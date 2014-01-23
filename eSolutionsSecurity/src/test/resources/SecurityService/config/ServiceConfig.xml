@@ -19,47 +19,50 @@
         <userManager>com.cws.esolutions.security.dao.usermgmt.impl.LDAPUserManager</userManager>
     </security-config>
 
+    <!-- this should correlate back to the data obtained from -->
+    <!-- the authentication repository. the objects below -->
+    <!-- are the *minimum* required to populate the user object -->
     <auth-data>
-        <objectClass>cwsperson</objectClass>
-        <userId>uid</userId>
-        <userPassword>userPassword</userPassword>
-        <lockCount>cwsfailedpwdcount</lockCount>
-        <lastLogin>cwslastlogin</lastLogin>
-        <surname>sn</surname>
-        <givenName>givenName</givenName>
-        <expiryDate>cwsexpirydate</expiryDate>
-        <secQuestionOne>cwssecq1</secQuestionOne>
-        <secQuestionTwo>cwssecq2</secQuestionTwo>
-        <secAnswerOne>cwssecans1</secAnswerOne>
-        <secAnswerTwo>cwssecans2</secAnswerTwo>
-        <emailAddr>email</emailAddr>
-        <isSuspended>cwsissuspended</isSuspended>
-        <commonName>cn</commonName>
-        <olrSetupReq>cwsisolrsetup</olrSetupReq>
-        <olrLocked>cwsisolrlocked</olrLocked>
-        <displayName>displayName</displayName>
-        <tcAccepted>cwsistcaccepted</tcAccepted>
-        <publicKey>cwspublickey</publicKey>
-        <pagerNumber>pager</pagerNumber>
-        <userType>cwsusertype</userType>
-        <telephoneNumber>telephoneNumber</telephoneNumber>
-        <memberOf>memberOf</memberOf>
+        <objectClass>cwsperson</objectClass> <!-- need this -->
+        <userId>uid</userId> <!-- need this -->
+        <userPassword>userPassword</userPassword> <!-- this is ONLY used during authentication. it is NOT kept in memory -->
+        <userRole>cwsrole</userRole> <!-- we need this (although we dont need it for an ldap repo -->
+        <lockCount>cwsfailedpwdcount</lockCount> <!-- need this -->
+        <lastLogin>cwslastlogin</lastLogin> <!-- need this -->
+        <surname>sn</surname> <!-- need this -->
+        <givenName>givenName</givenName> <!-- need this -->
+        <expiryDate>cwsexpirydate</expiryDate> <!-- need this -->
+        <secQuestionOne>cwssecq1</secQuestionOne> <!-- only used for authentication (specifically, an online reset) -->
+        <secQuestionTwo>cwssecq2</secQuestionTwo> <!-- only used for authentication (specifically, an online reset) -->
+        <secAnswerOne>cwssecans1</secAnswerOne> <!-- only used for authentication (specifically, an online reset) -->
+        <secAnswerTwo>cwssecans2</secAnswerTwo> <!-- only used for authentication (specifically, an online reset) -->
+        <emailAddr>email</emailAddr> <!-- need this -->
+        <isSuspended>cwsissuspended</isSuspended> <!-- need this -->
+        <commonName>cn</commonName> <!-- need this -->
+        <olrSetupReq>cwsisolrsetup</olrSetupReq> <!-- only used for authentication (specifically, an online reset) -->
+        <olrLocked>cwsisolrlocked</olrLocked> <!-- only used for authentication (specifically, an online reset) -->
+        <displayName>displayName</displayName> <!--  we could remove this and just use the surname, but what if someone wants a different display ? -->
+        <publicKey>cwspublickey</publicKey> <!-- only used during file signature operations. not used any other time and not stored during auth -->
+        <pagerNumber>pager</pagerNumber> <!-- need this -->
+        <telephoneNumber>telephoneNumber</telephoneNumber> <!-- need this -->
     </auth-data>
 
+    <!-- only required if file-based signing is used. the keys arent used for anything else. -->
     <key-config>
-        <keyAlgorithm>RSA</keyAlgorithm>
+        <keyAlgorithm>RSA</keyAlgorithm> <!-- keygen algorithm -->
         <keySize>4096</keySize> <!-- if algorithm is DSA, this MUST be 1024: http://docs.oracle.com/javase/6/docs/technotes/guides/security/SunProviders.html -->
-        <keyDirectory>/opt/eSolutions/keys</keyDirectory>
+        <keyDirectory>/opt/eSolutions/keys</keyDirectory> <!-- this is ONLY required if you're using a file-based keymanager -->
         <keyManager>com.cws.esolutions.security.keymgmt.impl.LDAPKeyManager</keyManager>
     </key-config>
 
+    <!-- only required if file-based signing is used. if this is configured then key-config MUST be configured. -->
     <file-security-config>
-        <signatureAlgorithm>SHA1withRSA</signatureAlgorithm>
-        <encryptionAlgorithm>RSA</encryptionAlgorithm>
+        <signatureAlgorithm>SHA1withRSA</signatureAlgorithm> <!-- file signature algorithm -->
+        <encryptionAlgorithm>RSA</encryptionAlgorithm> <!-- file encryption algorithm -->
     </file-security-config>
 
     <exception-config>
-        <sendExceptionNotifications>false</sendExceptionNotifications>
+        <sendExceptionNotifications>false</sendExceptionNotifications> <!-- if true, configure mail props -->
     </exception-config>
 
     <resource-config>

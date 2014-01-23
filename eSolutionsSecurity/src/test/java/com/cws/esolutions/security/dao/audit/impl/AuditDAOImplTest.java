@@ -91,8 +91,7 @@ public class AuditDAOImplTest
     {
         try
         {
-            List<Object> list = auditDAO.getAuditInterval("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95", 1);
-            System.out.println(list);
+            Assert.assertNotNull(auditDAO.getAuditInterval("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95", 1));
         }
         catch (SQLException sqx)
         {

@@ -26,17 +26,11 @@ package com.cws.esolutions.security.filters;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
-
 import java.io.IOException;
-
 import javax.servlet.Filter;
-
 import java.util.Enumeration;
-
 import org.slf4j.LoggerFactory;
-
 import java.util.ResourceBundle;
-
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletRequest;
@@ -44,11 +38,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 import javax.servlet.UnavailableException;
-
 import java.util.MissingResourceException;
-
 import org.apache.commons.lang.StringUtils;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 

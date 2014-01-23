@@ -176,7 +176,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     }
 
                     boolean isUserCreated = userManager.addUserAccount(accountData,
-                            new ArrayList<String>(Arrays.asList(userAccount.getGroups().toString())));
+                            new ArrayList<>(Arrays.asList(userAccount.getGroups().toString())));
 
                     if (DEBUG)
                     {
@@ -334,7 +334,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             {
                 
                 // delete userAccount
-                boolean isComplete = userManager.removeUserAccount(userAccount.getUsername(), userAccount.getGuid());
+                boolean isComplete = userManager.removeUserAccount(userAccount.getUsername());
 
                 if (DEBUG)
                 {
@@ -447,7 +447,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 if ((userData != null) && (userData.size() != 0))
                 {
-                    boolean isComplete = userManager.modifyUserSuspension((String) userData.get(1), (String) userData.get(0), userAccount.isSuspended());
+                    boolean isComplete = userManager.modifyUserSuspension((String) userData.get(1), userAccount.isSuspended());
 
                     if (DEBUG)
                     {
@@ -573,9 +573,8 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 if ((userData != null) && (userData.size() != 0))
                 {
-                    // TODO
-                    // boolean isComplete = userManager.modifyUserRole((String) userData.get(1), (String) userData.get(0), userAccount.getRole().name());
-                    boolean isComplete = false;
+                    boolean isComplete = userManager.modifyUserRole((String) userData.get(1), userAccount.getGroups().toArray());
+
                     if (DEBUG)
                     {
                         DEBUGGER.debug("isComplete: {}", isComplete);
@@ -749,7 +748,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     // we never show the user the password, we're only doing this
                     // to prevent unauthorized access (or further unauthorized access)
                     // we get a return code back but we aren't going to use it really
-                    boolean isComplete = userManager.changeUserPassword(userAccount.getGuid(), tmpPassword, 0); // TODO ??
+                    boolean isComplete = userManager.changeUserPassword(userAccount.getGuid(), tmpPassword); // TODO ??
 
                     if (DEBUG)
                     {

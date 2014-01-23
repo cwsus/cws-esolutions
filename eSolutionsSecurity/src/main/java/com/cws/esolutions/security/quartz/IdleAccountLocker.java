@@ -136,7 +136,7 @@ public class IdleAccountLocker implements Job
 
                 if (cal.getTime().before(lastLogin))
                 {
-                    boolean isComplete = manager.modifyUserSuspension(username, guid, true);
+                    boolean isComplete = manager.modifyUserSuspension(username, true);
 
                     if (DEBUG)
                     {

@@ -56,8 +56,8 @@ public class SQLUserManager implements UserManager
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("userId: {}", userId);
-            DEBUGGER.debug("userGuid: {}", userGuid);
+            DEBUGGER.debug("Value: {}", userId);
+            DEBUGGER.debug("Value: {}", userGuid);
         }
 
         Connection sqlConn = null;
@@ -76,7 +76,7 @@ public class SQLUserManager implements UserManager
             sqlConn.setAutoCommit(true);
 
             stmt = sqlConn.prepareCall("{ CALL getUserByAttribute(?, ?) }");
-            stmt.setString(1, userGuid);
+            stmt.setString(1, userId);
             stmt.setInt(2, 0);
 
             if (DEBUG)
@@ -242,16 +242,14 @@ public class SQLUserManager implements UserManager
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#changeUserPassword(java.lang.String, java.lang.String, java.lang.int)
      */
     @Override
-    public synchronized boolean changeUserPassword(final String userGuid, final String newPass, final int expiry) throws UserManagementException
+    public synchronized boolean changeUserPassword(final String userId, final String newPass) throws UserManagementException
     {
-        final String methodName = SQLUserManager.CNAME + "#changeUserPassword(final String userGuid, final String newPass, final int expiry) throws UserManagementException";
+        final String methodName = SQLUserManager.CNAME + "#changeUserPassword(final String userId, final String newPass) throws UserManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("userGuid: {}", userGuid);
-            DEBUGGER.debug("newPass: {}", newPass);
-            DEBUGGER.debug("expiry: {}", expiry);
+            DEBUGGER.debug("userId: {}", userId);
         }
 
         Connection sqlConn = null;
@@ -271,9 +269,8 @@ public class SQLUserManager implements UserManager
 
             // first make sure the existing password is proper
             // then make sure the new password doesnt match the existing password
-            stmt = sqlConn.prepareCall("{ CALL updateUserPassword(?, ?, ?) }");
-            stmt.setString(1, userGuid);
-            stmt.setInt(2, expiry);
+            stmt = sqlConn.prepareCall("{ CALL updateUserPassword(?, ?) }");
+            stmt.setString(1, userId);
             stmt.setString(3, newPass);
 
             if (DEBUG)
@@ -316,18 +313,17 @@ public class SQLUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#removeUserAccount(java.lang.String, java.lang.String)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#removeUserAccount(java.lang.String)
      */
     @Override
-    public synchronized boolean removeUserAccount(final String userId, final String userGuid) throws UserManagementException
+    public synchronized boolean removeUserAccount(final String userId) throws UserManagementException
     {
-        final String methodName = SQLUserManager.CNAME + "#removeUserAccount(final String userId, final String userGuid) throws UserManagementException";
+        final String methodName = SQLUserManager.CNAME + "#removeUserAccount(final String userId) throws UserManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("userId: {}", userId);
-            DEBUGGER.debug("userGuid: {}", userGuid);
         }
 
         Connection sqlConn = null;
@@ -346,7 +342,7 @@ public class SQLUserManager implements UserManager
             sqlConn.setAutoCommit(true);
 
             stmt = sqlConn.prepareCall("{ CALL removeUserAccount(?) }");
-            stmt.setString(1, userGuid);
+            stmt.setString(1, userId);
 
             if (DEBUG)
             {
@@ -726,15 +722,14 @@ public class SQLUserManager implements UserManager
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserSuspension(java.lang.String, java.lang.String, boolean)
      */
     @Override
-    public synchronized boolean modifyUserSuspension(final String userId, final String userGuid, final boolean isSuspended) throws UserManagementException
+    public synchronized boolean modifyUserSuspension(final String userId, final boolean isSuspended) throws UserManagementException
     {
-        final String methodName = SQLUserManager.CNAME + "#modifyUserSuspension(final String userId, final String userGuid, final boolean isSuspended) throws UserManagementException";
+        final String methodName = SQLUserManager.CNAME + "#modifyUserSuspension(final String userId, final boolean isSuspended) throws UserManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", userId);
-            DEBUGGER.debug("Value: {}", userGuid);
             DEBUGGER.debug("Value: {}", isSuspended);
         }
 
@@ -754,7 +749,7 @@ public class SQLUserManager implements UserManager
             sqlConn.setAutoCommit(true);
 
             stmt = sqlConn.prepareCall("{ CALL modifyUserSuspension(?, ?) }");
-            stmt.setString(1, userGuid);
+            stmt.setString(1, userId);
             stmt.setBoolean(2, isSuspended);
 
             if (DEBUG)
@@ -807,15 +802,14 @@ public class SQLUserManager implements UserManager
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#lockUserAccount(java.lang.String, java.lang.String, java.lang.Boolean)
      */
     @Override
-    public synchronized void lockUserAccount(final String userId, final String userGuid) throws UserManagementException
+    public synchronized void lockUserAccount(final String userId) throws UserManagementException
     {
-        final String methodName = SQLUserManager.CNAME + "#unlockUserAccount(final Stirng userId, final String userGuid) throws UserManagementException";
+        final String methodName = SQLUserManager.CNAME + "#unlockUserAccount(final String userId) throws UserManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", userId);
-            DEBUGGER.debug("Value: {}", userGuid);
         }
 
         Connection sqlConn = null;
@@ -833,7 +827,7 @@ public class SQLUserManager implements UserManager
             sqlConn.setAutoCommit(true);
 
             stmt = sqlConn.prepareCall("{ CALL lockUserAccount(?) }");
-            stmt.setString(1, userGuid);
+            stmt.setString(1, userId);
 
             if (DEBUG)
             {
@@ -873,15 +867,14 @@ public class SQLUserManager implements UserManager
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#unlockUserAccount(java.lang.String, java.lang.String)
      */
     @Override
-    public synchronized boolean unlockUserAccount(final String userId, final String userGuid) throws UserManagementException
+    public synchronized boolean unlockUserAccount(final String userId) throws UserManagementException
     {
-        final String methodName = SQLUserManager.CNAME + "#unlockUserAccount(final Stirng userId, final String userGuid) throws UserManagementException";
+        final String methodName = SQLUserManager.CNAME + "#unlockUserAccount(final Stirng userId, final String userId) throws UserManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", userId);
-            DEBUGGER.debug("Value: {}", userGuid);
         }
 
         Connection sqlConn = null;
@@ -900,7 +893,7 @@ public class SQLUserManager implements UserManager
             sqlConn.setAutoCommit(true);
 
             stmt = sqlConn.prepareCall("{ CALL unlockUserAccount(?) }");
-            stmt.setString(1, userGuid);
+            stmt.setString(1, userId);
 
             if (DEBUG)
             {
@@ -952,23 +945,22 @@ public class SQLUserManager implements UserManager
      * TODO: Add in the method description/comments
      *
      * @param userId
-     * @param userGuid
+     * @param userId
      * @param value
      * @return
      * @throws UserManagementException
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserEmail(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public boolean modifyUserEmail(final String userId, final String userGuid, final String value) throws UserManagementException
+    public boolean modifyUserEmail(final String userId, final String value) throws UserManagementException
     {
-        final String methodName = SQLUserManager.CNAME + "#modifyUserEmail(final String userId, final String userGuid, final String value) throws UserManagementException";
+        final String methodName = SQLUserManager.CNAME + "#modifyUserEmail(final String userId, final String value) throws UserManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("userId: {}", userId);
-            DEBUGGER.debug("userGuid: {}", userGuid);
-            DEBUGGER.debug("userGuid: {}", value);
+            DEBUGGER.debug("userId: {}", value);
         }
         
         return false;
@@ -978,23 +970,22 @@ public class SQLUserManager implements UserManager
      * TODO: Add in the method description/comments
      *
      * @param userId
-     * @param userGuid
+     * @param userId
      * @param value
      * @return
      * @throws UserManagementException
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserContact(java.lang.String, java.lang.String, java.util.List)
      */
     @Override
-    public boolean modifyUserContact(final String userId, final String userGuid, final List<String> value) throws UserManagementException
+    public boolean modifyUserContact(final String userId, final List<String> value) throws UserManagementException
     {
-        final String methodName = SQLUserManager.CNAME + "#modifyUserContact(final String userId, final String userGuid, final List<String> value) throws UserManagementException";
+        final String methodName = SQLUserManager.CNAME + "#modifyUserContact(final String userId, final List<String> value) throws UserManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("userId: {}", userId);
-            DEBUGGER.debug("userGuid: {}", userGuid);
-            DEBUGGER.debug("userGuid: {}", value);
+            DEBUGGER.debug("List<String>: {}", value);
         }
         
         return false;
@@ -1004,23 +995,22 @@ public class SQLUserManager implements UserManager
      * TODO: Add in the method description/comments
      *
      * @param userId
-     * @param userGuid
+     * @param userId
      * @param role
      * @return
      * @throws UserManagementException
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserRole(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public boolean modifyUserRole(final String userId, final String userGuid, final String value) throws UserManagementException
+    public boolean modifyUserRole(final String userId, final Object[] value) throws UserManagementException
     {
-        final String methodName = SQLUserManager.CNAME + "#modifyUserRole(final String userId, final String userGuid, final String value) throws UserManagementException";
+        final String methodName = SQLUserManager.CNAME + "#modifyUserRole(final String userId, final Object[] value) throws UserManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("userId: {}", userId);
-            DEBUGGER.debug("userGuid: {}", userGuid);
-            DEBUGGER.debug("userGuid: {}", value);
+            DEBUGGER.debug("List<String>: {}", value);
         }
         
         return false;
@@ -1030,21 +1020,20 @@ public class SQLUserManager implements UserManager
      * TODO: Add in the method description/comments
      *
      * @param userId
-     * @param userGuid
+     * @param userId
      * @return
      * @throws UserManagementException
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#lockOnlineReset(java.lang.String, java.lang.String)
      */
     @Override
-    public boolean lockOnlineReset(final String userId, final String userGuid) throws UserManagementException
+    public boolean lockOnlineReset(final String userId) throws UserManagementException
     {
-        final String methodName = SQLUserManager.CNAME + "#lockOnlineReset(final String userId, final String userGuid, final String value) throws UserManagementException";
+        final String methodName = SQLUserManager.CNAME + "#lockOnlineReset(final String userId, final String value) throws UserManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("userId: {}", userId);
-            DEBUGGER.debug("userGuid: {}", userGuid);
         }
         
         return false;
@@ -1054,21 +1043,37 @@ public class SQLUserManager implements UserManager
      * TODO: Add in the method description/comments
      *
      * @param userId
-     * @param userGuid
+     * @param userId
      * @return
      * @throws UserManagementException
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#clearLockCount(java.lang.String, java.lang.String)
      */
     @Override
-    public boolean clearLockCount(final String userId, final String userGuid) throws UserManagementException
+    public boolean clearLockCount(final String userId) throws UserManagementException
     {
-        final String methodName = SQLUserManager.CNAME + "#clearLockCount(final String userId, final String userGuid, final String value) throws UserManagementException";
+        final String methodName = SQLUserManager.CNAME + "#clearLockCount(final String userId, final String value) throws UserManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("userId: {}", userId);
-            DEBUGGER.debug("userGuid: {}", userGuid);
+        }
+        
+        return false;
+    }
+
+    /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#changeUserSecurity(java.lang.String, java.util.List)
+     */
+    @Override
+    public boolean changeUserSecurity(final String userId, final List<String> values) throws UserManagementException
+    {
+        final String methodName = SQLUserManager.CNAME + "#changeUserSecurity(final String userId, final List<String> values) throws UserManagementException";
+        
+        if (DEBUG)
+        {
+        	DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: ", userId);
         }
         
         return false;

@@ -14,69 +14,51 @@
         <smsResetEnabled>false</smsResetEnabled> <!-- do we send the reset email AND an sms ? -->
         <smsCodeLength>8</smsCodeLength> <!-- how long should the sms reset id be ? -->
         <resetTimeout>30</resetTimeout> <!-- reset timeout length (minutes) -->
+        <authConfig>/opt/cws/eSolutions/etc/repository.properties</authConfig>
         <authManager>com.cws.esolutions.security.dao.userauth.impl.LDAPAuthenticator</authManager>
         <userManager>com.cws.esolutions.security.dao.usermgmt.impl.LDAPUserManager</userManager>
     </security-config>
 
+    <!-- this should correlate back to the data obtained from -->
+    <!-- the authentication repository. the objects below -->
+    <!-- are the *minimum* required to populate the user object -->
     <auth-data>
-        <objectClass>cwsperson</objectClass>
-        <userId>uid</userId>
-        <userPassword>userPassword</userPassword>
-        <userRole>cwsrole</userRole>
-        <lockCount>cwsfailedpwdcount</lockCount>
-        <lastLogin>cwslastlogin</lastLogin>
-        <surname>sn</surname>
-        <givenName>givenName</givenName>
-        <expiryDate>cwsexpirydate</expiryDate>
-        <secQuestionOne>cwssecq1</secQuestionOne>
-        <secQuestionTwo>cwssecq2</secQuestionTwo>
-        <secAnswerOne>cwssecans1</secAnswerOne>
-        <secAnswerTwo>cwssecans2</secAnswerTwo>
-        <emailAddr>email</emailAddr>
-        <isSuspended>cwsissuspended</isSuspended>
-        <commonName>cn</commonName>
-        <olrSetupReq>cwsisolrsetup</olrSetupReq>
-        <olrLocked>cwsisolrlocked</olrLocked>
-        <displayName>displayName</displayName>
-        <tcAccepted>cwsistcaccepted</tcAccepted>
-        <publicKey>cwspublickey</publicKey>
-        <pagerNumber>pager</pagerNumber>
-        <userType>cwsusertype</userType>
-        <telephoneNumber>telephoneNumber</telephoneNumber>
+        <objectClass>cwsperson</objectClass> <!-- need this -->
+        <userId>uid</userId> <!-- need this -->
+        <userPassword>userPassword</userPassword> <!-- this is ONLY used during authentication. it is NOT kept in memory -->
+        <userRole>cwsrole</userRole> <!-- we need this (although we dont need it for an ldap repo -->
+        <lockCount>cwsfailedpwdcount</lockCount> <!-- need this -->
+        <lastLogin>cwslastlogin</lastLogin> <!-- need this -->
+        <surname>sn</surname> <!-- need this -->
+        <givenName>givenName</givenName> <!-- need this -->
+        <expiryDate>cwsexpirydate</expiryDate> <!-- need this -->
+        <secQuestionOne>cwssecq1</secQuestionOne> <!-- only used for authentication (specifically, an online reset) -->
+        <secQuestionTwo>cwssecq2</secQuestionTwo> <!-- only used for authentication (specifically, an online reset) -->
+        <secAnswerOne>cwssecans1</secAnswerOne> <!-- only used for authentication (specifically, an online reset) -->
+        <secAnswerTwo>cwssecans2</secAnswerTwo> <!-- only used for authentication (specifically, an online reset) -->
+        <emailAddr>email</emailAddr> <!-- need this -->
+        <isSuspended>cwsissuspended</isSuspended> <!-- need this -->
+        <commonName>cn</commonName> <!-- need this -->
+        <olrSetupReq>cwsisolrsetup</olrSetupReq> <!-- only used for authentication (specifically, an online reset) -->
+        <olrLocked>cwsisolrlocked</olrLocked> <!-- only used for authentication (specifically, an online reset) -->
+        <displayName>displayName</displayName> <!--  we could remove this and just use the surname, but what if someone wants a different display ? -->
+        <publicKey>cwspublickey</publicKey> <!-- only used during file signature operations. not used any other time and not stored during auth -->
+        <pagerNumber>pager</pagerNumber> <!-- need this -->
+        <telephoneNumber>telephoneNumber</telephoneNumber> <!-- need this -->
     </auth-data>
 
-    <auth-repo>
-        <repoType>LDAP</repoType>
-        <configFile>/opt/cws/eSolutions/etc/repository.properties</configFile>
-        <isSecure>isSecure</isSecure>
-        <trustStoreFile>trustStoreFile</trustStoreFile>
-        <trustStorePass>trustStorePass</trustStorePass>
-        <trustStoreType>trustStoreType</trustStoreType>
-        <repositoryHost>repositoryHost</repositoryHost>
-        <repositoryPort>repositoryPort</repositoryPort>
-        <repositoryConnTimeout>repositoryConnTimeout</repositoryConnTimeout>
-        <repositoryReadTimeout>repositoryReadTimeout</repositoryReadTimeout>
-        <repositoryUser>repositoryUser</repositoryUser>
-        <repositoryPass>repositoryPass</repositoryPass>
-        <repositorySalt>repositorySalt</repositorySalt>
-        <minConnections>minConnections</minConnections>
-        <maxConnections>maxConnections</maxConnections>
-        <baseObjectClass>inetOrgPerson</baseObjectClass>
-        <repositoryBaseDN>dc=caspersbox,dc=com</repositoryBaseDN>
-        <repositoryUserBase>organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com</repositoryUserBase>
-        <repositoryRoleBase>organizationalUnitName=Roles,organizationName=CWS US,dc=caspersbox,dc=com</repositoryRoleBase>
-    </auth-repo>
-
+    <!-- only required if file-based signing is used. the keys arent used for anything else. -->
     <key-config>
-        <keyAlgorithm>RSA</keyAlgorithm>
+        <keyAlgorithm>RSA</keyAlgorithm> <!-- keygen algorithm -->
         <keySize>4096</keySize> <!-- if algorithm is DSA, this MUST be 1024: http://docs.oracle.com/javase/6/docs/technotes/guides/security/SunProviders.html -->
-        <keyDirectory>/opt/eSolutions/keys</keyDirectory>
+        <keyDirectory>/opt/eSolutions/keys</keyDirectory> <!-- this is ONLY required if you're using a file-based keymanager -->
         <keyManager>com.cws.esolutions.security.keymgmt.impl.LDAPKeyManager</keyManager>
     </key-config>
 
+    <!-- only required if file-based signing is used. if this is configured then key-config MUST be configured. -->
     <file-security-config>
-        <signatureAlgorithm>SHA1withRSA</signatureAlgorithm>
-        <encryptionAlgorithm>RSA</encryptionAlgorithm>
+        <signatureAlgorithm>SHA1withRSA</signatureAlgorithm> <!-- file signature algorithm -->
+        <encryptionAlgorithm>RSA</encryptionAlgorithm> <!-- file encryption algorithm -->
     </file-security-config>
 
     <exception-config>

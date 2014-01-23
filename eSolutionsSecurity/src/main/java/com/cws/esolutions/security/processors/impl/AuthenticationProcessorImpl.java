@@ -200,7 +200,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     userAccount.setOlrLocked((Boolean) userData.get(13));
 
                     // build groups
-                    List<UserGroup> userGroups = new ArrayList<UserGroup>();
+                    List<UserGroup> userGroups = new ArrayList<>();
                     for (String group : StringUtils.split((String) userData.get(14), ","))
                     {
                         if (DEBUG)
@@ -307,8 +307,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                         }
 
                         // do it
-                        // TODO: make a farkin method out of this
-                        userManager.clearLockCount(name, guid);
+                        userManager.clearLockCount(name);
                     }
                 }
             }
@@ -558,7 +557,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     {
                         try
                         {
-                            userManager.lockOnlineReset(userAccount.getUsername(), userAccount.getGuid());
+                            userManager.lockOnlineReset(userAccount.getUsername());
                         }
                         catch (UserManagementException umx)
                         {

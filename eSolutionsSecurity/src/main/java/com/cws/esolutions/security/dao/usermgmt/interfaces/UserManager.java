@@ -90,19 +90,18 @@ public interface UserManager
      * @return
      * @throws UserManagementException
      */
-    boolean modifyUserEmail(final String userId, final String userGuid, final String value) throws UserManagementException;
+    boolean modifyUserEmail(final String userId, final String value) throws UserManagementException;
 
     /**
      * 
      * TODO: Add in the method description/comments
      *
      * @param userId
-     * @param userGuid
      * @param value
      * @return
      * @throws UserManagementException
      */
-    boolean modifyUserContact(final String userId, final String userGuid, final List<String> value) throws UserManagementException;
+    boolean modifyUserContact(final String userId, final List<String> value) throws UserManagementException;
 
     /**
      * Suspends or unsuspends a provided user account. This could be utilized
@@ -110,68 +109,60 @@ public interface UserManager
      * account during extended periods of leave or investigations.
      *
      * @param userId - The username to perform the modification against
-     * @param userGuid - The UUID of the user to perform the modification against
      * @param isSuspended - <code>true</code> to suspend the account, <code>false</code> to unsuspend
      * @return boolean
      * @throws UserManagementException if an error occurs during processing
      */
-    boolean modifyUserSuspension(final String userId, final String userGuid, final boolean isSuspended) throws UserManagementException;
+    boolean modifyUserSuspension(final String userId, final boolean isSuspended) throws UserManagementException;
 
     /**
      * 
      * TODO: Add in the method description/comments
      *
      * @param userId
-     * @param userGuid
      * @param role
      * @return
      * @throws UserManagementException
      */
-    boolean modifyUserRole(final String userId, final String userGuid, final String role) throws UserManagementException;
-    /**
-     * 
-     * TODO: Add in the method description/comments
-     *
-     * @param userId
-     * @param userGuid
-     * @param isSuspended
-     * @return
-     * @throws UserManagementException
-     */
-    boolean lockOnlineReset(final String userId, final String userGuid) throws UserManagementException;
+    boolean modifyUserRole(final String userId, final Object[] role) throws UserManagementException;
 
     /**
      * 
      * TODO: Add in the method description/comments
      *
      * @param userId
-     * @param userGuid
-     * @param isSuspended
      * @return
      * @throws UserManagementException
      */
-    boolean clearLockCount(final String userId, final String userGuid) throws UserManagementException;
+    boolean lockOnlineReset(final String userId) throws UserManagementException;
+
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param userId
+     * @return
+     * @throws UserManagementException
+     */
+    boolean clearLockCount(final String userId) throws UserManagementException;
 
     /**
      * Locks a provided user account by either incrementing the existing lock count
      * by 1 or by setting the value to the configured lockout value.
      *
      * @param userId - The username to perform the modification against
-     * @param userGuid - The UUID of the user to perform the modification against
-     * @return boolean
      * @throws UserManagementException if an error occurs during processing
      */
-    void lockUserAccount(final String userId, final String userGuid) throws UserManagementException;
+    void lockUserAccount(final String userId) throws UserManagementException;
 
     /**
      * Unlocks a provided user account by setting the lock count to 0.
      *
      * @param userId - The username to perform the modification against
-     * @param userGuid - The UUID of the user to perform the modification against
      * @return boolean
      * @throws UserManagementException if an error occurs during processing
      */
-    boolean unlockUserAccount(final String userId, final String userGuid) throws UserManagementException;
+    boolean unlockUserAccount(final String userId) throws UserManagementException;
 
     /**
      * Removes a provided user account from the authentication datastore. This
@@ -179,23 +170,33 @@ public interface UserManager
      * re-created it will NOT have the same security information (such as UUID)
      *
      * @param userId - The username to perform the modification against
-     * @param userGuid - The UUID of the user to perform the modification against
      * @return boolean
      * @throws UserManagementException if an error occurs during processing
      */
-    boolean removeUserAccount(final String userId, final String userGuid) throws UserManagementException;
+    boolean removeUserAccount(final String userId) throws UserManagementException;
 
     /**
      * 
      * TODO: Add in the method description/comments
      *
-     * @param userDN
+     * @param userId
      * @param newPass
      * @param expiry
      * @return
      * @throws UserManagementException
      */
-    boolean changeUserPassword(final String userDN, final String newPass, final int expiry) throws UserManagementException;
+    boolean changeUserPassword(final String userId, final String newPass) throws UserManagementException;
+
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param userId
+     * @param values
+     * @return
+     * @throws UserManagementException
+     */
+    boolean changeUserSecurity(final String userId, final List<String> values) throws UserManagementException;
 
     /**
      * Searches for user accounts given provided search data.

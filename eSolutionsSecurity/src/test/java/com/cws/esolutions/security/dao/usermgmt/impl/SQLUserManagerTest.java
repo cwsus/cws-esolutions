@@ -25,16 +25,12 @@ package com.cws.esolutions.security.dao.usermgmt.impl;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.Map;
-import java.util.List;
 import java.util.UUID;
 import org.junit.Test;
 import org.junit.After;
 import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Assert;
-import java.util.HashMap;
-import java.util.Calendar;
 import java.util.ArrayList;
 import org.apache.commons.lang.RandomStringUtils;
 
@@ -45,7 +41,7 @@ import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementExceptio
 
 public class SQLUserManagerTest
 {
-    private static final UserManager userManager = new SQLUserManager();
+    private static final String GUID = UUID.randomUUID().toString();
 
     @Before
     public void setUp()
@@ -56,28 +52,31 @@ public class SQLUserManagerTest
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             Assert.fail(e.getMessage());
             System.exit(1);
         }
     }
 
-    @Test
-    public void testAddAccount()
+    public void addUserAccount()
     {
-        List<String> list = new ArrayList<>(
-            Arrays.asList(
-                "testuser",
-                RandomStringUtils.randomAlphanumeric(64),
-                "USER",
-                "Test",
-                "User",
-                "test@test.com",
-                UUID.randomUUID().toString(),
-                "Test User"));
-
         try
         {
-            Assert.assertTrue(userManager.addUserAccount(null, list));
+            final UserManager userManager = new SQLUserManager();
+
+            Assert.assertTrue(userManager.addUserAccount(
+                    new ArrayList<>(
+                            Arrays.asList(
+                                    "junit-test",
+                                    RandomStringUtils.randomAlphanumeric(64),
+                                    "Test",
+                                    "User",
+                                    "test@test.com",
+                                    SQLUserManagerTest.GUID,
+                                    "Test User")),
+                    new ArrayList<>(
+                            Arrays.asList(
+                                    "USER"))));
         }
         catch (UserManagementException umx)
         {
@@ -86,11 +85,13 @@ public class SQLUserManagerTest
     }
 
     @Test
-    public void testSearchUsers()
+    public void modifyUserEmail()
     {
         try
         {
-            Assert.assertNotNull(userManager.searchUsers(SearchRequestType.GUID, "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95"));
+            final UserManager manager = new SQLUserManager();
+
+            Assert.assertTrue(manager.modifyUserEmail("junit-test", "test@test.com"));
         }
         catch (UserManagementException umx)
         {
@@ -99,11 +100,16 @@ public class SQLUserManagerTest
     }
 
     @Test
-    public void testModifyUserSuspension()
+    public void modifyUserContact()
     {
         try
         {
-            Assert.assertTrue(userManager.modifyUserSuspension("khuntly", "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95", false));
+            final UserManager manager = new SQLUserManager();
+
+            Assert.assertTrue(manager.modifyUserContact("junit-test", new ArrayList<>(
+                    Arrays.asList(
+                            "716-341-5669",
+                            "716-341-5669"))));
         }
         catch (UserManagementException umx)
         {
@@ -112,18 +118,13 @@ public class SQLUserManagerTest
     }
 
     @Test
-    public void testModifyUserLockout()
+    public void modifyUserSuspension()
     {
         try
         {
-            Assert.assertTrue(userManager.modifyUserInformation("test", "99504de2-ac12-486a-b835-12c8c164d8bc", new HashMap<String, Object>()
-                    {
-                        private static final long serialVersionUID = 602188777075148683L;
+            final UserManager manager = new SQLUserManager();
 
-                        {
-                            put("cwsfailedpwdcount", 5);
-                        }
-                    }));
+            Assert.assertTrue(manager.modifyUserSuspension("junit-test", true));
         }
         catch (UserManagementException umx)
         {
@@ -132,18 +133,13 @@ public class SQLUserManagerTest
     }
 
     @Test
-    public void testModifyUserPassword()
+    public void modifyUserRole()
     {
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, 45);
-
-        Map<String, Object> change = new HashMap<>();
-        change.put("userPassword", "6TPeXOxpCKce2wPZMM3nIGtbN2BRk31guOO7utNwfvtjmGxqvLhBi/Atd0ZzxDlR2/5l0cKJgqiMTHCoXPjhwQ==");
-        // change.put("cwsexpirydate", cal.getTimeInMillis());
-
         try
         {
-            Assert.assertTrue(userManager.modifyUserInformation("khuntly", "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95", change));
+            final UserManager manager = new SQLUserManager();
+
+            Assert.assertTrue(manager.modifyUserRole("junit-test", new Object[] { "Service Operator" } ));
         }
         catch (UserManagementException umx)
         {
@@ -152,19 +148,13 @@ public class SQLUserManagerTest
     }
 
     @Test
-    public void testModifyUserAnswers()
+    public void lockOnlineReset()
     {
         try
         {
-            Assert.assertTrue(userManager.modifyUserInformation("khuntly", "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95", new HashMap<String, Object>()
-                    {
-                        private static final long serialVersionUID = 602188777075148683L;
+            final UserManager manager = new SQLUserManager();
 
-                        {
-                            put("cwssecans1", "VxqLnzg918cdevQdl+aut3+o2UW40O3ozfz2iUWkOYBjTeRsiJBppeHlyuofEJw+");
-                            put("cwssecans2", "VxqLnzg918cdevQdl+aut3+o2UW40O3ozfz2iUWkOYCiHy4/Zkct4Dsf1KnqTbZE");
-                        }
-                    }));
+            Assert.assertTrue(manager.lockOnlineReset("junit-test"));
         }
         catch (UserManagementException umx)
         {
@@ -173,19 +163,110 @@ public class SQLUserManagerTest
     }
 
     @Test
-    public void testModifyUserContact()
+    public void clearLockCount()
     {
         try
         {
-            Assert.assertTrue(userManager.modifyUserInformation("khuntly", "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95", new HashMap<String, Object>()
-                    {
-                        private static final long serialVersionUID = 602188777075148683L;
+            final UserManager manager = new SQLUserManager();
 
-                        {
-                            put("pager", "716-341-5669");
-                            put("telephoneNumber", "716-341-5669");
-                        }
-                    }));
+            Assert.assertTrue(manager.clearLockCount("junit-test"));
+        }
+        catch (UserManagementException umx)
+        {
+            Assert.fail(umx.getMessage());
+        }
+    }
+
+    @Test
+    public void lockUserAccount()
+    {
+        try
+        {
+            final UserManager manager = new SQLUserManager();
+
+            manager.lockUserAccount("junit-test");
+        }
+        catch (UserManagementException umx)
+        {
+            Assert.fail(umx.getMessage());
+        }
+    }
+
+    @Test
+    public void changeUserPassword()
+    {
+        try
+        {
+            final UserManager manager = new SQLUserManager();
+
+            Assert.assertTrue(manager.changeUserPassword("junit-test",
+                    "6TPeXOxpCKce2wPZMM3nIGtbN2BRk31guOO7utNwfvtjmGxqvLhBi/Atd0ZzxDlR2/5l0cKJgqiMTHCoXPjhwQ=="));
+        }
+        catch (UserManagementException umx)
+        {
+            Assert.fail(umx.getMessage());
+        }
+    }
+
+    @Test
+    public void changeUserSecurity()
+    {
+        try
+        {
+            final UserManager manager = new SQLUserManager();
+
+            Assert.assertTrue(manager.changeUserSecurity("junit-test",
+                    new ArrayList<>(
+                            Arrays.asList(
+                                    "question 1",
+                                    "question 2",
+                                    "answer 1",
+                                    "answer 2"))));
+        }
+        catch (UserManagementException umx)
+        {
+            Assert.fail(umx.getMessage());
+        }
+    }
+
+    @Test
+    public void searchUsers()
+    {
+        try
+        {
+            final UserManager userManager = new SQLUserManager();
+
+            Assert.assertNotNull(userManager.searchUsers(SearchRequestType.GUID, SQLUserManagerTest.GUID));
+        }
+        catch (UserManagementException umx)
+        {
+            Assert.fail(umx.getMessage());
+        }
+    }
+
+    @Test
+    public void loadUserAccount()
+    {
+        try
+        {
+            final UserManager userManager = new SQLUserManager();
+
+            Assert.assertNotNull(userManager.loadUserAccount(SQLUserManagerTest.GUID));
+        }
+        catch (UserManagementException umx)
+        {
+            Assert.fail(umx.getMessage());
+        }
+    }
+
+    @Test
+    public void removeUserAccount()
+    {
+        try
+        {
+            final UserManager manager = new SQLUserManager();
+
+            Assert.assertTrue(manager.removeUserAccount("junit-test"));
         }
         catch (UserManagementException umx)
         {

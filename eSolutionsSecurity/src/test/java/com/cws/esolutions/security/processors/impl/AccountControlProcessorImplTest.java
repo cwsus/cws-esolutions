@@ -220,7 +220,7 @@ public class AccountControlProcessorImplTest
 
         try
         {
-            AccountControlResponse response = processor.modifyUserLockout(request);
+            AccountControlResponse response = processor.modifyUserSuspension(request);
 
             Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
         }

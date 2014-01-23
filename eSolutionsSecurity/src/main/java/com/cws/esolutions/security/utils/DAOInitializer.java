@@ -97,7 +97,7 @@ public final class DAOInitializer
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("String: {}", properties);
+            DEBUGGER.debug("File: {}", properties);
             DEBUGGER.debug("isContainer: {}", isContainer);
             DEBUGGER.debug("SecurityServiceBean: {}", bean);
         }

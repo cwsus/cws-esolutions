@@ -25,10 +25,8 @@ package com.cws.esolutions.security.processors.impl;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.Map;
 import java.util.List;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Calendar;
 import java.util.ArrayList;
 import java.sql.SQLException;
@@ -117,7 +115,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                 secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
                                 secBean.getConfigData().getSecurityConfig().getIterations()));
 
-                boolean isComplete = userManager.modifyUserEmail(userAccount.getUsername(), userAccount.getGuid(), userAccount.getEmailAddr());
+                boolean isComplete = userManager.modifyUserEmail(userAccount.getUsername(), userAccount.getEmailAddr());
 
                 if (isComplete)
                 {
@@ -247,8 +245,8 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                 secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
                                 secBean.getConfigData().getSecurityConfig().getIterations()));
 
-                boolean isComplete = userManager.modifyUserContact(userAccount.getUsername(), userAccount.getGuid(),
-                        new ArrayList<String>(
+                boolean isComplete = userManager.modifyUserContact(userAccount.getUsername(),
+                        new ArrayList<>(
                                 Arrays.asList(
                                         userAccount.getTelephoneNumber(),
                                         userAccount.getPagerNumber())));
@@ -425,7 +423,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                             // make the modification in the user repository
                             userManager.changeUserPassword(userAccount.getGuid(),
                                     PasswordUtils.encryptText(reqSecurity.getNewPassword(), newUserSalt,
-                                            secConfig.getAuthAlgorithm(), secConfig.getIterations()), secConfig.getPasswordExpiration());
+                                            secConfig.getAuthAlgorithm(), secConfig.getIterations()));
 
                             if (DEBUG)
                             {
@@ -466,7 +464,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                     // repository, because we couldnt update the salt value. if we don't
                                     // undo it then the user will never be able to login without admin
                                     // intervention
-                                    boolean isBackedOut = userManager.changeUserPassword(userAccount.getUsername(), currentPassword, secConfig.getPasswordExpiration());
+                                    boolean isBackedOut = userManager.changeUserPassword(userAccount.getUsername(), currentPassword);
 
                                     if (!(isBackedOut))
                                     {
@@ -634,23 +632,17 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                             // make the backout
                             List<String> currentSec = authenticator.obtainSecurityData(userAccount.getUsername(), userAccount.getGuid());
 
-                            Map<String, Object> backout = new HashMap<>();
-                            backout.put(authData.getSecQuestionOne(), currentSec.get(0));
-                            backout.put(authData.getSecQuestionTwo(), currentSec.get(1));
-                            backout.put(authData.getSecAnswerOne(), currentSec.get(2));
-                            backout.put(authData.getSecAnswerTwo(), currentSec.get(3));
-
                             // good, move forward
                             // make the modification in the user repository
-                            Map<String, Object> changeMap = new HashMap<>();
-                            changeMap.put(authData.getSecQuestionOne(), reqSecurity.getSecQuestionOne());
-                            changeMap.put(authData.getSecQuestionTwo(), reqSecurity.getSecQuestionTwo());
-                            changeMap.put(authData.getSecAnswerOne(), PasswordUtils.encryptText(reqSecurity.getSecAnswerOne(), newUserSalt,
-                                    secConfig.getAuthAlgorithm(), secConfig.getIterations()));
-                            changeMap.put(authData.getSecAnswerTwo(), PasswordUtils.encryptText(reqSecurity.getSecAnswerTwo(), newUserSalt,
-                                    secConfig.getAuthAlgorithm(), secConfig.getIterations()));
-
-                            boolean isComplete = userManager.modifyUserInformation(userAccount.getUsername(), userAccount.getGuid(), changeMap);
+                            boolean isComplete = userManager.changeUserSecurity(userAccount.getUsername(), 
+                                    new ArrayList<>(
+                                        Arrays.asList(
+                                            reqSecurity.getSecQuestionOne(),
+                                            reqSecurity.getSecQuestionTwo(),
+                                            PasswordUtils.encryptText(reqSecurity.getSecAnswerOne(), newUserSalt,
+                                                secConfig.getAuthAlgorithm(), secConfig.getIterations()),
+                                            PasswordUtils.encryptText(reqSecurity.getSecAnswerTwo(), newUserSalt,
+                                                secConfig.getAuthAlgorithm(), secConfig.getIterations()))));
 
                             if (DEBUG)
                             {
@@ -672,7 +664,8 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                     // repository, because we couldnt update the salt value. if we don't
                                     // undo it then the user will never be able to login without admin
                                     // intervention
-                                    boolean backoutData = userManager.modifyUserInformation(userAccount.getUsername(), userAccount.getGuid(), backout);
+                                    boolean backoutData = userManager.changeUserSecurity(userAccount.getUsername(), currentSec);
+                                    
                                     boolean backoutSalt = userSec.updateUserSalt(userAccount.getGuid(), existingSalt, SaltType.RESET.name());
 
                                     if (!(backoutData) && (!(backoutSalt)))

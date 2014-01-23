@@ -55,6 +55,7 @@ public final class SecurityConfig implements Serializable
     private int smsCodeLength = 8; // default of 8
     private int iterations = 65535; // default to 65535
     private int resetIdLength = 32; // default of 32
+    private File authConfig = null; // FULL path to connection configuration file
     private String authManager = null;
     private String userManager = null;
     private int passwordMinLength = 8; // default of 8 characters
@@ -63,8 +64,6 @@ public final class SecurityConfig implements Serializable
     private String authAlgorithm = null;
     private boolean performAudit = true; // default true to perform audit
     private boolean smsResetEnabled = false;
-
-    private File authConfig = null;
 
     private static final long serialVersionUID = -338675198961732554L;
     private static final String CNAME = SecurityConfig.class.getName();
@@ -280,7 +279,6 @@ public final class SecurityConfig implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        System.out.println(value);
         this.authConfig = value;
     }
 

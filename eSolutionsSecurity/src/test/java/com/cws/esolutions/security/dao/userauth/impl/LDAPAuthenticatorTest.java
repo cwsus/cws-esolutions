@@ -39,8 +39,6 @@ import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException
 
 public class LDAPAuthenticatorTest
 {
-    private static final Authenticator authenticator = new LDAPAuthenticator();
-
     @Before
     public void setUp()
     {
@@ -56,10 +54,12 @@ public class LDAPAuthenticatorTest
     }
 
     @Test
-    public void testPasswordLogon()
+    public void performLogon()
     {
         try
         {
+            final Authenticator authenticator = new LDAPAuthenticator();
+
             Assert.assertNotNull(authenticator.performLogon("khuntly", "VOpqGWznp1flygXFED8FVTxXTRHG9QG/Dj+apuuyeh59JWVbYd9hOgZTOfpLdBWRlPDb1TZnvt7XE3llHOPQQQ=="));
         }
         catch (AuthenticatorException e)
@@ -69,7 +69,7 @@ public class LDAPAuthenticatorTest
     }
 
     @Test
-    public void testVerifySecurityQuestions()
+    public void verifySecurityData()
     {
         List<String> authList = new ArrayList<>(
                 Arrays.asList(
@@ -80,6 +80,8 @@ public class LDAPAuthenticatorTest
 
         try
         {
+            final Authenticator authenticator = new LDAPAuthenticator();
+
             Assert.assertTrue(authenticator.verifySecurityData(authList));
         }
         catch (AuthenticatorException e)
