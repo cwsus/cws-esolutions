@@ -45,7 +45,7 @@ public class SQLAuthenticator implements Authenticator
     private static final DataSource dataSource = (DataSource) svcBean.getAuthDataSource();
 
     /**
-     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String, java.lang.String)
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String)
      */
     @Override
     public synchronized List<Object> performLogon(final String username, final String password) throws AuthenticatorException

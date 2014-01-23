@@ -227,7 +227,7 @@ public class LDAPUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#addUserAccount(java.lang.List, java.util.List)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#addUserAccount(java.util.List, java.util.List)
      */
     @Override
     public synchronized boolean addUserAccount(final List<String> createRequest, final List<String> roles) throws UserManagementException
@@ -460,7 +460,7 @@ public class LDAPUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#unlockUserAccount(java.lang.String, java.lang.String, java.lang.Boolean)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#unlockUserAccount(java.lang.String)
      */
     @Override
     public synchronized void lockUserAccount(final String userId) throws UserManagementException
@@ -641,7 +641,7 @@ public class LDAPUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#changeUserPassword(java.lang.String, java.lang.String, java.lang.int)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#changeUserPassword(java.lang.String, java.lang.String)
      */
     @Override
     public synchronized boolean changeUserPassword(final String userId, final String newPass) throws UserManagementException
@@ -1472,7 +1472,7 @@ public class LDAPUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserRole(java.lang.String, java.util.List)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserRole(java.lang.String, java.lang.Object[])
      */
     @Override
     public boolean modifyUserRole(final String userId, final Object[] value) throws UserManagementException
@@ -1579,7 +1579,7 @@ public class LDAPUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#lockOnlineReset(java.lang.String, java.lang.String)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#lockOnlineReset(java.lang.String)
      */
     @Override
     public boolean lockOnlineReset(final String userId) throws UserManagementException

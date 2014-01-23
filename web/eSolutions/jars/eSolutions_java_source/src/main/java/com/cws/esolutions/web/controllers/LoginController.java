@@ -323,8 +323,8 @@ public class LoginController
 
                         return mView;
                     case EXPIRED:
-                        mView = new ModelAndView(new RedirectView());
-                        mView.setViewName(this.appConfig.getExpiredRedirect());
+                        hSession.invalidate();
+                        mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessagePasswordExpired());
 
                         return mView;
                     default:
@@ -610,10 +610,11 @@ public class LoginController
                         return mView;
                     case EXPIRED:
                         // password expired - redirect to change password page
-                        hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
+                        hSession.invalidate();
 
-                        mView = new ModelAndView(new RedirectView());
-                        mView.setViewName(this.appConfig.getExpiredRedirect());
+                        mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessagePasswordExpired());
+                        mView.addObject("command", new LoginRequest());
+                        mView.setViewName(this.combinedLoginPage);
 
                         if (DEBUG)
                         {
@@ -958,11 +959,11 @@ public class LoginController
                         return mView;
                     case EXPIRED:
                         // password expired - redirect to change password page
-                        hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
+                        hSession.invalidate();
 
-                        mView = new ModelAndView(new RedirectView());
-                        mView.setViewName(this.appConfig.getExpiredRedirect());
-                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessagePasswordExpired());
+                        mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessagePasswordExpired());
+                        mView.addObject("command", new LoginRequest());
+                        mView.setViewName(this.passwordLoginPage);
 
                         return mView;
                     default:
@@ -1123,11 +1124,11 @@ public class LoginController
                         return mView;
                     case EXPIRED:
                         // password expired - redirect to change password page
-                        hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
+                        hSession.invalidate();
 
-                        mView = new ModelAndView(new RedirectView());
-                        mView.setViewName(this.appConfig.getExpiredRedirect());
-                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessagePasswordExpired());
+                        mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessagePasswordExpired());
+                        mView.addObject("command", new LoginRequest());
+                        mView.setViewName(this.passwordLoginPage);
 
                         return mView;
                     default:

@@ -46,7 +46,6 @@ import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
-import com.cws.esolutions.web.validators.EmailAddressValidator;
 import com.cws.esolutions.web.validators.EmailMessageValidator;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
@@ -399,7 +398,7 @@ public class CommonController
             }
         }
 
-        mView.addObject("serviceEmail", this.appConfig.getSvcEmailAddr());
+        mView.addObject("serviceEmail", this.coreConfig.getAppConfig().getEmailAliasId());
         mView.addObject("command", new EmailMessage());
         mView.setViewName(this.appConfig.getContactAdminsPage());
 
@@ -424,7 +423,6 @@ public class CommonController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final EmailMessageValidator messageValidator = this.appConfig.getMessageValidator();
-        final EmailAddressValidator addressValidator = this.appConfig.getEmailValidator();
         final String emailId = RandomStringUtils.randomAlphanumeric(16);
 
         if (DEBUG)
@@ -433,7 +431,6 @@ public class CommonController
             DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
             DEBUGGER.debug("EmailMessageValidator: {}", messageValidator);
-            DEBUGGER.debug("EmailAddressValidator: {}", addressValidator);
             DEBUGGER.debug("emailId: {}", emailId);
 
             DEBUGGER.debug("Dumping session content:");
@@ -471,17 +468,6 @@ public class CommonController
         }
 
         messageValidator.validate(message, bindResult);
-
-        if (bindResult.hasErrors())
-        {
-            mView.addObject("errors", bindResult.getAllErrors());
-            mView.addObject("command", message);
-            mView.setViewName(this.appConfig.getContactAdminsPage());
-
-            return mView;
-        }
-
-        addressValidator.validate(message.getEmailAddr().get(0), bindResult);
 
         if (bindResult.hasErrors())
         {

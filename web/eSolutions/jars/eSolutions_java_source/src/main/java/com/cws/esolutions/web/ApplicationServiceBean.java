@@ -5,7 +5,6 @@
 package com.cws.esolutions.web;
 
 import java.util.Map;
-import java.util.List;
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.web.enums.LogonType;
-import com.cws.esolutions.web.validators.EmailAddressValidator;
 import com.cws.esolutions.web.validators.EmailMessageValidator;
 /*
  * Project: eSolutions_java_source
