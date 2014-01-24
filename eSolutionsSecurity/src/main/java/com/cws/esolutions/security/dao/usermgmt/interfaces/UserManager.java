@@ -84,10 +84,9 @@ public interface UserManager
      * 
      * TODO: Add in the method description/comments
      *
-     * @param userId
-     * @param userGuid
-     * @param address
-     * @return
+     * @param userId - The username to perform the modification against
+     * @param value - The new email address to apply
+     * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
     boolean modifyUserEmail(final String userId, final String value) throws UserManagementException;
@@ -96,9 +95,9 @@ public interface UserManager
      * 
      * TODO: Add in the method description/comments
      *
-     * @param userId
+     * @param userId - The username to perform the modification against
      * @param value
-     * @return
+     * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
     boolean modifyUserContact(final String userId, final List<String> value) throws UserManagementException;
@@ -110,7 +109,7 @@ public interface UserManager
      *
      * @param userId - The username to perform the modification against
      * @param isSuspended - <code>true</code> to suspend the account, <code>false</code> to unsuspend
-     * @return boolean
+     * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException if an error occurs during processing
      */
     boolean modifyUserSuspension(final String userId, final boolean isSuspended) throws UserManagementException;
@@ -119,9 +118,9 @@ public interface UserManager
      * 
      * TODO: Add in the method description/comments
      *
-     * @param userId
+     * @param userId - The username to perform the modification against
      * @param role
-     * @return
+     * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
     boolean modifyUserRole(final String userId, final Object[] role) throws UserManagementException;
@@ -130,8 +129,8 @@ public interface UserManager
      * 
      * TODO: Add in the method description/comments
      *
-     * @param userId
-     * @return
+     * @param userId - The username to perform the modification against
+     * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
     boolean lockOnlineReset(final String userId) throws UserManagementException;
@@ -140,8 +139,8 @@ public interface UserManager
      * 
      * TODO: Add in the method description/comments
      *
-     * @param userId
-     * @return
+     * @param userId - The username to perform the modification against
+     * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
     boolean clearLockCount(final String userId) throws UserManagementException;
@@ -159,7 +158,7 @@ public interface UserManager
      * Unlocks a provided user account by setting the lock count to 0.
      *
      * @param userId - The username to perform the modification against
-     * @return boolean
+     * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException if an error occurs during processing
      */
     boolean unlockUserAccount(final String userId) throws UserManagementException;
@@ -170,7 +169,7 @@ public interface UserManager
      * re-created it will NOT have the same security information (such as UUID)
      *
      * @param userId - The username to perform the modification against
-     * @return boolean
+     * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException if an error occurs during processing
      */
     boolean removeUserAccount(final String userId) throws UserManagementException;
@@ -179,10 +178,10 @@ public interface UserManager
      * 
      * TODO: Add in the method description/comments
      *
-     * @param userId
+     * @param userId - The username to perform the modification against
      * @param newPass
      * @param expiry
-     * @return
+     * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
     boolean changeUserPassword(final String userId, final String newPass) throws UserManagementException;
@@ -191,9 +190,9 @@ public interface UserManager
      * 
      * TODO: Add in the method description/comments
      *
-     * @param userId
+     * @param userId - The username to perform the modification against
      * @param values
-     * @return
+     * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
     boolean changeUserSecurity(final String userId, final List<String> values) throws UserManagementException;

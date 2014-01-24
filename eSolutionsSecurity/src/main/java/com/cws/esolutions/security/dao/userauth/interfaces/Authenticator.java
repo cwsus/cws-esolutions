@@ -61,8 +61,6 @@ public interface Authenticator
      * necessary flags are sent back to the frontend for further
      * handling.
      *
-     * executeAgentLogon
-     * @param guid
      * @param username
      * @param password
      * @return List<Object>

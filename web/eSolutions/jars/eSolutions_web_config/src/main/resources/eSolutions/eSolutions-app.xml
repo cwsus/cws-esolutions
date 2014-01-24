@@ -35,12 +35,7 @@
         <property name="messageFromRequired" value="theme.from.required" />
     </bean>
 
-    <bean id="addressValidator" class="com.cws.esolutions.web.validators.EmailAddressValidator">
-        <property name="messageEmailAddressRequired" value="email.source.addr.required" />
-    </bean>
-
     <bean id="secConfig" class="com.cws.esolutions.security.config.xml.SecurityConfigurationData" />
-
     <bean id="coreConfig" class="com.cws.esolutions.core.config.xml.CoreConfigurationData" />
 
     <!-- application configuration -->
@@ -48,42 +43,20 @@
         <property name="messageValidator">
             <ref bean="messageValidator" />
         </property>
-        <property name="emailValidator">
-            <ref bean="addressValidator" />
-        </property>
         <property name="fileEncoding" value="UTF-8" />
         <property name="applicationName" value="eSolutions" /> <!-- application name -->
         <property name="applicationId" value="6236B840-88B0-4230-BCBC-8EC33EE837D9" />
         <property name="logonType" value="COMBINED" />
         <property name="requestTimeout" value="10" /> <!-- timeout value (primarily for connections) -->
         <property name="dateFormat" value="MM/dd/yyyy hh:mm" /> <!-- date format (displayed on jsp's) -->
-        <property name="uploadDirectory" value="/opt/cws/eSolutions/deployments" /> <!-- where should we put uploads ? -->
-        <property name="secEmailAddr" value="secadm@caspersbox.com" /> <!-- whats the email address we expose? -->
-        <property name="svcEmailAddr" value="esolutionsadm@caspersbox.com" /> <!-- whats the email address we expose? -->
         <!-- enable/disable services. true for on, false for off -->
         <property name="services">
             <map>
                 <entry key="appMgmt" value="true" />
                 <entry key="dnsAdmin" value="true" />
-                <entry key="kbase" value="true" />
-                <entry key="messaging" value="true" />
                 <entry key="sysMgmt" value="true" />
-                <entry key="userAdmin" value="true" />
-                <entry key="deployApp" value="true" />
-                <entry key="buildApp" value="true" />
                 <entry key="svcMgmt" value="true" />
             </map>
-        </property>
-        <property name="allowedAppFileExtensions">
-            <list>
-                <value>war</value>
-                <value>ear</value>
-            </list>
-        </property>
-        <property name="allowedWebFileExtensions">
-            <list>
-                <value>zip</value>
-            </list>
         </property>
         <property name="homePage" value="HomePage" />
         <property name="contactAdminsPage" value="System_ContactAdmins" />
@@ -93,7 +66,6 @@
         <property name="unauthorizedPage" value="System_Unauthorized" />
         <property name="unavailablePage" value="System_UnavailablePage" />
         <property name="logonRedirect" value="redirect:/ui/login/default" />
-        <property name="expiredRedirect" value="redirect:/ui/user-account/password" />
         <property name="homeRedirect" value="redirect:/ui/common/default" />
         <property name="contactAdminsRedirect" value="redirect:/ui/common/contact" />
         <property name="themeMessageSource" value="nls.theme.resources" />
@@ -115,7 +87,6 @@
                 <value>classpath:nls/DNSServiceServlet/DNSServiceServlet</value>
                 <value>classpath:nls/LoginServlet/LoginServlet</value>
                 <value>classpath:nls/ServiceMessagingServlet/ServiceMessagingServlet</value>
-                <value>classpath:nls/OnlineResetServlet/OnlineResetServlet</value>
                 <value>classpath:nls/ServiceManagementServlet/ServiceManagementServlet</value>
                 <value>classpath:nls/SystemCheckServlet/SystemCheckServlet</value>
                 <value>classpath:nls/SystemManagementServlet/SystemManagementServlet</value>
@@ -129,3 +100,4 @@
         <property name="defaultEncoding" value="UTF-8" />
     </bean>
 </beans>
+
