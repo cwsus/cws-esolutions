@@ -26,18 +26,23 @@ package com.cws.esolutions.android.tasks;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
+import java.io.InputStream;
+import java.io.IOException;
+import java.util.Properties;
 import android.os.AsyncTask;
 import android.app.Activity;
 import org.slf4j.LoggerFactory;
 import android.net.NetworkInfo;
 import android.content.Context;
+import android.content.res.Resources;
 import android.net.ConnectivityManager;
+import android.content.res.AssetManager;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.dbcp.BasicDataSource;
 
 import com.cws.esolutions.android.Constants;
-import com.cws.esolutions.core.exception.CoreServiceException;
-import com.cws.esolutions.core.listeners.CoreServiceInitializer;
-import com.cws.esolutions.security.exception.SecurityServiceException;
-import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
+import com.cws.esolutions.security.utils.PasswordUtils;
+import android.util.*;
 
 public class LoaderTask extends AsyncTask<Void, Void, Boolean>
 {
@@ -134,23 +139,113 @@ public class LoaderTask extends AsyncTask<Void, Void, Boolean>
         }
 
         boolean isLoaded = false;
+        InputStream iStream = null;
 
         try
         {
-            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml");
+            Resources resources = this.reqActivity.getResources();
 
-            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml");
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Resources: {}", resources);
+            }
+
+            AssetManager assetMgr = resources.getAssets();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AssetManager: {}", assetMgr);
+            }
+
+            iStream = assetMgr.open("application.properties");
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("InputStream: {}", iStream);
+            }
+
+            Properties props = new Properties();
+            props.load(iStream);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Properties: {}", props);
+			}
+
+            String[] dataSources = StringUtils.split(props.getProperty("datasources"), ",");
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("String[]: {}", dataSources);
+            }
+
+            for (String source : dataSources)
+            {
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("String: {}", source);
+                }
+
+				InputStream dsStream = assetMgr.open(source + ".properties");
+
+				if (DEBUG)
+				{
+					DEBUGGER.debug("InputStream: {}", dsStream);
+				}
+
+				Properties dsProps = new Properties();
+				dsProps.load(dsStream);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Properties: {}", dsProps);
+				}
+
+				StringBuilder sBuilder = new StringBuilder()
+					.append("connectTimeout=" + dsProps.getProperty("connTimeout") + ";")
+					.append("socketTimeout=" + dsProps.getProperty("connTimeout") + ";")
+					.append("autoReconnect=" + dsProps.getProperty("autoReconnect") + ";")
+					.append("zeroDateTimeBehavior=convertToNull");
+
+				if (DEBUG)
+				{
+					DEBUGGER.debug("StringBuilder: {}", sBuilder);
+				}
+
+				BasicDataSource dataSource = new BasicDataSource();
+				dataSource.setDriverClassName(dsProps.getProperty("driver"));
+				dataSource.setUrl(dsProps.getProperty("dsUrl"));
+				dataSource.setUsername(dsProps.getProperty("username"));
+				dataSource.setConnectionProperties(sBuilder.toString());
+				dataSource.setPassword(PasswordUtils.decryptText(
+                    dsProps.getProperty("password"),
+                    dsProps.getProperty("salt").length()));
+
+				if (DEBUG)
+				{
+					DEBUGGER.debug("BasicDataSource: {}", dataSource);
+				}
+
+                dsStream.close();
+			}
 
             isLoaded = true;
 		}
-        catch (CoreServiceException csx)
+        catch (IOException iox)
         {
-            ERROR_LOGGER.error(csx.getMessage(), csx);
+            ERROR_LOGGER.error(iox.getMessage(), iox);
         }
-        catch (SecurityServiceException ssx)
+        finally
         {
-            ERROR_LOGGER.error(ssx.getMessage(), ssx);
-        }
+            try
+            {
+                iStream.close();
+			}
+            catch (IOException iox)
+            {
+                ERROR_LOGGER.error(iox.getMessage(), iox);
+            }
+		}
 
         return isLoaded;
     }
