@@ -32,7 +32,6 @@ import java.lang.reflect.Field;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityServiceConstants;
-import com.cws.esolutions.security.dao.userauth.enums.LoginType;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
@@ -49,7 +48,6 @@ public class AuthenticationRequest implements Serializable
     private int count = 0;
     private int timeoutValue = 0;
     private String resetSmsCode = null;
-    private LoginType loginType = null;
     private String applicationId = null;
     private String resetRequestId = null;
     private String applicationName = null;
@@ -67,7 +65,7 @@ public class AuthenticationRequest implements Serializable
 
     public final void setHostInfo(final RequestHostInfo value)
     {
-        final String methodName = AuthenticationRequest.CNAME + "#setBaseDN(final RequestHostInfo value)";
+        final String methodName = AuthenticationRequest.CNAME + "#setHostInfo(final RequestHostInfo value)";
 
         if (DEBUG)
         {
@@ -80,7 +78,7 @@ public class AuthenticationRequest implements Serializable
 
     public final void setUserAccount(final UserAccount value)
     {
-        final String methodName = AuthenticationRequest.CNAME + "#setLoginType(final UserAccount value)";
+        final String methodName = AuthenticationRequest.CNAME + "#setUserAccount(final UserAccount value)";
 
         if (DEBUG)
         {
@@ -93,7 +91,7 @@ public class AuthenticationRequest implements Serializable
 
     public final void setUserSecurity(final AuthenticationData value)
     {
-        final String methodName = AuthenticationRequest.CNAME + "#setLoginType(final AuthenticationData value)";
+        final String methodName = AuthenticationRequest.CNAME + "#setUserSecurity(final AuthenticationData value)";
 
         if (DEBUG)
         {
@@ -140,19 +138,6 @@ public class AuthenticationRequest implements Serializable
         }
 
         this.authType = value;
-    }
-
-    public final void setLoginType(final LoginType type)
-    {
-        final String methodName = AuthenticationRequest.CNAME + "#setLoginType(final LoginType type)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("LoginType: {}", type);
-        }
-
-        this.loginType = type;
     }
 
     public final void setTimeoutValue(final int value)
@@ -220,7 +205,7 @@ public class AuthenticationRequest implements Serializable
 
     public final UserAccount getUserAccount()
     {
-        final String methodName = AuthenticationRequest.CNAME + "#getLoginType()";
+        final String methodName = AuthenticationRequest.CNAME + "#getUserAccount()";
 
         if (DEBUG)
         {
@@ -280,19 +265,6 @@ public class AuthenticationRequest implements Serializable
         }
 
         return this.authType;
-    }
-
-    public final LoginType getLoginType()
-    {
-        final String methodName = AuthenticationRequest.CNAME + "#getLoginType()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("LoginType: {}", this.loginType);
-        }
-
-        return this.loginType;
     }
 
     public final int getTimeoutValue()

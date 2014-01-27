@@ -70,17 +70,9 @@
     </definition>
 
     <!-- Authentication -->
-    <definition name="CombinedLogin" extends="baseLayout">
-        <put-attribute name="title"         value="eSolutions - Enter Username" cascade="true" />
+    <definition name="Login" extends="baseLayout">
+        <put-attribute name="title"         value="eSolutions - Login" cascade="true" />
         <put-attribute name="body"          value="/com.cws.esolutions.web.login/jsp/html/en/Login.jsp" cascade="true" />
-    </definition>
-    <definition name="UsernameLogin" extends="baseLayout">
-        <put-attribute name="title"         value="eSolutions - Enter Username" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.login/jsp/html/en/LoginUsername.jsp" cascade="true" />
-    </definition>
-    <definition name="PasswordLogin" extends="baseLayout">
-        <put-attribute name="title"         value="eSolutions - Enter Password" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.login/jsp/html/en/LoginPassword.jsp" cascade="true" />
     </definition>
     <definition name="OTPLogin" extends="baseLayout">
         <put-attribute name="title"         value="eSolutions - Enter Password" cascade="true" />

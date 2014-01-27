@@ -26,22 +26,29 @@ package com.cws.esolutions.android.tasks;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
+
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.Properties;
+
 import android.os.AsyncTask;
 import android.app.Activity;
+
 import org.slf4j.LoggerFactory;
+
 import android.net.NetworkInfo;
 import android.content.Context;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.content.res.AssetManager;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.dbcp.BasicDataSource;
 
 import com.cws.esolutions.android.Constants;
+import com.cws.esolutions.android.utils.NetworkUtils;
 import com.cws.esolutions.security.utils.PasswordUtils;
+
 import android.util.*;
 
 public class LoaderTask extends AsyncTask<Void, Void, Boolean>
@@ -77,53 +84,11 @@ public class LoaderTask extends AsyncTask<Void, Void, Boolean>
             DEBUGGER.debug(methodName);
         }
 
-        boolean isConnected = false;
-
-        final ConnectivityManager connMgr = (ConnectivityManager) this.reqActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-		System.out.print(connMgr);
-        if (DEBUG)
+        if (!(NetworkUtils.checkNetwork(this.reqActivity)))
         {
-            DEBUGGER.debug("ConnectivityManager: {}", connMgr);
-        }
-
-        NetworkInfo[] networkInfo = connMgr.getAllNetworkInfo();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("NetworkInfo[]: {}", networkInfo);
-        }
-
-        if ((networkInfo.length == 0) || (networkInfo == null))
-        {
-            // no available network connection
-            ERROR_LOGGER.error("No available network connection. Cannot continue.");
+            ERROR_LOGGER.error("Network connections are available but not currently connected.");
 
             super.cancel(true);
-        }
-        else
-        {
-            for (NetworkInfo network : networkInfo)
-            {
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("NetworkInfo: {}", network);
-                }
-
-                if (network.isConnected())
-                {
-                    isConnected = true;
-
-                    break;
-                }
-            }
-
-            if (!(isConnected))
-            {
-                ERROR_LOGGER.error("Network connections are available but not currently connected.");
-
-                super.cancel(true);
-            }
         }
     }
 
@@ -164,6 +129,13 @@ public class LoaderTask extends AsyncTask<Void, Void, Boolean>
                 DEBUGGER.debug("InputStream: {}", iStream);
             }
 
+            if ((iStream == null) || (iStream.available() > 0))
+            {
+                ERROR_LOGGER.error("Unable to load application properties. Cannot continue.");
+
+                super.cancel(true);
+            }
+
             Properties props = new Properties();
             props.load(iStream);
 
@@ -193,40 +165,54 @@ public class LoaderTask extends AsyncTask<Void, Void, Boolean>
 					DEBUGGER.debug("InputStream: {}", dsStream);
 				}
 
-				Properties dsProps = new Properties();
-				dsProps.load(dsStream);
+	            if ((dsStream == null) || (dsStream.available() > 0))
+	            {
+	                ERROR_LOGGER.error("Unable to load datasource properties.");
+	            }
+	            else
+	            {
+    				Properties dsProps = new Properties();
+    				dsProps.load(dsStream);
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Properties: {}", dsProps);
-				}
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Properties: {}", dsProps);
+    				}
 
-				StringBuilder sBuilder = new StringBuilder()
-					.append("connectTimeout=" + dsProps.getProperty("connTimeout") + ";")
-					.append("socketTimeout=" + dsProps.getProperty("connTimeout") + ";")
-					.append("autoReconnect=" + dsProps.getProperty("autoReconnect") + ";")
-					.append("zeroDateTimeBehavior=convertToNull");
+    				StringBuilder sBuilder = new StringBuilder()
+    					.append("connectTimeout=" + dsProps.getProperty("connTimeout") + ";")
+    					.append("socketTimeout=" + dsProps.getProperty("connTimeout") + ";")
+    					.append("autoReconnect=" + dsProps.getProperty("autoReconnect") + ";")
+    					.append("zeroDateTimeBehavior=convertToNull");
 
-				if (DEBUG)
-				{
-					DEBUGGER.debug("StringBuilder: {}", sBuilder);
-				}
+    				if (DEBUG)
+    				{
+    					DEBUGGER.debug("StringBuilder: {}", sBuilder);
+    				}
 
-				BasicDataSource dataSource = new BasicDataSource();
-				dataSource.setDriverClassName(dsProps.getProperty("driver"));
-				dataSource.setUrl(dsProps.getProperty("dsUrl"));
-				dataSource.setUsername(dsProps.getProperty("username"));
-				dataSource.setConnectionProperties(sBuilder.toString());
-				dataSource.setPassword(PasswordUtils.decryptText(
-                    dsProps.getProperty("password"),
-                    dsProps.getProperty("salt").length()));
+    				if (!(NetworkUtils.isHostValid(dsProps.getProperty("dsUrl"))))
+    				{
+    	                ERROR_LOGGER.error("Datasource host is unavailable. Cannot create datasource.");
+    				}
+    				else
+    				{
+        				BasicDataSource dataSource = new BasicDataSource();
+        				dataSource.setDriverClassName(dsProps.getProperty("driver"));
+        				dataSource.setUrl(dsProps.getProperty("dsUrl"));
+        				dataSource.setUsername(dsProps.getProperty("username"));
+        				dataSource.setConnectionProperties(sBuilder.toString());
+        				dataSource.setPassword(PasswordUtils.decryptText(
+                            dsProps.getProperty("password"),
+                            dsProps.getProperty("salt").length()));
 
-				if (DEBUG)
-				{
-					DEBUGGER.debug("BasicDataSource: {}", dataSource);
-				}
+        				if (DEBUG)
+        				{
+        					DEBUGGER.debug("BasicDataSource: {}", dataSource);
+        				}
+    				}
+	            }
 
-                dsStream.close();
+	            dsStream.close();
 			}
 
             isLoaded = true;
@@ -259,7 +245,6 @@ public class LoaderTask extends AsyncTask<Void, Void, Boolean>
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", value);
         }
-		System.out.println(value);
     }
 }
 

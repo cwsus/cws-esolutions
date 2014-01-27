@@ -32,16 +32,7 @@
 <!--
     function validateForm(theForm)
     {
-        if (theForm.password.value == '')
-        {
-            clearText(theForm);
-
-            document.getElementById('validationError').innerHTML = 'Your username must be provided.';
-            document.getElementById('txtPassword').style.color = '#FF0000';
-            document.getElementById('execute').disabled = false;
-            document.getElementById('password').focus();
-        }
-        else if (theForm.otpValue.value == '')
+        if (theForm.otpValue.value == '')
         {
             clearText(theForm);
 
@@ -89,9 +80,6 @@
             <input type="hidden" name="vpath" id="vpath" value="${param.vpath}" />
 
             <p>
-                <label id="txtPassword"><spring:message code="login.user.pwd" /></label>
-                <form:password path="password" />
-                <form:errors path="password" cssClass="error" />
                 <label id="txtOtpValue"><spring:message code="login.user.otp" /></label>
                 <form:password path="otpValue" />
                 <form:errors path="otpValue" cssClass="error" />

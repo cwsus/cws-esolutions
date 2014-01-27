@@ -86,7 +86,5 @@ public interface IAccountControlProcessor
 
     AccountControlResponse modifyUserPassword(final AccountControlRequest request) throws AccountControlException;
 
-    AccountControlResponse addTwoFactorAuth(final AccountControlRequest request) throws AccountControlException;
-
     AccountControlResponse listUserAccounts(final AccountControlRequest request) throws AccountControlException;
 }

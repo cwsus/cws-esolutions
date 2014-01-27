@@ -198,6 +198,18 @@ public interface UserManager
     boolean changeUserSecurity(final String userId, final List<String> values) throws UserManagementException;
 
     /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param userId - The username to perform the modification against
+     * @param secret
+     * @param expiry
+     * @return <code>true</code> if the process completes, <code>false</code> otherwise
+     * @throws UserManagementException
+     */
+    boolean addOtpSecret(final String userId, final String secret) throws UserManagementException;
+
+    /**
      * Searches for user accounts given provided search data.
      * The following <code>SearchRequestType</code>s are available:
      * <code>USERNAME</code> - A basic username search. If a wildcard

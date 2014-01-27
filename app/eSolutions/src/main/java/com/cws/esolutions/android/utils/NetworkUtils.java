@@ -26,9 +26,11 @@ package com.cws.esolutions.android.utils;
  */
 import org.slf4j.Logger;
 import android.os.AsyncTask;
+import java.net.InetAddress;
 import org.slf4j.LoggerFactory;
 import android.net.NetworkInfo;
 import android.content.Context;
+import java.net.UnknownHostException;
 import android.net.ConnectivityManager;
 
 import com.cws.esolutions.android.Constants;
@@ -46,7 +48,7 @@ public final class NetworkUtils
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_LOGGER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
 
     public synchronized static boolean checkNetwork(final Context context)
     {
@@ -75,7 +77,7 @@ public final class NetworkUtils
         if ((networkInfo.length == 0) || (networkInfo == null))
         {
             // no available network connection
-            ERROR_LOGGER.error("No available network connection. Cannot continue.");
+            ERROR_RECORDER.error("No available network connection. Cannot continue.");
         }
         else
         {
@@ -96,10 +98,40 @@ public final class NetworkUtils
 
             if (!(isConnected))
             {
-                ERROR_LOGGER.error("Network connections are available but not currently connected.");
+                ERROR_RECORDER.error("Network connections are available but not currently connected.");
             }
         }
 
         return isConnected;
+    }
+
+    public static final synchronized boolean isHostValid(final String hostName)
+    {
+        final String methodName = NetworkUtils.CNAME + "#isHostValid(final String hostName)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", hostName);
+        }
+
+        boolean validHost = false;
+
+        try
+        {
+            synchronized(new Object())
+            {
+                if (InetAddress.getByName(hostName) != null)
+                {
+                    validHost = true;
+                }
+            }
+        }
+        catch (UnknownHostException ux)
+        {
+            ERROR_RECORDER.error(ux.getMessage(), ux);
+        }
+
+        return validHost;
     }
 }

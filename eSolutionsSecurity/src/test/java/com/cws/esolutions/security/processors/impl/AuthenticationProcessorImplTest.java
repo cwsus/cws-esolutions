@@ -33,7 +33,6 @@ import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
-import com.cws.esolutions.security.dao.userauth.enums.LoginType;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
@@ -78,7 +77,6 @@ public class AuthenticationProcessorImplTest
         AuthenticationRequest request = new AuthenticationRequest();
         request.setApplicationName("eSolutions");
         request.setAuthType(AuthenticationType.LOGIN);
-        request.setLoginType(LoginType.USERNAME);
         request.setUserAccount(account);
         request.setApplicationId("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
         request.setApplicationName("esolutions");
@@ -109,7 +107,6 @@ public class AuthenticationProcessorImplTest
         AuthenticationRequest request = new AuthenticationRequest();
         request.setApplicationName("esolutions");
         request.setAuthType(AuthenticationType.LOGIN);
-        request.setLoginType(LoginType.PASSWORD);
         request.setUserAccount(account);
         request.setUserSecurity(userSecurity);
         request.setHostInfo(hostInfo);
@@ -140,7 +137,6 @@ public class AuthenticationProcessorImplTest
         AuthenticationRequest request = new AuthenticationRequest();
         request.setApplicationName("esolutions");
         request.setAuthType(AuthenticationType.LOGIN);
-        request.setLoginType(LoginType.COMBINED);
         request.setUserAccount(account);
         request.setUserSecurity(userSecurity);
         request.setHostInfo(hostInfo);
@@ -170,7 +166,6 @@ public class AuthenticationProcessorImplTest
         AuthenticationRequest request = new AuthenticationRequest();
         request.setApplicationName("esolutions");
         request.setAuthType(AuthenticationType.LOGIN);
-        request.setLoginType(LoginType.COMBINED);
         request.setUserAccount(account);
         request.setUserSecurity(userSecurity);
         request.setHostInfo(hostInfo);
@@ -198,7 +193,6 @@ public class AuthenticationProcessorImplTest
         AuthenticationRequest request = new AuthenticationRequest();
         request.setApplicationName("eSolutions");
         request.setAuthType(AuthenticationType.LOGIN);
-        request.setLoginType(LoginType.USERNAME);
         request.setUserAccount(account);
         request.setApplicationId("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
         request.setApplicationName("esolutions");

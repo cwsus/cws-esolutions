@@ -1202,34 +1202,4 @@ public final class NetworkUtils
 
         return resObject;
     }
-
-    public static final synchronized boolean isHostValid(final String hostName)
-    {
-        final String methodName = NetworkUtils.CNAME + "#isHostValid(final String hostName)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug(hostName);
-        }
-
-        boolean validHost = false;
-
-        try
-        {
-            synchronized(new Object())
-            {
-                if (InetAddress.getByName(hostName) != null)
-                {
-                    validHost = true;
-                }
-            }
-        }
-        catch (UnknownHostException ux)
-        {
-            ERROR_RECORDER.error(ux.getMessage(), ux);
-        }
-
-        return validHost;
-    }
 }

@@ -44,7 +44,6 @@ import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.web.validators.LoginValidator;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
-import com.cws.esolutions.security.dao.userauth.enums.LoginType;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
@@ -62,14 +61,11 @@ import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcesso
 @RequestMapping("/login")
 public class LoginController
 {
+    private String loginPage = null;
     private String otpLoginPage = null;
     private boolean allowUserReset = true;
     private LoginValidator validator = null;
-    private String combinedLoginPage = null;
-    private String usernameLoginPage = null;
-    private String passwordLoginPage = null;
     private String logoffCompleteString = null;
-    private String messageUsernameEmpty = null;
     private String messageSubmissionFailed = null;
     private ApplicationServiceBean appConfig = null;
     private ServiceMessagingProcessorImpl messaging = null;
@@ -93,9 +89,9 @@ public class LoginController
         this.messaging = value;
     }
 
-    public final void setCombinedLoginPage(final String value)
+    public final void setLoginPage(final String value)
     {
-        final String methodName = LoginController.CNAME + "#setCombinedLoginPage(final String value)";
+        final String methodName = LoginController.CNAME + "#setLoginPage(final String value)";
 
         if (DEBUG)
         {
@@ -103,33 +99,7 @@ public class LoginController
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.combinedLoginPage = value;
-    }
-
-    public final void setUsernameLoginPage(final String value)
-    {
-        final String methodName = LoginController.CNAME + "#setUsernameLoginPage(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.usernameLoginPage = value;
-    }
-
-    public final void setPasswordLoginPage(final String value)
-    {
-        final String methodName = LoginController.CNAME + "#setPasswordLoginPage(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.passwordLoginPage = value;
+        this.loginPage = value;
     }
 
     public final void setOtpLoginPage(final String value)
@@ -156,19 +126,6 @@ public class LoginController
         }
 
         this.logoffCompleteString = value;
-    }
-
-    public final void setMessageUsernameEmpty(final String value)
-    {
-        final String methodName = LoginController.CNAME + "#setMessageUsernameEmpty(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageUsernameEmpty = value;
     }
 
     public final void setValidator(final LoginValidator value)
@@ -335,20 +292,8 @@ public class LoginController
             }
         }
 
-        switch (this.appConfig.getLogonType())
-        {
-            case COMBINED:
-                mView.setViewName(this.combinedLoginPage);
-                mView.addObject("command", new LoginRequest());
-
-                break;
-            default:
-                // default to split
-                mView.setViewName(this.usernameLoginPage);
-                mView.addObject("command", new UserAccount());
-
-                break;
-        }
+        mView.setViewName(this.loginPage);
+        mView.addObject("command", new LoginRequest());
 
         try
         {
@@ -521,7 +466,7 @@ public class LoginController
         {
             mView.addObject("errors", bindResult.getAllErrors());
             mView.addObject("command", new LoginRequest());
-            mView.setViewName(this.combinedLoginPage);
+            mView.setViewName(this.loginPage);
 
             return mView;
         }
@@ -557,7 +502,6 @@ public class LoginController
 
             AuthenticationRequest authRequest = new AuthenticationRequest();
             authRequest.setAuthType(AuthenticationType.LOGIN);
-            authRequest.setLoginType(LoginType.COMBINED);
             authRequest.setHostInfo(reqInfo);
             authRequest.setTimeoutValue(this.appConfig.getRequestTimeout());
             authRequest.setUserAccount(reqUser);
@@ -614,7 +558,7 @@ public class LoginController
 
                         mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessagePasswordExpired());
                         mView.addObject("command", new LoginRequest());
-                        mView.setViewName(this.combinedLoginPage);
+                        mView.setViewName(this.loginPage);
 
                         if (DEBUG)
                         {
@@ -628,7 +572,7 @@ public class LoginController
 
                         mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
                         mView.addObject("command", new LoginRequest());
-                        mView.setViewName(this.combinedLoginPage);
+                        mView.setViewName(this.loginPage);
 
                         break;
                 }
@@ -637,7 +581,7 @@ public class LoginController
             {
                 mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
                 mView.addObject("command", new LoginRequest());
-                mView.setViewName(this.combinedLoginPage);
+                mView.setViewName(this.loginPage);
             }
         }
         catch (AuthenticationException ax)
@@ -645,349 +589,7 @@ public class LoginController
             ERROR_RECORDER.error(ax.getMessage(), ax);
 
             mView.addObject("command", new LoginRequest());
-            mView.setViewName(this.combinedLoginPage);
-            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
-        }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
-    }
-
-    // username logon
-    @RequestMapping(value = "/username", method = RequestMethod.POST)
-    public final ModelAndView submitUsernameLogin(@ModelAttribute("user") final UserAccount user, final BindingResult bindResult)
-    {
-        final String methodName = LoginController.CNAME + "#submitUsernameLogin(@ModelAttribute(\"user\") final UserAccount, final BindingResult bindResult)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("UserAccount: {}", user);
-            DEBUGGER.debug("BindingResult: {}", bindResult);
-        }
-
-        ModelAndView mView = new ModelAndView();
-        mView.addObject(Constants.ALLOW_RESET, this.allowUserReset);
-
-        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        final HttpServletRequest hRequest = requestAttributes.getRequest();
-        final HttpSession hSession = hRequest.getSession();
-        final IAuthenticationProcessor authProcessor = new AuthenticationProcessorImpl();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
-            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
-            DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("Session ID: {}", hSession.getId());
-
-            DEBUGGER.debug("Dumping session content:");
-            Enumeration<?> sessionEnumeration = hSession.getAttributeNames();
-
-            while (sessionEnumeration.hasMoreElements())
-            {
-                String element = (String) sessionEnumeration.nextElement();
-                Object value = hSession.getAttribute(element);
-
-                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
-            }
-
-            DEBUGGER.debug("Dumping request content:");
-            Enumeration<?> requestEnumeration = hRequest.getAttributeNames();
-
-            while (requestEnumeration.hasMoreElements())
-            {
-                String element = (String) requestEnumeration.nextElement();
-                Object value = hRequest.getAttribute(element);
-
-                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
-            }
-
-            DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<?> paramsEnumeration = hRequest.getParameterNames();
-
-            while (paramsEnumeration.hasMoreElements())
-            {
-                String element = (String) paramsEnumeration.nextElement();
-                Object value = hRequest.getParameter(element);
-
-                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
-            }
-        }
-
-        this.validator.validate(user, bindResult);
-
-        if (bindResult.hasErrors())
-        {
-            // validation failed
-            mView.addObject(Constants.ERROR_MESSAGE, this.messageUsernameEmpty);
-            mView.addObject("command", new UserAccount());
-
-            return mView;
-        }
-
-        try
-        {
-            // validate
-            RequestHostInfo reqInfo = new RequestHostInfo();
-            reqInfo.setHostAddress(hRequest.getRemoteHost());
-            reqInfo.setHostName(hRequest.getRemoteAddr());
-            reqInfo.setSessionId(hSession.getId());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            }
-
-            UserAccount reqUser = new UserAccount();
-            reqUser.setUsername(user.getUsername());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("UserAccount: {}", reqUser);
-            }
-
-            AuthenticationRequest authRequest = new AuthenticationRequest();
-            authRequest.setAuthType(AuthenticationType.LOGIN);
-            authRequest.setLoginType(LoginType.USERNAME);
-            authRequest.setHostInfo(reqInfo);
-            authRequest.setTimeoutValue(this.appConfig.getRequestTimeout());
-            authRequest.setUserAccount(reqUser);
-            authRequest.setApplicationId(this.appConfig.getApplicationId());
-            authRequest.setApplicationName(this.appConfig.getApplicationName());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AuthenticationRequest: {}", authRequest);
-            }
-
-            AuthenticationResponse authResponse = authProcessor.processAgentLogon(authRequest);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AuthenticationResponse: {}", authResponse);
-            }
-
-            if (authResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-            {
-                UserAccount userAccount = authResponse.getUserAccount();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserAccount: {}", userAccount);
-                }
-
-                switch (userAccount.getStatus())
-                {
-                    case SUCCESS:
-                        // username validated
-                        // add auth
-                        mView.addObject("command", new AuthenticationData());
-
-                        switch (this.appConfig.getLogonType())
-                        {
-                            case OTP:
-                                // send to OTP page
-                                mView.setViewName(this.otpLoginPage);
-
-                                return mView;
-                            default:
-                                // send to password page
-                                mView.setViewName(this.passwordLoginPage);
-
-                                return mView;
-                        }
-                    default:
-                        // no dice (but its also an unspecified failure)
-                        mView.addObject("command", new UserAccount());
-                        mView.setViewName(this.usernameLoginPage);
-                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
-                        
-                        break;
-                }
-            }
-            else
-            {
-                mView.addObject("command", new UserAccount());
-                mView.setViewName(this.usernameLoginPage);
-                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
-            }
-        }
-        catch (AuthenticationException ax)
-        {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            mView.addObject("command", new UserAccount());
-            mView.setViewName(this.usernameLoginPage);
-            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
-        }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
-    }
-
-    // password logon
-    @RequestMapping(value = "/password", method = RequestMethod.POST)
-    public final ModelAndView submitPasswordLogin(@ModelAttribute("security") final AuthenticationData security, final BindingResult bindResult)
-    {
-        final String methodName = LoginController.CNAME + "#submitPasswordLogin(@ModelAttribute(\"security\") final AuthenticationData security, final BindingResult bindResult)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AuthenticationData: {}", security);
-            DEBUGGER.debug("BindingResult: {}", bindResult);
-        }
-
-        ModelAndView mView = new ModelAndView();
-        mView.addObject(Constants.ALLOW_RESET, this.allowUserReset);
-
-        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        final HttpServletRequest hRequest = requestAttributes.getRequest();
-        final HttpSession hSession = hRequest.getSession();
-        final IAuthenticationProcessor authProcessor = new AuthenticationProcessorImpl();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
-            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
-            DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("Session ID: {}", hSession.getId());
-
-            DEBUGGER.debug("Dumping session content:");
-            Enumeration<?> sessionEnumeration = hSession.getAttributeNames();
-
-            while (sessionEnumeration.hasMoreElements())
-            {
-                String element = (String) sessionEnumeration.nextElement();
-                Object value = hSession.getAttribute(element);
-
-                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
-            }
-
-            DEBUGGER.debug("Dumping request content:");
-            Enumeration<?> requestEnumeration = hRequest.getAttributeNames();
-
-            while (requestEnumeration.hasMoreElements())
-            {
-                String element = (String) requestEnumeration.nextElement();
-                Object value = hRequest.getAttribute(element);
-
-                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
-            }
-
-            DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<?> paramsEnumeration = hRequest.getParameterNames();
-
-            while (paramsEnumeration.hasMoreElements())
-            {
-                String element = (String) paramsEnumeration.nextElement();
-                Object value = hRequest.getParameter(element);
-
-                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
-            }
-        }
-
-        try
-        {
-            // validate
-            RequestHostInfo reqInfo = new RequestHostInfo();
-            reqInfo.setHostAddress(hRequest.getRemoteHost());
-            reqInfo.setHostName(hRequest.getRemoteAddr());
-            reqInfo.setSessionId(hSession.getId());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            }
-
-            AuthenticationRequest authRequest = new AuthenticationRequest();
-            authRequest.setAuthType(AuthenticationType.LOGIN);
-            authRequest.setLoginType(LoginType.PASSWORD);
-            authRequest.setHostInfo(reqInfo);
-            authRequest.setTimeoutValue(this.appConfig.getRequestTimeout());
-            authRequest.setUserAccount((UserAccount) hRequest.getSession().getAttribute(Constants.USER_ACCOUNT));
-            authRequest.setUserSecurity(security);
-            authRequest.setApplicationId(this.appConfig.getApplicationId());
-            authRequest.setApplicationName(this.appConfig.getApplicationName());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AuthenticationRequest: {}", authRequest);
-            }
-
-            AuthenticationResponse authResponse = authProcessor.processAgentLogon(authRequest);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AuthenticationResponse: {}", authResponse);
-            }
-
-            if (authResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-            {
-                UserAccount userAccount = authResponse.getUserAccount();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserAccount: {}", userAccount);
-                }
-
-                switch (userAccount.getStatus())
-                {
-                    case SUCCESS:
-                        // username validated
-                        // check logon type
-                        hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
-
-                        if (StringUtils.isNotBlank(hRequest.getParameter("vpath")))
-                        {
-                            mView = new ModelAndView(new RedirectView("redirect:" + hRequest.getParameter("vpath"), false));
-                        }
-                        else
-                        {
-                            mView = new ModelAndView(new RedirectView(this.appConfig.getHomeRedirect(), true));
-                        }
-
-                        return mView;
-                    case EXPIRED:
-                        // password expired - redirect to change password page
-                        hSession.invalidate();
-
-                        mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessagePasswordExpired());
-                        mView.addObject("command", new LoginRequest());
-                        mView.setViewName(this.passwordLoginPage);
-
-                        return mView;
-                    default:
-                        // no dice (but its also an unspecified failure)
-                        mView.addObject("command", new AuthenticationData());
-                        mView.setViewName(this.passwordLoginPage);
-                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
-                        
-                        break;
-                }
-            }
-            else
-            {
-                mView.addObject("command", new AuthenticationData());
-                mView.setViewName(this.passwordLoginPage);
-                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
-            }
-        }
-        catch (AuthenticationException ax)
-        {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            mView.addObject("command", new AuthenticationData());
-            mView.setViewName(this.passwordLoginPage);
+            mView.setViewName(this.loginPage);
             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
         }
 
@@ -1076,7 +678,6 @@ public class LoginController
 
             AuthenticationRequest authRequest = new AuthenticationRequest();
             authRequest.setAuthType(AuthenticationType.LOGIN);
-            authRequest.setLoginType(LoginType.USERNAME);
             authRequest.setHostInfo(reqInfo);
             authRequest.setTimeoutValue(this.appConfig.getRequestTimeout());
             authRequest.setUserAccount((UserAccount) hRequest.getSession().getAttribute(Constants.USER_ACCOUNT));
@@ -1128,7 +729,7 @@ public class LoginController
 
                         mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessagePasswordExpired());
                         mView.addObject("command", new LoginRequest());
-                        mView.setViewName(this.passwordLoginPage);
+                        mView.setViewName(this.loginPage);
 
                         return mView;
                     default:

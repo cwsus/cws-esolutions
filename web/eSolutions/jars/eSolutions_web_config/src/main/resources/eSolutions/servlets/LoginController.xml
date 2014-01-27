@@ -27,9 +27,7 @@
         <property name="messaging" ref="serviceMessaging" />
         <property name="allowUserReset" value="true" /> <!-- enable/disable user reset process -->
         <property name="logoffCompleteString" value="login.user.logoff" />
-        <property name="combinedLoginPage" value="CombinedLogin" />
-        <property name="usernameLoginPage" value="UsernameLogin" />
-        <property name="passwordLoginPage" value="PasswordLogin" />
+        <property name="loginPage" value="Login" />
         <property name="otpLoginPage" value="OTPLogin" />
         <property name="messageSubmissionFailed" value="login.request.failed" />
     </bean>

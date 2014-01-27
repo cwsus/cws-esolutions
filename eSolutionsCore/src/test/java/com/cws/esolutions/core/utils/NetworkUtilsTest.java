@@ -63,13 +63,6 @@ public class NetworkUtilsTest
         }
     }
 
-    @Test
-    public void testIsHostValid()
-    {
-        Assert.assertTrue(NetworkUtils.isHostValid("localhost"));
-        Assert.assertFalse(NetworkUtils.isHostValid("notlocalhost"));
-    }
-
     @After
     public void tearDown()
     {

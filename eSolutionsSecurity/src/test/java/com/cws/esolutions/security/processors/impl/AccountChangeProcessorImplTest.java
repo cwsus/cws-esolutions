@@ -71,7 +71,7 @@ public final class AccountChangeProcessorImplTest
      }
 
     @Test
-    public void testChangeUserEmail()
+    public void changeUserEmail()
     {
         UserAccount account = userAccount;
         account.setEmailAddr("test@test.com");
@@ -103,39 +103,7 @@ public final class AccountChangeProcessorImplTest
     }
 
     @Test
-    public void testChangeUserContactChangeTelephone()
-    {
-        UserAccount account = userAccount;
-        account.setTelephoneNumber("716-341-1697");
-
-        AuthenticationData userSecurity = new AuthenticationData();
-        userSecurity.setPassword("Ariana21*");
-
-        AccountChangeRequest request = new AccountChangeRequest();
-        request.setHostInfo(hostInfo);
-        request.setUserAccount(account);
-        request.setUserSecurity(userSecurity);
-        request.setApplicationName("eSolutions");
-        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
-        request.setModType(ModificationType.EMAIL);
-        request.setRequestor(userAccount);
-        request.setIsReset(false);
-        request.setIsLogonRequest(false);
-
-        try
-        {
-            AccountChangeResponse response = processor.changeUserContact(request);
-
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
-        }
-        catch (AccountChangeException acx)
-        {
-            Assert.fail(acx.getMessage());
-        }
-    }
-
-    @Test
-    public void testChangeUserContactChangePager()
+    public void changeUserContact()
     {
         UserAccount account = userAccount;
         account.setPagerNumber("716-341-1697");
@@ -167,7 +135,7 @@ public final class AccountChangeProcessorImplTest
     }
 
     @Test
-    public void testChangeUserPassword()
+    public void changeUserPassword()
     {
         AuthenticationData userSecurity = new AuthenticationData();
         userSecurity.setPassword("Ariana21*");
@@ -197,14 +165,10 @@ public final class AccountChangeProcessorImplTest
     }
 
     @Test
-    public void testChangeUserSecurity()
+    public void changeUserSecurity()
     {
         AuthenticationData userSecurity = new AuthenticationData();
         userSecurity.setPassword("Ariana21*");
-        userSecurity.setSecQuestionOne("What is your favourite car ?");
-        userSecurity.setSecQuestionTwo("What is your least favourite colour ?");
-        userSecurity.setSecAnswerOne("answerone");
-        userSecurity.setSecAnswerTwo("answertwo");
 
         AccountChangeRequest request = new AccountChangeRequest();
         request.setHostInfo(hostInfo);
@@ -219,7 +183,7 @@ public final class AccountChangeProcessorImplTest
 
         try
         {
-            AccountChangeResponse response = processor.changeUserSecurity(request);
+            AccountChangeResponse response = processor.enableOtpAuth(request);
 
             Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
         }
@@ -229,6 +193,11 @@ public final class AccountChangeProcessorImplTest
         }
     }
 
+    @Test
+    public void enableOtpAuth()
+    {
+        
+    }
     @After
     public void tearDown()
     {

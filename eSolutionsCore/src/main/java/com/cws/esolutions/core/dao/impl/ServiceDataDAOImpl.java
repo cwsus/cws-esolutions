@@ -36,12 +36,12 @@ import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.core.dao.interfaces.IServiceDataDAO;
 /**
- * @see com.cws.esolutions.core.dao.processors.interfaces.IServiceDataDAO
+ * @see com.cws.esolutions.core.dao.interfaces.IServiceDataDAO
  */
 public class ServiceDataDAOImpl implements IServiceDataDAO
 {
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IServiceDataDAO#addService(java.util.List)
+     * @see com.cws.esolutions.core.dao.interfaces.IServiceDataDAO#addService(java.util.List)
      */
     @Override
     public synchronized boolean addService(final List<String> data) throws SQLException
@@ -118,7 +118,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IServiceDataDAO#updateService(java.util.List)
+     * @see com.cws.esolutions.core.dao.interfaces.IServiceDataDAO#updateService(java.util.List)
      */
     @Override
     public synchronized boolean updateService(final List<String> data) throws SQLException
@@ -195,7 +195,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IServiceDataDAO#removeService(java.lang.String)
+     * @see com.cws.esolutions.core.dao.interfaces.IServiceDataDAO#removeService(java.lang.String)
      */
     @Override
     public synchronized boolean removeService(final String datacenter) throws SQLException
@@ -261,7 +261,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IServiceDataDAO#listServices(int)
+     * @see com.cws.esolutions.core.dao.interfaces.IServiceDataDAO#listServices(int)
      */
     @Override
     public synchronized List<String[]> listServices(final int startRow) throws SQLException
@@ -359,7 +359,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IServiceDataDAO#getServicesByAttribute(java.lang.String, int)
+     * @see com.cws.esolutions.core.dao.interfaces.IServiceDataDAO#getServicesByAttribute(java.lang.String, int)
      */
     @Override
     public synchronized List<Object[]> getServicesByAttribute(final String attribute, final int startRow) throws SQLException
@@ -487,7 +487,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IServiceDataDAO#getService(java.lang.String)
+     * @see com.cws.esolutions.core.dao.interfaces.IServiceDataDAO#getService(java.lang.String)
      */
     @Override
     public synchronized List<String> getService(final String attribute) throws SQLException

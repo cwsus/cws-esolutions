@@ -25,7 +25,9 @@ package com.cws.esolutions.security.utils;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import javax.crypto.Mac;
 import org.slf4j.Logger;
+import java.nio.ByteBuffer;
 import javax.crypto.Cipher;
 import org.slf4j.LoggerFactory;
 import java.security.MessageDigest;
@@ -217,5 +219,73 @@ public final class PasswordUtils
         }
 
         return decPass;
+    }
+
+    public static final boolean validateOtpValue(final int variance, final String algorithm, final String secret, final int code) throws SecurityException
+    {
+        final String methodName = PasswordUtils.CNAME + "#validateOtpValue(final int variance, final String algorithm, final String secret, final int code) throws SecurityException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("int: {}", variance);
+            DEBUGGER.debug("String: {}", algorithm);
+        }
+
+        boolean isValid = false;
+
+        final ByteBuffer buffer = ByteBuffer.allocate(8);
+        final long timeIndex = System.currentTimeMillis() / 1000 / 30;
+        final SecretKeySpec signKey = new SecretKeySpec(secret.getBytes(), algorithm);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ByteBuffer: {}", buffer);
+            DEBUGGER.debug("long: {}", timeIndex);
+            DEBUGGER.debug("SecretKeySpec: {}", signKey);
+        }
+
+        try
+        {
+            for (int i = -variance; i <= variance; i++)
+            {
+                Mac mac = Mac.getInstance(algorithm);
+                mac.init(signKey);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Mac: {}", mac);
+                }
+
+                byte[] hash = mac.doFinal(buffer.putLong(timeIndex).array());
+                int offset = hash[19] & 0xf;
+                long truncatedHash = hash[offset] & 0x7f;
+
+                for (int x = 1; x < 4; x++)
+                {
+                    truncatedHash <<= 8;
+                    truncatedHash |= hash[offset + i] & 0xff;
+
+                    if ((truncatedHash %= 1000000) == code)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        catch (InvalidKeyException ikx)
+        {
+            ERROR_RECORDER.error(ikx.getMessage(), ikx);
+
+            throw new SecurityException(ikx.getMessage(), ikx);
+        }
+        catch (NoSuchAlgorithmException nsx)
+        {
+            ERROR_RECORDER.error(nsx.getMessage(), nsx);
+
+            throw new SecurityException(nsx.getMessage(), nsx);
+        }
+
+        return isValid;
     }
 }

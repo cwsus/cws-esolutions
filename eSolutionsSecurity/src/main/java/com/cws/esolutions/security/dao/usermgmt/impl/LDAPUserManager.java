@@ -25,10 +25,10 @@ package com.cws.esolutions.security.dao.usermgmt.impl;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -695,6 +695,110 @@ public class LDAPUserManager implements UserManager
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
                 .append(authData.getUserId() + "=" + userId + ",")
                 .append(this.connProps.getProperty(SecurityServiceConstants.USER_BASE)).toString(), modifyList));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPResult: {}", ldapResult);
+            }
+
+            isComplete = (ldapResult.getResultCode() == ResultCode.SUCCESS);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isComplete: {}", isComplete);
+            }
+        }
+        catch (LDAPException lx)
+        {
+            ERROR_RECORDER.error(lx.getMessage(), lx);
+
+            throw new UserManagementException(lx.getMessage(), lx);
+        }
+        catch (ConnectException cx)
+        {
+            ERROR_RECORDER.error(cx.getMessage(), cx);
+
+            throw new UserManagementException(cx.getMessage(), cx);
+        }
+        finally
+        {
+            if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
+            {
+                ldapPool.releaseConnection(ldapConn);
+            }
+        }
+
+        return isComplete;
+    }
+
+    /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#addOtpSecret(java.lang.String, java.lang.String)
+     */
+    @Override
+    public synchronized boolean addOtpSecret(final String userId, final String secret) throws UserManagementException
+    {
+        final String methodName = LDAPUserManager.CNAME + "#addOtpSecret(final String userId, final String secret) throws UserManagementException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("User GUID: {}", userId);
+        }
+
+        boolean isComplete = false;
+        LDAPConnection ldapConn = null;
+        LDAPConnectionPool ldapPool = null;
+
+        try
+        {
+            ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPConnectionPool: {}", ldapPool);
+            }
+
+            if (ldapPool.isClosed())
+            {
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+
+            ldapConn = ldapPool.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+            }
+
+            if (!(ldapConn.isConnected()))
+            {
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+
+            LDAPResult ldapResult = null;
+
+            try
+            {
+                // assume add
+                List<Modification> modifyList = new ArrayList<>(
+                        Arrays.asList(
+                                new Modification(ModificationType.ADD, authData.getSecret(), secret)));
+
+                ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
+                    .append(authData.getUserId() + "=" + userId + ",")
+                    .append(this.connProps.getProperty(SecurityServiceConstants.USER_BASE)).toString(), modifyList));
+            }
+            catch (LDAPException lx)
+            {
+                // ok, maybe mod ?
+                List<Modification> modifyList = new ArrayList<>(
+                        Arrays.asList(
+                                new Modification(ModificationType.REPLACE, authData.getSecret(), secret)));
+
+                ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
+                    .append(authData.getUserId() + "=" + userId + ",")
+                    .append(this.connProps.getProperty(SecurityServiceConstants.USER_BASE)).toString(), modifyList));
+            }
 
             if (DEBUG)
             {

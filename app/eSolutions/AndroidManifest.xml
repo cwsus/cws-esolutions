@@ -19,7 +19,7 @@
         android:allowClearUserData = "true">
 
         <activity
-            android:name = "com.cws.esolutions.android.ui.LoginActivity"
+            android:name = "com.cws.esolutions.android.ui.MainActivity"
             android:label = "@string/loginTitle">
             <intent-filter>
                 <action android:name = "android.intent.action.MAIN" />
@@ -27,7 +27,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name = "com.cws.esolutions.android.ui.MainActivity"
+            android:name = "com.cws.esolutions.android.ui.HomeActivity"
+            android:label = "@string/loginTitle">
+        </activity>
+        <activity
+            android:name = "com.cws.esolutions.android.ui.LoginActivity"
             android:label = "@string/mainTitle"
             android:exported = "false">
         </activity>

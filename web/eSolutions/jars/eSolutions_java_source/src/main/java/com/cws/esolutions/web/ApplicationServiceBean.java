@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.web.enums.LogonType;
 import com.cws.esolutions.web.validators.EmailMessageValidator;
 /*
  * Project: eSolutions_java_source
@@ -32,7 +31,6 @@ public class ApplicationServiceBean implements Serializable
     @Autowired private String dateFormat = null;
     @Autowired private String fileEncoding = null;
     @Autowired private String homeRedirect = null;
-    @Autowired private LogonType logonType = null;
     @Autowired private String logonRedirect = null;
     @Autowired private String applicationId = null;
     @Autowired private String applicationName = null;
@@ -73,19 +71,6 @@ public class ApplicationServiceBean implements Serializable
         }
 
         this.fileEncoding = value;
-    }
-
-    public final void setLogonType(final LogonType value)
-    {
-        final String methodName = ApplicationServiceBean.CNAME + "#setLogonType(final LogonType value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.logonType = value;
     }
 
     public final void setLogonRedirect(final String value)
@@ -424,19 +409,6 @@ public class ApplicationServiceBean implements Serializable
         }
 
         return this.fileEncoding;
-    }
-
-    public final LogonType getLogonType()
-    {
-        final String methodName = ApplicationServiceBean.CNAME + "#getLogonType()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.logonType);
-        }
-
-        return this.logonType;
     }
 
     public final String getLogonRedirect()

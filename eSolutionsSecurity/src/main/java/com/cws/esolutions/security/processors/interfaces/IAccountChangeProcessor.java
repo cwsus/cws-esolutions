@@ -84,6 +84,16 @@ public interface IAccountChangeProcessor
      * @return
      * @throws AccountChangeException
      */
+    AccountChangeResponse enableOtpAuth(final AccountChangeRequest request) throws AccountChangeException;
+
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws AccountChangeException
+     */
     AccountChangeResponse changeUserEmail(final AccountChangeRequest request) throws AccountChangeException;
 
     /**

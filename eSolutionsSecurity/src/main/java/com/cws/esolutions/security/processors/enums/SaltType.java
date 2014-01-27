@@ -36,5 +36,6 @@ package com.cws.esolutions.security.processors.enums;
 public enum SaltType
 {
     LOGON,
+    OTP,
     RESET;
 }

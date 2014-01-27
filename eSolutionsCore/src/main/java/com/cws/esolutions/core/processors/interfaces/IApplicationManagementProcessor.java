@@ -78,8 +78,8 @@ public interface IApplicationManagementProcessor
      * 
      * TODO: Add in the method description/comments
      *
-     * @param request
-     * @return
+     * @param request The request information to add the new application
+     * @return <code>ApplicationManagementResponse</code> containing the response information
      * @throws ApplicationManagementException
      */
     ApplicationManagementResponse addNewApplication(final ApplicationManagementRequest request) throws ApplicationManagementException;

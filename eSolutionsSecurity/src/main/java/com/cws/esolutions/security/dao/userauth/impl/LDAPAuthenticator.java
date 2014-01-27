@@ -164,7 +164,8 @@ public class LDAPAuthenticator implements Authenticator
                 authData.getExpiryDate(),
                 authData.getIsSuspended(),
                 authData.getOlrSetupReq(),
-                authData.getOlrLocked());
+                authData.getOlrLocked(),
+                authData.getSecret());
 
             if (DEBUG)
             {
@@ -218,6 +219,7 @@ public class LDAPAuthenticator implements Authenticator
             userAccount.add(entry.getAttributeValueAsBoolean(authData.getIsSuspended()));
             userAccount.add(entry.getAttributeValueAsBoolean(authData.getOlrSetupReq()));
             userAccount.add(entry.getAttributeValueAsBoolean(authData.getOlrLocked()));
+            userAccount.add(entry.getAttributeValue(authData.getSecret()));
 
             Filter roleFilter = Filter.create("(&(objectClass=groupOfUniqueNames)" +
                     "(&(uniqueMember=" + entry.getDN() + ")))");

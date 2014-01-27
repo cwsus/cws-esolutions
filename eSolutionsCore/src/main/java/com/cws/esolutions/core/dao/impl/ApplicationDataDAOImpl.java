@@ -25,25 +25,26 @@ package com.cws.esolutions.core.dao.impl;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import java.sql.Types;
 import java.util.List;
 import java.util.Arrays;
 import java.sql.ResultSet;
 import java.sql.Connection;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import java.sql.CallableStatement;
-
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO;
 /**
- * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO
+ * @see com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO
+ * @author 35033355
+ * @version 1.0
  */
 public class ApplicationDataDAOImpl implements IApplicationDataDAO
 {
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#addApplication(java.util.List)
+     * @see com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO#addApplication(java.util.List)
      */
     @Override
     public synchronized boolean addApplication(final List<Object> value) throws SQLException
@@ -116,7 +117,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#updateApplication(java.util.List)
+     * @see com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO#updateApplication(java.util.List)
      */
     @Override
     public synchronized boolean updateApplication(final List<Object> value) throws SQLException
@@ -189,7 +190,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#removeApplication(java.lang.String)
+     * @see com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO#removeApplication(java.lang.String)
      */
     @Override
     public synchronized boolean removeApplication(final String value) throws SQLException
@@ -254,7 +255,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#listApplications(int)
+     * @see com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO#listApplications(int)
      */
     @Override
     public synchronized List<String[]> listApplications(final int startRow) throws SQLException
@@ -357,7 +358,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#getApplicationsByAttribute(java.lang.String, int)
+     * @see com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO#getApplicationsByAttribute(java.lang.String, int)
      */
     @Override
     public synchronized List<Object[]> getApplicationsByAttribute(final String value, final int startRow) throws SQLException
@@ -486,7 +487,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#getApplication(java.lang.String)
+     * @see com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO#getApplication(java.lang.String)
      */
     @Override
     public synchronized List<Object> getApplication(final String value) throws SQLException

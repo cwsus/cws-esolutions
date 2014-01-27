@@ -48,7 +48,6 @@ import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
-import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
@@ -88,182 +87,138 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
         try
         {
-            String password = null;
-            UserAccount authAccount = null;
-
             List<Object[]> userInfo = userManager.searchUsers(SearchRequestType.USERNAME, authUser.getUsername());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("User list: {}", userInfo);
+                DEBUGGER.debug("List<Object[]>: {}", userInfo);
             }
 
             if ((userInfo == null) || (userInfo.size() == 0) || (userInfo.size() > 1))
             {
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
-            else
+
+            Object[] userData = userInfo.get(0);
+
+            if (DEBUG)
             {
-                Object[] userData = userInfo.get(0);
+                DEBUGGER.debug("Object[]: {}", userData);
+            }
+
+            String userSalt = userSec.getUserSalt((String) userData[0], SaltType.LOGON.name());
+
+            if (StringUtils.isEmpty(userSalt))
+            {
+                throw new AuthenticationException("Unable to obtain configured user salt. Cannot continue");
+            }
+
+            List<Object> authObject = authenticator.performLogon((String) userData[1],
+                    PasswordUtils.encryptText(authSec.getPassword(), userSalt,
+                            svcBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
+                            svcBean.getConfigData().getSecurityConfig().getIterations()));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("List<Object>: {}", authObject);
+            }
+
+            if ((authObject.size() == 0) || (authObject == null))
+            {
+                throw new AuthenticationException("Authentication processing failed. Cannot continue.");
+            }
+
+            if (((Integer) authObject.get(8) >= secConfig.getMaxAttempts()) || ((Boolean) authObject.get(11)))
+            {
+                // user locked
+                response.setRequestStatus(SecurityRequestStatus.FAILURE);
+
+                return response;
+            }
+
+            // if the user has enabled otp auth, do it here
+            if (StringUtils.isNotEmpty((String) authObject.get(14)))
+            {
+                userAccount = new UserAccount();
+                userAccount.setGuid((String) authObject.get(0));
+                userAccount.setUsername((String) authObject.get(1));
+
+                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+
+                return response;
+            }
+
+            userAccount = new UserAccount();
+            userAccount.setGuid((String) authObject.get(0));
+            userAccount.setUsername((String) authObject.get(1));
+            userAccount.setGivenName((String) authObject.get(2));
+            userAccount.setSurname((String) authObject.get(3));
+            userAccount.setDisplayName((String) authObject.get(4));
+            userAccount.setEmailAddr((String) authObject.get(5));
+            userAccount.setPagerNumber((String) authObject.get(6));
+            userAccount.setTelephoneNumber((String) authObject.get(7));
+            userAccount.setFailedCount((Integer) authObject.get(8));
+            userAccount.setLastLogin((Date) authObject.get(9));
+            userAccount.setExpiryDate((Date) authObject.get(10));
+            userAccount.setSuspended((Boolean) authObject.get(11));
+            userAccount.setOlrSetup((Boolean) authObject.get(12));
+            userAccount.setOlrLocked((Boolean) authObject.get(13));
+
+            // build groups
+            List<UserGroup> userGroups = new ArrayList<>();
+            for (String group : StringUtils.split((String) authObject.get(15), ","))
+            {
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Group: {}", group);
+                }
+
+                List<String> serviceList = svcInfo.listServicesForGroup(group);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("userData: {}", userData);
+                    DEBUGGER.debug("List<String>: {}", serviceList);
                 }
 
-                authAccount = new UserAccount();
-                authAccount.setGuid((String) userData[0]);
-                authAccount.setUsername((String) userData[1]);
+                UserGroup userGroup = new UserGroup();
+                userGroup.setName(group);
+                userGroup.setServices(serviceList);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("UserAccount: {}", authAccount);
+                    DEBUGGER.debug("UserGroup: {}", userGroup);
                 }
 
-                switch (request.getLoginType())
-                {
-                    case USERNAME:
-                        // set the status flag to success
-                        if (request.getAuthType() == AuthenticationType.RESET)
-                        {
-                            authAccount.setStatus(LoginStatus.RESET);
-                        }
-                        else
-                        {
-                            authAccount.setStatus(LoginStatus.SUCCESS);
-                        }
-
-                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        response.setUserAccount(authAccount);
-
-                        return response;
-                    case OTP:
-                        throw new AuthenticatorException("OTP authentication has not yet been implemented.");
-                    default:
-                        String userSalt = userSec.getUserSalt(authAccount.getGuid(), SaltType.LOGON.name());
-
-                        if (StringUtils.isNotEmpty(userSalt))
-                        {
-                            password = PasswordUtils.encryptText(
-                                    authSec.getPassword(),
-                                    userSalt,
-                                    svcBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
-                                    svcBean.getConfigData().getSecurityConfig().getIterations());
-                        }
-                        else
-                        {
-                            throw new AuthenticationException("Unable to obtain configured user salt. Cannot continue");
-                        }
-
-                        break;
-                }
+                userGroups.add(userGroup);
             }
 
             if (DEBUG)
             {
-                DEBUGGER.debug("userInfo: {}", userInfo);
+                DEBUGGER.debug("List<UserGroup>: {}", userGroups);
             }
 
-            if (authAccount != null)
+            userAccount.setGroups(userGroups);
+
+            if (DEBUG)
             {
-                List<Object> userData = authenticator.performLogon(authAccount.getUsername(), password);
+                DEBUGGER.debug("UserAccount: {}", userAccount);
+            }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserData: {}", userData);
-                }
+            // have a user account, run with it
+            if ((userAccount.getExpiryDate().before(new Date(System.currentTimeMillis())))
+                    || (userAccount.getExpiryDate().equals(new Date(System.currentTimeMillis()))))
+            {
+                userAccount.setStatus(LoginStatus.EXPIRED);
 
-                if ((userData != null) && (!(userData.isEmpty())))
-                {
-                    if (((Integer) userData.get(8) >= secConfig.getMaxAttempts()) || ((Boolean) userData.get(11)))
-                    {
-                        // user locked
-                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
-
-                        return response;
-                    }
-
-                    userAccount = new UserAccount();
-                    userAccount.setGuid((String) userData.get(0));
-                    userAccount.setUsername((String) userData.get(1));
-                    userAccount.setGivenName((String) userData.get(2));
-                    userAccount.setSurname((String) userData.get(3));
-                    userAccount.setDisplayName((String) userData.get(4));
-                    userAccount.setEmailAddr((String) userData.get(5));
-                    userAccount.setPagerNumber((String) userData.get(6));
-                    userAccount.setTelephoneNumber((String) userData.get(7));
-                    userAccount.setFailedCount((Integer) userData.get(8));
-                    userAccount.setLastLogin((Date) userData.get(9));
-                    userAccount.setExpiryDate((Date) userData.get(10));
-                    userAccount.setSuspended((Boolean) userData.get(11));
-                    userAccount.setOlrSetup((Boolean) userData.get(12));
-                    userAccount.setOlrLocked((Boolean) userData.get(13));
-
-                    // build groups
-                    List<UserGroup> userGroups = new ArrayList<>();
-                    for (String group : StringUtils.split((String) userData.get(14), ","))
-                    {
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Group: {}", group);
-                        }
-
-                        List<String> serviceList = svcInfo.listServicesForGroup(group);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("List<String>: {}", serviceList);
-                        }
-
-                        UserGroup userGroup = new UserGroup();
-                        userGroup.setName(group);
-                        userGroup.setServices(serviceList);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("UserGroup: {}", userGroup);
-                        }
-
-                        userGroups.add(userGroup);
-                    }
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("List<UserGroup>: {}", userGroups);
-                    }
-
-                    userAccount.setGroups(userGroups);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("UserAccount: {}", userAccount);
-                    }
-
-                    // have a user account, run with it
-                    if ((userAccount.getExpiryDate().before(new Date(System.currentTimeMillis())))
-                            || (userAccount.getExpiryDate().equals(new Date(System.currentTimeMillis()))))
-                    {
-                        userAccount.setStatus(LoginStatus.EXPIRED);
-
-                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        response.setUserAccount(userAccount);
-                    }
-                    else
-                    {
-                        userAccount.setStatus(LoginStatus.SUCCESS);
-
-                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        response.setUserAccount(userAccount);
-                    }
-                }
-                else
-                {
-                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                }
+                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                response.setUserAccount(userAccount);
             }
             else
             {
-                response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                userAccount.setStatus(LoginStatus.SUCCESS);
+
+                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                response.setUserAccount(userAccount);
             }
 
             if (DEBUG)
@@ -317,6 +272,191 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             }
 
             response.setRequestStatus(SecurityRequestStatus.FAILURE);
+        }
+        catch (SecurityServiceException ssx)
+        {
+            ERROR_RECORDER.error(ssx.getMessage(), ssx);
+
+            throw new AuthenticationException(ssx.getMessage(), ssx);
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new AuthenticationException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.LOGON);
+                auditEntry.setUserAccount(authUser);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
+        }
+
+        return response;
+    }
+
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor#processOtpLogon(com.cws.esolutions.security.processors.dto.AuthenticationRequest)
+     */
+    @Override
+    public AuthenticationResponse processOtpLogon(final AuthenticationRequest request) throws AuthenticationException
+    {
+        final String methodName = IAuthenticationProcessor.CNAME + "#processOtpLogon(final AuthenticationRequest request) throws AuthenticationException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("AuthenticationRequest: {}", request);
+        }
+
+        UserAccount userAccount = null;
+        AuthenticationResponse response = new AuthenticationResponse();
+
+        final int variance = 3; // TODO: this needs to be configurable
+        final String algorithm = secConfig.getOtpAlgorithm();
+        final RequestHostInfo reqInfo = request.getHostInfo();
+        final UserAccount authUser = request.getUserAccount();
+        final AuthenticationData authSec = request.getUserSecurity();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("String: {}", algorithm);
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            DEBUGGER.debug("UserAccount: {}", authUser);
+        }
+
+        try
+        {
+            String otpSalt = userSec.getUserSalt(authUser.getGuid(), SaltType.OTP.name());
+
+            // if the user has enabled otp auth, do it here
+            if (StringUtils.isEmpty(otpSalt))
+            {
+                throw new AuthenticationException("Unable to obtain salt. Cannot continue.");
+            }
+
+            boolean isAuthorized = PasswordUtils.validateOtpValue(variance, algorithm,
+                    PasswordUtils.decryptText(authSec.getSecret(), otpSalt.length()),
+                    authSec.getOtpValue());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isAuthorized: {}", isAuthorized);
+            }
+
+            if (!(isAuthorized))
+            {
+                response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                response.setCount(request.getCount() + 1);
+
+                return response;
+            }
+
+            List<Object> userData = userManager.loadUserAccount(authUser.getGuid());
+
+            userAccount = new UserAccount();
+            userAccount.setGuid((String) userData.get(0));
+            userAccount.setUsername((String) userData.get(1));
+            userAccount.setGivenName((String) userData.get(2));
+            userAccount.setSurname((String) userData.get(3));
+            userAccount.setDisplayName((String) userData.get(4));
+            userAccount.setEmailAddr((String) userData.get(5));
+            userAccount.setPagerNumber((String) userData.get(6));
+            userAccount.setTelephoneNumber((String) userData.get(7));
+            userAccount.setFailedCount((Integer) userData.get(8));
+            userAccount.setLastLogin((Date) userData.get(9));
+            userAccount.setExpiryDate((Date) userData.get(10));
+            userAccount.setSuspended((Boolean) userData.get(11));
+            userAccount.setOlrSetup((Boolean) userData.get(12));
+            userAccount.setOlrLocked((Boolean) userData.get(13));
+
+            // build groups
+            List<UserGroup> userGroups = new ArrayList<>();
+            for (String group : StringUtils.split((String) userData.get(15), ","))
+            {
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Group: {}", group);
+                }
+
+                List<String> serviceList = svcInfo.listServicesForGroup(group);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("List<String>: {}", serviceList);
+                }
+
+                UserGroup userGroup = new UserGroup();
+                userGroup.setName(group);
+                userGroup.setServices(serviceList);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("UserGroup: {}", userGroup);
+                }
+
+                userGroups.add(userGroup);
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("List<UserGroup>: {}", userGroups);
+            }
+
+            userAccount.setGroups(userGroups);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("UserAccount: {}", userAccount);
+            }
+
+            // have a user account, run with it
+            if ((userAccount.getExpiryDate().before(new Date(System.currentTimeMillis())))
+                    || (userAccount.getExpiryDate().equals(new Date(System.currentTimeMillis()))))
+            {
+                userAccount.setStatus(LoginStatus.EXPIRED);
+
+                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                response.setUserAccount(userAccount);
+            }
+            else
+            {
+                userAccount.setStatus(LoginStatus.SUCCESS);
+
+                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                response.setUserAccount(userAccount);
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AuthenticationResponse: {}", response);
+            }
         }
         catch (SecurityServiceException ssx)
         {

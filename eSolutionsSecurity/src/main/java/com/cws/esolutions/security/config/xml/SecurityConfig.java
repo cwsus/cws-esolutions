@@ -58,6 +58,7 @@ public final class SecurityConfig implements Serializable
     private File authConfig = null; // FULL path to connection configuration file
     private String authManager = null;
     private String userManager = null;
+    private String otpAlgorithm = null;
     private int passwordMinLength = 8; // default of 8 characters
     private int passwordMaxLength = 128; // default of 32 characters
     private int passwordExpiration = 45; // 90 day lifetime
@@ -160,6 +161,19 @@ public final class SecurityConfig implements Serializable
         }
 
         this.authAlgorithm = value;
+    }
+
+    public final void setOtpAlgorithm(final String value)
+    {
+        final String methodName = SecurityConfig.CNAME + "#setOtpAlgorithm(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.otpAlgorithm = value;
     }
 
     public final void setSaltLength(final int value)
@@ -322,6 +336,20 @@ public final class SecurityConfig implements Serializable
         }
 
         return this.authAlgorithm;
+    }
+
+    @XmlElement(name = "otpAlgorithm")
+    public final String getOtpAlgorithm()
+    {
+        final String methodName = SecurityConfig.CNAME + "#getOtpAlgorithm()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.otpAlgorithm);
+        }
+
+        return this.otpAlgorithm;
     }
 
     @XmlElement(name = "passwordExpiration")

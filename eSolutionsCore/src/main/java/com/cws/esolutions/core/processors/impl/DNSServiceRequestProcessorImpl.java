@@ -335,8 +335,6 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                             DEBUGGER.debug("serverName: {}", serverName);
                         }
 
-                        NetworkUtils.isHostValid(serverName);
-
                         // do the lookup here
                     }
                 }

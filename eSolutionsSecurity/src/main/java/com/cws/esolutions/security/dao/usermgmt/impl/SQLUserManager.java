@@ -239,6 +239,80 @@ public class SQLUserManager implements UserManager
     }
 
     /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#addOtpSecret(java.lang.String, java.lang.String)
+     */
+    @Override
+    public synchronized boolean addOtpSecret(final String userId, final String secret) throws UserManagementException
+    {
+        final String methodName = SQLUserManager.CNAME + "#addOtpSecret(final String userId, final String secret) throws UserManagementException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("userId: {}", userId);
+        }
+
+        Connection sqlConn = null;
+        boolean isComplete = false;
+        CallableStatement stmt = null;
+
+        try
+        {
+            sqlConn = SQLUserManager.dataSource.getConnection();
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+
+            // first make sure the existing password is proper
+            // then make sure the new password doesnt match the existing password
+            stmt = sqlConn.prepareCall("{ CALL addUserSecret(?, ?) }");
+            stmt.setString(1, userId);
+            stmt.setString(2, secret);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.executeUpdate() == 1)
+            {
+                isComplete = true;
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new UserManagementException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            try
+            {
+                if (stmt != null)
+                {
+                    stmt.close();
+                }
+
+                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                {
+                    sqlConn.close();
+                }
+            }
+            catch (SQLException sqx)
+            {
+                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+            }
+        }
+
+        return isComplete;
+    }
+
+    /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#changeUserPassword(java.lang.String, java.lang.String, java.lang.int)
      */
     @Override
@@ -542,7 +616,8 @@ public class SQLUserManager implements UserManager
                         Object[] userData = new Object[]
                         {
                                 resultSet.getString(authData.getCommonName()),
-                                resultSet.getString(authData.getUserId())
+                                resultSet.getString(authData.getUserId()),
+                                resultSet.getInt(authData.getLockCount())
                         };
 
                         if (DEBUG)

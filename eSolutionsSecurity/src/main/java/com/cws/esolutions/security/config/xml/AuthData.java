@@ -47,6 +47,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 @XmlAccessorType(XmlAccessType.NONE)
 public final class AuthData implements Serializable
 {
+    private String secret = null;
     private String userId = null;
     private String surname = null;
     private String memberOf = null;
@@ -127,6 +128,19 @@ public final class AuthData implements Serializable
         }
         
         this.userPassword = value;
+    }
+
+    public final void setSecret(final String value)
+    {
+        final String methodName = AuthData.CNAME + "#setSecret(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+        
+        this.secret = value;
     }
 
     public final void setLockCount(final String value)
@@ -403,6 +417,20 @@ public final class AuthData implements Serializable
         }
         
         return this.userPassword;
+    }
+
+    @XmlElement(name = "secret")
+    public final String getSecret()
+    {
+        final String methodName = AuthData.CNAME + "#getSecret()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.secret);
+        }
+        
+        return this.secret;
     }
 
     @XmlElement(name = "publicKey")

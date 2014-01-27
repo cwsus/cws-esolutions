@@ -43,7 +43,6 @@ import java.security.NoSuchAlgorithmException;
 
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.android.tasks.LoaderTask;
 import com.cws.esolutions.android.tasks.UserAuthenticationTask;
 import com.cws.esolutions.security.dao.userauth.enums.LoginType;
 import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
@@ -81,8 +80,6 @@ public class LoginActivity extends Activity
             DEBUGGER.debug("EditText: {}", etRequestValue);
             DEBUGGER.debug("TextView: {}", tvResponseValue);
         }
-
-		new LoaderTask(LoginActivity.this).execute();
 
         if (super.getIntent().getExtras() != null)
         {

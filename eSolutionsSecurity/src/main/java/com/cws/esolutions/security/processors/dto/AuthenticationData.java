@@ -40,8 +40,9 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 public class AuthenticationData implements Serializable
 {
+    private int otpValue = 0;
+    private String secret = null;
     private String userSalt = null;
-    private String otpValue = null;
     private String password = null;
     private String newPassword = null;
     private String secAnswerOne = null;
@@ -92,9 +93,9 @@ public class AuthenticationData implements Serializable
         this.newPassword = value;
     }
 
-    public final void setOtpValue(final String value)
+    public final void setOtpValue(final int value)
     {
-        final String methodName = AuthenticationData.CNAME + "#setOtpValue(final String value)";
+        final String methodName = AuthenticationData.CNAME + "#setOtpValue(final int value)";
 
         if (DEBUG)
         {
@@ -164,6 +165,18 @@ public class AuthenticationData implements Serializable
         this.resetRequestId = value;
     }
 
+    public final void setSecret(final String value)
+    {
+        final String methodName = AuthenticationData.CNAME + "#setSecret(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        this.secret = value;
+    }
+
     public final String getUserSalt()
     {
         final String methodName = AuthenticationData.CNAME + "#getUserSalt()";
@@ -200,7 +213,7 @@ public class AuthenticationData implements Serializable
         return this.newPassword;
     }
 
-    public final String getOtpValue()
+    public final int getOtpValue()
     {
         final String methodName = AuthenticationData.CNAME + "#getOtpValue()";
 
@@ -270,5 +283,17 @@ public class AuthenticationData implements Serializable
         }
 
         return this.resetRequestId;
+    }
+
+    public final String getSecret()
+    {
+        final String methodName = AuthenticationData.CNAME + "#getSecret()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        return this.secret;
     }
 }

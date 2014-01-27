@@ -44,6 +44,7 @@ import com.cws.esolutions.security.enums.SecurityRequestStatus;
  */
 public class AccountChangeResponse implements Serializable
 {
+    private String qrUrl = null;
     private UserAccount userAccount = null;
     private List<String> questionList = null;
     private SecurityRequestStatus requestStatus = null;
@@ -94,6 +95,19 @@ public class AccountChangeResponse implements Serializable
         this.questionList = value;
     }
 
+    public final void setQrUrl(final String value)
+    {
+        final String methodName = AccountChangeResponse.CNAME + "#setQrUrl(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.qrUrl = value;
+    }
+
     public final SecurityRequestStatus getRequestStatus()
     {
         final String methodName = AccountChangeResponse.CNAME + "#getMgmtType()";
@@ -131,6 +145,19 @@ public class AccountChangeResponse implements Serializable
         }
 
         return this.questionList;
+    }
+
+    public final String getQrUrl()
+    {
+        final String methodName = AccountChangeResponse.CNAME + "#getQrUrl()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.qrUrl);
+        }
+
+        return this.qrUrl;
     }
 
     @Override
