@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.android.tasks.LoaderTask;
 
 public class MainActivity extends Activity
 {
@@ -54,8 +55,8 @@ public class MainActivity extends Activity
         }
 
         super.onCreate(bundle);
-        super.setContentView(R.layout.activity_main);
         super.setTitle(R.string.mainTitle);
+        super.setContentView(R.layout.activity_main);
 
         final UserAccount userAccount = (UserAccount) super.getIntent().getExtras().getSerializable(Constants.USER_DATA);
 

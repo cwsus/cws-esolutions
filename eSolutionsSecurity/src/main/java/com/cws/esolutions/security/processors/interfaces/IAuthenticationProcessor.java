@@ -89,6 +89,8 @@ public interface IAuthenticationProcessor
      */
     AuthenticationResponse processAgentLogon(final AuthenticationRequest request) throws AuthenticationException;
 
+    AuthenticationResponse performOtpAuth(final AuthenticationRequest request) throws AuthenticationException;
+
     AuthenticationResponse obtainUserSecurityConfig(final AuthenticationRequest request) throws AuthenticationException;
 
     AuthenticationResponse verifyUserSecurityConfig(final AuthenticationRequest request) throws AuthenticationException;

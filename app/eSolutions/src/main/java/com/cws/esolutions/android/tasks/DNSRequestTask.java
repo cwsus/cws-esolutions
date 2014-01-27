@@ -92,7 +92,7 @@ public class DNSRequestTask extends AsyncTask<String, Object, List<String>>
 
         if (DEBUG)
         {
-            DEBUGGER.debug("NetworkInfo[]: {}", networkInfo);
+            //DEBUGGER.debug("NetworkInfo[]: {}", networkInfo);
         }
 
         if ((networkInfo.length == 0) || (networkInfo == null))

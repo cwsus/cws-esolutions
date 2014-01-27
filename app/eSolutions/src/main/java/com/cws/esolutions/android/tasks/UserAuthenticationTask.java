@@ -27,25 +27,19 @@ package com.cws.esolutions.android.tasks;
  */
 import java.util.List;
 import java.util.Arrays;
-
 import org.slf4j.Logger;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.net.InetAddress;
-
 import android.os.AsyncTask;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-
 import org.slf4j.LoggerFactory;
-
 import android.widget.TextView;
 import android.content.Context;
 import android.net.NetworkInfo;
 import android.net.ConnectivityManager;
-
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.android.ui.R;
@@ -114,7 +108,7 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
 
         if (DEBUG)
         {
-            DEBUGGER.debug("NetworkInfo[]: {}", networks);
+           // DEBUGGER.debug("NetworkInfo[]: {}", networks);
         }
 
         if ((networks.length == 0) || (networks == null))
