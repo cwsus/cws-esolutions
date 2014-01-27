@@ -70,6 +70,18 @@
         <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
     </listener>
 
+    <filter id="CsrfPreventionFilter">
+        <filter-name>CsrfPreventionFilter</filter-name>
+        <filter-class>org.apache.catalina.filters.CsrfPreventionFilter</filter-class>
+        <init-param>
+            <param-name>entryPoints</param-name>
+            <param-value>/ui/login/default</param-value>
+        </init-param>
+        <init-param>
+            <param-name>nonceCacheSize</param-name>
+            <param-value>2</param-value>
+        </init-param>
+    </filter>
     <filter id="SSLEnforcementFilter">
         <description>Security Service SSL Enforcement</description>
         <display-name>SSLEnforcementFilter</display-name>
@@ -101,6 +113,10 @@
         </init-param>
     </filter>
 
+    <filter-mapping id="CsrfPreventionFilter_mapping">
+        <filter-name>CsrfPreventionFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
     <filter-mapping id="SSLEnforcementFilter_mapping">
         <filter-name>SSLEnforcementFilter</filter-name>
         <url-pattern>/*</url-pattern>
