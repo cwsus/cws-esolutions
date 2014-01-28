@@ -48,7 +48,7 @@ public final class NetworkUtils
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + NetworkUtils.CNAME);
 
     public synchronized static boolean checkNetwork(final Context context)
     {
@@ -60,6 +60,7 @@ public final class NetworkUtils
         }
 
         boolean isConnected = false;
+
         final ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         if (DEBUG)

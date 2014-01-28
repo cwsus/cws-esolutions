@@ -45,6 +45,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import com.cws.esolutions.android.ui.R;
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.android.utils.NetworkUtils;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.dao.userauth.enums.LoginType;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
@@ -65,7 +66,7 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + UserAuthenticationTask.class.getSimpleName());
 
     /**
      * @param request - The requesting activity
@@ -96,52 +97,12 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
             DEBUGGER.debug(methodName);
         }
 
-        boolean isConnected = false;
-        ConnectivityManager connMgr = (ConnectivityManager) reqActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
+		if (!(NetworkUtils.checkNetwork(this.reqActivity)))
+		{
+			ERROR_RECORDER.error("Network connections are available but not currently connected.");
 
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ConnectivityManager: {}", connMgr);
-        }
-        
-        NetworkInfo[] networks = connMgr.getAllNetworkInfo();
-
-        if (DEBUG)
-        {
-           // DEBUGGER.debug("NetworkInfo[]: {}", networks);
-        }
-
-        if ((networks.length == 0) || (networks == null))
-        {
-            // no available network connection
-            ERROR_RECORDER.error("No available network connection. Cannot continue.");
-
-            super.cancel(true);
-        }
-        else
-        {
-            for (NetworkInfo network : networks)
-            {
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("NetworkInfo: {}", network);
-                }
-
-                if (network.isConnected())
-                {
-                    isConnected = true;
-
-                    break;
-                }
-            }
-
-            if (!(isConnected))
-            {
-                ERROR_RECORDER.error("Network connections are available but not currently connected.");
-
-                super.cancel(true);
-            }
-        }
+			super.cancel(true);
+		}
     }
 
     @Override

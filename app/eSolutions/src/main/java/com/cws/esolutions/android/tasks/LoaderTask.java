@@ -25,45 +25,45 @@ package com.cws.esolutions.android.tasks;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import java.util.Map;
 import org.slf4j.Logger;
-
+import java.util.HashMap;
+import java.sql.Connection;
 import java.io.InputStream;
 import java.io.IOException;
+import javax.sql.DataSource;
 import java.util.Properties;
-
 import android.os.AsyncTask;
 import android.app.Activity;
-
+import java.sql.SQLException;
 import org.slf4j.LoggerFactory;
-
 import android.net.NetworkInfo;
 import android.content.Context;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.content.res.AssetManager;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.dbcp.BasicDataSource;
 
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.android.utils.NetworkUtils;
 import com.cws.esolutions.security.utils.PasswordUtils;
-
-import android.util.*;
+import com.cws.esolutions.android.ApplicationServiceBean;
 
 public class LoaderTask extends AsyncTask<Void, Void, Boolean>
 {
+    private InputStream iStream = null;
     private Activity reqActivity = null;
 
     private static final String CNAME = LoaderTask.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_LOGGER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + LoaderTask.class.getSimpleName());
 
     public LoaderTask(final Activity activity)
     {
-        final String methodName = LoaderTask.CNAME + "#DNSRequestTask(final Activity activity)";
+        final String methodName = LoaderTask.CNAME + "#LoaderTask(final Activity activity)#Constructor()";
 
         if (DEBUG)
         {
@@ -84,9 +84,37 @@ public class LoaderTask extends AsyncTask<Void, Void, Boolean>
             DEBUGGER.debug(methodName);
         }
 
-        if (!(NetworkUtils.checkNetwork(this.reqActivity)))
+		try
+		{
+			if (!(NetworkUtils.checkNetwork(this.reqActivity)))
+			{
+				super.cancel(true);
+			}
+
+			AssetManager assetMgr = this.reqActivity.getResources().getAssets();
+
+			if (DEBUG)
+			{
+				DEBUGGER.debug("AssetManager: {}", assetMgr);
+			}
+
+			this.iStream = assetMgr.open("application.properties"); // TODO: make this configurableS
+
+			if (DEBUG)
+			{
+				DEBUGGER.debug("InputStream: {}", this.iStream);
+			}
+
+			if ((this.iStream == null) || (this.iStream.available() == 0))
+			{
+				ERROR_RECORDER.error("Unable to load application properties. Cannot continue.");
+
+				super.cancel(true);
+			}
+		}
+        catch (IOException iox)
         {
-            ERROR_LOGGER.error("Network connections are available but not currently connected.");
+            ERROR_RECORDER.error(iox.getMessage(), iox);
 
             super.cancel(true);
         }
@@ -95,7 +123,7 @@ public class LoaderTask extends AsyncTask<Void, Void, Boolean>
     @Override
     protected Boolean doInBackground(final Void... value)
     {
-        final String methodName = LoaderTask.CNAME + "#doInBackground(final Context... vlaue)";
+        final String methodName = LoaderTask.CNAME + "#doInBackground(final Void... vlaue)";
 
         if (DEBUG)
         {
@@ -104,40 +132,20 @@ public class LoaderTask extends AsyncTask<Void, Void, Boolean>
         }
 
         boolean isLoaded = false;
-        InputStream iStream = null;
+
+        final ApplicationServiceBean bean = ApplicationServiceBean.getInstance();
+		final AssetManager assetMgr = this.reqActivity.getResources().getAssets();
+
+		if (DEBUG)
+		{
+			DEBUGGER.debug("ApplicationServiceBean: {}", bean);
+			DEBUGGER.debug("AssetManager: {}", assetMgr);
+		}
 
         try
         {
-            Resources resources = this.reqActivity.getResources();
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Resources: {}", resources);
-            }
-
-            AssetManager assetMgr = resources.getAssets();
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AssetManager: {}", assetMgr);
-            }
-
-            iStream = assetMgr.open("application.properties");
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("InputStream: {}", iStream);
-            }
-
-            if ((iStream == null) || (iStream.available() > 0))
-            {
-                ERROR_LOGGER.error("Unable to load application properties. Cannot continue.");
-
-                super.cancel(true);
-            }
-
             Properties props = new Properties();
-            props.load(iStream);
+            props.load(this.iStream);
 
             if (DEBUG)
             {
@@ -151,6 +159,23 @@ public class LoaderTask extends AsyncTask<Void, Void, Boolean>
                 DEBUGGER.debug("String[]: {}", dataSources);
             }
 
+			if ((dataSources.length == 0) || (dataSources == null))
+			{
+				return true;
+			}
+
+			Map<String, DataSource> dsMap = bean.getDataSources();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Map<String, DataSource>: {}", dsMap);
+			}
+
+            if ((dsMap == null) || (dsMap.isEmpty()))
+			{
+				dsMap = new HashMap<String, DataSource>();
+			}
+
             for (String source : dataSources)
             {
                 if (DEBUG)
@@ -158,84 +183,108 @@ public class LoaderTask extends AsyncTask<Void, Void, Boolean>
                     DEBUGGER.debug("String: {}", source);
                 }
 
-				InputStream dsStream = assetMgr.open(source + ".properties");
-
-				if (DEBUG)
+				if (!(dsMap.containsKey(source)))
 				{
-					DEBUGGER.debug("InputStream: {}", dsStream);
-				}
+				    InputStream dsStream = assetMgr.open(source + ".properties");
 
-	            if ((dsStream == null) || (dsStream.available() > 0))
-	            {
-	                ERROR_LOGGER.error("Unable to load datasource properties.");
-	            }
-	            else
-	            {
-    				Properties dsProps = new Properties();
-    				dsProps.load(dsStream);
+				    if (DEBUG)
+				    {
+					    DEBUGGER.debug("InputStream: {}", dsStream);
+				    }
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Properties: {}", dsProps);
-    				}
+	                if ((dsStream == null) || (dsStream.available() == 0))
+	                {
+	                    ERROR_RECORDER.error("Unable to load datasource properties.");
+	                }
+	                else
+	                {
+    				    Properties dsProps = new Properties();
+    				    dsProps.load(dsStream);
 
-    				StringBuilder sBuilder = new StringBuilder()
-    					.append("connectTimeout=" + dsProps.getProperty("connTimeout") + ";")
-    					.append("socketTimeout=" + dsProps.getProperty("connTimeout") + ";")
-    					.append("autoReconnect=" + dsProps.getProperty("autoReconnect") + ";")
-    					.append("zeroDateTimeBehavior=convertToNull");
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Properties: {}", dsProps);
+    				    }
 
-    				if (DEBUG)
-    				{
-    					DEBUGGER.debug("StringBuilder: {}", sBuilder);
-    				}
+    				    StringBuilder sBuilder = new StringBuilder()
+    					    .append("connectTimeout=" + dsProps.getProperty("connTimeout") + ";")
+    					    .append("socketTimeout=" + dsProps.getProperty("connTimeout") + ";")
+    					    .append("autoReconnect=" + dsProps.getProperty("autoReconnect") + ";")
+    					    .append("zeroDateTimeBehavior=convertToNull");
 
-    				if (!(NetworkUtils.isHostValid(dsProps.getProperty("dsUrl"))))
-    				{
-    	                ERROR_LOGGER.error("Datasource host is unavailable. Cannot create datasource.");
-    				}
-    				else
-    				{
-        				BasicDataSource dataSource = new BasicDataSource();
-        				dataSource.setDriverClassName(dsProps.getProperty("driver"));
-        				dataSource.setUrl(dsProps.getProperty("dsUrl"));
-        				dataSource.setUsername(dsProps.getProperty("username"));
-        				dataSource.setConnectionProperties(sBuilder.toString());
-        				dataSource.setPassword(PasswordUtils.decryptText(
+    				    if (DEBUG)
+    				    {
+    					    DEBUGGER.debug("StringBuilder: {}", sBuilder);
+    				    }
+
+        			    BasicDataSource dataSource = new BasicDataSource();
+        			    dataSource.setDriverClassName(dsProps.getProperty("driver"));
+        			    dataSource.setUrl(dsProps.getProperty("dsUrl"));
+        			    dataSource.setUsername(dsProps.getProperty("username"));
+        			    dataSource.setConnectionProperties(sBuilder.toString());
+       				    dataSource.setPassword(PasswordUtils.decryptText(
                             dsProps.getProperty("password"),
                             dsProps.getProperty("salt").length()));
 
-        				if (DEBUG)
-        				{
-        					DEBUGGER.debug("BasicDataSource: {}", dataSource);
-        				}
-    				}
-	            }
+        			    if (DEBUG)
+        			    {
+        				    DEBUGGER.debug("BasicDataSource: {}", dataSource);
+        			    }
 
-	            dsStream.close();
-			}
+                        Connection conn = null;
+
+                        try
+                        {
+                            conn = dataSource.getConnection();
+					    }
+                        catch (SQLException sqx)
+                        {
+					    	ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+						    return false;
+					    }
+					    finally
+					    {
+						    try
+						    {
+							    if ((conn != null) && (!(conn.isClosed())))
+							    {
+								    conn.close();
+							    }
+						    }
+						    catch (SQLException sqx)
+						    {
+							    ERROR_RECORDER.error(sqx.getMessage(), sqx);
+						    }
+					    }
+    			    }
+
+	                dsStream.close();
+			    }
+            }
 
             isLoaded = true;
 		}
         catch (IOException iox)
         {
-            ERROR_LOGGER.error(iox.getMessage(), iox);
+            ERROR_RECORDER.error(iox.getMessage(), iox);
         }
         finally
         {
             try
             {
-                iStream.close();
+                this.iStream.close();
 			}
             catch (IOException iox)
             {
-                ERROR_LOGGER.error(iox.getMessage(), iox);
+                ERROR_RECORDER.error(iox.getMessage(), iox);
             }
 		}
 
         return isLoaded;
     }
 
+    @Override
     protected void onPostExecute(final boolean value)
     {
         final String methodName = LoaderTask.CNAME + "#onPostExecute(final boolean value)";

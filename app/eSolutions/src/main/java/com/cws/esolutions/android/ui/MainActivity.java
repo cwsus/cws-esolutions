@@ -31,8 +31,12 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.view.MenuItem;
 import android.content.Intent;
+import android.app.AlertDialog;
 import android.widget.TextView;
 import org.slf4j.LoggerFactory;
+import java.lang.InterruptedException;
+import android.content.DialogInterface;
+import java.util.concurrent.ExecutionException;
 
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
@@ -44,6 +48,7 @@ public class MainActivity extends Activity
     private static final String CNAME = MainActivity.class.getName();
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.DEBUGGER + MainActivity.class.getSimpleName());
 
     public void onCreate(final Bundle bundle)
     {
@@ -59,10 +64,76 @@ public class MainActivity extends Activity
         super.setTitle(R.string.mainTitle);
         super.setContentView(R.layout.activity_main);
 
-        new LoaderTask(MainActivity.this).execute();
+        final LoaderTask loader = new LoaderTask(this);
+        loader.execute();
 
-        this.startActivity(new Intent(this, LoginActivity.class));
-        super.finish();
+        try
+		{
+			if ((loader.isCancelled()) || (!(loader.get())))
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                    .setMessage("An error occurred while initializing the application. Cannot continue.")
+                    .setCancelable(false)
+                    .setNeutralButton("Exit",
+					    new DialogInterface.OnClickListener()
+					    {
+						    public void onClick(final DialogInterface dialogInterface, final int which)
+						    {
+						        MainActivity.this.finish();
+						    }
+					    });
+
+                AlertDialog error = builder.create();
+                error.show();
+
+                return;
+		    }
+
+            this.startActivity(new Intent(this, LoginActivity.class));
+            super.finish();
+		}
+		catch (InterruptedException ix)
+		{
+            ERROR_RECORDER.error(ix.getMessage(), ix);
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(this)
+				.setMessage("An error occurred while initializing the application. Cannot continue.")
+				.setCancelable(false)
+				.setNeutralButton("Exit",
+				    new DialogInterface.OnClickListener()
+				    {
+					    public void onClick(final DialogInterface dialogInterface, final int which)
+					    {
+						    MainActivity.this.finish();
+					    }
+				    });
+
+			AlertDialog error = builder.create();
+			error.show();
+
+			return;
+		}
+		catch (ExecutionException ex)
+		{
+            ERROR_RECORDER.error(ex.getMessage(), ex);
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(this)
+				.setMessage("An error occurred while initializing the application. Cannot continue.")
+				.setCancelable(false)
+				.setNeutralButton("Exit",
+                    new DialogInterface.OnClickListener()
+				    {
+                        public void onClick(final DialogInterface dialogInterface, final int which)
+					    {
+						    MainActivity.this.finish();
+					    }
+				    });
+
+			AlertDialog error = builder.create();
+			error.show();
+
+			return;
+		}
     }
 
     @Override
@@ -77,5 +148,7 @@ public class MainActivity extends Activity
 
         // do signout here
         super.finish();
+
+        return;
     }
 }

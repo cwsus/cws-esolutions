@@ -32,13 +32,10 @@ public final class Constants
      */
     public static final String USER_DATA = "userAccount";
     public static final String APPLICATION_NAME = "eSolutions";
+    public static final String LINE_BREAK = System.getProperty("line.separator");
     public static final String APPLICATION_ID = "5446d6f1-cab8-439f-9bc7-f72141cc81bc";
 
     /* Logging constants */
-    public static final String LOGGING_TAG = "eSolutions-";
-    public static final String WARN_LOGGER = "WARN_RECORDER.";
-    public static final String INFO_LOGGER = "INFO_RECORDER.";
-    public static final String AUDIT_LOGGER = "AUDIT_RECORDER.";
     public static final String ERROR_LOGGER = "ERROR_RECORDER.";
     public static final String DEBUGGER = "ESOLUTIONS_DEBUGGER";
 }

@@ -39,6 +39,7 @@ import android.net.ConnectivityManager;
 
 import com.cws.esolutions.android.ui.R;
 import com.cws.esolutions.android.Constants;
+import com.cws.esolutions.android.utils.NetworkUtils;
 import com.cws.esolutions.core.processors.dto.DNSRecord;
 import com.cws.esolutions.core.processors.enums.DNSRecordType;
 import com.cws.esolutions.core.processors.enums.DNSRequestType;
@@ -55,19 +56,19 @@ public class DNSRequestTask extends AsyncTask<String, Object, List<String>>
     private static final String CNAME = DNSRequestTask.class.getName();
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_LOGGER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + DNSRequestTask.class.getSimpleName());
 
-    public DNSRequestTask(final Activity activity)
+    public DNSRequestTask(final Activity value)
     {
-        final String methodName = DNSRequestTask.CNAME + "#DNSRequestTask(final Activity activity)";
+        final String methodName = DNSRequestTask.CNAME + "#DNSRequestTask(final Activity value)#Constructor()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Activity: {}", activity);
+            DEBUGGER.debug("Activity: {}", value);
         }
 
-        this.reqActivity = activity;
+        this.reqActivity = value;
     }
 
     @Override
@@ -80,67 +81,21 @@ public class DNSRequestTask extends AsyncTask<String, Object, List<String>>
             DEBUGGER.debug(methodName);
         }
 
-        boolean isConnected = false;
-        final ConnectivityManager connMgr = (ConnectivityManager) this.reqActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ConnectivityManager: {}", connMgr);
-        }
-        
-        NetworkInfo[] networkInfo = connMgr.getAllNetworkInfo();
-
-        if (DEBUG)
-        {
-            //DEBUGGER.debug("NetworkInfo[]: {}", networkInfo);
-        }
-
-        if ((networkInfo.length == 0) || (networkInfo == null))
-        {
-            // no available network connection
-            ERROR_LOGGER.error("No available network connection. Cannot continue.");
-
-            super.cancel(true);
-        }
-        else
-        {
-            for (NetworkInfo network : networkInfo)
-            {
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("NetworkInfo: {}", network);
-                }
-
-                if (network.isConnected())
-                {
-                    isConnected = true;
-
-                    break;
-                }
-            }
-
-            if (!(isConnected))
-            {
-                ERROR_LOGGER.error("Network connections are available but not currently connected.");
-
-                super.cancel(true);
-            }
-        }
+		if (!(NetworkUtils.checkNetwork(this.reqActivity)))
+		{
+			super.cancel(true);
+		}
     }
 
     @Override
-    protected List<String> doInBackground(final String... request)
+    protected List<String> doInBackground(final String... value)
     {
-        final String methodName = DNSRequestTask.CNAME + "#doInBackground(final String... request)";
+        final String methodName = DNSRequestTask.CNAME + "#doInBackground(final String... value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-
-            for (String str : request)
-            {
-                DEBUGGER.debug(str);
-            }
+            DEBUGGER.debug("Value: {}", value);
         }
 
         List<String> resultsList = new ArrayList<String>();
@@ -150,8 +105,8 @@ public class DNSRequestTask extends AsyncTask<String, Object, List<String>>
         try
         {
             DNSRecord record = new DNSRecord();
-            record.setRecordName(request[0]);
-            record.setRecordType(DNSRecordType.valueOf(request[2]));
+            record.setRecordName(value[0]);
+            record.setRecordType(DNSRecordType.valueOf(value[2]));
 
             if (DEBUG)
             {
@@ -160,7 +115,7 @@ public class DNSRequestTask extends AsyncTask<String, Object, List<String>>
 
             DNSServiceRequest dnsRequest = new DNSServiceRequest();
             dnsRequest.setRequestType(DNSRequestType.LOOKUP);
-            dnsRequest.setResolverHost(request[1]);
+            dnsRequest.setResolverHost(value[1]);
             dnsRequest.setRecord(record);
 
             if (DEBUG)
@@ -177,33 +132,29 @@ public class DNSRequestTask extends AsyncTask<String, Object, List<String>>
         }
         catch (DNSServiceException dsx)
         {
-            ERROR_LOGGER.error(dsx.getMessage(), dsx);
+            ERROR_RECORDER.error(dsx.getMessage(), dsx);
         }
 
         return resultsList;
     }
 
-    protected void onPostExecute(final List<String> result)
+    protected void onPostExecute(final List<String> value)
     {
-        final String methodName = DNSRequestTask.CNAME + "#onPostExecute(final List<String> result)";
+        final String methodName = DNSRequestTask.CNAME + "#onPostExecute(final List<String> value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-
-            for (String str : result)
-            {
-                DEBUGGER.debug(str);
-            }
+            DEBUGGER.debug("Value: {}", value);
         }
 
         final TextView responseView = ((TextView) this.reqActivity.findViewById(R.id.tvResponseList));
 
-        if ((result != null) && (result.size() != 0))
+        if ((value != null) && (value.size() != 0))
         {
             StringBuilder sBuilder = new StringBuilder();
 
-            for (String entry : result)
+            for (String entry : value)
             {
                 if (DEBUG)
                 {
