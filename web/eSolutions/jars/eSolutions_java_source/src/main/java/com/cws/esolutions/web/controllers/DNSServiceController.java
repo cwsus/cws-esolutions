@@ -10,7 +10,17 @@
  * express written authorization of CaspersBox Web Services, N.A.
  */
 package com.cws.esolutions.web.controllers;
-
+/*
+ * Project: eSolutions_java_source
+ * Package: com.cws.esolutions.web.controllers
+ * File: DNSServiceController.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.util.List;
 import org.slf4j.Logger;
 import java.util.Enumeration;
@@ -38,17 +48,7 @@ import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.exception.DNSServiceException;
 import com.cws.esolutions.core.processors.impl.DNSServiceRequestProcessorImpl;
 import com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor;
-/*
- * Project: eSolutions_java_source
- * Package: com.cws.esolutions.web.controllers
- * File: DNSServiceController.java
- *
- * History
- *
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
- */
+
 @Controller
 @RequestMapping("/dns-service")
 public class DNSServiceController

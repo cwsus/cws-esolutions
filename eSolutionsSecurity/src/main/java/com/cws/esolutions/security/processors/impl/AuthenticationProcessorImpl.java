@@ -94,9 +94,11 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 DEBUGGER.debug("List<Object[]>: {}", userInfo);
             }
 
-            if ((userInfo == null) || (userInfo.size() == 0) || (userInfo.size() > 1))
+            if ((userInfo == null) || (userInfo.size() == 0) || (userInfo.size() != 1))
             {
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
+
+                return response;
             }
 
             Object[] userData = userInfo.get(0);
@@ -143,7 +145,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 userAccount.setGuid((String) authObject.get(0));
                 userAccount.setUsername((String) authObject.get(1));
 
-                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                response.setRequestStatus(SecurityRequestStatus.CONTINUE);
 
                 return response;
             }
@@ -338,15 +340,12 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
         UserAccount userAccount = null;
         AuthenticationResponse response = new AuthenticationResponse();
 
-        final int variance = 3; // TODO: this needs to be configurable
-        final String algorithm = secConfig.getOtpAlgorithm();
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount authUser = request.getUserAccount();
         final AuthenticationData authSec = request.getUserSecurity();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("String: {}", algorithm);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", authUser);
         }
@@ -354,15 +353,16 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
         try
         {
             String otpSalt = userSec.getUserSalt(authUser.getGuid(), SaltType.OTP.name());
+            String otpSecret = authenticator.obtainOtpSecret(authUser.getUsername(), authUser.getGuid());
 
             // if the user has enabled otp auth, do it here
-            if (StringUtils.isEmpty(otpSalt))
+            if ((StringUtils.isEmpty(otpSalt)) || (StringUtils.isEmpty(otpSecret)))
             {
-                throw new AuthenticationException("Unable to obtain salt. Cannot continue.");
+                throw new AuthenticationException("Unable to obtain security information. Cannot continue.");
             }
 
-            boolean isAuthorized = PasswordUtils.validateOtpValue(variance, algorithm,
-                    PasswordUtils.decryptText(authSec.getSecret(), otpSalt.length()),
+            boolean isAuthorized = PasswordUtils.validateOtpValue(secConfig.getOtpVariance(), secConfig.getOtpAlgorithm(),
+                    PasswordUtils.decryptText(otpSecret, otpSalt.length()),
                     authSec.getOtpValue());
 
             if (DEBUG)

@@ -27,7 +27,6 @@ package com.cws.esolutions.security.utils;
  */
 import javax.crypto.Mac;
 import org.slf4j.Logger;
-import java.nio.ByteBuffer;
 import javax.crypto.Cipher;
 import org.slf4j.LoggerFactory;
 import java.security.MessageDigest;
@@ -37,6 +36,7 @@ import java.security.InvalidKeyException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.UnsupportedEncodingException;
 import javax.crypto.IllegalBlockSizeException;
+import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.codec.binary.Base64;
 import java.security.NoSuchAlgorithmException;
 
@@ -232,46 +232,46 @@ public final class PasswordUtils
             DEBUGGER.debug("String: {}", algorithm);
         }
 
-        boolean isValid = false;
+        long truncatedHash = 0;
+        byte[] data = new byte[8];
+        long timeIndex = System.currentTimeMillis() / 1000 / 30;
 
-        final ByteBuffer buffer = ByteBuffer.allocate(8);
-        final long timeIndex = System.currentTimeMillis() / 1000 / 30;
-        final SecretKeySpec signKey = new SecretKeySpec(secret.getBytes(), algorithm);
+        final Base32 codec = new Base32();
+        final byte[] decoded = codec.decode(secret);
+        SecretKeySpec signKey = new SecretKeySpec(decoded, algorithm);
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ByteBuffer: {}", buffer);
             DEBUGGER.debug("long: {}", timeIndex);
-            DEBUGGER.debug("SecretKeySpec: {}", signKey);
         }
 
         try
         {
-            for (int i = -variance; i <= variance; i++)
+            for (int i = 8; i-- > 0; timeIndex >>>= 8)
             {
-                Mac mac = Mac.getInstance(algorithm);
-                mac.init(signKey);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Mac: {}", mac);
-                }
-
-                byte[] hash = mac.doFinal(buffer.putLong(timeIndex).array());
-                int offset = hash[19] & 0xf;
-                long truncatedHash = hash[offset] & 0x7f;
-
-                for (int x = 1; x < 4; x++)
-                {
-                    truncatedHash <<= 8;
-                    truncatedHash |= hash[offset + i] & 0xff;
-
-                    if ((truncatedHash %= 1000000) == code)
-                    {
-                        return true;
-                    }
-                }
+                data[i] = (byte) timeIndex;
             }
+
+            Mac mac = Mac.getInstance(algorithm);
+            mac.init(signKey);
+            byte[] hash = mac.doFinal(data);
+            int offset = hash[20 - 1] & 0xF;
+            
+            for (int i = 0; i < 4; i++)
+            {
+                truncatedHash <<= 8;
+                truncatedHash |= (hash[offset + i] & 0xFF);
+            }
+
+            truncatedHash &= 0x7FFFFFFF;
+            truncatedHash %= 1000000;
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("truncatedHash: {}", truncatedHash);
+            }
+
+            return (truncatedHash == code);
         }
         catch (InvalidKeyException ikx)
         {
@@ -285,7 +285,5 @@ public final class PasswordUtils
 
             throw new SecurityException(nsx.getMessage(), nsx);
         }
-
-        return isValid;
     }
 }

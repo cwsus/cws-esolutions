@@ -37,9 +37,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import org.slf4j.LoggerFactory;
 import android.widget.TextView;
-import android.content.Context;
-import android.net.NetworkInfo;
-import android.net.ConnectivityManager;
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.android.ui.R;
@@ -47,7 +44,6 @@ import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.android.utils.NetworkUtils;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
-import com.cws.esolutions.security.dao.userauth.enums.LoginType;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
@@ -68,10 +64,6 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + UserAuthenticationTask.class.getSimpleName());
 
-    /**
-     * @param request - The requesting activity
-     * @param response - The target activity
-     */
     public UserAuthenticationTask(final Activity request, final Class<?> response)
     {
         final String methodName = UserAuthenticationTask.CNAME + "#UserAuthenticationTask(final Activity request, final Class<?> response)";
@@ -123,73 +115,49 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
         final List<Object> responseList = new ArrayList<Object>(
                 Arrays.asList(
                         requestList.get(1)));
-        final AuthenticationType authType = (AuthenticationType) requestList.get(0);
-        final LoginType loginType = (LoginType) requestList.get(1);
         final IAuthenticationProcessor processor = new AuthenticationProcessorImpl();
 
         try
         {
-            switch (authType)
+            userAccount = (UserAccount) requestList.get(3);
+            userAccount.setUsername((String) requestList.get(3));
+            userSecurity.setPassword((String) requestList.get(4));
+
+            if (DEBUG)
             {
-                case LOGIN:
-                    switch(loginType)
-                    {
-                        case USERNAME:
-                            userAccount.setUsername((String) requestList.get(3));
-
-                            break;
-                        case PASSWORD:
-                            userAccount = (UserAccount) requestList.get(3);
-                            userSecurity.setPassword((String) requestList.get(4));
-
-                            break;
-                        default:
-                            throw new AuthenticationException("No login type was provided.");
-                    }
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("UserAccount: {}", userAccount);
-                    }
-
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostAddress(InetAddress.getLocalHost().getHostAddress());
-                    reqInfo.setHostName(InetAddress.getLocalHost().getHostName());
-                    reqInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                    }
-
-                    AuthenticationRequest authReq = new AuthenticationRequest();
-                    authReq.setApplicationName(Constants.APPLICATION_NAME);
-                    authReq.setAuthType((AuthenticationType) requestList.get(0));
-                    authReq.setLoginType((LoginType) requestList.get(1));
-                    authReq.setUserAccount(userAccount);
-                    authReq.setApplicationId(Constants.APPLICATION_ID);
-                    authReq.setHostInfo(reqInfo);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuthenticationRequest: {}", authReq);
-                    }
-
-                    AuthenticationResponse authResponse = processor.processAgentLogon(authReq);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuthenticationResponse: {}", authResponse);
-                    }
-
-                    responseList.add(authResponse);
-
-                    break;
-                default:
-                    authResponse = null;
-
-                    throw new AuthenticationException("No authentication type was provided.");
+                DEBUGGER.debug("UserAccount: {}", userAccount);
             }
+
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostAddress(InetAddress.getLocalHost().getHostAddress());
+            reqInfo.setHostName(InetAddress.getLocalHost().getHostName());
+            reqInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            }
+
+            AuthenticationRequest authReq = new AuthenticationRequest();
+            authReq.setApplicationName(Constants.APPLICATION_NAME);
+            authReq.setAuthType((AuthenticationType) requestList.get(0));
+            authReq.setUserAccount(userAccount);
+            authReq.setApplicationId(Constants.APPLICATION_ID);
+            authReq.setHostInfo(reqInfo);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AuthenticationRequest: {}", authReq);
+            }
+
+            AuthenticationResponse authResponse = processor.processAgentLogon(authReq);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AuthenticationResponse: {}", authResponse);
+            }
+
+            responseList.add(authResponse);
         }
         catch (AuthenticationException ax)
         {
@@ -214,14 +182,11 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
             DEBUGGER.debug("responseList: {}", responseList);
         }
 
-        final LoginType loginType = (LoginType) responseList.get(0);
         final AuthenticationResponse authResponse = (AuthenticationResponse) responseList.get(1);
         final TextView responseView = ((TextView) this.reqActivity.findViewById(R.id.tvResponseValue));
 
         if (authResponse != null)
         {
-            Intent intent = null;
-
             if (authResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
             {
                 UserAccount resAccount = authResponse.getUserAccount();
@@ -234,46 +199,16 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
                 switch(resAccount.getStatus())
                 {
                     case SUCCESS:
-                        switch (loginType)
+                        Intent intent = new Intent(this.reqActivity, this.resActivity);
+                        intent.putExtra("userData", authResponse.getUserAccount());
+
+                        if (DEBUG)
                         {
-                            case USERNAME:
-                                intent = new Intent(this.reqActivity, this.reqActivity.getClass());
-
-                                break;
-                            default:
-                                intent = new Intent(this.reqActivity, this.resActivity);
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("Intent: {}", intent);
-                                }
-
-                                break;
+                            DEBUGGER.debug("Intent: {}", intent);
                         }
 
-                        intent.putExtra("userData", authResponse.getUserAccount());
                         this.reqActivity.startActivity(intent);
                         this.reqActivity.finish();
-
-                        break;
-                    case FAILURE:
-                        responseView.setTextColor(Color.RED);
-                        responseView.setText(this.reqActivity.getString(R.string.txtSignonError));
-
-                        break;
-                    case LOCKOUT:
-                        responseView.setTextColor(Color.RED);
-                        responseView.setText(this.reqActivity.getString(R.string.txtAccountLocked));
-
-                        break;
-                    case SESSION_EXISTS:
-                        responseView.setTextColor(Color.RED);
-                        responseView.setText(this.reqActivity.getString(R.string.txtAccountSignedIn));
-
-                        break;
-                    case SUSPENDED:
-                        responseView.setTextColor(Color.RED);
-                        responseView.setText(this.reqActivity.getString(R.string.txtAccountSuspended));
 
                         break;
                     default:

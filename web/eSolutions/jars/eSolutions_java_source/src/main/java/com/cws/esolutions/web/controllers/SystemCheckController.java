@@ -10,7 +10,17 @@
  * express written authorization of CaspersBox Web Services, N.A.
  */
 package com.cws.esolutions.web.controllers;
-
+/*
+ * Project: eSolutions_java_source
+ * Package: com.cws.esolutions.web.controllers
+ * File: SystemCheckController.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.slf4j.Logger;
 import java.util.Enumeration;
 import org.slf4j.LoggerFactory;
@@ -38,17 +48,7 @@ import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.impl.SystemCheckProcessorImpl;
 import com.cws.esolutions.core.processors.exception.SystemCheckException;
 import com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor;
-/*
- * Project: eSolutions_java_source
- * Package: com.cws.esolutions.web.controllers
- * File: SystemCheckController.java
- *
- * History
- *
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
- */
+
 @Controller
 @RequestMapping("/system-check")
 public class SystemCheckController

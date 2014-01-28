@@ -63,20 +63,7 @@ public interface IUserSecurityInformationDAO
      * @return <code>true</code> if successful, <code>false</code> otherwise
      * @throws SQLException if an exception occurs during insertion process
      */
-    boolean addUserSalt(final String commonName, final String saltValue, final String saltType) throws SQLException;
-
-    /**
-     * Updates the configured salt value for the configured user. This happens during a
-     * user-initiated password change or reset, and also during an administrator-initiated
-     * password reset.
-     *
-     * @param commonName - The commonName associated with the user (also known as GUID)
-     * @param saltValue - The salt value generated for the provided user
-     * @param saltType - The provided salt type - logon or reset
-     * @return <code>true</code> if successful, <code>false</code> otherwise
-     * @throws SQLException if an exception occurs during insertion process
-     */
-    boolean updateUserSalt(final String commonName, final String saltValue, final String saltType) throws SQLException;
+    boolean addOrUpdateSalt(final String commonName, final String saltValue, final String saltType) throws SQLException;
 
     /**
      * Removes the salt value for the provided user. This only happens during account

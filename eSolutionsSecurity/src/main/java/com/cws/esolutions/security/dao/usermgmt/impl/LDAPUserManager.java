@@ -35,7 +35,6 @@ import java.util.Properties;
 import java.io.FileInputStream;
 import java.net.ConnectException;
 import java.io.FileNotFoundException;
-
 import com.unboundid.ldap.sdk.Filter;
 import com.unboundid.ldap.sdk.Attribute;
 import com.unboundid.ldap.sdk.ResultCode;
@@ -52,7 +51,7 @@ import com.unboundid.ldap.sdk.LDAPConnection;
 import com.unboundid.ldap.sdk.ModificationType;
 import com.unboundid.ldap.sdk.SearchResultEntry;
 import com.unboundid.ldap.sdk.LDAPConnectionPool;
-import com.cws.esolutions.security.SecurityServiceConstants;
+
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
@@ -63,6 +62,10 @@ public class LDAPUserManager implements UserManager
 {
     private Properties connProps = null;
 
+    private static final String BASE_DN = "repositoryBaseDN";
+    private static final String BASE_OBJECT = "baseObjectClass";
+    private static final String USER_BASE = "repositoryUserBase";
+    private static final String ROLE_BASE = "repositoryRoleBase";
     private static final String CNAME = LDAPUserManager.class.getName();
 
     public LDAPUserManager() throws UserManagementException
@@ -145,7 +148,7 @@ public class LDAPUserManager implements UserManager
                 throw new ConnectException("Failed to create LDAP connection using the specified information");
             }
 
-            searchFilter = Filter.create("(&(objectClass=" + authData.getObjectClass() + ")" +
+            searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + ")" +
                     "(&(" + authData.getCommonName() + "=" + userGuid + ")))");
 
             if (DEBUG)
@@ -154,7 +157,7 @@ public class LDAPUserManager implements UserManager
             }
 
             searchRequest = new SearchRequest(
-                    this.connProps.getProperty(SecurityServiceConstants.BASE_DN),
+                    this.connProps.getProperty(this.connProps.getProperty(LDAPUserManager.BASE_DN)),
                     SearchScope.SUB,
                     searchFilter,
                     authData.getCommonName());
@@ -174,7 +177,7 @@ public class LDAPUserManager implements UserManager
             if ((searchResult.getResultCode() == ResultCode.SUCCESS) && (searchResult.getEntryCount() == 0))
             {
                 // we should have a valid uuid now
-                searchFilter = Filter.create("(&(objectClass=" + authData.getObjectClass() + ")" +
+                searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + ")" +
                         "(&(" + authData.getUserId() + "=" + userId + ")))");
 
                 if (DEBUG)
@@ -183,7 +186,7 @@ public class LDAPUserManager implements UserManager
                 }
 
                 searchRequest = new SearchRequest(
-                        this.connProps.getProperty(SecurityServiceConstants.BASE_DN),
+                        this.connProps.getProperty(this.connProps.getProperty(LDAPUserManager.BASE_DN)),
                         SearchScope.SUB,
                         searchFilter,
                         authData.getUserId());
@@ -249,7 +252,7 @@ public class LDAPUserManager implements UserManager
         {
             final StringBuilder userDN = new StringBuilder()
                 .append(authData.getUserId() + "=" + createRequest.get(0) + ",")
-                .append(this.connProps.getProperty(SecurityServiceConstants.USER_BASE));
+                .append(this.connProps.getProperty(LDAPUserManager.USER_BASE));
 
             if (DEBUG)
             {
@@ -282,7 +285,7 @@ public class LDAPUserManager implements UserManager
 
             // have a connection, create the user
             List<Attribute> newAttributes = new ArrayList<>();
-            newAttributes.add(new Attribute("objectClass", authData.getObjectClass()));
+            newAttributes.add(new Attribute("objectClass", this.connProps.getProperty(LDAPUserManager.BASE_OBJECT)));
             newAttributes.add(new Attribute(authData.getUserId(), createRequest.get(0)));
             newAttributes.add(new Attribute(authData.getUserPassword(), createRequest.get(1)));
             newAttributes.add(new Attribute(authData.getSurname(), createRequest.get(3)));
@@ -315,7 +318,7 @@ public class LDAPUserManager implements UserManager
 
                 StringBuilder roleDN = new StringBuilder()
                     .append("cn=" + role)
-                    .append(this.connProps.getProperty(SecurityServiceConstants.ROLE_BASE));
+                    .append(this.connProps.getProperty(LDAPUserManager.ROLE_BASE));
 
                 if (DEBUG)
                 {
@@ -424,7 +427,7 @@ public class LDAPUserManager implements UserManager
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
                 .append(authData.getUserId() + "=" + userId + ",")
-                .append(this.connProps.getProperty(SecurityServiceConstants.USER_BASE)).toString(), modifyList));
+                .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
 
             if (DEBUG)
             {
@@ -517,7 +520,7 @@ public class LDAPUserManager implements UserManager
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
                 .append(authData.getUserId() + "=" + userId + ",")
-                .append(this.connProps.getProperty(SecurityServiceConstants.USER_BASE)).toString(), modifyList));
+                .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
 
             if (DEBUG)
             {
@@ -605,7 +608,7 @@ public class LDAPUserManager implements UserManager
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
                 .append(authData.getUserId() + "=" + userId + ",")
-                .append(this.connProps.getProperty(SecurityServiceConstants.USER_BASE)).toString(), modifyList));
+                .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
 
             if (DEBUG)
             {
@@ -694,7 +697,7 @@ public class LDAPUserManager implements UserManager
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
                 .append(authData.getUserId() + "=" + userId + ",")
-                .append(this.connProps.getProperty(SecurityServiceConstants.USER_BASE)).toString(), modifyList));
+                .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
 
             if (DEBUG)
             {
@@ -786,7 +789,7 @@ public class LDAPUserManager implements UserManager
 
                 ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
                     .append(authData.getUserId() + "=" + userId + ",")
-                    .append(this.connProps.getProperty(SecurityServiceConstants.USER_BASE)).toString(), modifyList));
+                    .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
             }
             catch (LDAPException lx)
             {
@@ -797,7 +800,7 @@ public class LDAPUserManager implements UserManager
 
                 ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
                     .append(authData.getUserId() + "=" + userId + ",")
-                    .append(this.connProps.getProperty(SecurityServiceConstants.USER_BASE)).toString(), modifyList));
+                    .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
             }
 
             if (DEBUG)
@@ -881,7 +884,7 @@ public class LDAPUserManager implements UserManager
 
             DeleteRequest deleteRequest = new DeleteRequest(new StringBuilder()
                 .append(authData.getUserId() + "=" + userId + ",")
-                .append(this.connProps.getProperty(SecurityServiceConstants.USER_BASE)).toString());
+                .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString());
 
             if (DEBUG)
             {
@@ -974,32 +977,32 @@ public class LDAPUserManager implements UserManager
                 switch (searchType)
                 {
                     case USERNAME:
-                        searchFilter = Filter.create("(&(objectClass=" + authData.getObjectClass() + ")" +
+                        searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + ")" +
                                 "(&(" + authData.getUserId() + "=" + searchData + ")))");
 
                         break;
                     case EMAILADDR:
-                        searchFilter = Filter.create("(&(objectClass=" + authData.getObjectClass() + ")" +
+                        searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + ")" +
                                 "(&(" + authData.getEmailAddr() + "=" + searchData + ")))");
 
                         break;
                     case GUID:
-                        searchFilter = Filter.create("(&(objectClass=" + authData.getObjectClass() + ")" +
+                        searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + ")" +
                                 "(&(" + authData.getCommonName() + "=" + searchData + ")))");
 
                         break;
                     case GIVENNAME:
-                        searchFilter = Filter.create("(&(objectClass=" + authData.getObjectClass() + ")" +
+                        searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + ")" +
                                 "(&(" + authData.getGivenName() + "=" + searchData + ")))");
 
                         break;
                     case SURNAME:
-                        searchFilter = Filter.create("(&(objectClass=" + authData.getObjectClass() + ")" +
+                        searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + ")" +
                                 "(&(" + authData.getSurname() + "=" + searchData + ")))");
 
                         break;
                     case DISPLAYNAME:
-                        searchFilter = Filter.create("(&(objectClass=" + authData.getObjectClass() + ")" +
+                        searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + ")" +
                                 "(&(" + authData.getDisplayName() + "=" + searchData + ")))");
 
                         break;
@@ -1018,7 +1021,7 @@ public class LDAPUserManager implements UserManager
             }
 
             SearchRequest searchReq = new SearchRequest(
-                this.connProps.getProperty(SecurityServiceConstants.USER_BASE),
+                this.connProps.getProperty(LDAPUserManager.USER_BASE),
                 SearchScope.SUB,
                 searchFilter,
                 authData.getCommonName(),
@@ -1129,7 +1132,7 @@ public class LDAPUserManager implements UserManager
                 throw new ConnectException("Failed to create LDAP connection using the specified information");
             }
 
-            Filter searchFilter = Filter.create("(&(objectClass=" + authData.getObjectClass() + ")" +
+            Filter searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + ")" +
                     "(&(" + authData.getCommonName() + "=" + userGuid + ")))");
 
             if (DEBUG)
@@ -1138,7 +1141,7 @@ public class LDAPUserManager implements UserManager
             }
 
             SearchRequest searchRequest = new SearchRequest(
-                    this.connProps.getProperty(SecurityServiceConstants.USER_BASE),
+                    this.connProps.getProperty(LDAPUserManager.USER_BASE),
                     SearchScope.SUB,
                     searchFilter,
                     authData.getCommonName(),
@@ -1204,7 +1207,7 @@ public class LDAPUserManager implements UserManager
                     }
 
                     SearchRequest roleSearch = new SearchRequest(
-                        this.connProps.getProperty(SecurityServiceConstants.ROLE_BASE),
+                        this.connProps.getProperty(LDAPUserManager.ROLE_BASE),
                         SearchScope.SUB,
                         roleFilter,
                         "cn");
@@ -1319,18 +1322,10 @@ public class LDAPUserManager implements UserManager
                 throw new ConnectException("Failed to create LDAP connection using the specified information");
             }
 
-            Filter searchFilter = Filter.create("(&(objectClass=" + authData.getObjectClass() + ")" +
-                    "(&(objectClass=" + authData.getObjectClass() + ")))");
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("searchFilter: {}", searchFilter);
-            }
-
             SearchRequest searchReq = new SearchRequest(
-                this.connProps.getProperty(SecurityServiceConstants.USER_BASE),
+                this.connProps.getProperty(LDAPUserManager.USER_BASE),
                 SearchScope.SUB,
-                searchFilter,
+                Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + "))"),
                 authData.getCommonName(),
                 authData.getUserId(),
                 authData.getDisplayName());
@@ -1449,7 +1444,7 @@ public class LDAPUserManager implements UserManager
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
                 .append(authData.getUserId() + "=" + userId + ",")
-                .append(this.connProps.getProperty(SecurityServiceConstants.USER_BASE)).toString(), modifyList));
+                .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
 
             if (DEBUG)
             {
@@ -1538,7 +1533,7 @@ public class LDAPUserManager implements UserManager
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
                 .append(authData.getUserId() + "=" + userId + ",")
-                .append(this.connProps.getProperty(SecurityServiceConstants.USER_BASE)).toString(), modifyList));
+                .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
 
             if (DEBUG)
             {
@@ -1596,7 +1591,7 @@ public class LDAPUserManager implements UserManager
 
         final StringBuilder userDN = new StringBuilder()
             .append(authData.getUserId() + "=" + userId + ",")
-            .append(this.connProps.getProperty(SecurityServiceConstants.USER_BASE));
+            .append(this.connProps.getProperty(LDAPUserManager.USER_BASE));
 
         try
         {
@@ -1633,7 +1628,7 @@ public class LDAPUserManager implements UserManager
 
                 StringBuilder roleDN = new StringBuilder()
                     .append("cn=" + (String) group)
-                    .append(this.connProps.getProperty(SecurityServiceConstants.ROLE_BASE));
+                    .append(this.connProps.getProperty(LDAPUserManager.ROLE_BASE));
 
                 if (DEBUG)
                 {
@@ -1733,7 +1728,7 @@ public class LDAPUserManager implements UserManager
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
                 .append(authData.getUserId() + "=" + userId + ",")
-                .append(this.connProps.getProperty(SecurityServiceConstants.USER_BASE)).toString(), modifyList));
+                .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
 
             if (DEBUG)
             {
@@ -1821,7 +1816,7 @@ public class LDAPUserManager implements UserManager
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
                 .append(authData.getUserId() + "=" + userId + ",")
-                .append(this.connProps.getProperty(SecurityServiceConstants.USER_BASE)).toString(), modifyList));
+                .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
 
             if (DEBUG)
             {
@@ -1916,7 +1911,7 @@ public class LDAPUserManager implements UserManager
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
                 .append(authData.getUserId() + "=" + userId + ",")
-                .append(this.connProps.getProperty(SecurityServiceConstants.USER_BASE)).toString(), modifyList));
+                .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
 
             if (DEBUG)
             {

@@ -40,12 +40,12 @@ import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInforma
 public class UserSecurityInformationDAOImpl implements IUserSecurityInformationDAO
 {
     /**
-     * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#addUserSalt(java.lang.String, java.lang.String, java.lang.String)
+     * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#addOrUpdateSalt(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public synchronized boolean addUserSalt(final String commonName, final String saltValue, final String saltType) throws SQLException
+    public synchronized boolean addOrUpdateSalt(final String commonName, final String saltValue, final String saltType) throws SQLException
     {
-        final String methodName = IUserSecurityInformationDAO.CNAME + "#addUserSalt(final String commonName, final String saltValue, final String saltType) throws SQLException";
+        final String methodName = IUserSecurityInformationDAO.CNAME + "#addOrUpdateSalt(final String commonName, final String saltValue, final String saltType) throws SQLException";
 
         if (DEBUG)
         {
@@ -69,69 +69,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL addUserSalt(?, ?, ?)}");
-            stmt.setString(1, commonName);
-            stmt.setString(2, saltValue);
-            stmt.setString(3, saltType);
-
-            if (!(stmt.execute()))
-            {
-                isComplete = true;
-            }
-        }
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new SQLException(sqx.getMessage(), sqx);
-        }
-        finally
-        {
-            if (stmt != null)
-            {
-                stmt.close();
-            }
-
-            if ((sqlConn != null) && (!(sqlConn.isClosed())))
-            {
-                sqlConn.close();
-            }
-        }
-
-        return isComplete;
-    }
-
-    /**
-     * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#updateUserSalt(java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
-    public synchronized boolean updateUserSalt(final String commonName, final String saltValue, final String saltType) throws SQLException
-    {
-        final String methodName = IUserSecurityInformationDAO.CNAME + "#updateUserSalt(final String commonName, final String saltValue, final String saltType) throws SQLException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("commonName: {}", commonName);
-            DEBUGGER.debug("saltType: {}", saltType);
-        }
-
-        Connection sqlConn = null;
-        boolean isComplete = false;
-        CallableStatement stmt = null;
-
-        try
-        {
-            sqlConn = dataSource.getConnection();
-
-            if (sqlConn.isClosed())
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-
-            sqlConn.setAutoCommit(true);
-
-            stmt = sqlConn.prepareCall("{ CALL updateUserSalt(?, ?, ?) }");
+            stmt = sqlConn.prepareCall("{CALL addOrUpdateSalt(?, ?, ?)}");
             stmt.setString(1, commonName);
             stmt.setString(2, saltValue);
             stmt.setString(3, saltType);

@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cws.esolutions.web.Constants;
+import com.cws.esolutions.web.validators.EmailAddressValidator;
 import com.cws.esolutions.web.validators.EmailMessageValidator;
 /*
  * Project: eSolutions_java_source
@@ -33,6 +34,7 @@ public class ApplicationServiceBean implements Serializable
     @Autowired private String homeRedirect = null;
     @Autowired private String logonRedirect = null;
     @Autowired private String applicationId = null;
+    @Autowired private String expiredRedirect = null;
     @Autowired private String applicationName = null;
     @Autowired private String unavailablePage = null;
     @Autowired private String unauthorizedPage = null;
@@ -50,6 +52,7 @@ public class ApplicationServiceBean implements Serializable
     @Autowired private String messageUserNotLoggedIn = null;
     @Autowired private String messageValidationFailed = null;
     @Autowired private String messageEmailSentSuccess = null;
+    @Autowired private EmailAddressValidator emailValidator = null;
     @Autowired private EmailMessageValidator messageValidator = null;
     @Autowired private String messageRequestProcessingFailure = null;
 
@@ -398,6 +401,32 @@ public class ApplicationServiceBean implements Serializable
         this.themeMessageSource = value;
     }
 
+    public final void setExpiredRedirect(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setExpiredRedirect(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.expiredRedirect = value;
+    }
+
+    public final void setEmailValidator(final EmailAddressValidator value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getEmailValidator(final EmailAddressValidator value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.emailValidator = value;
+    }
+
     public final String getFileEncoding()
     {
         final String methodName = ApplicationServiceBean.CNAME + "#getFileEncoding()";
@@ -734,6 +763,32 @@ public class ApplicationServiceBean implements Serializable
         }
 
         return this.contactAdminsRedirect;
+    }
+
+    public final EmailAddressValidator getEmailValidator()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getEmailValidator()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.emailValidator);
+        }
+
+        return this.emailValidator;
+    }
+
+    public final String getExpiredRedirect()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getExpiredRedirect()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.expiredRedirect);
+        }
+
+        return this.expiredRedirect;
     }
 
     @Override

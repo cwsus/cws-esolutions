@@ -15,7 +15,7 @@
  */
 package com.cws.esolutions.android.ui;
 /*
- * NewProject
+ * eSolutions
  * com.cws.esolutions.core.ui
  * LoginActivity.java
  *
@@ -44,13 +44,10 @@ import java.security.NoSuchAlgorithmException;
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.android.tasks.UserAuthenticationTask;
-import com.cws.esolutions.security.dao.userauth.enums.LoginType;
 import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
 
 public class LoginActivity extends Activity
 {
-    private LoginType loginType = null;
-
     private static final String CNAME = LoginActivity.class.getName();
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -95,14 +92,12 @@ public class LoginActivity extends Activity
                 if (userAccount != null)
                 {
                     // user already went through and submitted uid
-                    this.loginType = LoginType.PASSWORD;
                     tvRequestName.setText(R.string.tvPassword);
                     etRequestValue.setHint(R.string.hintPassword);
                     etRequestValue.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("LoginType: {}", this.loginType);
                         DEBUGGER.debug("TextView: {}", tvRequestName);
                         DEBUGGER.debug("EditText: {}", etRequestValue);
                         DEBUGGER.debug("TextView: {}", tvResponseValue);
@@ -112,14 +107,12 @@ public class LoginActivity extends Activity
                 {
                     super.getIntent().getExtras().remove(Constants.USER_DATA);
 
-                    this.loginType = LoginType.USERNAME;
                     tvRequestName.setText(R.string.tvUsername);
                     etRequestValue.setHint(R.string.hintUsername);
                     etRequestValue.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("LoginType: {}", this.loginType);
                         DEBUGGER.debug("TextView: {}", tvRequestName);
                         DEBUGGER.debug("EditText: {}", etRequestValue);
                         DEBUGGER.debug("TextView: {}", tvResponseValue);
@@ -129,14 +122,12 @@ public class LoginActivity extends Activity
         }
         else
         {
-            this.loginType = LoginType.USERNAME;
             tvRequestName.setText(R.string.tvUsername);
             etRequestValue.setHint(R.string.hintUsername);
             etRequestValue.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("LoginType: {}", this.loginType);
                 DEBUGGER.debug("TextView: {}", tvRequestName);
                 DEBUGGER.debug("EditText: {}", etRequestValue);
                 DEBUGGER.debug("TextView: {}", tvResponseValue);
@@ -184,83 +175,23 @@ public class LoginActivity extends Activity
             // no data provided
             // route through the request type
             // to display the right message
-            switch (this.loginType)
-            {
-                case USERNAME:
-                    tvResponseValue.setTextColor(Color.RED);
-                    tvResponseValue.setText(R.string.txtUsernameRequired);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("TextView: {}", tvResponseValue);
-                    }
-
-                    break;
-                case PASSWORD:
-                    tvResponseValue.setTextColor(Color.RED);
-                    tvResponseValue.setText(R.string.txtPasswordRequired);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("TextView: {}", tvResponseValue);
-                    }
-
-                    break;
-                case COMBINED:
-                    break;
-                case OTP:
-                    break;
-                case SECCONFIG:
-                    break;
-                default:
-                    break;
-            }
+            tvResponseValue.setTextColor(Color.RED);
+            tvResponseValue.setText(R.string.txtUsernameRequired);
+            tvResponseValue.setTextColor(Color.RED);
+            tvResponseValue.setText(R.string.txtPasswordRequired);
         }
         else
         {
-            UserAccount userAccount = null;
-
             final List<Object> authRequest = new ArrayList<Object>(
-                    Arrays.asList(
-                            AuthenticationType.LOGIN,
-                            this.loginType));
+                    Arrays.asList(AuthenticationType.LOGIN,
+                            etRequestValue.getText().toString(),
+                            etRequestValue.getText().toString()));
             final UserAuthenticationTask userLogin = new UserAuthenticationTask(LoginActivity.this, MainActivity.class);
 
             if (DEBUG)
             {
                 DEBUGGER.debug("List<Object>: {}", authRequest);
                 DEBUGGER.debug("UserAuthenticationTask: {}", userLogin);
-            }
-
-            switch (loginType)
-            {
-                case USERNAME:
-                    authRequest.add(3, etRequestValue.getText().toString());
-
-                    break;
-                case PASSWORD:
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("UserAccount: {}", userAccount);
-                    }
-
-                    authRequest.add(3, getIntent().getSerializableExtra("userData"));
-                    authRequest.add(4, etRequestValue.getText().toString());
-
-                    break;
-                default:
-                    tvResponseValue.setTextColor(Color.RED);
-                    tvResponseValue.setText(R.string.txtSignonError);
-
-                    return;
-            }
-
-            if (DEBUG)
-            {
-                for (Object obj: authRequest)
-                {
-                    DEBUGGER.debug("Object: {}", obj);
-                }
             }
 
             // send the logon

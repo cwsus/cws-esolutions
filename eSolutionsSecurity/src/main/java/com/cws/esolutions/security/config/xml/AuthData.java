@@ -59,7 +59,6 @@ public final class AuthData implements Serializable
     private String givenName = null;
     private String expiryDate = null;
     private String commonName = null;
-    private String objectClass = null;
     private String olrSetupReq = null;
     private String isSuspended = null;
     private String displayName = null;
@@ -77,19 +76,6 @@ public final class AuthData implements Serializable
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
-
-    public final void setObjectClass(final String value)
-    {
-        final String methodName = AuthData.CNAME + "#setObjectClass(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-        
-        this.objectClass = value;
-    }
 
     public final void setUserId(final String value)
     {
@@ -375,20 +361,6 @@ public final class AuthData implements Serializable
         }
 
         this.telephoneNumber = value;
-    }
-
-    @XmlElement(name = "objectClass")
-    public final String getObjectClass()
-    {
-        final String methodName = AuthData.CNAME + "#getObjectClass()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.objectClass);
-        }
-        
-        return this.objectClass;
     }
 
     @XmlElement(name = "userId")

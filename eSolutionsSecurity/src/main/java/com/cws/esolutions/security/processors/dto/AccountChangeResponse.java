@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import java.io.Serializable;
 import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
+import java.io.ByteArrayOutputStream;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityServiceConstants;
@@ -44,9 +45,9 @@ import com.cws.esolutions.security.enums.SecurityRequestStatus;
  */
 public class AccountChangeResponse implements Serializable
 {
-    private String qrUrl = null;
     private UserAccount userAccount = null;
     private List<String> questionList = null;
+    private ByteArrayOutputStream qrCode = null;
     private SecurityRequestStatus requestStatus = null;
 
     private static final long serialVersionUID = 430337834863065121L;
@@ -95,9 +96,9 @@ public class AccountChangeResponse implements Serializable
         this.questionList = value;
     }
 
-    public final void setQrUrl(final String value)
+    public final void setQrCode(final ByteArrayOutputStream value)
     {
-        final String methodName = AccountChangeResponse.CNAME + "#setQrUrl(final String value)";
+        final String methodName = AccountChangeResponse.CNAME + "#setQrCode(final ByteArrayOutputStream value)";
 
         if (DEBUG)
         {
@@ -105,7 +106,7 @@ public class AccountChangeResponse implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.qrUrl = value;
+        this.qrCode = value;
     }
 
     public final SecurityRequestStatus getRequestStatus()
@@ -147,17 +148,17 @@ public class AccountChangeResponse implements Serializable
         return this.questionList;
     }
 
-    public final String getQrUrl()
+    public final ByteArrayOutputStream getQrCode()
     {
-        final String methodName = AccountChangeResponse.CNAME + "#getQrUrl()";
+        final String methodName = AccountChangeResponse.CNAME + "#getQrCode()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.qrUrl);
+            DEBUGGER.debug("Value: {}", this.qrCode);
         }
 
-        return this.qrUrl;
+        return this.qrCode;
     }
 
     @Override

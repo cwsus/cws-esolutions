@@ -29,7 +29,6 @@ import org.junit.Test;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Assert;
-import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.utils.PasswordUtils;
@@ -56,17 +55,7 @@ public class PasswordUtilsTest
     }
 
     @Test
-    public void testCreateHash()
-    {
-        final String salt = RandomStringUtils.randomAlphanumeric(bean.getConfigData().getSecurityConfig().getSaltLength());
-        final String pass = "Ariana21*";
-
-        System.out.println(salt);
-        System.out.println(PasswordUtils.encryptText(pass, salt, bean.getConfigData().getSecurityConfig().getAuthAlgorithm(), bean.getConfigData().getSecurityConfig().getIterations()));
-    }
-
-    @Test
-    public void testOneWayHash()
+    public void encryptText()
     {
         Assert.assertEquals("xdwcvNbTtdBkcxvtn3g5BTHz1naNiq3tZAn255ai1hZtRUPiA0TyoLPs3fP6lC9YcvyNcreuFqEuse10nnyHAg==",
                 PasswordUtils.encryptText("TestPasswordValue", "zHnDJVgtiJy3FNFDfSe9ZK1KW97zd1oDmA8awAoW7QnDR6i2wd9AfV2NmXOOVYJO",
@@ -81,10 +70,18 @@ public class PasswordUtilsTest
     }
 
     @Test
-    public void testDecryptText()
+    public void decryptText()
     {
-        Assert.assertEquals("=CiDTYN%Ay-3AfW#9NtSl%/xm8s+7mXv", PasswordUtils.decryptText("OXjrFNJCkWg6KIgv3XioKDyas9bhkyGnsB3Se55nJ1a+em8CdViU/ZuTw4LYS08wMHi+V1i7rsvlrAkeCH58VNXAYCjIXErmm2wXK0EzSYm152/Cg/bKcW27pM48Oovgp2r7lv+HaHrRrR/w/FaGSA==",
-                "Hjq7slET1m8haapqkZqKAnLvT9DxhJPc9hfGlfpjzNZ8pSSbcSgX8Ji7G1L6Q9rw".length()));
+        Assert.assertEquals("TestTwoWayHash", PasswordUtils.decryptText("bXUNMHkQsn0XYqKYQIqb5/rBcjqgP+iI9oaRqsFwZg6ksO6VXygs7Z1Dw08BaaecTteff8Knx8gnR+l6YoE41l2jLG4ZkFL4y4M6/pqP7fU=",
+                "PWQKRN8J60s9gg7Qg3eM6o19ggPsLiIDfjCXohJ9qgfMMILnDmPl79ipeZ56TEJI".length()));
+    }
+
+    @Test
+    public void validateOtpValue()
+    {
+        Assert.assertEquals("number", PasswordUtils.validateOtpValue(bean.getConfigData().getSecurityConfig().getOtpVariance(),
+                bean.getConfigData().getSecurityConfig().getOtpAlgorithm(),
+                "the secret", 0));
     }
 
     @After

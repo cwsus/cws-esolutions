@@ -70,7 +70,7 @@ public class UserSecurityInformationDAOImplTest
     {
         try
         {
-            Assert.assertTrue(dao.addUserSalt(UserSecurityInformationDAOImplTest.GUID, logonSalt, SaltType.LOGON.name()));
+            Assert.assertTrue(dao.addOrUpdateSalt(UserSecurityInformationDAOImplTest.GUID, logonSalt, SaltType.LOGON.name()));
         }
         catch (SQLException sqx)
         {
@@ -83,7 +83,7 @@ public class UserSecurityInformationDAOImplTest
     {
         try
         {
-            Assert.assertTrue(dao.addUserSalt(UserSecurityInformationDAOImplTest.GUID, resetSalt, SaltType.RESET.name()));
+            Assert.assertTrue(dao.addOrUpdateSalt(UserSecurityInformationDAOImplTest.GUID, resetSalt, SaltType.RESET.name()));
         }
         catch (SQLException sqx)
         {
@@ -98,7 +98,7 @@ public class UserSecurityInformationDAOImplTest
 
         try
         {
-            Assert.assertTrue(dao.updateUserSalt(UserSecurityInformationDAOImplTest.GUID, salt, SaltType.LOGON.name()));
+            Assert.assertTrue(dao.addOrUpdateSalt(UserSecurityInformationDAOImplTest.GUID, salt, SaltType.LOGON.name()));
         }
         catch (SQLException sqx)
         {
@@ -113,7 +113,7 @@ public class UserSecurityInformationDAOImplTest
 
         try
         {
-            Assert.assertTrue(dao.updateUserSalt(UserSecurityInformationDAOImplTest.GUID, salt, SaltType.RESET.name()));
+            Assert.assertTrue(dao.addOrUpdateSalt(UserSecurityInformationDAOImplTest.GUID, salt, SaltType.RESET.name()));
         }
         catch (SQLException sqx)
         {

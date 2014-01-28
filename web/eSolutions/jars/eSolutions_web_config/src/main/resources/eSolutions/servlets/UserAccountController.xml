@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <bean id="contactValidator" class="com.cws.esolutions.web.validators.TelephoneValidator">
+        <property name="messageNumberInvalid" value="error.tel.number.invalid" />
+        <property name="messagePasswordRequired" value="user.account.current.password.empty" />
+    </bean>
+
+    <bean id="passwordValidator" class="com.cws.esolutions.web.validators.PasswordValidator">
+        <property name="secConfig">
+            <ref bean="secConfig" />
+        </property>
+        <property name="messagePasswordFailedValidation" value="error.password.requirement.failure" />
+        <property name="messagePasswordMatch" value="user.account.current.matches.new" />
+        <property name="messageConfirmPasswordRequired" value="user.account.confirm.password.empty" />
+        <property name="messageNewPasswordRequired" value="user.account.new.password.empty" />
+        <property name="messageCurrentPasswordRequired" value="user.account.current.password.empty" />
+    </bean>
+
+    <bean id="securityResponseValidator" class="com.cws.esolutions.web.validators.SecurityResponseValidator">
+        <property name="messageSecurityQuestionRequired" value="security.question.required" />
+        <property name="messageSecurityAnswerRequired" value="security.answer.required" />
+        <property name="messageCurrentPasswordEmpty" value="user.account.current.password.empty" />
+        <property name="messageSecurityQuestionsMatch" value="security.questions.cannot.match" />
+        <property name="messageSecurityAnswersMatch" value="security.answers.cannot.match" />
+        <property name="messageQuestionsAnswersMatch" value="security.questions.match.answers" />
+    </bean>
+
+    <bean id="userAccountController" class="com.cws.esolutions.web.controllers.UserAccountController">
+        <property name="passwordValidator">
+            <ref bean="passwordValidator" />
+        </property>
+        <property name="securityValidator">
+            <ref bean="securityResponseValidator" />
+        </property>
+        <property name="telValidator">
+            <ref bean="contactValidator" />
+        </property>
+        <property name="appConfig">
+            <ref bean="appConfig" />
+        </property>
+        <property name="myAccountPage" value="UserAccount_ShowUser" />
+        <property name="changeEmailPage" value="UserAccount_ChangeEmail" />
+        <property name="changeSecurityPage" value="UserAccount_ChangeSecurity" />
+        <property name="changePasswordPage" value="UserAccount_ChangePassword" />
+        <property name="changeContactPage" value="UserAccount_ChangeContact" />
+        <property name="messageEmailChangeSuccess" value="user.account.email.change.success" />
+        <property name="messagePasswordChangeSuccess" value="user.account.password.change.success" />
+        <property name="messageSecurityChangeSuccess" value="user.account.update.security.success" />
+        <property name="messageKeyGenerationSuccess" value="user.account.update.keys.success" />
+        <property name="messageContactChangeSuccess" value="user.account.update.contact.success" />
+    </bean>
+</beans>

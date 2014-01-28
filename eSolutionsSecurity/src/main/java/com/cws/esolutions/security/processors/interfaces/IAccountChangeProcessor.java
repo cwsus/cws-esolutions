@@ -62,6 +62,7 @@ public interface IAccountChangeProcessor
 {
     static final String CNAME = IAccountChangeProcessor.class.getName();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
+    static final String KEY_URI_FORMAT = "otpauth://totp/%s?secret=%s&issuer=%s&algorithm=%s";
 
     static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final KeyConfig keyConfig = secBean.getConfigData().getKeyConfig();

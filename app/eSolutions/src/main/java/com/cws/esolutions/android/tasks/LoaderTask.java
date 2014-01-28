@@ -37,10 +37,6 @@ import android.os.AsyncTask;
 import android.app.Activity;
 import java.sql.SQLException;
 import org.slf4j.LoggerFactory;
-import android.net.NetworkInfo;
-import android.content.Context;
-import android.content.res.Resources;
-import android.net.ConnectivityManager;
 import android.content.res.AssetManager;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.dbcp.BasicDataSource;
@@ -282,18 +278,6 @@ public class LoaderTask extends AsyncTask<Void, Void, Boolean>
 		}
 
         return isLoaded;
-    }
-
-    @Override
-    protected void onPostExecute(final boolean value)
-    {
-        final String methodName = LoaderTask.CNAME + "#onPostExecute(final boolean value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
     }
 }
 

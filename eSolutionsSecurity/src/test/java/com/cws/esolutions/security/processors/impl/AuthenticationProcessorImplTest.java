@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Assert;
+import org.hamcrest.CoreMatchers;
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
@@ -68,34 +69,7 @@ public class AuthenticationProcessorImplTest
     }
 
     @Test
-    public void testUsernameAuthentication()
-    {
-        UserAccount account = new UserAccount();
-        account.setUsername("khuntly");
-        hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
-
-        AuthenticationRequest request = new AuthenticationRequest();
-        request.setApplicationName("eSolutions");
-        request.setAuthType(AuthenticationType.LOGIN);
-        request.setUserAccount(account);
-        request.setApplicationId("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
-        request.setApplicationName("esolutions");
-        request.setHostInfo(hostInfo);
-
-        try
-        {
-            AuthenticationResponse response = agentAuth.processAgentLogon(request);
-
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
-        }
-        catch (AuthenticationException ax)
-        {
-            Assert.fail(ax.getMessage());
-        }
-    }
-
-    @Test
-    public void testPasswordAuthentication()
+    public void processAgentLogon()
     {
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
@@ -115,24 +89,30 @@ public class AuthenticationProcessorImplTest
         {
             AuthenticationResponse response = agentAuth.processAgentLogon(request);
 
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+            Assert.assertThat(response.getRequestStatus(),
+                CoreMatchers.anyOf(
+                    CoreMatchers.equalTo(SecurityRequestStatus.SUCCESS),
+                    CoreMatchers.equalTo(SecurityRequestStatus.CONTINUE)));
         }
         catch (AuthenticationException ax)
         {
-            ax.printStackTrace();
             Assert.fail(ax.getMessage());
         }
     }
 
     @Test
-    public void testCombinedAuthentication()
+    public void processOtpLogon()
     {
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
+        account.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
+
         hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
         AuthenticationData userSecurity = new AuthenticationData();
         userSecurity.setPassword("Ariana21*");
+        userSecurity.setSecret("RHmJrNj6KISffPbnksYZDuKr9pookp0oxThyHa0rqkrID+tX8PTVcTl6D/MoA0FCp2r7lv+HaHrRrR/w/FaGSA==");
+        userSecurity.setOtpValue(790269);
 
         AuthenticationRequest request = new AuthenticationRequest();
         request.setApplicationName("esolutions");
@@ -143,7 +123,7 @@ public class AuthenticationProcessorImplTest
 
         try
         {
-            AuthenticationResponse response = agentAuth.processAgentLogon(request);
+            AuthenticationResponse response = agentAuth.processOtpLogon(request);
 
             Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
         }
@@ -154,7 +134,7 @@ public class AuthenticationProcessorImplTest
     }
 
     @Test
-    public void testFailedResponse()
+    public void processAgentLogonAsFailed()
     {
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
@@ -183,7 +163,7 @@ public class AuthenticationProcessorImplTest
     }
 
     @Test
-    public void testObtainUserSecurityConfig()
+    public void obtainUserSecurityConfig()
     {
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
@@ -211,7 +191,7 @@ public class AuthenticationProcessorImplTest
     }
 
     @Test
-    public void testVerifyUserSecurityConfig()
+    public void verifyUserSecurityConfig()
     {
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");

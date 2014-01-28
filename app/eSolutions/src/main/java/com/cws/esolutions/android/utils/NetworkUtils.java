@@ -25,7 +25,6 @@ package com.cws.esolutions.android.utils;
  *     Created.
  */
 import org.slf4j.Logger;
-import android.os.AsyncTask;
 import java.net.InetAddress;
 import org.slf4j.LoggerFactory;
 import android.net.NetworkInfo;

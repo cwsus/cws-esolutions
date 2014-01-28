@@ -29,11 +29,12 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.ArrayList;
-import java.net.URLEncoder;
+import net.glxn.qrgen.QRCode;
 import java.sql.SQLException;
 import java.security.SecureRandom;
+import java.io.ByteArrayOutputStream;
+import net.glxn.qrgen.image.ImageType;
 import org.apache.commons.lang.StringUtils;
-import java.io.UnsupportedEncodingException;
 import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.lang.RandomStringUtils;
 
@@ -415,7 +416,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                     {
                         // good, move forward
                         // put the new salt in the database
-                        boolean isComplete = userSec.updateUserSalt(userAccount.getGuid(), newUserSalt, SaltType.LOGON.name());
+                        boolean isComplete = userSec.addOrUpdateSalt(userAccount.getGuid(), newUserSalt, SaltType.LOGON.name());
 
                         if (DEBUG)
                         {
@@ -656,7 +657,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                             if (isComplete)
                             {
                                 // now update the salt
-                                isComplete = userSec.updateUserSalt(userAccount.getGuid(), newUserSalt, SaltType.RESET.name());
+                                isComplete = userSec.addOrUpdateSalt(userAccount.getGuid(), newUserSalt, SaltType.RESET.name());
 
                                 if (isComplete)
                                 {
@@ -670,7 +671,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                     // intervention
                                     boolean backoutData = userManager.changeUserSecurity(userAccount.getUsername(), currentSec);
                                     
-                                    boolean backoutSalt = userSec.updateUserSalt(userAccount.getGuid(), existingSalt, SaltType.RESET.name());
+                                    boolean backoutSalt = userSec.addOrUpdateSalt(userAccount.getGuid(), existingSalt, SaltType.RESET.name());
 
                                     if (!(backoutData) && (!(backoutSalt)))
                                     {
@@ -942,12 +943,11 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                 // ok, thats out of the way. lets keep moving.
                 // encrypt the secret
-                String encrypted = PasswordUtils.encryptText(secret, otpSalt,
-                    secConfig.getAuthAlgorithm(), secConfig.getIterations());
+                String encrypted = PasswordUtils.encryptText(secret, otpSalt);
 
                 if (StringUtils.isNotEmpty(encrypted))
                 {
-                    boolean isSaltInserted = userSec.addUserSalt(userAccount.getGuid(), otpSalt, SaltType.OTP.name());
+                    boolean isSaltInserted = userSec.addOrUpdateSalt(userAccount.getGuid(), otpSalt, SaltType.OTP.name());
 
                     if (DEBUG)
                     {
@@ -975,16 +975,25 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                         return response;
                     }
 
-                    StringBuilder urlBuilder = new StringBuilder()
-                        .append("https://chart.googleapis.com/chart?chs=200x200&chld=M%7C0&cht=qr&chl=")
-                        .append(URLEncoder.encode(String.format("otpauth://totp/%s@%s&secret=%s", userAccount.getUsername(), request.getApplicationName(), secret), "UTF-8"));
+                    String qrCodeData = String.format(IAccountChangeProcessor.KEY_URI_FORMAT,
+                            userAccount.getUsername(),
+                            secret,
+                            request.getApplicationName(),
+                            secConfig.getOtpAlgorithm());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("StringBuilder: {}", urlBuilder.toString());
+                        DEBUGGER.debug("qrCodeData: {}", qrCodeData);
                     }
 
-                    response.setQrUrl(urlBuilder.toString());
+                    ByteArrayOutputStream qrCode = QRCode.from(qrCodeData.trim()).to(ImageType.PNG).stream();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("ByteArrayOutputStream: {}", qrCode);
+                    }
+
+                    response.setQrCode(qrCode);
                     response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                 }
                 else
@@ -998,12 +1007,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
-        }
-        catch (UnsupportedEncodingException uex)
-        {
-            ERROR_RECORDER.error(uex.getMessage(), uex);
-
-            throw new AccountChangeException(uex.getMessage(), uex);
         }
         catch (SQLException sqx)
         {

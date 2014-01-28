@@ -36,7 +36,6 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.android.tasks.LoaderTask;
 
 public class HomeActivity extends Activity
 {

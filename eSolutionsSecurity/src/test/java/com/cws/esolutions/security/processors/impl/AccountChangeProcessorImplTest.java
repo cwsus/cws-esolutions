@@ -25,6 +25,11 @@ package com.cws.esolutions.security.processors.impl;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.junit.After;
 import org.junit.Before;
@@ -44,31 +49,31 @@ import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor
 
 public final class AccountChangeProcessorImplTest
 {
-     private static UserAccount userAccount = new UserAccount();
-     private static RequestHostInfo hostInfo = new RequestHostInfo();
-     private static final IAccountChangeProcessor processor = new AccountChangeProcessorImpl();
+    private static UserAccount userAccount = new UserAccount();
+    private static RequestHostInfo hostInfo = new RequestHostInfo();
+    private static final IAccountChangeProcessor processor = new AccountChangeProcessorImpl();
 
-     @Before
-     public void setUp()
-     {
-         try
-         {
-             hostInfo.setHostAddress("junit");
-             hostInfo.setHostName("junit");
+    @Before
+    public void setUp()
+    {
+        try
+        {
+            hostInfo.setHostAddress("junit");
+            hostInfo.setHostName("junit");
 
-             userAccount.setStatus(LoginStatus.SUCCESS);
-             userAccount.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
-             userAccount.setUsername("khuntly");
+            userAccount.setStatus(LoginStatus.SUCCESS);
+            userAccount.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
+            userAccount.setUsername("khuntly");
 
-             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml");
-         }
-         catch (Exception ex)
-         {
-             Assert.fail(ex.getMessage());
+            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml");
+        }
+        catch (Exception ex)
+        {
+            Assert.fail(ex.getMessage());
 
-             System.exit(-1);
-         }
-     }
+            System.exit(-1);
+        }
+    }
 
     @Test
     public void changeUserEmail()
@@ -183,7 +188,7 @@ public final class AccountChangeProcessorImplTest
 
         try
         {
-            AccountChangeResponse response = processor.enableOtpAuth(request);
+            AccountChangeResponse response = processor.changeUserSecurity(request);
 
             Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
         }
@@ -196,8 +201,39 @@ public final class AccountChangeProcessorImplTest
     @Test
     public void enableOtpAuth()
     {
-        
+        AuthenticationData userSecurity = new AuthenticationData();
+        userSecurity.setPassword("Ariana21*");
+
+        AccountChangeRequest request = new AccountChangeRequest();
+        request.setHostInfo(hostInfo);
+        request.setUserAccount(userAccount);
+        request.setUserSecurity(userSecurity);
+        request.setApplicationName("eSolutions");
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+        request.setRequestor(userAccount);
+
+        try
+        {
+            AccountChangeResponse response = processor.enableOtpAuth(request);
+
+            try
+            {
+                IOUtils.write(response.getQrCode().toByteArray(), new FileOutputStream(new File("C:/Temp/qrcode.png")));
+            }
+            catch (IOException e)
+            {
+                // Do Logging
+            }
+
+            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+        }
+        catch (AccountChangeException acx)
+        {
+            acx.printStackTrace();
+            Assert.fail(acx.getMessage());
+        }
     }
+
     @After
     public void tearDown()
     {

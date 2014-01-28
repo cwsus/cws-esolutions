@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <security-config>
+        <otpVariance>3</otpVariance>
         <email-address>secadm@caspersbox.com</email-address>
         <maxAttempts>3</maxAttempts> <!-- maximum number of failed authentication attempts -->
         <iterations>65535</iterations> <!-- number of times to hash over the password -->
@@ -24,7 +25,6 @@
     <!-- the authentication repository. the objects below -->
     <!-- are the *minimum* required to populate the user object -->
     <auth-data>
-        <objectClass>cwsperson</objectClass> <!-- need this -->
         <userId>uid</userId> <!-- need this -->
         <userPassword>userPassword</userPassword> <!-- this is ONLY used during authentication. it is NOT kept in memory -->
         <userRole>cwsrole</userRole> <!-- we need this (although we dont need it for an ldap repo -->
@@ -46,6 +46,7 @@
         <publicKey>cwspublickey</publicKey> <!-- only used during file signature operations. not used any other time and not stored during auth -->
         <pagerNumber>pager</pagerNumber> <!-- need this -->
         <telephoneNumber>telephoneNumber</telephoneNumber> <!-- need this -->
+        <secret>cwssecretkey</secret>
     </auth-data>
 
     <!-- only required if file-based signing is used. the keys arent used for anything else. -->

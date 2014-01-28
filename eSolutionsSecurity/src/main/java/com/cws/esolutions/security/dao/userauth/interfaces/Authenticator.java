@@ -70,6 +70,8 @@ public interface Authenticator
 
     List<String> obtainSecurityData(final String userId, final String userGuid) throws AuthenticatorException;
 
+    String obtainOtpSecret(final String userId, final String userGuid) throws AuthenticatorException;
+
     /**
      * Processes authentication for the selected security question and user. If successful,
      * a true response is returned back to the frontend signalling that further

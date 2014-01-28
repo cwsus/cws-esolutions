@@ -35,6 +35,10 @@
         <property name="messageFromRequired" value="theme.from.required" />
     </bean>
 
+    <bean id="addressValidator" class="com.cws.esolutions.web.validators.EmailAddressValidator">
+        <property name="messageEmailAddressRequired" value="email.source.addr.required" />
+    </bean>
+
     <bean id="secConfig" class="com.cws.esolutions.security.config.xml.SecurityConfigurationData" />
     <bean id="coreConfig" class="com.cws.esolutions.core.config.xml.CoreConfigurationData" />
 
@@ -42,6 +46,9 @@
     <bean id="appConfig" class="com.cws.esolutions.web.ApplicationServiceBean">
         <property name="messageValidator">
             <ref bean="messageValidator" />
+        </property>
+        <property name="emailValidator">
+            <ref bean="addressValidator" />
         </property>
         <property name="fileEncoding" value="UTF-8" />
         <property name="applicationName" value="eSolutions" /> <!-- application name -->
@@ -55,6 +62,7 @@
                 <entry key="dnsAdmin" value="true" />
                 <entry key="sysMgmt" value="true" />
                 <entry key="svcMgmt" value="true" />
+                <entry key="userAdmin" value="true" />
             </map>
         </property>
         <property name="homePage" value="HomePage" />
@@ -67,6 +75,7 @@
         <property name="logonRedirect" value="redirect:/ui/login/default" />
         <property name="homeRedirect" value="redirect:/ui/common/default" />
         <property name="contactAdminsRedirect" value="redirect:/ui/common/contact" />
+        <property name="expiredRedirect" value="redirect:/ui/user-account/password" />
         <property name="themeMessageSource" value="nls.theme.resources" />
         <property name="messageEmailSendFailed" value="theme.system.message.email.send.failed" />
         <property name="messageRequestCanceled" value="theme.system.message.request.canceled" />
@@ -89,6 +98,9 @@
                 <value>classpath:nls/ServiceManagementServlet/ServiceManagementServlet</value>
                 <value>classpath:nls/SystemCheckServlet/SystemCheckServlet</value>
                 <value>classpath:nls/SystemManagementServlet/SystemManagementServlet</value>
+                <value>classpath:nls/OnlineResetServlet/OnlineResetServlet</value>
+                <value>classpath:nls/UserAccountServlet/UserAccountServlet</value>
+                <value>classpath:nls/UserManagementServlet/UserManagementServlet</value>
                 <value>classpath:nls/theme/resources</value>
             </list>
         </property>

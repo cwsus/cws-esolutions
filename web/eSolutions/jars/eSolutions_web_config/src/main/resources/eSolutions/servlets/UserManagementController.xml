@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <import resource="classpath:eSolutions/mailTemplates/UserManagement.xml" />
+
+    <bean id="accountValidator" class="com.cws.esolutions.web.validators.UserAccountValidator">
+        <property name="messageUsernameRequired" value="user.mgmt.user.name.required" />
+        <property name="messageEmailAddrRequired" value="user.mgmt.user.email.required" />
+        <property name="messageGivenNameRequired" value="user.mgmt.user.givenname.required" />
+        <property name="messageUserSurnameRequired" value="user.mgmt.user.surname.required" />
+        <property name="messageSuspensionFlagRequired" value="user.mgmt.user.suspension.required" />
+        <property name="messageUserRoleRequired" value="user.mgmt.user.role.required" />
+    </bean>
+
+    <bean id="userManagementController" class="com.cws.esolutions.web.controllers.UserManagementController">
+        <property name="appConfig">
+            <ref bean="appConfig" />
+        </property>
+        <property name="secConfig">
+            <ref bean="secConfig" />
+        </property>
+        <property name="coreConfig">
+            <ref bean="coreConfig" />
+        </property>
+        <property name="validator">
+            <ref bean="accountValidator" />
+        </property>
+        <property name="serviceId" value="AEB46994-57B4-4E92-90AA-A4046F60B830" />
+        <property name="serviceName" value="userAdmin" />
+        <property name="recordsPerPage" value="20" />
+        <property name="accountCreatedEmail" ref="accountCreatedEmail" />
+        <property name="forgotPasswordEmail" ref="forgotPasswordEmail" />
+        <property name="resetURL" value="/ui/olr/forgot-password/" />
+        <property name="viewUserPage" value="UserManagement_ViewUser" />
+        <property name="viewAuditPage" value="UserManagement_UserAudit" />
+        <property name="createUserPage" value="UserManagement_CreateUser" />
+        <property name="searchUsersPage" value="UserManagement_UserSearch" />
+        <property name="messageAddUserSuccess" value="user.mgmt.add.user.success" />
+        <property name="messageAddUserFailed" value="user.mgmt.add.user.failed" />
+        <property name="messageRoleChangeSuccess" value="user.mgmt.role.change.success" />
+        <property name="messageAccountResetSuccess" value="user.mgmt.reset.user.success" />
+        <property name="messageAccountLockSuccess" value="user.mgmt.account.lock.success" />
+        <property name="messageAccountUnlockSuccess" value="user.mgmt.account.unlock.success" />
+        <property name="messageAccountUnsuspendSuccess" value="user.mgmt.account.unsuspend.success" />
+        <property name="messageAccountSuspendSuccess" value="user.mgmt.account.suspend.success" />
+    </bean>
+</beans>

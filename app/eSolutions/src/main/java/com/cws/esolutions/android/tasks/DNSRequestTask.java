@@ -33,9 +33,6 @@ import android.app.Activity;
 import android.graphics.Color;
 import org.slf4j.LoggerFactory;
 import android.widget.TextView;
-import android.net.NetworkInfo;
-import android.content.Context;
-import android.net.ConnectivityManager;
 
 import com.cws.esolutions.android.ui.R;
 import com.cws.esolutions.android.Constants;

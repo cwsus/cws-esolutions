@@ -49,6 +49,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 @XmlAccessorType(XmlAccessType.NONE)
 public final class SecurityConfig implements Serializable
 {
+    private int otpVariance = 0;
     private int saltLength = 32; // default to 64
     private int maxAttempts = 3; // default of 3
     private int resetTimeout = 30; // default of 30 minutes
@@ -296,6 +297,19 @@ public final class SecurityConfig implements Serializable
         this.authConfig = value;
     }
 
+    public final void setOtpVariance(final int value)
+    {
+        final String methodName = SecurityConfig.CNAME + "#setOtpVariance(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.otpVariance = value;
+    }
+
     @XmlElement(name = "maxAttempts")
     public final int getMaxAttempts()
     {
@@ -518,6 +532,20 @@ public final class SecurityConfig implements Serializable
         }
         
         return this.authConfig;
+    }
+
+    @XmlElement(name = "otpVariance")
+    public final int getOtpVariance()
+    {
+        final String methodName = SecurityConfig.CNAME + "#getOtpVariance()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.otpVariance);
+        }
+        
+        return this.otpVariance;
     }
 
     @Override
