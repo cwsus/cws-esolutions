@@ -87,7 +87,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
         try
         {
-            List<Object[]> userInfo = userManager.searchUsers(SearchRequestType.USERNAME, authUser.getUsername());
+            List<Object[]> userInfo = userManager.searchUsers(IAuthenticationProcessor.ATTRIBUTE_UID, authUser.getUsername());
 
             if (DEBUG)
             {
@@ -241,7 +241,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 {
                     // failed authentication, update counter
                     // find out if this is a valid user...
-                    List<Object[]> userList = userManager.searchUsers(SearchRequestType.USERNAME, authUser.getUsername());
+                    List<Object[]> userList = userManager.searchUsers(IAuthenticationProcessor.ATTRIBUTE_UID, authUser.getUsername());
 
                     // only do the work if the userlist is equal to 1.
                     // if there were 150 users found then we dont want
@@ -381,7 +381,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 return response;
             }
 
-            List<Object> userData = userManager.loadUserAccount(authUser.getGuid());
+            List<Object> userData = userManager.loadUserAccount(authUser.getGuid(), authData.getEntries());
 
             userAccount = new UserAccount();
             userAccount.setGuid((String) userData.get(0));
@@ -537,7 +537,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
         try
         {
-            List<Object[]> userInfo = userManager.searchUsers(SearchRequestType.USERNAME, userAccount.getUsername());
+            List<Object[]> userInfo = userManager.searchUsers(IAuthenticationProcessor.ATTRIBUTE_UID, userAccount.getUsername());
 
             if (DEBUG)
             {
