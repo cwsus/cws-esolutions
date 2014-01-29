@@ -31,7 +31,6 @@ import java.util.Calendar;
 import java.util.ArrayList;
 import net.glxn.qrgen.QRCode;
 import java.sql.SQLException;
-import java.security.SecureRandom;
 import java.io.ByteArrayOutputStream;
 import net.glxn.qrgen.image.ImageType;
 import org.apache.commons.lang.StringUtils;
@@ -115,10 +114,11 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 // best flow control, but it does exactly what we need where we need it.
                 authenticator.performLogon(userAccount.getUsername(),
                         PasswordUtils.encryptText(
-                                reqSecurity.getPassword(),
-                                userSalt,
-                                secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
-                                secBean.getConfigData().getSecurityConfig().getIterations()));
+                            reqSecurity.getPassword(),
+                            userSalt,
+                            secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
+                            secBean.getConfigData().getSecurityConfig().getIterations()),
+                        authData.getEntries());
 
                 boolean isComplete = userManager.modifyUserEmail(userAccount.getUsername(), userAccount.getEmailAddr());
 
@@ -245,10 +245,11 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 // best flow control, but it does exactly what we need where we need it.
                 authenticator.performLogon(userAccount.getUsername(),
                         PasswordUtils.encryptText(
-                                reqSecurity.getPassword(),
-                                userSalt,
-                                secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
-                                secBean.getConfigData().getSecurityConfig().getIterations()));
+                            reqSecurity.getPassword(),
+                            userSalt,
+                            secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
+                            secBean.getConfigData().getSecurityConfig().getIterations()),
+                        authData.getEntries());
 
                 boolean isComplete = userManager.modifyUserContact(userAccount.getUsername(),
                         new ArrayList<>(
@@ -402,7 +403,12 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                         // fails we'll get an exception and not process further. this might not be the
                         // best flow control, but it does exactly what we need where we need it.
                         authenticator.performLogon(userAccount.getUsername(),
-                                PasswordUtils.encryptText(reqSecurity.getPassword(), userSalt, secConfig.getAuthAlgorithm(), secConfig.getIterations()));
+                                PasswordUtils.encryptText(
+                                    reqSecurity.getPassword(),
+                                    userSalt,
+                                    secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
+                                    secBean.getConfigData().getSecurityConfig().getIterations()),
+                                authData.getEntries());
                     }
                 }
 
@@ -620,8 +626,12 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                     // fails we'll get an exception and not process further. this might not be the
                     // best flow control, but it does exactly what we need where we need it.
                     authenticator.performLogon(userAccount.getUsername(),
-                            PasswordUtils.encryptText(reqSecurity.getPassword(), userSalt,
-                                    secConfig.getAuthAlgorithm(), secConfig.getIterations()));
+                            PasswordUtils.encryptText(
+                                reqSecurity.getPassword(),
+                                userSalt,
+                                secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
+                                secBean.getConfigData().getSecurityConfig().getIterations()),
+                            authData.getEntries());
 
                     // ok, thats out of the way. lets keep moving.
                     String newUserSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
@@ -895,7 +905,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
         AccountChangeResponse response = new AccountChangeResponse();
 
-        final SecureRandom secureRandom = new SecureRandom();
         final UserAccount requestor = request.getRequestor();
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount userAccount = request.getUserAccount();
@@ -903,7 +912,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
         if (DEBUG)
         {
-            DEBUGGER.debug("SecureRandom: {}", secureRandom);
             DEBUGGER.debug("UserAccount: {}", userAccount);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", userAccount);
@@ -927,12 +935,14 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 // fails we'll get an exception and not process further. this might not be the
                 // best flow control, but it does exactly what we need where we need it.
                 authenticator.performLogon(userAccount.getUsername(),
-                    PasswordUtils.encryptText(reqSecurity.getPassword(), userSalt,
-                        secConfig.getAuthAlgorithm(), secConfig.getIterations()));
+                        PasswordUtils.encryptText(
+                            reqSecurity.getPassword(),
+                            userSalt,
+                            secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
+                            secBean.getConfigData().getSecurityConfig().getIterations()),
+                        authData.getEntries());
 
-                byte[] buffer = new byte[10];
-                secureRandom.nextBytes(buffer);
-                String secret = new String(new Base32().encode(buffer));
+                String secret = new String(new Base32().encode(RandomStringUtils.randomAlphanumeric(10).getBytes()));
 
                 if (DEBUG)
                 {
@@ -941,7 +951,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                 String otpSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
 
-                if (StringUtils.isNotEmpty(encrypted))
+                if (StringUtils.isNotEmpty(otpSalt))
                 {
                     boolean isSaltInserted = userSec.addOrUpdateSalt(userAccount.getGuid(), otpSalt, SaltType.OTP.name());
 
@@ -998,6 +1008,157 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 {
                     response.setRequestStatus(SecurityRequestStatus.FAILURE);
                 }
+            }
+            else
+            {
+                ERROR_RECORDER.error("Unable to obtain configured user salt. Cannot continue");
+
+                response.setRequestStatus(SecurityRequestStatus.FAILURE);
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new AccountChangeException(sqx.getMessage(), sqx);
+        }
+        catch (AuthenticatorException ax)
+        {
+            ERROR_RECORDER.error(ax.getMessage(), ax);
+
+            throw new AccountChangeException(ax.getMessage(), ax);
+        }
+        catch (SecurityException sx)
+        {
+            ERROR_RECORDER.error(sx.getMessage(), sx);
+
+            throw new SecurityException(sx.getMessage(), sx);
+        }
+        catch (UserManagementException umx)
+        {
+            ERROR_RECORDER.error(umx.getMessage(), umx);
+
+            throw new SecurityException(umx.getMessage(), umx);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.CHANGEKEYS);
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
+        }
+
+        return response;
+    }
+
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#disableOtpAuth(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
+     */
+    @Override
+    public AccountChangeResponse disableOtpAuth(final AccountChangeRequest request) throws AccountChangeException
+    {
+        final String methodName = IAccountChangeProcessor.CNAME + "#disableOtpAuth(final AccountChangeRequest request) throws AccountChangeException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("AccountChangeRequest: {}", request);
+        }
+
+        AccountChangeResponse response = new AccountChangeResponse();
+
+        final UserAccount requestor = request.getRequestor();
+        final RequestHostInfo reqInfo = request.getHostInfo();
+        final UserAccount userAccount = request.getUserAccount();
+        final AuthenticationData reqSecurity = request.getUserSecurity();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+        }
+
+        if (!(StringUtils.equals(userAccount.getGuid(), requestor.getGuid())))
+        {
+            // requesting user is not the same as the user being reset. authorize
+            response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+
+            return response;
+        }
+
+        try
+        {
+            String userSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.LOGON.name());
+
+            if (StringUtils.isNotEmpty(userSalt))
+            {
+                // we aren't getting the data back here because we don't need it. if the request
+                // fails we'll get an exception and not process further. this might not be the
+                // best flow control, but it does exactly what we need where we need it.
+                authenticator.performLogon(userAccount.getUsername(),
+                        PasswordUtils.encryptText(
+                            reqSecurity.getPassword(),
+                            userSalt,
+                            secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
+                            secBean.getConfigData().getSecurityConfig().getIterations()),
+                        authData.getEntries());
+
+                // delete entries here
+                boolean isSecretRemoved = userManager.removeOtpSecret(userAccount.getGuid());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("isSecretRemoved: {}", isSecretRemoved);
+                }
+
+                if (!(isSecretRemoved))
+                {
+                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
+
+                    return response;
+                }
+
+                boolean isSaltRemoved = userSec.removeUserData(userAccount.getGuid(), SaltType.OTP.name());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("isSaltRemoved: {}", isSaltRemoved);
+                }
+
+                if (!(isSaltRemoved))
+                {
+                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
+
+                    return response;
+                }
+
+                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
             }
             else
             {

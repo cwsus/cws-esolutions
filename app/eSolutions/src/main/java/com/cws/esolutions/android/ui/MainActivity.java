@@ -58,7 +58,7 @@ public class MainActivity extends Activity
 
         super.onCreate(bundle);
         super.setTitle(R.string.mainTitle);
-        super.setContentView(R.layout.activity_main);
+        super.setContentView(R.layout.main);
 
         final LoaderTask loader = new LoaderTask(this);
         loader.execute();

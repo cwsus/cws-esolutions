@@ -25,7 +25,9 @@ package com.cws.esolutions.security.dao.usermgmt.interfaces;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import java.util.Map;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +35,6 @@ import com.cws.esolutions.security.config.xml.AuthData;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
-import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -78,7 +79,7 @@ public interface UserManager
      * @return boolean - <code>true</code> if user creation was successful, <code>false</code> otherwise
      * @throws UserManagementException if an error occurs during processing
      */
-    boolean addUserAccount(final List<String> createRequest, final List<String> roles) throws UserManagementException;
+    boolean addUserAccount(final Map<String, String> userAccount, final List<String> roles) throws UserManagementException;
 
     /**
      * 
@@ -89,7 +90,7 @@ public interface UserManager
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
-    boolean modifyUserEmail(final String userId, final String value) throws UserManagementException;
+    boolean modifyUserEmail(final String userId, final String value, final String attributeName) throws UserManagementException;
 
     /**
      * 
@@ -100,7 +101,7 @@ public interface UserManager
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
-    boolean modifyUserContact(final String userId, final List<String> value) throws UserManagementException;
+    boolean modifyUserContact(final String userId, final String value, final String attribute) throws UserManagementException;
 
     /**
      * Suspends or unsuspends a provided user account. This could be utilized
@@ -112,7 +113,7 @@ public interface UserManager
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException if an error occurs during processing
      */
-    boolean modifyUserSuspension(final String userId, final boolean isSuspended) throws UserManagementException;
+    boolean modifyUserSuspension(final String userId, final boolean isSuspended, final String attributeName) throws UserManagementException;
 
     /**
      * 
@@ -123,7 +124,7 @@ public interface UserManager
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
-    boolean modifyUserRole(final String userId, final Object[] role) throws UserManagementException;
+    boolean modifyUserRole(final String userId, final Object[] value) throws UserManagementException;
 
     /**
      * 
@@ -133,7 +134,7 @@ public interface UserManager
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
-    boolean lockOnlineReset(final String userId) throws UserManagementException;
+    boolean lockOnlineReset(final String userId, final String attributeName) throws UserManagementException;
 
     /**
      * 
@@ -143,7 +144,7 @@ public interface UserManager
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
-    boolean clearLockCount(final String userId) throws UserManagementException;
+    boolean clearLockCount(final String userId, final String attributeName) throws UserManagementException;
 
     /**
      * Locks a provided user account by either incrementing the existing lock count
@@ -152,7 +153,7 @@ public interface UserManager
      * @param userId - The username to perform the modification against
      * @throws UserManagementException if an error occurs during processing
      */
-    void lockUserAccount(final String userId) throws UserManagementException;
+    void lockUserAccount(final String userId, final String attributeName) throws UserManagementException;
 
     /**
      * Unlocks a provided user account by setting the lock count to 0.
@@ -161,7 +162,7 @@ public interface UserManager
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException if an error occurs during processing
      */
-    boolean unlockUserAccount(final String userId) throws UserManagementException;
+    boolean unlockUserAccount(final String userId, final String attributeName) throws UserManagementException;
 
     /**
      * Removes a provided user account from the authentication datastore. This
@@ -184,7 +185,7 @@ public interface UserManager
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
-    boolean changeUserPassword(final String userId, final String newPass) throws UserManagementException;
+    boolean changeUserPassword(final String userId, final String newPass, final String attributeName) throws UserManagementException;
 
     /**
      * 
@@ -195,7 +196,7 @@ public interface UserManager
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
-    boolean changeUserSecurity(final String userId, final List<String> values) throws UserManagementException;
+    boolean changeUserSecurity(final String userId, final Map<String, String> values) throws UserManagementException;
 
     /**
      * 
@@ -207,7 +208,9 @@ public interface UserManager
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
-    boolean addOtpSecret(final String userId, final String secret) throws UserManagementException;
+    boolean addOtpSecret(final String userId, final String secret, final String attributeName) throws UserManagementException;
+
+    boolean removeOtpSecret(final String userId, final String attributeName) throws UserManagementException;
 
     /**
      * Searches for user accounts given provided search data.
@@ -233,7 +236,7 @@ public interface UserManager
      * @throws UserManagementException if an error occurs during processing or if an invalid
      * <code>SearchRequestType</code> value is provided.
      */
-    List<Object[]> searchUsers(final SearchRequestType searchType, final String searchData) throws UserManagementException;
+    List<String[]> searchUsers(final String attribute, final String searchData) throws UserManagementException;
 
     /**
      * Loads and returns data for a provided user account. Search is performed using the user's
@@ -245,7 +248,7 @@ public interface UserManager
      * @return List<Object> - The associated user account data
      * @throws UserManagementException if an error occurs during the search process
      */
-    List<Object> loadUserAccount(final String userGuid) throws UserManagementException;
+    List<Object> loadUserAccount(final String userGuid, final List<String> attributes) throws UserManagementException;
 
     /**
      * Returns a list of ALL user accounts stored in the authentication datastore. This is

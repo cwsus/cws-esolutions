@@ -25,7 +25,7 @@ package com.cws.esolutions.security.dao.usermgmt.impl;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.Date;
+import java.util.Map;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -35,6 +35,7 @@ import java.util.Properties;
 import java.io.FileInputStream;
 import java.net.ConnectException;
 import java.io.FileNotFoundException;
+
 import com.unboundid.ldap.sdk.Filter;
 import com.unboundid.ldap.sdk.Attribute;
 import com.unboundid.ldap.sdk.ResultCode;
@@ -51,9 +52,7 @@ import com.unboundid.ldap.sdk.LDAPConnection;
 import com.unboundid.ldap.sdk.ModificationType;
 import com.unboundid.ldap.sdk.SearchResultEntry;
 import com.unboundid.ldap.sdk.LDAPConnectionPool;
-
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
-import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 /**
  * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager
@@ -149,7 +148,7 @@ public class LDAPUserManager implements UserManager
             }
 
             searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + ")" +
-                    "(&(" + authData.getCommonName() + "=" + userGuid + ")))");
+                    "(&(cn=" + userGuid + ")))");
 
             if (DEBUG)
             {
@@ -160,7 +159,7 @@ public class LDAPUserManager implements UserManager
                     this.connProps.getProperty(this.connProps.getProperty(LDAPUserManager.BASE_DN)),
                     SearchScope.SUB,
                     searchFilter,
-                    authData.getCommonName());
+                    "cn");
 
             if (DEBUG)
             {
@@ -178,7 +177,7 @@ public class LDAPUserManager implements UserManager
             {
                 // we should have a valid uuid now
                 searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + ")" +
-                        "(&(" + authData.getUserId() + "=" + userId + ")))");
+                        "(&(" + "uid" + "=" + userId + ")))");
 
                 if (DEBUG)
                 {
@@ -189,7 +188,7 @@ public class LDAPUserManager implements UserManager
                         this.connProps.getProperty(this.connProps.getProperty(LDAPUserManager.BASE_DN)),
                         SearchScope.SUB,
                         searchFilter,
-                        authData.getUserId());
+                        "uid");
 
                 if (DEBUG)
                 {
@@ -230,17 +229,18 @@ public class LDAPUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#addUserAccount(java.util.List, java.util.List)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#addUserAccount(java.util.Map, java.util.List)
      */
     @Override
-    public synchronized boolean addUserAccount(final List<String> createRequest, final List<String> roles) throws UserManagementException
+    public synchronized boolean addUserAccount(final Map<String, String> userAccount, final List<String> roles) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#addUserAccount(final List<String> createRequest, final List<String> roles) throws UserManagementException";
+        final String methodName = LDAPUserManager.CNAME + "#addUserAccount(final Map<String, String> userAccount, final List<String> roles) throws UserManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("CreateRequest: {}", createRequest);
+            DEBUGGER.debug("Value: {}", userAccount);
+            DEBUGGER.debug("Value: {}", roles);
         }
 
         LDAPResult ldapResult = null;
@@ -251,7 +251,7 @@ public class LDAPUserManager implements UserManager
         try
         {
             final StringBuilder userDN = new StringBuilder()
-                .append(authData.getUserId() + "=" + createRequest.get(0) + ",")
+                .append("uid" + "=" + userAccount.get(0) + ",")
                 .append(this.connProps.getProperty(LDAPUserManager.USER_BASE));
 
             if (DEBUG)
@@ -286,13 +286,17 @@ public class LDAPUserManager implements UserManager
             // have a connection, create the user
             List<Attribute> newAttributes = new ArrayList<>();
             newAttributes.add(new Attribute("objectClass", this.connProps.getProperty(LDAPUserManager.BASE_OBJECT)));
-            newAttributes.add(new Attribute(authData.getUserId(), createRequest.get(0)));
-            newAttributes.add(new Attribute(authData.getUserPassword(), createRequest.get(1)));
-            newAttributes.add(new Attribute(authData.getSurname(), createRequest.get(3)));
-            newAttributes.add(new Attribute(authData.getGivenName(), createRequest.get(4)));
-            newAttributes.add(new Attribute(authData.getEmailAddr(), createRequest.get(5)));
-            newAttributes.add(new Attribute(authData.getCommonName(), createRequest.get(6)));
-            newAttributes.add(new Attribute(authData.getDisplayName(), createRequest.get(7)));
+
+            for (String attribute : userAccount.keySet())
+            {
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Attribute: {}", attribute);
+                    DEBUGGER.debug("Value: {}", userAccount.get(attribute));
+                }
+
+                newAttributes.add(new Attribute(attribute, userAccount.get(attribute)));
+            }
 
             AddRequest addRequest = new AddRequest(userDN.toString(), newAttributes);
 
@@ -368,18 +372,19 @@ public class LDAPUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserSuspension(java.lang.String, boolean)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserSuspension(java.lang.String, boolean, java.lang.String)
      */
     @Override
-    public synchronized boolean modifyUserSuspension(final String userId, final boolean isSuspended) throws UserManagementException
+    public synchronized boolean modifyUserSuspension(final String userId, final boolean isSuspended, final String attributeName) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#modifyUserSuspension(final String userDN, final boolean isSuspended) throws UserManagementException";
+        final String methodName = LDAPUserManager.CNAME + "#modifyUserSuspension(final String userDN, final boolean isSuspended, final String attributeName) throws UserManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", userId);
-            DEBUGGER.debug("Value: {}", isSuspended); 
+            DEBUGGER.debug("Value: {}", isSuspended);
+            DEBUGGER.debug("Value: {}", attributeName);
         }
 
         boolean isComplete = false;
@@ -416,7 +421,7 @@ public class LDAPUserManager implements UserManager
             (
                 Arrays.asList
                 (
-                    new Modification(ModificationType.REPLACE, authData.getIsSuspended(), String.valueOf(isSuspended))
+                    new Modification(ModificationType.REPLACE, attributeName, String.valueOf(isSuspended))
                 )
             );
 
@@ -426,7 +431,7 @@ public class LDAPUserManager implements UserManager
             }
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
-                .append(authData.getUserId() + "=" + userId + ",")
+                .append("uid" + "=" + userId + ",")
                 .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
 
             if (DEBUG)
@@ -463,10 +468,10 @@ public class LDAPUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#unlockUserAccount(java.lang.String)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#unlockUserAccount(java.lang.String, java.lang.String)
      */
     @Override
-    public synchronized void lockUserAccount(final String userId) throws UserManagementException
+    public synchronized void lockUserAccount(final String userId, final String attributeName) throws UserManagementException
     {
         final String methodName = LDAPUserManager.CNAME + "#lockUserAccount(final String userId) throws UserManagementException";
 
@@ -474,6 +479,7 @@ public class LDAPUserManager implements UserManager
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", userId);
+            DEBUGGER.debug("Value: {}", attributeName);
         }
 
         LDAPConnection ldapConn = null;
@@ -509,7 +515,7 @@ public class LDAPUserManager implements UserManager
             (
                 Arrays.asList
                 (
-                    new Modification(ModificationType.REPLACE, authData.getLockCount(), "0")
+                    new Modification(ModificationType.REPLACE, attributeName, "0")
                 )
             );
 
@@ -519,7 +525,7 @@ public class LDAPUserManager implements UserManager
             }
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
-                .append(authData.getUserId() + "=" + userId + ",")
+                .append("uid" + "=" + userId + ",")
                 .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
 
             if (DEBUG)
@@ -554,10 +560,10 @@ public class LDAPUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#unlockUserAccount(java.lang.String)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#unlockUserAccount(java.lang.String, java.lang.String)
      */
     @Override
-    public synchronized boolean unlockUserAccount(final String userId) throws UserManagementException
+    public synchronized boolean unlockUserAccount(final String userId, final String attributeName) throws UserManagementException
     {
         final String methodName = LDAPUserManager.CNAME + "#modifyUserSuspension(final String userId) throws UserManagementException";
 
@@ -565,6 +571,7 @@ public class LDAPUserManager implements UserManager
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", userId);
+            DEBUGGER.debug("Value: {}", attributeName);
         }
 
         boolean isComplete = false;
@@ -599,7 +606,7 @@ public class LDAPUserManager implements UserManager
 
             List<Modification> modifyList = new ArrayList<>(
                 Arrays.asList(
-                    new Modification(ModificationType.REPLACE, authData.getLockCount(), "0")));
+                    new Modification(ModificationType.REPLACE, attributeName, "0")));
 
             if (DEBUG)
             {
@@ -607,7 +614,7 @@ public class LDAPUserManager implements UserManager
             }
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
-                .append(authData.getUserId() + "=" + userId + ",")
+                .append("uid" + "=" + userId + ",")
                 .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
 
             if (DEBUG)
@@ -644,17 +651,18 @@ public class LDAPUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#changeUserPassword(java.lang.String, java.lang.String)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#changeUserPassword(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public synchronized boolean changeUserPassword(final String userId, final String newPass) throws UserManagementException
+    public synchronized boolean changeUserPassword(final String userId, final String newPass, final String attributeName) throws UserManagementException
     {
         final String methodName = LDAPUserManager.CNAME + "#changeUserPassword(final String userId, final String newPass) throws UserManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("User GUID: {}", userId);
+            DEBUGGER.debug("Value: {}", userId);
+            DEBUGGER.debug("Value: {}", attributeName);
         }
 
         boolean isComplete = false;
@@ -692,11 +700,11 @@ public class LDAPUserManager implements UserManager
 
             List<Modification> modifyList = new ArrayList<>(
                 Arrays.asList(
-                        new Modification(ModificationType.REPLACE, authData.getUserPassword(), newPass),
-                        new Modification(ModificationType.REPLACE, authData.getExpiryDate(), String.valueOf(cal.getTime()))));
+                        new Modification(ModificationType.REPLACE, "userPassword", newPass),
+                        new Modification(ModificationType.REPLACE, attributeName, String.valueOf(cal.getTime()))));
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
-                .append(authData.getUserId() + "=" + userId + ",")
+                .append("uid" + "=" + userId + ",")
                 .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
 
             if (DEBUG)
@@ -738,7 +746,7 @@ public class LDAPUserManager implements UserManager
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#addOtpSecret(java.lang.String, java.lang.String)
      */
     @Override
-    public synchronized boolean addOtpSecret(final String userId, final String secret) throws UserManagementException
+    public synchronized boolean addOtpSecret(final String userId, final String secret, final String attributeName) throws UserManagementException
     {
         final String methodName = LDAPUserManager.CNAME + "#addOtpSecret(final String userId, final String secret) throws UserManagementException";
 
@@ -746,6 +754,7 @@ public class LDAPUserManager implements UserManager
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("User GUID: {}", userId);
+            DEBUGGER.debug("Value: {}", attributeName);
         }
 
         boolean isComplete = false;
@@ -785,10 +794,10 @@ public class LDAPUserManager implements UserManager
                 // assume add
                 List<Modification> modifyList = new ArrayList<>(
                         Arrays.asList(
-                                new Modification(ModificationType.ADD, authData.getSecret(), secret)));
+                                new Modification(ModificationType.ADD, attributeName, secret)));
 
                 ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
-                    .append(authData.getUserId() + "=" + userId + ",")
+                    .append("uid" + "=" + userId + ",")
                     .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
             }
             catch (LDAPException lx)
@@ -796,12 +805,100 @@ public class LDAPUserManager implements UserManager
                 // ok, maybe mod ?
                 List<Modification> modifyList = new ArrayList<>(
                         Arrays.asList(
-                                new Modification(ModificationType.REPLACE, authData.getSecret(), secret)));
+                                new Modification(ModificationType.REPLACE, attributeName, secret)));
 
                 ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
-                    .append(authData.getUserId() + "=" + userId + ",")
+                    .append("uid" + "=" + userId + ",")
                     .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
             }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPResult: {}", ldapResult);
+            }
+
+            isComplete = (ldapResult.getResultCode() == ResultCode.SUCCESS);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isComplete: {}", isComplete);
+            }
+        }
+        catch (LDAPException lx)
+        {
+            ERROR_RECORDER.error(lx.getMessage(), lx);
+
+            throw new UserManagementException(lx.getMessage(), lx);
+        }
+        catch (ConnectException cx)
+        {
+            ERROR_RECORDER.error(cx.getMessage(), cx);
+
+            throw new UserManagementException(cx.getMessage(), cx);
+        }
+        finally
+        {
+            if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
+            {
+                ldapPool.releaseConnection(ldapConn);
+            }
+        }
+
+        return isComplete;
+    }
+
+    /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#removeOtpSecret(java.lang.String, java.lang.String)
+     */
+    @Override
+    public synchronized boolean removeOtpSecret(final String userId, final String attributeName) throws UserManagementException
+    {
+        final String methodName = LDAPUserManager.CNAME + "#removeOtpSecret(final String userId, final String value) throws UserManagementException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("userId: {}", userId);
+            DEBUGGER.debug("Value: {}", attributeName);
+        }
+        
+        boolean isComplete = false;
+        LDAPConnection ldapConn = null;
+        LDAPConnectionPool ldapPool = null;
+
+        try
+        {
+            ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPConnectionPool: {}", ldapPool);
+            }
+
+            if (ldapPool.isClosed())
+            {
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+
+            ldapConn = ldapPool.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+            }
+
+            if (!(ldapConn.isConnected()))
+            {
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+
+            List<Modification> modifyList = new ArrayList<>(
+                    Arrays.asList(
+                            new Modification(ModificationType.DELETE, attributeName)));
+
+            LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
+                .append("uid" + "=" + userId + ",")
+                .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
 
             if (DEBUG)
             {
@@ -883,7 +980,7 @@ public class LDAPUserManager implements UserManager
             }
 
             DeleteRequest deleteRequest = new DeleteRequest(new StringBuilder()
-                .append(authData.getUserId() + "=" + userId + ",")
+                .append("uid" + "=" + userId + ",")
                 .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString());
 
             if (DEBUG)
@@ -927,21 +1024,21 @@ public class LDAPUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#searchUsers(com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType, java.lang.String)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#searchUsers(java.lang.String, java.lang.String)
      */
     @Override
-    public synchronized List<Object[]> searchUsers(final SearchRequestType searchType, final String searchData) throws UserManagementException
+    public synchronized List<String[]> searchUsers(final String attribute, final String searchData) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#searchUsers(final SearchRequestType searchType, final String searchData) throws UserManagementException";
+        final String methodName = LDAPUserManager.CNAME + "#searchUsers(final String attribute, final String searchData) throws UserManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("SearchRequestType: {}", searchType);
-            DEBUGGER.debug("Search data: {}", searchData);
+            DEBUGGER.debug("Value: {}", attribute);
+            DEBUGGER.debug("Value: {}", searchData);
         }
 
-        List<Object[]> results = null;
+        List<String[]> results = null;
         LDAPConnection ldapConn = null;
         LDAPConnectionPool ldapPool = null;
 
@@ -970,63 +1067,20 @@ public class LDAPUserManager implements UserManager
             {
                 throw new ConnectException("Failed to create LDAP connection using the specified information");
             }
-            Filter searchFilter = null;
+            Filter searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + ")" +
+                    "(&(" + attribute + "=" + searchData + ")))");
 
-            if (searchType != null)
+            if (DEBUG)
             {
-                switch (searchType)
-                {
-                    case USERNAME:
-                        searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + ")" +
-                                "(&(" + authData.getUserId() + "=" + searchData + ")))");
-
-                        break;
-                    case EMAILADDR:
-                        searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + ")" +
-                                "(&(" + authData.getEmailAddr() + "=" + searchData + ")))");
-
-                        break;
-                    case GUID:
-                        searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + ")" +
-                                "(&(" + authData.getCommonName() + "=" + searchData + ")))");
-
-                        break;
-                    case GIVENNAME:
-                        searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + ")" +
-                                "(&(" + authData.getGivenName() + "=" + searchData + ")))");
-
-                        break;
-                    case SURNAME:
-                        searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + ")" +
-                                "(&(" + authData.getSurname() + "=" + searchData + ")))");
-
-                        break;
-                    case DISPLAYNAME:
-                        searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + ")" +
-                                "(&(" + authData.getDisplayName() + "=" + searchData + ")))");
-
-                        break;
-                    default:
-                        throw new UserManagementException("No search type was provided.");
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("searchFilter: {}", searchFilter);
-                }
-            }
-            else
-            {
-                throw new UserManagementException("No valid search request type was provided. Cannot continue.");
+                DEBUGGER.debug("searchFilter: {}", searchFilter);
             }
 
             SearchRequest searchReq = new SearchRequest(
                 this.connProps.getProperty(LDAPUserManager.USER_BASE),
                 SearchScope.SUB,
                 searchFilter,
-                authData.getCommonName(),
-                authData.getUserId(),
-                authData.getLockCount());
+                "cn",
+                "uid");
 
             if (DEBUG)
             {
@@ -1042,19 +1096,18 @@ public class LDAPUserManager implements UserManager
 
             if (searchResult.getResultCode() == ResultCode.SUCCESS)
             {
-                results = new ArrayList<Object[]>();
+                results = new ArrayList<String[]>();
 
                 for (SearchResultEntry entry : searchResult.getSearchEntries())
                 {
-                    Object[] userData = new Object[] {
-                            entry.getAttributeValue(authData.getCommonName()),
-                            entry.getAttributeValue(authData.getUserId()),
-                            entry.getAttributeValueAsInteger(authData.getLockCount())
+                    String[] userData = new String[] {
+                            entry.getAttributeValue("cn"),
+                            entry.getAttributeValue("uid")
                     };
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("Data: {}", userData);
+                        DEBUGGER.debug("Data: {}", (Object) userData);
                     }
 
                     results.add(userData);
@@ -1089,17 +1142,18 @@ public class LDAPUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#loadUserAccount(java.lang.String)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#loadUserAccount(java.lang.String, java.util.List)
      */
     @Override
-    public synchronized List<Object> loadUserAccount(final String userGuid) throws UserManagementException
+    public synchronized List<Object> loadUserAccount(final String userGuid, final List<String> attributes) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#loadUserAccount(final String userGuid) throws UserManagementException";
+        final String methodName = LDAPUserManager.CNAME + "#loadUserAccount(final String userGuid, final List<String> attributes) throws UserManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("userGuid: {}", userGuid);
+            DEBUGGER.debug("Value: {}", userGuid);
+            DEBUGGER.debug("Value: {}", attributes);
         }
 
         LDAPConnection ldapConn = null;
@@ -1133,7 +1187,7 @@ public class LDAPUserManager implements UserManager
             }
 
             Filter searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + ")" +
-                    "(&(" + authData.getCommonName() + "=" + userGuid + ")))");
+                    "(&(cn=" + userGuid + ")))");
 
             if (DEBUG)
             {
@@ -1143,20 +1197,7 @@ public class LDAPUserManager implements UserManager
             SearchRequest searchRequest = new SearchRequest(
                     this.connProps.getProperty(LDAPUserManager.USER_BASE),
                     SearchScope.SUB,
-                    searchFilter,
-                    authData.getCommonName(),
-                    authData.getUserId(),
-                    authData.getGivenName(),
-                    authData.getSurname(),
-                    authData.getDisplayName(),
-                    authData.getEmailAddr(),
-                    authData.getPagerNumber(),
-                    authData.getTelephoneNumber(),
-                    authData.getLastLogin(),
-                    authData.getExpiryDate(),
-                    authData.getIsSuspended(),
-                    authData.getOlrSetupReq(),
-                    authData.getOlrLocked());
+                    searchFilter);
 
             if (DEBUG)
             {
@@ -1183,20 +1224,15 @@ public class LDAPUserManager implements UserManager
 
                     // valid user, load the information
                     userAccount = new ArrayList<>();
-                    userAccount.add(entry.getAttributeValue(authData.getCommonName()));
-                    userAccount.add(entry.getAttributeValue(authData.getUserId()));
-                    userAccount.add(entry.getAttributeValue(authData.getGivenName()));
-                    userAccount.add(entry.getAttributeValue(authData.getSurname()));
-                    userAccount.add(entry.getAttributeValue(authData.getDisplayName()));
-                    userAccount.add(entry.getAttributeValue(authData.getEmailAddr()));
-                    userAccount.add(entry.getAttributeValue(authData.getPagerNumber()));
-                    userAccount.add(entry.getAttributeValue(authData.getTelephoneNumber()));
-                    userAccount.add(entry.getAttributeValueAsInteger(authData.getLockCount()));
-                    userAccount.add(entry.getAttributeValueAsLong(authData.getLastLogin()));
-                    userAccount.add(entry.getAttributeValueAsLong(authData.getExpiryDate()));
-                    userAccount.add(entry.getAttributeValueAsBoolean(authData.getIsSuspended()));
-                    userAccount.add(entry.getAttributeValueAsBoolean(authData.getOlrSetupReq()));
-                    userAccount.add(entry.getAttributeValueAsBoolean(authData.getOlrLocked()));
+                    for (String attribute : attributes)
+                    {
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Attribute: {}", attribute);
+                        }
+
+                        userAccount.add(entry.getAttributeValue((attribute)));
+                    }
 
                     Filter roleFilter = Filter.create("(&(objectClass=groupOfUniqueNames)" +
                             "(&(uniqueMember=" + entry.getDN() + ")))");
@@ -1325,10 +1361,7 @@ public class LDAPUserManager implements UserManager
             SearchRequest searchReq = new SearchRequest(
                 this.connProps.getProperty(LDAPUserManager.USER_BASE),
                 SearchScope.SUB,
-                Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + "))"),
-                authData.getCommonName(),
-                authData.getUserId(),
-                authData.getDisplayName());
+                Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + "))"));
 
             if (DEBUG)
             {
@@ -1349,9 +1382,8 @@ public class LDAPUserManager implements UserManager
                 for (SearchResultEntry entry : searchResult.getSearchEntries())
                 {
                     String[] userData = new String[] {
-                            entry.getAttributeValue(authData.getCommonName()),
-                            entry.getAttributeValue(authData.getUserId()),
-                            entry.getAttributeValue(authData.getDisplayName()),
+                            entry.getAttributeValue("cn"),
+                            entry.getAttributeValue("uid")
                     };
 
                     if (DEBUG)
@@ -1397,7 +1429,7 @@ public class LDAPUserManager implements UserManager
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserEmail(java.lang.String, java.lang.String)
      */
     @Override
-    public boolean modifyUserEmail(final String userId, final String value) throws UserManagementException
+    public synchronized boolean modifyUserEmail(final String userId, final String value, final String attributeName) throws UserManagementException
     {
         final String methodName = LDAPUserManager.CNAME + "#modifyUserEmail(final String userId, final String value) throws UserManagementException";
 
@@ -1406,6 +1438,7 @@ public class LDAPUserManager implements UserManager
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("userId: {}", userId);
             DEBUGGER.debug("userGuid: {}", value);
+            DEBUGGER.debug("Value: {}", attributeName);
         }
         
         boolean isComplete = false;
@@ -1440,10 +1473,10 @@ public class LDAPUserManager implements UserManager
 
             List<Modification> modifyList = new ArrayList<>(
                     Arrays.asList(
-                            new Modification(ModificationType.REPLACE, authData.getEmailAddr(), value)));
+                            new Modification(ModificationType.REPLACE, attributeName, value)));
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
-                .append(authData.getUserId() + "=" + userId + ",")
+                .append("uid" + "=" + userId + ",")
                 .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
 
             if (DEBUG)
@@ -1482,18 +1515,19 @@ public class LDAPUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserContact(java.lang.String, java.util.List)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserContact(java.lang.String, java.util.String, java.lang.String)
      */
     @Override
-    public boolean modifyUserContact(final String userId, final List<String> value) throws UserManagementException
+    public synchronized boolean modifyUserContact(final String userId, final String value, final String attribute) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#modifyUserContact(final String userId, final List<String> value) throws UserManagementException";
+        final String methodName = LDAPUserManager.CNAME + "#modifyUserContact(final String userId, final String value, final String attribute) throws UserManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("userId: {}", userId);
-            DEBUGGER.debug("userGuid: {}", value);
+            DEBUGGER.debug("Value: {}", userId);
+            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("Value: {}", attribute);
         }
         
         boolean isComplete = false;
@@ -1528,11 +1562,10 @@ public class LDAPUserManager implements UserManager
 
             List<Modification> modifyList = new ArrayList<>(
                     Arrays.asList(
-                            new Modification(ModificationType.REPLACE, authData.getTelephoneNumber(), value.get(0)),
-                            new Modification(ModificationType.REPLACE, authData.getPagerNumber(), value.get(1))));
+                            new Modification(ModificationType.REPLACE, attribute, value)));
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
-                .append(authData.getUserId() + "=" + userId + ",")
+                .append("uid" + "=" + userId + ",")
                 .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
 
             if (DEBUG)
@@ -1574,7 +1607,7 @@ public class LDAPUserManager implements UserManager
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserRole(java.lang.String, java.lang.Object[])
      */
     @Override
-    public boolean modifyUserRole(final String userId, final Object[] value) throws UserManagementException
+    public synchronized boolean modifyUserRole(final String userId, final Object[] value) throws UserManagementException
     {
         final String methodName = LDAPUserManager.CNAME + "#modifyUserRole(final String userId, final Object[] value) throws UserManagementException";
 
@@ -1590,7 +1623,7 @@ public class LDAPUserManager implements UserManager
         LDAPConnectionPool ldapPool = null;
 
         final StringBuilder userDN = new StringBuilder()
-            .append(authData.getUserId() + "=" + userId + ",")
+            .append("uid" + "=" + userId + ",")
             .append(this.connProps.getProperty(LDAPUserManager.USER_BASE));
 
         try
@@ -1678,10 +1711,10 @@ public class LDAPUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#lockOnlineReset(java.lang.String)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#lockOnlineReset(java.lang.String, java.lang.String)
      */
     @Override
-    public boolean lockOnlineReset(final String userId) throws UserManagementException
+    public synchronized boolean lockOnlineReset(final String userId, final String attributeName) throws UserManagementException
     {
         final String methodName = LDAPUserManager.CNAME + "#lockOnlineReset(final String userId) throws UserManagementException";
 
@@ -1690,6 +1723,7 @@ public class LDAPUserManager implements UserManager
             
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("userId: {}", userId);
+            DEBUGGER.debug("Value: {}", attributeName);
         }
         
         boolean isComplete = false;
@@ -1724,10 +1758,10 @@ public class LDAPUserManager implements UserManager
 
             List<Modification> modifyList = new ArrayList<>(
                     Arrays.asList(
-                            new Modification(ModificationType.REPLACE, authData.getOlrLocked(), String.valueOf(true))));
+                            new Modification(ModificationType.REPLACE, attributeName, String.valueOf(true))));
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
-                .append(authData.getUserId() + "=" + userId + ",")
+                .append("uid" + "=" + userId + ",")
                 .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
 
             if (DEBUG)
@@ -1766,17 +1800,18 @@ public class LDAPUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#clearLockCount(java.lang.String)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#clearLockCount(java.lang.String, java.lang.String)
      */
     @Override
-    public boolean clearLockCount(final String userId) throws UserManagementException
+    public synchronized boolean clearLockCount(final String userId, final String attribute) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#clearLockCount(final String userId) throws UserManagementException";
+        final String methodName = LDAPUserManager.CNAME + "#clearLockCount(final String userId, final String attribute) throws UserManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("userId: {}", userId);
+            DEBUGGER.debug("Value: {}", attribute);
         }
         
         boolean isComplete = false;
@@ -1811,11 +1846,10 @@ public class LDAPUserManager implements UserManager
 
             List<Modification> modifyList = new ArrayList<>(
                     Arrays.asList(
-                            new Modification(ModificationType.REPLACE, authData.getLockCount(), "0"),
-                            new Modification(ModificationType.REPLACE, authData.getLastLogin(), String.valueOf(new Date()))));
+                            new Modification(ModificationType.REPLACE, attribute, "0")));
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
-                .append(authData.getUserId() + "=" + userId + ",")
+                .append("uid" + "=" + userId + ",")
                 .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
 
             if (DEBUG)
@@ -1857,9 +1891,9 @@ public class LDAPUserManager implements UserManager
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#changeUserSecurity(java.lang.String, java.util.List)
      */
     @Override
-    public boolean changeUserSecurity(final String userId, final List<String> values) throws UserManagementException
+    public synchronized boolean changeUserSecurity(final String userId, final Map<String, String> values) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#changeUserSecurity(final String userId, final List<String> values) throws UserManagementException";
+        final String methodName = LDAPUserManager.CNAME + "#changeUserSecurity(final String userId, final Map<String, String> values) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -1897,12 +1931,16 @@ public class LDAPUserManager implements UserManager
                 throw new ConnectException("Failed to create LDAP connection using the specified information");
             }
 
-            List<Modification> modifyList = new ArrayList<>(
-                Arrays.asList(
-                    new Modification(ModificationType.REPLACE, authData.getSecQuestionOne(), values.get(0)),
-                    new Modification(ModificationType.REPLACE, authData.getSecQuestionOne(), values.get(1)),
-                    new Modification(ModificationType.REPLACE, authData.getSecAnswerOne(), values.get(2)),
-                    new Modification(ModificationType.REPLACE, authData.getSecAnswerOne(), values.get(3))));
+            List<Modification> modifyList = new ArrayList<>();
+            for (String attribute : values.keySet())
+            {
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Attribute: {}, Value: {}", attribute, values.get(attribute));
+                }
+
+                modifyList.add(new Modification(ModificationType.REPLACE, attribute, values.get(attribute)));
+            }
 
             if (DEBUG)
             {
@@ -1910,7 +1948,7 @@ public class LDAPUserManager implements UserManager
             }
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
-                .append(authData.getUserId() + "=" + userId + ",")
+                .append("uid" + "=" + userId + ",")
                 .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
 
             if (DEBUG)

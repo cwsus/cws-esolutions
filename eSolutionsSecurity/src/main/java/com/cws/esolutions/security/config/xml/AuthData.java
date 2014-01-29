@@ -25,6 +25,7 @@ package com.cws.esolutions.security.config.xml;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import java.util.List;
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -33,6 +34,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElementWrapper;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
 /**
@@ -66,6 +68,7 @@ public final class AuthData implements Serializable
     private String userPassword = null;
     private String secAnswerOne = null;
     private String secAnswerTwo = null;
+    private List<String> entries = null;
     private String secQuestionOne = null;
     private String secQuestionTwo = null;
     private String telephoneNumber = null;
@@ -76,6 +79,19 @@ public final class AuthData implements Serializable
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
+
+    public final void setEntries(final List<String> value)
+    {
+        final String methodName = AuthData.CNAME + "#setEntries(final List<String> value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+        
+        this.entries = value;
+    }
 
     public final void setUserId(final String value)
     {
@@ -361,6 +377,21 @@ public final class AuthData implements Serializable
         }
 
         this.telephoneNumber = value;
+    }
+
+    @XmlElement(name = "accountInformation")
+    @XmlElementWrapper(name = "serviceAccount")
+    public final List<String> getEntries()
+    {
+        final String methodName = AuthData.CNAME + "#getEntries()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.entries);
+        }
+        
+        return this.entries;
     }
 
     @XmlElement(name = "userId")

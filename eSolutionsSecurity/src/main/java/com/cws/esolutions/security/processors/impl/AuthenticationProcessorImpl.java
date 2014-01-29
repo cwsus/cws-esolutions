@@ -115,10 +115,13 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 throw new AuthenticationException("Unable to obtain configured user salt. Cannot continue");
             }
 
-            List<Object> authObject = authenticator.performLogon((String) userData[1],
-                    PasswordUtils.encryptText(authSec.getPassword(), userSalt,
-                            svcBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
-                            svcBean.getConfigData().getSecurityConfig().getIterations()));
+            authenticator.performLogon(userAccount.getUsername(),
+                    PasswordUtils.encryptText(
+                        reqSecurity.getPassword(),
+                        userSalt,
+                        secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
+                        secBean.getConfigData().getSecurityConfig().getIterations()),
+                    authData.getEntries());
 
             if (DEBUG)
             {

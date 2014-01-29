@@ -194,6 +194,10 @@
     </definition>
 
     <!-- UserAccount -->
+    <definition name="UserAccount_EnableOTP" extends="baseLayout">
+        <put-attribute name="title"         value="eSolutions - Enable One-Time Password" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.esolutions.web.useraccount/jsp/html/en/UserAccount_EnableOTP.jsp" cascade="true" />
+    </definition>
     <definition name="UserAccount_ChangePassword" extends="baseLayout">
         <put-attribute name="title"         value="eSolutions - Update Password" cascade="true" />
         <put-attribute name="body"          value="/com.cws.esolutions.web.useraccount/jsp/html/en/UserAccount_ChangePassword.jsp" cascade="true" />

@@ -22,10 +22,14 @@ package com.cws.esolutions.web.controllers;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
+
 import java.util.Enumeration;
+
 import org.slf4j.LoggerFactory;
+
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
@@ -64,11 +68,13 @@ import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor
 @RequestMapping("/user-account")
 public class UserAccountController
 {
+    private String enableOtpPage = null;
     private String myAccountPage = null;
     private String changeEmailPage = null;
     private String changeContactPage = null;
     private String changeSecurityPage = null;
     private String changePasswordPage = null;
+    private String messageEnableOtpSuccess = null;
     private TelephoneValidator telValidator = null;
     private ApplicationServiceBean appConfig = null;
     private String messageEmailChangeSuccess = null;
@@ -148,6 +154,19 @@ public class UserAccountController
         }
 
         this.myAccountPage = value;
+    }
+
+    public final void setEnableOtpPage(final String value)
+    {
+        final String methodName = UserAccountController.CNAME + "#setEnableOtpPage(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.enableOtpPage = value;
     }
 
     public final void setChangeEmailPage(final String value)
@@ -252,6 +271,19 @@ public class UserAccountController
         }
 
         this.messagePasswordChangeSuccess = value;
+    }
+
+    public final void setMessageEnableOtpSuccess(final String value)
+    {
+        final String methodName = UserAccountController.CNAME + "#setMessageEnableOtpSuccess(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageEnableOtpSuccess = value;
     }
 
     public final void setMessageSecurityChangeSuccess(final String value)
@@ -413,6 +445,76 @@ public class UserAccountController
 
         mView.addObject("command", changeReq);
         mView.setViewName(this.changePasswordPage);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
+    }
+
+    @RequestMapping(value = "/enable-otp", method = RequestMethod.GET)
+    public final ModelAndView showEnableOtp()
+    {
+        final String methodName = UserAccountController.CNAME + "#showEnableOtp()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String element = sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
+
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String element = requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
+
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String element = paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
+
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
+            }
+        }
+
+        mView.addObject("command", new UserChangeRequest());
+        mView.setViewName(this.enableOtpPage);
 
         if (DEBUG)
         {
@@ -1073,6 +1175,153 @@ public class UserAccountController
                 hSession.setAttribute(Constants.USER_ACCOUNT, resAccount);
 
                 mView.addObject(Constants.RESPONSE_MESSAGE, this.messagePasswordChangeSuccess);
+                mView.setViewName(this.myAccountPage);
+            }
+            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+            {
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
+
+                return mView;
+            }
+            else
+            {
+                mView.setViewName(this.appConfig.getErrorResponsePage());
+
+                return mView;
+            }
+        }
+        catch (AccountChangeException acx)
+        {
+            ERROR_RECORDER.error(acx.getMessage(), acx);
+
+            mView.setViewName(this.appConfig.getErrorResponsePage());
+
+            return mView;
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
+    }
+
+    @RequestMapping(value = "/enable-otp", method = RequestMethod.POST)
+    public final ModelAndView doEnableOtp(@ModelAttribute("changeReq") final UserChangeRequest changeReq, final BindingResult bindResult)
+    {
+        final String methodName = UserAccountController.CNAME + "#doEnableOtp(@ModelAttribute(\"changeReq\") final UserChangeRequest changeReq, final BindingResult bindResult)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("UserChangeRequest: {}", changeReq);
+            DEBUGGER.debug("BindingResult: {}", bindResult);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IAccountChangeProcessor processor = new AccountChangeProcessorImpl();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String element = sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
+
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String element = requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
+
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String element = paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
+
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
+            }
+        }
+
+        // validate our new password here
+        this.passwordValidator.validate(changeReq, bindResult);
+
+        if (bindResult.hasErrors())
+        {
+            mView.addObject("command", new UserChangeRequest());
+            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+            mView.setViewName(this.enableOtpPage);
+        }
+
+        try
+        {
+            AuthenticationData userSecurity = new AuthenticationData();
+            userSecurity.setPassword(changeReq.getCurrentPassword());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AuthenticationData: {}", userSecurity);
+            }
+
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setSessionId(hSession.getId());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            }
+
+            AccountChangeRequest request = new AccountChangeRequest();
+            request.setHostInfo(reqInfo);
+            request.setRequestor(userAccount);
+            request.setUserAccount(userAccount);
+            request.setUserSecurity(userSecurity);
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setApplicationName(this.appConfig.getApplicationName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountChangeRequest: {}", request);
+            }
+
+            AccountChangeResponse response = processor.enableOtpAuth(request);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountChangeResponse: {}", response);
+            }
+
+            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            {
+                mView.addObject(Constants.RESPONSE_MESSAGE, this.messageEnableOtpSuccess);
                 mView.setViewName(this.myAccountPage);
             }
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)

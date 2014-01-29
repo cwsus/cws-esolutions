@@ -121,7 +121,7 @@ public class PasswordExpirationNotifier implements Job
                     DEBUGGER.debug("Account: {}", (Object) account);
                 }
 
-                List<Object> accountDetail = manager.loadUserAccount(account[0]);
+                List<Object> accountDetail = manager.loadUserAccount("cn", account[0]);
 
                 if (DEBUG)
                 {

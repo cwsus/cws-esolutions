@@ -74,7 +74,7 @@ public interface IUserSecurityInformationDAO
      * @return <code>true</code> if successful, <code>false</code> otherwise
      * @throws SQLException if an exception occurs during insertion process
      */
-    boolean removeUserData(final String commonName) throws SQLException;
+    boolean removeUserData(final String commonName, final String saltType) throws SQLException;
 
     /**
      * Returns the salt value associated with the given user account to process an

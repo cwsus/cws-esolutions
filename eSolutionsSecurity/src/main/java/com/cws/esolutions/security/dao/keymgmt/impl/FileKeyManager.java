@@ -37,9 +37,13 @@ import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.SecureRandom;
 import java.io.FileNotFoundException;
+
 import org.apache.commons.io.IOUtils;
+
 import java.security.KeyPairGenerator;
+
 import org.apache.commons.io.FileUtils;
+
 import java.security.spec.X509EncodedKeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.NoSuchAlgorithmException;
@@ -55,12 +59,12 @@ public class FileKeyManager implements KeyManager
     private static final String CNAME = FileKeyManager.class.getName();
 
     /**
-     * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#returnKeys(java.lang.String)
+     * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#returnKeys(java.lang.String, java.lang.String)
      */
     @Override
-    public synchronized KeyPair returnKeys(final String guid) throws KeyManagementException
+    public synchronized KeyPair returnKeys(final String guid, final String attributeName) throws KeyManagementException
     {
-        final String methodName = FileKeyManager.CNAME + "#returnKeys(final String guid) throws KeyManagementException";
+        final String methodName = FileKeyManager.CNAME + "#returnKeys(final String guid, final String attributeName) throws KeyManagementException";
         
         if (DEBUG)
         {
@@ -160,12 +164,12 @@ public class FileKeyManager implements KeyManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#createKeys(java.lang.String)
+     * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#createKeys(java.lang.String, java.lang.String)
      */
     @Override
-    public synchronized boolean createKeys(final String guid) throws KeyManagementException
+    public synchronized boolean createKeys(final String guid, final String attributeName) throws KeyManagementException
     {
-        final String methodName = FileKeyManager.CNAME + "#createKeys(final String guid) throws KeyManagementException";
+        final String methodName = FileKeyManager.CNAME + "#createKeys(final String guid, final String attributeName) throws KeyManagementException";
         
         if (DEBUG)
         {
@@ -268,12 +272,12 @@ public class FileKeyManager implements KeyManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#removeKeys(java.lang.String)
+     * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#removeKeys(java.lang.String, java.lang.String)
      */
     @Override
-    public synchronized boolean removeKeys(final String guid) throws KeyManagementException
+    public synchronized boolean removeKeys(final String guid, final String attributeName) throws KeyManagementException
     {
-        final String methodName = FileKeyManager.CNAME + "#removeKeys(final String guid) throws KeyManagementException";
+        final String methodName = FileKeyManager.CNAME + "#removeKeys(final String guid, final String attributeName) throws KeyManagementException";
         
         if (DEBUG)
         {

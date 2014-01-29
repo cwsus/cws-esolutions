@@ -47,11 +47,13 @@
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
+        <property name="enableOtpPage" value="UserAccount_EnableOTP" />
         <property name="myAccountPage" value="UserAccount_ShowUser" />
         <property name="changeEmailPage" value="UserAccount_ChangeEmail" />
         <property name="changeSecurityPage" value="UserAccount_ChangeSecurity" />
         <property name="changePasswordPage" value="UserAccount_ChangePassword" />
         <property name="changeContactPage" value="UserAccount_ChangeContact" />
+        <property name="messageEnableOtpSuccess" value="user.account.otp.enable.success" />
         <property name="messageEmailChangeSuccess" value="user.account.email.change.success" />
         <property name="messagePasswordChangeSuccess" value="user.account.password.change.success" />
         <property name="messageSecurityChangeSuccess" value="user.account.update.security.success" />

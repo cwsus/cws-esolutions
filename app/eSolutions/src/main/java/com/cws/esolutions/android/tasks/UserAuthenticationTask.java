@@ -25,32 +25,50 @@ package com.cws.esolutions.android.tasks;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+
 import java.util.List;
-import java.util.Arrays;
 import org.slf4j.Logger;
+import java.util.Arrays;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.sql.Connection;
+import java.util.Properties;
 import java.net.InetAddress;
 import android.os.AsyncTask;
 import android.app.Activity;
+import java.sql.SQLException;
 import android.content.Intent;
 import android.graphics.Color;
 import org.slf4j.LoggerFactory;
 import android.widget.TextView;
+import com.unboundid.util.ssl.SSLUtil;
+import javax.net.ssl.SSLSocketFactory;
+import android.content.res.AssetManager;
+import com.unboundid.ldap.sdk.ResultCode;
+import com.unboundid.ldap.sdk.LDAPException;
+import com.unboundid.ldap.sdk.LDAPConnection;
+import java.security.GeneralSecurityException;
+import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang.RandomStringUtils;
+import com.unboundid.ldap.sdk.LDAPConnectionOptions;
+import com.unboundid.util.ssl.TrustStoreTrustManager;
 
 import com.cws.esolutions.android.ui.R;
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.android.utils.NetworkUtils;
+import com.cws.esolutions.security.utils.PasswordUtils;
+import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
+import com.cws.esolutions.security.config.enums.AuthRepositoryType;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
-import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.processors.impl.AuthenticationProcessorImpl;
+import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor;
 
 public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, List<Object>>
@@ -58,7 +76,23 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
     private Activity reqActivity = null;
     private Class<?> resActivity = null;
 
+    private static final String REPO_TYPE = "repoType";
+    private static final String IS_SECURE = "isSecure";
+    private static final String TRUST_FILE= "trustStoreFile";
+    private static final String TRUST_PASS = "trustStorePass";
+    private static final String TRUST_TYPE = "trustStoreType";
+    private static final String CONN_DRIVER = "repositoryDriver";
+    private static final String REPOSITORY_HOST = "repositoryHost";
+    private static final String REPOSITORY_PORT = "repositoryPort";
+    private static final String MIN_CONNECTIONS = "minConnections";
+    private static final String MAX_CONNECTIONS = "maxConnections";
+    private static final String REPOSITORY_USER = "repositoryUser";
+    private static final String REPOSITORY_PASS = "repositoryPass";
+    private static final String REPOSITORY_SALT = "repositorySalt";
+    private static final String CONN_TIMEOUT = "repositoryConnTimeout";
+    private static final String READ_TIMEOUT = "repositoryReadTimeout";
     private static final String CNAME = UserAuthenticationTask.class.getName();
+    private static final SecurityServiceBean bean = SecurityServiceBean.getInstance();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -89,12 +123,211 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
             DEBUGGER.debug(methodName);
         }
 
+        InputStream iStream = null;
+
 		if (!(NetworkUtils.checkNetwork(this.reqActivity)))
 		{
 			ERROR_RECORDER.error("Network connections are available but not currently connected.");
 
 			super.cancel(true);
 		}
+
+        AssetManager assetMgr = this.reqActivity.getResources().getAssets();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("AssetManager: {}", assetMgr);
+        }
+
+        try
+        {
+            iStream = assetMgr.open(this.reqActivity.getResources().getString(R.string.securityConfigFile));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("InputStream: {}", iStream);
+            }
+
+            if ((iStream == null) || (iStream.available() == 0))
+            {
+                ERROR_RECORDER.error("Unable to load application properties. Cannot continue.");
+
+                super.cancel(true);
+            }
+
+            Properties connProps = new Properties();
+            connProps.load(iStream);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Properties: {}", connProps);
+            }
+
+            AuthRepositoryType repoType = AuthRepositoryType.valueOf(connProps.getProperty(UserAuthenticationTask.REPO_TYPE));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AuthRepositoryType: {}", repoType);
+            }
+
+            switch (repoType)
+            {
+                case LDAP:
+                    LDAPConnection ldapConn = null;
+                    LDAPConnectionOptions connOpts = new LDAPConnectionOptions();
+
+                    connOpts.setAutoReconnect(true);
+                    connOpts.setAbandonOnTimeout(true);
+                    connOpts.setBindWithDNRequiresPassword(true);
+                    connOpts.setConnectTimeoutMillis(Integer.parseInt(connProps.getProperty(UserAuthenticationTask.CONN_TIMEOUT)));
+                    connOpts.setResponseTimeoutMillis(Integer.parseInt(connProps.getProperty(UserAuthenticationTask.READ_TIMEOUT)));
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("LDAPConnectionOptions: {}", connOpts);
+                    }
+
+                    if (Boolean.valueOf(connProps.getProperty(UserAuthenticationTask.IS_SECURE)))
+                    {
+                        SSLUtil sslUtil = new SSLUtil(new TrustStoreTrustManager(
+                                connProps.getProperty(UserAuthenticationTask.TRUST_FILE),
+                                connProps.getProperty(UserAuthenticationTask.TRUST_PASS).toCharArray(),
+                                connProps.getProperty(UserAuthenticationTask.TRUST_TYPE),
+                                true));
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("SSLUtil: {}", sslUtil);
+                        }
+
+                        SSLSocketFactory sslSocketFactory = sslUtil.createSSLSocketFactory();
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("SSLSocketFactory: {}", sslSocketFactory);
+                        }
+
+                        ldapConn = new LDAPConnection(sslSocketFactory, connOpts, connProps.getProperty(UserAuthenticationTask.REPOSITORY_HOST),
+                                Integer.parseInt(connProps.getProperty(UserAuthenticationTask.REPOSITORY_PORT)),
+                                connProps.getProperty(UserAuthenticationTask.REPOSITORY_USER),
+                                PasswordUtils.decryptText(connProps.getProperty(UserAuthenticationTask.REPOSITORY_PASS),
+                                        connProps.getProperty(UserAuthenticationTask.REPOSITORY_SALT).length()));
+                    }
+                    else
+                    {
+                        ldapConn = new LDAPConnection(connOpts, connProps.getProperty(UserAuthenticationTask.REPOSITORY_HOST),
+                                Integer.parseInt(connProps.getProperty(UserAuthenticationTask.REPOSITORY_PORT)),
+                                connProps.getProperty(UserAuthenticationTask.REPOSITORY_USER),
+                                PasswordUtils.decryptText(connProps.getProperty(UserAuthenticationTask.REPOSITORY_PASS),
+                                        connProps.getProperty(UserAuthenticationTask.REPOSITORY_SALT).length()));
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+                    }
+
+                    if (!(ldapConn.isConnected()))
+                    {
+                        throw new LDAPException(ResultCode.CONNECT_ERROR, "Failed to establish an LDAP connection");
+                    }
+
+                    bean.setAuthDataSource(ldapConn);
+
+                    break;
+                case SQL:
+                    BasicDataSource dataSource = new BasicDataSource();
+                    dataSource.setInitialSize(Integer.parseInt(connProps.getProperty(UserAuthenticationTask.MIN_CONNECTIONS)));
+                    dataSource.setMaxActive(Integer.parseInt(connProps.getProperty(UserAuthenticationTask.MAX_CONNECTIONS)));
+                    dataSource.setDriverClassName(connProps.getProperty(UserAuthenticationTask.CONN_DRIVER));
+                    dataSource.setUrl(connProps.getProperty(UserAuthenticationTask.REPOSITORY_HOST));
+                    dataSource.setUsername(connProps.getProperty(UserAuthenticationTask.REPOSITORY_USER));
+                    dataSource.setPassword(PasswordUtils.decryptText(
+                            connProps.getProperty(UserAuthenticationTask.REPOSITORY_PASS),
+                            connProps.getProperty(UserAuthenticationTask.REPOSITORY_SALT).length()));
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("BasicDataSource: {}", dataSource);
+                    }
+
+                    Connection conn = null;
+
+                    try
+                    {
+                        conn = dataSource.getConnection();
+
+                        bean.setAuthDataSource(conn);
+                    }
+                    catch (SQLException sqx)
+                    {
+                        ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+                        super.cancel(true);
+                    }
+                    finally
+                    {
+                        try
+                        {
+                            if ((conn != null) && (!(conn.isClosed())))
+                            {
+                                conn.close();
+                            }
+                        }
+                        catch (SQLException sqx)
+                        {
+                            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                        }
+                    }
+
+                    break;
+                default:
+                    ERROR_RECORDER.error("No acceptable authentication datasource has been configured.");
+
+                    super.cancel(true);
+            }
+        }
+        catch (IOException iox)
+        {
+            ERROR_RECORDER.error(iox.getMessage(), iox);
+
+            super.cancel(true);
+        }
+        catch (GeneralSecurityException gsx)
+        {
+            ERROR_RECORDER.error(gsx.getMessage(), gsx);
+
+            super.cancel(true);
+        }
+        catch (NumberFormatException nfx)
+        {
+            ERROR_RECORDER.error(nfx.getMessage(), nfx);
+
+            super.cancel(true);
+        }
+        catch (LDAPException lx)
+        {
+            ERROR_RECORDER.error(lx.getMessage(), lx);
+
+            super.cancel(true);
+        }
+        catch (SecurityException sx)
+        {
+            ERROR_RECORDER.error(sx.getMessage(), sx);
+
+            super.cancel(true);
+        }
+        finally
+        {
+            try
+            {
+                iStream.close();
+            }
+            catch (IOException iox)
+            {
+                ERROR_RECORDER.error(iox.getMessage(), iox);
+            }
+        }
     }
 
     @Override

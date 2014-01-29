@@ -18,32 +18,22 @@
         android:theme = "@style/AppTheme"
         android:allowClearUserData = "true">
 
-        <activity
-            android:name = "com.cws.esolutions.android.ui.MainActivity"
-            android:label = "@string/loginTitle">
+        <activity android:name = "com.cws.esolutions.android.ui.MainActivity">
             <intent-filter>
                 <action android:name = "android.intent.action.MAIN" />
                 <category android:name = "android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name = "com.cws.esolutions.android.ui.HomeActivity"
-            android:label = "@string/loginTitle">
-        </activity>
-        <activity
-            android:name = "com.cws.esolutions.android.ui.LoginActivity"
-            android:label = "@string/mainTitle"
-            android:exported = "false">
-        </activity>
-        <activity
-            android:name = "com.cws.esolutions.android.ui.DNSActivity"
-            android:label = "@string/dnsTitle"
-            android:exported = "false">
-        </activity>
-        <activity
-            android:name = "com.cws.esolutions.android.ui.VirtualManagerActivity"
-            android:label = "@string/vmTitle"
-            android:exported = "false">
-        </activity>
+        <activity android:name = "com.cws.esolutions.android.ui.ApplicationManagementActivity" />
+        <activity android:name = "com.cws.esolutions.android.ui.DNSServiceActivity" />
+        <activity android:name = "com.cws.esolutions.android.ui.HomeActivity" />
+        <activity android:name = "com.cws.esolutions.android.ui.LoginActivity" />
+        <activity android:name = "com.cws.esolutions.android.ui.OnlineResetActivity" />
+        <activity android:name = "com.cws.esolutions.android.ui.ServiceManagementActivity" />
+        <activity android:name = "com.cws.esolutions.android.ui.ServiceMessagingActivity" />
+        <activity android:name = "com.cws.esolutions.android.ui.SystemCheckActivity" />
+        <activity android:name = "com.cws.esolutions.android.ui.SystemManagementActivity" />
+        <activity android:name = "com.cws.esolutions.android.ui.UserAccountActivity" />
+        <activity android:name = "com.cws.esolutions.android.ui.VirtualManagerActivity" />
     </application>
 </manifest>

@@ -25,7 +25,7 @@ package com.cws.esolutions.security.dao.userauth.impl;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.Date;
+import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.IOException;
@@ -34,19 +34,15 @@ import java.io.FileInputStream;
 import java.net.ConnectException;
 import java.io.FileNotFoundException;
 import com.unboundid.ldap.sdk.Filter;
-import com.unboundid.ldap.sdk.LDAPResult;
 import com.unboundid.ldap.sdk.ResultCode;
 import com.unboundid.ldap.sdk.BindResult;
 import com.unboundid.ldap.sdk.BindRequest;
 import com.unboundid.ldap.sdk.SearchScope;
 import org.apache.commons.lang.StringUtils;
-import com.unboundid.ldap.sdk.Modification;
 import com.unboundid.ldap.sdk.SearchResult;
-import com.unboundid.ldap.sdk.ModifyRequest;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.SearchRequest;
 import com.unboundid.ldap.sdk.LDAPConnection;
-import com.unboundid.ldap.sdk.ModificationType;
 import com.unboundid.ldap.sdk.SearchResultEntry;
 import com.unboundid.ldap.sdk.SimpleBindRequest;
 import com.unboundid.ldap.sdk.LDAPConnectionPool;
@@ -100,17 +96,18 @@ public class LDAPAuthenticator implements Authenticator
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String)
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String, java.util.List)
      */
     @Override
-    public synchronized List<Object> performLogon(final String username, final String password) throws AuthenticatorException
+    public synchronized List<Object> performLogon(final String username, final String password, final List<String> attributes) throws AuthenticatorException
     {
-        final String methodName = LDAPAuthenticator.CNAME + "#performLogon(final String username, final String password) throws AuthenticatorException";
+        final String methodName = LDAPAuthenticator.CNAME + "#performLogon(final String username, final String password, final List<String> attributes) throws AuthenticatorException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("String: {}", username);
+            DEBUGGER.debug("List<String>: {}", attributes);
         }
 
         LDAPConnection ldapConn = null;
@@ -144,7 +141,7 @@ public class LDAPAuthenticator implements Authenticator
             }
 
             Filter searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPAuthenticator.BASE_OBJECT) + ")" +
-                "(&(" + authData.getUserId() + "=" + username+ ")))");
+                "(&(uid=" + username+ ")))");
 
             if (DEBUG)
             {
@@ -194,21 +191,15 @@ public class LDAPAuthenticator implements Authenticator
                 DEBUGGER.debug("BindResult: {}", bindResult);
             }
 
-            userAccount.add(entry.getAttributeValue(authData.getCommonName()));
-            userAccount.add(entry.getAttributeValue(authData.getUserId()));
-            userAccount.add(entry.getAttributeValue(authData.getGivenName()));
-            userAccount.add(entry.getAttributeValue(authData.getSurname()));
-            userAccount.add(entry.getAttributeValue(authData.getDisplayName()));
-            userAccount.add(entry.getAttributeValue(authData.getEmailAddr()));
-            userAccount.add(entry.getAttributeValue(authData.getPagerNumber()));
-            userAccount.add(entry.getAttributeValue(authData.getTelephoneNumber()));
-            userAccount.add(entry.getAttributeValueAsInteger(authData.getLockCount()));
-            userAccount.add(entry.getAttributeValueAsLong(authData.getLastLogin()));
-            userAccount.add(entry.getAttributeValueAsLong(authData.getExpiryDate()));
-            userAccount.add(entry.getAttributeValueAsBoolean(authData.getIsSuspended()));
-            userAccount.add(entry.getAttributeValueAsBoolean(authData.getOlrSetupReq()));
-            userAccount.add(entry.getAttributeValueAsBoolean(authData.getOlrLocked()));
-            userAccount.add(entry.getAttributeValue(authData.getSecret()));
+            for (String attribute : attributes)
+            {
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Attribute: {}", attribute);
+                }
+
+                userAccount.add(entry.getAttributeValue(attribute));
+            }
 
             Filter roleFilter = Filter.create("(&(objectClass=groupOfUniqueNames)" +
                     "(&(uniqueMember=" + entry.getDN() + ")))");
@@ -265,37 +256,6 @@ public class LDAPAuthenticator implements Authenticator
                 userAccount.add(sBuilder.toString());
             }
 
-            List<Modification> modifyList = new ArrayList<>();
-
-            // reset the lock count and update last login
-            if (StringUtils.isEmpty(entry.getAttributeValue(authData.getLastLogin())))
-            {
-                modifyList.add(new Modification(ModificationType.ADD, authData.getLastLogin(), new Date().toString()));
-            }
-            else
-            {
-                modifyList.add(new Modification(ModificationType.REPLACE, authData.getLastLogin(), new Date().toString()));
-            }
-
-            modifyList.add(new Modification(ModificationType.REPLACE, authData.getLockCount(), String.valueOf(0)));
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("List<Modification>: {}", modifyList);
-            }
-
-            LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(entry.getDN(), modifyList));
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("LDAPResult: {}", ldapResult);
-            }
-
-            if (ldapResult.getResultCode() != ResultCode.SUCCESS)
-            {
-                ERROR_RECORDER.error("Failed to modify lockcount and last login for authenticated account.");
-            }
-
             if (DEBUG)
             {
                 DEBUGGER.debug("UserAccount: {}", userAccount);
@@ -325,18 +285,19 @@ public class LDAPAuthenticator implements Authenticator
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainSecurityData(java.lang.String, java.lang.String)
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainSecurityData(java.lang.String, java.lang.String, java.util.List)
      */
     @Override
-    public synchronized List<String> obtainSecurityData(final String userId, final String userGuid) throws AuthenticatorException
+    public synchronized List<String> obtainSecurityData(final String userId, final String userGuid, final List<String> attributes) throws AuthenticatorException
     {
-        final String methodName = LDAPAuthenticator.CNAME + "#obtainSecurityData(final String userId, final String userGuid) throws AuthenticatorException";
+        final String methodName = LDAPAuthenticator.CNAME + "#obtainSecurityData(final String userId, final String userGuid, final List<String> attributes) throws AuthenticatorException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("User ID: {}", userId);
-            DEBUGGER.debug("User GUID: {}", userGuid);
+            DEBUGGER.debug("Value: {}", userId);
+            DEBUGGER.debug("Value: {}", userGuid);
+            DEBUGGER.debug("Value: {}", attributes);
         }
 
         LDAPConnection ldapConn = null;
@@ -369,9 +330,9 @@ public class LDAPAuthenticator implements Authenticator
                 throw new ConnectException("Failed to create LDAP connection using the specified information");
             }
 
-            Filter searchFilter = Filter.create("(&(objectClass=" + LDAPAuthenticator.BASE_OBJECT + ")" +
-                "(&(" + authData.getUserId() + "=" + userId + "))" +
-                "(&(" + authData.getCommonName() + "=" + userGuid + ")))");
+            Filter searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPAuthenticator.BASE_OBJECT) + ")" +
+                "(&(cn=" + userId + "))" +
+                "(&(uid=" + userGuid + ")))");
 
             if (DEBUG)
             {
@@ -381,13 +342,7 @@ public class LDAPAuthenticator implements Authenticator
             SearchRequest searchRequest = new SearchRequest(
                 this.connProps.getProperty(LDAPAuthenticator.BASE_DN),
                 SearchScope.SUB,
-                searchFilter,
-                authData.getUserId(),
-                authData.getCommonName(),
-                authData.getSecQuestionOne(),
-                authData.getSecQuestionTwo(),
-                authData.getSecAnswerOne(),
-                authData.getSecAnswerTwo());
+                searchFilter);
 
             if (DEBUG)
             {
@@ -404,10 +359,15 @@ public class LDAPAuthenticator implements Authenticator
             SearchResultEntry entry = searchResult.getSearchEntries().get(0);
 
             userSecurity = new ArrayList<>();
-            userSecurity.add(entry.getAttributeValue(authData.getSecQuestionOne()));
-            userSecurity.add(entry.getAttributeValue(authData.getSecQuestionTwo()));
-            userSecurity.add(entry.getAttributeValue(authData.getSecAnswerOne()));
-            userSecurity.add(entry.getAttributeValue(authData.getSecAnswerTwo()));
+            for (String attribute : attributes)
+            {
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Attribute: {}", attribute);
+                }
+
+                userSecurity.add(entry.getAttributeValue(attribute));
+            }
         }
         catch (LDAPException lx)
         {
@@ -433,18 +393,19 @@ public class LDAPAuthenticator implements Authenticator
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainOtpSecret(java.lang.String, java.lang.String)
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainOtpSecret(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public synchronized String obtainOtpSecret(final String userId, final String userGuid) throws AuthenticatorException
+    public synchronized String obtainOtpSecret(final String userId, final String userGuid, final String attribute) throws AuthenticatorException
     {
-        final String methodName = LDAPAuthenticator.CNAME + "#obtainOtpSecret(final String userId, final String userGuid) throws AuthenticatorException";
+        final String methodName = LDAPAuthenticator.CNAME + "#obtainOtpSecret(final String userId, final String userGuid, final String attribute) throws AuthenticatorException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("User ID: {}", userId);
-            DEBUGGER.debug("User GUID: {}", userGuid);
+            DEBUGGER.debug("Value: {}", userId);
+            DEBUGGER.debug("Value: {}", userGuid);
+            DEBUGGER.debug("Value: {}", attribute);
         }
 
         String otpSecret = null;
@@ -477,9 +438,9 @@ public class LDAPAuthenticator implements Authenticator
                 throw new ConnectException("Failed to create LDAP connection using the specified information");
             }
 
-            Filter searchFilter = Filter.create("(&(objectClass=" + LDAPAuthenticator.BASE_OBJECT + ")" +
-                "(&(" + authData.getUserId() + "=" + userId + "))" +
-                "(&(" + authData.getCommonName() + "=" + userGuid + ")))");
+            Filter searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPAuthenticator.BASE_OBJECT) + ")" +
+                "(&(uid=" + userId + "))" +
+                "(&(cn=" + userGuid + ")))");
 
             if (DEBUG)
             {
@@ -490,7 +451,7 @@ public class LDAPAuthenticator implements Authenticator
                 this.connProps.getProperty(LDAPAuthenticator.BASE_DN),
                 SearchScope.SUB,
                 searchFilter,
-                authData.getSecret());
+                attribute);
 
             if (DEBUG)
             {
@@ -504,7 +465,7 @@ public class LDAPAuthenticator implements Authenticator
                 throw new AuthenticatorException("No user was found for the provided user information");
             }
 
-            otpSecret = searchResult.getSearchEntries().get(0).getAttributeValue(authData.getSecret());
+            otpSecret = searchResult.getSearchEntries().get(0).getAttributeValue(attribute);
         }
         catch (LDAPException lx)
         {
@@ -530,16 +491,19 @@ public class LDAPAuthenticator implements Authenticator
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#verifySecurityData(java.util.List)
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#verifySecurityData(java.lang.String, java.lang.String, java.util.Map)
      */
     @Override
-    public synchronized boolean verifySecurityData(final List<String> request) throws AuthenticatorException
+    public synchronized boolean verifySecurityData(final String userId, final String userGuid, final Map<String, String> attributes) throws AuthenticatorException
     {
-        final String methodName = LDAPAuthenticator.CNAME + "#verifySecurityData(final List<String> request) throws AuthenticatorException";
+        final String methodName = LDAPAuthenticator.CNAME + "#verifySecurityData(final String userId, final String userGuid, final Map<String, String> attributes) throws AuthenticatorException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", userId);
+            DEBUGGER.debug("Value: {}", userGuid);
+            DEBUGGER.debug("Value: {}", attributes);
         }
 
         boolean isAuthorized = false;
@@ -573,17 +537,14 @@ public class LDAPAuthenticator implements Authenticator
             }
 
             // validate the question
-            Filter searchFilter = Filter.create("(&(objectClass=" + LDAPAuthenticator.BASE_OBJECT + ")" +
-                "(&(" + authData.getCommonName() + "=" + request.get(0) + "))" +
-                "(&(" + authData.getUserId() + "=" + request.get(1) + "))" +
-                "(&(" + authData.getSecAnswerOne() + "=" + request.get(2) + "))" +
-                "(&(" + authData.getSecAnswerTwo() + "=" + request.get(3) + ")))");
+            Filter searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPAuthenticator.BASE_OBJECT) + ")" +
+                "(&(cn=" + userGuid + "))" +
+                "(&(uid=" + userId + ")))");
 
             SearchRequest searchReq = new SearchRequest(
                 this.connProps.getProperty(LDAPAuthenticator.BASE_DN),
                 SearchScope.SUB,
-                searchFilter,
-                authData.getCommonName());
+                searchFilter);
 
             if (DEBUG)
             {
@@ -597,11 +558,31 @@ public class LDAPAuthenticator implements Authenticator
                 DEBUGGER.debug("searchResult: {}", searchResult);
             }
 
-            isAuthorized = ((searchResult.getResultCode() == ResultCode.SUCCESS) && (searchResult.getSearchEntries().size() == 1));
+            if ((searchResult.getResultCode() != ResultCode.SUCCESS) || (searchResult.getEntryCount() != 1))
+            {
+                throw new AuthenticatorException("No user was found for the provided user information");
+            }
+
+            SearchResultEntry entry = searchResult.getSearchEntries().get(0);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isAuthorized: {}", isAuthorized);
+                DEBUGGER.debug("SearchResultEntry: {}", entry);
+            }
+
+            for (String key : attributes.keySet())
+            {
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Key: {}", key);
+                }
+
+                if (StringUtils.equals(entry.getAttributeValue(key), attributes.get(key)))
+                {
+                    break;
+                }
+
+                isAuthorized = true;
             }
         }
         catch (LDAPException lx)

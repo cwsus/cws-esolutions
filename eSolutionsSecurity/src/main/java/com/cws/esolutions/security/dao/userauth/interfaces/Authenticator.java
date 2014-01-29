@@ -25,6 +25,7 @@ package com.cws.esolutions.security.dao.userauth.interfaces;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import java.util.Map;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,11 +67,11 @@ public interface Authenticator
      * @return List<Object>
      * @throws AuthenticatorException
      */
-    List<Object> performLogon(final String username, final String password) throws AuthenticatorException;
+    List<Object> performLogon(final String username, final String password, final List<String> attributes) throws AuthenticatorException;
 
-    List<String> obtainSecurityData(final String userId, final String userGuid) throws AuthenticatorException;
+    List<String> obtainSecurityData(final String userId, final String userGuid, final List<String> attributes) throws AuthenticatorException;
 
-    String obtainOtpSecret(final String userId, final String userGuid) throws AuthenticatorException;
+    String obtainOtpSecret(final String userId, final String userGuid, final String attribute) throws AuthenticatorException;
 
     /**
      * Processes authentication for the selected security question and user. If successful,
@@ -81,5 +82,5 @@ public interface Authenticator
      * @return boolean
      * @throws AuthenticatorException
      */
-    boolean verifySecurityData(final List<String> request) throws AuthenticatorException;
+    boolean verifySecurityData(final String uid, final String guid, final Map<String, String> attributes) throws AuthenticatorException;
 }

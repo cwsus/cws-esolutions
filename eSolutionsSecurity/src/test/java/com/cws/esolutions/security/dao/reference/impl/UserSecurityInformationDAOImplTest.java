@@ -152,7 +152,7 @@ public class UserSecurityInformationDAOImplTest
     {
         try
         {
-            Assert.assertTrue(dao.removeUserData(UserSecurityInformationDAOImplTest.GUID));
+            Assert.assertTrue(dao.removeUserData(UserSecurityInformationDAOImplTest.GUID, null));
         }
         catch (SQLException sqx)
         {

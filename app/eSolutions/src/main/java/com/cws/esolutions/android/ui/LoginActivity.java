@@ -64,7 +64,7 @@ public class LoginActivity extends Activity
         }
 
         super.onCreate(bundle);
-        super.setContentView(R.layout.activity_login);
+        super.setContentView(R.layout.login);
         super.setTitle(R.string.loginTitle);
 
         final TextView tvRequestName = (TextView) super.findViewById(R.id.tvRequestName);

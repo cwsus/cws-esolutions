@@ -129,6 +129,7 @@ public class AuthenticationProcessorImplTest
         }
         catch (AuthenticationException ax)
         {
+            ax.printStackTrace();
             Assert.fail(ax.getMessage());
         }
     }

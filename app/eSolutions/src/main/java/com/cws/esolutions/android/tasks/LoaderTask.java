@@ -41,6 +41,7 @@ import android.content.res.AssetManager;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.dbcp.BasicDataSource;
 
+import com.cws.esolutions.android.ui.R;
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.android.utils.NetworkUtils;
 import com.cws.esolutions.security.utils.PasswordUtils;
@@ -94,7 +95,7 @@ public class LoaderTask extends AsyncTask<Void, Void, Boolean>
 				DEBUGGER.debug("AssetManager: {}", assetMgr);
 			}
 
-			this.iStream = assetMgr.open("application.properties"); // TODO: make this configurableS
+			this.iStream = assetMgr.open(this.reqActivity.getResources().getString(R.string.applicationConfigFile));
 
 			if (DEBUG)
 			{

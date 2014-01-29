@@ -27,7 +27,6 @@ package com.cws.esolutions.android.ui;
  */
 import org.slf4j.Logger;
 import android.os.Bundle;
-import android.view.Menu;
 import android.app.Activity;
 import android.view.MenuItem;
 import android.content.Intent;
@@ -53,8 +52,8 @@ public class VirtualManagerActivity extends Activity
         }
 
         super.onCreate(bundle);
-        super.setContentView(R.layout.activity_main);
-        super.setTitle(R.string.mainTitle);
+        super.setContentView(R.layout.virtualmanager);
+        super.setTitle(R.string.virtualManagerTitle);
 
         final UserAccount userAccount = (UserAccount) super.getIntent().getExtras().getSerializable(Constants.USER_DATA);
 
@@ -76,21 +75,6 @@ public class VirtualManagerActivity extends Activity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(final Menu menu)
-    {
-        final String methodName = VirtualManagerActivity.CNAME + "#onCreateOptionsMenu(final Menu menu)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Menu: {}", menu);
-        }
-
-        super.getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(final MenuItem item)
     {
         final String methodName = VirtualManagerActivity.CNAME + "#onOptionsItemSelected(final MenuItem item)";
@@ -101,6 +85,8 @@ public class VirtualManagerActivity extends Activity
             DEBUGGER.debug("MenuItem: {}", item);
         }
 
+        Intent intent = null;
+
         final UserAccount userAccount = (UserAccount) super.getIntent().getExtras().getSerializable(Constants.USER_DATA);
 
         if (DEBUG)
@@ -110,11 +96,123 @@ public class VirtualManagerActivity extends Activity
 
         switch (item.getItemId())
         {
-            case R.id.menu_signout:
+            case R.id.applicationManagement:
+                intent = new Intent(this, ApplicationManagementActivity.class);
+                intent.putExtra(Constants.USER_DATA, userAccount);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Intent: {}", intent);
+                }
+
+                this.startActivity(intent);
+
+                super.finish();
+
+                return true;
+            case R.id.dnsService:
+                intent = new Intent(this, DNSServiceActivity.class);
+                intent.putExtra(Constants.USER_DATA, userAccount);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Intent: {}", intent);
+                }
+
+                this.startActivity(intent);
+
+                super.finish();
+
+                return true;
+            case R.id.home:
+                intent = new Intent(this, HomeActivity.class);
+                intent.putExtra(Constants.USER_DATA, userAccount);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Intent: {}", intent);
+                }
+
+                this.startActivity(intent);
+
+                super.finish();
+
+                return true;
+            case R.id.serviceManagement:
+                intent = new Intent(this, ServiceManagementActivity.class);
+                intent.putExtra(Constants.USER_DATA, userAccount);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Intent: {}", intent);
+                }
+
+                this.startActivity(intent);
+
+                super.finish();
+
+                return true;
+            case R.id.serviceMessaging:
+                intent = new Intent(this, ServiceMessagingActivity.class);
+                intent.putExtra(Constants.USER_DATA, userAccount);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Intent: {}", intent);
+                }
+
+                this.startActivity(intent);
+
+                super.finish();
+
+                return true;
+            case R.id.systemManagement:
+                intent = new Intent(this, SystemManagementActivity.class);
+                intent.putExtra(Constants.USER_DATA, userAccount);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Intent: {}", intent);
+                }
+
+                this.startActivity(intent);
+
+                super.finish();
+
+                return true;
+            case R.id.userAccount:
+                intent = new Intent(this, UserAccountActivity.class);
+                intent.putExtra(Constants.USER_DATA, userAccount);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Intent: {}", intent);
+                }
+
+                this.startActivity(intent);
+
+                super.finish();
+
+                return true;
+            case R.id.userManagement:
+                intent = new Intent(this, UserManagementActivity.class);
+                intent.putExtra(Constants.USER_DATA, userAccount);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Intent: {}", intent);
+                }
+
+                this.startActivity(intent);
+
+                super.finish();
+
+                return true;
+            case R.id.signout:
                 super.getIntent().removeExtra(Constants.USER_DATA);
                 super.getIntent().getExtras().remove(Constants.USER_DATA);
 
-                Intent intent = new Intent(this, LoginActivity.class);
+                intent = new Intent(this, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
                 if (DEBUG)
@@ -126,35 +224,9 @@ public class VirtualManagerActivity extends Activity
 
                 super.finish();
 
-                break;
-            case R.id.menu_dnssvc:
-                Intent dnsIntent = new Intent(this, DNSActivity.class);
-                dnsIntent.putExtra(Constants.USER_DATA, userAccount);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Intent: {}", dnsIntent);
-                }
-
-                this.startActivity(dnsIntent);
-
-                break;
-            case R.id.menu_sysmgt:
-                Intent sysmIntent = new Intent(this, DNSActivity.class);
-                sysmIntent.putExtra(Constants.USER_DATA, userAccount);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Intent: {}", sysmIntent);
-                }
-
-                this.startActivity(sysmIntent);
-
-                break;
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-
-        return true;
     }
 }

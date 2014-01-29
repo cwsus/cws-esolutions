@@ -1,5 +1,5 @@
 <resources>
-    <string name = "dnsTitle">eSolutions - DNS Services</string>
+    <string name = "dnsServiceTitle">eSolutions - DNS Services</string>
     <string name = "tvHostName">Hostname: </string>
     <string name = "tvHostHint">ex. www.google.com</string>
     <string name = "tvDNSServer">DNS Server: </string>

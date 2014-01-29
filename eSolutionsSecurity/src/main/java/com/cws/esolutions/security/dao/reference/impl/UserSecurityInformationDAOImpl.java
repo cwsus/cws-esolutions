@@ -259,17 +259,18 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#removeUserData(java.lang.String)
+     * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#removeUserData(java.lang.String, java.lang.String)
      */
     @Override
-    public synchronized boolean removeUserData(final String commonName) throws SQLException
+    public synchronized boolean removeUserData(final String commonName, final String saltType) throws SQLException
     {
-        final String methodName = IUserSecurityInformationDAO.CNAME + "#removeUserData(final String commonName) throws SQLException";
+        final String methodName = IUserSecurityInformationDAO.CNAME + "#removeUserData(final String commonName, final String saltType) throws SQLException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("commonName: {}", commonName);
+            DEBUGGER.debug("saltType: {}", saltType);
         }
 
         Connection sqlConn = null;
@@ -291,8 +292,9 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL removeUserData(?)}");
+            stmt = sqlConn.prepareCall("{CALL removeUserData(?, ?)}");
             stmt.setString(1, commonName);
+            stmt.setString(2, saltType);
 
             if (DEBUG)
             {
