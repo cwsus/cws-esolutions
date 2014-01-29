@@ -941,10 +941,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                 String otpSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
 
-                // ok, thats out of the way. lets keep moving.
-                // encrypt the secret
-                String encrypted = PasswordUtils.encryptText(secret, otpSalt);
-
                 if (StringUtils.isNotEmpty(encrypted))
                 {
                     boolean isSaltInserted = userSec.addOrUpdateSalt(userAccount.getGuid(), otpSalt, SaltType.OTP.name());
@@ -961,7 +957,8 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                         return response;
                     }
 
-                    boolean isComplete = userManager.addOtpSecret(userAccount.getUsername(), encrypted);
+                    boolean isComplete = userManager.addOtpSecret(userAccount.getUsername(),
+                        PasswordUtils.encryptText(secret, otpSalt));
 
                     if (DEBUG)
                     {
@@ -993,6 +990,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                         DEBUGGER.debug("ByteArrayOutputStream: {}", qrCode);
                     }
 
+                    response.setSecret(secret);
                     response.setQrCode(qrCode);
                     response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                 }
