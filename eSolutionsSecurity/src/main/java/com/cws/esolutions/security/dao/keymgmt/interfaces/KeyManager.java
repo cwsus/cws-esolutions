@@ -26,9 +26,7 @@ package com.cws.esolutions.security.dao.keymgmt.interfaces;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
-
 import java.security.KeyPair;
-
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.SecurityServiceBean;
@@ -62,9 +60,9 @@ public interface KeyManager
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + KeyManager.class.getName());
 
-    KeyPair returnKeys(final String guid, final String attributeName) throws KeyManagementException;
+    KeyPair returnKeys(final String guid) throws KeyManagementException;
 
-    boolean createKeys(final String guid, final String attributeName) throws KeyManagementException;
+    boolean createKeys(final String guid) throws KeyManagementException;
 
-    boolean removeKeys(final String guid, final String attributeName) throws KeyManagementException;
+    boolean removeKeys(final String guid) throws KeyManagementException;
 }

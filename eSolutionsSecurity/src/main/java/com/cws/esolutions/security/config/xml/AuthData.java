@@ -80,19 +80,6 @@ public final class AuthData implements Serializable
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
 
-    public final void setEntries(final List<String> value)
-    {
-        final String methodName = AuthData.CNAME + "#setEntries(final List<String> value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-        
-        this.entries = value;
-    }
-
     public final void setUserId(final String value)
     {
         final String methodName = AuthData.CNAME + "#setUserId(final String value)";
@@ -379,8 +366,6 @@ public final class AuthData implements Serializable
         this.telephoneNumber = value;
     }
 
-    @XmlElement(name = "accountInformation")
-    @XmlElementWrapper(name = "serviceAccount")
     public final List<String> getEntries()
     {
         final String methodName = AuthData.CNAME + "#getEntries()";
@@ -388,9 +373,27 @@ public final class AuthData implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.entries);
         }
-        
+
+        this.entries = new ArrayList<>(
+            Arrays.asList(
+                this.secret,
+                this.userId,
+                this.surname,
+                this.memberOf,
+                this.lockCount,
+                this.lastLogin,
+                this.emailAddr,
+                this.olrLocked,
+                this.givenName,
+                this.expiryDate,
+                this.commonName,
+                this.olrSetupReq,
+                this.isSuspended,
+                this.displayName,
+                this.pagerNumber,
+                this.telephoneNumber));
+
         return this.entries;
     }
 

@@ -28,26 +28,19 @@ package com.cws.esolutions.core.processors.impl;
 import java.io.File;
 import java.util.List;
 import java.util.Arrays;
-
 import org.xbill.DNS.Name;
 import org.xbill.DNS.Type;
-
 import java.util.ArrayList;
 import java.io.IOException;
 import java.util.Properties;
-
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Record;
-
 import java.sql.SQLException;
 import java.security.Security;
 import java.io.FileOutputStream;
-
 import org.xbill.DNS.SimpleResolver;
-
 import java.io.FileNotFoundException;
 import java.net.UnknownHostException;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.xbill.DNS.TextParseException;

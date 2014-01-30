@@ -65,9 +65,9 @@ public interface IAuthenticationProcessor
     static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final String CNAME = IAuthenticationProcessor.class.getName();
     static final ISecurityReferenceDAO secRef = new SecurityReferenceDAOImpl();
-    static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
+    static final SecurityServiceBean bean = SecurityServiceBean.getInstance();
     static final IAccessControlService accessControl = new AccessControlServiceImpl();
-    static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
+    static final SecurityConfig secConfig = bean.getConfigData().getSecurityConfig();
     static final IUserServiceInformationDAO svcInfo = new UserServiceInformationDAOImpl();
     static final IAccountControlProcessor controlProcessor = new AccountControlProcessorImpl();
     static final IUserSecurityInformationDAO userSec = new UserSecurityInformationDAOImpl();
