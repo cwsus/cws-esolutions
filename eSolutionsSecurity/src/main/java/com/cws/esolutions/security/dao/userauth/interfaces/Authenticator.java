@@ -68,9 +68,9 @@ public interface Authenticator
      */
     List<Object> performLogon(final String username, final String password) throws AuthenticatorException;
 
-    List<String> obtainSecurityData(final String username, final String guid) throws AuthenticatorException;
+    List<String> obtainSecurityData(final String userId, final String guid) throws AuthenticatorException;
 
-    String obtainOtpSecret(final String userId, final String userGuid) throws AuthenticatorException;
+    String obtainOtpSecret(final String userId, final String guid) throws AuthenticatorException;
 
     /**
      * Processes authentication for the selected security question and user. If successful,
@@ -81,5 +81,5 @@ public interface Authenticator
      * @return boolean
      * @throws AuthenticatorException
      */
-    boolean verifySecurityData(final String uid, final String guid, final List<String> attributes) throws AuthenticatorException;
+    boolean verifySecurityData(final String userId, final String guid) throws AuthenticatorException;
 }

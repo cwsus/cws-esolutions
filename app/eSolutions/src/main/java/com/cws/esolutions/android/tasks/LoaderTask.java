@@ -41,6 +41,7 @@ import android.content.res.AssetManager;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.dbcp.BasicDataSource;
 
+import com.cws.esolutions.security.config.xml.AuthData;
 import com.cws.esolutions.android.ui.R;
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.android.utils.NetworkUtils;

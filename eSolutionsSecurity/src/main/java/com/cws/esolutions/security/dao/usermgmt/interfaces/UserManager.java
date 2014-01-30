@@ -81,6 +81,17 @@ public interface UserManager
     boolean addUserAccount(final List<String> userAccount, final List<String> roles) throws UserManagementException;
 
     /**
+     * Removes a provided user account from the authentication datastore. This
+     * method fully deletes - the account will become unrecoverable, and if
+     * re-created it will NOT have the same security information (such as UUID)
+     *
+     * @param userId - The username to perform the modification against
+     * @return <code>true</code> if the process completes, <code>false</code> otherwise
+     * @throws UserManagementException if an error occurs during processing
+     */
+    boolean removeUserAccount(final String userId) throws UserManagementException;
+
+    /**
      * 
      * TODO: Add in the method description/comments
      *
@@ -100,7 +111,7 @@ public interface UserManager
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
-    boolean modifyUserContact(final String userId, final String value) throws UserManagementException;
+    boolean modifyUserContact(final String userId, final List<String> value) throws UserManagementException;
 
     /**
      * Suspends or unsuspends a provided user account. This could be utilized
@@ -123,7 +134,7 @@ public interface UserManager
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
-    boolean modifyUserRole(final String userId, final Object[] value) throws UserManagementException;
+    boolean modifyUserGroups(final String userId, final Object[] value) throws UserManagementException;
 
     /**
      * 
@@ -133,7 +144,7 @@ public interface UserManager
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
-    boolean lockOnlineReset(final String userId) throws UserManagementException;
+    boolean modifyOlrLock(final String userId, final boolean isLocked) throws UserManagementException;
 
     /**
      * 
@@ -143,36 +154,7 @@ public interface UserManager
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
-    boolean clearLockCount(final String username) throws UserManagementException;
-
-    /**
-     * Locks a provided user account by either incrementing the existing lock count
-     * by 1 or by setting the value to the configured lockout value.
-     *
-     * @param userId - The username to perform the modification against
-     * @throws UserManagementException if an error occurs during processing
-     */
-    void lockUserAccount(final String userId) throws UserManagementException;
-
-    /**
-     * Unlocks a provided user account by setting the lock count to 0.
-     *
-     * @param userId - The username to perform the modification against
-     * @return <code>true</code> if the process completes, <code>false</code> otherwise
-     * @throws UserManagementException if an error occurs during processing
-     */
-    boolean unlockUserAccount(final String userId) throws UserManagementException;
-
-    /**
-     * Removes a provided user account from the authentication datastore. This
-     * method fully deletes - the account will become unrecoverable, and if
-     * re-created it will NOT have the same security information (such as UUID)
-     *
-     * @param userId - The username to perform the modification against
-     * @return <code>true</code> if the process completes, <code>false</code> otherwise
-     * @throws UserManagementException if an error occurs during processing
-     */
-    boolean removeUserAccount(final String userId) throws UserManagementException;
+    boolean modifyUserLock(final String userId, final boolean isLocked, final boolean increment) throws UserManagementException;
 
     /**
      * 
@@ -184,7 +166,7 @@ public interface UserManager
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
-    boolean changeUserPassword(final String userId, final String newPass) throws UserManagementException;
+    boolean modifyUserPassword(final String userId, final String newPass) throws UserManagementException;
 
     /**
      * 
@@ -195,7 +177,7 @@ public interface UserManager
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
-    boolean changeUserSecurity(final String userId, final List<String> values) throws UserManagementException;
+    boolean modifyUserSecurity(final String userId, final List<String> values) throws UserManagementException;
 
     /**
      * 
@@ -207,9 +189,7 @@ public interface UserManager
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
-    boolean addOtpSecret(final String userId, final String secret) throws UserManagementException;
-
-    boolean removeOtpSecret(final String userId) throws UserManagementException;
+    boolean modifyOtpSecret(final String userId, final boolean addSecret,  final String secret) throws UserManagementException;
 
     /**
      * Searches for user accounts given provided search data.
@@ -235,7 +215,7 @@ public interface UserManager
      * @throws UserManagementException if an error occurs during processing or if an invalid
      * <code>SearchRequestType</code> value is provided.
      */
-    List<String[]> searchUsers(final String attribute, final String searchData) throws UserManagementException;
+    List<String[]> searchUsers(final String searchData) throws UserManagementException;
 
     /**
      * Loads and returns data for a provided user account. Search is performed using the user's
@@ -247,7 +227,7 @@ public interface UserManager
      * @return List<Object> - The associated user account data
      * @throws UserManagementException if an error occurs during the search process
      */
-    List<Object> loadUserAccount(final String guid) throws UserManagementException;
+    List<Object> loadUserAccount(final String userId) throws UserManagementException;
 
     /**
      * Returns a list of ALL user accounts stored in the authentication datastore. This is
