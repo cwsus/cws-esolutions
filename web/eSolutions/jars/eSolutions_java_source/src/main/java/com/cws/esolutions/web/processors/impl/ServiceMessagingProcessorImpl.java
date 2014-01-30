@@ -45,7 +45,6 @@ import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.web.processors.interfaces.IMessagingProcessor;
-import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
@@ -418,7 +417,6 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                 searchRequest.setUserAccount(searchAccount);
                 searchRequest.setApplicationName(request.getApplicationName());
                 searchRequest.setApplicationId(request.getApplicationId());
-                searchRequest.setSearchType(SearchRequestType.GUID);
                 searchRequest.setRequestor(svcAccount);
 
                 if (DEBUG)
@@ -660,7 +658,6 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
             searchRequest.setUserAccount(searchAccount);
             searchRequest.setApplicationName(request.getApplicationName());
             searchRequest.setApplicationId(request.getApplicationId());
-            searchRequest.setSearchType(SearchRequestType.GUID);
             searchRequest.setRequestor(svcAccount);
 
             if (DEBUG)

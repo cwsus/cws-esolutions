@@ -26,6 +26,7 @@ package com.cws.esolutions.security.dao.userauth.interfaces;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,5 +82,5 @@ public interface Authenticator
      * @return boolean
      * @throws AuthenticatorException
      */
-    boolean verifySecurityData(final String userId, final String guid) throws AuthenticatorException;
+    boolean verifySecurityData(final String userId, final String guid, List<String> values) throws AuthenticatorException;
 }

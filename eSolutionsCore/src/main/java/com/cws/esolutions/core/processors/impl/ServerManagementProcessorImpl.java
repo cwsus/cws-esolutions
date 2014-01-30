@@ -49,7 +49,6 @@ import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.dto.ServerManagementRequest;
 import com.cws.esolutions.core.processors.dto.ServerManagementResponse;
-import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
@@ -891,7 +890,6 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                         searchRequest.setUserAccount(searchAccount);
                         searchRequest.setApplicationName(request.getApplicationName());
                         searchRequest.setApplicationId(request.getApplicationId());
-                        searchRequest.setSearchType(SearchRequestType.GUID);
                         searchRequest.setRequestor(svcAccount);
 
                         if (DEBUG)

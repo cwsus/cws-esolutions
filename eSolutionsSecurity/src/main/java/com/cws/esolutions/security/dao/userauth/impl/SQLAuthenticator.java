@@ -25,7 +25,6 @@ package com.cws.esolutions.security.dao.userauth.impl;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.Map;
 import java.util.List;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -33,7 +32,6 @@ import java.sql.Connection;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.sql.CallableStatement;
-import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
@@ -49,15 +47,14 @@ public class SQLAuthenticator implements Authenticator
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String, java.util.List)
      */
     @Override
-    public synchronized List<Object> performLogon(final String username, final String password, final List<String> attributes) throws AuthenticatorException
+    public synchronized List<Object> performLogon(final String username, final String password) throws AuthenticatorException
     {
-        final String methodName = SQLAuthenticator.CNAME + "#performLogon(final String user, final String password, final List<String> attributes) throws AuthenticatorException";
+        final String methodName = SQLAuthenticator.CNAME + "#performLogon(final String user, final String password) throws AuthenticatorException";
         
         if(DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("String: {}", username);
-            DEBUGGER.debug("Value: {}", attributes);
         }
 
         Connection sqlConn = null;
@@ -102,7 +99,7 @@ public class SQLAuthenticator implements Authenticator
                 resultSet.first();
                 userAccount = new ArrayList<Object>();
 
-                for (String attribute : attributes)
+                for (String attribute : authData.getEntries())
                 {
                     if (DEBUG)
                     {
@@ -156,16 +153,15 @@ public class SQLAuthenticator implements Authenticator
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainSecurityData(java.lang.String, java.lang.String, java.util.List)
      */
     @Override
-    public synchronized List<String> obtainSecurityData(final String userName, final String userGuid, final List<String> attributes) throws AuthenticatorException
+    public synchronized List<String> obtainSecurityData(final String userName, final String userGuid) throws AuthenticatorException
     {
-        final String methodName = SQLAuthenticator.CNAME + "#obtainSecurityData(final String userName, final String userGuid, final List<String> attributes) throws AuthenticatorException";
+        final String methodName = SQLAuthenticator.CNAME + "#obtainSecurityData(final String userName, final String userGuid) throws AuthenticatorException";
         
         if(DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", userName);
             DEBUGGER.debug("Value: {}", userGuid);
-            DEBUGGER.debug("Value: {}", attributes);
         }
 
         Connection sqlConn = null;
@@ -206,7 +202,7 @@ public class SQLAuthenticator implements Authenticator
                     resultSet.first();
                     userSecurity = new ArrayList<>();
 
-                    for (String attribute : attributes)
+                    for (String attribute : authData.getEntries())
                     {
                         if (DEBUG)
                         {
@@ -261,16 +257,15 @@ public class SQLAuthenticator implements Authenticator
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainOtpSecret(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public synchronized String obtainOtpSecret(final String userName, final String userGuid, final String attribute) throws AuthenticatorException
+    public synchronized String obtainOtpSecret(final String userName, final String userGuid) throws AuthenticatorException
     {
-        final String methodName = SQLAuthenticator.CNAME + "#obtainOtpSecret(final String userName, final String userGuid, final String attribute) throws AuthenticatorException";
+        final String methodName = SQLAuthenticator.CNAME + "#obtainOtpSecret(final String userName, final String userGuid) throws AuthenticatorException";
         
         if(DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", userName);
             DEBUGGER.debug("Value: {}", userGuid);
-            DEBUGGER.debug("Value: {}", attribute);
         }
 
         String otpSecret = null;
@@ -311,7 +306,7 @@ public class SQLAuthenticator implements Authenticator
                 {
                     resultSet.first();
 
-                    otpSecret = resultSet.getString(attribute);
+                    otpSecret = resultSet.getString(1);
                 }
             }
         }
@@ -353,21 +348,18 @@ public class SQLAuthenticator implements Authenticator
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#verifySecurityData(java.lang.String, java.lang.String, java.util.Map)
      */
     @Override
-    public synchronized boolean verifySecurityData(final String userId, final String userGuid, final Map<String, String> attributes) throws AuthenticatorException
+    public synchronized boolean verifySecurityData(final String userId, final String userGuid, final List<String> attributes) throws AuthenticatorException
     {
-        final String methodName = SQLAuthenticator.CNAME + "#verifySecurityData(final String userId, final String userGuid, final Map<String, String> attributes) throws AuthenticatorException";
+        final String methodName = SQLAuthenticator.CNAME + "#verifySecurityData(final String userId, final String userGuid, final List<String> attributes) throws AuthenticatorException";
 
         if(DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", userId);
             DEBUGGER.debug("Value: {}", userGuid);
-            DEBUGGER.debug("Value: {}", attributes);
         }
 
         Connection sqlConn = null;
-        ResultSet resultSet = null;
-        boolean isAuthorized = false;
         CallableStatement stmt = null;
 
         try
@@ -381,48 +373,17 @@ public class SQLAuthenticator implements Authenticator
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL verifySecurityQuestions(?, ?)}");
+            stmt = sqlConn.prepareCall("{CALL verifySecurityQuestions(?, ?, ?)}");
             stmt.setString(1, userId); // guid
-            stmt.setString(2, userGuid); // username
+            stmt.setString(2, attributes.get(0)); // username
+            stmt.setString(3, attributes.get(1)); // username
 
             if (DEBUG)
             {
                 DEBUGGER.debug("Statement: {}", stmt.toString());
             }
 
-            if (!(stmt.execute()))
-            {
-                throw new SQLException("Unable to load provided user account");
-            }
-
-            resultSet = stmt.getResultSet();
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ResultSet: {}", resultSet);
-            }
-
-            if (!(resultSet.next()))
-            {
-                throw new SQLException("Unable to load provided user account");
-            }
-
-            resultSet.first();
-
-            for (String key : attributes.keySet())
-            {
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Key: {}", key);
-                }
-
-                if (StringUtils.equals(resultSet.getString(key), attributes.get(key)))
-                {
-                    break;
-                }
-
-                isAuthorized = true;
-            }
+            return stmt.execute();
         }
         catch (SQLException sqx)
         {
@@ -434,11 +395,6 @@ public class SQLAuthenticator implements Authenticator
         {
             try
             {
-                if (resultSet != null)
-                {
-                    resultSet.close();
-                }
-            
                 if (stmt != null)
                 {
                     stmt.close();
@@ -454,7 +410,5 @@ public class SQLAuthenticator implements Authenticator
                 ERROR_RECORDER.error(sqx.getMessage(), sqx);
             }
         }
-
-        return isAuthorized;
     }
 }

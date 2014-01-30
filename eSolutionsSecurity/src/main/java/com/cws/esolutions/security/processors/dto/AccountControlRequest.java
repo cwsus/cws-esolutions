@@ -37,7 +37,6 @@ import com.cws.esolutions.security.processors.enums.ControlType;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.enums.ModificationType;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
-import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -60,9 +59,8 @@ public class AccountControlRequest implements Serializable
     private UserAccount userAccount = null;
     private RequestHostInfo hostInfo = null;
     private ModificationType modType = null;
-    private AuthenticationData userSecurity = null;
     private List<String> servicesList = null;
-    private SearchRequestType searchType = null;
+    private AuthenticationData userSecurity = null;
 
     private static final long serialVersionUID = -6754484691575800762L;
     private static final String CNAME = AccountControlRequest.class.getName();
@@ -159,19 +157,6 @@ public class AccountControlRequest implements Serializable
         }
 
         this.modType = value;
-    }
-
-    public final void setSearchType(final SearchRequestType value)
-    {
-        final String methodName = AccountControlRequest.CNAME + "#setSearchType(final SearchRequestType value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.searchType = value;
     }
 
     public final void setRequestor(final UserAccount value)
@@ -353,19 +338,6 @@ public class AccountControlRequest implements Serializable
         }
 
         return this.modType;
-    }
-
-    public final SearchRequestType getSearchType()
-    {
-        final String methodName = AccountControlRequest.CNAME + "#getSearchType()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.searchType);
-        }
-
-        return this.searchType;
     }
 
     public final UserAccount getRequestor()

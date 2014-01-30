@@ -62,7 +62,6 @@ import com.cws.esolutions.security.processors.enums.ModificationType;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
-import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
@@ -578,7 +577,6 @@ public class UserManagementController
                 request.setApplicationId(this.appConfig.getApplicationName());
                 request.setControlType(ControlType.LOOKUP);
                 request.setModType(ModificationType.NONE);
-                request.setSearchType(SearchRequestType.ALL);
                 request.setRequestor(userAccount);
                 request.setIsLogonRequest(false);
                 request.setServiceId(this.serviceId);
@@ -2329,7 +2327,6 @@ public class UserManagementController
                 searchRequest.setApplicationId(this.appConfig.getApplicationName());
                 searchRequest.setControlType(ControlType.LOOKUP);
                 searchRequest.setModType(ModificationType.NONE);
-                searchRequest.setSearchType(SearchRequestType.ALL);
                 searchRequest.setRequestor(userAccount);
                 searchRequest.setIsLogonRequest(false);
                 searchRequest.setServiceId(this.serviceId);

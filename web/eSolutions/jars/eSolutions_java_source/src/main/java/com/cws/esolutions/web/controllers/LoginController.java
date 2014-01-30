@@ -49,7 +49,6 @@ import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
-import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
 import com.cws.esolutions.web.processors.impl.ServiceMessagingProcessorImpl;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
@@ -501,7 +500,6 @@ public class LoginController
             }
 
             AuthenticationRequest authRequest = new AuthenticationRequest();
-            authRequest.setAuthType(AuthenticationType.LOGIN);
             authRequest.setHostInfo(reqInfo);
             authRequest.setTimeoutValue(this.appConfig.getRequestTimeout());
             authRequest.setUserAccount(reqUser);
@@ -677,7 +675,6 @@ public class LoginController
             }
 
             AuthenticationRequest authRequest = new AuthenticationRequest();
-            authRequest.setAuthType(AuthenticationType.LOGIN);
             authRequest.setHostInfo(reqInfo);
             authRequest.setTimeoutValue(this.appConfig.getRequestTimeout());
             authRequest.setUserAccount((UserAccount) hRequest.getSession().getAttribute(Constants.USER_ACCOUNT));

@@ -34,7 +34,6 @@ import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
-import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -54,7 +53,6 @@ public class AuthenticationRequest implements Serializable
     private UserAccount userAccount = null;
     private RequestHostInfo hostInfo = null;
     private AuthenticationData userSecurity = null;
-    private AuthenticationType authType = null;
 
     private static final long serialVersionUID = -201074803920605226L;
     private static final String CNAME = AuthenticationRequest.class.getName();
@@ -125,19 +123,6 @@ public class AuthenticationRequest implements Serializable
         }
 
         this.applicationId = value;
-    }
-
-    public final void setAuthType(final AuthenticationType value)
-    {
-        final String methodName = AuthenticationRequest.CNAME + "#setAuthType(final AuthenticationType value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AuthenticationType: {}", value);
-        }
-
-        this.authType = value;
     }
 
     public final void setTimeoutValue(final int value)
@@ -252,19 +237,6 @@ public class AuthenticationRequest implements Serializable
         }
 
         return this.applicationId;
-    }
-
-    public final AuthenticationType getAuthType()
-    {
-        final String methodName = AuthenticationRequest.CNAME + "#getAuthType()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AuthenticationType: {}", this.authType);
-        }
-
-        return this.authType;
     }
 
     public final int getTimeoutValue()

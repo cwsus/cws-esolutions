@@ -36,7 +36,6 @@ import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
-import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 
 public class SQLUserManagerTest
@@ -62,9 +61,9 @@ public class SQLUserManagerTest
     {
         try
         {
-            final UserManager userManager = new SQLUserManager();
+            final UserManager manager = new LDAPUserManager();
 
-            Assert.assertTrue(userManager.addUserAccount(
+            Assert.assertTrue(manager.addUserAccount(
                     new ArrayList<>(
                             Arrays.asList(
                                     "junit-test",
@@ -89,7 +88,7 @@ public class SQLUserManagerTest
     {
         try
         {
-            final UserManager manager = new SQLUserManager();
+            final UserManager manager = new LDAPUserManager();
 
             Assert.assertTrue(manager.modifyUserEmail("junit-test", "test@test.com"));
         }
@@ -104,7 +103,7 @@ public class SQLUserManagerTest
     {
         try
         {
-            final UserManager manager = new SQLUserManager();
+            final UserManager manager = new LDAPUserManager();
 
             Assert.assertTrue(manager.modifyUserContact("junit-test", new ArrayList<>(
                     Arrays.asList(
@@ -122,7 +121,7 @@ public class SQLUserManagerTest
     {
         try
         {
-            final UserManager manager = new SQLUserManager();
+            final UserManager manager = new LDAPUserManager();
 
             Assert.assertTrue(manager.modifyUserSuspension("junit-test", true));
         }
@@ -137,9 +136,9 @@ public class SQLUserManagerTest
     {
         try
         {
-            final UserManager manager = new SQLUserManager();
+            final UserManager manager = new LDAPUserManager();
 
-            Assert.assertTrue(manager.modifyUserRole("junit-test", new Object[] { "Service Operator" } ));
+            Assert.assertTrue(manager.modifyUserGroups("junit-test", new Object[] { "Service Operator" } ));
         }
         catch (UserManagementException umx)
         {
@@ -152,9 +151,9 @@ public class SQLUserManagerTest
     {
         try
         {
-            final UserManager manager = new SQLUserManager();
+            final UserManager manager = new LDAPUserManager();
 
-            Assert.assertTrue(manager.lockOnlineReset("junit-test"));
+            Assert.assertTrue(manager.modifyOlrLock("junit-test", true));
         }
         catch (UserManagementException umx)
         {
@@ -167,9 +166,9 @@ public class SQLUserManagerTest
     {
         try
         {
-            final UserManager manager = new SQLUserManager();
+            final UserManager manager = new LDAPUserManager();
 
-            Assert.assertTrue(manager.clearLockCount("junit-test"));
+            Assert.assertTrue(manager.modifyUserLock("junit-test", false, 0));
         }
         catch (UserManagementException umx)
         {
@@ -182,9 +181,9 @@ public class SQLUserManagerTest
     {
         try
         {
-            final UserManager manager = new SQLUserManager();
+            final UserManager manager = new LDAPUserManager();
 
-            manager.lockUserAccount("junit-test");
+            Assert.assertTrue(manager.modifyUserLock("junit-test", true, 0));
         }
         catch (UserManagementException umx)
         {
@@ -199,7 +198,7 @@ public class SQLUserManagerTest
         {
             final UserManager manager = new SQLUserManager();
 
-            Assert.assertTrue(manager.changeUserPassword("junit-test",
+            Assert.assertTrue(manager.modifyUserPassword("junit-test",
                     "6TPeXOxpCKce2wPZMM3nIGtbN2BRk31guOO7utNwfvtjmGxqvLhBi/Atd0ZzxDlR2/5l0cKJgqiMTHCoXPjhwQ=="));
         }
         catch (UserManagementException umx)
@@ -213,9 +212,9 @@ public class SQLUserManagerTest
     {
         try
         {
-            final UserManager manager = new SQLUserManager();
+            final UserManager manager = new LDAPUserManager();
 
-            Assert.assertTrue(manager.changeUserSecurity("junit-test",
+            Assert.assertTrue(manager.modifyUserSecurity("junit-test",
                     new ArrayList<>(
                             Arrays.asList(
                                     "question 1",
@@ -234,9 +233,9 @@ public class SQLUserManagerTest
     {
         try
         {
-            final UserManager userManager = new SQLUserManager();
+            final UserManager manager = new LDAPUserManager();
 
-            Assert.assertNotNull(userManager.searchUsers(SearchRequestType.GUID, SQLUserManagerTest.GUID));
+            Assert.assertNotNull(manager.searchUsers(SQLUserManagerTest.GUID));
         }
         catch (UserManagementException umx)
         {
@@ -249,9 +248,9 @@ public class SQLUserManagerTest
     {
         try
         {
-            final UserManager userManager = new SQLUserManager();
+            final UserManager manager = new LDAPUserManager();
 
-            Assert.assertNotNull(userManager.loadUserAccount(SQLUserManagerTest.GUID));
+            Assert.assertNotNull(manager.loadUserAccount(SQLUserManagerTest.GUID));
         }
         catch (UserManagementException umx)
         {
@@ -264,7 +263,7 @@ public class SQLUserManagerTest
     {
         try
         {
-            final UserManager manager = new SQLUserManager();
+            final UserManager manager = new LDAPUserManager();
 
             Assert.assertTrue(manager.removeUserAccount("junit-test"));
         }

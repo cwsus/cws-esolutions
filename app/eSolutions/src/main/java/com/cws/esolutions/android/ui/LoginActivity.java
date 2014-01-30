@@ -44,7 +44,6 @@ import java.security.NoSuchAlgorithmException;
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.android.tasks.UserAuthenticationTask;
-import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
 
 public class LoginActivity extends Activity
 {
@@ -183,7 +182,7 @@ public class LoginActivity extends Activity
         else
         {
             final List<Object> authRequest = new ArrayList<Object>(
-                    Arrays.asList(AuthenticationType.LOGIN,
+                    Arrays.asList(
                             etRequestValue.getText().toString(),
                             etRequestValue.getText().toString()));
             final UserAuthenticationTask userLogin = new UserAuthenticationTask(LoginActivity.this, MainActivity.class);

@@ -112,15 +112,14 @@ public class LDAPKeyManager implements KeyManager
      * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#returnKeys(java.lang.String, java.lang.String)
      */
     @Override
-    public synchronized KeyPair returnKeys(final String guid, final String attributeName) throws KeyManagementException
+    public synchronized KeyPair returnKeys(final String guid) throws KeyManagementException
     {
-        final String methodName = LDAPKeyManager.CNAME + "#returnKeys(final String guid, final String attributeName) throws KeyManagementException";
+        final String methodName = LDAPKeyManager.CNAME + "#returnKeys(final String guid) throws KeyManagementException";
         
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", guid);
-            DEBUGGER.debug("Value: {}", attributeName);
         }
 
         KeyPair keyPair = null;
@@ -171,7 +170,7 @@ public class LDAPKeyManager implements KeyManager
                     this.connProps.getProperty(this.connProps.getProperty(LDAPKeyManager.USER_BASE)),
                     SearchScope.SUB,
                     searchFilter,
-                    attributeName);
+                    authData.getPublicKey());
 
             if (DEBUG)
             {
@@ -190,7 +189,7 @@ public class LDAPKeyManager implements KeyManager
                 throw new KeyManagementException("No users were located with the search data provided");
             }
 
-            byte[] pubKeyBytes = searchResult.getSearchEntries().get(0).getAttributeValueBytes(attributeName);
+            byte[] pubKeyBytes = searchResult.getSearchEntries().get(0).getAttributeValueBytes(authData.getPublicKey());
 
             // privkey will always be stored in the database
             // i probably shouldnt mix this but im going to anyway
@@ -302,15 +301,14 @@ public class LDAPKeyManager implements KeyManager
      * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#createKeys(java.lang.String, java.lang.String)
      */
     @Override
-    public synchronized boolean createKeys(final String guid, final String attributeName) throws KeyManagementException
+    public synchronized boolean createKeys(final String guid) throws KeyManagementException
     {
-        final String methodName = LDAPKeyManager.CNAME + "#createKeys(final String guid, final String attributeName) throws KeyManagementException";
+        final String methodName = LDAPKeyManager.CNAME + "#createKeys(final String guid) throws KeyManagementException";
         
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", guid);
-            DEBUGGER.debug("Value: {}", attributeName);
         }
 
         Connection sqlConn = null;
@@ -403,7 +401,7 @@ public class LDAPKeyManager implements KeyManager
             {
                 List<Modification> modifyList = new ArrayList<>(
                         Arrays.asList(
-                                new Modification(ModificationType.ADD, attributeName, keyPair.getPublic().getEncoded())));
+                                new Modification(ModificationType.ADD, authData.getPublicKey(), keyPair.getPublic().getEncoded())));
 
                 if (DEBUG)
                 {
@@ -504,15 +502,14 @@ public class LDAPKeyManager implements KeyManager
      * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#removeKeys(java.lang.String, java.lang.String)
      */
     @Override
-    public synchronized boolean removeKeys(final String guid, final String attributeName) throws KeyManagementException
+    public synchronized boolean removeKeys(final String guid) throws KeyManagementException
     {
-        final String methodName = LDAPKeyManager.CNAME + "#removeKeys(final String guid, final String attributeName) throws KeyManagementException";
+        final String methodName = LDAPKeyManager.CNAME + "#removeKeys(final String guid) throws KeyManagementException";
         
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", guid);
-            DEBUGGER.debug("Value: {}", attributeName);
         }
 
         Connection sqlConn = null;
@@ -588,7 +585,7 @@ public class LDAPKeyManager implements KeyManager
             {
                 List<Modification> modifyList = new ArrayList<>(
                         Arrays.asList(
-                                new Modification(ModificationType.DELETE, attributeName)));
+                                new Modification(ModificationType.DELETE, authData.getPublicKey())));
 
                 if (DEBUG)
                 {

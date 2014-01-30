@@ -46,7 +46,6 @@ import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
-import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
@@ -87,7 +86,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
         try
         {
-            List<Object[]> userInfo = userManager.searchUsers(IAuthenticationProcessor.ATTRIBUTE_UID, authUser.getUsername());
+            List<String[]> userInfo = userManager.searchUsers(authUser.getUsername());
 
             if (DEBUG)
             {
@@ -115,13 +114,12 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 throw new AuthenticationException("Unable to obtain configured user salt. Cannot continue");
             }
 
-            authenticator.performLogon(userAccount.getUsername(),
+            List<Object> authObject = authenticator.performLogon((String) userData[1],
                     PasswordUtils.encryptText(
-                        reqSecurity.getPassword(),
+                            authSec.getPassword(),
                         userSalt,
-                        secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
-                        secBean.getConfigData().getSecurityConfig().getIterations()),
-                    authData.getEntries());
+                        bean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
+                        bean.getConfigData().getSecurityConfig().getIterations()));
 
             if (DEBUG)
             {
@@ -241,7 +239,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 {
                     // failed authentication, update counter
                     // find out if this is a valid user...
-                    List<Object[]> userList = userManager.searchUsers(IAuthenticationProcessor.ATTRIBUTE_UID, authUser.getUsername());
+                    List<String[]> userList = userManager.searchUsers(authUser.getUsername());
 
                     // only do the work if the userlist is equal to 1.
                     // if there were 150 users found then we dont want
@@ -267,7 +265,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                         }
 
                         // do it
-                        userManager.clearLockCount(name);
+                        userManager.modifyUserLock(guid, false, lockCount + 1);
                     }
                 }
             }
@@ -381,7 +379,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 return response;
             }
 
-            List<Object> userData = userManager.loadUserAccount(authUser.getGuid(), authData.getEntries());
+            List<Object> userData = userManager.loadUserAccount(authUser.getGuid());
 
             userAccount = new UserAccount();
             userAccount.setGuid((String) userData.get(0));
@@ -537,7 +535,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
         try
         {
-            List<Object[]> userInfo = userManager.searchUsers(IAuthenticationProcessor.ATTRIBUTE_UID, userAccount.getUsername());
+            List<String[]> userInfo = userManager.searchUsers(userAccount.getUsername());
 
             if (DEBUG)
             {
@@ -674,16 +672,13 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
             if (StringUtils.isNotEmpty(userSalt))
             {
-                final List<String> requestList = new ArrayList<>(
-                        Arrays.asList(
-                                userAccount.getGuid(),
-                                userAccount.getUsername(),
-                                PasswordUtils.encryptText(userSecurity.getSecAnswerOne(), userSalt,
-                                        secConfig.getAuthAlgorithm(), secConfig.getIterations()),
-                                PasswordUtils.encryptText(userSecurity.getSecAnswerTwo(), userSalt,
-                                        secConfig.getAuthAlgorithm(), secConfig.getIterations())));
-
-                boolean isVerified = authenticator.verifySecurityData(requestList);
+                boolean isVerified = authenticator.verifySecurityData(userAccount.getUsername(), userAccount.getGuid(),
+                        new ArrayList<String>(
+                                Arrays.asList(
+                                        PasswordUtils.encryptText(userSecurity.getSecAnswerOne(), userSalt,
+                                                secConfig.getAuthAlgorithm(), secConfig.getIterations()),
+                                        PasswordUtils.encryptText(userSecurity.getSecAnswerTwo(), userSalt,
+                                                secConfig.getAuthAlgorithm(), secConfig.getIterations()))));
 
                 if (DEBUG)
                 {
@@ -700,7 +695,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     {
                         try
                         {
-                            userManager.lockOnlineReset(userAccount.getUsername());
+                            userManager.modifyOlrLock(userAccount.getUsername(), true);
                         }
                         catch (UserManagementException umx)
                         {

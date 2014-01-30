@@ -64,7 +64,6 @@ import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.config.enums.AuthRepositoryType;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
-import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
 import com.cws.esolutions.security.processors.impl.AuthenticationProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
@@ -372,7 +371,6 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
 
             AuthenticationRequest authReq = new AuthenticationRequest();
             authReq.setApplicationName(Constants.APPLICATION_NAME);
-            authReq.setAuthType((AuthenticationType) requestList.get(0));
             authReq.setUserAccount(userAccount);
             authReq.setApplicationId(Constants.APPLICATION_ID);
             authReq.setHostInfo(reqInfo);

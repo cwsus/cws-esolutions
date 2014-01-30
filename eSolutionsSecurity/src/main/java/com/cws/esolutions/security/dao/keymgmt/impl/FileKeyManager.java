@@ -62,9 +62,9 @@ public class FileKeyManager implements KeyManager
      * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#returnKeys(java.lang.String, java.lang.String)
      */
     @Override
-    public synchronized KeyPair returnKeys(final String guid, final String attributeName) throws KeyManagementException
+    public synchronized KeyPair returnKeys(final String guid) throws KeyManagementException
     {
-        final String methodName = FileKeyManager.CNAME + "#returnKeys(final String guid, final String attributeName) throws KeyManagementException";
+        final String methodName = FileKeyManager.CNAME + "#returnKeys(final String guid) throws KeyManagementException";
         
         if (DEBUG)
         {
@@ -167,9 +167,9 @@ public class FileKeyManager implements KeyManager
      * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#createKeys(java.lang.String, java.lang.String)
      */
     @Override
-    public synchronized boolean createKeys(final String guid, final String attributeName) throws KeyManagementException
+    public synchronized boolean createKeys(final String guid) throws KeyManagementException
     {
-        final String methodName = FileKeyManager.CNAME + "#createKeys(final String guid, final String attributeName) throws KeyManagementException";
+        final String methodName = FileKeyManager.CNAME + "#createKeys(final String guid) throws KeyManagementException";
         
         if (DEBUG)
         {
@@ -275,9 +275,9 @@ public class FileKeyManager implements KeyManager
      * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#removeKeys(java.lang.String, java.lang.String)
      */
     @Override
-    public synchronized boolean removeKeys(final String guid, final String attributeName) throws KeyManagementException
+    public synchronized boolean removeKeys(final String guid) throws KeyManagementException
     {
-        final String methodName = FileKeyManager.CNAME + "#removeKeys(final String guid, final String attributeName) throws KeyManagementException";
+        final String methodName = FileKeyManager.CNAME + "#removeKeys(final String guid) throws KeyManagementException";
         
         if (DEBUG)
         {

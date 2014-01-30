@@ -26,22 +26,16 @@ package com.cws.esolutions.security.dao.usermgmt.impl;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.util.UUID;
-
 import org.junit.Test;
 import org.junit.After;
-
 import java.util.Arrays;
-
 import org.junit.Before;
 import org.junit.Assert;
-
 import java.util.ArrayList;
-
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
-import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 
 public class LDAPUserManagerTest
@@ -144,7 +138,7 @@ public class LDAPUserManagerTest
         {
             final UserManager manager = new LDAPUserManager();
 
-            Assert.assertTrue(manager.modifyUserRole("junit-test", new Object[] { "Service Operator" } ));
+            Assert.assertTrue(manager.modifyUserGroups("junit-test", new Object[] { "Service Operator" } ));
         }
         catch (UserManagementException umx)
         {
@@ -159,7 +153,7 @@ public class LDAPUserManagerTest
         {
             final UserManager manager = new LDAPUserManager();
 
-            Assert.assertTrue(manager.lockOnlineReset("junit-test"));
+            Assert.assertTrue(manager.modifyOlrLock("junit-test", true));
         }
         catch (UserManagementException umx)
         {
@@ -174,7 +168,7 @@ public class LDAPUserManagerTest
         {
             final UserManager manager = new LDAPUserManager();
 
-            Assert.assertTrue(manager.clearLockCount("junit-test"));
+            Assert.assertTrue(manager.modifyUserLock("junit-test", false, 0));
         }
         catch (UserManagementException umx)
         {
@@ -189,7 +183,7 @@ public class LDAPUserManagerTest
         {
             final UserManager manager = new LDAPUserManager();
 
-            manager.lockUserAccount("junit-test");
+            Assert.assertTrue(manager.modifyUserLock("junit-test", true, 0));
         }
         catch (UserManagementException umx)
         {
@@ -204,7 +198,7 @@ public class LDAPUserManagerTest
         {
             final UserManager manager = new SQLUserManager();
 
-            Assert.assertTrue(manager.changeUserPassword("junit-test",
+            Assert.assertTrue(manager.modifyUserPassword("junit-test",
                     "6TPeXOxpCKce2wPZMM3nIGtbN2BRk31guOO7utNwfvtjmGxqvLhBi/Atd0ZzxDlR2/5l0cKJgqiMTHCoXPjhwQ=="));
         }
         catch (UserManagementException umx)
@@ -220,7 +214,7 @@ public class LDAPUserManagerTest
         {
             final UserManager manager = new LDAPUserManager();
 
-            Assert.assertTrue(manager.changeUserSecurity("junit-test",
+            Assert.assertTrue(manager.modifyUserSecurity("junit-test",
                     new ArrayList<>(
                             Arrays.asList(
                                     "question 1",
@@ -241,7 +235,7 @@ public class LDAPUserManagerTest
         {
             final UserManager manager = new LDAPUserManager();
 
-            Assert.assertNotNull(manager.searchUsers(SearchRequestType.GUID, LDAPUserManagerTest.GUID));
+            Assert.assertNotNull(manager.searchUsers(LDAPUserManagerTest.GUID));
         }
         catch (UserManagementException umx)
         {

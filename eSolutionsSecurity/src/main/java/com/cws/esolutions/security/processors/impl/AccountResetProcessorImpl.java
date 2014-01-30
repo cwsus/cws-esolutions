@@ -42,7 +42,6 @@ import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.processors.dto.AccountResetRequest;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
-import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
@@ -106,7 +105,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                 if (StringUtils.isNotEmpty(commonName))
                 {
                     // good, now we have something we can look for
-                    List<Object[]> userList = userManager.searchUsers(SearchRequestType.GUID, commonName);
+                    List<String[]> userList = userManager.searchUsers(commonName);
 
                     if (DEBUG)
                     {

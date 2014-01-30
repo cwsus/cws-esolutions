@@ -72,7 +72,7 @@ public interface IAuthenticationProcessor
     static final IAccountControlProcessor controlProcessor = new AccountControlProcessorImpl();
     static final IUserSecurityInformationDAO userSec = new UserSecurityInformationDAOImpl();
     static final Authenticator authenticator = AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());
-    static final UserManager userManager = UserManagerFactory.getUserManager(svcBean.getConfigData().getSecurityConfig().getUserManager());
+    static final UserManager userManager = UserManagerFactory.getUserManager(bean.getConfigData().getSecurityConfig().getUserManager());
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

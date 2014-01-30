@@ -64,12 +64,10 @@ import com.cws.esolutions.security.processors.dto.AccountResetRequest;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
 import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
-import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 import com.cws.esolutions.web.processors.interfaces.IMessagingProcessor;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
-import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
 import com.cws.esolutions.web.processors.impl.ServiceMessagingProcessorImpl;
 import com.cws.esolutions.security.processors.impl.AccountResetProcessorImpl;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
@@ -769,7 +767,6 @@ public class OnlineResetController
             controlReq.setIsLogonRequest(false);
             controlReq.setModType(ModificationType.NONE);
             controlReq.setUserAccount(reqAccount);
-            controlReq.setSearchType(SearchRequestType.FORGOTUID);
             controlReq.setApplicationId(this.appConfig.getApplicationId());
             controlReq.setApplicationName(this.appConfig.getApplicationName());
 
@@ -946,7 +943,6 @@ public class OnlineResetController
             }
 
             AuthenticationRequest secRequest = new AuthenticationRequest();
-            secRequest.setAuthType(AuthenticationType.RESET);
             secRequest.setHostInfo(reqInfo);
             secRequest.setUserAccount(reqAccount);
             secRequest.setApplicationId(this.appConfig.getApplicationId());
@@ -1123,7 +1119,6 @@ public class OnlineResetController
             authRequest.setHostInfo(reqInfo);
             authRequest.setUserAccount(userAccount);
             authRequest.setUserSecurity(userSecurity);
-            authRequest.setAuthType(AuthenticationType.RESET);
             authRequest.setTimeoutValue(this.appConfig.getRequestTimeout());
             authRequest.setApplicationId(this.appConfig.getApplicationId());
             authRequest.setApplicationName(this.appConfig.getApplicationName());

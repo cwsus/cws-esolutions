@@ -25,7 +25,6 @@ package com.cws.esolutions.core.config.xml;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.io.File;
 import java.util.List;
 import org.slf4j.Logger;
 import java.io.Serializable;
@@ -57,10 +56,7 @@ public final class ApplicationConfig implements Serializable
     private String proxyConfig = null;
     private String nlsFileName = null;
     private String emailAliasId = null;
-    private File fileRepositoryRoot = null;
     private String agentBundleSource = null;
-    private File serviceRootDirectory = null;
-    private File archiveRootDirectory = null;
     private String virtualManagerClass = null;
     private List<String> serviceAccount = null;
 
@@ -160,45 +156,6 @@ public final class ApplicationConfig implements Serializable
         }
 
         this.proxyConfig = value;
-    }
-
-    public final void setServiceRootDirectory(final File value)
-    {
-        final String methodName = ApplicationConfig.CNAME + "#setServiceRootDirectory(final File value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.serviceRootDirectory = value;
-    }
-
-    public final void setArchiveRootDirectory(final File value)
-    {
-        final String methodName = ApplicationConfig.CNAME + "#setArchiveRootDirectory(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.archiveRootDirectory = value;
-    }
-
-    public final void setFileRepositoryRoot(final File value)
-    {
-        final String methodName = ApplicationConfig.CNAME + "#setFileRepositoryRoot(final File value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.fileRepositoryRoot = value;
     }
 
     public final void setVirtualManagerClass(final String value)
@@ -336,48 +293,6 @@ public final class ApplicationConfig implements Serializable
         }
 
         return this.proxyConfig;
-    }
-
-    @XmlElement(name = "serviceRootDirectory")
-    public final File getServiceRootDirectory()
-    {
-        final String methodName = ApplicationConfig.CNAME + "#getServiceRootDirectory()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.serviceRootDirectory);
-        }
-
-        return this.serviceRootDirectory;
-    }
-
-    @XmlElement(name = "archiveRootDirectory")
-    public File getArchiveRootDirectory()
-    {
-        final String methodName = ApplicationConfig.CNAME + "#getArchiveRootDirectory()";
-        
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.archiveRootDirectory);
-        }
-        
-        return this.archiveRootDirectory;
-    }
-
-    @XmlElement(name = "fileRepositoryRoot")
-    public File getFileRepositoryRoot()
-    {
-        final String methodName = ApplicationConfig.CNAME + "#getFileRepositoryRoot()";
-        
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.fileRepositoryRoot);
-        }
-        
-        return this.fileRepositoryRoot;
     }
 
     @XmlElement(name = "virtualManagerClass")

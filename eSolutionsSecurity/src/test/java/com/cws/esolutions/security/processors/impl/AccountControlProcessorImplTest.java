@@ -40,7 +40,6 @@ import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.enums.ModificationType;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
-import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
@@ -154,7 +153,6 @@ public class AccountControlProcessorImplTest
         request.setIsLogonRequest(false);
         request.setRequestor(userAccount);
         request.setUserAccount(searchUser);
-        request.setSearchType(SearchRequestType.USERNAME);
 
         try
         {

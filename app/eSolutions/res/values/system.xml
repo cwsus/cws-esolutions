@@ -1,5 +1,5 @@
 <resources>
     <string name = "applicationConfigFile">eSolutions/application.properties</string>
-    <string name = "securityConfigFile">/SecurityService/ServiceConfig.properties</string>
-    <string name = "coreConfigFile">/eSolutionsCore/ServiceConfig.properties</string>
+    <string name = "securityConfigFile">SecurityService/config/ServiceConfig.properties</string>
+    <string name = "coreConfigFile">eSolutionsCore/config/ServiceConfig.properties</string>
 </resources>

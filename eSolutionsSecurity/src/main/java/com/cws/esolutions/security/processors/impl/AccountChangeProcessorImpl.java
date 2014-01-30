@@ -117,8 +117,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                             reqSecurity.getPassword(),
                             userSalt,
                             secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
-                            secBean.getConfigData().getSecurityConfig().getIterations()),
-                        authData.getEntries());
+                            secBean.getConfigData().getSecurityConfig().getIterations()));
 
                 boolean isComplete = userManager.modifyUserEmail(userAccount.getUsername(), userAccount.getEmailAddr());
 
@@ -248,8 +247,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                             reqSecurity.getPassword(),
                             userSalt,
                             secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
-                            secBean.getConfigData().getSecurityConfig().getIterations()),
-                        authData.getEntries());
+                            secBean.getConfigData().getSecurityConfig().getIterations()));
 
                 boolean isComplete = userManager.modifyUserContact(userAccount.getUsername(),
                         new ArrayList<>(
@@ -407,8 +405,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                     reqSecurity.getPassword(),
                                     userSalt,
                                     secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
-                                    secBean.getConfigData().getSecurityConfig().getIterations()),
-                                authData.getEntries());
+                                    secBean.getConfigData().getSecurityConfig().getIterations()));
                     }
                 }
 
@@ -432,7 +429,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                         if (isComplete)
                         {
                             // make the modification in the user repository
-                            userManager.changeUserPassword(userAccount.getGuid(),
+                            userManager.modifyUserPassword(userAccount.getGuid(),
                                     PasswordUtils.encryptText(reqSecurity.getNewPassword(), newUserSalt,
                                             secConfig.getAuthAlgorithm(), secConfig.getIterations()));
 
@@ -475,7 +472,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                     // repository, because we couldnt update the salt value. if we don't
                                     // undo it then the user will never be able to login without admin
                                     // intervention
-                                    boolean isBackedOut = userManager.changeUserPassword(userAccount.getUsername(), currentPassword);
+                                    boolean isBackedOut = userManager.modifyUserPassword(userAccount.getUsername(), currentPassword);
 
                                     if (!(isBackedOut))
                                     {
@@ -630,8 +627,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                 reqSecurity.getPassword(),
                                 userSalt,
                                 secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
-                                secBean.getConfigData().getSecurityConfig().getIterations()),
-                            authData.getEntries());
+                                secBean.getConfigData().getSecurityConfig().getIterations()));
 
                     // ok, thats out of the way. lets keep moving.
                     String newUserSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
@@ -649,7 +645,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                             // good, move forward
                             // make the modification in the user repository
-                            boolean isComplete = userManager.changeUserSecurity(userAccount.getUsername(), 
+                            boolean isComplete = userManager.modifyUserSecurity(userAccount.getUsername(), 
                                     new ArrayList<>(
                                         Arrays.asList(
                                             reqSecurity.getSecQuestionOne(),
@@ -679,11 +675,27 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                     // repository, because we couldnt update the salt value. if we don't
                                     // undo it then the user will never be able to login without admin
                                     // intervention
-                                    boolean backoutData = userManager.changeUserSecurity(userAccount.getUsername(), currentSec);
-                                    
+                                    boolean isReverted = userManager.modifyUserSecurity(userAccount.getUsername(), 
+                                            new ArrayList<>(
+                                                Arrays.asList(
+                                                        currentSec.get(0),
+                                                        currentSec.get(1),
+                                                        currentSec.get(2),
+                                                        currentSec.get(3))));
+
+                                    if (DEBUG)
+                                    {
+                                        DEBUGGER.debug("isReverted: {}", isReverted);
+                                    }
+
                                     boolean backoutSalt = userSec.addOrUpdateSalt(userAccount.getGuid(), existingSalt, SaltType.RESET.name());
 
-                                    if (!(backoutData) && (!(backoutSalt)))
+                                    if (DEBUG)
+                                    {
+                                        DEBUGGER.debug("backoutSalt: {}", backoutSalt);
+                                    }
+
+                                    if (!(isReverted) && (!(backoutSalt)))
                                     {
                                         throw new AccountChangeException("Failed to modify the user account and unable to revert to existing state.");
                                     }
@@ -788,7 +800,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
         AccountChangeResponse response = new AccountChangeResponse();
 
-        final Calendar calendar = Calendar.getInstance();
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount userAccount = request.getUserAccount();
         final UserAccount requestor = request.getRequestor();
@@ -797,7 +808,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
         if (DEBUG)
         {
-            DEBUGGER.debug("Calendar: {}", calendar);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", userAccount);
             DEBUGGER.debug("UserAccount: {}", requestor);
@@ -939,8 +949,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                             reqSecurity.getPassword(),
                             userSalt,
                             secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
-                            secBean.getConfigData().getSecurityConfig().getIterations()),
-                        authData.getEntries());
+                            secBean.getConfigData().getSecurityConfig().getIterations()));
 
                 String secret = new String(new Base32().encode(RandomStringUtils.randomAlphanumeric(10).getBytes()));
 
@@ -967,7 +976,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                         return response;
                     }
 
-                    boolean isComplete = userManager.addOtpSecret(userAccount.getUsername(),
+                    boolean isComplete = userManager.modifyOtpSecret(userAccount.getUsername(), true,
                         PasswordUtils.encryptText(secret, otpSalt));
 
                     if (DEBUG)
@@ -1126,11 +1135,10 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                             reqSecurity.getPassword(),
                             userSalt,
                             secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
-                            secBean.getConfigData().getSecurityConfig().getIterations()),
-                        authData.getEntries());
+                            secBean.getConfigData().getSecurityConfig().getIterations()));
 
                 // delete entries here
-                boolean isSecretRemoved = userManager.removeOtpSecret(userAccount.getGuid());
+                boolean isSecretRemoved = userManager.modifyOtpSecret(userAccount.getGuid(), false, null);
 
                 if (DEBUG)
                 {

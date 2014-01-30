@@ -32,7 +32,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.ArrayList;
 import java.sql.SQLException;
-import java.lang.reflect.Field;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.RandomStringUtils;
 
@@ -47,7 +46,6 @@ import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.ControlType;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
-import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
@@ -573,7 +571,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 if ((userData != null) && (userData.size() != 0))
                 {
-                    boolean isComplete = userManager.modifyUserRole((String) userData.get(1), userAccount.getGroups().toArray());
+                    boolean isComplete = userManager.modifyUserGroups((String) userData.get(0), userAccount.getGroups().toArray());
 
                     if (DEBUG)
                     {
@@ -748,7 +746,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     // we never show the user the password, we're only doing this
                     // to prevent unauthorized access (or further unauthorized access)
                     // we get a return code back but we aren't going to use it really
-                    boolean isComplete = userManager.changeUserPassword(userAccount.getGuid(), tmpPassword); // TODO ??
+                    boolean isComplete = userManager.modifyUserPassword(userAccount.getGuid(), tmpPassword); // TODO ??
 
                     if (DEBUG)
                     {
@@ -902,9 +900,17 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 if ((userData != null) && (userData.size() != 0))
                 {
-                    userManager.lockUserAccount((String) userData.get(0));
+                    boolean isComplete = userManager.modifyUserLock((String) userData.get(0), true, userAccount.getFailedCount());
 
-                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("isComplete: {}", isComplete);
+                    }
+
+                    if (isComplete)
+                    {
+                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                    }
                 }
                 else
                 {
@@ -986,157 +992,73 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount reqAccount = request.getRequestor();
         final UserAccount userAccount = request.getUserAccount();
-        final SearchRequestType searchType = request.getSearchType();
 
         if (DEBUG)
         {
             DEBUGGER.debug("UserAccount: {}", reqAccount);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", userAccount);
-            DEBUGGER.debug("SearchRequestType: {}", searchType);
         }
 
         try
         {
-            boolean isUserAuthorized = false;
+            boolean isUserAuthorized = accessControl.isUserAuthorized(reqAccount, request.getServiceId());
 
-            if (searchType != SearchRequestType.FORGOTUID)
+            if (DEBUG)
             {
-                isUserAuthorized = accessControl.isUserAuthorized(reqAccount, request.getServiceId());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                }
-            }
-            else
-            {
-                isUserAuthorized = true;
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if (isUserAuthorized)
+            List<String[]> userList = userManager.searchUsers(userAccount.getEmailAddr());
+
+            if (DEBUG)
             {
-                List<Object[]> userList = null;
+                DEBUGGER.debug("userList: {}", userList);
+            }
 
-                switch (searchType)
+            if ((userList != null) && (userList.size() != 0))
+            {
+                List<UserAccount> userAccounts = new ArrayList<>();
+
+                for (Object[] userData : userList)
                 {
-                    case FORGOTUID:
-                        userList = userManager.searchUsers(SearchRequestType.EMAILADDR, userAccount.getEmailAddr());
-
-                        break;
-                    default:
-                        String searchData = null;
-                        SearchRequestType requestType = null;
-
-                        for (Field field : userAccount.getClass().getDeclaredFields())
-                        {
-                            field.setAccessible(true); // private fields, make them accessible
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("field: {}", field);
-                            }
-
-                            if (!(field.getName().equals("methodName")) &&
-                                    (!(field.getName().equals("CNAME"))) &&
-                                    (!(field.getName().equals("DEBUGGER"))) &&
-                                    (!(field.getName().equals("DEBUG"))) &&
-                                    (!(field.getName().equals("ERROR_RECORDER"))) &&
-                                    (!(field.getName().equals("serialVersionUID"))))
-                            {
-                                try
-                                {
-                                    if (field.get(userAccount) != null)
-                                    {
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("Value: {}", field.get(userAccount));
-                                        }
-
-                                        searchData = (String) field.get(userAccount);
-                                        requestType = SearchRequestType.valueOf(field.getName().toUpperCase());
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("requestType: {}", requestType);
-                                            DEBUGGER.debug("searchData: {}", searchData);
-                                        }
-
-                                        break;
-                                    }
-                                }
-                                catch (IllegalAccessException iax)
-                                {
-                                    ERROR_RECORDER.error(iax.getMessage(), iax);
-                                }
-                            }
-                        }
-
-                        userList = userManager.searchUsers(requestType, searchData);
-
-                        break;
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("userList: {}", userList);
-                }
-
-                if ((userList != null) && (userList.size() != 0))
-                {
-                    if ((searchType == SearchRequestType.FORGOTUID) && (userList.size() != 1))
+                    if (!(StringUtils.equals(reqAccount.getGuid(), (String) userData[0])))
                     {
-                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                    }
-                    else
-                    {
-                        List<UserAccount> userAccounts = new ArrayList<>();
-
-                        for (Object[] userData : userList)
-                        {
-                            if (!(StringUtils.equals(reqAccount.getGuid(), (String) userData[0])))
-                            {
-                                UserAccount userInfo = new UserAccount();
-                                userInfo.setGuid((String) userData[0]);
-                                userInfo.setUsername((String) userData[1]);
-                                userInfo.setGivenName((String) userData[2]);
-                                userInfo.setSurname((String) userData[3]);
-                                userInfo.setEmailAddr((String) userData[5]);
-                                userInfo.setDisplayName((String) userData[4]);
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("UserAccount: {}", userInfo);
-                                }
-
-                                userAccounts.add(userInfo);
-                            }
-                        }
+                        UserAccount userInfo = new UserAccount();
+                        userInfo.setGuid((String) userData[0]);
+                        userInfo.setUsername((String) userData[1]);
+                        userInfo.setGivenName((String) userData[2]);
+                        userInfo.setSurname((String) userData[3]);
+                        userInfo.setEmailAddr((String) userData[5]);
+                        userInfo.setDisplayName((String) userData[4]);
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("userAccounts: {}", userAccounts);
+                            DEBUGGER.debug("UserAccount: {}", userInfo);
                         }
 
-                        if (userAccounts.size() == 0)
-                        {
-                            response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                        }
-                        else
-                        {
-                            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                            response.setUserList(userAccounts);
-                        }
+                        userAccounts.add(userInfo);
                     }
+                }
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("userAccounts: {}", userAccounts);
+                }
+
+                if (userAccounts.size() == 0)
+                {
+                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
                 }
                 else
                 {
-                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                    response.setUserList(userAccounts);
                 }
             }
             else
             {
-                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+                response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
         catch (UserManagementException umx)
@@ -1153,37 +1075,33 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         }
         finally
         {
-            if (searchType != SearchRequestType.FORGOTUID)
+            try
             {
-                // audit
-                try
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.SEARCHACCOUNTS);
+                auditEntry.setUserAccount(reqAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
                 {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.SEARCHACCOUNTS);
-                    auditEntry.setUserAccount(reqAccount);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
                 }
-                catch (AuditServiceException asx)
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
                 {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
                 }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
 
@@ -1209,32 +1127,21 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount reqAccount = request.getRequestor();
         final UserAccount userAccount = request.getUserAccount();
-        final SearchRequestType searchType = request.getSearchType();
 
         if (DEBUG)
         {
             DEBUGGER.debug("UserAccount: {}", reqAccount);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", userAccount);
-            DEBUGGER.debug("SearchRequestType: {}", searchType);
         }
 
         try
         {
-            boolean isUserAuthorized = false;
+            boolean isUserAuthorized = accessControl.isUserAuthorized(reqAccount, request.getServiceId());
 
-            if (searchType != SearchRequestType.FORGOTUID)
+            if (DEBUG)
             {
-                isUserAuthorized = accessControl.isUserAuthorized(reqAccount, request.getServiceId());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                }
-            }
-            else
-            {
-                isUserAuthorized = true;
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
             if (isUserAuthorized)
@@ -1301,37 +1208,34 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         }
         finally
         {
-            if (searchType != SearchRequestType.FORGOTUID)
+            // audit
+            try
             {
-                // audit
-                try
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.LOADACCOUNT);
+                auditEntry.setUserAccount(reqAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
                 {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.LOADACCOUNT);
-                    auditEntry.setUserAccount(reqAccount);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
                 }
-                catch (AuditServiceException asx)
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
                 {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
                 }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
 

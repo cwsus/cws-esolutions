@@ -25,7 +25,6 @@ package com.cws.esolutions.security.dao.usermgmt.interfaces;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.Map;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +63,7 @@ public interface UserManager
      * @throws UserManagementException if any errors occur during the process
      * or if any one of the provided information already exists in the datastore
      */
-    void validateUserAccount(final String userId, final String userGuid) throws UserManagementException;
+    boolean validateUserAccount(final String userId, final String userGuid) throws UserManagementException;
 
     /**
      * Adds a new user to the authentication system. This method is utilized
@@ -90,6 +89,56 @@ public interface UserManager
      * @throws UserManagementException if an error occurs during processing
      */
     boolean removeUserAccount(final String userId) throws UserManagementException;
+
+    /**
+     * Searches for user accounts given provided search data.
+     * The following <code>SearchRequestType</code>s are available:
+     * <code>USERNAME</code> - A basic username search. If a wildcard
+     * is utilized, all matching accounts are returned, otherwise one
+     * or zero accounts will be returned, depending on result.
+     * <code>EMAILADDR</code> - An email address search. Response follows
+     * that of <code>USERNAME</code> search.
+     * <code>GUID</code> - A UUID search. 1 or zero accounts should be
+     * returned with this type of search.
+     * <code>FIRSTNAME</code> - Search based on first name. Multiple accounts
+     * may be returned as a result of this search, with or without wildcarding.
+     * <code>LASTNAME</code> - Search based on last name. Multiple accounts
+     * may be returned as a result of this search, with or without wildcarding.
+     *
+     * @param searchType - The <code>SearchRequestType</code> to utilize for this
+     * this search. This determines which <code>Filter</code> to use.
+     * @param searchData - The search string to utilize within the <code>Filter</code>
+     * that correlates to the provided <code>SearchRequestType</code>
+     * @return List<String[]> - An <code>ArrayList</code> containing a string array of
+     * all possible responses
+     * @throws UserManagementException if an error occurs during processing or if an invalid
+     * <code>SearchRequestType</code> value is provided.
+     */
+    List<String[]> searchUsers(final String searchData) throws UserManagementException;
+
+    /**
+     * Loads and returns data for a provided user account. Search is performed using the user's
+     * GUID (Globally Unique IDentifier). If no user, or more than one user is returned for the
+     * provided information, an <code>UserManagementException</code> is thrown and returned to
+     * the requestor.
+     *
+     * @param userGuid - The Globally Unique IDentifier of the desired user
+     * @return List<Object> - The associated user account data
+     * @throws UserManagementException if an error occurs during the search process
+     */
+    List<Object> loadUserAccount(final String userId) throws UserManagementException;
+
+    /**
+     * Returns a list of ALL user accounts stored in the authentication datastore. This is
+     * ONLY to be used with the reapers - currently, the <link>com.cws.esolutions.security.quartz.IdleAccountLocker</link>
+     * and <link>com.cws.esolutions.security.quartz.PasswordExpirationNotifier</link>.
+     *
+     * <strong>THIS SHOULD NOT BE USED IN ANY OTHER CLASSES UNLESS ABSOLUTELY NECESSARY.</strong>
+     *
+     * @return List<String[]> - A list of all user accounts currently housed in the repository
+     * @throws UserManagementException if an error occurs during processing
+     */
+    List<String[]> listUserAccounts() throws UserManagementException;
 
     /**
      * 
@@ -154,7 +203,7 @@ public interface UserManager
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
-    boolean modifyUserLock(final String userId, final boolean isLocked, final boolean increment) throws UserManagementException;
+    boolean modifyUserLock(final String userId, final boolean isLocked, final int increment) throws UserManagementException;
 
     /**
      * 
@@ -189,55 +238,5 @@ public interface UserManager
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
-    boolean modifyOtpSecret(final String userId, final boolean addSecret,  final String secret) throws UserManagementException;
-
-    /**
-     * Searches for user accounts given provided search data.
-     * The following <code>SearchRequestType</code>s are available:
-     * <code>USERNAME</code> - A basic username search. If a wildcard
-     * is utilized, all matching accounts are returned, otherwise one
-     * or zero accounts will be returned, depending on result.
-     * <code>EMAILADDR</code> - An email address search. Response follows
-     * that of <code>USERNAME</code> search.
-     * <code>GUID</code> - A UUID search. 1 or zero accounts should be
-     * returned with this type of search.
-     * <code>FIRSTNAME</code> - Search based on first name. Multiple accounts
-     * may be returned as a result of this search, with or without wildcarding.
-     * <code>LASTNAME</code> - Search based on last name. Multiple accounts
-     * may be returned as a result of this search, with or without wildcarding.
-     *
-     * @param searchType - The <code>SearchRequestType</code> to utilize for this
-     * this search. This determines which <code>Filter</code> to use.
-     * @param searchData - The search string to utilize within the <code>Filter</code>
-     * that correlates to the provided <code>SearchRequestType</code>
-     * @return List<String[]> - An <code>ArrayList</code> containing a string array of
-     * all possible responses
-     * @throws UserManagementException if an error occurs during processing or if an invalid
-     * <code>SearchRequestType</code> value is provided.
-     */
-    List<String[]> searchUsers(final String searchData) throws UserManagementException;
-
-    /**
-     * Loads and returns data for a provided user account. Search is performed using the user's
-     * GUID (Globally Unique IDentifier). If no user, or more than one user is returned for the
-     * provided information, an <code>UserManagementException</code> is thrown and returned to
-     * the requestor.
-     *
-     * @param userGuid - The Globally Unique IDentifier of the desired user
-     * @return List<Object> - The associated user account data
-     * @throws UserManagementException if an error occurs during the search process
-     */
-    List<Object> loadUserAccount(final String userId) throws UserManagementException;
-
-    /**
-     * Returns a list of ALL user accounts stored in the authentication datastore. This is
-     * ONLY to be used with the reapers - currently, the <link>com.cws.esolutions.security.quartz.IdleAccountLocker</link>
-     * and <link>com.cws.esolutions.security.quartz.PasswordExpirationNotifier</link>.
-     *
-     * <strong>THIS SHOULD NOT BE USED IN ANY OTHER CLASSES UNLESS ABSOLUTELY NECESSARY.</strong>
-     *
-     * @return List<String[]> - A list of all user accounts currently housed in the repository
-     * @throws UserManagementException if an error occurs during processing
-     */
-    List<String[]> listUserAccounts() throws UserManagementException;
+    boolean modifyOtpSecret(final String userId, final boolean addSecret, final String secret) throws UserManagementException;
 }
