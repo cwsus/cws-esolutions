@@ -25,7 +25,6 @@ package com.cws.esolutions.android.tasks;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-
 import java.util.List;
 import org.slf4j.Logger;
 import java.util.Arrays;
