@@ -36,8 +36,10 @@ import android.content.DialogInterface;
 import java.util.concurrent.ExecutionException;
 
 import com.cws.esolutions.android.Constants;
-import com.cws.esolutions.android.tasks.LoaderTask;
 import com.cws.esolutions.android.ui.LoginActivity;
+import com.cws.esolutions.android.tasks.ApplicationLoader;
+import com.cws.esolutions.android.tasks.CoreServiceLoader;
+import com.cws.esolutions.android.tasks.SecurityServiceLoader;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -68,8 +70,14 @@ public class MainActivity extends Activity
         super.setTitle(R.string.mainTitle);
         super.setContentView(R.layout.main);
 
-        final LoaderTask loader = new LoaderTask(this);
+        final ApplicationLoader loader = new ApplicationLoader(this);
         loader.execute();
+
+        final SecurityServiceLoader secLoader = new SecurityServiceLoader(this);
+        secLoader.execute();
+
+        final CoreServiceLoader coreLoader = new CoreServiceLoader(this);
+        coreLoader.execute();
 
         try
         {

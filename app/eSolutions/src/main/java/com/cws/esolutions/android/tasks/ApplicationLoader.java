@@ -66,24 +66,24 @@ import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
  * @version 1.0
  * @see android.os.AsyncTask
  */
-public class LoaderTask extends AsyncTask<Void, Void, Boolean>
+public class ApplicationLoader extends AsyncTask<Void, Void, Boolean>
 {
     private InputStream iStream = null;
     private Activity reqActivity = null;
     private InputStream coreStream = null;
     private InputStream securityStream = null;
 
-    private static final String CNAME = LoaderTask.class.getName();
+    private static final String CNAME = ApplicationLoader.class.getName();
     private static final CoreServiceBean coreBean = CoreServiceBean.getInstance();
     private static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + LoaderTask.class.getSimpleName());
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + ApplicationLoader.class.getSimpleName());
 
-    public LoaderTask(final Activity activity)
+    public ApplicationLoader(final Activity activity)
     {
-        final String methodName = LoaderTask.CNAME + "#LoaderTask(final Activity activity)#Constructor()";
+        final String methodName = ApplicationLoader.CNAME + "#LoaderTask(final Activity activity)#Constructor()";
 
         if (DEBUG)
         {
@@ -98,7 +98,7 @@ public class LoaderTask extends AsyncTask<Void, Void, Boolean>
     @Override
     protected void onPreExecute()
     {
-        final String methodName = LoaderTask.CNAME + "#onPreExecute()";
+        final String methodName = ApplicationLoader.CNAME + "#onPreExecute()";
 
         if (DEBUG)
         {
@@ -163,7 +163,7 @@ public class LoaderTask extends AsyncTask<Void, Void, Boolean>
     @Override
     protected Boolean doInBackground(final Void... value)
     {
-        final String methodName = LoaderTask.CNAME + "#doInBackground(final Void... vlaue)";
+        final String methodName = ApplicationLoader.CNAME + "#doInBackground(final Void... vlaue)";
 
         if (DEBUG)
         {
@@ -330,7 +330,7 @@ public class LoaderTask extends AsyncTask<Void, Void, Boolean>
             }
 
             DAOInitializer.configureAndCreateAuthConnection(assetMgr.open(this.reqActivity.getResources().getString(R.string.coreConfigFile)),
-                    false, LoaderTask.secBean);
+                    false, ApplicationLoader.secBean);
 
             secBean.setAuthDataSource(value);
             secBean.setConfigData(secSvcConfig);
