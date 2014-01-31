@@ -34,6 +34,7 @@ import java.lang.reflect.Field;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
+import com.cws.esolutions.security.processors.dto.AuthenticationData;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -48,7 +49,7 @@ public class AccountResetResponse implements Serializable
     private String smsCode = null;
     private UserAccount userAccount = null;
     private List<String> questionList = null;
-    private List<UserAccount> userList = null;
+    private AuthenticationData userSecurity = null;
     private SecurityRequestStatus requestStatus = null;
 
     private static final long serialVersionUID = -3110651267063305566L;
@@ -82,19 +83,6 @@ public class AccountResetResponse implements Serializable
         }
 
         this.userAccount = value;
-    }
-
-    public final void setUserList(final List<UserAccount> value)
-    {
-        final String methodName = AccountResetResponse.CNAME + "#setUserList(final List<UserAccount> value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.userList = value;
     }
 
     public final void setResetId(final String value)
@@ -134,14 +122,26 @@ public class AccountResetResponse implements Serializable
         this.questionList = value;
     }
 
-    public final SecurityRequestStatus getRequestStatus()
+    public final void setUserSecurity(final AuthenticationData value)
     {
-        final String methodName = AccountResetResponse.CNAME + "#getMgmtType()";
+        final String methodName = AccountResetResponse.CNAME + "#setUserSecurity(final AuthenticationData value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("SecurityRequestStatus: {}", this.requestStatus);
+        }
+
+        this.userSecurity = value;
+    }
+
+    public final SecurityRequestStatus getRequestStatus()
+    {
+        final String methodName = AccountResetResponse.CNAME + "#getRequestStatus()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.requestStatus);
         }
 
         return this.requestStatus;
@@ -158,19 +158,6 @@ public class AccountResetResponse implements Serializable
         }
 
         return this.userAccount;
-    }
-
-    public final List<UserAccount> getUserList()
-    {
-        final String methodName = AccountResetResponse.CNAME + "#getUserList()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.userList);
-        }
-
-        return this.userList;
     }
 
     public final String getResetId()
@@ -208,6 +195,18 @@ public class AccountResetResponse implements Serializable
         }
 
         return this.questionList;
+    }
+
+    public final AuthenticationData getUserSecurity()
+    {
+        final String methodName = AccountResetResponse.CNAME + "#getUserSecurity()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        return this.userSecurity;
     }
 
     @Override

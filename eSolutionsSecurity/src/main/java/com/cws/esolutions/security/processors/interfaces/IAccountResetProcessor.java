@@ -79,6 +79,4 @@ public interface IAccountResetProcessor
     AccountResetResponse verifyResetRequest(final AccountResetRequest request) throws AccountResetException;
 
     AccountResetResponse resetUserPassword(final AccountResetRequest request) throws AccountResetException;
-
-    AccountResetResponse getSecurityQuestions(final AccountResetRequest request) throws AccountResetException;
 }

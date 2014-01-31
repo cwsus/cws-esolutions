@@ -26,7 +26,9 @@ package com.cws.esolutions.security.processors.impl;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.util.List;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.ArrayList;
 import java.sql.SQLException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.RandomStringUtils;
@@ -46,12 +48,299 @@ import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
+import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 /**
  * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor
  */
 public class AccountResetProcessorImpl implements IAccountResetProcessor
 {
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#findUserAccount(com.cws.esolutions.security.processors.dto.AccountResetRequest)
+     */
+    @Override
+    public AccountResetResponse findUserAccount(final AccountResetRequest request) throws AccountResetException
+    {
+        final String methodName = IAccountControlProcessor.CNAME + "#findUserAccount(final AccountResetRequest request) throws AccountResetException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("AccountResetRequest: {}", request);
+        }
+
+        AccountResetResponse response = new AccountResetResponse();
+
+        final RequestHostInfo reqInfo = request.getHostInfo();
+        final UserAccount userAccount = request.getUserAccount();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+        }
+
+        try
+        {
+            List<String[]> userList = userManager.searchUsers(userAccount.getEmailAddr());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("userList: {}", userList);
+            }
+
+            if ((userList != null) || (userList.size() != 1))
+            {
+                response.setRequestStatus(SecurityRequestStatus.FAILURE);
+
+                return response;
+            }
+
+            UserAccount userInfo = new UserAccount();
+            userInfo.setGuid((String) userList.get(0)[0]);
+            userInfo.setUsername((String) userList.get(0)[1]);
+            userInfo.setEmailAddr((String) userList.get(0)[5]);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("UserAccount: {}", userInfo);
+            }
+
+            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+            response.setUserAccount(userInfo);
+        }
+        catch (UserManagementException umx)
+        {
+            ERROR_RECORDER.error(umx.getMessage(), umx);
+
+            throw new AccountControlException(umx.getMessage(), umx);
+        }
+
+        return response;
+    }
+
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#obtainUserSecurityConfig(com.cws.esolutions.security.processors.dto.AccountResetRequest)
+     */
+    @Override
+    public AccountResetResponse obtainUserSecurityConfig(final AccountResetRequest request) throws AccountResetException
+    {
+        final String methodName = IAccountResetProcessor.CNAME + "#obtainUserSecurityConfig(final AccountResetRequest request) throws AccountResetException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("AccountResetRequest: {}", request);
+        }
+
+        AccountResetResponse response = new AccountResetResponse();
+
+        final RequestHostInfo reqInfo = request.getHostInfo();
+        final UserAccount userAccount = request.getUserAccount();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+        }
+
+        try
+        {
+            List<String> securityData = authenticator.obtainSecurityData(userAccount.getUsername(), userAccount.getGuid());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("List<String>: {}", securityData);
+            }
+
+            if ((securityData == null) || (securityData.isEmpty()))
+            {
+                response.setRequestStatus(SecurityRequestStatus.FAILURE);
+            }
+
+            AuthenticationData userSecurity = new AuthenticationData();
+            userSecurity.setSecQuestionOne(securityData.get(0));
+            userSecurity.setSecQuestionTwo(securityData.get(1));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AuthenticationData: {}", userSecurity);
+            }
+
+            response.setUserAccount(userAccount);
+            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+            response.setUserSecurity(userSecurity);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountResetResponse: {}", response);
+            }
+        }
+        catch (AuthenticatorException ax)
+        {
+            ERROR_RECORDER.error(ax.getMessage(), ax);
+
+            throw new AccountResetException(ax.getMessage(), ax);
+        }
+        finally
+        {
+            if (resAccount != null)
+            {
+                // audit
+                try
+                {
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.LOADSECURITY);
+                    auditEntry.setUserAccount(resAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
+                }
+                catch (AuditServiceException asx)
+                {
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                }
+            }
+        }
+
+        return response;
+    }
+
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#verifyUserSecurityConfig(com.cws.esolutions.security.processors.dto.AccountResetRequest)
+     */
+    @Override
+    public AccountResetResponse verifyUserSecurityConfig(final AccountResetRequest request) throws AccountResetException
+    {
+        final String methodName = IAccountResetProcessor.CNAME + "#verifyUserSecurityConfig(final AccountResetRequest request) throws AccountResetException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("AccountResetRequest: {}", request);
+        }
+
+        AccountResetResponse authResponse = new AccountResetResponse();
+
+        final RequestHostInfo reqInfo = request.getHostInfo();
+        final UserAccount userAccount = request.getUserAccount();
+        final AuthenticationData userSecurity = request.getUserSecurity();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+        }
+
+        try
+        {
+            final String userSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.RESET.name());
+
+            if (StringUtils.isNotEmpty(userSalt))
+            {
+                boolean isVerified = authenticator.verifySecurityData(userAccount.getUsername(), userAccount.getGuid(),
+				    new ArrayList<String>(
+						Arrays.asList(
+							PasswordUtils.encryptText(userSecurity.getSecAnswerOne(), userSalt,
+								secConfig.getAuthAlgorithm(), secConfig.getIterations()),
+					        PasswordUtils.encryptText(userSecurity.getSecAnswerTwo(), userSalt,
+								secConfig.getAuthAlgorithm(), secConfig.getIterations()))));
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("isVerified: {}", isVerified);
+                }
+
+                if (isVerified)
+                {
+                    authResponse.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                }
+                else
+                {
+                    if (request.getCount() >= 3)
+                    {
+                        try
+                        {
+                            userManager.modifyOlrLock(userAccount.getUsername(), true);
+                        }
+                        catch (UserManagementException umx)
+                        {
+                            ERROR_RECORDER.error(umx.getMessage(), umx);
+                        }
+                    }
+
+                    authResponse.setCount(request.getCount() + 1);
+                    authResponse.setRequestStatus(SecurityRequestStatus.FAILURE);
+                }
+            }
+            else
+            {
+                throw new AccountResetException("Unable to obtain user salt value. Cannot continue.");
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new AccountResetException(sqx.getMessage(), sqx);
+        }
+        catch (AuthenticatorException ax)
+        {
+            ERROR_RECORDER.error(ax.getMessage(), ax);
+
+            throw new AccountResetException(ax.getMessage(), ax);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.VERIFYSECURITY);
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
+        }
+
+        return authResponse;
+    }
+
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#verifyResetRequest(com.cws.esolutions.security.processors.dto.AccountResetRequest)
      */
@@ -63,7 +352,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AuthenticationRequest: {}", request);
+            DEBUGGER.debug("AccountResetRequest: {}", request);
         }
 
         AccountResetResponse response = new AccountResetResponse();
@@ -142,7 +431,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                     }
                     else
                     {
-                        throw new AuthenticationException("Multiple user accounts were located for the provided information");
+                        throw new AccountResetException("Multiple user accounts were located for the provided information");
                     }
                 }
                 else
@@ -152,12 +441,12 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("AuthenticationResponse: {}", response);
+                    DEBUGGER.debug("AccountResetResponse: {}", response);
                 }
             }
             else
             {
-                throw new AuthenticationException("Reset request has expired.");
+                throw new AccountResetException("Reset request has expired.");
             }
         }
         catch (SecurityServiceException ssx)
@@ -324,311 +613,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
-        }
-
-        return response;
-    }
-
-    /**
-     * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#obtainUserSecurityConfig(com.cws.esolutions.security.processors.dto.AccountResetRequest)
-     */
-    @Override
-    public AccountResetResponse obtainUserSecurityConfig(final AccountResetRequest request) throws AccountResetException
-    {
-        final String methodName = IAccountResetProcessor.CNAME + "#obtainUserSecurityConfig(final AccountResetRequest request) throws AccountResetException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AccountResetRequest: {}", request);
-        }
-
-        UserAccount resAccount = null;
-        AccountResetResponse response = new AccountResetResponse();
-
-        final RequestHostInfo reqInfo = request.getHostInfo();
-        final UserAccount userAccount = request.getUserAccount();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-        }
-
-        try
-        {
-            List<String[]> userInfo = userManager.searchUsers(userAccount.getUsername());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("User list: {}", userInfo);
-            }
-
-            if ((userInfo == null) || (userInfo.size() == 0) || (userInfo.size() > 1))
-            {
-                response.setRequestStatus(SecurityRequestStatus.FAILURE);
-            }
-            else
-            {
-                Object[] userData = userInfo.get(0);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("userData: {}", userData);
-                }
-
-                List<String> securityData = authenticator.obtainSecurityData((String) userData[0], (String) userData[1]);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserAccount: {}", userAccount);
-                }
-
-                if ((securityData != null) && (!(securityData.isEmpty())))
-                {
-                    AuthenticationData userSecurity = new AuthenticationData();
-                    userSecurity.setSecQuestionOne(securityData.get(0));
-                    userSecurity.setSecQuestionTwo(securityData.get(1));
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuthenticationData: {}", userSecurity);
-                    }
-
-                    response.setUserAccount(resAccount);
-                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    response.setUserSecurity(userSecurity);
-                }
-                else
-                {
-                    // null data
-                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                }
-            }
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccountResetResponse: {}", response);
-            }
-        }
-        catch (AuthenticatorException ax)
-        {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            throw new AccountResetException(ax.getMessage(), ax);
-        }
-        catch (UserManagementException umx)
-        {
-            ERROR_RECORDER.error(umx.getMessage(), umx);
-
-            throw new AccountResetException(umx.getMessage(), umx);
-        }
-        finally
-        {
-            if (resAccount != null)
-            {
-                // audit
-                try
-                {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.LOADSECURITY);
-                    auditEntry.setUserAccount(resAccount);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
-                }
-            }
-        }
-
-        return response;
-    }
-
-    /**
-     * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#verifyUserSecurityConfig(com.cws.esolutions.security.processors.dto.AccountResetRequest)
-     */
-    @Override
-    public AccountResetResponse verifyUserSecurityConfig(final AccountResetRequest request) throws AccountResetException
-    {
-        final String methodName = IAccountResetProcessor.CNAME + "#verifyUserSecurityConfig(final AccountResetRequest request) throws AccountResetException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AccountResetRequest: {}", request);
-        }
-
-        AccountResetResponse authResponse = new AccountResetResponse();
-
-        final RequestHostInfo reqInfo = request.getHostInfo();
-        final UserAccount userAccount = request.getUserAccount();
-        final AuthenticationData userSecurity = request.getUserSecurity();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-        }
-
-        try
-        {
-            final String userSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.RESET.name());
-
-            if (StringUtils.isNotEmpty(userSalt))
-            {
-                boolean isVerified = authenticator.verifySecurityData(userAccount.getUsername(), userAccount.getGuid(),
-				    new ArrayList<String>(
-				        Arrays.asList(
-					        PasswordUtils.encryptText(userSecurity.getSecAnswerOne(), userSalt,
-								secConfig.getAuthAlgorithm(), secConfig.getIterations()),
-						    PasswordUtils.encryptText(userSecurity.getSecAnswerTwo(), userSalt,
-								secConfig.getAuthAlgorithm(), secConfig.getIterations()))));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isVerified: {}", isVerified);
-                }
-
-                if (isVerified)
-                {
-                    authResponse.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                }
-                else
-                {
-                    if (request.getCount() >= 3)
-                    {
-                        try
-                        {
-                            userManager.modifyOlrLock(userAccount.getUsername(), true);
-                        }
-                        catch (UserManagementException umx)
-                        {
-                            ERROR_RECORDER.error(umx.getMessage(), umx);
-                        }
-                    }
-
-                    authResponse.setCount(request.getCount() + 1);
-                    authResponse.setRequestStatus(SecurityRequestStatus.FAILURE);
-                }
-            }
-            else
-            {
-                throw new AccountResetException("Unable to obtain user salt value. Cannot continue.");
-            }
-        }
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new AccountResetException(sqx.getMessage(), sqx);
-        }
-        catch (AuthenticatorException ax)
-        {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            throw new AccountResetException(ax.getMessage(), ax);
-        }
-        finally
-        {
-            // audit
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.VERIFYSECURITY);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
-        }
-
-        return authResponse;
-    }
-
-    /**
-     * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#getSecurityQuestions(com.cws.esolutions.security.processors.dto.AccountResetRequest)
-     */
-    @Override
-    public AccountResetResponse getSecurityQuestions(final AccountResetRequest request) throws AccountResetException
-    {
-        final String methodName = IAccountResetProcessor.CNAME + "#getSecurityQuestions(final AccountResetRequest request) throws AccountResetException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AccountResetRequest: {}", request);
-        }
-
-        AccountResetResponse response = new AccountResetResponse();
-
-        final UserAccount reqUser = request.getUserAccount();
-        final RequestHostInfo reqInfo = request.getHostInfo();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("UserAccount: {}", reqUser);
-            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-        }
-
-        try
-        {
-            List<String> questionList = secRef.obtainSecurityQuestionList();
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("questionList: {}", questionList);
-            }
-
-            response.setQuestionList(questionList);
-            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccountResetResponse: {}", response);
-            }
-        }
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-            
-            throw new AccountResetException(sqx.getMessage(), sqx);
         }
 
         return response;
