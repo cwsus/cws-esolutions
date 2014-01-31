@@ -45,6 +45,7 @@ import com.cws.esolutions.security.processors.dto.AuthenticationData;
  */
 public class AccountResetResponse implements Serializable
 {
+    private int count = 0;
     private String resetId = null;
     private String smsCode = null;
     private UserAccount userAccount = null;
@@ -107,6 +108,19 @@ public class AccountResetResponse implements Serializable
         }
 
         this.smsCode = value;
+    }
+
+    public final void setCount(final int value)
+    {
+        final String methodName = AccountResetResponse.CNAME + "#setCount(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.count = value;
     }
 
     public final void setQuestionList(final List<String> value)
@@ -207,6 +221,19 @@ public class AccountResetResponse implements Serializable
         }
 
         return this.userSecurity;
+    }
+
+    public final int getCount()
+    {
+        final String methodName = AccountResetResponse.CNAME + "#getCount()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.count);
+        }
+
+        return this.count;
     }
 
     @Override

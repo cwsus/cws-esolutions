@@ -34,6 +34,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
@@ -61,7 +62,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
     @Override
     public AccountResetResponse findUserAccount(final AccountResetRequest request) throws AccountResetException
     {
-        final String methodName = IAccountControlProcessor.CNAME + "#findUserAccount(final AccountResetRequest request) throws AccountResetException";
+        final String methodName = IAccountResetProcessor.CNAME + "#findUserAccount(final AccountResetRequest request) throws AccountResetException";
 
         if (DEBUG)
         {
@@ -113,7 +114,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
         {
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
-            throw new AccountControlException(umx.getMessage(), umx);
+            throw new AccountResetException(umx.getMessage(), umx);
         }
 
         return response;
@@ -184,37 +185,34 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
         }
         finally
         {
-            if (resAccount != null)
+            // audit
+            try
             {
-                // audit
-                try
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.LOADSECURITY);
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
                 {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.LOADSECURITY);
-                    auditEntry.setUserAccount(resAccount);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
                 }
-                catch (AuditServiceException asx)
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
                 {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
                 }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
 
