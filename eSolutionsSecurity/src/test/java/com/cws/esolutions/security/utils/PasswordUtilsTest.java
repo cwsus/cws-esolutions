@@ -38,8 +38,7 @@ public class PasswordUtilsTest
 {
     private static final SecurityServiceBean bean = SecurityServiceBean.getInstance();
 
-    @Before
-    public void setUp()
+    @Before public void setUp()
     {
         try
         {
@@ -54,38 +53,33 @@ public class PasswordUtilsTest
         }
     }
 
-    @Test
-    public void encryptText()
+    @Test public void encryptText()
     {
         Assert.assertEquals("xdwcvNbTtdBkcxvtn3g5BTHz1naNiq3tZAn255ai1hZtRUPiA0TyoLPs3fP6lC9YcvyNcreuFqEuse10nnyHAg==",
                 PasswordUtils.encryptText("TestPasswordValue", "zHnDJVgtiJy3FNFDfSe9ZK1KW97zd1oDmA8awAoW7QnDR6i2wd9AfV2NmXOOVYJO",
                         bean.getConfigData().getSecurityConfig().getAuthAlgorithm(), bean.getConfigData().getSecurityConfig().getIterations()));
     }
 
-    @Test
-    public void testTwoWayHash()
+    @Test public void testTwoWayHash()
     {
         Assert.assertEquals("bXUNMHkQsn0XYqKYQIqb5/rBcjqgP+iI9oaRqsFwZg6ksO6VXygs7Z1Dw08BaaecTteff8Knx8gnR+l6YoE41l2jLG4ZkFL4y4M6/pqP7fU=",
                 PasswordUtils.encryptText("TestTwoWayHash", "PWQKRN8J60s9gg7Qg3eM6o19ggPsLiIDfjCXohJ9qgfMMILnDmPl79ipeZ56TEJI"));
     }
 
-    @Test
-    public void decryptText()
+    @Test public void decryptText()
     {
         Assert.assertEquals("TestTwoWayHash", PasswordUtils.decryptText("bXUNMHkQsn0XYqKYQIqb5/rBcjqgP+iI9oaRqsFwZg6ksO6VXygs7Z1Dw08BaaecTteff8Knx8gnR+l6YoE41l2jLG4ZkFL4y4M6/pqP7fU=",
                 "PWQKRN8J60s9gg7Qg3eM6o19ggPsLiIDfjCXohJ9qgfMMILnDmPl79ipeZ56TEJI".length()));
     }
 
-    @Test
-    public void validateOtpValue()
+    @Test public void validateOtpValue()
     {
         Assert.assertEquals("number", PasswordUtils.validateOtpValue(bean.getConfigData().getSecurityConfig().getOtpVariance(),
                 bean.getConfigData().getSecurityConfig().getOtpAlgorithm(),
                 "the secret", 0));
     }
 
-    @After
-    public void tearDown()
+    @After public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

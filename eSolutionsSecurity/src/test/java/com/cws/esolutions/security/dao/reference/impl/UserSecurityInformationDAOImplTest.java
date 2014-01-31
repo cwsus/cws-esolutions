@@ -38,24 +38,16 @@ import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInforma
 
 public class UserSecurityInformationDAOImplTest
 {
-    private static String resetId = null;
-    private static String smsCode = null;
-    private static String resetSalt = null;
-    private static String logonSalt = null;
-
     private static final String GUID = "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95";
+    private static final String resetId = RandomStringUtils.randomAlphanumeric(64);
+    private static final String smsCode = RandomStringUtils.randomAlphanumeric(8);
+    private static final String logonSalt = RandomStringUtils.randomAlphanumeric(64);
     private static final IUserSecurityInformationDAO dao = new UserSecurityInformationDAOImpl();
 
-    @Before
-    public void setUp()
+    @Before public void setUp()
     {
         try
         {
-            smsCode = RandomStringUtils.randomAlphanumeric(8);
-            resetId = RandomStringUtils.randomAlphanumeric(64);
-            resetSalt = RandomStringUtils.randomAlphanumeric(64);
-            logonSalt = RandomStringUtils.randomAlphanumeric(64);
-
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml");
         }
         catch (Exception e)
@@ -65,8 +57,7 @@ public class UserSecurityInformationDAOImplTest
         }
     }
 
-    @Test
-    public void testAddUserLogonSalt()
+    @Test public void addOrUpdateSalt()
     {
         try
         {
@@ -78,51 +69,7 @@ public class UserSecurityInformationDAOImplTest
         }
     }
 
-    @Test
-    public void testAddUserResetSalt()
-    {
-        try
-        {
-            Assert.assertTrue(dao.addOrUpdateSalt(UserSecurityInformationDAOImplTest.GUID, resetSalt, SaltType.RESET.name()));
-        }
-        catch (SQLException sqx)
-        {
-            Assert.fail(sqx.getMessage());
-        }
-    }
-
-    @Test
-    public void testUpdateUserLoginSalt()
-    {
-        String salt = RandomStringUtils.randomAlphanumeric(64);
-
-        try
-        {
-            Assert.assertTrue(dao.addOrUpdateSalt(UserSecurityInformationDAOImplTest.GUID, salt, SaltType.LOGON.name()));
-        }
-        catch (SQLException sqx)
-        {
-            Assert.fail(sqx.getMessage());
-        }
-    }
-
-    @Test
-    public void testUpdateUserResetSalt()
-    {
-        String salt = RandomStringUtils.randomAlphanumeric(64);
-
-        try
-        {
-            Assert.assertTrue(dao.addOrUpdateSalt(UserSecurityInformationDAOImplTest.GUID, salt, SaltType.RESET.name()));
-        }
-        catch (SQLException sqx)
-        {
-            Assert.fail(sqx.getMessage());
-        }
-    }
-
-    @Test
-    public void testGetUserLoginSalt()
+    @Test public void getUserSalt()
     {
         try
         {
@@ -134,34 +81,7 @@ public class UserSecurityInformationDAOImplTest
         }
     }
 
-    @Test
-    public void testGetUserResetSalt()
-    {
-        try
-        {
-            Assert.assertNotNull(dao.getUserSalt(UserSecurityInformationDAOImplTest.GUID, SaltType.RESET.name()));
-        }
-        catch (SQLException sqx)
-        {
-            Assert.fail(sqx.getMessage());
-        }
-    }
-
-    @Test
-    public void testRemoveUserData()
-    {
-        try
-        {
-            Assert.assertTrue(dao.removeUserData(UserSecurityInformationDAOImplTest.GUID, null));
-        }
-        catch (SQLException sqx)
-        {
-            Assert.fail(sqx.getMessage());
-        }
-    }
-
-    @Test
-    public void testInsertResetData()
+    @Test public void insertResetData()
     {
         try
         {
@@ -173,12 +93,11 @@ public class UserSecurityInformationDAOImplTest
         }
     }
 
-    @Test
-    public void testInsertResetDataWithSms()
+    @Test public void listActiveResets()
     {
         try
         {
-            Assert.assertTrue(dao.insertResetData(UserSecurityInformationDAOImplTest.GUID, resetId, smsCode));
+            Assert.assertNotNull(dao.listActiveResets());
         }
         catch (SQLException sqx)
         {
@@ -186,8 +105,7 @@ public class UserSecurityInformationDAOImplTest
         }
     }
 
-    @Test
-    public void testGetResetData()
+    @Test public void getResetData()
     {
         try
         {
@@ -199,21 +117,7 @@ public class UserSecurityInformationDAOImplTest
         }
     }
 
-    @Test
-    public void testRemoveResetData()
-    {
-        try
-        {
-            Assert.assertTrue(dao.removeResetData(UserSecurityInformationDAOImplTest.GUID, resetId));
-        }
-        catch (SQLException sqx)
-        {
-            Assert.fail(sqx.getMessage());
-        }
-    }
-
-    @Test
-    public void testVerifySmsForReset()
+    @Test public void verifySmsForReset()
     {
         try
         {
@@ -225,8 +129,43 @@ public class UserSecurityInformationDAOImplTest
         }
     }
 
-    @After
-    public void tearDown()
+    @Test public void getAuthenticationData()
+    {
+        try
+        {
+            Assert.assertNotNull(dao.getAuthenticationData(UserSecurityInformationDAOImplTest.GUID, SaltType.LOGON.name()));
+        }
+        catch (SQLException sqx)
+        {
+            Assert.fail(sqx.getMessage());
+        }
+    }
+
+    @Test public void removeResetData()
+    {
+        try
+        {
+            Assert.assertTrue(dao.removeResetData(UserSecurityInformationDAOImplTest.GUID, resetId));
+        }
+        catch (SQLException sqx)
+        {
+            Assert.fail(sqx.getMessage());
+        }
+    }
+
+    @Test public void removeUserData()
+    {
+        try
+        {
+            Assert.assertTrue(dao.removeUserData(UserSecurityInformationDAOImplTest.GUID, null));
+        }
+        catch (SQLException sqx)
+        {
+            Assert.fail(sqx.getMessage());
+        }
+    }
+
+    @After public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

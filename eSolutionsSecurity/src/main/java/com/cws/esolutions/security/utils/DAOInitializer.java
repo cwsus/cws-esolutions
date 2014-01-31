@@ -27,6 +27,7 @@ package com.cws.esolutions.security.utils;
  */
 import java.io.File;
 import org.slf4j.Logger;
+import java.io.InputStream;
 import java.io.IOException;
 import java.util.Properties;
 import javax.naming.Context;
@@ -90,9 +91,9 @@ public final class DAOInitializer
      * @param bean - The <code>SecurityServiceBean</code> that holds the connection
      * @throws SecurityServiceException if an exception occurs opening the connection
      */
-    public synchronized static void configureAndCreateAuthConnection(final File properties, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException
+    public synchronized static void configureAndCreateAuthConnection(final InputStream properties, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException
     {
-        String methodName = DAOInitializer.CNAME + "#configureAndCreateAuthConnection(final File properties, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException";
+        String methodName = DAOInitializer.CNAME + "#configureAndCreateAuthConnection(final InputStream properties, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException";
 
         if (DEBUG)
         {
@@ -105,7 +106,7 @@ public final class DAOInitializer
         try
         {
             Properties connProps = new Properties();
-            connProps.load(new FileInputStream(properties));
+            connProps.load(properties);
 
             if (DEBUG)
             {

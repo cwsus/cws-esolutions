@@ -68,7 +68,15 @@ import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
 import com.cws.esolutions.security.processors.impl.AuthenticationProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor;
-
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
+ *
+ * @author khuntly
+ * @version 1.0
+ * @see android.os.AsyncTask
+ */
 public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, List<Object>>
 {
     private Activity reqActivity = null;
@@ -123,12 +131,12 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
 
         InputStream iStream = null;
 
-		if (!(NetworkUtils.checkNetwork(this.reqActivity)))
-		{
-			ERROR_RECORDER.error("Network connections are available but not currently connected.");
+        if (!(NetworkUtils.checkNetwork(this.reqActivity)))
+        {
+            ERROR_RECORDER.error("Network connections are available but not currently connected.");
 
-			super.cancel(true);
-		}
+            super.cancel(true);
+        }
 
         AssetManager assetMgr = this.reqActivity.getResources().getAssets();
 

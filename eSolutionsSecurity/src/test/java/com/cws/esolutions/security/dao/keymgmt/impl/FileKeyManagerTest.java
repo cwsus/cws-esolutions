@@ -35,6 +35,7 @@ import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
+import com.cws.esolutions.security.dao.keymgmt.factory.KeyManagementFactory;
 import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
 
 public class FileKeyManagerTest
@@ -42,10 +43,9 @@ public class FileKeyManagerTest
     private static UserAccount userAccount = new UserAccount();
     private static RequestHostInfo hostInfo = new RequestHostInfo();
 
-    private static final KeyManager keyManager = new SQLKeyManager();
+    private static final KeyManager processor = KeyManagementFactory.getKeyManager("com.cws.esolutions.security.dao.keymgmt.impl.FileKeyManager");
 
-    @Before
-    public void setUp()
+    @Before public void setUp()
     {
         try
         {
@@ -66,12 +66,11 @@ public class FileKeyManagerTest
         }
     }
 
-    @Test
-    public void testCreateKeys()
+    @Test public void createKeys()
     {
         try
         {
-            Assert.assertTrue(keyManager.createKeys(userAccount.getGuid()));
+            Assert.assertTrue(processor.createKeys(userAccount.getGuid()));
         }
         catch (KeyManagementException kmx)
         {
@@ -79,12 +78,11 @@ public class FileKeyManagerTest
         }
     }
 
-    @Test
-    public void testReturnKeys()
+    @Test public void returnKeys()
     {
         try
         {
-            Assert.assertNotNull(keyManager.returnKeys(userAccount.getGuid()));
+            Assert.assertNotNull(processor.returnKeys(userAccount.getGuid()));
         }
         catch (KeyManagementException kmx)
         {
@@ -92,12 +90,11 @@ public class FileKeyManagerTest
         }
     }
 
-    @Test
-    public void testDeleteKeys()
+    @Test public void removeKeys()
     {
         try
         {
-            Assert.assertTrue(keyManager.removeKeys(userAccount.getGuid()));
+            Assert.assertTrue(processor.removeKeys(userAccount.getGuid()));
         }
         catch (KeyManagementException kmx)
         {
@@ -105,8 +102,7 @@ public class FileKeyManagerTest
         }
     }
 
-    @After
-    public void tearDown()
+    @After public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

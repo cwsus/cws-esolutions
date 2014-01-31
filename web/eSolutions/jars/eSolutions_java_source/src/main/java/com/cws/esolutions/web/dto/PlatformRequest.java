@@ -10,16 +10,6 @@
  * express written authorization of CaspersBox Web Services, N.A.
  */
 package com.cws.esolutions.web.dto;
-
-import java.util.List;
-import org.slf4j.Logger;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import org.slf4j.LoggerFactory;
-
-import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.core.processors.enums.ServiceRegion;
-import com.cws.esolutions.core.processors.enums.ServiceStatus;
 /*
  * Project: eSolutions_java_source
  * Package: com.cws.esolutions.web.dto
@@ -30,6 +20,21 @@ import com.cws.esolutions.core.processors.enums.ServiceStatus;
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
+import java.util.List;
+import org.slf4j.Logger;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import org.slf4j.LoggerFactory;
+
+import com.cws.esolutions.web.Constants;
+import com.cws.esolutions.core.processors.enums.ServiceRegion;
+import com.cws.esolutions.core.processors.enums.ServiceStatus;
+/**
+ * TODO: Add class information/description
+ *
+ * @author 35033355
+ * @version 1.0
  */
 public class PlatformRequest implements Serializable
 {

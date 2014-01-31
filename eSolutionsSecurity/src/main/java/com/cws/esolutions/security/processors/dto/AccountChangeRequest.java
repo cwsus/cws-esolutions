@@ -33,7 +33,6 @@ import java.lang.reflect.Field;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-import com.cws.esolutions.security.processors.enums.ModificationType;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -49,10 +48,8 @@ public class AccountChangeRequest implements Serializable
     private String applicationId = null;
     private UserAccount requestor = null;
     private String applicationName = null;
-    private boolean isLoginRequest = false;
     private UserAccount userAccount = null;
     private RequestHostInfo hostInfo = null;
-    private ModificationType modType = null;
     private AuthenticationData userSecurity = null;
 
     private static final long serialVersionUID = -7265044360536886625L;
@@ -126,19 +123,6 @@ public class AccountChangeRequest implements Serializable
         this.applicationId = value;
     }
 
-    public final void setModType(final ModificationType value)
-    {
-        final String methodName = AccountChangeRequest.CNAME + "#setControlType(final ModificationType value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.modType = value;
-    }
-
     public final void setRequestor(final UserAccount value)
     {
         final String methodName = AccountChangeRequest.CNAME + "#setRequestor(final UserAccount value)";
@@ -163,19 +147,6 @@ public class AccountChangeRequest implements Serializable
         }
 
         this.isReset = value;
-    }
-
-    public final void setIsLogonRequest(final boolean value)
-    {
-        final String methodName = AccountChangeRequest.CNAME + "#setIsLogonRequest(final boolean value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.isLoginRequest = value;
     }
 
     public final RequestHostInfo getHostInfo()
@@ -242,19 +213,6 @@ public class AccountChangeRequest implements Serializable
         return this.applicationId;
     }
 
-    public final ModificationType getModType()
-    {
-        final String methodName = AccountChangeRequest.CNAME + "#getControlType()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.modType);
-        }
-
-        return this.modType;
-    }
-
     public final UserAccount getRequestor()
     {
         final String methodName = AccountChangeRequest.CNAME + "#getRequestor()";
@@ -279,19 +237,6 @@ public class AccountChangeRequest implements Serializable
         }
 
         return this.isReset;
-    }
-
-    public final boolean isLoginRequest()
-    {
-        final String methodName = AccountChangeRequest.CNAME + "#isLoginRequest()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.isLoginRequest);
-        }
-
-        return this.isLoginRequest;
     }
 
     @Override

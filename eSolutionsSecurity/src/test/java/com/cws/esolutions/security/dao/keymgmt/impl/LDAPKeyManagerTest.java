@@ -43,8 +43,9 @@ public class LDAPKeyManagerTest
     private static UserAccount userAccount = new UserAccount();
     private static RequestHostInfo hostInfo = new RequestHostInfo();
 
-    @Before
-    public void setUp()
+    private static final KeyManager processor = KeyManagementFactory.getKeyManager("com.cws.esolutions.security.dao.keymgmt.impl.LDAPKeyManager");
+
+    @Before public void setUp()
     {
         try
         {
@@ -65,14 +66,11 @@ public class LDAPKeyManagerTest
         }
     }
 
-    @Test
-    public void testCreateKeys()
+    @Test public void createKeys()
     {
-        KeyManager keyManager = KeyManagementFactory.getKeyManager("com.cws.esolutions.security.keymgmt.impl.LDAPKeyManager");
-
         try
         {
-            Assert.assertTrue(keyManager.createKeys(userAccount.getGuid()));
+            Assert.assertTrue(processor.createKeys(userAccount.getGuid()));
         }
         catch (KeyManagementException kmx)
         {
@@ -80,14 +78,11 @@ public class LDAPKeyManagerTest
         }
     }
 
-    @Test
-    public void testReturnKeys()
+    @Test public void returnKeys()
     {
-        KeyManager keyManager = KeyManagementFactory.getKeyManager("com.cws.esolutions.security.keymgmt.impl.LDAPKeyManager");
-
         try
         {
-            Assert.assertNotNull(keyManager.returnKeys(userAccount.getGuid()));
+            Assert.assertNotNull(processor.returnKeys(userAccount.getGuid()));
         }
         catch (KeyManagementException kmx)
         {
@@ -95,14 +90,11 @@ public class LDAPKeyManagerTest
         }
     }
 
-    @Test
-    public void testDeleteKeys()
+    @Test public void removeKeys()
     {
-        KeyManager keyManager = KeyManagementFactory.getKeyManager("com.cws.esolutions.security.keymgmt.impl.LDAPKeyManager");
-
         try
         {
-            Assert.assertTrue(keyManager.removeKeys(userAccount.getGuid()));
+            Assert.assertTrue(processor.removeKeys(userAccount.getGuid()));
         }
         catch (KeyManagementException kmx)
         {
@@ -110,8 +102,7 @@ public class LDAPKeyManagerTest
         }
     }
 
-    @After
-    public void tearDown()
+    @After public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

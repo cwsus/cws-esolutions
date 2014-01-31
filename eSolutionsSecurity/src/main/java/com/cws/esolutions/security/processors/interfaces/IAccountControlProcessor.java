@@ -43,9 +43,7 @@ import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
-import com.cws.esolutions.security.dao.reference.impl.UserServiceInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl;
-import com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -64,7 +62,6 @@ public interface IAccountControlProcessor
     static final ISecurityReferenceDAO secRef = new SecurityReferenceDAOImpl();
     static final IAccessControlService accessControl = new AccessControlServiceImpl();
     static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
-    static final IUserServiceInformationDAO userSvcs = new UserServiceInformationDAOImpl();
     static final IUserSecurityInformationDAO userSec = new UserSecurityInformationDAOImpl();
     static final UserManager userManager = UserManagerFactory.getUserManager(secConfig.getUserManager());
     

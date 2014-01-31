@@ -62,7 +62,15 @@ import com.cws.esolutions.core.processors.exception.ServerManagementException;
 import com.cws.esolutions.core.processors.exception.ServiceManagementException;
 import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
 import com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor;
-
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
+ *
+ * @author khuntly
+ * @version 1.0
+ * @see org.springframework.stereotype.Controller
+ */
 @Controller
 @RequestMapping("/system-management")
 public class SystemManagementController

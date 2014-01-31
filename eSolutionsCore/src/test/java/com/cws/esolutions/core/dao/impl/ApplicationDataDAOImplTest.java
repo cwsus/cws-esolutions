@@ -42,8 +42,7 @@ public class ApplicationDataDAOImplTest
     private String guid = "828f58b4-55f8-473a-9d75-17ae6cad3f6b";
     private static final IApplicationDataDAO dao = new ApplicationDataDAOImpl();
 
-    @Before
-    public void setUp()
+    @Before public void setUp()
     {
         try
         {
@@ -57,8 +56,7 @@ public class ApplicationDataDAOImplTest
         }
     }
 
-    @Test
-    public void addNewApplication()
+    @Test public void addNewApplication()
     {
         List<Object> appData = new ArrayList<Object>(
                 Arrays.asList(
@@ -82,8 +80,7 @@ public class ApplicationDataDAOImplTest
         }
     }
 
-    @Test
-    public void updateApplication()
+    @Test public void updateApplication()
     {
         List<Object> appData = new ArrayList<Object>(
                 Arrays.asList(
@@ -107,8 +104,7 @@ public class ApplicationDataDAOImplTest
         }
     }
 
-    @Test
-    public void listInstalledApplications()
+    @Test public void listInstalledApplications()
     {
         try
         {
@@ -120,8 +116,7 @@ public class ApplicationDataDAOImplTest
         }
     }
 
-    @Test
-    public void getApplicationData()
+    @Test public void getApplicationData()
     {
         try
         {
@@ -133,8 +128,7 @@ public class ApplicationDataDAOImplTest
         }
     }
 
-    @Test
-    public void getApplicationsByAttribute()
+    @Test public void getApplicationsByAttribute()
     {
         try
         {
@@ -146,8 +140,7 @@ public class ApplicationDataDAOImplTest
         }
     }
 
-    @Test
-    public void deleteApplication()
+    @Test public void deleteApplication()
     {
         try
         {
@@ -159,8 +152,7 @@ public class ApplicationDataDAOImplTest
         }
     }
 
-    @After
-    public void tearDown()
+    @After public void tearDown()
     {
         CoreServiceInitializer.shutdown();
     }

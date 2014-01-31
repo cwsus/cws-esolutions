@@ -145,7 +145,7 @@ public class PasswordExpirationNotifier implements Job
                                 PasswordUtils.decryptText((String) jobData.get("password"), ((String) jobData.get("salt")).length())));
                     }
 
-                    email.setFrom(bean.getConfigData().getEmailAddr());
+                    email.setFrom((String) jobData.get("emailAddr"));
                     email.addTo((String) accountDetail.get(6));
                     email.setSubject((String) jobData.get("messageSubject"));
                     email.setMsg(String.format((String) jobData.get("messageBody"),

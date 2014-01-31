@@ -49,8 +49,7 @@ public class AuditProcessorImplTest
 
     private static final IAuditProcessor processor = new AuditProcessorImpl();
 
-    @Before
-    public void setUp()
+    @Before public void setUp()
     {
         try
         {
@@ -71,8 +70,7 @@ public class AuditProcessorImplTest
         }
     }
 
-    @Test
-    public void testAuditRequest()
+    @Test public void testAuditRequest()
     {
         AuditEntry auditEntry = new AuditEntry();
         auditEntry.setApplicationId("JUNIT");
@@ -94,8 +92,7 @@ public class AuditProcessorImplTest
         }
     }
 
-    @Test
-    public void testGetAuditEntries()
+    @Test public void testGetAuditEntries()
     {
         AuditEntry auditEntry = new AuditEntry();
         auditEntry.setUserAccount(AuditProcessorImplTest.userAccount);
@@ -120,8 +117,7 @@ public class AuditProcessorImplTest
         }
     }
 
-    @After
-    public void tearDown()
+    @After public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

@@ -10,7 +10,17 @@
  * express written authorization of CaspersBox Web Services, N.A.
  */
 package com.cws.esolutions.web.validators;
-
+/*
+ * Project: eSolutions_java_source
+ * Package: com.cws.esolutions.web.validators
+ * File: TelephoneValidator.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.util.List;
 import org.slf4j.Logger;
 import java.util.Arrays;
@@ -23,16 +33,14 @@ import org.springframework.validation.ValidationUtils;
 
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.web.dto.UserChangeRequest;
-/*
- * Project: eSolutions_java_source
- * Package: com.cws.esolutions.web.validators
- * File: TelephoneValidator.java
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
  *
- * History
- *
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * @author khuntly
+ * @version 1.0
+ * @see org.springframework.validation.Validator
  */
 public class TelephoneValidator implements Validator
 {

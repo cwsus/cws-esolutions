@@ -21,6 +21,14 @@ package com.cws.esolutions.web;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
+ *
+ * @author khuntly
+ * @version 1.0
+ */
 public class Constants
 {
     public static final String INFO_LOGGER = "INFO_RECORDER.";

@@ -32,9 +32,7 @@ import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
-import com.cws.esolutions.security.dao.reference.impl.UserServiceInformationDAOImpl;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
-import com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -52,7 +50,6 @@ public interface IAccessControlService
     static final String EMAIL_SVC_ID = "4F0E7E62-BC28-414A-9FE8-C2B4E1875B4D";
 
     static final IAuditProcessor auditor = new AuditProcessorImpl();
-    static final IUserServiceInformationDAO sqlServiceDAO = new UserServiceInformationDAOImpl();
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

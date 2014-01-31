@@ -38,7 +38,15 @@ import java.util.concurrent.ExecutionException;
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.android.tasks.LoaderTask;
 import com.cws.esolutions.android.ui.LoginActivity;
-
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
+ *
+ * @author khuntly
+ * @version 1.0
+ * @see android.app.Activity
+ */
 public class MainActivity extends Activity
 {
     private static final String CNAME = MainActivity.class.getName();
@@ -64,72 +72,72 @@ public class MainActivity extends Activity
         loader.execute();
 
         try
-		{
-			if ((loader.isCancelled()) || (!(loader.get())))
+        {
+            if ((loader.isCancelled()) || (!(loader.get())))
             {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this)
                     .setMessage("An error occurred while initializing the application. Cannot continue.")
                     .setCancelable(false)
                     .setNeutralButton("Exit",
-					    new DialogInterface.OnClickListener()
-					    {
-						    public void onClick(final DialogInterface dialogInterface, final int which)
-						    {
-						        MainActivity.this.finish();
-						    }
-					    });
+                        new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(final DialogInterface dialogInterface, final int which)
+                            {
+                                MainActivity.this.finish();
+                            }
+                        });
 
                 AlertDialog error = builder.create();
                 error.show();
 
                 return;
-		    }
+            }
 
             this.startActivity(new Intent(this, LoginActivity.class));
             super.finish();
-		}
-		catch (InterruptedException ix)
-		{
+        }
+        catch (InterruptedException ix)
+        {
             ERROR_RECORDER.error(ix.getMessage(), ix);
 
-			AlertDialog.Builder builder = new AlertDialog.Builder(this)
-				.setMessage("An error occurred while initializing the application. Cannot continue.")
-				.setCancelable(false)
-				.setNeutralButton("Exit",
-				    new DialogInterface.OnClickListener()
-				    {
-					    public void onClick(final DialogInterface dialogInterface, final int which)
-					    {
-						    MainActivity.this.finish();
-					    }
-				    });
+            AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setMessage("An error occurred while initializing the application. Cannot continue.")
+                .setCancelable(false)
+                .setNeutralButton("Exit",
+                    new DialogInterface.OnClickListener()
+                    {
+                        public void onClick(final DialogInterface dialogInterface, final int which)
+                        {
+                            MainActivity.this.finish();
+                        }
+                    });
 
-			AlertDialog error = builder.create();
-			error.show();
+            AlertDialog error = builder.create();
+            error.show();
 
-			return;
-		}
-		catch (ExecutionException ex)
-		{
+            return;
+        }
+        catch (ExecutionException ex)
+        {
             ERROR_RECORDER.error(ex.getMessage(), ex);
 
-			AlertDialog.Builder builder = new AlertDialog.Builder(this)
-				.setMessage("An error occurred while initializing the application. Cannot continue.")
-				.setCancelable(false)
-				.setNeutralButton("Exit",
+            AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setMessage("An error occurred while initializing the application. Cannot continue.")
+                .setCancelable(false)
+                .setNeutralButton("Exit",
                     new DialogInterface.OnClickListener()
-				    {
+                    {
                         public void onClick(final DialogInterface dialogInterface, final int which)
-					    {
-						    MainActivity.this.finish();
-					    }
-				    });
+                        {
+                            MainActivity.this.finish();
+                        }
+                    });
 
-			AlertDialog error = builder.create();
-			error.show();
+            AlertDialog error = builder.create();
+            error.show();
 
-			return;
-		}
+            return;
+        }
     }
 
     @Override

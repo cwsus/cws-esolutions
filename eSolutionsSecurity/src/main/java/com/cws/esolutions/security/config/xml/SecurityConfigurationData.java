@@ -47,7 +47,6 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 @XmlAccessorType(XmlAccessType.NONE)
 public final class SecurityConfigurationData implements Serializable
 {
-    private String emailAddr = null;
     private AuthData authData = null;
     private KeyConfig keyConfig = null;
     private SecurityConfig securityConfig = null;
@@ -61,19 +60,6 @@ public final class SecurityConfigurationData implements Serializable
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
-
-    public final void setEmailAddr(final String value)
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#setEmailAddr(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.emailAddr = value;
-    }
 
     public final void setSecurityConfig(final SecurityConfig value)
     {
@@ -151,20 +137,6 @@ public final class SecurityConfigurationData implements Serializable
         }
 
         this.fileSecurityConfig = value;
-    }
-
-    @XmlElement(name = "email-address")
-    public final String getEmailAddr()
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#getEmailAddr()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.emailAddr);
-        }
-
-        return this.emailAddr;
     }
 
     @XmlElement(name = "security-config")

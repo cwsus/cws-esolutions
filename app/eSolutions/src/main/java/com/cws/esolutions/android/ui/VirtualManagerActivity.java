@@ -34,7 +34,15 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
-
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
+ *
+ * @author khuntly
+ * @version 1.0
+ * @see android.app.Activity
+ */
 public class VirtualManagerActivity extends Activity
 {
     private static final String CNAME = VirtualManagerActivity.class.getName();

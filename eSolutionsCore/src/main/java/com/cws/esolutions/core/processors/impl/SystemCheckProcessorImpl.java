@@ -337,7 +337,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
             }
             else
             {
-				response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
             }
         }
         catch (UtilityException ux)
@@ -503,7 +503,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
             }
             else
             {
-				response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
             }
         }
         catch (UtilityException ux)
@@ -668,7 +668,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
             }
             else
             {
-				response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
             }
         }
         catch (UtilityException ux)

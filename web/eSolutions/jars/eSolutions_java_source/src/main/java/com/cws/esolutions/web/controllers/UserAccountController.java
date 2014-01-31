@@ -22,14 +22,10 @@ package com.cws.esolutions.web.controllers;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
-
 import java.util.Enumeration;
-
 import org.slf4j.LoggerFactory;
-
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
@@ -51,7 +47,6 @@ import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.web.validators.SecurityResponseValidator;
-import com.cws.esolutions.security.processors.enums.ModificationType;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AccountResetRequest;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
@@ -63,7 +58,15 @@ import com.cws.esolutions.security.processors.exception.AccountResetException;
 import com.cws.esolutions.security.processors.exception.AccountChangeException;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
 import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor;
-
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
+ *
+ * @author khuntly
+ * @version 1.0
+ * @see org.springframework.stereotype.Controller
+ */
 @Controller
 @RequestMapping("/user-account")
 public class UserAccountController
@@ -597,7 +600,6 @@ public class UserAccountController
 
             AccountResetRequest request = new AccountResetRequest();
             request.setHostInfo(reqInfo);
-            request.setRequestor(userAccount);
             request.setUserAccount(userAccount);
             request.setApplicationId(this.appConfig.getApplicationId());
             request.setApplicationName(this.appConfig.getApplicationName());
@@ -608,7 +610,8 @@ public class UserAccountController
             }
 
             IAccountResetProcessor resetProcess = new AccountResetProcessorImpl();
-            AccountResetResponse response = resetProcess.getSecurityQuestions(request);
+
+            AccountResetResponse response = resetProcess.obtainUserSecurityConfig(request);
 
             if (DEBUG)
             {
@@ -1090,7 +1093,6 @@ public class UserAccountController
             if (userAccount.getStatus() == LoginStatus.RESET)
             {
                 userSecurity = new AuthenticationData();
-                userSecurity.setResetRequestId(changeReq.getResetKey());
                 userSecurity.setNewPassword(changeReq.getConfirmPassword());
             }
             else
@@ -1117,8 +1119,6 @@ public class UserAccountController
 
             AccountChangeRequest request = new AccountChangeRequest();
             request.setHostInfo(reqInfo);
-            request.setIsLogonRequest(false);
-            request.setModType(ModificationType.PASSWORD);
             request.setRequestor(userAccount);
             request.setUserAccount(userAccount);
             request.setUserSecurity(userSecurity);
@@ -1454,8 +1454,6 @@ public class UserAccountController
 
             AccountChangeRequest request = new AccountChangeRequest();
             request.setHostInfo(reqInfo);
-            request.setIsLogonRequest(false);
-            request.setModType(ModificationType.SECINFO);
             request.setRequestor(userAccount);
             request.setUserAccount(userAccount);
             request.setUserSecurity(userSecurity);
@@ -1613,8 +1611,6 @@ public class UserAccountController
 
             AccountChangeRequest request = new AccountChangeRequest();
             request.setHostInfo(reqInfo);
-            request.setIsLogonRequest(false);
-            request.setModType(ModificationType.SECINFO);
             request.setRequestor(userAccount);
             request.setUserAccount(userAccount);
             request.setUserSecurity(userSecurity);
@@ -1777,8 +1773,6 @@ public class UserAccountController
 
             AccountChangeRequest request = new AccountChangeRequest();
             request.setHostInfo(reqInfo);
-            request.setIsLogonRequest(false);
-            request.setModType(ModificationType.SECINFO);
             request.setRequestor(userAccount);
             request.setUserAccount(userAccount);
             request.setUserSecurity(userSecurity);

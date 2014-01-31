@@ -38,8 +38,7 @@ public class SecurityReferenceDAOImplTest
 {
     private static final ISecurityReferenceDAO secRef = new SecurityReferenceDAOImpl();
 
-    @Before
-    public void setUp()
+    @Before public void setUp()
     {
         try
         {
@@ -52,8 +51,7 @@ public class SecurityReferenceDAOImplTest
         }
     }
 
-    @Test
-    public void testObtainApprovedServers()
+    @Test public void testObtainApprovedServers()
     {
         try
         {
@@ -65,8 +63,7 @@ public class SecurityReferenceDAOImplTest
         }
     }
 
-    @Test
-    public void testObtainSecurityQuestionList()
+    @Test public void testObtainSecurityQuestionList()
     {
         try
         {
@@ -78,8 +75,7 @@ public class SecurityReferenceDAOImplTest
         }
     }
 
-    @After
-    public void tearDown()
+    @After public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

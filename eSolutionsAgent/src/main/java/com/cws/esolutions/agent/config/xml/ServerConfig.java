@@ -50,7 +50,7 @@ public final class ServerConfig implements Serializable
 {
     private String salt = null;
     private String clientId = null;
-	private int connectTimeout = 0;
+    private int connectTimeout = 0;
     private String username = null;
     private String password = null;
     private String requestQueue = null;

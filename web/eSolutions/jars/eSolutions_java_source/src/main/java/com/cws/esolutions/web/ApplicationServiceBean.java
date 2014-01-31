@@ -3,17 +3,6 @@
  * All rights reserved.
  */
 package com.cws.esolutions.web;
-
-import java.util.Map;
-import org.slf4j.Logger;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.web.validators.EmailAddressValidator;
-import com.cws.esolutions.web.validators.EmailMessageValidator;
 /*
  * Project: eSolutions_java_source
  * Package: com.cws.esolutions.web
@@ -25,6 +14,24 @@ import com.cws.esolutions.web.validators.EmailMessageValidator;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import java.util.Map;
+import org.slf4j.Logger;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.cws.esolutions.web.Constants;
+import com.cws.esolutions.web.validators.EmailAddressValidator;
+import com.cws.esolutions.web.validators.EmailMessageValidator;
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
+ *
+ * @author khuntly
+ * @version 1.0
+ */
 public class ApplicationServiceBean implements Serializable
 {
     @Autowired private String homePage = null;
@@ -32,6 +39,7 @@ public class ApplicationServiceBean implements Serializable
     @Autowired private String dateFormat = null;
     @Autowired private String fileEncoding = null;
     @Autowired private String homeRedirect = null;
+    @Autowired private String emailAddress = null;
     @Autowired private String logonRedirect = null;
     @Autowired private String applicationId = null;
     @Autowired private String expiredRedirect = null;
@@ -256,6 +264,19 @@ public class ApplicationServiceBean implements Serializable
         }
 
         this.applicationId = value;
+    }
+
+    public final void setEmailAddress(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setEmailAddress(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.emailAddress = value;
     }
 
     public final void setServices(final Map<String, Boolean> value)
@@ -516,6 +537,19 @@ public class ApplicationServiceBean implements Serializable
         }
 
         return this.applicationId;
+    }
+
+    public final String getEmailAddress()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getEmailAddress()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.emailAddress);
+        }
+
+        return this.emailAddress;
     }
 
     public final Map<String, Boolean> getServices()

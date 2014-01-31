@@ -39,8 +39,7 @@ public class AccessControlServiceImplTest
     private static RequestHostInfo hostInfo = new RequestHostInfo();
     private static final IAccessControlService processor = new AccessControlServiceImpl();
 
-    @Before
-    public void setUp()
+    @Before public void setUp()
     {
         try
         {
@@ -61,11 +60,7 @@ public class AccessControlServiceImplTest
         }
     }
 
-    /**
-     * Test method for {@link com.cws.esolutions.security.services.impl.AccessControlServiceImpl#isUserAuthorized(com.cws.esolutions.security.dto.UserAccount, java.lang.String)}.
-     */
-    @Test
-    public final void testIsUserAuthorized()
+    @Test public final void testIsUserAuthorized()
     {
         try
         {
@@ -77,8 +72,7 @@ public class AccessControlServiceImplTest
         }
     }
 
-    @After
-    public void tearDown()
+    @After public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

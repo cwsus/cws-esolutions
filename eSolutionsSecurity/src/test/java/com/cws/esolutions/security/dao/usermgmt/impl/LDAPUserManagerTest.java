@@ -36,14 +36,15 @@ import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
+import com.cws.esolutions.security.dao.usermgmt.factory.UserManagerFactory;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 
 public class LDAPUserManagerTest
 {
     private static final String GUID = UUID.randomUUID().toString();
+    private static final UserManager manager = UserManagerFactory.getUserManager("com.cws.esolutions.security.dao.usermgmt.impl.LDAPUserManager");
 
-    @Before
-    public void setUp()
+    @Before public void setUp()
     {
         try
         {
@@ -57,12 +58,22 @@ public class LDAPUserManagerTest
         }
     }
 
-    public void addUserAccount()
+    @Test public void validateUserAccount()
     {
         try
         {
-            final UserManager manager = new LDAPUserManager();
+            Assert.assertTrue(manager.validateUserAccount("junit-test", LDAPUserManagerTest.GUID));
+        }
+        catch (UserManagementException umx)
+        {
+            Assert.fail(umx.getMessage());
+        }
+    }
 
+    @Test public void addUserAccount()
+    {
+        try
+        {
             Assert.assertTrue(manager.addUserAccount(
                     new ArrayList<>(
                             Arrays.asList(
@@ -83,14 +94,11 @@ public class LDAPUserManagerTest
         }
     }
 
-    @Test
-    public void modifyUserEmail()
+    @Test public void listUserAccounts()
     {
         try
         {
-            final UserManager manager = new LDAPUserManager();
-
-            Assert.assertTrue(manager.modifyUserEmail("junit-test", "test@test.com"));
+            Assert.assertNotNull(manager.listUserAccounts());
         }
         catch (UserManagementException umx)
         {
@@ -98,17 +106,11 @@ public class LDAPUserManagerTest
         }
     }
 
-    @Test
-    public void modifyUserContact()
+    @Test public void searchUsers()
     {
         try
         {
-            final UserManager manager = new LDAPUserManager();
-
-            Assert.assertTrue(manager.modifyUserContact("junit-test", new ArrayList<>(
-                    Arrays.asList(
-                            "716-341-5669",
-                            "716-341-5669"))));
+            Assert.assertNotNull(manager.searchUsers("junit-test"));
         }
         catch (UserManagementException umx)
         {
@@ -116,140 +118,10 @@ public class LDAPUserManagerTest
         }
     }
 
-    @Test
-    public void modifyUserSuspension()
+    @Test public void loadUserAccount()
     {
         try
         {
-            final UserManager manager = new LDAPUserManager();
-
-            Assert.assertTrue(manager.modifyUserSuspension("junit-test", true));
-        }
-        catch (UserManagementException umx)
-        {
-            Assert.fail(umx.getMessage());
-        }
-    }
-
-    @Test
-    public void modifyUserRole()
-    {
-        try
-        {
-            final UserManager manager = new LDAPUserManager();
-
-            Assert.assertTrue(manager.modifyUserGroups("junit-test", new Object[] { "Service Operator" } ));
-        }
-        catch (UserManagementException umx)
-        {
-            Assert.fail(umx.getMessage());
-        }
-    }
-
-    @Test
-    public void lockOnlineReset()
-    {
-        try
-        {
-            final UserManager manager = new LDAPUserManager();
-
-            Assert.assertTrue(manager.modifyOlrLock("junit-test", true));
-        }
-        catch (UserManagementException umx)
-        {
-            Assert.fail(umx.getMessage());
-        }
-    }
-
-    @Test
-    public void clearLockCount()
-    {
-        try
-        {
-            final UserManager manager = new LDAPUserManager();
-
-            Assert.assertTrue(manager.modifyUserLock("junit-test", false, 0));
-        }
-        catch (UserManagementException umx)
-        {
-            Assert.fail(umx.getMessage());
-        }
-    }
-
-    @Test
-    public void lockUserAccount()
-    {
-        try
-        {
-            final UserManager manager = new LDAPUserManager();
-
-            Assert.assertTrue(manager.modifyUserLock("junit-test", true, 0));
-        }
-        catch (UserManagementException umx)
-        {
-            Assert.fail(umx.getMessage());
-        }
-    }
-
-    @Test
-    public void changeUserPassword()
-    {
-        try
-        {
-            final UserManager manager = new SQLUserManager();
-
-            Assert.assertTrue(manager.modifyUserPassword("junit-test",
-                    "6TPeXOxpCKce2wPZMM3nIGtbN2BRk31guOO7utNwfvtjmGxqvLhBi/Atd0ZzxDlR2/5l0cKJgqiMTHCoXPjhwQ=="));
-        }
-        catch (UserManagementException umx)
-        {
-            Assert.fail(umx.getMessage());
-        }
-    }
-
-    @Test
-    public void changeUserSecurity()
-    {
-        try
-        {
-            final UserManager manager = new LDAPUserManager();
-
-            Assert.assertTrue(manager.modifyUserSecurity("junit-test",
-                    new ArrayList<>(
-                            Arrays.asList(
-                                    "question 1",
-                                    "question 2",
-                                    "answer 1",
-                                    "answer 2"))));
-        }
-        catch (UserManagementException umx)
-        {
-            Assert.fail(umx.getMessage());
-        }
-    }
-
-    @Test
-    public void searchUsers()
-    {
-        try
-        {
-            final UserManager manager = new LDAPUserManager();
-
-            Assert.assertNotNull(manager.searchUsers(LDAPUserManagerTest.GUID));
-        }
-        catch (UserManagementException umx)
-        {
-            Assert.fail(umx.getMessage());
-        }
-    }
-
-    @Test
-    public void loadUserAccount()
-    {
-        try
-        {
-            final UserManager manager = new LDAPUserManager();
-
             Assert.assertNotNull(manager.loadUserAccount(LDAPUserManagerTest.GUID));
         }
         catch (UserManagementException umx)
@@ -258,14 +130,11 @@ public class LDAPUserManagerTest
         }
     }
 
-    @Test
-    public void removeUserAccount()
+    @Test public void modifyUserEmail()
     {
         try
         {
-            final UserManager manager = new LDAPUserManager();
-
-            Assert.assertTrue(manager.removeUserAccount("junit-test"));
+            Assert.assertTrue(manager.modifyUserEmail(LDAPUserManagerTest.GUID, "test@test.com"));
         }
         catch (UserManagementException umx)
         {
@@ -273,8 +142,127 @@ public class LDAPUserManagerTest
         }
     }
 
-    @After
-    public void tearDown()
+    @Test public void modifyUserContact()
+    {
+        try
+        {
+            Assert.assertTrue(manager.modifyUserContact(LDAPUserManagerTest.GUID,
+                    new ArrayList<>(
+                            Arrays.asList("555-555-1212", "555-555-1213"))));
+        }
+        catch (UserManagementException umx)
+        {
+            Assert.fail(umx.getMessage());
+        }
+    }
+
+    @Test public void modifyUserSuspension()
+    {
+        try
+        {
+            Assert.assertTrue(manager.modifyUserSuspension(LDAPUserManagerTest.GUID, true));
+            Assert.assertTrue(manager.modifyUserSuspension(LDAPUserManagerTest.GUID, false));
+        }
+        catch (UserManagementException umx)
+        {
+            Assert.fail(umx.getMessage());
+        }
+    }
+
+    @Test public void modifyUserGroups()
+    {
+        try
+        {
+            Assert.assertTrue(manager.modifyUserGroups(LDAPUserManagerTest.GUID, new Object[] { "Service Admins" }));
+        }
+        catch (UserManagementException umx)
+        {
+            Assert.fail(umx.getMessage());
+        }
+    }
+
+    @Test public void modifyOlrLock()
+    {
+        try
+        {
+            Assert.assertTrue(manager.modifyOlrLock(LDAPUserManagerTest.GUID, true));
+            Assert.assertTrue(manager.modifyOlrLock(LDAPUserManagerTest.GUID, false));
+        }
+        catch (UserManagementException umx)
+        {
+            Assert.fail(umx.getMessage());
+        }
+    }
+
+    @Test public void modifyUserLock()
+    {
+        try
+        {
+            Assert.assertTrue(manager.modifyUserLock(LDAPUserManagerTest.GUID, true, 0));
+            Assert.assertTrue(manager.modifyUserLock(LDAPUserManagerTest.GUID, false, 1));
+            Assert.assertTrue(manager.modifyUserLock(LDAPUserManagerTest.GUID, false, 0));
+        }
+        catch (UserManagementException umx)
+        {
+            Assert.fail(umx.getMessage());
+        }
+    }
+
+    @Test public void modifyUserPassword()
+    {
+        try
+        {
+            Assert.assertTrue(manager.modifyUserPassword(LDAPUserManagerTest.GUID, RandomStringUtils.randomAlphanumeric(64)));
+        }
+        catch (UserManagementException umx)
+        {
+            Assert.fail(umx.getMessage());
+        }
+    }
+
+    @Test public void modifyUserSecurity()
+    {
+        try
+        {
+            Assert.assertTrue(manager.modifyUserSecurity(LDAPUserManagerTest.GUID, new ArrayList<>(
+                    Arrays.asList(
+                            RandomStringUtils.randomAlphanumeric(64),
+                            RandomStringUtils.randomAlphanumeric(64),
+                            RandomStringUtils.randomAlphanumeric(64),
+                            RandomStringUtils.randomAlphanumeric(64)))));
+        }
+        catch (UserManagementException umx)
+        {
+            Assert.fail(umx.getMessage());
+        }
+    }
+
+    @Test public void modifyOtpSecret()
+    {
+        try
+        {
+            Assert.assertTrue(manager.modifyOtpSecret(LDAPUserManagerTest.GUID, true, RandomStringUtils.randomAlphanumeric(64)));
+            Assert.assertTrue(manager.modifyOtpSecret(LDAPUserManagerTest.GUID, false, null));
+        }
+        catch (UserManagementException umx)
+        {
+            Assert.fail(umx.getMessage());
+        }
+    }
+
+    @Test public void removeUserAccount()
+    {
+        try
+        {
+            Assert.assertTrue(manager.removeUserAccount(LDAPUserManagerTest.GUID));
+        }
+        catch (UserManagementException umx)
+        {
+            Assert.fail(umx.getMessage());
+        }
+    }
+
+    @After public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

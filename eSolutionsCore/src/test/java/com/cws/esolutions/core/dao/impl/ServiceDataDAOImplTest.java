@@ -47,8 +47,7 @@ public class ServiceDataDAOImplTest
     private static final String pGuid = "a5299180-73d5-11e3-981f-0800200c9a66";
     private static final String dGuid = "e5f4cab8-038c-46f2-bbdd-fab9b84638cb";
 
-    @Before
-    public void setUp()
+    @Before public void setUp()
     {
         try
         {
@@ -62,8 +61,7 @@ public class ServiceDataDAOImplTest
         }
     }
 
-    @Test
-    public void addNewPlatform()
+    @Test public void addNewPlatform()
     {
         List<String> servers = new ArrayList<>(
                 Arrays.asList(
@@ -93,8 +91,7 @@ public class ServiceDataDAOImplTest
         }
     }
 
-    @Test
-    public void addNewDatacenter()
+    @Test public void addNewDatacenter()
     {
         List<String> serviceData = new ArrayList<>(
                 Arrays.asList(
@@ -117,8 +114,7 @@ public class ServiceDataDAOImplTest
         }
     }
 
-    @Test
-    public void updatePlatformData()
+    @Test public void updatePlatformData()
     {
         List<String> servers = new ArrayList<>(
                 Arrays.asList(
@@ -148,8 +144,7 @@ public class ServiceDataDAOImplTest
         }
     }
 
-    @Test
-    public void updateDatacenterData()
+    @Test public void updateDatacenterData()
     {
         List<String> serviceData = new ArrayList<>(
                 Arrays.asList(
@@ -172,8 +167,7 @@ public class ServiceDataDAOImplTest
         }
     }
 
-    @Test
-    public void listServices()
+    @Test public void listServices()
     {
         try
         {
@@ -185,8 +179,7 @@ public class ServiceDataDAOImplTest
         }
     }
 
-    @Test
-    public void getServiceByAttribute()
+    @Test public void getServiceByAttribute()
     {
         try
         {
@@ -198,8 +191,7 @@ public class ServiceDataDAOImplTest
         }
     }
 
-    @Test
-    public void getPlatformData()
+    @Test public void getPlatformData()
     {
         try
         {
@@ -211,8 +203,7 @@ public class ServiceDataDAOImplTest
         }
     }
 
-    @Test
-    public void getDatacenterData()
+    @Test public void getDatacenterData()
     {
         try
         {
@@ -224,8 +215,7 @@ public class ServiceDataDAOImplTest
         }
     }
 
-    @Test
-    public void removePlatform()
+    @Test public void removePlatform()
     {
         try
         {
@@ -237,8 +227,7 @@ public class ServiceDataDAOImplTest
         }
     }
 
-    @Test
-    public void removeDatacenter()
+    @Test public void removeDatacenter()
     {
         try
         {
@@ -250,8 +239,7 @@ public class ServiceDataDAOImplTest
         }
     }
 
-    @After
-    public void tearDown()
+    @After public void tearDown()
     {
         CoreServiceInitializer.shutdown();
     }

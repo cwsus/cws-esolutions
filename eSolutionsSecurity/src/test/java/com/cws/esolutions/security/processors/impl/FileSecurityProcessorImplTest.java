@@ -47,8 +47,9 @@ public class FileSecurityProcessorImplTest
     private static UserAccount userAccount = new UserAccount();
     private static RequestHostInfo hostInfo = new RequestHostInfo();
 
-    @Before
-    public void setUp()
+    private static final IFileSecurityProcessor processor = new FileSecurityProcessorImpl();
+
+    @Before public void setUp()
     {
         try
         {
@@ -69,11 +70,8 @@ public class FileSecurityProcessorImplTest
         }
     }
 
-    @Test
-    public void testSignFile()
+    @Test public void testSignFile()
     {
-        IFileSecurityProcessor processor = new FileSecurityProcessorImpl();
-
         FileSecurityRequest request = new FileSecurityRequest();
         request.setHostInfo(hostInfo);
         request.setUserAccount(userAccount);
@@ -92,11 +90,8 @@ public class FileSecurityProcessorImplTest
         }
     }
 
-    @Test
-    public void testVerifyFile()
+    @Test public void testVerifyFile()
     {
-        IFileSecurityProcessor processor = new FileSecurityProcessorImpl();
-
         FileSecurityRequest request = new FileSecurityRequest();
         request.setHostInfo(hostInfo);
         request.setUserAccount(userAccount);
@@ -115,11 +110,8 @@ public class FileSecurityProcessorImplTest
         }
     }
 
-    @Test
-    public void testEncryptFile()
+    @Test public void testEncryptFile()
     {
-        IFileSecurityProcessor processor = new FileSecurityProcessorImpl();
-
         FileSecurityRequest request = new FileSecurityRequest();
         request.setHostInfo(hostInfo);
         request.setUserAccount(userAccount);
@@ -138,11 +130,8 @@ public class FileSecurityProcessorImplTest
         }
     }
 
-    @Test
-    public void testDecryptFile()
+    @Test public void testDecryptFile()
     {
-        IFileSecurityProcessor processor = new FileSecurityProcessorImpl();
-
         FileSecurityRequest request = new FileSecurityRequest();
         request.setHostInfo(hostInfo);
         request.setUserAccount(userAccount);
@@ -161,8 +150,7 @@ public class FileSecurityProcessorImplTest
         }
     }
 
-    @After
-    public void tearDown()
+    @After public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

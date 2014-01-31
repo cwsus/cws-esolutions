@@ -33,9 +33,7 @@ import java.lang.reflect.Field;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityServiceConstants;
-import com.cws.esolutions.security.processors.enums.ControlType;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-import com.cws.esolutions.security.processors.enums.ModificationType;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -48,17 +46,14 @@ import com.cws.esolutions.security.processors.dto.AuthenticationData;
 public class AccountControlRequest implements Serializable
 {
     private int startPage = 0;
-    private boolean isReset = false;
     private String projectId = null;
     private String serviceId = null;
     private String applicationId = null;
     private UserAccount requestor = null;
     private String applicationName = null;
-    private ControlType controlType = null;
     private boolean isLoginRequest = false;
     private UserAccount userAccount = null;
     private RequestHostInfo hostInfo = null;
-    private ModificationType modType = null;
     private List<String> servicesList = null;
     private AuthenticationData userSecurity = null;
 
@@ -133,32 +128,6 @@ public class AccountControlRequest implements Serializable
         this.applicationId = value;
     }
 
-    public final void setControlType(final ControlType value)
-    {
-        final String methodName = AccountControlRequest.CNAME + "#setControlType(final ControlType value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.controlType = value;
-    }
-
-    public final void setModType(final ModificationType value)
-    {
-        final String methodName = AccountControlRequest.CNAME + "#setControlType(final ModificationType value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.modType = value;
-    }
-
     public final void setRequestor(final UserAccount value)
     {
         final String methodName = AccountControlRequest.CNAME + "#setRequestor(final UserAccount value)";
@@ -170,32 +139,6 @@ public class AccountControlRequest implements Serializable
         }
 
         this.requestor = value;
-    }
-
-    public final void setIsReset(final boolean value)
-    {
-        final String methodName = AccountControlRequest.CNAME + "#setIsReset(final boolean value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.isReset = value;
-    }
-
-    public final void setIsLogonRequest(final boolean value)
-    {
-        final String methodName = AccountControlRequest.CNAME + "#setIsLogonRequest(final boolean value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.isLoginRequest = value;
     }
 
     public final void setServiceId(final String value)
@@ -314,32 +257,6 @@ public class AccountControlRequest implements Serializable
         return this.applicationId;
     }
 
-    public final ControlType getControlType()
-    {
-        final String methodName = AccountControlRequest.CNAME + "#getControlType()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.controlType);
-        }
-
-        return this.controlType;
-    }
-
-    public final ModificationType getModType()
-    {
-        final String methodName = AccountControlRequest.CNAME + "#getControlType()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.modType);
-        }
-
-        return this.modType;
-    }
-
     public final UserAccount getRequestor()
     {
         final String methodName = AccountControlRequest.CNAME + "#getRequestor()";
@@ -351,19 +268,6 @@ public class AccountControlRequest implements Serializable
         }
 
         return this.requestor;
-    }
-
-    public final boolean isReset()
-    {
-        final String methodName = AccountControlRequest.CNAME + "#isReset()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.isReset);
-        }
-
-        return this.isReset;
     }
 
     public final boolean isLoginRequest()

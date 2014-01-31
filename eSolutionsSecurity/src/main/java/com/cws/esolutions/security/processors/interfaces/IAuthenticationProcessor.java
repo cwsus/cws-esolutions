@@ -46,9 +46,7 @@ import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
-import com.cws.esolutions.security.dao.reference.impl.UserServiceInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl;
-import com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -68,7 +66,6 @@ public interface IAuthenticationProcessor
     static final SecurityServiceBean bean = SecurityServiceBean.getInstance();
     static final IAccessControlService accessControl = new AccessControlServiceImpl();
     static final SecurityConfig secConfig = bean.getConfigData().getSecurityConfig();
-    static final IUserServiceInformationDAO svcInfo = new UserServiceInformationDAOImpl();
     static final IAccountControlProcessor controlProcessor = new AccountControlProcessorImpl();
     static final IUserSecurityInformationDAO userSec = new UserSecurityInformationDAOImpl();
     static final Authenticator authenticator = AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());

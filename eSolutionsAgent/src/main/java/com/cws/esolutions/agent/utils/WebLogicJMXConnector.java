@@ -65,7 +65,7 @@ public final class WebLogicJMXConnector
 
         try
         {
-			Hashtable<String, Object> jmxTable = new Hashtable<>();
+            Hashtable<String, Object> jmxTable = new Hashtable<>();
             jmxTable.put(JMXConnectorFactory.PROTOCOL_PROVIDER_PACKAGES, WebLogicJMXConnector.PROTOCOL_PACKAGES);
 
             if (jmxConfig.getIsSecure())
@@ -73,7 +73,7 @@ public final class WebLogicJMXConnector
                 UsernameAndPassword authInfo = new UsernameAndPassword();
                 authInfo = UserConfigFileManager.getUsernameAndPassword(
                         jmxConfig.getUserConfig(),
-					    jmxConfig.getKeyConfig(),
+                        jmxConfig.getKeyConfig(),
                         "weblogic.management");
 
                 if (DEBUG)

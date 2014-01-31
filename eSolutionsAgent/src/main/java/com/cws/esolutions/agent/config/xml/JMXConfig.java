@@ -496,11 +496,11 @@ public final class JMXConfig implements Serializable
             }
 
             if (!(field.getName().equals("methodName")) &&
-				(!(field.getName().equals("CNAME"))) &&
-				(!(field.getName().equals("DEBUGGER"))) &&
-				(!(field.getName().equals("DEBUG"))) &&
-				(!(field.getName().equals("ERROR_RECORDER"))) &&
-				(!(field.getName().equals("serialVersionUID"))))
+                (!(field.getName().equals("CNAME"))) &&
+                (!(field.getName().equals("DEBUGGER"))) &&
+                (!(field.getName().equals("DEBUG"))) &&
+                (!(field.getName().equals("ERROR_RECORDER"))) &&
+                (!(field.getName().equals("serialVersionUID"))))
             {
                 try
                 {

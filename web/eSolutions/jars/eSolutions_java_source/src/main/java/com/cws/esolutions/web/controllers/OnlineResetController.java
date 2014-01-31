@@ -53,33 +53,34 @@ import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.web.validators.OnlineResetValidator;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
-import com.cws.esolutions.security.processors.enums.ControlType;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
-import com.cws.esolutions.security.processors.enums.ModificationType;
 import com.cws.esolutions.security.processors.dto.AccountResetRequest;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
-import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 import com.cws.esolutions.web.processors.interfaces.IMessagingProcessor;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
-import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
 import com.cws.esolutions.web.processors.impl.ServiceMessagingProcessorImpl;
 import com.cws.esolutions.security.processors.impl.AccountResetProcessorImpl;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
-import com.cws.esolutions.security.processors.impl.AuthenticationProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
-import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
-import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor;
-
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
+ *
+ * @author khuntly
+ * @version 1.0
+ * @see org.springframework.stereotype.Controller
+ */
 @Controller
 @RequestMapping("/online-reset")
 public class OnlineResetController
@@ -524,17 +525,8 @@ public class OnlineResetController
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            AuthenticationData userSecurity = new AuthenticationData();
-            userSecurity.setResetRequestId(resetId);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AuthenticationData: {}", userSecurity);
-            }
-
             AccountResetRequest resetReq = new AccountResetRequest();
             resetReq.setHostInfo(reqInfo);
-            resetReq.setUserSecurity(userSecurity);
             resetReq.setApplicationId(this.appConfig.getApplicationId());
             resetReq.setApplicationName(this.appConfig.getApplicationName());
 
@@ -762,10 +754,7 @@ public class OnlineResetController
             }
 
             AccountControlRequest controlReq = new AccountControlRequest();
-            controlReq.setControlType(ControlType.LOOKUP);
             controlReq.setHostInfo(reqInfo);
-            controlReq.setIsLogonRequest(false);
-            controlReq.setModType(ModificationType.NONE);
             controlReq.setUserAccount(reqAccount);
             controlReq.setApplicationId(this.appConfig.getApplicationId());
             controlReq.setApplicationName(this.appConfig.getApplicationName());
@@ -802,7 +791,7 @@ public class OnlineResetController
                                     String.format(this.forgotUsernameEmail.getTo()[0], userAccount.getEmailAddr()))));
                     message.setEmailAddr(new ArrayList<>(
                             Arrays.asList(
-                                    String.format(this.forgotUsernameEmail.getTo()[0], this.secConfig.getEmailAddr()))));
+                                    String.format(this.forgotUsernameEmail.getTo()[0], this.appConfig.getEmailAddress()))));
                     message.setMessageBody(String.format(this.forgotUsernameEmail.getText(),
                             userAccount.getGivenName(),
                             new Date(System.currentTimeMillis()),
@@ -823,7 +812,7 @@ public class OnlineResetController
                     mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                 }
 
-				mView = new ModelAndView(new RedirectView());
+                mView = new ModelAndView(new RedirectView());
                 mView.addObject(Constants.MESSAGE_RESPONSE, this.messageRequestComplete);
                 mView.setViewName(this.appConfig.getLogonRedirect());
             }
@@ -865,7 +854,7 @@ public class OnlineResetController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
-        final IAuthenticationProcessor authProcessor = new AuthenticationProcessorImpl();
+        final IAccountResetProcessor processor = new AccountResetProcessorImpl();
 
         if (DEBUG)
         {
@@ -942,22 +931,22 @@ public class OnlineResetController
                 DEBUGGER.debug("UserAccount: {}", reqAccount);
             }
 
-            AuthenticationRequest secRequest = new AuthenticationRequest();
-            secRequest.setHostInfo(reqInfo);
-            secRequest.setUserAccount(reqAccount);
-            secRequest.setApplicationId(this.appConfig.getApplicationId());
-            secRequest.setApplicationName(this.appConfig.getApplicationName());
+            AccountResetRequest resetReq = new AccountResetRequest();
+            resetReq.setApplicationId(this.appConfig.getApplicationId());
+            resetReq.setApplicationName(this.appConfig.getApplicationName());
+            resetReq.setHostInfo(reqInfo);
+            resetReq.setUserAccount(reqAccount);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("AuthenticationRequest: {}", secRequest);
+                DEBUGGER.debug("AuthenticationRequest: {}", resetReq);
             }
 
-            AuthenticationResponse response = authProcessor.obtainUserSecurityConfig(secRequest);
+            AccountResetResponse response = processor.obtainUserSecurityConfig(resetReq);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("AuthenticationResponse: {}", response);
+                DEBUGGER.debug("AccountResetResponse: {}", response);
             }
 
             if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
@@ -1000,9 +989,9 @@ public class OnlineResetController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (AuthenticationException ax)
+        catch (AccountResetException arx)
         {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
+            ERROR_RECORDER.error(arx.getMessage(), arx);
 
             mView = new ModelAndView(new RedirectView());
             mView.setViewName(this.appConfig.getErrorResponsePage());
@@ -1035,8 +1024,7 @@ public class OnlineResetController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAccountResetProcessor resetProcess = new AccountResetProcessorImpl();
-        final IAuthenticationProcessor authProcessor = new AuthenticationProcessorImpl();
+        final IAccountResetProcessor processor = new AccountResetProcessorImpl();
 
         if (DEBUG)
         {
@@ -1115,25 +1103,24 @@ public class OnlineResetController
                 DEBUGGER.debug("AuthenticationData: {}", userSecurity);
             }
 
-            AuthenticationRequest authRequest = new AuthenticationRequest();
-            authRequest.setHostInfo(reqInfo);
-            authRequest.setUserAccount(userAccount);
-            authRequest.setUserSecurity(userSecurity);
-            authRequest.setTimeoutValue(this.appConfig.getRequestTimeout());
-            authRequest.setApplicationId(this.appConfig.getApplicationId());
-            authRequest.setApplicationName(this.appConfig.getApplicationName());
-            authRequest.setCount(request.getCount());
+            AccountResetRequest resRequest = new AccountResetRequest();
+            resRequest.setApplicationId(this.appConfig.getApplicationId());
+            resRequest.setApplicationName(this.appConfig.getApplicationName());
+            resRequest.setHostInfo(reqInfo);
+            resRequest.setUserAccount(userAccount);
+            resRequest.setCount(request.getCount());
+            resRequest.setUserSecurity(userSecurity);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("AuthenticationRequest: {}", authRequest);
+                DEBUGGER.debug("AccountResetRequest: {}", resRequest);
             }
 
-            AuthenticationResponse response = authProcessor.verifyUserSecurityConfig(authRequest);
+            AccountResetResponse response = processor.verifyUserSecurityConfig(resRequest);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("AuthenticationResponse: {}", response);
+                DEBUGGER.debug("AccountResetResponse: {}", response);
             }
 
             if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
@@ -1142,7 +1129,6 @@ public class OnlineResetController
                 // kick off the reset workflow
                 AccountResetRequest resetReq = new AccountResetRequest();
                 resetReq.setHostInfo(reqInfo);
-                resetReq.setRequestor(userAccount);
                 resetReq.setUserAccount(userAccount);
                 resetReq.setApplicationId(this.appConfig.getApplicationId());
                 resetReq.setApplicationName(this.appConfig.getApplicationName());
@@ -1152,7 +1138,7 @@ public class OnlineResetController
                     DEBUGGER.debug("AccountResetRequest: {}", resetReq);
                 }
 
-                AccountResetResponse resetRes = resetProcess.resetUserPassword(resetReq);
+                AccountResetResponse resetRes = processor.resetUserPassword(resetReq);
 
                 if (DEBUG)
                 {
@@ -1196,7 +1182,7 @@ public class OnlineResetController
                                         String.format(this.forgotPasswordEmail.getTo()[0], userAccount.getEmailAddr()))));
                         message.setEmailAddr(new ArrayList<>(
                                 Arrays.asList(
-                                        String.format(this.forgotPasswordEmail.getTo()[0], this.secConfig.getEmailAddr()))));
+                                        String.format(this.forgotPasswordEmail.getTo()[0], this.appConfig.getEmailAddress()))));
                         message.setMessageBody(String.format(this.forgotPasswordEmail.getText(),
                             responseAccount.getGivenName(),
                             new Date(System.currentTimeMillis()),
@@ -1226,7 +1212,7 @@ public class OnlineResetController
                         smsMessage.setIsAlert(true); // set this to alert so it shows as high priority
                         smsMessage.setMessageBody(resetRes.getSmsCode());
                         smsMessage.setMessageTo(new ArrayList<>(Arrays.asList(responseAccount.getPagerNumber())));
-                        smsMessage.setEmailAddr(new ArrayList<>(Arrays.asList(this.secConfig.getEmailAddr())));
+                        smsMessage.setEmailAddr(new ArrayList<>(Arrays.asList(this.appConfig.getEmailAddress())));
 
                         if (DEBUG)
                         {
@@ -1266,12 +1252,6 @@ public class OnlineResetController
                 mView.addObject("command", request);
                 mView.setViewName(this.submitAnswersPage);
             }
-        }
-        catch (AuthenticationException ax)
-        {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
         catch (AccountResetException arx)
         {

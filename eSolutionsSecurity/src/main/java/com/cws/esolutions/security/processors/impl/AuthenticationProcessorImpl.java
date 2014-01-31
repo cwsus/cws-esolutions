@@ -27,7 +27,6 @@ package com.cws.esolutions.security.processors.impl;
  */
 import java.util.List;
 import java.util.Date;
-import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import com.unboundid.ldap.sdk.ResultCode;
@@ -176,7 +175,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     DEBUGGER.debug("Group: {}", group);
                 }
 
-                List<String> serviceList = svcInfo.listServicesForGroup(group);
+                List<String> serviceList = secRef.listServicesForGroup(group);
 
                 if (DEBUG)
                 {
@@ -406,7 +405,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     DEBUGGER.debug("Group: {}", group);
                 }
 
-                List<String> serviceList = svcInfo.listServicesForGroup(group);
+                List<String> serviceList = secRef.listServicesForGroup(group);
 
                 if (DEBUG)
                 {

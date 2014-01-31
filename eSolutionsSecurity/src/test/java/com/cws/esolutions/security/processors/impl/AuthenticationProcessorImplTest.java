@@ -48,8 +48,7 @@ public class AuthenticationProcessorImplTest
 
     private static final IAuthenticationProcessor agentAuth = new AuthenticationProcessorImpl();
 
-    @Before
-    public void setUp()
+    @Before public void setUp()
     {
         try
         {
@@ -67,8 +66,7 @@ public class AuthenticationProcessorImplTest
         }
     }
 
-    @Test
-    public void processAgentLogon()
+    @Test public void processAgentLogon()
     {
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
@@ -98,8 +96,7 @@ public class AuthenticationProcessorImplTest
         }
     }
 
-    @Test
-    public void processOtpLogon()
+    @Test public void processOtpLogon()
     {
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
@@ -131,94 +128,7 @@ public class AuthenticationProcessorImplTest
         }
     }
 
-    @Test
-    public void processAgentLogonAsFailed()
-    {
-        UserAccount account = new UserAccount();
-        account.setUsername("khuntly");
-        hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
-
-        AuthenticationData userSecurity = new AuthenticationData();
-        userSecurity.setPassword("Ariana21*");
-
-        AuthenticationRequest request = new AuthenticationRequest();
-        request.setApplicationName("esolutions");
-        request.setUserAccount(account);
-        request.setUserSecurity(userSecurity);
-        request.setHostInfo(hostInfo);
-
-        try
-        {
-            AuthenticationResponse response = agentAuth.processAgentLogon(request);
-
-            Assert.assertEquals(SecurityRequestStatus.FAILURE, response.getRequestStatus());
-        }
-        catch (AuthenticationException ax)
-        {
-            Assert.fail(ax.getMessage());
-        }
-    }
-
-    @Test
-    public void obtainUserSecurityConfig()
-    {
-        UserAccount account = new UserAccount();
-        account.setUsername("khuntly");
-        account.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
-        hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
-
-        AuthenticationRequest request = new AuthenticationRequest();
-        request.setApplicationName("eSolutions");
-        request.setUserAccount(account);
-        request.setApplicationId("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
-        request.setApplicationName("esolutions");
-        request.setHostInfo(hostInfo);
-
-        try
-        {
-            AuthenticationResponse response = agentAuth.obtainUserSecurityConfig(request);
-
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
-        }
-        catch (AuthenticationException ax)
-        {
-            Assert.fail(ax.getMessage());
-        }
-    }
-
-    @Test
-    public void verifyUserSecurityConfig()
-    {
-        UserAccount account = new UserAccount();
-        account.setUsername("khuntly");
-        account.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
-
-        AuthenticationData userSecurity = new AuthenticationData();
-        userSecurity.setSecAnswerOne("answerone");
-        userSecurity.setSecAnswerTwo("answertwo");
-
-        AuthenticationRequest request = new AuthenticationRequest();
-        request.setApplicationName("eSolutions");
-        request.setUserAccount(account);
-        request.setUserSecurity(userSecurity);
-        request.setApplicationId("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
-        request.setApplicationName("esolutions");
-        request.setHostInfo(hostInfo);
-
-        try
-        {
-            AuthenticationResponse response = agentAuth.verifyUserSecurityConfig(request);
-
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
-        }
-        catch (AuthenticationException ax)
-        {
-            Assert.fail(ax.getMessage());
-        }
-    }
-
-    @After
-    public void tearDown()
+    @After public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

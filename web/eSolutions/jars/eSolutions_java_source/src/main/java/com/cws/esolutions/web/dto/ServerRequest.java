@@ -10,7 +10,17 @@
  * express written authorization of CaspersBox Web Services, N.A.
  */
 package com.cws.esolutions.web.dto;
-
+/*
+ * Project: eSolutions_java_source
+ * Package: com.cws.esolutions.web.dto
+ * File: ServerRequest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -22,16 +32,11 @@ import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.core.processors.enums.ServerStatus;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.core.processors.enums.NetworkPartition;
-/*
- * Project: eSolutions_java_source
- * Package: com.cws.esolutions.web.dto
- * File: ServerRequest.java
+/**
+ * TODO: Add class information/description
  *
- * History
- *
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * @author 35033355
+ * @version 1.0
  */
 public class ServerRequest implements Serializable
 {

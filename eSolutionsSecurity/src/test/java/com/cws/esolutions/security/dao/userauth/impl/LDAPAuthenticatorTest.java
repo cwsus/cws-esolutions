@@ -34,12 +34,14 @@ import java.util.ArrayList;
 
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
+import com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 
 public class LDAPAuthenticatorTest
 {
-    @Before
-    public void setUp()
+    private static final Authenticator authenticator = AuthenticatorFactory.getAuthenticator("com.cws.esolutions.security.dao.userauth.LDAPAuthenticator");
+
+    @Before public void setUp()
     {
         try
         {
@@ -52,13 +54,10 @@ public class LDAPAuthenticatorTest
         }
     }
 
-    @Test
-    public void performLogon()
+    @Test public void performLogon()
     {
         try
         {
-            final Authenticator authenticator = new LDAPAuthenticator();
-
             Assert.assertNotNull(authenticator.performLogon("khuntly", "VOpqGWznp1flygXFED8FVTxXTRHG9QG/Dj+apuuyeh59JWVbYd9hOgZTOfpLdBWRlPDb1TZnvt7XE3llHOPQQQ=="));
         }
         catch (AuthenticatorException e)
@@ -67,14 +66,35 @@ public class LDAPAuthenticatorTest
         }
     }
 
-    @Test
-    public void verifySecurityData()
+    @Test public void obtainSecurityData()
     {
         try
         {
-            final Authenticator authenticator = new LDAPAuthenticator();
+            Assert.assertNotNull(authenticator.obtainSecurityData("khuntly", "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95"));
+        }
+        catch (AuthenticatorException e)
+        {
+            Assert.fail(e.getMessage());
+        }
+    }
 
-            Assert.assertTrue(authenticator.verifySecurityData("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95", "khuntly",
+    @Test public void obtainOtpSecret()
+    {
+        try
+        {
+            Assert.assertNotNull(authenticator.obtainOtpSecret("khuntly", "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95"));
+        }
+        catch (AuthenticatorException e)
+        {
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test public void verifySecurityData()
+    {
+        try
+        {
+            Assert.assertTrue(authenticator.verifySecurityData("khuntly", "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95",
                     new ArrayList<String>(
                             Arrays.asList("2kAghHhR1Kaq4vuXukaY9NDOnt9J9rZzGvn6Fgg2EIsj2kHjsYv4mIp2SGsATUL8d839aqL27+KOVxh704hk5Q==",
                                     "JeqSyqq3trkDkOwMZDf8lIHCfa2NWPSMJ/rFVnPmooGKXcAzUtwR/wJ18uc5wOQtbsMaa3cK3lB2kwqqi/SpWA=="))));
@@ -86,8 +106,7 @@ public class LDAPAuthenticatorTest
         }
     }
 
-    @After
-    public void tearDown()
+    @After public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

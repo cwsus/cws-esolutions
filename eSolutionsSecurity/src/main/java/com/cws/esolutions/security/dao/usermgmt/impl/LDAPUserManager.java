@@ -147,7 +147,7 @@ public class LDAPUserManager implements UserManager
 
             Filter searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + ")" +
                     "(|(cn=" + userGuid + ")" +
-					"(uid=" + userId + ")))");
+                    "(uid=" + userId + ")))");
 
             if (DEBUG)
             {
@@ -1547,11 +1547,11 @@ public class LDAPUserManager implements UserManager
 
             if (addSecret)
             {
-                modifyList.add(new Modification(ModificationType.DELETE, authData.getSecret()));
+                modifyList.add(new Modification(ModificationType.REPLACE, authData.getSecret(), secret));
             }
             else
             {
-                modifyList.add(new Modification(ModificationType.REPLACE, authData.getSecret(), secret));
+                modifyList.add(new Modification(ModificationType.DELETE, authData.getSecret()));
             }
 
             if (DEBUG)

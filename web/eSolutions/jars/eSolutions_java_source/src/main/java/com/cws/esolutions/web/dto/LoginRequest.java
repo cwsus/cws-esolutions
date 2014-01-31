@@ -10,13 +10,6 @@
  * express written authorization of CaspersBox Web Services, N.A.
  */
 package com.cws.esolutions.web.dto;
-
-import org.slf4j.Logger;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import org.slf4j.LoggerFactory;
-
-import com.cws.esolutions.web.Constants;
 /*
  * Project: eSolutions_java_source
  * Package: com.cws.esolutions.web.dto
@@ -27,6 +20,18 @@ import com.cws.esolutions.web.Constants;
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
+import org.slf4j.Logger;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import org.slf4j.LoggerFactory;
+
+import com.cws.esolutions.web.Constants;
+/**
+ * TODO: Add class information/description
+ *
+ * @author 35033355
+ * @version 1.0
  */
 public class LoginRequest implements Serializable
 {

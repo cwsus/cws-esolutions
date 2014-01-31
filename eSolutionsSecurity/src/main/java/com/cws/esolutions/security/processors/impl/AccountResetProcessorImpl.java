@@ -48,7 +48,6 @@ import com.cws.esolutions.security.processors.dto.AccountResetRequest;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
-import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
@@ -91,7 +90,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                 DEBUGGER.debug("userList: {}", userList);
             }
 
-            if ((userList != null) || (userList.size() != 1))
+            if ((userList.size() != 1) || (userList == null))
             {
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
 
@@ -253,12 +252,12 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             if (StringUtils.isNotEmpty(userSalt))
             {
                 boolean isVerified = authenticator.verifySecurityData(userAccount.getUsername(), userAccount.getGuid(),
-				    new ArrayList<String>(
-						Arrays.asList(
-							PasswordUtils.encryptText(userSecurity.getSecAnswerOne(), userSalt,
-								secConfig.getAuthAlgorithm(), secConfig.getIterations()),
-					        PasswordUtils.encryptText(userSecurity.getSecAnswerTwo(), userSalt,
-								secConfig.getAuthAlgorithm(), secConfig.getIterations()))));
+                    new ArrayList<String>(
+                        Arrays.asList(
+                            PasswordUtils.encryptText(userSecurity.getSecAnswerOne(), userSalt,
+                                secConfig.getAuthAlgorithm(), secConfig.getIterations()),
+                            PasswordUtils.encryptText(userSecurity.getSecAnswerTwo(), userSalt,
+                                secConfig.getAuthAlgorithm(), secConfig.getIterations()))));
 
                 if (DEBUG)
                 {
@@ -358,7 +357,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
         final Calendar cal = Calendar.getInstance();
         final RequestHostInfo reqInfo = request.getHostInfo();
-        final AuthenticationData userSecurity = request.getUserSecurity();
                 
         if (DEBUG)
         {
@@ -425,18 +423,18 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                             DEBUGGER.debug("UserAccount: {}", userAccount);
                         }
 
-						// remove the reset request
-						boolean isRemoved = userSec.removeResetData(userAccount.getGuid(), request.getResetRequestId());
+                        // remove the reset request
+                        boolean isRemoved = userSec.removeResetData(userAccount.getGuid(), request.getResetRequestId());
 
-						if (DEBUG)
-						{
-							DEBUGGER.debug("isRemoved: {}", isRemoved);
-						}
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("isRemoved: {}", isRemoved);
+                        }
 
-						if (!(isRemoved))
-						{
-							ERROR_RECORDER.error("Failed to remove provided reset request from datastore");
-						}
+                        if (!(isRemoved))
+                        {
+                            ERROR_RECORDER.error("Failed to remove provided reset request from datastore");
+                        }
 
                         response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                         response.setUserAccount(userAccount);
@@ -495,7 +493,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
         final Calendar calendar = Calendar.getInstance();
         final RequestHostInfo reqInfo = request.getHostInfo();
-        final UserAccount reqAccount = request.getRequestor();
         final UserAccount userAccount = request.getUserAccount();
 
         calendar.add(Calendar.DATE, secConfig.getPasswordExpiration());
@@ -504,19 +501,11 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
         {
             DEBUGGER.debug("Calendar: {}", calendar);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            DEBUGGER.debug("UserAccount: {}", reqAccount);
             DEBUGGER.debug("UserAccount: {}", userAccount);
         }
 
         try
         {
-            if (!(StringUtils.equals(userAccount.getGuid(), reqAccount.getGuid())))
-            {
-                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-
-                return response;
-            }
-
             String resetId = RandomStringUtils.randomAlphanumeric(secConfig.getResetIdLength());
             String smsReset = RandomStringUtils.randomAlphanumeric(secConfig.getSmsCodeLength());
 

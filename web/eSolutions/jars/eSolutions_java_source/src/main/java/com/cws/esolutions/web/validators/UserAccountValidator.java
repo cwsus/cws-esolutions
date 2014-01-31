@@ -10,15 +10,6 @@
  * express written authorization of CaspersBox Web Services, N.A.
  */
 package com.cws.esolutions.web.validators;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
-import org.springframework.validation.ValidationUtils;
-
-import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.security.dto.UserAccount;
 /*
  * Project: eSolutions_java_source
  * Package: com.cws.esolutions.web.validators
@@ -29,6 +20,23 @@ import com.cws.esolutions.security.dto.UserAccount;
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
+import org.springframework.validation.ValidationUtils;
+
+import com.cws.esolutions.web.Constants;
+import com.cws.esolutions.security.dto.UserAccount;
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
+ *
+ * @author khuntly
+ * @version 1.0
+ * @see org.springframework.validation.Validator
  */
 public class UserAccountValidator implements Validator
 {

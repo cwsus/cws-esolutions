@@ -68,7 +68,15 @@ import com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor
 import com.cws.esolutions.core.processors.impl.ApplicationManagementProcessorImpl;
 import com.cws.esolutions.core.processors.exception.ApplicationManagementException;
 import com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor;
-
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
+ *
+ * @author khuntly
+ * @version 1.0
+ * @see org.springframework.stereotype.Controller
+ */
 @Controller
 @RequestMapping("/application-management")
 public class ApplicationManagementController

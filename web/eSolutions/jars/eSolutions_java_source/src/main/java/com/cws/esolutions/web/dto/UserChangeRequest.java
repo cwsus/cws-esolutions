@@ -10,14 +10,6 @@
  * express written authorization of CaspersBox Web Services, N.A.
  */
 package com.cws.esolutions.web.dto;
-
-import org.slf4j.Logger;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import org.slf4j.LoggerFactory;
-
-import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.web.enums.ResetRequestType;
 /*
  * Project: eSolutions_java_source
  * Package: com.cws.esolutions.web.dto
@@ -28,6 +20,19 @@ import com.cws.esolutions.web.enums.ResetRequestType;
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
+import org.slf4j.Logger;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import org.slf4j.LoggerFactory;
+
+import com.cws.esolutions.web.Constants;
+import com.cws.esolutions.web.enums.ResetRequestType;
+/**
+ * TODO: Add class information/description
+ *
+ * @author 35033355
+ * @version 1.0
  */
 public final class UserChangeRequest implements Serializable
 {

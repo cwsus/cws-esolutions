@@ -45,8 +45,9 @@ public class AccountResetProcessorImplTest
 {
     private static RequestHostInfo hostInfo = null;
 
-    @Before
-    public void setUp()
+    private static final IAccountResetProcessor processor = new AccountResetProcessorImpl();
+
+    @Before public void setUp()
     {
         try
         {
@@ -63,8 +64,103 @@ public class AccountResetProcessorImplTest
         }
     }
 
-    @Test
-    public void testResetUserPassword()
+    @Test public void findUserAccount()
+    {
+        UserAccount account = new UserAccount();
+        account.setUsername("khuntly");
+
+        AccountResetRequest request = new AccountResetRequest();
+        request.setApplicationId("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
+        request.setApplicationName("eSolutions");
+        request.setHostInfo(hostInfo);
+        request.setUserAccount(account);
+
+        try
+        {
+            AccountResetResponse response = processor.findUserAccount(request);
+
+            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+        }
+        catch (AccountResetException ax)
+        {
+            Assert.fail(ax.getMessage());
+        }
+    }
+
+    @Test public void obtainUserSecurityConfig()
+    {
+        UserAccount account = new UserAccount();
+        account.setUsername("khuntly");
+        account.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
+        hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
+
+        AccountResetRequest request = new AccountResetRequest();
+        request.setApplicationId("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
+        request.setApplicationName("eSolutions");
+        request.setHostInfo(hostInfo);
+        request.setUserAccount(account);
+
+        try
+        {
+            AccountResetResponse response = processor.obtainUserSecurityConfig(request);
+
+            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+        }
+        catch (AccountResetException ax)
+        {
+            Assert.fail(ax.getMessage());
+        }
+    }
+
+    @Test public void verifyUserSecurityConfig()
+    {
+        UserAccount account = new UserAccount();
+        account.setUsername("khuntly");
+        account.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
+
+        AuthenticationData userSecurity = new AuthenticationData();
+        userSecurity.setSecAnswerOne("answerone");
+        userSecurity.setSecAnswerTwo("answertwo");
+
+        AccountResetRequest request = new AccountResetRequest();
+        request.setApplicationId("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
+        request.setApplicationName("eSolutions");
+        request.setHostInfo(hostInfo);
+        request.setUserAccount(account);
+        request.setUserSecurity(userSecurity);
+
+        try
+        {
+            AccountResetResponse response = processor.verifyUserSecurityConfig(request);
+
+            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+        }
+        catch (AccountResetException ax)
+        {
+            Assert.fail(ax.getMessage());
+        }
+    }
+
+    @Test public void verifyResetRequest()
+    {
+        AccountResetRequest request = new AccountResetRequest();
+        request.setApplicationName("esolutions");
+        request.setHostInfo(hostInfo);
+        request.setResetRequestId("5elKReQu6KddvYQaXt0hYZ72K61TKH7JoSvk1t2WmsdQ7zTO75fTpzbhEgjYSCdL");
+
+        try
+        {
+            AccountResetResponse response = processor.verifyResetRequest(request);
+
+            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+        }
+        catch (AccountResetException arx)
+        {
+            Assert.fail(arx.getMessage());
+        }
+    }
+
+    @Test public void resetUserPassword()
     {
         IAccountResetProcessor processor = new AccountResetProcessorImpl();
 
@@ -83,7 +179,6 @@ public class AccountResetProcessorImplTest
         AccountResetRequest request = new AccountResetRequest();
         request.setApplicationName("esolutions");
         request.setHostInfo(hostInfo);
-        request.setRequestor(account);
         request.setUserAccount(account);
 
         try
@@ -98,33 +193,7 @@ public class AccountResetProcessorImplTest
         }
     }
 
-    @Test
-    public void testVerifyResetRequest()
-    {
-        IAccountResetProcessor processor = new AccountResetProcessorImpl();
-
-        AuthenticationData userSecurity = new AuthenticationData();
-        userSecurity.setResetRequestId("5elKReQu6KddvYQaXt0hYZ72K61TKH7JoSvk1t2WmsdQ7zTO75fTpzbhEgjYSCdL");
-
-        AccountResetRequest request = new AccountResetRequest();
-        request.setApplicationName("esolutions");
-        request.setHostInfo(hostInfo);
-        request.setUserSecurity(userSecurity);
-
-        try
-        {
-            AccountResetResponse response = processor.verifyResetRequest(request);
-
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
-        }
-        catch (AccountResetException arx)
-        {
-            Assert.fail(arx.getMessage());
-        }
-    }
-
-    @After
-    public void tearDown()
+    @After public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

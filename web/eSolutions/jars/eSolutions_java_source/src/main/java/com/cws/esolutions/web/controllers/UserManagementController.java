@@ -55,10 +55,8 @@ import com.cws.esolutions.web.validators.UserAccountValidator;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.dto.AuditResponse;
-import com.cws.esolutions.security.processors.enums.ControlType;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-import com.cws.esolutions.security.processors.enums.ModificationType;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
@@ -69,7 +67,15 @@ import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
-
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
+ *
+ * @author khuntly
+ * @version 1.0
+ * @see org.springframework.stereotype.Controller
+ */
 @Controller
 @RequestMapping("/user-management")
 public class UserManagementController
@@ -575,10 +581,7 @@ public class UserManagementController
                 request.setHostInfo(reqInfo);
                 request.setUserAccount(searchAccount);
                 request.setApplicationId(this.appConfig.getApplicationName());
-                request.setControlType(ControlType.LOOKUP);
-                request.setModType(ModificationType.NONE);
                 request.setRequestor(userAccount);
-                request.setIsLogonRequest(false);
                 request.setServiceId(this.serviceId);
                 request.setApplicationId(this.appConfig.getApplicationId());
                 request.setApplicationName(this.appConfig.getApplicationName());
@@ -1309,10 +1312,7 @@ public class UserManagementController
                 request.setUserAccount(account);
                 request.setApplicationName(this.appConfig.getApplicationName());
                 request.setApplicationId(this.appConfig.getApplicationId());
-                request.setControlType(ControlType.SUSPEND);
-                request.setModType(ModificationType.NONE);
                 request.setRequestor(userAccount);
-                request.setIsLogonRequest(false);
                 request.setServiceId(this.serviceId);
 
                 if (DEBUG)
@@ -1454,10 +1454,7 @@ public class UserManagementController
                 request.setUserAccount(account);
                 request.setApplicationName(this.appConfig.getApplicationName());
                 request.setApplicationId(this.appConfig.getApplicationId());
-                request.setControlType(ControlType.SUSPEND);
-                request.setModType(ModificationType.NONE);
                 request.setRequestor(userAccount);
-                request.setIsLogonRequest(false);
                 request.setServiceId(this.serviceId);
 
                 if (DEBUG)
@@ -1599,10 +1596,7 @@ public class UserManagementController
                 request.setUserAccount(account);
                 request.setApplicationName(this.appConfig.getApplicationName());
                 request.setApplicationId(this.appConfig.getApplicationId());
-                request.setControlType(ControlType.SUSPEND);
-                request.setModType(ModificationType.NONE);
                 request.setRequestor(userAccount);
-                request.setIsLogonRequest(false);
                 request.setServiceId(this.serviceId);
 
                 if (DEBUG)
@@ -1745,10 +1739,7 @@ public class UserManagementController
                 request.setUserAccount(account);
                 request.setApplicationName(this.appConfig.getApplicationName());
                 request.setApplicationId(this.appConfig.getApplicationId());
-                request.setControlType(ControlType.SUSPEND);
-                request.setModType(ModificationType.NONE);
                 request.setRequestor(userAccount);
-                request.setIsLogonRequest(false);
                 request.setServiceId(this.serviceId);
 
                 if (DEBUG)
@@ -1961,7 +1952,7 @@ public class UserManagementController
                                             String.format(this.forgotPasswordEmail.getTo()[0], account.getEmailAddr()))));
                             message.setEmailAddr(new ArrayList<>(
                                     Arrays.asList(
-                                            String.format(this.forgotPasswordEmail.getTo()[0], this.secConfig.getEmailAddr()))));
+                                            String.format(this.forgotPasswordEmail.getTo()[0], this.appConfig.getEmailAddress()))));
                             message.setMessageBody(String.format(this.forgotPasswordEmail.getText(),
                                     account.getGivenName(),
                                     new Date(System.currentTimeMillis()),
@@ -1991,7 +1982,7 @@ public class UserManagementController
                             smsMessage.setIsAlert(true); // set this to alert so it shows as high priority
                             smsMessage.setMessageBody(resetRes.getSmsCode());
                             smsMessage.setMessageTo(new ArrayList<>(Arrays.asList(account.getPagerNumber())));
-                            smsMessage.setEmailAddr(new ArrayList<>(Arrays.asList(this.secConfig.getEmailAddr())));
+                            smsMessage.setEmailAddr(new ArrayList<>(Arrays.asList(this.appConfig.getEmailAddress())));
 
                             if (DEBUG)
                             {
@@ -2158,8 +2149,6 @@ public class UserManagementController
                 request.setServiceId(this.serviceId);
                 request.setApplicationId(this.appConfig.getApplicationId());
                 request.setApplicationName(this.appConfig.getApplicationName());
-                request.setModType(ModificationType.ROLE);
-                request.setControlType(ControlType.MODIFY);
 
                 if (DEBUG)
                 {
@@ -2325,10 +2314,7 @@ public class UserManagementController
                 searchRequest.setHostInfo(reqInfo);
                 searchRequest.setUserAccount(searchAccount);
                 searchRequest.setApplicationId(this.appConfig.getApplicationName());
-                searchRequest.setControlType(ControlType.LOOKUP);
-                searchRequest.setModType(ModificationType.NONE);
                 searchRequest.setRequestor(userAccount);
-                searchRequest.setIsLogonRequest(false);
                 searchRequest.setServiceId(this.serviceId);
                 searchRequest.setApplicationId(this.appConfig.getApplicationId());
                 searchRequest.setApplicationName(this.appConfig.getApplicationName());
@@ -2526,10 +2512,7 @@ public class UserManagementController
                 request.setUserAccount(newUser);
                 request.setUserSecurity(security);
                 request.setApplicationId(this.appConfig.getApplicationName());
-                request.setControlType(ControlType.CREATE);
-                request.setModType(ModificationType.NONE);
                 request.setRequestor(userAccount);
-                request.setIsLogonRequest(false);
                 request.setServiceId(this.serviceId);
                 request.setApplicationId(this.appConfig.getApplicationId());
                 request.setApplicationName(this.appConfig.getApplicationName());
@@ -2554,10 +2537,7 @@ public class UserManagementController
                     resetReq.setUserAccount(newUser);
                     resetReq.setUserSecurity(security);
                     resetReq.setApplicationId(this.appConfig.getApplicationName());
-                    resetReq.setControlType(ControlType.RESETPASS);
-                    resetReq.setModType(ModificationType.PASSWORD);
                     resetReq.setRequestor(userAccount);
-                    resetReq.setIsLogonRequest(false);
                     resetReq.setServiceId(this.serviceId);
                     resetReq.setApplicationId(this.appConfig.getApplicationId());
                     resetReq.setApplicationName(this.appConfig.getApplicationName());
@@ -2611,7 +2591,7 @@ public class UserManagementController
                                             String.format(this.accountCreatedEmail.getTo()[0], responseAccount.getEmailAddr()))));
                             message.setEmailAddr(new ArrayList<>(
                                     Arrays.asList(
-                                            String.format(this.accountCreatedEmail.getTo()[0], this.secConfig.getEmailAddr()))));
+                                            String.format(this.accountCreatedEmail.getTo()[0], this.appConfig.getEmailAddress()))));
                             message.setMessageBody(String.format(this.accountCreatedEmail.getText(),
                                     this.appConfig.getApplicationName(),
                                     responseAccount.getUsername(),
@@ -2638,7 +2618,7 @@ public class UserManagementController
                             smsMessage.setIsAlert(true); // set this to alert so it shows as high priority
                             smsMessage.setMessageBody(resetRes.getSmsCode());
                             smsMessage.setMessageTo(new ArrayList<>(Arrays.asList(responseAccount.getPagerNumber())));
-                            smsMessage.setEmailAddr(new ArrayList<>(Arrays.asList(this.secConfig.getEmailAddr())));
+                            smsMessage.setEmailAddr(new ArrayList<>(Arrays.asList(this.appConfig.getEmailAddress())));
 
                             if (DEBUG)
                             {

@@ -45,9 +45,7 @@ import com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory;
 import com.cws.esolutions.security.processors.exception.AccountChangeException;
 import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
-import com.cws.esolutions.security.dao.reference.impl.UserServiceInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl;
-import com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 /**
  * Allows processing of account change requests for individual user accounts for
@@ -70,7 +68,6 @@ public interface IAccountChangeProcessor
     static final KeyConfig keyConfig = secBean.getConfigData().getKeyConfig();
     static final ISecurityReferenceDAO secRef = new SecurityReferenceDAOImpl();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
-    static final IUserServiceInformationDAO userSvcs = new UserServiceInformationDAOImpl();
     static final IUserSecurityInformationDAO userSec = new UserSecurityInformationDAOImpl();
     static final UserManager userManager = UserManagerFactory.getUserManager(secConfig.getUserManager());
     static final Authenticator authenticator = AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());

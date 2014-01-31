@@ -48,7 +48,6 @@ public class AccountResetRequest implements Serializable
     private String resetSmsCode = null;
     private String applicationId = null;
     private String resetRequestId = null;
-    private UserAccount requestor = null;
     private String applicationName = null;
     private UserAccount userAccount = null;
     private RequestHostInfo hostInfo = null;
@@ -123,19 +122,6 @@ public class AccountResetRequest implements Serializable
         }
 
         this.applicationId = value;
-    }
-
-    public final void setRequestor(final UserAccount value)
-    {
-        final String methodName = AccountResetRequest.CNAME + "#setRequestor(final UserAccount value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.requestor = value;
     }
 
     public final void setResetRequestId(final String value)
@@ -237,19 +223,6 @@ public class AccountResetRequest implements Serializable
         }
 
         return this.applicationId;
-    }
-
-    public final UserAccount getRequestor()
-    {
-        final String methodName = AccountResetRequest.CNAME + "#getRequestor()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.requestor);
-        }
-
-        return this.requestor;
     }
 
     public final int getCount()

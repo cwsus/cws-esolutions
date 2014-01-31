@@ -25,22 +25,33 @@ package com.cws.esolutions.security.listeners;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.Map;
+
 import org.slf4j.Logger;
+
 import java.util.HashMap;
+
 import javax.sql.DataSource;
 import javax.naming.Context;
+
 import org.slf4j.LoggerFactory;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.naming.InitialContext;
 import javax.xml.bind.JAXBException;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
+
 import org.apache.log4j.helpers.Loader;
+
 import javax.servlet.ServletContextEvent;
+
 import org.apache.log4j.xml.DOMConfigurator;
+
 import javax.servlet.ServletContextListener;
 
 import com.cws.esolutions.security.SecurityServiceBean;
@@ -130,7 +141,8 @@ public class SecurityServiceListener implements ServletContextListener
                     Context initContext = new InitialContext();
                     Context envContext = (Context) initContext.lookup(SecurityServiceConstants.DS_CONTEXT);
 
-                    DAOInitializer.configureAndCreateAuthConnection(configData.getSecurityConfig().getAuthConfig(), true, SecurityServiceListener.svcBean);
+                    DAOInitializer.configureAndCreateAuthConnection(new FileInputStream(configData.getSecurityConfig().getAuthConfig()),
+                            false, SecurityServiceListener.svcBean);
 
                     Map<String, DataSource> dsMap = new HashMap<>();
 
@@ -162,6 +174,10 @@ public class SecurityServiceListener implements ServletContextListener
         catch (JAXBException jx)
         {
             ERROR_RECORDER.error(jx.getMessage(), jx);
+        }
+        catch (FileNotFoundException fnfx)
+        {
+            ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
         }
     }
 

@@ -46,8 +46,7 @@ public class ServerDataDAOImplTest
     private String guid = "77adebf4-a7b7-4aea-8dbd-a54bc0b5897f";
     private static final IServerDataDAO dao = new ServerDataDAOImpl();
 
-    @Before
-    public void setUp()
+    @Before public void setUp()
     {
         try
         {
@@ -61,8 +60,7 @@ public class ServerDataDAOImplTest
         }
     }
 
-    @Test
-    public void addNewServer()
+    @Test public void addNewServer()
     {
         List<Object> data = new ArrayList<Object>
         (
@@ -108,8 +106,7 @@ public class ServerDataDAOImplTest
         }
     }
 
-    @Test
-    public void modifyServerData()
+    @Test public void modifyServerData()
     {
         List<Object> data = new ArrayList<Object>
         (
@@ -155,8 +152,7 @@ public class ServerDataDAOImplTest
         }
     }
 
-    @Test
-    public void getInstalledServer()
+    @Test public void getInstalledServer()
     {
         try
         {
@@ -168,8 +164,7 @@ public class ServerDataDAOImplTest
         }
     }
 
-    @Test
-    public void getInstalledServers()
+    @Test public void getInstalledServers()
     {
         try
         {
@@ -181,8 +176,7 @@ public class ServerDataDAOImplTest
         }
     }
 
-    @Test
-    public void getServersByAttribute()
+    @Test public void getServersByAttribute()
     {
         try
         {
@@ -194,8 +188,7 @@ public class ServerDataDAOImplTest
         }
     }
 
-    @Test
-    public void removeExistingServer()
+    @Test public void removeExistingServer()
     {
         try
         {
@@ -207,8 +200,7 @@ public class ServerDataDAOImplTest
         }
     }
 
-    @After
-    public void tearDown()
+    @After public void tearDown()
     {
         CoreServiceInitializer.shutdown();
     }

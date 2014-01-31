@@ -43,7 +43,6 @@ import com.cws.esolutions.security.processors.enums.SaltType;
 import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
-import com.cws.esolutions.security.processors.enums.ControlType;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
@@ -184,32 +183,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     if (isUserCreated)
                     {
                         response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-
-                        // assign services (if any)
-                        if ((request.getServicesList() != null) && (request.getServicesList().size() != 0))
-                        {
-                            try
-                            {
-                                for (String svcId : request.getServicesList())
-                                {
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("Service: {}", svcId);
-                                    }
-
-                                    boolean isServiceAdded = userSvcs.addServiceToUser(userAccount.getGuid(), svcId);
-
-                                    if (!(isServiceAdded))
-                                    {
-                                        throw new SQLException("Failed to provision service " + svcId + " for the provided user");
-                                    }
-                                }
-                            }
-                            catch (SQLException sqx)
-                            {
-                                ERROR_RECORDER.error(sqx.getMessage(), sqx);
-                            }
-                        }
                     }
                     else
                     {
@@ -1271,20 +1244,11 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            boolean isUserAuthorized = false;
+            boolean isUserAuthorized = accessControl.isUserAuthorized(reqAccount, request.getServiceId());
 
-            if (request.getControlType() != ControlType.SERVICES)
+            if (DEBUG)
             {
-                isUserAuthorized = accessControl.isUserAuthorized(reqAccount, request.getServiceId());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                }
-            }
-            else
-            {
-                isUserAuthorized = true;
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
             if (isUserAuthorized)

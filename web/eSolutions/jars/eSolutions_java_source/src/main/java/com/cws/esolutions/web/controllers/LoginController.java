@@ -55,7 +55,15 @@ import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 import com.cws.esolutions.security.processors.impl.AuthenticationProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor;
-
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
+ *
+ * @author khuntly
+ * @version 1.0
+ * @see org.springframework.stereotype.Controller
+ */
 @Controller
 @RequestMapping("/login")
 public class LoginController
@@ -501,7 +509,6 @@ public class LoginController
 
             AuthenticationRequest authRequest = new AuthenticationRequest();
             authRequest.setHostInfo(reqInfo);
-            authRequest.setTimeoutValue(this.appConfig.getRequestTimeout());
             authRequest.setUserAccount(reqUser);
             authRequest.setUserSecurity(reqSecurity);
             authRequest.setApplicationId(this.appConfig.getApplicationId());
@@ -676,7 +683,6 @@ public class LoginController
 
             AuthenticationRequest authRequest = new AuthenticationRequest();
             authRequest.setHostInfo(reqInfo);
-            authRequest.setTimeoutValue(this.appConfig.getRequestTimeout());
             authRequest.setUserAccount((UserAccount) hRequest.getSession().getAttribute(Constants.USER_ACCOUNT));
             authRequest.setUserSecurity(security);
             authRequest.setApplicationId(this.appConfig.getApplicationId());

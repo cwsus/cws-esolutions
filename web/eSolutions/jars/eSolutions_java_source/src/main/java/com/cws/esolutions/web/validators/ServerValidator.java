@@ -10,7 +10,17 @@
  * express written authorization of CaspersBox Web Services, N.A.
  */
 package com.cws.esolutions.web.validators;
-
+/*
+ * Project: eSolutions_java_source
+ * Package: com.cws.esolutions.web.validators
+ * File: ServerValidator.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.slf4j.Logger;
 import java.util.regex.Pattern;
 import org.slf4j.LoggerFactory;
@@ -22,16 +32,14 @@ import org.springframework.validation.ValidationUtils;
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.enums.ServerType;
-/*
- * Project: eSolutions_java_source
- * Package: com.cws.esolutions.web.validators
- * File: ServerValidator.java
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
  *
- * History
- *
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * @author khuntly
+ * @version 1.0
+ * @see org.springframework.validation.Validator
  */
 public class ServerValidator implements Validator
 {
