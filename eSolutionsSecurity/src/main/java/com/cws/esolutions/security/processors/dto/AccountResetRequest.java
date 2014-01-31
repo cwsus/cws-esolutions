@@ -44,7 +44,10 @@ import com.cws.esolutions.security.processors.dto.AuthenticationData;
  */
 public class AccountResetRequest implements Serializable
 {
+    private int count = 0;
+    private String resetSmsCode = null;
     private String applicationId = null;
+    private String resetRequestId = null;
     private UserAccount requestor = null;
     private String applicationName = null;
     private UserAccount userAccount = null;
@@ -135,6 +138,43 @@ public class AccountResetRequest implements Serializable
         this.requestor = value;
     }
 
+    public final void setResetRequestId(final String value)
+    {
+        final String methodName = AuthenticationRequest.CNAME + "#setResetRequestId(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        this.resetRequestId = value;
+    }
+
+    public final void setResetSmsCode(final String value)
+    {
+        final String methodName = AuthenticationRequest.CNAME + "#setResetSmsCode(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        this.resetSmsCode = value;
+    }
+
+    public final void setCount(final int value)
+    {
+        final String methodName = AccountResetRequest.CNAME + "#setCount(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.count = value;
+    }
+
     public final RequestHostInfo getHostInfo()
     {
         final String methodName = AccountResetRequest.CNAME + "#getHostInfo()";
@@ -210,6 +250,43 @@ public class AccountResetRequest implements Serializable
         }
 
         return this.requestor;
+    }
+
+    public final int getCount()
+    {
+        final String methodName = AccountResetRequest.CNAME + "#getCount()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.count);
+        }
+
+        return this.count;
+    }
+
+    public final String getResetRequestId()
+    {
+        final String methodName = AuthenticationRequest.CNAME + "#getResetRequestId()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        return this.resetRequestId;
+    }
+
+    public final String getResetSmsCode()
+    {
+        final String methodName = AuthenticationRequest.CNAME + "#getResetSmsCode()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        return this.resetSmsCode;
     }
 
     @Override

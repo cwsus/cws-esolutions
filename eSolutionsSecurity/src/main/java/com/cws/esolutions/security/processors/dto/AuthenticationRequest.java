@@ -45,10 +45,7 @@ import com.cws.esolutions.security.processors.dto.AuthenticationData;
 public class AuthenticationRequest implements Serializable
 {
     private int count = 0;
-    private int timeoutValue = 0;
-    private String resetSmsCode = null;
     private String applicationId = null;
-    private String resetRequestId = null;
     private String applicationName = null;
     private UserAccount userAccount = null;
     private RequestHostInfo hostInfo = null;
@@ -123,43 +120,6 @@ public class AuthenticationRequest implements Serializable
         }
 
         this.applicationId = value;
-    }
-
-    public final void setTimeoutValue(final int value)
-    {
-        final String methodName = AuthenticationRequest.CNAME + "#setTimeoutValue(final int value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.timeoutValue = value;
-    }
-
-    public final void setResetRequestId(final String value)
-    {
-        final String methodName = AuthenticationRequest.CNAME + "#setResetRequestId(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        this.resetRequestId = value;
-    }
-
-    public final void setResetSmsCode(final String value)
-    {
-        final String methodName = AuthenticationRequest.CNAME + "#setResetSmsCode(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        this.resetSmsCode = value;
     }
 
     public final void setCount(final int value)
@@ -237,43 +197,6 @@ public class AuthenticationRequest implements Serializable
         }
 
         return this.applicationId;
-    }
-
-    public final int getTimeoutValue()
-    {
-        final String methodName = AuthenticationRequest.CNAME + "#getTimeoutValue()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.timeoutValue);
-        }
-
-        return this.timeoutValue;
-    }
-
-    public final String getResetRequestId()
-    {
-        final String methodName = AuthenticationRequest.CNAME + "#getResetRequestId()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        return this.resetRequestId;
-    }
-
-    public final String getResetSmsCode()
-    {
-        final String methodName = AuthenticationRequest.CNAME + "#getResetSmsCode()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        return this.resetSmsCode;
     }
 
     public final int getCount()

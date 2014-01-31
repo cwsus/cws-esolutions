@@ -49,7 +49,6 @@ public class AuthenticationData implements Serializable
     private String secAnswerTwo = null;
     private String secQuestionOne = null;
     private String secQuestionTwo = null;
-    private String resetRequestId = null;
 
     private static final long serialVersionUID = -1680121237315483191L;
     private static final String CNAME = AuthenticationData.class.getName();
@@ -151,18 +150,6 @@ public class AuthenticationData implements Serializable
         }
 
         this.secAnswerTwo = value;
-    }
-
-    public final void setResetRequestId(final String value)
-    {
-        final String methodName = AuthenticationData.CNAME + "#setResetRequestId(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        this.resetRequestId = value;
     }
 
     public final void setSecret(final String value)
@@ -271,18 +258,6 @@ public class AuthenticationData implements Serializable
         }
 
         return this.secAnswerTwo;
-    }
-
-    public final String getResetRequestId()
-    {
-        final String methodName = AuthenticationData.CNAME + "#getResetRequestId()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        return this.resetRequestId;
     }
 
     public final String getSecret()
