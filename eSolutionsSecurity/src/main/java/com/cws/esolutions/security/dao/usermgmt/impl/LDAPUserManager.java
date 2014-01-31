@@ -146,8 +146,8 @@ public class LDAPUserManager implements UserManager
             }
 
             Filter searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + ")" +
-                    "(&(cn=" + userGuid + "))" +
-					"(|(uid=" + userId + ")))");
+                    "(|(cn=" + userGuid + ")" +
+					"(uid=" + userId + ")))");
 
             if (DEBUG)
             {
@@ -482,12 +482,12 @@ public class LDAPUserManager implements UserManager
                 throw new ConnectException("Failed to create LDAP connection using the specified information");
             }
             Filter searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + ")" +
-                "(&(" + authData.getCommonName() + "=" + searchData +"))" +
-                "(|(" + authData.getUserId() + "=" + searchData +"))" +
-                "(|(" + authData.getEmailAddr() + "=" + searchData +"))" +
-                "(|(" + authData.getGivenName() + "=" + searchData +"))" +
-                "(|(" + authData.getSurname() + "=" + searchData +"))" +
-                "(|(" + authData.getDisplayName() + "=" + searchData +")))");
+                "(|(" + authData.getCommonName() + "=" + searchData +")" +
+                "(" + authData.getUserId() + "=" + searchData +")" +
+                "(" + authData.getEmailAddr() + "=" + searchData +")" +
+                "(" + authData.getGivenName() + "=" + searchData +")" +
+                "(" + authData.getSurname() + "=" + searchData +")" +
+                "(" + authData.getDisplayName() + "=" + searchData +")))");
 
             if (DEBUG)
             {

@@ -70,6 +70,12 @@ public interface IAccountResetProcessor
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
+    AccountResetResponse findUserAccount(final AccountResetRequest request) throws AccountResetException;
+
+    AccountResetResponse obtainUserSecurityConfig(final AccountResetRequest request) throws AccountResetException;
+
+    AccountResetResponse verifyUserSecurityConfig(final AccountResetRequest request) throws AccountResetException;
+
     AccountResetResponse verifyResetRequest(final AccountResetRequest request) throws AccountResetException;
 
     AccountResetResponse resetUserPassword(final AccountResetRequest request) throws AccountResetException;
