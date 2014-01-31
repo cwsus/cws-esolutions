@@ -140,7 +140,7 @@ public class AccountResetRequest implements Serializable
 
     public final void setResetRequestId(final String value)
     {
-        final String methodName = AuthenticationRequest.CNAME + "#setResetRequestId(final String value)";
+        final String methodName = AccountResetRequest.CNAME + "#setResetRequestId(final String value)";
 
         if (DEBUG)
         {
@@ -152,7 +152,7 @@ public class AccountResetRequest implements Serializable
 
     public final void setResetSmsCode(final String value)
     {
-        final String methodName = AuthenticationRequest.CNAME + "#setResetSmsCode(final String value)";
+        final String methodName = AccountResetRequest.CNAME + "#setResetSmsCode(final String value)";
 
         if (DEBUG)
         {
@@ -267,7 +267,7 @@ public class AccountResetRequest implements Serializable
 
     public final String getResetRequestId()
     {
-        final String methodName = AuthenticationRequest.CNAME + "#getResetRequestId()";
+        final String methodName = AccountResetRequest.CNAME + "#getResetRequestId()";
 
         if (DEBUG)
         {
@@ -279,7 +279,7 @@ public class AccountResetRequest implements Serializable
 
     public final String getResetSmsCode()
     {
-        final String methodName = AuthenticationRequest.CNAME + "#getResetSmsCode()";
+        final String methodName = AccountResetRequest.CNAME + "#getResetSmsCode()";
 
         if (DEBUG)
         {

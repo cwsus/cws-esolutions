@@ -440,25 +440,10 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                             if (isComplete)
                             {
-                                if (userAccount.getStatus() == LoginStatus.EXPIRED)
+                                if ((userAccount.getStatus() == LoginStatus.EXPIRED) || (userAccount.getStatus() == LoginStatus.RESET))
                                 {
                                     // update the account
                                     userAccount.setStatus(LoginStatus.SUCCESS);
-                                }
-                                else if (userAccount.getStatus() == LoginStatus.RESET)
-                                {
-                                    // remove the reset request
-                                    boolean isRemoved = userSec.removeResetData(userAccount.getGuid(), reqSecurity.getResetRequestId());
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("isRemoved: {}", isRemoved);
-                                    }
-
-                                    if (!(isRemoved))
-                                    {
-                                        ERROR_RECORDER.error("Failed to remove provided reset request from datastore");
-                                    }
                                 }
 
                                 response.setUserAccount(userAccount);

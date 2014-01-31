@@ -35,6 +35,7 @@ import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.utils.PasswordUtils;
+import com.cws.esolutions.security.processors.enums.SaltType;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
@@ -375,7 +376,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             }
 
             // the request id should be in here, so lets make sure it exists
-            List<String> resetData = userSec.getResetData(userSecurity.getResetRequestId());
+            List<String> resetData = userSec.getResetData(request.getResetRequestId());
 
             final String commonName = resetData.get(0);
             final Long resetTimestamp = Long.valueOf(resetData.get(1));
@@ -423,6 +424,19 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                         {
                             DEBUGGER.debug("UserAccount: {}", userAccount);
                         }
+
+						// remove the reset request
+						boolean isRemoved = userSec.removeResetData(userAccount.getGuid(), request.getResetRequestId());
+
+						if (DEBUG)
+						{
+							DEBUGGER.debug("isRemoved: {}", isRemoved);
+						}
+
+						if (!(isRemoved))
+						{
+							ERROR_RECORDER.error("Failed to remove provided reset request from datastore");
+						}
 
                         response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                         response.setUserAccount(userAccount);
