@@ -75,12 +75,69 @@ public final class AuthData implements Serializable
     private String secQuestionTwo = null;
     private String telephoneNumber = null;
 
+    private String baseObject = null;
+    private String repositoryBaseDN = null;
+    private String repositoryUserBase = null;
+    private String repositoryRoleBase = null;
+
     private static final long serialVersionUID = -6969755465434590684L;
     private static final String CNAME = AuthData.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
+
+    public final void setBaseObject(final String value)
+    {
+        final String methodName = AuthData.CNAME + "#setBaseObject(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.baseObject = value;
+    }
+
+    public final void setRepositoryBaseDN(final String value)
+    {
+        final String methodName = AuthData.CNAME + "#setRepositoryBaseDN(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.repositoryBaseDN = value;
+    }
+
+    public final void setRepositoryUserBase(final String value)
+    {
+        final String methodName = AuthData.CNAME + "#setRepositoryUserBase(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.repositoryUserBase = value;
+    }
+
+    public final void setRepositoryRoleBase(final String value)
+    {
+        final String methodName = AuthData.CNAME + "#setRepositoryRoleBase(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.repositoryRoleBase = value;
+    }
 
     public final void setUserId(final String value)
     {
@@ -397,6 +454,62 @@ public final class AuthData implements Serializable
                 this.telephoneNumber));
 
         return this.entries;
+    }
+
+    @XmlElement(name = "baseObject")
+    public final String getBaseObject()
+    {
+        final String methodName = AuthData.CNAME + "#getBaseObject()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.baseObject);
+        }
+
+        return this.baseObject;
+    }
+
+    @XmlElement(name = "repositoryBaseDN")
+    public final String getRepositoryBaseDN()
+    {
+        final String methodName = AuthData.CNAME + "#getRepositoryBaseDN()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName)
+            DEBUGGER.debug("Value: {}", this.repositoryBaseDN);
+        }
+
+        return this.repositoryBaseDN;
+    }
+
+    @XmlElement(name = "repositoryUserBase")
+    public final String getRepositoryUserBase()
+    {
+        final String methodName = AuthData.CNAME + "#getRepositoryUserBase()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.repositoryUserBase);
+        }
+
+        return this.repositoryUserBase;
+    }
+
+    @XmlElement(name = "repositoryRoleBase")
+    public final String getRepositoryRoleBase()
+    {
+        final String methodName = AuthData.CNAME + "#getRepositoryRoleBase()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.repositoryRoleBase);
+        }
+
+        return this.repositoryRoleBase;
     }
 
     @XmlElement(name = "userId")

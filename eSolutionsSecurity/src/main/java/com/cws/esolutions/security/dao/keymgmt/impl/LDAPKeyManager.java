@@ -28,14 +28,11 @@ package com.cws.esolutions.security.dao.keymgmt.impl;
 import java.util.List;
 import java.util.Arrays;
 import java.sql.ResultSet;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.sql.Connection;
 import javax.sql.DataSource;
-import java.util.Properties;
 import java.sql.SQLException;
 import java.security.KeyPair;
-import java.io.FileInputStream;
 import java.security.PublicKey;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
@@ -43,9 +40,7 @@ import java.net.ConnectException;
 import java.sql.CallableStatement;
 import java.security.SecureRandom;
 import com.unboundid.ldap.sdk.Filter;
-import java.io.FileNotFoundException;
 import java.security.KeyPairGenerator;
-import org.apache.commons.io.FileUtils;
 import com.unboundid.ldap.sdk.ResultCode;
 import com.unboundid.ldap.sdk.LDAPResult;
 import com.unboundid.ldap.sdk.SearchScope;
@@ -69,54 +64,8 @@ import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
  */
 public class LDAPKeyManager implements KeyManager
 {
-    private Properties connProps = null;
-
-    private static final String BASE_OBJECT = "baseObjectClass";
-    private static final String USER_BASE = "repositoryUserBase";
     private static final String CNAME = LDAPKeyManager.class.getName();
     private static final DataSource dataSource = (DataSource) svcBean.getAuthDataSource();
-
-    public LDAPKeyManager() throws KeyManagementException
-    {
-        final String methodName = LDAPKeyManager.CNAME + "#LDAPKeyManager()#Constructor throws KeyManagementException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        try
-        {
-            this.connProps = new Properties();
-            this.connProps.load(new FileInputStream(FileUtils.getFile(secConfig.getAuthConfig())));
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Properties: {}", this.connProps);
-            }
-        }
-        catch (FileNotFoundException fnfx)
-        {
-            try
-            {
-                this.connProps = new Properties();
-                this.connProps.load(LDAPKeyManager.class.getClassLoader().getResourceAsStream(secConfig.getAuthConfig()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Properties: {}", this.connProps);
-                }
-            }
-            catch (IOException iox)
-            {
-				throw new KeyManagementException(iox.getMessage(), iox);
-			}
-        }
-        catch (IOException iox)
-        {
-            throw new KeyManagementException(iox.getMessage(), iox);
-        }
-    }
 
     /**
      * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#returnKeys(java.lang.String, java.lang.String)
@@ -168,7 +117,7 @@ public class LDAPKeyManager implements KeyManager
             }
 
             // need to get the DN
-            Filter searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPKeyManager.BASE_OBJECT) + ")" +
+            Filter searchFilter = Filter.create("(&(objectClass=" + authData.getBaseObject() + ")" +
                     "(&(cn=" + guid + ")))");
 
             if (DEBUG)
@@ -177,7 +126,7 @@ public class LDAPKeyManager implements KeyManager
             }
 
             SearchRequest searchReq = new SearchRequest(
-                    this.connProps.getProperty(this.connProps.getProperty(LDAPKeyManager.USER_BASE)),
+                    authData.getRepositoryUserBase(),
                     SearchScope.SUB,
                     searchFilter,
                     authData.getPublicKey());
@@ -347,7 +296,7 @@ public class LDAPKeyManager implements KeyManager
             }
 
             // need to get the DN
-            Filter searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPKeyManager.BASE_OBJECT) + ")" +
+            Filter searchFilter = Filter.create("(&(objectClass=" + authData.getBaseObject() + ")" +
                     "(&(cn=" + guid + ")))");
 
             if (DEBUG)
@@ -356,7 +305,7 @@ public class LDAPKeyManager implements KeyManager
             }
 
             SearchRequest searchReq = new SearchRequest(
-                    this.connProps.getProperty(this.connProps.getProperty(LDAPKeyManager.USER_BASE)),
+                    authData.getRepositoryUserBase(),
                     SearchScope.SUB,
                     searchFilter);
 
@@ -505,6 +454,7 @@ public class LDAPKeyManager implements KeyManager
         }
 
         Connection sqlConn = null;
+        boolean isComplete = false;
         ResultSet resultSet = null;
         CallableStatement stmt = null;
         LDAPConnection ldapConn = null;
@@ -539,7 +489,7 @@ public class LDAPKeyManager implements KeyManager
             }
 
             // need to get the DN
-            Filter searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPKeyManager.BASE_OBJECT) + ")" +
+            Filter searchFilter = Filter.create("(&(objectClass=" + authData.getBaseObject() + ")" +
                     "(&(cn=" + guid + ")))");
 
             if (DEBUG)
@@ -548,7 +498,7 @@ public class LDAPKeyManager implements KeyManager
             }
 
             SearchRequest searchReq = new SearchRequest(
-                    this.connProps.getProperty(this.connProps.getProperty(LDAPKeyManager.USER_BASE)),
+                    authData.getRepositoryUserBase(),
                     SearchScope.SUB,
                     searchFilter);
 
@@ -591,16 +541,10 @@ public class LDAPKeyManager implements KeyManager
                     DEBUGGER.debug("LDAPResult: {}", ldapResult);
                 }
 
-                if (ldapResult.getResultCode() != ResultCode.SUCCESS)
+                if (ldapResult.getResultCode() == ResultCode.SUCCESS)
                 {
-                    return false;
+                    return true;
                 }
-
-                return true;
-            }
-            else
-            {
-                throw new SQLException("Failed to remove user private key");
             }
         }
         catch (SQLException sqx)
@@ -644,6 +588,7 @@ public class LDAPKeyManager implements KeyManager
                 ERROR_RECORDER.error(sqx.getMessage(), sqx);
             }
         }
-    }
 
+        return isComplete;
+    }
 }
