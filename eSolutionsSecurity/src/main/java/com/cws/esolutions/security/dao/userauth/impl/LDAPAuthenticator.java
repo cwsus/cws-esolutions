@@ -33,6 +33,7 @@ import java.io.FileInputStream;
 import java.net.ConnectException;
 import java.io.FileNotFoundException;
 import com.unboundid.ldap.sdk.Filter;
+import org.apache.commons.io.FileUtils;
 import com.unboundid.ldap.sdk.ResultCode;
 import com.unboundid.ldap.sdk.BindResult;
 import com.unboundid.ldap.sdk.BindRequest;
@@ -67,12 +68,13 @@ public class LDAPAuthenticator implements Authenticator
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", loadProps);
         }
 
         try
         {
             this.connProps = new Properties();
-            this.connProps.load(new FileInputStream(secConfig.getAuthConfig()));
+            this.connProps.load(new FileInputStream(FileUtils.getFile(secConfig.getAuthConfig())));
 
             if (DEBUG)
             {

@@ -144,8 +144,10 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 userAccount = new UserAccount();
                 userAccount.setGuid((String) authObject.get(0));
                 userAccount.setUsername((String) authObject.get(1));
+                userAccount.setStatus(LoginStatus.CONTINUE);
 
-                response.setRequestStatus(SecurityRequestStatus.CONTINUE);
+                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                response.setUserAccount(userAccount);
 
                 return response;
             }

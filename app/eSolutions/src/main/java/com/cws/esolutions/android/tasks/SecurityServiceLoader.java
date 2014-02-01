@@ -25,6 +25,7 @@ package com.cws.esolutions.android.tasks;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import java.io.File;
 import java.util.List;
 import org.slf4j.Logger;
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.config.xml.AuthData;
 import com.cws.esolutions.security.config.xml.KeyConfig;
 import com.cws.esolutions.security.utils.DAOInitializer;
+import com.cws.esolutions.android.utils.DatasourceUtils;
 import com.cws.esolutions.android.ApplicationServiceBean;
 import com.cws.esolutions.security.config.xml.ResourceConfig;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
@@ -222,6 +224,7 @@ public class SecurityServiceLoader extends AsyncTask<Void, Void, Boolean>
             secConfig.setSmsCodeLength(Integer.parseInt(securityProperties.getProperty("smsCodeLength")));
             secConfig.setResetTimeout(Integer.parseInt(securityProperties.getProperty("resetTimeout")));
             secConfig.setOtpVariance(Integer.parseInt(securityProperties.getProperty("otpVariance")));
+            secConfig.setAuthConfig(this.reqActivity.getResources().getString(R.string.authRepoConfig));
 
             SecurityConfigurationData secSvcConfig = new SecurityConfigurationData();
             secSvcConfig.setAuthData(authData);
@@ -243,10 +246,10 @@ public class SecurityServiceLoader extends AsyncTask<Void, Void, Boolean>
                 {
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("String: {}", source);
+                        DEBUGGER.debug("String: {}", source.trim());
                     }
 
-                    InputStream dsStream = assetMgr.open(source + ".properties");
+                    InputStream dsStream = assetMgr.open(source.trim() + ".properties");
 
                     if (DEBUG)
                     {
@@ -302,10 +305,6 @@ public class SecurityServiceLoader extends AsyncTask<Void, Void, Boolean>
                 DEBUGGER.debug("SecurityConfigurationData: {}", secSvcConfig);
             }
 
-            DAOInitializer.configureAndCreateAuthConnection(assetMgr.open(this.reqActivity.getResources().getString(R.string.coreConfigFile)),
-                    false, SecurityServiceLoader.secBean);
-
-            secBean.setAuthDataSource(value);
             secBean.setConfigData(secSvcConfig);
 
             isLoaded = true;
@@ -317,10 +316,6 @@ public class SecurityServiceLoader extends AsyncTask<Void, Void, Boolean>
         catch (NotFoundException nfx)
         {
             ERROR_RECORDER.error(nfx.getMessage(), nfx);
-        }
-        catch (SecurityServiceException ssx)
-        {
-            ERROR_RECORDER.error(ssx.getMessage(), ssx);
         }
         finally
         {

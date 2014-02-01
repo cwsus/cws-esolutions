@@ -77,7 +77,7 @@ import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcesso
  * @version 1.0
  * @see android.os.AsyncTask
  */
-public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, List<Object>>
+public class UserAuthenticationTask extends AsyncTask<List<String>, Integer, AuthenticationResponse>
 {
     private Activity reqActivity = null;
     private Class<?> resActivity = null;
@@ -147,7 +147,7 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
 
         try
         {
-            iStream = assetMgr.open(this.reqActivity.getResources().getString(R.string.securityConfigFile));
+            iStream = assetMgr.open(this.reqActivity.getResources().getString(R.string.authRepoConfig));
 
             if (DEBUG)
             {
@@ -337,9 +337,9 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
     }
 
     @Override
-    protected List<Object> doInBackground(final List<Object>... request)
+    protected AuthenticationResponse doInBackground(final List<String>... request)
     {
-        final String methodName = UserAuthenticationTask.CNAME + "#doInBackground(final List<Object>... request)";
+        final String methodName = UserAuthenticationTask.CNAME + "#doInBackground(final List<String>... request)";
 
         if (DEBUG)
         {
@@ -347,127 +347,118 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
             DEBUGGER.debug("Request: {}", request);
         }
 
-        UserAccount userAccount = new UserAccount();
-        AuthenticationData userSecurity = new AuthenticationData();
+        AuthenticationResponse response = null;
 
-        final List<Object> requestList = (List<Object>) request[0];
-        final List<Object> responseList = new ArrayList<Object>(
-                Arrays.asList(
-                        requestList.get(1)));
+		RequestHostInfo reqInfo = new RequestHostInfo();
+		reqInfo.setHostAddress("android"); // TODO
+		reqInfo.setHostName("android"); // TODO
+		reqInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
+
+		if (DEBUG)
+		{
+			DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+		}
+
+        UserAccount userAccount = new UserAccount();
+        userAccount.setUsername(request[0].get(0));
+
+		if (DEBUG)
+		{
+			DEBUGGER.debug("UserAccount: {}", userAccount);
+		}
+
+        AuthenticationData userSecurity = new AuthenticationData();
+        userSecurity.setPassword(request[0].get(1));
+
+		AuthenticationRequest authReq = new AuthenticationRequest();
+		authReq.setApplicationName(Constants.APPLICATION_NAME);
+		authReq.setUserAccount(userAccount);
+		authReq.setApplicationId(Constants.APPLICATION_ID);
+		authReq.setHostInfo(reqInfo);
+
+		if (DEBUG)
+		{
+			DEBUGGER.debug("AuthenticationRequest: {}", authReq);
+		}
+
         final IAuthenticationProcessor processor = new AuthenticationProcessorImpl();
 
         try
         {
-            userAccount = (UserAccount) requestList.get(3);
-            userAccount.setUsername((String) requestList.get(3));
-            userSecurity.setPassword((String) requestList.get(4));
+            response = processor.processAgentLogon(authReq);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("UserAccount: {}", userAccount);
+                DEBUGGER.debug("AuthenticationResponse: {}", response);
             }
-
-            RequestHostInfo reqInfo = new RequestHostInfo();
-            reqInfo.setHostAddress(InetAddress.getLocalHost().getHostAddress());
-            reqInfo.setHostName(InetAddress.getLocalHost().getHostName());
-            reqInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            }
-
-            AuthenticationRequest authReq = new AuthenticationRequest();
-            authReq.setApplicationName(Constants.APPLICATION_NAME);
-            authReq.setUserAccount(userAccount);
-            authReq.setApplicationId(Constants.APPLICATION_ID);
-            authReq.setHostInfo(reqInfo);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AuthenticationRequest: {}", authReq);
-            }
-
-            AuthenticationResponse authResponse = processor.processAgentLogon(authReq);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AuthenticationResponse: {}", authResponse);
-            }
-
-            responseList.add(authResponse);
         }
         catch (AuthenticationException ax)
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
         }
-        catch (IOException iox)
-        {
-            ERROR_RECORDER.error(iox.getMessage(), iox);
-        }
 
-        return responseList;
+        return response;
     }
 
     @Override
-    protected void onPostExecute(final List<Object> responseList)
+    protected void onPostExecute(final AuthenticationResponse response)
     {
-        final String methodName = UserAuthenticationTask.CNAME + "#onPostExecute(final List<Object> responseList)";
+        final String methodName = UserAuthenticationTask.CNAME + "#onPostExecute(final AuthenticationResponse response)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("responseList: {}", responseList);
+            DEBUGGER.debug("AuthenticationResponse: {}", response);
         }
 
-        final AuthenticationResponse authResponse = (AuthenticationResponse) responseList.get(1);
         final TextView responseView = ((TextView) this.reqActivity.findViewById(R.id.tvResponseValue));
 
-        if (authResponse != null)
+        if (DEBUG)
         {
-            if (authResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-            {
-                UserAccount resAccount = authResponse.getUserAccount();
+            DEBUGGER.debug("TextView: {}", responseView);
+        }
+
+        if ((response == null) || (response.getRequestStatus() != SecurityRequestStatus.SUCCESS))
+        {
+			responseView.setTextColor(Color.RED);
+			responseView.setText(this.reqActivity.getString(R.string.txtSignonError));
+
+			if (DEBUG)
+			{
+				DEBUGGER.debug(methodName);
+				DEBUGGER.debug("TextView: {}", responseView);
+			}
+
+            return;
+        }
+
+        UserAccount resAccount = response.getUserAccount();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("UserAccount: {}", resAccount);
+        }
+
+        switch(resAccount.getStatus())
+        {
+            case SUCCESS:
+                Intent intent = new Intent(this.reqActivity, this.resActivity);
+                intent.putExtra("userData", response.getUserAccount());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("UserAccount: {}", resAccount);
+                    DEBUGGER.debug("Intent: {}", intent);
                 }
 
-                switch(resAccount.getStatus())
-                {
-                    case SUCCESS:
-                        Intent intent = new Intent(this.reqActivity, this.resActivity);
-                        intent.putExtra("userData", authResponse.getUserAccount());
+                this.reqActivity.startActivity(intent);
+                this.reqActivity.finish();
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Intent: {}", intent);
-                        }
-
-                        this.reqActivity.startActivity(intent);
-                        this.reqActivity.finish();
-
-                        break;
-                    default:
-                        responseView.setTextColor(Color.RED);
-                        responseView.setText(this.reqActivity.getString(R.string.txtSignonError));
-
-                        break;
-                }
-            }
-            else
-            {
+                return;
+            default:
                 responseView.setTextColor(Color.RED);
                 responseView.setText(this.reqActivity.getString(R.string.txtSignonError));
-            }
-        }
-        else
-        {
-            ERROR_RECORDER.error("authResponse was null. Cannot continue");
 
-            responseView.setTextColor(Color.RED);
-            responseView.setText(this.reqActivity.getString(R.string.txtSignonError));
+                return;
         }
     }
 }

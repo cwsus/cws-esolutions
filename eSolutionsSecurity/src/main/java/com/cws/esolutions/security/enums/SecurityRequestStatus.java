@@ -36,7 +36,6 @@ package com.cws.esolutions.security.enums;
 public enum SecurityRequestStatus
 {
     SUCCESS,
-    CONTINUE,
     FAILURE,
     UNAUTHORIZED,
     DISABLED;

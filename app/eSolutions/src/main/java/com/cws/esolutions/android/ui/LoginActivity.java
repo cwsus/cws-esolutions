@@ -74,17 +74,6 @@ public class LoginActivity extends Activity
         super.setContentView(R.layout.login);
         super.setTitle(R.string.loginTitle);
 
-        final TextView tvRequestName = (TextView) super.findViewById(R.id.tvRequestName);
-        final EditText etRequestValue = (EditText) super.findViewById(R.id.etRequestValue);
-        final TextView tvResponseValue = (TextView) super.findViewById(R.id.tvResponseValue);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("TextView: {}", tvRequestName);
-            DEBUGGER.debug("EditText: {}", etRequestValue);
-            DEBUGGER.debug("TextView: {}", tvResponseValue);
-        }
-
         if (super.getIntent().getExtras() != null)
         {
             if (super.getIntent().getExtras().containsKey(Constants.USER_DATA))
@@ -98,46 +87,8 @@ public class LoginActivity extends Activity
 
                 if (userAccount != null)
                 {
-                    // user already went through and submitted uid
-                    tvRequestName.setText(R.string.tvPassword);
-                    etRequestValue.setHint(R.string.hintPassword);
-                    etRequestValue.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("TextView: {}", tvRequestName);
-                        DEBUGGER.debug("EditText: {}", etRequestValue);
-                        DEBUGGER.debug("TextView: {}", tvResponseValue);
-                    }
+                    // home
                 }
-                else
-                {
-                    super.getIntent().getExtras().remove(Constants.USER_DATA);
-
-                    tvRequestName.setText(R.string.tvUsername);
-                    etRequestValue.setHint(R.string.hintUsername);
-                    etRequestValue.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("TextView: {}", tvRequestName);
-                        DEBUGGER.debug("EditText: {}", etRequestValue);
-                        DEBUGGER.debug("TextView: {}", tvResponseValue);
-                    }
-                }
-            }
-        }
-        else
-        {
-            tvRequestName.setText(R.string.tvUsername);
-            etRequestValue.setHint(R.string.hintUsername);
-            etRequestValue.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("TextView: {}", tvRequestName);
-                DEBUGGER.debug("EditText: {}", etRequestValue);
-                DEBUGGER.debug("TextView: {}", tvResponseValue);
             }
         }
     }
@@ -166,18 +117,18 @@ public class LoginActivity extends Activity
             DEBUGGER.debug("View: {}", view);
         }
 
-        final TextView tvRequestName = (TextView) super.findViewById(R.id.tvRequestName);
-        final EditText etRequestValue = (EditText) super.findViewById(R.id.etRequestValue);
+        final EditText etUsername = (EditText) super.findViewById(R.id.etUsername);
+        final EditText etPassword = (EditText) super.findViewById(R.id.etPassword);
         final TextView tvResponseValue = (TextView) super.findViewById(R.id.tvResponseValue);
 
         if (DEBUG)
         {
-            DEBUGGER.debug("TextView: {}", tvRequestName);
-            DEBUGGER.debug("EditText: {}", etRequestValue);
+            DEBUGGER.debug("EditText: {}", etUsername);
+            DEBUGGER.debug("EditText: {}", etPassword);
             DEBUGGER.debug("TextView: {}", tvResponseValue);
         }
 
-        if (StringUtils.isEmpty(etRequestValue.getText().toString()))
+        if ((StringUtils.isEmpty(etUsername.getText().toString())) || (StringUtils.isEmpty(etUsername.getText().toString())))
         {
             // no data provided
             // route through the request type
@@ -189,20 +140,18 @@ public class LoginActivity extends Activity
         }
         else
         {
-            final List<Object> authRequest = new ArrayList<Object>(
-                    Arrays.asList(
-                            etRequestValue.getText().toString(),
-                            etRequestValue.getText().toString()));
             final UserAuthenticationTask userLogin = new UserAuthenticationTask(LoginActivity.this, MainActivity.class);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("List<Object>: {}", authRequest);
                 DEBUGGER.debug("UserAuthenticationTask: {}", userLogin);
             }
 
             // send the logon
-            userLogin.execute(authRequest);
+            userLogin.execute(new ArrayList<String>(
+                Arrays.asList(
+                    etUsername.getText().toString(),
+                    etPassword.getText().toString())));
 
             if (userLogin.isCancelled())
             {
