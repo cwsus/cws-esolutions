@@ -38,6 +38,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.JAXBException;
 import java.io.FileNotFoundException;
 import org.apache.log4j.helpers.Loader;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.commons.dbcp.BasicDataSource;
@@ -182,7 +183,7 @@ public class SecurityServiceInitializer
 
         try
         {
-            DAOInitializer.closeAuthConnection(config.getSecurityConfig().getAuthConfig(), false, svcBean);
+            DAOInitializer.closeAuthConnection(new FileInputStream(FileUtils.getFile(configData.getSecurityConfig().getAuthConfig())), false, svcBean);
 
             if (dsMap != null)
             {

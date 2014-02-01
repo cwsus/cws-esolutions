@@ -99,7 +99,7 @@ public final class DAOInitializer
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("File: {}", properties);
+            DEBUGGER.debug("InputStream: {}", properties);
             DEBUGGER.debug("isContainer: {}", isContainer);
             DEBUGGER.debug("SecurityServiceBean: {}", bean);
         }
@@ -267,14 +267,14 @@ public final class DAOInitializer
      * @param bean - The <code>SecurityServiceBean</code> that holds the connection
      * @throws SecurityServiceException if an exception occurs closing the connection
      */
-    public synchronized static void closeAuthConnection(final File properties, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException
+    public synchronized static void closeAuthConnection(final InputStream properties, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException
     {
-        String methodName = DAOInitializer.CNAME + "#closeAuthConnection(final File properties, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException";
+        String methodName = DAOInitializer.CNAME + "#closeAuthConnection(final InputStream properties, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("File: {}", properties);
+            DEBUGGER.debug("InputStream: {}", properties);
             DEBUGGER.debug("isContainer: {}", isContainer);
             DEBUGGER.debug("SecurityServiceBean: {}", bean);
         }
@@ -282,7 +282,7 @@ public final class DAOInitializer
         try
         {
             Properties connProps = new Properties();
-            connProps.load(new FileInputStream(properties));
+            connProps.load(properties);
 
             if (DEBUG)
             {

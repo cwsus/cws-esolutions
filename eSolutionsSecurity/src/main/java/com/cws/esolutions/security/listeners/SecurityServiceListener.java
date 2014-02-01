@@ -193,7 +193,7 @@ public class SecurityServiceListener implements ServletContextListener
 
         try
         {
-            DAOInitializer.closeAuthConnection(config.getSecurityConfig().getAuthConfig(), true, svcBean);
+            DAOInitializer.closeAuthConnection(new FileInputStream(FileUtils.getFile(configData.getSecurityConfig().getAuthConfig())), false, svcBean);
         }
         catch (SecurityServiceException ssx)
         {
