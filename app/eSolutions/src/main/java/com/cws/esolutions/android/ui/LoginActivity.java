@@ -140,6 +140,8 @@ public class LoginActivity extends Activity
         }
         else
         {
+			tvResponseValue.setTextColor(Color.BLUE);
+			tvResponseValue.setText(R.string.txtPleaseWait);
             final UserAuthenticationTask userLogin = new UserAuthenticationTask(LoginActivity.this, MainActivity.class);
 
             if (DEBUG)
@@ -148,10 +150,7 @@ public class LoginActivity extends Activity
             }
 
             // send the logon
-            userLogin.execute(new ArrayList<String>(
-                Arrays.asList(
-                    etUsername.getText().toString(),
-                    etPassword.getText().toString())));
+            userLogin.execute(new String[] { etUsername.getText().toString(), etPassword.getText().toString() });
 
             if (userLogin.isCancelled())
             {

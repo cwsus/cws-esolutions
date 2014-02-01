@@ -30,6 +30,8 @@ import org.slf4j.Logger;
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
+
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -40,7 +42,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ApplicationServiceBean
 {
-    private String hostName = null;
+    private RequestHostInfo reqInfo = null;
     private Map<String, DataSource> dataSources = null;
 
     private static ApplicationServiceBean instance = null;
@@ -94,9 +96,9 @@ public class ApplicationServiceBean
      * @param value - The system-provided hostname that the service is running
      * on
      */
-    public final void setHostName(final String value)
+    public final void setReqInfo(final RequestHostInfo value)
     {
-        final String methodName = ApplicationServiceBean.CNAME + "#setHostName(final String value)";
+        final String methodName = ApplicationServiceBean.CNAME + "#setReqInfo(final RequestHostInfo value)";
 
         if (DEBUG)
         {
@@ -104,7 +106,7 @@ public class ApplicationServiceBean
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.hostName = value;
+        this.reqInfo = value;
     }
 
     public final Map<String, DataSource> getDataSources()
@@ -125,17 +127,17 @@ public class ApplicationServiceBean
      *
      * @return String - The system-provided hostname
      */
-    public final String getHostName()
+    public final RequestHostInfo getReqInfo()
     {
-        final String methodName = ApplicationServiceBean.CNAME + "#getHostName()";
+        final String methodName = ApplicationServiceBean.CNAME + "#getReqInfo()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.hostName);
+            DEBUGGER.debug("Value: {}", this.reqInfo);
         }
 
-        return this.hostName;
+        return this.reqInfo;
     }
 
     @Override

@@ -92,28 +92,21 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 DEBUGGER.debug("List<Object[]>: {}", userInfo);
             }
 
-            if ((userInfo == null) || (userInfo.size() == 0) || (userInfo.size() != 1))
+            if ((userInfo.size() != 1) || (userInfo == null))
             {
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
 
                 return response;
             }
 
-            Object[] userData = userInfo.get(0);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Object[]: {}", userData);
-            }
-
-            String userSalt = userSec.getUserSalt((String) userData[0], SaltType.LOGON.name());
+            String userSalt = userSec.getUserSalt(userInfo.get(0)[0], SaltType.LOGON.name());
 
             if (StringUtils.isEmpty(userSalt))
             {
                 throw new AuthenticationException("Unable to obtain configured user salt. Cannot continue");
             }
 
-            List<Object> authObject = authenticator.performLogon((String) userData[1],
+            List<Object> authObject = authenticator.performLogon(userInfo.get(0)[0],
                     PasswordUtils.encryptText(
                             authSec.getPassword(),
                         userSalt,

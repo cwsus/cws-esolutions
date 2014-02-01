@@ -26,22 +26,27 @@ package com.cws.esolutions.android.tasks;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.io.File;
+import java.util.Map;
 import java.util.List;
 import org.slf4j.Logger;
+import java.util.HashMap;
 import java.util.ArrayList;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.Properties;
 import android.os.AsyncTask;
 import android.app.Activity;
+import javax.sql.DataSource;
 import org.slf4j.LoggerFactory;
 import android.content.res.AssetManager;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.dbcp.BasicDataSource;
 import android.content.res.Resources.NotFoundException;
 
 import com.cws.esolutions.android.ui.R;
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.android.utils.NetworkUtils;
+import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.config.xml.AuthData;
 import com.cws.esolutions.security.config.xml.KeyConfig;
@@ -190,6 +195,10 @@ public class SecurityServiceLoader extends AsyncTask<Void, Void, Boolean>
             authData.setMemberOf(securityProperties.getProperty("memberOf"));
             authData.setPagerNumber(securityProperties.getProperty("pagerNumber"));
             authData.setTelephoneNumber(securityProperties.getProperty("telephoneNumber"));
+            authData.setRepositoryBaseDN(securityProperties.getProperty("repositoryBaseDN"));
+            authData.setBaseObject(securityProperties.getProperty("baseObjectClass"));
+            authData.setRepositoryUserBase(securityProperties.getProperty("repositoryUserBase"));
+            authData.setRepositoryRoleBase(securityProperties.getProperty("repositoryRoleBase"));
 
             if (DEBUG)
             {
@@ -240,7 +249,17 @@ public class SecurityServiceLoader extends AsyncTask<Void, Void, Boolean>
 
             if ((secDataSources != null) && (secDataSources.length != 0))
             {
-                List<DataSourceManager> dsList = new ArrayList<DataSourceManager>();
+				Map<String, DataSource> dsMap = SecurityServiceLoader.secBean.getDataSources();
+
+				if (DEBUG)
+				{
+					DEBUGGER.debug("dsMap: {}", dsMap);
+				}
+
+				if (dsMap == null)
+				{
+					dsMap = new HashMap<>();
+				}
 
                 for (String source : secDataSources)
                 {
@@ -263,41 +282,30 @@ public class SecurityServiceLoader extends AsyncTask<Void, Void, Boolean>
                     {
                         DEBUGGER.debug("Properties: {}", dsProps);
                     }
-                    
-                    DataSourceManager dsManager = new DataSourceManager();
-                    dsManager.setDsName(dsProps.getProperty("dsName"));
-                    dsManager.setDataSource(dsProps.getProperty("datasource"));
-                    dsManager.setDriver(dsProps.getProperty("driver"));
-                    dsManager.setDsUser(dsProps.getProperty("dsUser"));
-                    dsManager.setDsPass(dsProps.getProperty("dsPass"));
-                    dsManager.setSalt(dsProps.getProperty("salt"));
-                    dsManager.setConnectTimeout(Integer.parseInt(dsProps.getProperty("connTimeout")));
-                    dsManager.setAutoReconnect(Boolean.valueOf(dsProps.getProperty("autoReconnect")));
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("DataSourceManager: {}", dsManager);
-                    }
+					BasicDataSource dataSource = new BasicDataSource();
+					dataSource.setDriverClassName(dsProps.getProperty("driver"));
+					dataSource.setUrl(dsProps.getProperty("datasource"));
+					dataSource.setUsername(dsProps.getProperty("username"));
+					dataSource.setConnectionProperties(dsProps.getProperty("connProps"));
+					dataSource.setPassword(PasswordUtils.decryptText(dsProps.getProperty("password"),
+						dsProps.getProperty("salt").length()));
 
-                    dsList.add(dsManager);
+					if (DEBUG)
+					{
+						DEBUGGER.debug("BasicDataSource: {}", dataSource);
+					}
 
+					dsMap.put(dsProps.getProperty("name"), dataSource);
                     dsStream.close();
                 }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("List<DataSourceManager: {}", dsList);
-                }
+				if (DEBUG)
+				{
+					DEBUGGER.debug("Map<String, DataSource>: {}", dsMap);
+				}
 
-                ResourceConfig securityResourceConfig = new ResourceConfig();
-                securityResourceConfig.setDsManager(dsList);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ResourceConfig: {}", securityResourceConfig);
-                }
-
-                secSvcConfig.setResourceConfig(securityResourceConfig);
+                secBean.setDataSources(dsMap);
             }
 
             if (DEBUG)

@@ -6,6 +6,7 @@
     <string name = "tvOtpPassword">Security PIN: </string>
     <string name = "hintPassword">Password</string>
     <string name = "btnDoLogin">Login</string>
+	<string name = "txtPleaseWait">Signing in...</string>
     <string name = "txtSignonError">An error occurred during signon. Please try again.</string>
     <string name = "txtPasswordExpiry">Your password has expired.</string>
     <string name = "txtOlrSetup">Your account requires additional information before continuing.</string>

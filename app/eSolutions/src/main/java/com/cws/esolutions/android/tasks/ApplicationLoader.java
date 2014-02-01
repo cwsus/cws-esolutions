@@ -43,6 +43,7 @@ import com.cws.esolutions.android.ui.R;
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.android.utils.NetworkUtils;
 import com.cws.esolutions.android.ApplicationServiceBean;
+import com.cws.esolutions.security.processors.dto.*;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -150,6 +151,17 @@ public class ApplicationLoader extends AsyncTask<Void, Void, Boolean>
         {
             Properties securityProperties = new Properties();
             securityProperties.load(this.iStream);
+
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostAddress(InetAddress.getLocalHost().getHostAddress());
+            reqInfo.setHostName(InetAddress.getLocalHost().getHostName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            }
+
+            bean.setReqInfo(reqInfo);
 
             isLoaded = true;
         }

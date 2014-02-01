@@ -50,6 +50,7 @@ import com.unboundid.ldap.sdk.LDAPConnection;
 import java.security.GeneralSecurityException;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang.RandomStringUtils;
+import com.unboundid.ldap.sdk.LDAPConnectionPool;
 import com.unboundid.ldap.sdk.LDAPConnectionOptions;
 import com.unboundid.util.ssl.TrustStoreTrustManager;
 
@@ -59,6 +60,7 @@ import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.android.utils.NetworkUtils;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.android.ApplicationServiceBean;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.config.enums.AuthRepositoryType;
@@ -77,7 +79,7 @@ import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcesso
  * @version 1.0
  * @see android.os.AsyncTask
  */
-public class UserAuthenticationTask extends AsyncTask<List<String>, Integer, AuthenticationResponse>
+public class UserAuthenticationTask extends AsyncTask<String, Integer, AuthenticationResponse>
 {
     private Activity reqActivity = null;
     private Class<?> resActivity = null;
@@ -99,6 +101,7 @@ public class UserAuthenticationTask extends AsyncTask<List<String>, Integer, Aut
     private static final String READ_TIMEOUT = "repositoryReadTimeout";
     private static final String CNAME = UserAuthenticationTask.class.getName();
     private static final SecurityServiceBean bean = SecurityServiceBean.getInstance();
+	private static final ApplicationServiceBean appBean = ApplicationServiceBean.getInstance();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -238,7 +241,21 @@ public class UserAuthenticationTask extends AsyncTask<List<String>, Integer, Aut
                         throw new LDAPException(ResultCode.CONNECT_ERROR, "Failed to establish an LDAP connection");
                     }
 
-                    bean.setAuthDataSource(ldapConn);
+                    LDAPConnectionPool connPool = new LDAPConnectionPool(ldapConn,
+						Integer.parseInt(connProps.getProperty(UserAuthenticationTask.MIN_CONNECTIONS)),
+						Integer.parseInt(connProps.getProperty(UserAuthenticationTask.MAX_CONNECTIONS)));
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("LDAPConnectionPool: {}", connPool);
+                    }
+
+                    if (connPool.isClosed())
+                    {
+                        throw new LDAPException(ResultCode.CONNECT_ERROR, "Failed to establish an LDAP connection");
+                    }
+
+                    bean.setAuthDataSource(connPool);
 
                     break;
                 case SQL:
@@ -337,7 +354,7 @@ public class UserAuthenticationTask extends AsyncTask<List<String>, Integer, Aut
     }
 
     @Override
-    protected AuthenticationResponse doInBackground(final List<String>... request)
+    protected AuthenticationResponse doInBackground(final String... request)
     {
         final String methodName = UserAuthenticationTask.CNAME + "#doInBackground(final List<String>... request)";
 
@@ -349,18 +366,8 @@ public class UserAuthenticationTask extends AsyncTask<List<String>, Integer, Aut
 
         AuthenticationResponse response = null;
 
-		RequestHostInfo reqInfo = new RequestHostInfo();
-		reqInfo.setHostAddress("android"); // TODO
-		reqInfo.setHostName("android"); // TODO
-		reqInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
-
-		if (DEBUG)
-		{
-			DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-		}
-
         UserAccount userAccount = new UserAccount();
-        userAccount.setUsername(request[0].get(0));
+        userAccount.setUsername(request[0]);
 
 		if (DEBUG)
 		{
@@ -368,13 +375,14 @@ public class UserAuthenticationTask extends AsyncTask<List<String>, Integer, Aut
 		}
 
         AuthenticationData userSecurity = new AuthenticationData();
-        userSecurity.setPassword(request[0].get(1));
+        userSecurity.setPassword(request[1]);
 
 		AuthenticationRequest authReq = new AuthenticationRequest();
 		authReq.setApplicationName(Constants.APPLICATION_NAME);
 		authReq.setUserAccount(userAccount);
+        authReq.setUserSecurity(userSecurity);
 		authReq.setApplicationId(Constants.APPLICATION_ID);
-		authReq.setHostInfo(reqInfo);
+		authReq.setHostInfo(appBean.getReqInfo());
 
 		if (DEBUG)
 		{
