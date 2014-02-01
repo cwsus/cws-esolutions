@@ -39,6 +39,7 @@ import javax.naming.NamingException;
 import java.io.FileNotFoundException;
 import com.unboundid.util.ssl.SSLUtil;
 import javax.net.ssl.SSLSocketFactory;
+import org.apache.commons.io.FileUtils;
 import com.unboundid.ldap.sdk.ResultCode;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.LDAPConnection;
@@ -91,9 +92,9 @@ public final class DAOInitializer
      * @param bean - The <code>SecurityServiceBean</code> that holds the connection
      * @throws SecurityServiceException if an exception occurs opening the connection
      */
-    public synchronized static void configureAndCreateAuthConnection(final InputStream properties, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException
+    public synchronized static void configureAndCreateAuthConnection(final String properties, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException
     {
-        String methodName = DAOInitializer.CNAME + "#configureAndCreateAuthConnection(final InputStream properties, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException";
+        String methodName = DAOInitializer.CNAME + "#configureAndCreateAuthConnection(final String properties, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException";
 
         if (DEBUG)
         {
@@ -106,7 +107,7 @@ public final class DAOInitializer
         try
         {
             Properties connProps = new Properties();
-            connProps.load(properties);
+            connProps.load(new FileInputStream(FileUtils.getFile(properties)));
 
             if (DEBUG)
             {
