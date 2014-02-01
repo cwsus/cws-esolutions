@@ -79,7 +79,7 @@ public class LDAPUserManager implements UserManager
         try
         {
             this.connProps = new Properties();
-            this.connProps.load(new FileInputStream(secConfig.getAuthConfig()));
+            this.connProps.load(new FileInputStream(FileUtils.getFile(secConfig.getAuthConfig())));
 
             if (DEBUG)
             {
@@ -90,7 +90,22 @@ public class LDAPUserManager implements UserManager
         {
             ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
 
-            throw new UserManagementException(fnfx.getMessage(), fnfx);
+            try
+            {
+                this.connProps = new Properties();
+                this.connProps.load(LDAPUserManager.class.getClassLoader().getResourceAsStream(secConfig.getAuthConfig())));
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Properties: {}", this.connProps);
+                }
+            }
+            catch (IOException iox)
+            {
+				ERROR_RECORDER.error(iox.getMessage(), iox);
+
+				throw new UserManagementException(iox.getMessage(), iox);
+			}
         }
         catch (IOException iox)
         {

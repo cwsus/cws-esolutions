@@ -87,7 +87,7 @@ public class LDAPKeyManager implements KeyManager
         try
         {
             this.connProps = new Properties();
-            this.connProps.load(new FileInputStream(secConfig.getAuthConfig()));
+            this.connProps.load(new FileInputStream(FileUtils.getFile(secConfig.getAuthConfig())));
 
             if (DEBUG)
             {
@@ -98,7 +98,22 @@ public class LDAPKeyManager implements KeyManager
         {
             ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
 
-            throw new KeyManagementException(fnfx.getMessage(), fnfx);
+            try
+            {
+                this.connProps = new Properties();
+                this.connProps.load(LDAPKeyManager.class.getClassLoader().getResourceAsStream(secConfig.getAuthConfig())));
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Properties: {}", this.connProps);
+                }
+            }
+            catch (IOException iox)
+            {
+				ERROR_RECORDER.error(iox.getMessage(), iox);
+
+				throw new KeyManagementException(iox.getMessage(), iox);
+			}
         }
         catch (IOException iox)
         {

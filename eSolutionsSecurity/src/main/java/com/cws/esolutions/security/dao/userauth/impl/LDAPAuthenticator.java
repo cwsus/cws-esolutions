@@ -84,7 +84,22 @@ public class LDAPAuthenticator implements Authenticator
         {
             ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
 
-            throw new AuthenticatorException(fnfx.getMessage(), fnfx);
+            try
+            {
+                this.connProps = new Properties();
+                this.connProps.load(LDAPAuthenticator.class.getClassLoader().getResourceAsStream(secConfig.getAuthConfig())));
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Properties: {}", this.connProps);
+                }
+            }
+            catch (IOException iox)
+            {
+				ERROR_RECORDER.error(iox.getMessage(), iox);
+
+				throw new AuthenticatorException(iox.getMessage(), iox);
+			}
         }
         catch (IOException iox)
         {
