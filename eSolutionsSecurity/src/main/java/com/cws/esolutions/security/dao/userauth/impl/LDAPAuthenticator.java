@@ -87,7 +87,7 @@ public class LDAPAuthenticator implements Authenticator
             try
             {
                 this.connProps = new Properties();
-                this.connProps.load(LDAPAuthenticator.class.getClassLoader().getResourceAsStream(secConfig.getAuthConfig())));
+                this.connProps.load(LDAPAuthenticator.class.getClassLoader().getResourceAsStream(secConfig.getAuthConfig()));
 
                 if (DEBUG)
                 {

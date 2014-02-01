@@ -93,7 +93,7 @@ public class LDAPUserManager implements UserManager
             try
             {
                 this.connProps = new Properties();
-                this.connProps.load(LDAPUserManager.class.getClassLoader().getResourceAsStream(secConfig.getAuthConfig())));
+                this.connProps.load(LDAPUserManager.class.getClassLoader().getResourceAsStream(secConfig.getAuthConfig()));
 
                 if (DEBUG)
                 {

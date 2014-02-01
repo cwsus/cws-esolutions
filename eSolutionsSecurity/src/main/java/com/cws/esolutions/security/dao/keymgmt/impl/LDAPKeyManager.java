@@ -101,7 +101,7 @@ public class LDAPKeyManager implements KeyManager
             try
             {
                 this.connProps = new Properties();
-                this.connProps.load(LDAPKeyManager.class.getClassLoader().getResourceAsStream(secConfig.getAuthConfig())));
+                this.connProps.load(LDAPKeyManager.class.getClassLoader().getResourceAsStream(secConfig.getAuthConfig()));
 
                 if (DEBUG)
                 {
