@@ -224,7 +224,7 @@ public class SecurityServiceLoader extends AsyncTask<Void, Void, Boolean>
             secConfig.setSmsCodeLength(Integer.parseInt(securityProperties.getProperty("smsCodeLength")));
             secConfig.setResetTimeout(Integer.parseInt(securityProperties.getProperty("resetTimeout")));
             secConfig.setOtpVariance(Integer.parseInt(securityProperties.getProperty("otpVariance")));
-            secConfig.setAuthConfig(this.reqActivity.getResources().getString(R.string.authRepoConfig));
+            secConfig.setAuthConfig(securityProperties.getProperty("authConfig"));
 
             SecurityConfigurationData secSvcConfig = new SecurityConfigurationData();
             secSvcConfig.setAuthData(authData);
