@@ -216,5 +216,9 @@ public class SecurityServiceInitializer
         {
             ERROR_RECORDER.error(ssx.getMessage(), ssx);
         }
+        catch (FileNotFoundException fnfx)
+        {
+            ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
+        }
     }
 }

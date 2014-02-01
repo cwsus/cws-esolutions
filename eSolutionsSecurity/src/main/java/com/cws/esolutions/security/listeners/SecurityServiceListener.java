@@ -199,5 +199,9 @@ public class SecurityServiceListener implements ServletContextListener
         {
             ERROR_RECORDER.error(ssx.getMessage(), ssx);
         }
+        catch (FileNotFoundException fnfx)
+        {
+            ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
+        }
     }
 }
