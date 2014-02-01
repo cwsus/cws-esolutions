@@ -82,8 +82,6 @@ public class LDAPAuthenticator implements Authenticator
         }
         catch (FileNotFoundException fnfx)
         {
-            ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
-
             try
             {
                 this.connProps = new Properties();
@@ -96,15 +94,11 @@ public class LDAPAuthenticator implements Authenticator
             }
             catch (IOException iox)
             {
-				ERROR_RECORDER.error(iox.getMessage(), iox);
-
 				throw new AuthenticatorException(iox.getMessage(), iox);
 			}
         }
         catch (IOException iox)
         {
-            ERROR_RECORDER.error(iox.getMessage(), iox);
-
             throw new AuthenticatorException(iox.getMessage(), iox);
         }
     }
@@ -276,14 +270,10 @@ public class LDAPAuthenticator implements Authenticator
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new AuthenticatorException(lx.getResultCode(), lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new AuthenticatorException(cx.getMessage(), cx);
         }
         finally
@@ -383,14 +373,10 @@ public class LDAPAuthenticator implements Authenticator
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new AuthenticatorException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new AuthenticatorException(cx.getMessage(), cx);
         }
         finally
@@ -480,14 +466,10 @@ public class LDAPAuthenticator implements Authenticator
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new AuthenticatorException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new AuthenticatorException(cx.getMessage(), cx);
         }
         finally
@@ -573,14 +555,10 @@ public class LDAPAuthenticator implements Authenticator
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new AuthenticatorException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new AuthenticatorException(cx.getMessage(), cx);
         }
         finally

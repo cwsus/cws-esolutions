@@ -54,7 +54,6 @@ public final class PasswordUtils
     private static final String CNAME = PasswordUtils.class.getName();
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public static final String encryptText(final String plainText, final String salt) throws SecurityException
@@ -80,38 +79,26 @@ public final class PasswordUtils
         }
         catch (InvalidKeyException ikx)
         {
-            ERROR_RECORDER.error(ikx.getMessage(), ikx);
-
             throw new SecurityException(ikx.getMessage(), ikx);
         }
         catch (NoSuchAlgorithmException nsx)
         {
-            ERROR_RECORDER.error(nsx.getMessage(), nsx);
-
             throw new SecurityException(nsx.getMessage(), nsx);
         }
         catch (NoSuchPaddingException npx)
         {
-            ERROR_RECORDER.error(npx.getMessage(), npx);
-
             throw new SecurityException(npx.getMessage(), npx);
         }
         catch (IllegalBlockSizeException ibx)
         {
-            ERROR_RECORDER.error(ibx.getMessage(), ibx);
-
             throw new SecurityException(ibx.getMessage(), ibx);
         }
         catch (BadPaddingException bpx)
         {
-            ERROR_RECORDER.error(bpx.getMessage(), bpx);
-
             throw new SecurityException(bpx.getMessage(), bpx);
         }
         catch (UnsupportedEncodingException uex)
         {
-            ERROR_RECORDER.error(uex.getMessage(), uex);
-
             throw new SecurityException(uex.getMessage(), uex);
         }
 
@@ -146,14 +133,10 @@ public final class PasswordUtils
         }
         catch (NoSuchAlgorithmException nsx)
         {
-            ERROR_RECORDER.error(nsx.getMessage(), nsx);
-
             throw new SecurityException(nsx.getMessage(), nsx);
         }
         catch (UnsupportedEncodingException uex)
         {
-            ERROR_RECORDER.error(uex.getMessage(), uex);
-
             throw new SecurityException(uex.getMessage(), uex);
         }
 
@@ -183,38 +166,26 @@ public final class PasswordUtils
         }
         catch (InvalidKeyException ikx)
         {
-            ERROR_RECORDER.error(ikx.getMessage(), ikx);
-
             throw new SecurityException(ikx.getMessage(), ikx);
         }
         catch (NoSuchAlgorithmException nsx)
         {
-            ERROR_RECORDER.error(nsx.getMessage(), nsx);
-
             throw new SecurityException(nsx.getMessage(), nsx);
         }
         catch (NoSuchPaddingException npx)
         {
-            ERROR_RECORDER.error(npx.getMessage(), npx);
-
             throw new SecurityException(npx.getMessage(), npx);
         }
         catch (IllegalBlockSizeException ibx)
         {
-            ERROR_RECORDER.error(ibx.getMessage(), ibx);
-
             throw new SecurityException(ibx.getMessage(), ibx);
         }
         catch (BadPaddingException bpx)
         {
-            ERROR_RECORDER.error(bpx.getMessage(), bpx);
-
             throw new SecurityException(bpx.getMessage(), bpx);
         }
         catch (UnsupportedEncodingException uex)
         {
-            ERROR_RECORDER.error(uex.getMessage(), uex);
-
             throw new SecurityException(uex.getMessage(), uex);
         }
 
@@ -275,14 +246,10 @@ public final class PasswordUtils
         }
         catch (InvalidKeyException ikx)
         {
-            ERROR_RECORDER.error(ikx.getMessage(), ikx);
-
             throw new SecurityException(ikx.getMessage(), ikx);
         }
         catch (NoSuchAlgorithmException nsx)
         {
-            ERROR_RECORDER.error(nsx.getMessage(), nsx);
-
             throw new SecurityException(nsx.getMessage(), nsx);
         }
     }

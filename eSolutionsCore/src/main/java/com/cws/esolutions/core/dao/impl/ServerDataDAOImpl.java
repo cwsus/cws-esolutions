@@ -118,8 +118,6 @@ public class ServerDataDAOImpl implements IServerDataDAO
         }
         catch (SQLException sqx)
         {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
             throw new SQLException(sqx.getMessage(), sqx);
         }
         finally
@@ -217,8 +215,6 @@ public class ServerDataDAOImpl implements IServerDataDAO
         }
         catch (SQLException sqx)
         {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
             throw new SQLException(sqx.getMessage(), sqx);
         }
         finally
@@ -283,8 +279,6 @@ public class ServerDataDAOImpl implements IServerDataDAO
         }
         catch (SQLException sqx)
         {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
             throw new SQLException(sqx.getMessage(), sqx);
         }
         finally
@@ -394,8 +388,6 @@ public class ServerDataDAOImpl implements IServerDataDAO
         }
         catch (SQLException sqx)
         {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
             throw new SQLException(sqx.getMessage(), sqx);
         }
         finally
@@ -523,8 +515,6 @@ public class ServerDataDAOImpl implements IServerDataDAO
         }
         catch (SQLException sqx)
         {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
             throw new SQLException(sqx.getMessage(), sqx);
         }
         finally
@@ -645,8 +635,6 @@ public class ServerDataDAOImpl implements IServerDataDAO
         }
         catch (SQLException sqx)
         {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
             throw new SQLException(sqx.getMessage(), sqx);
         }
         finally

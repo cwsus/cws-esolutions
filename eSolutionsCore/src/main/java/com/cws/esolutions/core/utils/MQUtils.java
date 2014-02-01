@@ -148,8 +148,6 @@ public final class MQUtils
                 }
                 catch (NamingException nx)
                 {
-                    ERROR_RECORDER.error(nx.getMessage(), nx);
-
                     throw new UtilityException(nx.getMessage(), nx);
                 }
             }
@@ -197,8 +195,6 @@ public final class MQUtils
         }
         catch (JMSException jx)
         {
-            ERROR_RECORDER.error(jx.getMessage(), jx);
-
             throw new UtilityException(jx.getMessage(), jx);
         }
         finally
@@ -303,8 +299,6 @@ public final class MQUtils
                 }
                 catch (NamingException nx)
                 {
-                    ERROR_RECORDER.error(nx.getMessage(), nx);
-
                     throw new UtilityException(nx.getMessage(), nx);
                 }
             }
@@ -347,8 +341,6 @@ public final class MQUtils
         }
         catch (JMSException jx)
         {
-            ERROR_RECORDER.error(jx.getMessage(), jx);
-
             throw new UtilityException(jx.getMessage(), jx);
         }
         finally

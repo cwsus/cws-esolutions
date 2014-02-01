@@ -231,32 +231,22 @@ public final class DAOInitializer
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new SecurityServiceException(lx.getMessage(), lx);
         }
         catch (GeneralSecurityException gsx)
         {
-            ERROR_RECORDER.error(gsx.getMessage(), gsx);
-
             throw new SecurityServiceException(gsx.getMessage(), gsx);
         }
         catch (NamingException nx)
         {
-            ERROR_RECORDER.error(nx.getMessage(), nx);
-
             throw new SecurityServiceException(nx.getMessage(), nx);
         }
         catch (FileNotFoundException fnfx)
         {
-            ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
-
             throw new SecurityServiceException(fnfx.getMessage(), fnfx);
         }
         catch (IOException iox)
         {
-            ERROR_RECORDER.error(iox.getMessage(), iox);
-
             throw new SecurityServiceException(iox.getMessage(), iox);
         }
     }
@@ -331,7 +321,7 @@ public final class DAOInitializer
 
                     break;
                 default:
-                    throw new SecurityServiceException("Unhandled ResourceType");
+                    return;
             }
         }
         catch (SQLException sqx)

@@ -89,8 +89,6 @@ public class LDAPUserManager implements UserManager
         }
         catch (FileNotFoundException fnfx)
         {
-            ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
-
             try
             {
                 this.connProps = new Properties();
@@ -103,15 +101,11 @@ public class LDAPUserManager implements UserManager
             }
             catch (IOException iox)
             {
-				ERROR_RECORDER.error(iox.getMessage(), iox);
-
 				throw new UserManagementException(iox.getMessage(), iox);
 			}
         }
         catch (IOException iox)
         {
-            ERROR_RECORDER.error(iox.getMessage(), iox);
-
             throw new UserManagementException(iox.getMessage(), iox);
         }
     }
@@ -195,14 +189,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally
@@ -345,14 +335,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         finally
@@ -433,14 +419,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally
@@ -555,14 +537,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally
@@ -728,14 +706,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally
@@ -838,14 +812,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally
@@ -926,14 +896,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally
@@ -1015,14 +981,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally
@@ -1110,14 +1072,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally
@@ -1217,14 +1175,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally
@@ -1306,14 +1260,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally
@@ -1402,14 +1352,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally
@@ -1493,14 +1439,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally
@@ -1593,14 +1535,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally
@@ -1686,14 +1624,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally

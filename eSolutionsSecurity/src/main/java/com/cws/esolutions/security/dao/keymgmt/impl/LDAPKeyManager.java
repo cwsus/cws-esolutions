@@ -97,8 +97,6 @@ public class LDAPKeyManager implements KeyManager
         }
         catch (FileNotFoundException fnfx)
         {
-            ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
-
             try
             {
                 this.connProps = new Properties();
@@ -111,15 +109,11 @@ public class LDAPKeyManager implements KeyManager
             }
             catch (IOException iox)
             {
-				ERROR_RECORDER.error(iox.getMessage(), iox);
-
 				throw new KeyManagementException(iox.getMessage(), iox);
 			}
         }
         catch (IOException iox)
         {
-            ERROR_RECORDER.error(iox.getMessage(), iox);
-
             throw new KeyManagementException(iox.getMessage(), iox);
         }
     }
@@ -252,32 +246,22 @@ public class LDAPKeyManager implements KeyManager
         }
         catch (InvalidKeySpecException iksx)
         {
-            ERROR_RECORDER.error(iksx.getMessage(), iksx);
-
             throw new KeyManagementException(iksx.getMessage(), iksx);
         }
         catch (NoSuchAlgorithmException nsax)
         {
-            ERROR_RECORDER.error(nsax.getMessage(), nsax);
-
             throw new KeyManagementException(nsax.getMessage(), nsax);
         }
         catch (SQLException sqx)
         {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
             throw new KeyManagementException(sqx.getMessage(), sqx);
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new KeyManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new KeyManagementException(cx.getMessage(), cx);
         }
         finally
@@ -459,26 +443,18 @@ public class LDAPKeyManager implements KeyManager
         }
         catch (NoSuchAlgorithmException nsax)
         {
-            ERROR_RECORDER.error(nsax.getMessage(), nsax);
-
             throw new KeyManagementException(nsax.getMessage(), nsax);
         }
         catch (SQLException sqx)
         {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
             throw new KeyManagementException(sqx.getMessage(), sqx);
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new KeyManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new KeyManagementException(cx.getMessage(), cx);
         }
         finally
@@ -629,20 +605,14 @@ public class LDAPKeyManager implements KeyManager
         }
         catch (SQLException sqx)
         {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
             throw new KeyManagementException(sqx.getMessage(), sqx);
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new KeyManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new KeyManagementException(cx.getMessage(), cx);
         }
         finally

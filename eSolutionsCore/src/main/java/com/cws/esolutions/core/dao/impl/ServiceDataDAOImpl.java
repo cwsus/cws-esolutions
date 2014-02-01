@@ -97,8 +97,6 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
         }
         catch (SQLException sqx)
         {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
             throw new SQLException(sqx.getMessage(), sqx);
         }
         finally
@@ -174,8 +172,6 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
         }
         catch (SQLException sqx)
         {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
             throw new SQLException(sqx.getMessage(), sqx);
         }
         finally
@@ -240,8 +236,6 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
         }
         catch (SQLException sqx)
         {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
             throw new SQLException(sqx.getMessage(), sqx);
         }
         finally
@@ -461,8 +455,6 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
         }
         catch (SQLException sqx)
         {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
             throw new SQLException(sqx.getMessage(), sqx);
         }
         finally
@@ -558,8 +550,6 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
         }
         catch (SQLException sqx)
         {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
             throw new SQLException(sqx.getMessage(), sqx);
         }
         finally
