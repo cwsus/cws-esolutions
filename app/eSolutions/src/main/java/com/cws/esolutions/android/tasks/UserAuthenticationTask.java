@@ -383,6 +383,7 @@ public class UserAuthenticationTask extends AsyncTask<String, Integer, Authentic
         authReq.setUserSecurity(userSecurity);
 		authReq.setApplicationId(Constants.APPLICATION_ID);
 		authReq.setHostInfo(appBean.getReqInfo());
+        authReq.setCount(this.reqActivity.getIntent().getExtras().getInt("lockCount", 0));
 
 		if (DEBUG)
 		{
@@ -428,6 +429,7 @@ public class UserAuthenticationTask extends AsyncTask<String, Integer, Authentic
 
         if ((response == null) || (response.getRequestStatus() != SecurityRequestStatus.SUCCESS))
         {
+            this.reqActivity.getIntent().putExtra("lockCount", response.getCount());
 			responseView.setTextColor(Color.RED);
 			responseView.setText(this.reqActivity.getString(R.string.txtSignonError));
 

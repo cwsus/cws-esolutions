@@ -240,26 +240,8 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     // to shoot them all
                     if ((userList != null) && (userList.size() == 1))
                     {
-                        Object[] lockInfo = userList.get(0);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("User Info: {}", lockInfo);
-                        }
-
-                        final String guid = (String) lockInfo[0];
-                        final String name = (String) lockInfo[1];
-                        final int lockCount = (Integer) lockInfo[2];
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("guid: {}", guid);
-                            DEBUGGER.debug("name: {}", name);
-                            DEBUGGER.debug("lockCount: {}", lockCount);
-                        }
-
                         // do it
-                        userManager.modifyUserLock(guid, false, lockCount + 1);
+                        userManager.modifyUserLock(userList.get(0)[0], false, request.getCount() + 1);
                     }
                 }
             }
@@ -268,6 +250,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 ERROR_RECORDER.error(umx.getMessage(), umx);
             }
 
+            response.setCount(request.getCount() + 1);
             response.setRequestStatus(SecurityRequestStatus.FAILURE);
         }
         catch (SecurityServiceException ssx)

@@ -37,13 +37,14 @@ import android.app.Activity;
 import org.slf4j.LoggerFactory;
 import android.content.res.AssetManager;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.RandomStringUtils;
 import android.content.res.Resources.NotFoundException;
 
 import com.cws.esolutions.android.ui.R;
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.android.utils.NetworkUtils;
 import com.cws.esolutions.android.ApplicationServiceBean;
-import com.cws.esolutions.security.processors.dto.*;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -149,12 +150,13 @@ public class ApplicationLoader extends AsyncTask<Void, Void, Boolean>
 
         try
         {
-            Properties securityProperties = new Properties();
-            securityProperties.load(this.iStream);
+            Properties props = new Properties();
+            props.load(this.iStream);
 
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostAddress(InetAddress.getLocalHost().getHostAddress());
             reqInfo.setHostName(InetAddress.getLocalHost().getHostName());
+            reqInfo.setSessionId(RandomStringUtils.randomAlphanumeric(Integer.parseInt(props.getProperty("sessIdLength"), 32)));
 
             if (DEBUG)
             {
