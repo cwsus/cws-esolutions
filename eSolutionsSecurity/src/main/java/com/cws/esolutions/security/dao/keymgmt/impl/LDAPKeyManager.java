@@ -45,6 +45,7 @@ import java.security.SecureRandom;
 import com.unboundid.ldap.sdk.Filter;
 import java.io.FileNotFoundException;
 import java.security.KeyPairGenerator;
+import org.apache.commons.io.FileUtils;
 import com.unboundid.ldap.sdk.ResultCode;
 import com.unboundid.ldap.sdk.LDAPResult;
 import com.unboundid.ldap.sdk.SearchScope;

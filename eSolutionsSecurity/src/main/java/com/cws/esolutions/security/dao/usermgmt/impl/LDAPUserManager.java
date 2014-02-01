@@ -36,6 +36,7 @@ import java.io.FileInputStream;
 import java.net.ConnectException;
 import java.io.FileNotFoundException;
 import com.unboundid.ldap.sdk.Filter;
+import org.apache.commons.io.FileUtils;
 import com.unboundid.ldap.sdk.Attribute;
 import com.unboundid.ldap.sdk.ResultCode;
 import com.unboundid.ldap.sdk.AddRequest;
