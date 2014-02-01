@@ -25,25 +25,18 @@ package com.cws.esolutions.security.listeners;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.Map;
-
 import org.slf4j.Logger;
-
 import java.util.HashMap;
-
 import javax.sql.DataSource;
-
 import java.sql.SQLException;
-
 import org.slf4j.LoggerFactory;
-
+import java.io.FileInputStream;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.JAXBException;
-
+import java.io.FileNotFoundException;
 import org.apache.log4j.helpers.Loader;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.xml.DOMConfigurator;
@@ -107,7 +100,7 @@ public class SecurityServiceInitializer
 
             SecurityServiceInitializer.svcBean.setConfigData(configData);
 
-            DAOInitializer.configureAndCreateAuthConnection(new FileInputStream(configData.getSecurityConfig().getAuthConfig()),
+            DAOInitializer.configureAndCreateAuthConnection(new FileInputStream(FileUtils.getFile(configData.getSecurityConfig().getAuthConfig())),
                     false, SecurityServiceInitializer.svcBean);
 
             Map<String, DataSource> dsMap = SecurityServiceInitializer.svcBean.getDataSources();

@@ -92,7 +92,7 @@ public final class DAOInitializer
      * @param bean - The <code>SecurityServiceBean</code> that holds the connection
      * @throws SecurityServiceException if an exception occurs opening the connection
      */
-    public synchronized static void configureAndCreateAuthConnection(final String properties, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException
+    public synchronized static void configureAndCreateAuthConnection(final InputStream properties, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException
     {
         String methodName = DAOInitializer.CNAME + "#configureAndCreateAuthConnection(final String properties, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException";
 
@@ -107,7 +107,7 @@ public final class DAOInitializer
         try
         {
             Properties connProps = new Properties();
-            connProps.load(new FileInputStream(FileUtils.getFile(properties)));
+            connProps.load(properties);
 
             if (DEBUG)
             {
