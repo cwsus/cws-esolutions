@@ -477,7 +477,7 @@ public final class AuthData implements Serializable
 
         if (DEBUG)
         {
-            DEBUGGER.debug(methodName)
+            DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", this.repositoryBaseDN);
         }
 
