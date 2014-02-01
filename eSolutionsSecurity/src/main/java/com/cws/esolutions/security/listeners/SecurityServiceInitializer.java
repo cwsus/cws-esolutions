@@ -183,7 +183,7 @@ public class SecurityServiceInitializer
 
         try
         {
-            DAOInitializer.closeAuthConnection(new FileInputStream(FileUtils.getFile(configData.getSecurityConfig().getAuthConfig())), false, svcBean);
+            DAOInitializer.closeAuthConnection(new FileInputStream(FileUtils.getFile(config.getSecurityConfig().getAuthConfig())), false, svcBean);
 
             if (dsMap != null)
             {

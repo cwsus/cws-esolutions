@@ -68,7 +68,6 @@ public class LDAPAuthenticator implements Authenticator
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", loadProps);
         }
 
         try
