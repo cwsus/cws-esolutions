@@ -32,6 +32,8 @@ import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
+import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
+import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -43,13 +45,8 @@ import com.cws.esolutions.security.services.exception.AccessControlServiceExcept
  */
 public interface IAccessControlService
 {
-    static final String CONTROL_SVC_REQUEST = "serviceRequest";
-    static final String CONTROL_USER_ADMIN = "userAdminFunction";
     static final String CNAME = IAccessControlService.class.getName();
-    static final String CONTROL_SERVICE_ADMIN = "serviceAdminFunction";
-    static final String EMAIL_SVC_ID = "4F0E7E62-BC28-414A-9FE8-C2B4E1875B4D";
-
-    static final IAuditProcessor auditor = new AuditProcessorImpl();
+    static final ISecurityReferenceDAO ref = new SecurityReferenceDAOImpl();
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

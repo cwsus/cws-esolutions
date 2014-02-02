@@ -32,7 +32,6 @@ import java.sql.SQLException;
 import com.unboundid.ldap.sdk.ResultCode;
 import org.apache.commons.lang.StringUtils;
 
-import com.cws.esolutions.security.dto.UserGroup;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.processors.enums.SaltType;
@@ -160,41 +159,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             userAccount.setSuspended((Boolean) authObject.get(11));
             userAccount.setOlrSetup((Boolean) authObject.get(12));
             userAccount.setOlrLocked((Boolean) authObject.get(13));
-
-            // build groups
-            List<UserGroup> userGroups = new ArrayList<>();
-            for (String group : StringUtils.split((String) authObject.get(15), ","))
-            {
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Group: {}", group);
-                }
-
-                List<String> serviceList = secRef.listServicesForGroup(group);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("List<String>: {}", serviceList);
-                }
-
-                UserGroup userGroup = new UserGroup();
-                userGroup.setName(group);
-                userGroup.setServices(serviceList);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserGroup: {}", userGroup);
-                }
-
-                userGroups.add(userGroup);
-            }
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("List<UserGroup>: {}", userGroups);
-            }
-
-            userAccount.setGroups(userGroups);
+            userAccount.setGroups(StringUtils.split((String) authObject.get(15), ","));
 
             if (DEBUG)
             {
@@ -373,41 +338,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             userAccount.setSuspended((Boolean) userData.get(11));
             userAccount.setOlrSetup((Boolean) userData.get(12));
             userAccount.setOlrLocked((Boolean) userData.get(13));
-
-            // build groups
-            List<UserGroup> userGroups = new ArrayList<>();
-            for (String group : StringUtils.split((String) userData.get(15), ","))
-            {
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Group: {}", group);
-                }
-
-                List<String> serviceList = secRef.listServicesForGroup(group);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("List<String>: {}", serviceList);
-                }
-
-                UserGroup userGroup = new UserGroup();
-                userGroup.setName(group);
-                userGroup.setServices(serviceList);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserGroup: {}", userGroup);
-                }
-
-                userGroups.add(userGroup);
-            }
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("List<UserGroup>: {}", userGroups);
-            }
-
-            userAccount.setGroups(userGroups);
+            userAccount.setGroups(StringUtils.split((String) userData.get(15), ","));
 
             if (DEBUG)
             {
