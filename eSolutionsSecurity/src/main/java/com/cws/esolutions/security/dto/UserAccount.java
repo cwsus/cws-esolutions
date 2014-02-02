@@ -498,29 +498,6 @@ public class UserAccount implements Serializable
         return this.telephoneNumber;
     }
 
-    public final boolean hasGroup(final String value)
-    {
-        final String methodName = UserAccount.CNAME + "#hasGroup(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        boolean isAuthorized = false;
-
-        for (UserGroup group : this.groups)
-        {
-            if (StringUtils.equals(group.getName(), value))
-            {
-                isAuthorized = true;
-            }
-        }
-
-        return isAuthorized;
-    }
-
     @Override
     public final String toString()
     {
