@@ -57,17 +57,24 @@ public class AccessControlServiceImpl implements IAccessControlService
                 DEBUGGER.debug("UserGroup: {}", group);
             }
 
-            List<String> services = ref.listServicesForGroup(group);
-
-            if (DEBUG)
+            try
             {
-                DEBUGGER.debug("List<String>: {}", services);
-            }
+                List<String> services = ref.listServicesForGroup(group);
 
-            if (services.contains(serviceGuid))
-            {
-                return true;
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("List<String>: {}", services);
+                }
+
+                if (services.contains(serviceGuid))
+                {
+                    return true;
+                }
             }
+            catch (SQLException sqx)
+            {
+                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+			}
         }
 
         return false;
