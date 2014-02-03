@@ -25,7 +25,7 @@ package com.cws.esolutions.core.processors.dto;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.Map;
+import java.util.List;
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -43,8 +43,11 @@ import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
  */
 public class VirtualServiceResponse implements Serializable
 {
+    private String apiVersion = null;
+    private String hostVersion = null;
     private boolean isComplete = false;
-    private Map<String, String> machines = null;
+    private VirtualServer server = null;
+    private List<VirtualServer> serverList = null;
     private CoreServicesStatus requestStatus = null;
 
     private static final long serialVersionUID = -2100329293282061334L;
@@ -67,9 +70,9 @@ public class VirtualServiceResponse implements Serializable
         this.requestStatus = value;
     }
 
-    public final void setMachines(final Map<String, String> value)
+    public final void setApiVersion(final String value)
     {
-        final String methodName = VirtualServiceResponse.CNAME + "#setMachines(final Map<String, String> value)";
+        final String methodName = VirtualServiceResponse.CNAME + "#setApiVersion(final String value)";
 
         if (DEBUG)
         {
@@ -77,7 +80,46 @@ public class VirtualServiceResponse implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.machines = value;
+        this.apiVersion = value;
+    }
+
+    public final void setHostVersion(final String value)
+    {
+        final String methodName = VirtualServiceResponse.CNAME + "#setHostVersion(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.hostVersion = value;
+    }
+
+    public final void setServer(final VirtualServer value)
+    {
+        final String methodName = VirtualServiceResponse.CNAME + "#setMachines(final VirtualServer value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.server = value;
+    }
+
+    public final void setServerList(final List<VirtualServer> value)
+    {
+        final String methodName = VirtualServiceResponse.CNAME + "#setServerList(final List<VirtualServer> value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.serverList = value;
     }
 
     public final void setIsComplete(final boolean value)
@@ -106,17 +148,30 @@ public class VirtualServiceResponse implements Serializable
         return this.requestStatus;
     }
 
-    public final Map<String, String> getMachines()
+    public final VirtualServer getServer()
     {
         final String methodName = VirtualServiceResponse.CNAME + "#getMachines()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.machines);
+            DEBUGGER.debug("Value: {}", this.server);
         }
 
-        return this.machines;
+        return this.server;
+    }
+
+    public final List<VirtualServer> getServerList()
+    {
+        final String methodName = VirtualServiceResponse.CNAME + "#getServerList()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.serverList);
+        }
+
+        return this.serverList;
     }
 
     public final boolean isComplete()
@@ -130,6 +185,32 @@ public class VirtualServiceResponse implements Serializable
         }
 
         return this.isComplete;
+    }
+
+    public final String getApiVersion()
+    {
+        final String methodName = VirtualServiceResponse.CNAME + "#getApiVersion()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.apiVersion);
+        }
+
+        return this.apiVersion;
+    }
+
+    public final String getHostVersion()
+    {
+        final String methodName = VirtualServiceResponse.CNAME + "#getHostVersion()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.hostVersion);
+        }
+
+        return this.hostVersion;
     }
 
     @Override

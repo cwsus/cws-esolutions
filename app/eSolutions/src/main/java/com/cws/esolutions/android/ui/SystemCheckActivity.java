@@ -53,6 +53,7 @@ public class SystemCheckActivity extends Activity
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
+    @Override
     public void onCreate(final Bundle bundle)
     {
         final String methodName = SystemCheckActivity.CNAME + "#onCreate(final Bundle bundle)";
@@ -107,6 +108,7 @@ public class SystemCheckActivity extends Activity
         return true;
     }
 
+    @Override
     public boolean onOptionsItemSelected(final MenuItem item)
     {
         final String methodName = SystemCheckActivity.CNAME + "#onOptionsItemSelected(final MenuItem item)";

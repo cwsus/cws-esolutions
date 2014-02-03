@@ -53,6 +53,7 @@ public class UserManagementActivity extends Activity
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
+    @Override
     public void onCreate(final Bundle bundle)
     {
         final String methodName = UserManagementActivity.CNAME + "#onCreate(final Bundle bundle)";
@@ -107,6 +108,7 @@ public class UserManagementActivity extends Activity
         return true;
     }
 
+    @Override
     public boolean onOptionsItemSelected(final MenuItem item)
     {
         final String methodName = UserManagementActivity.CNAME + "#onOptionsItemSelected(final MenuItem item)";

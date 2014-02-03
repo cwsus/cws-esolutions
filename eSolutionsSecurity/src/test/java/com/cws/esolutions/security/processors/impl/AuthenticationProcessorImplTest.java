@@ -29,7 +29,6 @@ import org.junit.Test;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Assert;
-import org.hamcrest.CoreMatchers;
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
@@ -85,10 +84,7 @@ public class AuthenticationProcessorImplTest
         {
             AuthenticationResponse response = agentAuth.processAgentLogon(request);
 
-            Assert.assertThat(response.getRequestStatus(),
-                CoreMatchers.anyOf(
-                    CoreMatchers.equalTo(SecurityRequestStatus.SUCCESS),
-                    CoreMatchers.equalTo(SecurityRequestStatus.CONTINUE)));
+            Assert.assertEquals(response.getRequestStatus(), SecurityRequestStatus.SUCCESS);
         }
         catch (AuthenticationException ax)
         {

@@ -25,12 +25,9 @@ package com.cws.esolutions.android.tasks;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.io.File;
 import java.util.Map;
-import java.util.List;
 import org.slf4j.Logger;
 import java.util.HashMap;
-import java.util.ArrayList;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -50,13 +47,8 @@ import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.config.xml.AuthData;
 import com.cws.esolutions.security.config.xml.KeyConfig;
-import com.cws.esolutions.security.utils.DAOInitializer;
-import com.cws.esolutions.android.utils.DatasourceUtils;
 import com.cws.esolutions.android.ApplicationServiceBean;
-import com.cws.esolutions.security.config.xml.ResourceConfig;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
-import com.cws.esolutions.security.config.xml.DataSourceManager;
-import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -70,10 +62,10 @@ import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 public class SecurityServiceLoader extends AsyncTask<Void, Void, Boolean>
 {
     private Activity reqActivity = null;
-    private InputStream securityStream = null;
 
     private static final String CNAME = SecurityServiceLoader.class.getName();
     private static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
+    private static final ApplicationServiceBean appBean = ApplicationServiceBean.getInstance();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -103,6 +95,9 @@ public class SecurityServiceLoader extends AsyncTask<Void, Void, Boolean>
             DEBUGGER.debug(methodName);
         }
 
+        InputStream authStream = null;
+        InputStream propsStream = null;
+
         try
         {
             if (!(NetworkUtils.checkNetwork(this.reqActivity)))
@@ -116,26 +111,72 @@ public class SecurityServiceLoader extends AsyncTask<Void, Void, Boolean>
             {
                 DEBUGGER.debug("AssetManager: {}", assetMgr);
             }
-            
-            this.securityStream = assetMgr.open(this.reqActivity.getResources().getString(R.string.securityConfigFile));
+
+            propsStream = assetMgr.open(this.reqActivity.getResources().getString(R.string.securityConfigFile));
 
             if (DEBUG)
             {
-                DEBUGGER.debug("InputStream: {}", this.securityStream);
+                DEBUGGER.debug("InputStream: {}", propsStream);
             }
 
-            if ((this.securityStream == null) || (this.securityStream.available() == 0))
+            if ((propsStream == null) || (propsStream.available() == 0))
             {
-                ERROR_RECORDER.error("Unable to load security properties. Cannot continue.");
+                ERROR_RECORDER.error("Unable to load core properties. Cannot continue.");
 
                 super.cancel(true);
             }
+
+            Properties secProps = new Properties();
+            secProps.load(propsStream);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Properties: {}", secProps);
+            }
+
+            SecurityServiceLoader.appBean.setSecProperties(secProps);
+
+            authStream = assetMgr.open(this.reqActivity.getResources().getString(R.string.securityConfigFile));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("InputStream: {}", authStream);
+            }
+
+            if ((authStream == null) || (authStream.available() == 0))
+            {
+                ERROR_RECORDER.error("Unable to load core properties. Cannot continue.");
+
+                super.cancel(true);
+            }
+
+            Properties authProps = new Properties();
+            authProps.load(authStream);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Properties: {}", authProps);
+            }
+
+            SecurityServiceLoader.appBean.setAuthProperties(authProps);
         }
         catch (IOException iox)
         {
             ERROR_RECORDER.error(iox.getMessage(), iox);
 
             super.cancel(true);
+        }
+        finally
+        {
+            try
+            {
+                propsStream.close();
+                authStream.close();
+            }
+            catch (IOException iox)
+            {
+                ERROR_RECORDER.error(iox.getMessage(), iox);
+            }
         }
     }
 
@@ -153,52 +194,44 @@ public class SecurityServiceLoader extends AsyncTask<Void, Void, Boolean>
 
         boolean isLoaded = false;
 
-        final ApplicationServiceBean bean = ApplicationServiceBean.getInstance();
         final AssetManager assetMgr = this.reqActivity.getResources().getAssets();
+        final Properties properties = SecurityServiceLoader.appBean.getSecProperties();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ApplicationServiceBean: {}", bean);
             DEBUGGER.debug("AssetManager: {}", assetMgr);
+            DEBUGGER.debug("Properties", properties);
         }
 
         try
         {
-            Properties securityProperties = new Properties();
-            securityProperties.load(this.securityStream);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Properties: {}", securityProperties);
-            }
-
             AuthData authData = new AuthData();
-            authData.setUserId(securityProperties.getProperty("userId"));
-            authData.setPublicKey(securityProperties.getProperty("publicKey"));
-            authData.setUserPassword(securityProperties.getProperty("userPassword"));
-            authData.setSecret(securityProperties.getProperty("secret"));
-            authData.setLockCount(securityProperties.getProperty("lockCount"));
-            authData.setLastLogin(securityProperties.getProperty("lastLogin"));
-            authData.setSurname(securityProperties.getProperty("surname"));
-            authData.setGivenName(securityProperties.getProperty("givenName"));
-            authData.setExpiryDate(securityProperties.getProperty("expiryDate"));
-            authData.setSecQuestionOne(securityProperties.getProperty("secQuestionOne"));
-            authData.setSecQuestionTwo(securityProperties.getProperty("secQuestionTwo"));
-            authData.setSecAnswerOne(securityProperties.getProperty("secAnswerOne"));
-            authData.setSecAnswerTwo(securityProperties.getProperty("secAnswerTwo"));
-            authData.setEmailAddr(securityProperties.getProperty("emailAddr"));
-            authData.setIsSuspended(securityProperties.getProperty("isSuspended"));
-            authData.setCommonName(securityProperties.getProperty("commonName"));
-            authData.setOlrSetupReq(securityProperties.getProperty("olrSetupReq"));
-            authData.setOlrLocked(securityProperties.getProperty("olrLocked"));
-            authData.setDisplayName(securityProperties.getProperty("displayName"));
-            authData.setMemberOf(securityProperties.getProperty("memberOf"));
-            authData.setPagerNumber(securityProperties.getProperty("pagerNumber"));
-            authData.setTelephoneNumber(securityProperties.getProperty("telephoneNumber"));
-            authData.setRepositoryBaseDN(securityProperties.getProperty("repositoryBaseDN"));
-            authData.setBaseObject(securityProperties.getProperty("baseObjectClass"));
-            authData.setRepositoryUserBase(securityProperties.getProperty("repositoryUserBase"));
-            authData.setRepositoryRoleBase(securityProperties.getProperty("repositoryRoleBase"));
+            authData.setUserId(properties.getProperty("userId"));
+            authData.setPublicKey(properties.getProperty("publicKey"));
+            authData.setUserPassword(properties.getProperty("userPassword"));
+            authData.setSecret(properties.getProperty("secret"));
+            authData.setLockCount(properties.getProperty("lockCount"));
+            authData.setLastLogin(properties.getProperty("lastLogin"));
+            authData.setSurname(properties.getProperty("surname"));
+            authData.setGivenName(properties.getProperty("givenName"));
+            authData.setExpiryDate(properties.getProperty("expiryDate"));
+            authData.setSecQuestionOne(properties.getProperty("secQuestionOne"));
+            authData.setSecQuestionTwo(properties.getProperty("secQuestionTwo"));
+            authData.setSecAnswerOne(properties.getProperty("secAnswerOne"));
+            authData.setSecAnswerTwo(properties.getProperty("secAnswerTwo"));
+            authData.setEmailAddr(properties.getProperty("emailAddr"));
+            authData.setIsSuspended(properties.getProperty("isSuspended"));
+            authData.setCommonName(properties.getProperty("commonName"));
+            authData.setOlrSetupReq(properties.getProperty("olrSetupReq"));
+            authData.setOlrLocked(properties.getProperty("olrLocked"));
+            authData.setDisplayName(properties.getProperty("displayName"));
+            authData.setMemberOf(properties.getProperty("memberOf"));
+            authData.setPagerNumber(properties.getProperty("pagerNumber"));
+            authData.setTelephoneNumber(properties.getProperty("telephoneNumber"));
+            authData.setRepositoryBaseDN(properties.getProperty("repositoryBaseDN"));
+            authData.setBaseObject(properties.getProperty("baseObjectClass"));
+            authData.setRepositoryUserBase(properties.getProperty("repositoryUserBase"));
+            authData.setRepositoryRoleBase(properties.getProperty("repositoryRoleBase"));
 
             if (DEBUG)
             {
@@ -206,10 +239,10 @@ public class SecurityServiceLoader extends AsyncTask<Void, Void, Boolean>
             }
 
             KeyConfig keyConfig = new KeyConfig();
-            keyConfig.setKeyManager(securityProperties.getProperty("keyManager"));
-            keyConfig.setKeyDirectory(securityProperties.getProperty("keyDirectory"));
-            keyConfig.setKeyAlgorithm(securityProperties.getProperty("keyAlgorithm"));
-            keyConfig.setKeySize(Integer.parseInt(securityProperties.getProperty("keySize")));
+            keyConfig.setKeyManager(properties.getProperty("keyManager"));
+            keyConfig.setKeyDirectory(properties.getProperty("keyDirectory"));
+            keyConfig.setKeyAlgorithm(properties.getProperty("keyAlgorithm"));
+            keyConfig.setKeySize(Integer.parseInt(properties.getProperty("keySize")));
 
             if (DEBUG)
             {
@@ -217,30 +250,30 @@ public class SecurityServiceLoader extends AsyncTask<Void, Void, Boolean>
             }
 
             SecurityConfig secConfig = new SecurityConfig();
-            secConfig.setMaxAttempts(Integer.parseInt(securityProperties.getProperty("maxAttempts")));
-            secConfig.setPasswordExpiration(Integer.parseInt(securityProperties.getProperty("passwordExpiration")));
-            secConfig.setPasswordMinLength(Integer.parseInt(securityProperties.getProperty("passwordMinLength")));
-            secConfig.setPasswordMaxLength(Integer.parseInt(securityProperties.getProperty("passwordMaxLength")));
-            secConfig.setIterations(Integer.parseInt(securityProperties.getProperty("iterations")));
-            secConfig.setAuthAlgorithm(securityProperties.getProperty("authAlgorithm"));
-            secConfig.setOtpAlgorithm(securityProperties.getProperty("otpAlgorithm"));
-            secConfig.setSaltLength(Integer.parseInt(securityProperties.getProperty("saltLength")));
-            secConfig.setAuthManager(securityProperties.getProperty("authManager"));
-            secConfig.setUserManager(securityProperties.getProperty("userManager"));
-            secConfig.setPerformAudit(Boolean.valueOf(securityProperties.getProperty("performAudit")));
-            secConfig.setResetIdLength(Integer.parseInt(securityProperties.getProperty("resetIdLength")));
-            secConfig.setIsSmsResetEnabled(Boolean.valueOf(securityProperties.getProperty("smsResetEnabled")));
-            secConfig.setSmsCodeLength(Integer.parseInt(securityProperties.getProperty("smsCodeLength")));
-            secConfig.setResetTimeout(Integer.parseInt(securityProperties.getProperty("resetTimeout")));
-            secConfig.setOtpVariance(Integer.parseInt(securityProperties.getProperty("otpVariance")));
-            secConfig.setAuthConfig(securityProperties.getProperty("authConfig"));
+            secConfig.setMaxAttempts(Integer.parseInt(properties.getProperty("maxAttempts")));
+            secConfig.setPasswordExpiration(Integer.parseInt(properties.getProperty("passwordExpiration")));
+            secConfig.setPasswordMinLength(Integer.parseInt(properties.getProperty("passwordMinLength")));
+            secConfig.setPasswordMaxLength(Integer.parseInt(properties.getProperty("passwordMaxLength")));
+            secConfig.setIterations(Integer.parseInt(properties.getProperty("iterations")));
+            secConfig.setAuthAlgorithm(properties.getProperty("authAlgorithm"));
+            secConfig.setOtpAlgorithm(properties.getProperty("otpAlgorithm"));
+            secConfig.setSaltLength(Integer.parseInt(properties.getProperty("saltLength")));
+            secConfig.setAuthManager(properties.getProperty("authManager"));
+            secConfig.setUserManager(properties.getProperty("userManager"));
+            secConfig.setPerformAudit(Boolean.valueOf(properties.getProperty("performAudit")));
+            secConfig.setResetIdLength(Integer.parseInt(properties.getProperty("resetIdLength")));
+            secConfig.setIsSmsResetEnabled(Boolean.valueOf(properties.getProperty("smsResetEnabled")));
+            secConfig.setSmsCodeLength(Integer.parseInt(properties.getProperty("smsCodeLength")));
+            secConfig.setResetTimeout(Integer.parseInt(properties.getProperty("resetTimeout")));
+            secConfig.setOtpVariance(Integer.parseInt(properties.getProperty("otpVariance")));
+            secConfig.setAuthConfig(properties.getProperty("authConfig"));
 
             SecurityConfigurationData secSvcConfig = new SecurityConfigurationData();
             secSvcConfig.setAuthData(authData);
             secSvcConfig.setKeyConfig(keyConfig);
             secSvcConfig.setSecurityConfig(secConfig);
 
-            String[] secDataSources = StringUtils.split(securityProperties.getProperty("datasources"), ",");
+            String[] secDataSources = StringUtils.split(properties.getProperty("datasources"), ",");
 
             if (DEBUG)
             {
@@ -258,7 +291,7 @@ public class SecurityServiceLoader extends AsyncTask<Void, Void, Boolean>
 
 				if (dsMap == null)
 				{
-					dsMap = new HashMap<>();
+					dsMap = new HashMap<String, DataSource>();
 				}
 
                 for (String source : secDataSources)
@@ -324,17 +357,6 @@ public class SecurityServiceLoader extends AsyncTask<Void, Void, Boolean>
         catch (NotFoundException nfx)
         {
             ERROR_RECORDER.error(nfx.getMessage(), nfx);
-        }
-        finally
-        {
-            try
-            {
-                this.securityStream.close();
-            }
-            catch (IOException iox)
-            {
-                ERROR_RECORDER.error(iox.getMessage(), iox);
-            }
         }
 
         return isLoaded;

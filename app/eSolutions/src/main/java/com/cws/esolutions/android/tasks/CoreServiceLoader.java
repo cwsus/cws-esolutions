@@ -62,10 +62,10 @@ import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 public class CoreServiceLoader extends AsyncTask<Void, Void, Boolean>
 {
     private Activity reqActivity = null;
-    private InputStream coreStream = null;
 
     private static final String CNAME = CoreServiceLoader.class.getName();
     private static final CoreServiceBean coreBean = CoreServiceBean.getInstance();
+    private static final ApplicationServiceBean appBean = ApplicationServiceBean.getInstance();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -95,6 +95,8 @@ public class CoreServiceLoader extends AsyncTask<Void, Void, Boolean>
             DEBUGGER.debug(methodName);
         }
 
+        InputStream iStream = null;
+
         try
         {
             if (!(NetworkUtils.checkNetwork(this.reqActivity)))
@@ -108,26 +110,47 @@ public class CoreServiceLoader extends AsyncTask<Void, Void, Boolean>
             {
                 DEBUGGER.debug("AssetManager: {}", assetMgr);
             }
-            
-            this.coreStream = assetMgr.open(this.reqActivity.getResources().getString(R.string.coreConfigFile));
+
+            iStream = assetMgr.open(this.reqActivity.getResources().getString(R.string.coreConfigFile));
 
             if (DEBUG)
             {
-                DEBUGGER.debug("InputStream: {}", this.coreStream);
+                DEBUGGER.debug("InputStream: {}", iStream);
             }
 
-            if ((this.coreStream == null) || (this.coreStream.available() == 0))
+            if ((iStream == null) || (iStream.available() == 0))
             {
                 ERROR_RECORDER.error("Unable to load core properties. Cannot continue.");
 
                 super.cancel(true);
             }
+
+            Properties properties = new Properties();
+            properties.load(iStream);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Properties: {}", properties);
+            }
+
+            CoreServiceLoader.appBean.setCoreProperties(properties);
         }
         catch (IOException iox)
         {
             ERROR_RECORDER.error(iox.getMessage(), iox);
 
             super.cancel(true);
+        }
+        finally
+        {
+            try
+            {
+                iStream.close();
+            }
+            catch (IOException iox)
+            {
+                ERROR_RECORDER.error(iox.getMessage(), iox);
+            }
         }
     }
 
@@ -145,37 +168,29 @@ public class CoreServiceLoader extends AsyncTask<Void, Void, Boolean>
 
         boolean isLoaded = false;
 
-        final ApplicationServiceBean bean = ApplicationServiceBean.getInstance();
         final AssetManager assetMgr = this.reqActivity.getResources().getAssets();
+        final Properties properties = CoreServiceLoader.appBean.getSecProperties();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ApplicationServiceBean: {}", bean);
             DEBUGGER.debug("AssetManager: {}", assetMgr);
+            DEBUGGER.debug("Properties: {}", properties);
         }
 
         try
         {
-            Properties coreProperties = new Properties();
-            coreProperties.load(this.coreStream);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Properties: {}", coreProperties);
-            }
-
             DNSConfig dnsConfig = new DNSConfig();
-            dnsConfig.setAdminName(coreProperties.getProperty("adminName"));
-            dnsConfig.setTTLInterval(Integer.parseInt(coreProperties.getProperty("ttlInterval")));
-            dnsConfig.setRetryInterval(Integer.parseInt(coreProperties.getProperty("retryInterval")));
-            dnsConfig.setDomainName(coreProperties.getProperty("domainName"));
-            dnsConfig.setCacheInterval(Integer.parseInt(coreProperties.getProperty("cacheInterval")));
-            dnsConfig.setRefreshInterval(Integer.parseInt(coreProperties.getProperty("refreshInterval")));
-            dnsConfig.setExpirationInterval(Integer.parseInt(coreProperties.getProperty("expirationInterval")));
-            dnsConfig.setSearchServiceHost(coreProperties.getProperty("searchServiceHost"));
-            dnsConfig.setZoneFilePath(coreProperties.getProperty(" "));
-            dnsConfig.setZoneRootDir(coreProperties.getProperty("zoneRootDir"));
-            dnsConfig.setNamedRootDir(coreProperties.getProperty("namedRootDir"));
+            dnsConfig.setAdminName(properties.getProperty("adminName"));
+            dnsConfig.setTTLInterval(Integer.parseInt(properties.getProperty("ttlInterval")));
+            dnsConfig.setRetryInterval(Integer.parseInt(properties.getProperty("retryInterval")));
+            dnsConfig.setDomainName(properties.getProperty("domainName"));
+            dnsConfig.setCacheInterval(Integer.parseInt(properties.getProperty("cacheInterval")));
+            dnsConfig.setRefreshInterval(Integer.parseInt(properties.getProperty("refreshInterval")));
+            dnsConfig.setExpirationInterval(Integer.parseInt(properties.getProperty("expirationInterval")));
+            dnsConfig.setSearchServiceHost(properties.getProperty("searchServiceHost"));
+            dnsConfig.setZoneFilePath(properties.getProperty(" "));
+            dnsConfig.setZoneRootDir(properties.getProperty("zoneRootDir"));
+            dnsConfig.setNamedRootDir(properties.getProperty("namedRootDir"));
 
             if (DEBUG)
             {
@@ -183,14 +198,14 @@ public class CoreServiceLoader extends AsyncTask<Void, Void, Boolean>
             }
 
             AgentConfig agentConfig = new AgentConfig();
-            agentConfig.setConnectionName(coreProperties.getProperty("connectionName"));
-            agentConfig.setClientId(coreProperties.getProperty("clientId"));
-            agentConfig.setRequestQueue(coreProperties.getProperty("requestQueue"));
-            agentConfig.setResponseQueue(coreProperties.getProperty("responseQueue"));
-            agentConfig.setUsername(coreProperties.getProperty("username"));
-            agentConfig.setPassword(coreProperties.getProperty("password"));
-            agentConfig.setSalt(coreProperties.getProperty("salt"));
-            agentConfig.setTimeout(Long.valueOf(coreProperties.getProperty("timeout")));
+            agentConfig.setConnectionName(properties.getProperty("connectionName"));
+            agentConfig.setClientId(properties.getProperty("clientId"));
+            agentConfig.setRequestQueue(properties.getProperty("requestQueue"));
+            agentConfig.setResponseQueue(properties.getProperty("responseQueue"));
+            agentConfig.setUsername(properties.getProperty("username"));
+            agentConfig.setPassword(properties.getProperty("password"));
+            agentConfig.setSalt(properties.getProperty("salt"));
+            agentConfig.setTimeout(Long.valueOf(properties.getProperty("timeout")));
 
             if (DEBUG)
             {
@@ -198,15 +213,15 @@ public class CoreServiceLoader extends AsyncTask<Void, Void, Boolean>
             }
 
             ApplicationConfig appConfig = new ApplicationConfig();
-            appConfig.setEmailAliasId(coreProperties.getProperty(""));
-            appConfig.setAppName(coreProperties.getProperty("appName"));
-            appConfig.setConnectTimeout(Integer.parseInt(coreProperties.getProperty("connectTimeout")));
-            appConfig.setMessageIdLength(Integer.parseInt(coreProperties.getProperty("messageIdLength")));
-            appConfig.setDateFormat(coreProperties.getProperty("dateFormat"));
-            appConfig.setNlsFileName(coreProperties.getProperty(""));
-            appConfig.setProxyConfigFile(coreProperties.getProperty(""));
-            appConfig.setVirtualManagerClass(coreProperties.getProperty("virtualManagerClass"));
-            appConfig.setAgentBundleSource(coreProperties.getProperty("agentBundleSource"));
+            appConfig.setEmailAliasId(properties.getProperty(""));
+            appConfig.setAppName(properties.getProperty("appName"));
+            appConfig.setConnectTimeout(Integer.parseInt(properties.getProperty("connectTimeout")));
+            appConfig.setMessageIdLength(Integer.parseInt(properties.getProperty("messageIdLength")));
+            appConfig.setDateFormat(properties.getProperty("dateFormat"));
+            appConfig.setNlsFileName(properties.getProperty(""));
+            appConfig.setProxyConfigFile(properties.getProperty(""));
+            appConfig.setVirtualManagerClass(properties.getProperty("virtualManagerClass"));
+            appConfig.setAgentBundleSource(properties.getProperty("agentBundleSource"));
 
             if (DEBUG)
             {
@@ -218,7 +233,7 @@ public class CoreServiceLoader extends AsyncTask<Void, Void, Boolean>
             coreConfig.setAppConfig(appConfig);
             coreConfig.setDNSConfig(dnsConfig);
 
-            String[] coreDataSources = StringUtils.split(coreProperties.getProperty("datasources"), ",");
+            String[] coreDataSources = StringUtils.split(properties.getProperty("datasources"), ",");
 
             if (DEBUG)
             {
@@ -306,17 +321,6 @@ public class CoreServiceLoader extends AsyncTask<Void, Void, Boolean>
         catch (NotFoundException nfx)
         {
             ERROR_RECORDER.error(nfx.getMessage(), nfx);
-        }
-        finally
-        {
-            try
-            {
-                this.coreStream.close();
-            }
-            catch (IOException iox)
-            {
-                ERROR_RECORDER.error(iox.getMessage(), iox);
-            }
         }
 
         return isLoaded;

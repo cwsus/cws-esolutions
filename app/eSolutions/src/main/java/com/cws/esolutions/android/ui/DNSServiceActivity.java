@@ -100,46 +100,6 @@ public class DNSServiceActivity extends Activity
         }
     }
 
-    public void executeDnsLookup(final View view)
-    {
-        final String methodName = DNSServiceActivity.CNAME + "#executeDnsLookup(final View view)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("View: {}", view);
-        }
-
-        final EditText hostName = (EditText) super.findViewById(R.id.etHostName);
-        final EditText serverName = (EditText) super.findViewById(R.id.etDNSServer);
-        final DNSRequestTask dnsRequest = new DNSRequestTask(DNSServiceActivity.this);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("EditText: {}", hostName);
-            DEBUGGER.debug("EditText: {}", serverName);
-            DEBUGGER.debug("DNSRequestTask: {}", dnsRequest);
-        }
-
-        InputMethodManager imm = (InputMethodManager) super.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(serverName.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
-
-        dnsRequest.execute(hostName.getText().toString(), serverName.getText().toString());
-
-        if (dnsRequest.isCancelled())
-        {
-            TextView resultView = new TextView(this);
-            resultView.setText("No network connection is available.");
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("TextView: {}", resultView);
-            }
-
-            super.setContentView(resultView);
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(final Menu menu)
     {
@@ -309,6 +269,46 @@ public class DNSServiceActivity extends Activity
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void executeDnsLookup(final View view)
+    {
+        final String methodName = DNSServiceActivity.CNAME + "#executeDnsLookup(final View view)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("View: {}", view);
+        }
+
+        final EditText hostName = (EditText) super.findViewById(R.id.etHostName);
+        final EditText serverName = (EditText) super.findViewById(R.id.etDNSServer);
+        final DNSRequestTask dnsRequest = new DNSRequestTask(DNSServiceActivity.this);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("EditText: {}", hostName);
+            DEBUGGER.debug("EditText: {}", serverName);
+            DEBUGGER.debug("DNSRequestTask: {}", dnsRequest);
+        }
+
+        InputMethodManager imm = (InputMethodManager) super.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(serverName.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+
+        dnsRequest.execute(hostName.getText().toString(), serverName.getText().toString());
+
+        if (dnsRequest.isCancelled())
+        {
+            TextView resultView = new TextView(this);
+            resultView.setText("No network connection is available.");
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("TextView: {}", resultView);
+            }
+
+            super.setContentView(resultView);
         }
     }
 }

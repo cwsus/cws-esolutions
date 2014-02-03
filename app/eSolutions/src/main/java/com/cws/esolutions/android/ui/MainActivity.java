@@ -26,13 +26,18 @@ package com.cws.esolutions.android.ui;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
 import android.app.AlertDialog;
+
 import org.slf4j.LoggerFactory;
+
 import java.lang.InterruptedException;
+
 import android.content.DialogInterface;
+
 import java.util.concurrent.ExecutionException;
 
 import com.cws.esolutions.android.Constants;
@@ -56,6 +61,7 @@ public class MainActivity extends Activity
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.DEBUGGER + MainActivity.class.getSimpleName());
 
+    @Override
     public void onCreate(final Bundle bundle)
     {
         final String methodName = MainActivity.CNAME + "#onCreate(final Bundle bundle)";

@@ -43,6 +43,23 @@ public final class Constants
     public static final String LINE_BREAK = System.getProperty("line.separator");
     public static final String APPLICATION_ID = "5446d6f1-cab8-439f-9bc7-f72141cc81bc";
 
+    // repo config
+    public static final String REPO_TYPE = "repoType";
+    public static final String IS_SECURE = "isSecure";
+    public static final String TRUST_FILE= "trustStoreFile";
+    public static final String TRUST_PASS = "trustStorePass";
+    public static final String TRUST_TYPE = "trustStoreType";
+    public static final String CONN_DRIVER = "repositoryDriver";
+    public static final String REPOSITORY_HOST = "repositoryHost";
+    public static final String REPOSITORY_PORT = "repositoryPort";
+    public static final String MIN_CONNECTIONS = "minConnections";
+    public static final String MAX_CONNECTIONS = "maxConnections";
+    public static final String REPOSITORY_USER = "repositoryUser";
+    public static final String REPOSITORY_PASS = "repositoryPass";
+    public static final String REPOSITORY_SALT = "repositorySalt";
+    public static final String CONN_TIMEOUT = "repositoryConnTimeout";
+    public static final String READ_TIMEOUT = "repositoryReadTimeout";
+
     /* Logging constants */
     public static final String ERROR_LOGGER = "ERROR_RECORDER.";
     public static final String DEBUGGER = "ESOLUTIONS_DEBUGGER";

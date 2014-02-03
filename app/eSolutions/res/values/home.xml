@@ -3,6 +3,5 @@
     <string name = "mainTitle">eSolutions</string>
     <string name = "btnLoadDNS">DNS</string>
     <string name = "btnSystemMgmt">Systems</string>
-    <string name = "btnSubmit">Submit</string>
     <string name = "svcErrorMessage">There was an error while configuring the application. If this problem persists, please contact your administrator.</string>
 </resources>

@@ -63,6 +63,8 @@ public interface VirtualServiceManager
      */
     VirtualServiceResponse listVirtualMachines(final VirtualServiceRequest request) throws VirtualServiceException;
 
+    VirtualServiceResponse getVirtualMachine(final VirtualServiceRequest request) throws VirtualServiceException;
+    
     /**
      * 
      * TODO: Add in the method description/comments

@@ -25,8 +25,8 @@ package com.cws.esolutions.core.processors.impl;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.Map;
-import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 import org.virtualbox_4_2.IConsole;
 import org.virtualbox_4_2.IMachine;
 import org.virtualbox_4_2.ISession;
@@ -40,6 +40,7 @@ import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.core.processors.enums.ServerType;
+import com.cws.esolutions.core.processors.dto.VirtualServer;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.dto.VirtualServiceRequest;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
@@ -95,49 +96,161 @@ public class OracleVBoxManager implements VirtualServiceManager
         {
             throw new VirtualServiceException("No virtual manager URL or port number was found. Cannot continue.");
         }
-        else
+
+        vboxMgr.connect(server.getMgrUrl(), userAccount.getUsername(),
+                PasswordUtils.decryptText(userSecurity.getPassword(), userSecurity.getUserSalt().length()));
+
+        if (DEBUG)
         {
-            vboxMgr.connect(server.getMgrUrl(), userAccount.getUsername(),
-                    PasswordUtils.decryptText(userSecurity.getPassword(), userSecurity.getUserSalt().length()));
+            DEBUGGER.debug("VirtualBoxManager: {}", vboxMgr);
+        }
+
+        IVirtualBox virtualBox = vboxMgr.getVBox();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("IVirtualBox: {}", virtualBox);
+        }
+
+        List<VirtualServer> machines = new ArrayList<>();
+
+        for (IMachine machine: virtualBox.getMachines())
+        {
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Machine: {}", machine);
+            }
+
+            VirtualServer vServer = new VirtualServer();
+            vServer.setGuid(machine.getId());
+            vServer.setName(machine.getName());
+            vServer.setState(machine.getState());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("VirtualBoxManager: {}", vboxMgr);
+                DEBUGGER.debug("VirtualServer: {}", vServer);
             }
 
-            IVirtualBox virtualBox = vboxMgr.getVBox();
+            machines.add(vServer);
+        }
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("IVirtualBox: {}", virtualBox);
-            }
+        if (DEBUG)
+        {
+            DEBUGGER.debug("machines: {}", machines);
+        }
 
-            Map<String, String> machines = new HashMap<>();
+        vboxMgr.disconnect();
 
-            for (IMachine machine: virtualBox.getMachines())
-            {
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Machine: {}", machine);
-                }
+        response.setApiVersion(virtualBox.getAPIVersion());
+        response.setHostVersion(virtualBox.getVersion());
+        response.setServerList(machines);
+        response.setRequestStatus(CoreServicesStatus.SUCCESS);
 
-                machines.put(machine.getId(), machine.getName());
-            }
+        if (DEBUG)
+        {
+            DEBUGGER.debug("VirtualServiceResponse: {}", response);
+        }
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("machines: {}", machines);
-            }
+        return response;
+    }
 
-            vboxMgr.disconnect();
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.VirtualServiceManager#getVirtualMachine(com.cws.esolutions.core.processors.dto.VirtualServiceRequest)
+     */
+    @Override
+    public synchronized VirtualServiceResponse getVirtualMachine(final VirtualServiceRequest request) throws VirtualServiceException
+    {
+        final String methodName = OracleVBoxManager.CNAME + "#getVirtualMachine(final VirtualServiceRequest request) throws VirtualServiceException";
+        
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("VirtualServiceRequest: {}", request);
+        }
 
-            response.setRequestStatus(CoreServicesStatus.SUCCESS);
-            response.setMachines(machines);
+        VirtualServiceResponse response = new VirtualServiceResponse();
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("VirtualServiceResponse: {}", response);
-            }
+        final Server server = request.getServer();
+        final VirtualServer vServer = request.getVirtualServer();
+        final UserAccount userAccount = request.getUserAccount();
+        final AuthenticationData userSecurity = request.getUserSecurity();
+        final VirtualBoxManager vboxMgr = VirtualBoxManager.createInstance(null);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Server: {}", server);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+            DEBUGGER.debug("AuthenticationData: {}", userSecurity);
+            DEBUGGER.debug("VirtualBoxManager: {}", vboxMgr);
+        }
+
+        if ((userAccount == null) || (userSecurity == null))
+        {
+            throw new VirtualServiceException("No authentication information was provided. Cannot continue.");
+        }
+
+        if (server.getServerType() != ServerType.VIRTUALHOST)
+        {
+            throw new VirtualServiceException("Provided server is not a virtual server host system");
+        }
+        else if (StringUtils.isEmpty(server.getMgrUrl()))
+        {
+            throw new VirtualServiceException("No virtual manager URL or port number was found. Cannot continue.");
+        }
+
+        vboxMgr.connect(server.getMgrUrl(), userAccount.getUsername(),
+            PasswordUtils.decryptText(userSecurity.getPassword(), userSecurity.getUserSalt().length()));
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("VirtualBoxManager: {}", vboxMgr);
+        }
+
+        IVirtualBox virtualBox = vboxMgr.getVBox();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("IVirtualBox: {}", virtualBox);
+        }
+
+        IMachine machine = virtualBox.findMachine(vServer.getGuid());
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("IMachine: {}", machine);
+        }
+
+        if (machine == null)
+        {
+            response.setRequestStatus(CoreServicesStatus.FAILURE);
+        }
+
+        VirtualServer resServer = new VirtualServer();
+        resServer.setGuid(machine.getId());
+        resServer.setName(machine.getName());
+        resServer.setDescription(machine.getDescription());
+        resServer.setCpuCount(machine.getCPUCount());
+        resServer.setHwUuid(machine.getHardwareUUID());
+        resServer.setMemorySize(machine.getMemorySize());
+        resServer.setOsTypeId(machine.getOSTypeId());
+        resServer.setHwVersion(machine.getHardwareVersion());
+        resServer.setState(machine.getState());
+        resServer.setFirmwareType(machine.getFirmwareType());
+        resServer.setGroups(machine.getGroups());
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("VirtualServer: {}", resServer);
+        }
+
+        vboxMgr.disconnect();
+
+        response.setServer(resServer);
+        response.setRequestStatus(CoreServicesStatus.SUCCESS);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("VirtualServiceResponse: {}", response);
         }
 
         return response;
@@ -190,64 +303,60 @@ public class OracleVBoxManager implements VirtualServiceManager
             {
                 throw new VirtualServiceException("No virtual manager URL or port number was found. Cannot continue.");
             }
-            else
+
+            vboxMgr.connect(server.getMgrUrl(), userAccount.getUsername(),
+                    PasswordUtils.decryptText(userSecurity.getPassword(), userSecurity.getUserSalt().length()));
+
+            if (DEBUG)
             {
-                vboxMgr.connect(server.getMgrUrl(), userAccount.getUsername(),
-                        PasswordUtils.decryptText(userSecurity.getPassword(), userSecurity.getUserSalt().length()));
+                DEBUGGER.debug("VirtualBoxManager: {}", vboxMgr);
+            }
 
-                if (DEBUG)
+            virtualBox = vboxMgr.getVBox();
+            session = vboxMgr.getSessionObject();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("IVirtualBox: {}", virtualBox);
+            }
+
+            machine = virtualBox.findMachine(server.getVirtualId());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("IMachine: {}", machine);
+            }
+
+            if (machine == null)
+            {
+                throw new VirtualServiceException("No machine was located with the given information");
+            }
+
+            if (machine.getState() == MachineState.PoweredOff)
+            {
+                response.setRequestStatus(CoreServicesStatus.SUCCESS);
+
+                return response;
+            }
+
+            IProgress progress = machine.launchVMProcess(session, "headless", null);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("IProgress: {}", progress);
+            }
+
+            int x = 0;
+
+            while (x != appConfig.getConnectTimeout())
+            {
+                if (progress.getCompleted())
                 {
-                    DEBUGGER.debug("VirtualBoxManager: {}", vboxMgr);
+                    break;
                 }
 
-                virtualBox = vboxMgr.getVBox();
-                session = vboxMgr.getSessionObject();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("IVirtualBox: {}", virtualBox);
-                }
-
-                machine = virtualBox.findMachine(server.getVirtualId());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("IMachine: {}", machine);
-                }
-
-                if (machine != null)
-                {
-                    if (machine.getState() == MachineState.PoweredOff)
-                    {
-                        IProgress progress = machine.launchVMProcess(session, "headless", null);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("IProgress: {}", progress);
-                        }
-
-                        int x = 0;
-
-                        while (x != appConfig.getConnectTimeout())
-                        {
-                            if (progress.getCompleted())
-                            {
-                                break;
-                            }
-
-                            this.wait(1);
-                            x++;
-                        }
-                    }
-                    else
-                    {
-                        throw new VirtualServiceException("Requested machine is not currently powered down. Cannot perform start request.");
-                    }
-                }
-                else
-                {
-                    throw new VirtualServiceException("No machine was found with identifier " + server.getVirtualId());
-                }
+                this.wait(1);
+                x++;
             }
         }
         catch (InterruptedException ix)
@@ -335,89 +444,85 @@ public class OracleVBoxManager implements VirtualServiceManager
             {
                 throw new VirtualServiceException("No virtual manager URL or port number was found. Cannot continue.");
             }
+
+            vboxMgr.connect(server.getMgrUrl(), userAccount.getUsername(),
+                    PasswordUtils.decryptText(userSecurity.getPassword(), userSecurity.getUserSalt().length()));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("VirtualBoxManager: {}", vboxMgr);
+            }
+
+            virtualBox = vboxMgr.getVBox();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("IVirtualBox: {}", virtualBox);
+            }
+
+            machine = virtualBox.findMachine(server.getVirtualId());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("IMachine: {}", machine);
+            }
+
+            if (machine != null)
+            {
+                throw new VirtualServiceException("No machine was located with the given information");
+            }
+
+            session = vboxMgr.openMachineSession(machine);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ISession: {}", session);
+            }
+
+            IConsole console = session.getConsole();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("IConsole: {}", console);
+            }
+
+            if (console.getState() != MachineState.Running)
+            {
+                response.setRequestStatus(CoreServicesStatus.SUCCESS);
+
+                return response;
+            }
+
+            // shut it down
+            IProgress progress = console.powerDown();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("IProgress: {}", progress);
+            }
+
+            int x = 0;
+
+            while (x != appConfig.getConnectTimeout())
+            {
+                if (progress.getCompleted())
+                {
+                    isComplete = true;
+
+                    break;
+                }
+
+                this.wait(1); // sleep for 1 second
+                x++;
+            }
+
+            if (isComplete)
+            {
+                response.setRequestStatus(CoreServicesStatus.SUCCESS);
+            }
             else
             {
-                vboxMgr.connect(server.getMgrUrl(), userAccount.getUsername(),
-                        PasswordUtils.decryptText(userSecurity.getPassword(), userSecurity.getUserSalt().length()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("VirtualBoxManager: {}", vboxMgr);
-                }
-
-                virtualBox = vboxMgr.getVBox();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("IVirtualBox: {}", virtualBox);
-                }
-
-                machine = virtualBox.findMachine(server.getVirtualId());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("IMachine: {}", machine);
-                }
-
-                if (machine != null)
-                {
-                    session = vboxMgr.openMachineSession(machine);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ISession: {}", session);
-                    }
-
-                    IConsole console = session.getConsole();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("IConsole: {}", console);
-                    }
-
-                    if (console.getState() == MachineState.Running)
-                    {
-                        // shut it down
-                        IProgress progress = console.powerDown();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("IProgress: {}", progress);
-                        }
-
-                        int x = 0;
-
-                        while (x != appConfig.getConnectTimeout())
-                        {
-                            if (progress.getCompleted())
-                            {
-                                isComplete = true;
-
-                                break;
-                            }
-
-                            this.wait(1); // sleep for 1 second
-                            x++;
-                        }
-
-                        if (isComplete)
-                        {
-                            response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                        }
-                        else
-                        {
-                            response.setRequestStatus(CoreServicesStatus.FAILURE);
-                        }
-                    }
-                    else
-                    {
-                        response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    }
-                }
-                else
-                {
-                    response.setRequestStatus(CoreServicesStatus.FAILURE);
-                }
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
         catch (InterruptedException ix)

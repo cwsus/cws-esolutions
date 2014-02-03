@@ -27,7 +27,7 @@ package com.cws.esolutions.android;
  */
 import java.util.Map;
 import org.slf4j.Logger;
-import java.io.InputStream;
+import java.util.Properties;
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
@@ -43,8 +43,10 @@ import com.cws.esolutions.security.processors.dto.RequestHostInfo;
  */
 public class ApplicationServiceBean
 {
-    private InputStream inputStream = null;
     private RequestHostInfo reqInfo = null;
+    private Properties secProperties = null;
+    private Properties authProperties = null;
+    private Properties coreProperties = null;
     private Map<String, DataSource> dataSources = null;
 
     private static ApplicationServiceBean instance = null;
@@ -111,9 +113,9 @@ public class ApplicationServiceBean
         this.reqInfo = value;
     }
 
-    public final void setInputStream(final InputStream value)
+    public final void setSecProperties(final Properties value)
     {
-        final String methodName = ApplicationServiceBean.CNAME + "#setInputStream(final InputStream value)";
+        final String methodName = ApplicationServiceBean.CNAME + "#setSecProperties(final Properties value)";
 
         if (DEBUG)
         {
@@ -121,7 +123,33 @@ public class ApplicationServiceBean
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.inputStream = value;
+        this.secProperties = value;
+    }
+
+    public final void setAuthProperties(final Properties value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setAuthProperties(final Properties value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.authProperties = value;
+    }
+
+    public final void setCoreProperties(final Properties value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setCoreProperties(final Properties value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.coreProperties = value;
     }
 
     public final Map<String, DataSource> getDataSources()
@@ -155,17 +183,43 @@ public class ApplicationServiceBean
         return this.reqInfo;
     }
 
-    public final InputStream getInputStream()
+    public final Properties getSecProperties()
     {
-        final String methodName = ApplicationServiceBean.CNAME + "#getInputStream()";
+        final String methodName = ApplicationServiceBean.CNAME + "#getSecProperties()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.inputStream);
+            DEBUGGER.debug("Value: {}", this.secProperties);
         }
 
-        return this.inputStream;
+        return this.secProperties;
+    }
+
+    public final Properties getAuthProperties()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getAuthProperties()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.authProperties);
+        }
+
+        return this.authProperties;
+    }
+
+    public final Properties getCoreProperties()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getCoreProperties()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.coreProperties);
+        }
+
+        return this.coreProperties;
     }
 
     @Override

@@ -25,51 +25,40 @@ package com.cws.esolutions.android.tasks;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.List;
 import org.slf4j.Logger;
-import java.util.Arrays;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.sql.Connection;
 import java.util.Properties;
-import java.net.InetAddress;
 import android.os.AsyncTask;
 import android.app.Activity;
 import java.sql.SQLException;
-import android.content.Intent;
-import android.graphics.Color;
 import org.slf4j.LoggerFactory;
-import android.widget.TextView;
 import com.unboundid.util.ssl.SSLUtil;
 import javax.net.ssl.SSLSocketFactory;
 import android.content.res.AssetManager;
-import com.unboundid.ldap.sdk.ResultCode;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.LDAPConnection;
 import java.security.GeneralSecurityException;
 import org.apache.commons.dbcp.BasicDataSource;
-import org.apache.commons.lang.RandomStringUtils;
 import com.unboundid.ldap.sdk.LDAPConnectionPool;
 import com.unboundid.ldap.sdk.LDAPConnectionOptions;
 import com.unboundid.util.ssl.TrustStoreTrustManager;
 
-import com.cws.esolutions.android.ui.R;
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.android.utils.NetworkUtils;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.android.enums.ResetRequestType;
 import com.cws.esolutions.android.ApplicationServiceBean;
-import com.cws.esolutions.security.enums.SecurityRequestStatus;
-import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.config.enums.AuthRepositoryType;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
-import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
-import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
-import com.cws.esolutions.security.processors.impl.AuthenticationProcessorImpl;
-import com.cws.esolutions.security.processors.exception.AuthenticationException;
-import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor;
+import com.cws.esolutions.security.processors.dto.AccountResetRequest;
+import com.cws.esolutions.security.processors.dto.AccountResetResponse;
+import com.cws.esolutions.security.processors.impl.AccountResetProcessorImpl;
+import com.cws.esolutions.security.processors.exception.AccountResetException;
+import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -79,27 +68,13 @@ import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcesso
  * @version 1.0
  * @see android.os.AsyncTask
  */
-public class OnlineResetTask extends AsyncTask<String, Integer, AuthenticationResponse>
+public class OnlineResetTask extends AsyncTask<String, Integer, AccountResetResponse>
 {
     private Activity reqActivity = null;
     private AuthRepositoryType repoType = null;
 
-    private static final String REPO_TYPE = "repoType";
-    private static final String IS_SECURE = "isSecure";
-    private static final String TRUST_FILE= "trustStoreFile";
-    private static final String TRUST_PASS = "trustStorePass";
-    private static final String TRUST_TYPE = "trustStoreType";
-    private static final String CONN_DRIVER = "repositoryDriver";
-    private static final String REPOSITORY_HOST = "repositoryHost";
-    private static final String REPOSITORY_PORT = "repositoryPort";
-    private static final String MIN_CONNECTIONS = "minConnections";
-    private static final String MAX_CONNECTIONS = "maxConnections";
-    private static final String REPOSITORY_USER = "repositoryUser";
-    private static final String REPOSITORY_PASS = "repositoryPass";
-    private static final String REPOSITORY_SALT = "repositorySalt";
-    private static final String CONN_TIMEOUT = "repositoryConnTimeout";
-    private static final String READ_TIMEOUT = "repositoryReadTimeout";
-    private static final String CNAME = UserAuthenticationTask.class.getName();
+
+    private static final String CNAME = OnlineResetTask.class.getName();
     private static final SecurityServiceBean bean = SecurityServiceBean.getInstance();
 	private static final ApplicationServiceBean appBean = ApplicationServiceBean.getInstance();
 
@@ -109,7 +84,7 @@ public class OnlineResetTask extends AsyncTask<String, Integer, AuthenticationRe
 
     public OnlineResetTask(final Activity request)
     {
-        final String methodName = OnlineResetTask.CNAME + "#UserAuthenticationTask(final Activity request)";
+        final String methodName = OnlineResetTask.CNAME + "#OnlineResetTask(final Activity request)";
 
         if (DEBUG)
         {
@@ -148,29 +123,14 @@ public class OnlineResetTask extends AsyncTask<String, Integer, AuthenticationRe
 
         try
         {
-            iStream = assetMgr.open(this.reqActivity.getResources().getString(R.string.authRepoConfig));
+            Properties authProps = OnlineResetTask.appBean.getAuthProperties();
 
             if (DEBUG)
             {
-                DEBUGGER.debug("InputStream: {}", iStream);
+                DEBUGGER.debug("Properties: {}", authProps);
             }
 
-            if ((iStream == null) || (iStream.available() == 0))
-            {
-                ERROR_RECORDER.error("Unable to load application properties. Cannot continue.");
-
-                super.cancel(true);
-            }
-
-            Properties connProps = new Properties();
-            connProps.load(iStream);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Properties: {}", connProps);
-            }
-
-            this.repoType = AuthRepositoryType.valueOf(connProps.getProperty(OnlineResetTask.REPO_TYPE));
+            this.repoType = AuthRepositoryType.valueOf(authProps.getProperty(Constants.REPO_TYPE));
 
             if (DEBUG)
             {
@@ -186,21 +146,21 @@ public class OnlineResetTask extends AsyncTask<String, Integer, AuthenticationRe
                     connOpts.setAutoReconnect(true);
                     connOpts.setAbandonOnTimeout(true);
                     connOpts.setBindWithDNRequiresPassword(true);
-                    connOpts.setConnectTimeoutMillis(Integer.parseInt(connProps.getProperty(OnlineResetTask.CONN_TIMEOUT)));
-                    connOpts.setResponseTimeoutMillis(Integer.parseInt(connProps.getProperty(OnlineResetTask.READ_TIMEOUT)));
+                    connOpts.setConnectTimeoutMillis(Integer.parseInt(authProps.getProperty(Constants.CONN_TIMEOUT)));
+                    connOpts.setResponseTimeoutMillis(Integer.parseInt(authProps.getProperty(Constants.READ_TIMEOUT)));
 
                     if (DEBUG)
                     {
                         DEBUGGER.debug("LDAPConnectionOptions: {}", connOpts);
                     }
 
-                    if (Boolean.valueOf(connProps.getProperty(OnlineResetTask.IS_SECURE)))
+                    if (Boolean.valueOf(authProps.getProperty(Constants.IS_SECURE)))
                     {
                         SSLUtil sslUtil = new SSLUtil(new TrustStoreTrustManager(
-														  connProps.getProperty(OnlineResetTask.TRUST_FILE),
-														  connProps.getProperty(OnlineResetTask.TRUST_PASS).toCharArray(),
-														  connProps.getProperty(OnlineResetTask.TRUST_TYPE),
-														  true));
+                                authProps.getProperty(Constants.TRUST_FILE),
+                                authProps.getProperty(Constants.TRUST_PASS).toCharArray(),
+                                authProps.getProperty(Constants.TRUST_TYPE),
+                                true));
 
                         if (DEBUG)
                         {
@@ -214,19 +174,19 @@ public class OnlineResetTask extends AsyncTask<String, Integer, AuthenticationRe
                             DEBUGGER.debug("SSLSocketFactory: {}", sslSocketFactory);
                         }
 
-                        ldapConn = new LDAPConnection(sslSocketFactory, connOpts, connProps.getProperty(OnlineResetTask.REPOSITORY_HOST),
-													  Integer.parseInt(connProps.getProperty(OnlineResetTask.REPOSITORY_PORT)),
-													  connProps.getProperty(OnlineResetTask.REPOSITORY_USER),
-													  PasswordUtils.decryptText(connProps.getProperty(OnlineResetTask.REPOSITORY_PASS),
-																				connProps.getProperty(OnlineResetTask.REPOSITORY_SALT).length()));
+                        ldapConn = new LDAPConnection(sslSocketFactory, connOpts, authProps.getProperty(Constants.REPOSITORY_HOST),
+                                Integer.parseInt(authProps.getProperty(Constants.REPOSITORY_PORT)),
+                                authProps.getProperty(Constants.REPOSITORY_USER),
+                                PasswordUtils.decryptText(authProps.getProperty(Constants.REPOSITORY_PASS),
+                                        authProps.getProperty(Constants.REPOSITORY_SALT).length()));
                     }
                     else
                     {
-                        ldapConn = new LDAPConnection(connOpts, connProps.getProperty(OnlineResetTask.REPOSITORY_HOST),
-													  Integer.parseInt(connProps.getProperty(OnlineResetTask.REPOSITORY_PORT)),
-													  connProps.getProperty(OnlineResetTask.REPOSITORY_USER),
-													  PasswordUtils.decryptText(connProps.getProperty(OnlineResetTask.REPOSITORY_PASS),
-																				connProps.getProperty(OnlineResetTask.REPOSITORY_SALT).length()));
+                        ldapConn = new LDAPConnection(connOpts, authProps.getProperty(Constants.REPOSITORY_HOST),
+                                Integer.parseInt(authProps.getProperty(Constants.REPOSITORY_PORT)),
+                                authProps.getProperty(Constants.REPOSITORY_USER),
+                                PasswordUtils.decryptText(authProps.getProperty(Constants.REPOSITORY_PASS),
+                                        authProps.getProperty(Constants.REPOSITORY_SALT).length()));
                     }
 
                     if (DEBUG)
@@ -242,8 +202,8 @@ public class OnlineResetTask extends AsyncTask<String, Integer, AuthenticationRe
                     }
 
                     LDAPConnectionPool connPool = new LDAPConnectionPool(ldapConn,
-																		 Integer.parseInt(connProps.getProperty(OnlineResetTask.MIN_CONNECTIONS)),
-																		 Integer.parseInt(connProps.getProperty(OnlineResetTask.MAX_CONNECTIONS)));
+						Integer.parseInt(authProps.getProperty(Constants.MIN_CONNECTIONS)),
+						Integer.parseInt(authProps.getProperty(Constants.MAX_CONNECTIONS)));
 
                     if (DEBUG)
                     {
@@ -262,14 +222,14 @@ public class OnlineResetTask extends AsyncTask<String, Integer, AuthenticationRe
                     break;
                 case SQL:
                     BasicDataSource dataSource = new BasicDataSource();
-                    dataSource.setInitialSize(Integer.parseInt(connProps.getProperty(OnlineResetTask.MIN_CONNECTIONS)));
-                    dataSource.setMaxActive(Integer.parseInt(connProps.getProperty(OnlineResetTask.MAX_CONNECTIONS)));
-                    dataSource.setDriverClassName(connProps.getProperty(OnlineResetTask.CONN_DRIVER));
-                    dataSource.setUrl(connProps.getProperty(OnlineResetTask.REPOSITORY_HOST));
-                    dataSource.setUsername(connProps.getProperty(OnlineResetTask.REPOSITORY_USER));
+                    dataSource.setInitialSize(Integer.parseInt(authProps.getProperty(Constants.MIN_CONNECTIONS)));
+                    dataSource.setMaxActive(Integer.parseInt(authProps.getProperty(Constants.MAX_CONNECTIONS)));
+                    dataSource.setDriverClassName(authProps.getProperty(Constants.CONN_DRIVER));
+                    dataSource.setUrl(authProps.getProperty(Constants.REPOSITORY_HOST));
+                    dataSource.setUsername(authProps.getProperty(Constants.REPOSITORY_USER));
                     dataSource.setPassword(PasswordUtils.decryptText(
-											   connProps.getProperty(OnlineResetTask.REPOSITORY_PASS),
-											   connProps.getProperty(OnlineResetTask.REPOSITORY_SALT).length()));
+                            authProps.getProperty(Constants.REPOSITORY_PASS),
+                            authProps.getProperty(Constants.REPOSITORY_SALT).length()));
 
                     if (DEBUG)
                     {
@@ -312,12 +272,6 @@ public class OnlineResetTask extends AsyncTask<String, Integer, AuthenticationRe
                     super.cancel(true);
             }
         }
-        catch (IOException iox)
-        {
-            ERROR_RECORDER.error(iox.getMessage(), iox);
-
-            super.cancel(true);
-        }
         catch (GeneralSecurityException gsx)
         {
             ERROR_RECORDER.error(gsx.getMessage(), gsx);
@@ -356,9 +310,9 @@ public class OnlineResetTask extends AsyncTask<String, Integer, AuthenticationRe
     }
 
     @Override
-    protected AuthenticationResponse doInBackground(final String... request)
+    protected AccountResetResponse doInBackground(final String... request)
     {
-        final String methodName = OnlineResetTask.CNAME + "#doInBackground(final List<String>... request)";
+        final String methodName = OnlineResetTask.CNAME + "#doInBackground(final String... request)";
 
         if (DEBUG)
         {
@@ -366,48 +320,104 @@ public class OnlineResetTask extends AsyncTask<String, Integer, AuthenticationRe
             DEBUGGER.debug("Request: {}", request);
         }
 
-        AuthenticationResponse response = null;
-        int lockCount = ((this.reqActivity.getIntent().getExtras() != null) ?
-            this.reqActivity.getIntent().getExtras().getInt("lockCount") : 0);
+        AccountResetResponse resetRes = null;
+        UserAccount reqAccount = new UserAccount();
+        AccountResetRequest resetReq = new AccountResetRequest();
 
-        UserAccount userAccount = new UserAccount();
-        userAccount.setUsername(request[0]);
-
-		if (DEBUG)
-		{
-			DEBUGGER.debug("UserAccount: {}", userAccount);
-		}
-
-        AuthenticationData userSecurity = new AuthenticationData();
-        userSecurity.setPassword(request[1]);
-
-		AuthenticationRequest authReq = new AuthenticationRequest();
-		authReq.setApplicationName(Constants.APPLICATION_NAME);
-		authReq.setUserAccount(userAccount);
-        authReq.setUserSecurity(userSecurity);
-		authReq.setApplicationId(Constants.APPLICATION_ID);
-		authReq.setHostInfo(appBean.getReqInfo());
-        authReq.setCount(lockCount);
-
-		if (DEBUG)
-		{
-			DEBUGGER.debug("AuthenticationRequest: {}", authReq);
-		}
-
-        final IAuthenticationProcessor processor = new AuthenticationProcessorImpl();
+        final IAccountResetProcessor processor = new AccountResetProcessorImpl();
 
         try
         {
-            response = processor.processAgentLogon(authReq);
-
-            if (DEBUG)
+            switch (ResetRequestType.valueOf(request[0]))
             {
-                DEBUGGER.debug("AuthenticationResponse: {}", response);
+                case USERNAME:
+                    reqAccount = new UserAccount();
+                    reqAccount.setEmailAddr(request[0]);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("UserAccount: {}", reqAccount);
+                    }
+
+                    resetReq.setApplicationId(Constants.APPLICATION_ID);
+                    resetReq.setApplicationName(Constants.APPLICATION_NAME);
+                    resetReq.setHostInfo(appBean.getReqInfo());
+                    resetReq.setUserAccount(reqAccount);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AccountResetRequest: {}", resetReq);
+                    }
+
+                    resetRes = processor.findUserAccount(resetReq);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AccountControlResponse: {}", resetRes);
+                    }
+
+                    return resetRes;
+                case PASSWORD:
+                    reqAccount = new UserAccount();
+                    reqAccount.setUsername(request[0]);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("UserAccount: {}", reqAccount);
+                    }
+
+                    resetReq = new AccountResetRequest();
+                    resetReq.setApplicationId(Constants.APPLICATION_ID);
+                    resetReq.setApplicationName(Constants.APPLICATION_NAME);
+                    resetReq.setHostInfo(appBean.getReqInfo());
+                    resetReq.setUserAccount(reqAccount);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuthenticationRequest: {}", resetReq);
+                    }
+
+                    resetRes = processor.obtainUserSecurityConfig(resetReq);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AccountResetResponse: {}", resetRes);
+                    }
+
+                    return resetRes;
+                case QUESTIONS:
+                    reqAccount.setUsername(request[1]); // TODO
+
+                    AuthenticationData authData = new AuthenticationData();
+                    authData.setSecAnswerOne(request[1]);
+                    authData.setSecAnswerTwo(request[2]);
+
+                    resetReq.setApplicationId(Constants.APPLICATION_ID);
+                    resetReq.setApplicationName(Constants.APPLICATION_NAME);
+                    resetReq.setHostInfo(appBean.getReqInfo());
+                    resetReq.setUserAccount(reqAccount);
+                    resetReq.setUserSecurity(authData);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AccountResetRequest: {}", resetReq);
+                    }
+
+                    resetRes = processor.verifyUserSecurityConfig(resetReq);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AccountResetResponse: {}", resetRes);
+                    }
+
+                    return resetRes;
+                default:
+                    break; // TODO
             }
         }
-        catch (AuthenticationException ax)
+        catch (AccountResetException arx)
         {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
+            ERROR_RECORDER.error(arx.getMessage(), arx);
         }
         finally
         {
@@ -453,6 +463,6 @@ public class OnlineResetTask extends AsyncTask<String, Integer, AuthenticationRe
             }
 		}
 
-        return response;
+        return resetRes;
     }
 }

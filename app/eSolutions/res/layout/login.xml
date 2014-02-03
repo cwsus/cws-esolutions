@@ -13,7 +13,7 @@
         android:layout_marginTop = "10dp"
         android:text = "@string/tvUsername"
 		android:clickable = "true"
-		android:onClick = "onClick" />
+		android:onClick = "loadForgotUsername" />
     <TextView
         android:id = "@+id/tvPassword"
         android:layout_width = "wrap_content"
@@ -24,7 +24,7 @@
         android:layout_marginTop = "60dp"
         android:text = "@string/tvPassword"
 		android:clickable = "true"
-		android:onClick = "onClick" />
+		android:onClick = "loadForgotPassword" />
     <EditText
         android:inputType="text"
         android:hint="@string/hintUsername"

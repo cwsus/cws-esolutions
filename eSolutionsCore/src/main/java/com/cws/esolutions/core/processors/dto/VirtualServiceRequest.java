@@ -48,8 +48,9 @@ public class VirtualServiceRequest implements Serializable
     private Server server = null;
     private UserAccount userAccount = null;
     private UserAccount virtualOwner = null;
-    private AuthenticationData userSecurity = null;
     private RequestHostInfo requestInfo = null;
+    private VirtualServer virtualServer = null;
+    private AuthenticationData userSecurity = null;
 
     private static final long serialVersionUID = -2457741523065460449L;
     private static final String CNAME = VirtualServiceRequest.class.getName();
@@ -95,6 +96,19 @@ public class VirtualServiceRequest implements Serializable
         }
 
         this.server = value;
+    }
+
+    public final void setVirtualServer(final VirtualServer value)
+    {
+        final String methodName = VirtualServiceRequest.CNAME + "#setVirtualServer(final VirtualServer value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.virtualServer = value;
     }
 
     public final void setVirtualOwner(final UserAccount value)
@@ -160,6 +174,19 @@ public class VirtualServiceRequest implements Serializable
         }
 
         return this.server;
+    }
+
+    public final VirtualServer getVirtualServer()
+    {
+        final String methodName = VirtualServiceRequest.CNAME + "#getVirtualServer()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.virtualServer);
+        }
+
+        return this.virtualServer;
     }
 
     public final UserAccount getVirtualOwner()

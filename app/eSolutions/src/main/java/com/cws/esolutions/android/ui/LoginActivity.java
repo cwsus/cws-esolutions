@@ -108,9 +108,9 @@ public class LoginActivity extends Activity
         super.finish();
     }
 
-    public void onClick(final View view)
+    public void loadForgotUsername(final View view)
     {
-        final String methodName = LoginActivity.CNAME + "#loadOnlineReset(final View view)";
+        final String methodName = LoginActivity.CNAME + "#loadForgotUsername(final View view)";
 
         if (DEBUG)
         {
@@ -118,8 +118,43 @@ public class LoginActivity extends Activity
             DEBUGGER.debug("View: {}", view);
         }
 
-		return;
+        Intent intent = new Intent(this, OnlineResetActivity.class);
+        intent.putExtra("forgotUsername", true);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Intent: {}", intent);
+        }
+
+        super.startActivity(intent);
+        super.finish();
+
+        return;
 	}
+
+    public void loadForgotPassword(final View view)
+    {
+        final String methodName = LoginActivity.CNAME + "#loadForgotPassword(final View view)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("View: {}", view);
+        }
+
+        Intent intent = new Intent(this, OnlineResetActivity.class);
+        intent.putExtra("forgotPassword", true);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Intent: {}", intent);
+        }
+
+        super.startActivity(intent);
+        super.finish();
+
+        return;
+    }
 
     public void executeUserLogin(final View view)
     {
