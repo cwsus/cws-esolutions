@@ -100,7 +100,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             UserAccount userInfo = new UserAccount();
             userInfo.setGuid((String) userList.get(0)[0]);
             userInfo.setUsername((String) userList.get(0)[1]);
-            userInfo.setEmailAddr((String) userList.get(0)[2]);
 
             if (DEBUG)
             {
