@@ -36,6 +36,7 @@ package com.cws.esolutions.security.processors.enums;
 public enum LoginStatus
 {
     SUCCESS,
+    CONTINUE,
     RESET,
     FAILURE,
     LOCKOUT,

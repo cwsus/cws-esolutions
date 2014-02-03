@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.cws</groupId>
         <artifactId>cws</artifactId>
-        <version>3.9</version>
+        <version>4.1</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -15,6 +15,10 @@
     <packaging>apk</packaging>
     <version>1.0-SNAPSHOT</version>
     <name>${project.artifactId}</name>
+
+	<properties>
+		<mqtt.version>1.6</mqtt.version>
+	</properties>
 
     <dependencies>
         <dependency>
@@ -32,17 +36,23 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.unboundid</groupId>
-            <artifactId>unboundid-ldapsdk</artifactId>
-            <version>${unboundid-ldapsdk.version}</version>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        <!-- dnsjava -->
         <dependency>
-            <groupId>dnsjava</groupId>
-            <artifactId>dnsjava</artifactId>
-            <version>${dnsjava.version}</version>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${commons-codec.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-pool</groupId>
+            <artifactId>commons-pool</artifactId>
+            <version>${commons-pool.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -53,6 +63,27 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.unboundid</groupId>
+            <artifactId>unboundid-ldapsdk</artifactId>
+            <version>${unboundid-ldapsdk.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>dnsjava</groupId>
+            <artifactId>dnsjava</artifactId>
+            <version>${dnsjava.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+		<dependency>
+			<groupId>org.fusesource.mqtt-client</groupId>
+			<artifactId>mqtt-client</artifactId>
+			<version>${mqtt.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
         <!-- cws-shared -->
         <dependency>
             <groupId>com.cws</groupId>

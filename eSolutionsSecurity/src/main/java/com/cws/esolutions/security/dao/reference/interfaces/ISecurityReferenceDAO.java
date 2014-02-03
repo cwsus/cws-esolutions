@@ -27,13 +27,9 @@ package com.cws.esolutions.security.dao.reference.interfaces;
  */
 import java.util.Map;
 import java.util.List;
-
 import org.slf4j.Logger;
-
 import javax.sql.DataSource;
-
 import java.sql.SQLException;
-
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.SecurityServiceBean;

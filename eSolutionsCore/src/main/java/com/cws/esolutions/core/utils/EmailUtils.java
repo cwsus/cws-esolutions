@@ -247,14 +247,10 @@ public final class EmailUtils
         }
         catch (MessagingException mex)
         {
-            ERROR_RECORDER.error(mex.getMessage(), mex);
-
             throw new MessagingException(mex.getMessage(), mex);
         }
         catch (NamingException nx)
         {
-            ERROR_RECORDER.error(nx.getMessage(), nx);
-
             throw new MessagingException(nx.getMessage(), nx);
         }
     }
@@ -457,37 +453,27 @@ public final class EmailUtils
                     else
                     {
                         // cant open folder
-                        ERROR_RECORDER.error("Failed to open requested folder. Cannot continue");
-
                         throw new MessagingException("Failed to open requested folder. Cannot continue");
                     }
                 }
                 else
                 {
                     // folder doesnt exist
-                    ERROR_RECORDER.error("Requested folder does not exist. Cannot continue.");
-
                     throw new MessagingException("Requested folder does not exist. Cannot continue.");
                 }
             }
             else
             {
                 // couldnt connect to service
-                ERROR_RECORDER.error("Failed to connect to mail service. Cannot continue.");
-
                 throw new MessagingException("Failed to connect to mail service. Cannot continue.");
             }
         }
         catch (IOException iox)
         {
-            ERROR_RECORDER.error(iox.getMessage(), iox);
-
             throw new MessagingException(iox.getMessage(), iox);
         }
         catch (MessagingException mex)
         {
-            ERROR_RECORDER.error(mex.getMessage(), mex);
-
             throw new MessagingException(mex.getMessage(), mex);
         }
         finally

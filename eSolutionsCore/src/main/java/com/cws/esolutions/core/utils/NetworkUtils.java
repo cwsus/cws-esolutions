@@ -279,14 +279,10 @@ public final class NetworkUtils
         }
         catch (AuthenticationProtocolException apx)
         {
-            ERROR_RECORDER.error(apx.getMessage(), apx);
-
             throw new UtilityException(apx.getMessage());
         }
         catch (IOException iox)
         {
-            ERROR_RECORDER.error(iox.getMessage(), iox);
-
             throw new UtilityException(iox.getMessage(), iox);
         }
         finally
@@ -453,14 +449,10 @@ public final class NetworkUtils
         }
         catch (AuthenticationProtocolException apx)
         {
-            ERROR_RECORDER.error(apx.getMessage(), apx);
-
             throw new UtilityException(apx.getMessage());
         }
         catch (IOException iox)
         {
-            ERROR_RECORDER.error(iox.getMessage(), iox);
-
             throw new UtilityException(iox.getMessage(), iox);
         }
         finally
@@ -661,14 +653,10 @@ public final class NetworkUtils
         }
         catch (AuthenticationProtocolException apx)
         {
-            ERROR_RECORDER.error(apx.getMessage(), apx);
-
             throw new UtilityException(apx.getMessage());
         }
         catch (IOException iox)
         {
-            ERROR_RECORDER.error(iox.getMessage(), iox);
-
             throw new UtilityException(iox.getMessage(), iox);
         }
         finally
@@ -770,8 +758,6 @@ public final class NetworkUtils
         }
         catch (IOException iox)
         {
-            ERROR_RECORDER.error(iox.getMessage(), iox);
-
             throw new UtilityException(iox.getMessage(), iox);
         }
         finally
@@ -857,26 +843,18 @@ public final class NetworkUtils
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UtilityException(cx.getMessage(), cx);
         }
         catch (UnknownHostException ux)
         {
-            ERROR_RECORDER.error(ux.getMessage(), ux);
-
             throw new UtilityException(ux.getMessage(), ux);
         }
         catch (SocketException sx)
         {
-            ERROR_RECORDER.error(sx.getMessage(), sx);
-
             throw new UtilityException(sx.getMessage(), sx);
         }
         catch (IOException iox)
         {
-            ERROR_RECORDER.error(iox.getMessage(), iox);
-
             throw new UtilityException(iox.getMessage(), iox);
         }
         finally
@@ -1040,26 +1018,18 @@ public final class NetworkUtils
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UtilityException(cx.getMessage(), cx);
         }
         catch (UnknownHostException ux)
         {
-            ERROR_RECORDER.error(ux.getMessage(), ux);
-
             throw new UtilityException(ux.getMessage(), ux);
         }
         catch (SocketException sx)
         {
-            ERROR_RECORDER.error(sx.getMessage(), sx);
-
             throw new UtilityException(sx.getMessage(), sx);
         }
         catch (IOException iox)
         {
-            ERROR_RECORDER.error(iox.getMessage(), iox);
-
             throw new UtilityException(iox.getMessage(), iox);
         }
         finally
@@ -1156,32 +1126,22 @@ public final class NetworkUtils
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UtilityException(cx.getMessage(), cx);
         }
         catch (UnknownHostException ux)
         {
-            ERROR_RECORDER.error(ux.getMessage(), ux);
-
             throw new UtilityException(ux.getMessage(), ux);
         }
         catch (SocketException sx)
         {
-            ERROR_RECORDER.error(sx.getMessage(), sx);
-
             throw new UtilityException(sx.getMessage(), sx);
         }
         catch (IOException iox)
         {
-            ERROR_RECORDER.error(iox.getMessage(), iox);
-
             throw new UtilityException(iox.getMessage(), iox);
         }
         catch (ClassNotFoundException cnfx)
         {
-            ERROR_RECORDER.error(cnfx.getMessage(), cnfx);
-
             throw new UtilityException(cnfx.getMessage(), cnfx);
         }
         finally

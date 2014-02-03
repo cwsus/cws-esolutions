@@ -96,8 +96,6 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         }
         catch (SQLException sqx)
         {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
             throw new SQLException(sqx.getMessage(), sqx);
         }
         finally
@@ -169,8 +167,6 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         }
         catch (SQLException sqx)
         {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
             throw new SQLException(sqx.getMessage(), sqx);
         }
         finally
@@ -234,8 +230,6 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         }
         catch (SQLException sqx)
         {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
             throw new SQLException(sqx.getMessage(), sqx);
         }
         finally
@@ -332,8 +326,6 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         }
         catch (SQLException sqx)
         {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
             throw new SQLException(sqx.getMessage(), sqx);
         }
         finally
@@ -461,8 +453,6 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         }
         catch (SQLException sqx)
         {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
             throw new SQLException(sqx.getMessage(), sqx);
         }
         finally
@@ -561,8 +551,6 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         }
         catch (SQLException sqx)
         {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
             throw new SQLException(sqx.getMessage(), sqx);
         }
         finally

@@ -2,4 +2,5 @@
     <string name = "applicationConfigFile">eSolutions/application.properties</string>
     <string name = "securityConfigFile">SecurityService/config/ServiceConfig.properties</string>
     <string name = "coreConfigFile">eSolutionsCore/config/ServiceConfig.properties</string>
+    <string name = "authRepoConfig">SecurityService/repository.properties</string>
 </resources>

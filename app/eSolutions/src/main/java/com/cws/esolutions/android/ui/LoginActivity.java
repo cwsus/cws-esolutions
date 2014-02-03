@@ -34,16 +34,18 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.text.InputType;
 import android.graphics.Color;
+import android.content.Intent;
 import org.slf4j.LoggerFactory;
 import android.widget.EditText;
 import android.widget.TextView;
 import org.apache.commons.lang.StringUtils;
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.ExecutionException;
 
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.android.tasks.UserAuthenticationTask;
+import com.cws.esolutions.security.enums.SecurityRequestStatus;
+import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -74,17 +76,6 @@ public class LoginActivity extends Activity
         super.setContentView(R.layout.login);
         super.setTitle(R.string.loginTitle);
 
-        final TextView tvRequestName = (TextView) super.findViewById(R.id.tvRequestName);
-        final EditText etRequestValue = (EditText) super.findViewById(R.id.etRequestValue);
-        final TextView tvResponseValue = (TextView) super.findViewById(R.id.tvResponseValue);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("TextView: {}", tvRequestName);
-            DEBUGGER.debug("EditText: {}", etRequestValue);
-            DEBUGGER.debug("TextView: {}", tvResponseValue);
-        }
-
         if (super.getIntent().getExtras() != null)
         {
             if (super.getIntent().getExtras().containsKey(Constants.USER_DATA))
@@ -98,46 +89,8 @@ public class LoginActivity extends Activity
 
                 if (userAccount != null)
                 {
-                    // user already went through and submitted uid
-                    tvRequestName.setText(R.string.tvPassword);
-                    etRequestValue.setHint(R.string.hintPassword);
-                    etRequestValue.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("TextView: {}", tvRequestName);
-                        DEBUGGER.debug("EditText: {}", etRequestValue);
-                        DEBUGGER.debug("TextView: {}", tvResponseValue);
-                    }
+                    // home
                 }
-                else
-                {
-                    super.getIntent().getExtras().remove(Constants.USER_DATA);
-
-                    tvRequestName.setText(R.string.tvUsername);
-                    etRequestValue.setHint(R.string.hintUsername);
-                    etRequestValue.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("TextView: {}", tvRequestName);
-                        DEBUGGER.debug("EditText: {}", etRequestValue);
-                        DEBUGGER.debug("TextView: {}", tvResponseValue);
-                    }
-                }
-            }
-        }
-        else
-        {
-            tvRequestName.setText(R.string.tvUsername);
-            etRequestValue.setHint(R.string.hintUsername);
-            etRequestValue.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("TextView: {}", tvRequestName);
-                DEBUGGER.debug("EditText: {}", etRequestValue);
-                DEBUGGER.debug("TextView: {}", tvResponseValue);
             }
         }
     }
@@ -155,8 +108,20 @@ public class LoginActivity extends Activity
         super.finish();
     }
 
-    @SuppressWarnings("unchecked")
-    public void executeUserLogin(final View view) throws NoSuchAlgorithmException, UnsupportedEncodingException
+    public void onClick(final View view)
+    {
+        final String methodName = LoginActivity.CNAME + "#loadOnlineReset(final View view)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("View: {}", view);
+        }
+
+		return;
+	}
+
+    public void executeUserLogin(final View view)
     {
         final String methodName = LoginActivity.CNAME + "#executeUserLogin(final View view)";
 
@@ -166,18 +131,21 @@ public class LoginActivity extends Activity
             DEBUGGER.debug("View: {}", view);
         }
 
-        final TextView tvRequestName = (TextView) super.findViewById(R.id.tvRequestName);
-        final EditText etRequestValue = (EditText) super.findViewById(R.id.etRequestValue);
+        final EditText etUsername = (EditText) super.findViewById(R.id.etUsername);
+        final EditText etPassword = (EditText) super.findViewById(R.id.etPassword);
+		final TextView tvPassword = (TextView) super.findViewById(R.id.tvPassword);
         final TextView tvResponseValue = (TextView) super.findViewById(R.id.tvResponseValue);
+        final UserAuthenticationTask userLogin = new UserAuthenticationTask(this);
 
         if (DEBUG)
         {
-            DEBUGGER.debug("TextView: {}", tvRequestName);
-            DEBUGGER.debug("EditText: {}", etRequestValue);
+            DEBUGGER.debug("EditText: {}", etUsername);
+            DEBUGGER.debug("EditText: {}", etPassword);
             DEBUGGER.debug("TextView: {}", tvResponseValue);
+            DEBUGGER.debug("UserAuthenticationTask: {}", userLogin);
         }
 
-        if (StringUtils.isEmpty(etRequestValue.getText().toString()))
+        if ((StringUtils.isEmpty(etUsername.getText().toString())) || (StringUtils.isEmpty(etUsername.getText().toString())))
         {
             // no data provided
             // route through the request type
@@ -186,34 +154,123 @@ public class LoginActivity extends Activity
             tvResponseValue.setText(R.string.txtUsernameRequired);
             tvResponseValue.setTextColor(Color.RED);
             tvResponseValue.setText(R.string.txtPasswordRequired);
+
+            return;
         }
-        else
+
+		tvResponseValue.setTextColor(Color.BLUE);
+		tvResponseValue.setText(R.string.txtPleaseWait);
+        etUsername.setEnabled(false);
+        etPassword.setEnabled(false);
+
+        try
         {
-            final List<Object> authRequest = new ArrayList<Object>(
-                    Arrays.asList(
-                            etRequestValue.getText().toString(),
-                            etRequestValue.getText().toString()));
-            final UserAuthenticationTask userLogin = new UserAuthenticationTask(LoginActivity.this, MainActivity.class);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("List<Object>: {}", authRequest);
-                DEBUGGER.debug("UserAuthenticationTask: {}", userLogin);
-            }
-
             // send the logon
-            userLogin.execute(authRequest);
+            userLogin.execute(new String[] { etUsername.getText().toString(), etPassword.getText().toString() });
 
             if (userLogin.isCancelled())
             {
-                tvResponseValue.setTextColor(Color.RED);
-                tvResponseValue.setText(R.string.txtSignonError);
+				etUsername.setEnabled(true);
+				etPassword.setEnabled(true);
+				etUsername.setText("");
+                etPassword.setText("");
+				tvResponseValue.setTextColor(Color.RED);
+				tvResponseValue.setText(super.getString(R.string.txtSignonError));
 
                 if (DEBUG)
                 {
                     DEBUGGER.debug("TextView: {}", tvResponseValue);
                 }
+
+                return;
             }
+
+            AuthenticationResponse response = userLogin.get();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AuthenticationResponse: {}", response);
+			}
+
+            if ((response == null) || (response.getRequestStatus() != SecurityRequestStatus.SUCCESS))
+            {
+                super.getIntent().putExtra("lockCount", response.getCount());
+
+				etUsername.setEnabled(true);
+				etPassword.setEnabled(true);
+				etUsername.setText("");
+                etPassword.setText("");
+				tvResponseValue.setTextColor(Color.RED);
+				tvResponseValue.setText(super.getString(R.string.txtSignonError));
+
+                return;
+            }
+
+            UserAccount resAccount = response.getUserAccount();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("UserAccount: {}", resAccount);
+            }
+
+            switch(resAccount.getStatus())
+            {
+                case SUCCESS:
+                    Intent intent = new Intent(this, HomeActivity.class);
+                    intent.putExtra("userData", response.getUserAccount());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Intent: {}", intent);
+                    }
+
+                    super.startActivity(intent);
+                    super.finish();
+
+                    return;
+                case CONTINUE:
+					etUsername.setEnabled(false);
+					etUsername.setText(resAccount.getUsername());
+					tvPassword.setText(super.getString(R.string.tvOtpPassword));
+					etPassword.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+					super.getIntent().putExtra("userData", resAccount);
+
+                    return;
+                default:
+				    super.getIntent().putExtra("lockCount", response.getCount());
+
+					etUsername.setEnabled(true);
+					etPassword.setEnabled(true);
+					etUsername.setText("");
+					etPassword.setText("");
+					tvResponseValue.setTextColor(Color.RED);
+					tvResponseValue.setText(super.getString(R.string.txtSignonError));
+
+                    return;
+            }
+        }
+        catch (InterruptedException ix)
+        {
+			etUsername.setEnabled(true);
+			etPassword.setEnabled(true);
+			etUsername.setText("");
+			etPassword.setText("");
+			tvResponseValue.setTextColor(Color.RED);
+			tvResponseValue.setText(super.getString(R.string.txtSignonError));
+
+            return;
+        }
+        catch (ExecutionException ex)
+        {
+			etUsername.setEnabled(true);
+			etPassword.setEnabled(true);
+			etUsername.setText("");
+			etPassword.setText("");
+			tvResponseValue.setTextColor(Color.RED);
+			tvResponseValue.setText(super.getString(R.string.txtSignonError));
+
+            return;
         }
     }
 }

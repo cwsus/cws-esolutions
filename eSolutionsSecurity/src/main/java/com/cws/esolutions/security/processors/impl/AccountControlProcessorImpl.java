@@ -544,7 +544,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 if ((userData != null) && (userData.size() != 0))
                 {
-                    boolean isComplete = userManager.modifyUserGroups((String) userData.get(0), userAccount.getGroups().toArray());
+                    boolean isComplete = userManager.modifyUserGroups((String) userData.get(0), userAccount.getGroups());
 
                     if (DEBUG)
                     {

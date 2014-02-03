@@ -25,12 +25,10 @@ package com.cws.esolutions.security.config.xml;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.io.File;
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
-
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -56,7 +54,7 @@ public final class SecurityConfig implements Serializable
     private int smsCodeLength = 8; // default of 8
     private int iterations = 65535; // default to 65535
     private int resetIdLength = 32; // default of 32
-    private File authConfig = null; // FULL path to connection configuration file
+    private String authConfig = null; // FULL path to connection configuration file
     private String authManager = null;
     private String userManager = null;
     private String otpAlgorithm = null;
@@ -284,7 +282,7 @@ public final class SecurityConfig implements Serializable
         this.resetTimeout = value;
     }
 
-    public final void setAuthConfig(final File value)
+    public final void setAuthConfig(final String value)
     {
         final String methodName = SecurityConfig.CNAME + "#setAuthConfig(final File value)";
 
@@ -521,7 +519,7 @@ public final class SecurityConfig implements Serializable
     }
 
     @XmlElement(name = "authConfig")
-    public final File getAuthConfig()
+    public final String getAuthConfig()
     {
         final String methodName = SecurityConfig.CNAME + "#getAuthConfig()";
 

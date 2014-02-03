@@ -37,13 +37,9 @@ import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.SecureRandom;
 import java.io.FileNotFoundException;
-
 import org.apache.commons.io.IOUtils;
-
 import java.security.KeyPairGenerator;
-
 import org.apache.commons.io.FileUtils;
-
 import java.security.spec.X509EncodedKeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.NoSuchAlgorithmException;
@@ -125,26 +121,18 @@ public class FileKeyManager implements KeyManager
         }
         catch (FileNotFoundException fnfx)
         {
-            ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
-
             throw new KeyManagementException(fnfx.getMessage(), fnfx);
         }
         catch (InvalidKeySpecException iksx)
         {
-            ERROR_RECORDER.error(iksx.getMessage(), iksx);
-
             throw new KeyManagementException(iksx.getMessage(), iksx);
         }
         catch (IOException iox)
         {
-            ERROR_RECORDER.error(iox.getMessage(), iox);
-
             throw new KeyManagementException(iox.getMessage(), iox);
         }
         catch (NoSuchAlgorithmException nsax)
         {
-            ERROR_RECORDER.error(nsax.getMessage(), nsax);
-
             throw new KeyManagementException(nsax.getMessage(), nsax);
         }
         finally
@@ -239,20 +227,14 @@ public class FileKeyManager implements KeyManager
         }
         catch (FileNotFoundException fnfx)
         {
-            ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
-
             throw new KeyManagementException(fnfx.getMessage(), fnfx);
         }
         catch (IOException iox)
         {
-            ERROR_RECORDER.error(iox.getMessage(), iox);
-
             throw new KeyManagementException(iox.getMessage(), iox);
         }
         catch (NoSuchAlgorithmException nsax)
         {
-            ERROR_RECORDER.error(nsax.getMessage(), nsax);
-
             throw new KeyManagementException(nsax.getMessage(), nsax);
         }
         finally
@@ -325,14 +307,10 @@ public class FileKeyManager implements KeyManager
         }
         catch (FileNotFoundException fnfx)
         {
-            ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
-
             throw new KeyManagementException(fnfx.getMessage(), fnfx);
         }
         catch (IOException iox)
         {
-            ERROR_RECORDER.error(iox.getMessage(), iox);
-
             throw new KeyManagementException(iox.getMessage(), iox);
         }
 

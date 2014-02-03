@@ -27,11 +27,7 @@ package com.cws.esolutions.security.dao.userauth.impl;
  */
 import java.util.List;
 import java.util.ArrayList;
-import java.io.IOException;
-import java.util.Properties;
-import java.io.FileInputStream;
 import java.net.ConnectException;
-import java.io.FileNotFoundException;
 import com.unboundid.ldap.sdk.Filter;
 import com.unboundid.ldap.sdk.ResultCode;
 import com.unboundid.ldap.sdk.BindResult;
@@ -52,46 +48,7 @@ import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException
  */
 public class LDAPAuthenticator implements Authenticator
 {
-    private Properties connProps = null;
-
-    private static final String BASE_DN = "repositoryBaseDN";
-    private static final String BASE_OBJECT = "baseObjectClass";
-    private static final String USER_BASE = "repositoryUserBase";
-    private static final String ROLE_BASE = "repositoryRoleBase";
     private static final String CNAME = LDAPAuthenticator.class.getName();
-
-    public LDAPAuthenticator() throws AuthenticatorException
-    {
-        final String methodName = LDAPAuthenticator.CNAME + "#LDAPAuthenticator()#Constructor throws AuthenticatorException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        try
-        {
-            this.connProps = new Properties();
-            this.connProps.load(new FileInputStream(secConfig.getAuthConfig()));
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Properties: {}", this.connProps);
-            }
-        }
-        catch (FileNotFoundException fnfx)
-        {
-            ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
-
-            throw new AuthenticatorException(fnfx.getMessage(), fnfx);
-        }
-        catch (IOException iox)
-        {
-            ERROR_RECORDER.error(iox.getMessage(), iox);
-
-            throw new AuthenticatorException(iox.getMessage(), iox);
-        }
-    }
 
     /**
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String, java.util.List)
@@ -137,7 +94,7 @@ public class LDAPAuthenticator implements Authenticator
                 throw new ConnectException("Failed to create LDAP connection using the specified information");
             }
 
-            Filter searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPAuthenticator.BASE_OBJECT) + ")" +
+            Filter searchFilter = Filter.create("(&(objectClass=" + authData.getBaseObject() + ")" +
                 "(&(uid=" + username+ ")))");
 
             if (DEBUG)
@@ -146,7 +103,7 @@ public class LDAPAuthenticator implements Authenticator
             }
 
             SearchRequest searchRequest = new SearchRequest(
-                this.connProps.getProperty(LDAPAuthenticator.USER_BASE),
+                authData.getRepositoryUserBase(),
                 SearchScope.SUB,
                 searchFilter);
 
@@ -207,7 +164,7 @@ public class LDAPAuthenticator implements Authenticator
             }
 
             SearchRequest roleSearch = new SearchRequest(
-                this.connProps.getProperty(LDAPAuthenticator.ROLE_BASE),
+                authData.getRepositoryRoleBase(),
                 SearchScope.SUB,
                 roleFilter,
                 "cn");
@@ -260,14 +217,10 @@ public class LDAPAuthenticator implements Authenticator
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new AuthenticatorException(lx.getResultCode(), lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new AuthenticatorException(cx.getMessage(), cx);
         }
         finally
@@ -326,7 +279,7 @@ public class LDAPAuthenticator implements Authenticator
                 throw new ConnectException("Failed to create LDAP connection using the specified information");
             }
 
-            Filter searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPAuthenticator.BASE_OBJECT) + ")" +
+            Filter searchFilter = Filter.create("(&(objectClass=" + authData.getBaseObject() + ")" +
                 "(&(cn=" + userId + "))" +
                 "(&(uid=" + userGuid + ")))");
 
@@ -336,7 +289,7 @@ public class LDAPAuthenticator implements Authenticator
             }
 
             SearchRequest searchRequest = new SearchRequest(
-                this.connProps.getProperty(LDAPAuthenticator.BASE_DN),
+                authData.getRepositoryUserBase(),
                 SearchScope.SUB,
                 searchFilter);
 
@@ -367,14 +320,10 @@ public class LDAPAuthenticator implements Authenticator
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new AuthenticatorException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new AuthenticatorException(cx.getMessage(), cx);
         }
         finally
@@ -433,7 +382,7 @@ public class LDAPAuthenticator implements Authenticator
                 throw new ConnectException("Failed to create LDAP connection using the specified information");
             }
 
-            Filter searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPAuthenticator.BASE_OBJECT) + ")" +
+            Filter searchFilter = Filter.create("(&(objectClass=" + authData.getBaseObject() + ")" +
                 "(&(uid=" + userId + "))" +
                 "(&(cn=" + userGuid + ")))");
 
@@ -443,7 +392,7 @@ public class LDAPAuthenticator implements Authenticator
             }
 
             SearchRequest searchRequest = new SearchRequest(
-                this.connProps.getProperty(LDAPAuthenticator.BASE_DN),
+                authData.getRepositoryUserBase(),
                 SearchScope.SUB,
                 searchFilter,
                 authData.getSecret());
@@ -464,14 +413,10 @@ public class LDAPAuthenticator implements Authenticator
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new AuthenticatorException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new AuthenticatorException(cx.getMessage(), cx);
         }
         finally
@@ -530,14 +475,14 @@ public class LDAPAuthenticator implements Authenticator
             }
 
             // validate the question
-            Filter searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPAuthenticator.BASE_OBJECT) + ")" +
+            Filter searchFilter = Filter.create("(&(objectClass=" + authData.getBaseObject() + ")" +
                 "(&(cn=" + userGuid + "))" +
                 "(&(uid=" + userId + "))" +
                 "(&(" + authData.getSecAnswerOne() + "=" + values.get(0) + "))" +
                 "(&(" + authData.getSecAnswerTwo() + "=" + values.get(1) + ")))");
 
             SearchRequest searchReq = new SearchRequest(
-                this.connProps.getProperty(LDAPAuthenticator.BASE_DN),
+                authData.getRepositoryUserBase(),
                 SearchScope.SUB,
                 searchFilter);
 
@@ -557,14 +502,10 @@ public class LDAPAuthenticator implements Authenticator
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new AuthenticatorException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new AuthenticatorException(cx.getMessage(), cx);
         }
         finally

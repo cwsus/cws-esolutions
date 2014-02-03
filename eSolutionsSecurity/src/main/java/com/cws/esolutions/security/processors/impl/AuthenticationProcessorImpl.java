@@ -32,7 +32,6 @@ import java.sql.SQLException;
 import com.unboundid.ldap.sdk.ResultCode;
 import org.apache.commons.lang.StringUtils;
 
-import com.cws.esolutions.security.dto.UserGroup;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.processors.enums.SaltType;
@@ -92,28 +91,21 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 DEBUGGER.debug("List<Object[]>: {}", userInfo);
             }
 
-            if ((userInfo == null) || (userInfo.size() == 0) || (userInfo.size() != 1))
+            if ((userInfo.size() != 1) || (userInfo == null))
             {
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
 
                 return response;
             }
 
-            Object[] userData = userInfo.get(0);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Object[]: {}", userData);
-            }
-
-            String userSalt = userSec.getUserSalt((String) userData[0], SaltType.LOGON.name());
+            String userSalt = userSec.getUserSalt(userInfo.get(0)[0], SaltType.LOGON.name());
 
             if (StringUtils.isEmpty(userSalt))
             {
                 throw new AuthenticationException("Unable to obtain configured user salt. Cannot continue");
             }
 
-            List<Object> authObject = authenticator.performLogon((String) userData[1],
+            List<Object> authObject = authenticator.performLogon(userInfo.get(0)[0],
                     PasswordUtils.encryptText(
                             authSec.getPassword(),
                         userSalt,
@@ -144,8 +136,10 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 userAccount = new UserAccount();
                 userAccount.setGuid((String) authObject.get(0));
                 userAccount.setUsername((String) authObject.get(1));
+                userAccount.setStatus(LoginStatus.CONTINUE);
 
-                response.setRequestStatus(SecurityRequestStatus.CONTINUE);
+                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                response.setUserAccount(userAccount);
 
                 return response;
             }
@@ -165,41 +159,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             userAccount.setSuspended((Boolean) authObject.get(11));
             userAccount.setOlrSetup((Boolean) authObject.get(12));
             userAccount.setOlrLocked((Boolean) authObject.get(13));
-
-            // build groups
-            List<UserGroup> userGroups = new ArrayList<>();
-            for (String group : StringUtils.split((String) authObject.get(15), ","))
-            {
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Group: {}", group);
-                }
-
-                List<String> serviceList = secRef.listServicesForGroup(group);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("List<String>: {}", serviceList);
-                }
-
-                UserGroup userGroup = new UserGroup();
-                userGroup.setName(group);
-                userGroup.setServices(serviceList);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserGroup: {}", userGroup);
-                }
-
-                userGroups.add(userGroup);
-            }
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("List<UserGroup>: {}", userGroups);
-            }
-
-            userAccount.setGroups(userGroups);
+            userAccount.setGroups(StringUtils.split((String) authObject.get(15), ","));
 
             if (DEBUG)
             {
@@ -245,26 +205,8 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     // to shoot them all
                     if ((userList != null) && (userList.size() == 1))
                     {
-                        Object[] lockInfo = userList.get(0);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("User Info: {}", lockInfo);
-                        }
-
-                        final String guid = (String) lockInfo[0];
-                        final String name = (String) lockInfo[1];
-                        final int lockCount = (Integer) lockInfo[2];
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("guid: {}", guid);
-                            DEBUGGER.debug("name: {}", name);
-                            DEBUGGER.debug("lockCount: {}", lockCount);
-                        }
-
                         // do it
-                        userManager.modifyUserLock(guid, false, lockCount + 1);
+                        userManager.modifyUserLock(userList.get(0)[0], false, request.getCount() + 1);
                     }
                 }
             }
@@ -273,6 +215,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 ERROR_RECORDER.error(umx.getMessage(), umx);
             }
 
+            response.setCount(request.getCount() + 1);
             response.setRequestStatus(SecurityRequestStatus.FAILURE);
         }
         catch (SecurityServiceException ssx)
@@ -395,41 +338,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             userAccount.setSuspended((Boolean) userData.get(11));
             userAccount.setOlrSetup((Boolean) userData.get(12));
             userAccount.setOlrLocked((Boolean) userData.get(13));
-
-            // build groups
-            List<UserGroup> userGroups = new ArrayList<>();
-            for (String group : StringUtils.split((String) userData.get(15), ","))
-            {
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Group: {}", group);
-                }
-
-                List<String> serviceList = secRef.listServicesForGroup(group);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("List<String>: {}", serviceList);
-                }
-
-                UserGroup userGroup = new UserGroup();
-                userGroup.setName(group);
-                userGroup.setServices(serviceList);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserGroup: {}", userGroup);
-                }
-
-                userGroups.add(userGroup);
-            }
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("List<UserGroup>: {}", userGroups);
-            }
-
-            userAccount.setGroups(userGroups);
+            userAccount.setGroups(StringUtils.split((String) userData.get(15), ","));
 
             if (DEBUG)
             {

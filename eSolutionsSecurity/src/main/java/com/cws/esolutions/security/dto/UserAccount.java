@@ -50,6 +50,7 @@ public class UserAccount implements Serializable
     private Date lastLogin = null;
     private Date expiryDate = null;
     private String username = null;
+    private String[] groups = null;
     private String emailAddr = null;
     private String givenName = null;
     private boolean olrSetup = false;
@@ -59,7 +60,6 @@ public class UserAccount implements Serializable
     private LoginStatus status = null;
     private String pagerNumber = null;
     private Integer failedCount = null;
-    private List<UserGroup> groups = null;
     private String telephoneNumber = null;
 
     private static final String CNAME = UserAccount.class.getName();
@@ -186,9 +186,9 @@ public class UserAccount implements Serializable
         this.lastLogin = value;
     }
 
-    public final void setGroups(final List<UserGroup> value)
+    public final void setGroups(final String[] value)
     {
-        final String methodName = UserAccount.CNAME + "#setGroups(final List<UserGroup> value)";
+        final String methodName = UserAccount.CNAME + "#setGroups(final String[] value)";
 
         if (DEBUG)
         {
@@ -420,7 +420,7 @@ public class UserAccount implements Serializable
         return this.lastLogin;
     }
 
-    public final List<UserGroup> getGroups()
+    public final String[] getGroups()
     {
         final String methodName = UserAccount.CNAME + "#getGroups()";
 
@@ -496,29 +496,6 @@ public class UserAccount implements Serializable
         }
 
         return this.telephoneNumber;
-    }
-
-    public final boolean hasGroup(final String value)
-    {
-        final String methodName = UserAccount.CNAME + "#hasGroup(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        boolean isAuthorized = false;
-
-        for (UserGroup group : this.groups)
-        {
-            if (StringUtils.equals(group.getName(), value))
-            {
-                isAuthorized = true;
-            }
-        }
-
-        return isAuthorized;
     }
 
     @Override

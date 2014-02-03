@@ -29,12 +29,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Properties;
-import java.io.FileInputStream;
 import java.net.ConnectException;
-import java.io.FileNotFoundException;
 import com.unboundid.ldap.sdk.Filter;
 import com.unboundid.ldap.sdk.Attribute;
 import com.unboundid.ldap.sdk.ResultCode;
@@ -59,46 +55,7 @@ import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementExceptio
  */
 public class LDAPUserManager implements UserManager
 {
-    private Properties connProps = null;
-
-    private static final String BASE_DN = "repositoryBaseDN";
-    private static final String BASE_OBJECT = "baseObjectClass";
-    private static final String USER_BASE = "repositoryUserBase";
-    private static final String ROLE_BASE = "repositoryRoleBase";
     private static final String CNAME = LDAPUserManager.class.getName();
-
-    public LDAPUserManager() throws UserManagementException
-    {
-        final String methodName = LDAPUserManager.CNAME + "#LDAPUserManager()#Constructor throws UserManagementException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        try
-        {
-            this.connProps = new Properties();
-            this.connProps.load(new FileInputStream(secConfig.getAuthConfig()));
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Properties: {}", this.connProps);
-            }
-        }
-        catch (FileNotFoundException fnfx)
-        {
-            ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
-
-            throw new UserManagementException(fnfx.getMessage(), fnfx);
-        }
-        catch (IOException iox)
-        {
-            ERROR_RECORDER.error(iox.getMessage(), iox);
-
-            throw new UserManagementException(iox.getMessage(), iox);
-        }
-    }
 
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#validateUserAccount(java.lang.String, java.lang.String)
@@ -145,7 +102,7 @@ public class LDAPUserManager implements UserManager
                 throw new ConnectException("Failed to create LDAP connection using the specified information");
             }
 
-            Filter searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + ")" +
+            Filter searchFilter = Filter.create("(&(objectClass=" + authData.getBaseObject() + ")" +
                     "(|(cn=" + userGuid + ")" +
                     "(uid=" + userId + ")))");
 
@@ -155,7 +112,7 @@ public class LDAPUserManager implements UserManager
             }
 
             SearchRequest searchRequest = new SearchRequest(
-                    this.connProps.getProperty(this.connProps.getProperty(LDAPUserManager.BASE_DN)),
+                    authData.getRepositoryBaseDN(),
                     SearchScope.SUB,
                     searchFilter,
                     "cn");
@@ -179,14 +136,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally
@@ -223,7 +176,7 @@ public class LDAPUserManager implements UserManager
         {
             final StringBuilder userDN = new StringBuilder()
                 .append("uid" + "=" + userAccount.get(0) + ",")
-                .append(this.connProps.getProperty(LDAPUserManager.USER_BASE));
+                .append(authData.getRepositoryUserBase());
 
             if (DEBUG)
             {
@@ -257,7 +210,7 @@ public class LDAPUserManager implements UserManager
             // have a connection, create the user
             List<Attribute> newAttributes = new ArrayList<>(
                 Arrays.asList(
-                    new Attribute("objectClass", this.connProps.getProperty(LDAPUserManager.BASE_OBJECT)),
+                    new Attribute("objectClass", authData.getBaseObject()),
                     new Attribute(authData.getCommonName(), userAccount.get(0)),
                     new Attribute(authData.getUserId(), userAccount.get(1)),
                     new Attribute(authData.getEmailAddr(), userAccount.get(2)),
@@ -293,7 +246,7 @@ public class LDAPUserManager implements UserManager
 
                     StringBuilder roleDN = new StringBuilder()
                         .append("cn=" + role)
-                        .append(this.connProps.getProperty(LDAPUserManager.ROLE_BASE));
+                        .append(authData.getRepositoryRoleBase());
 
                     if (DEBUG)
                     {
@@ -329,14 +282,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         finally
@@ -396,7 +345,7 @@ public class LDAPUserManager implements UserManager
 
             DeleteRequest deleteRequest = new DeleteRequest(new StringBuilder()
                 .append("uid" + "=" + userId + ",")
-                .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString());
+                .append(authData.getRepositoryUserBase()).toString());
 
             if (DEBUG)
             {
@@ -417,14 +366,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally
@@ -481,7 +426,7 @@ public class LDAPUserManager implements UserManager
             {
                 throw new ConnectException("Failed to create LDAP connection using the specified information");
             }
-            Filter searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + ")" +
+            Filter searchFilter = Filter.create("(&(objectClass=" + authData.getBaseObject() + ")" +
                 "(|(" + authData.getCommonName() + "=" + searchData +")" +
                 "(" + authData.getUserId() + "=" + searchData +")" +
                 "(" + authData.getEmailAddr() + "=" + searchData +")" +
@@ -495,7 +440,7 @@ public class LDAPUserManager implements UserManager
             }
 
             SearchRequest searchReq = new SearchRequest(
-                this.connProps.getProperty(LDAPUserManager.USER_BASE),
+                authData.getRepositoryUserBase(),
                 SearchScope.SUB,
                 searchFilter,
                 "cn",
@@ -515,7 +460,7 @@ public class LDAPUserManager implements UserManager
 
             if (searchResult.getResultCode() == ResultCode.SUCCESS)
             {
-                results = new ArrayList<String[]>();
+                results = new ArrayList<>();
 
                 for (SearchResultEntry entry : searchResult.getSearchEntries())
                 {
@@ -539,14 +484,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally
@@ -604,7 +545,7 @@ public class LDAPUserManager implements UserManager
                 throw new ConnectException("Failed to create LDAP connection using the specified information");
             }
 
-            Filter searchFilter = Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + ")" +
+            Filter searchFilter = Filter.create("(&(objectClass=" + authData.getBaseObject() + ")" +
                     "(&(cn=" + userGuid + ")))");
 
             if (DEBUG)
@@ -613,7 +554,7 @@ public class LDAPUserManager implements UserManager
             }
 
             SearchRequest searchRequest = new SearchRequest(
-                    this.connProps.getProperty(LDAPUserManager.USER_BASE),
+                    authData.getRepositoryUserBase(),
                     SearchScope.SUB,
                     searchFilter);
 
@@ -661,7 +602,7 @@ public class LDAPUserManager implements UserManager
                     }
 
                     SearchRequest roleSearch = new SearchRequest(
-                        this.connProps.getProperty(LDAPUserManager.ROLE_BASE),
+                        authData.getRepositoryRoleBase(),
                         SearchScope.SUB,
                         roleFilter,
                         "cn");
@@ -712,14 +653,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally
@@ -777,9 +714,9 @@ public class LDAPUserManager implements UserManager
             }
 
             SearchRequest searchReq = new SearchRequest(
-                this.connProps.getProperty(LDAPUserManager.USER_BASE),
+                authData.getRepositoryUserBase(),
                 SearchScope.SUB,
-                Filter.create("(&(objectClass=" + this.connProps.getProperty(LDAPUserManager.BASE_OBJECT) + "))"));
+                Filter.create("(&(objectClass=" + authData.getBaseObject() + "))"));
 
             if (DEBUG)
             {
@@ -822,14 +759,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally
@@ -894,7 +827,7 @@ public class LDAPUserManager implements UserManager
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
                 .append("uid" + "=" + userId + ",")
-                .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
+                .append(authData.getRepositoryUserBase()).toString(), modifyList));
 
             if (DEBUG)
             {
@@ -910,14 +843,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally
@@ -976,14 +905,14 @@ public class LDAPUserManager implements UserManager
                 throw new ConnectException("Failed to create LDAP connection using the specified information");
             }
 
-            List<Modification> modifyList = new ArrayList<Modification>(
+            List<Modification> modifyList = new ArrayList<>(
                     Arrays.asList(
                         new Modification(ModificationType.REPLACE, authData.getTelephoneNumber(), values.get(0)),
                         new Modification(ModificationType.REPLACE, authData.getPagerNumber(), values.get(1))));
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
                 .append("uid" + "=" + userId + ",")
-                .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
+                .append(authData.getRepositoryUserBase()).toString(), modifyList));
 
             if (DEBUG)
             {
@@ -999,14 +928,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally
@@ -1080,7 +1005,7 @@ public class LDAPUserManager implements UserManager
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
                 .append("uid" + "=" + userId + ",")
-                .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
+                .append(authData.getRepositoryUserBase()).toString(), modifyList));
 
             if (DEBUG)
             {
@@ -1094,14 +1019,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally
@@ -1136,7 +1057,7 @@ public class LDAPUserManager implements UserManager
 
         final StringBuilder userDN = new StringBuilder()
             .append("uid" + "=" + userId + ",")
-            .append(this.connProps.getProperty(LDAPUserManager.USER_BASE));
+            .append(authData.getRepositoryUserBase());
 
         try
         {
@@ -1173,7 +1094,7 @@ public class LDAPUserManager implements UserManager
 
                 StringBuilder roleDN = new StringBuilder()
                     .append("cn=" + (String) group)
-                    .append(this.connProps.getProperty(LDAPUserManager.ROLE_BASE));
+                    .append(authData.getRepositoryRoleBase());
 
                 if (DEBUG)
                 {
@@ -1201,14 +1122,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally
@@ -1274,7 +1191,7 @@ public class LDAPUserManager implements UserManager
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
                 .append("uid" + "=" + userId + ",")
-                .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
+                .append(authData.getRepositoryUserBase()).toString(), modifyList));
 
             if (DEBUG)
             {
@@ -1290,14 +1207,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally
@@ -1370,7 +1283,7 @@ public class LDAPUserManager implements UserManager
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
                 .append("uid" + "=" + userId + ",")
-                .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
+                .append(authData.getRepositoryUserBase()).toString(), modifyList));
 
             if (DEBUG)
             {
@@ -1386,14 +1299,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally
@@ -1461,7 +1370,7 @@ public class LDAPUserManager implements UserManager
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
                 .append("uid" + "=" + userId + ",")
-                .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
+                .append(authData.getRepositoryUserBase()).toString(), modifyList));
 
             if (DEBUG)
             {
@@ -1477,14 +1386,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally
@@ -1561,7 +1466,7 @@ public class LDAPUserManager implements UserManager
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
                 .append("uid" + "=" + userId + ",")
-                .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
+                .append(authData.getRepositoryUserBase()).toString(), modifyList));
 
             if (DEBUG)
             {
@@ -1577,14 +1482,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally
@@ -1656,7 +1557,7 @@ public class LDAPUserManager implements UserManager
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
                 .append("uid" + "=" + userId + ",")
-                .append(this.connProps.getProperty(LDAPUserManager.USER_BASE)).toString(), modifyList));
+                .append(authData.getRepositoryUserBase()).toString(), modifyList));
 
             if (DEBUG)
             {
@@ -1670,14 +1571,10 @@ public class LDAPUserManager implements UserManager
         }
         catch (LDAPException lx)
         {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)
         {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
             throw new UserManagementException(cx.getMessage(), cx);
         }
         finally

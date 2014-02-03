@@ -167,19 +167,14 @@ public class SQLKeyManager implements KeyManager
         }
         catch (InvalidKeySpecException iksx)
         {
-            ERROR_RECORDER.error(iksx.getMessage(), iksx);
-
             throw new KeyManagementException(iksx.getMessage(), iksx);
         }
         catch (NoSuchAlgorithmException nsax)
         {
-            ERROR_RECORDER.error(nsax.getMessage(), nsax);
-
             throw new KeyManagementException(nsax.getMessage(), nsax);
         }
         catch (SQLException sqx)
         {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new KeyManagementException(sqx.getMessage(), sqx);
         }
@@ -356,14 +351,10 @@ public class SQLKeyManager implements KeyManager
         }
         catch (NoSuchAlgorithmException nsax)
         {
-            ERROR_RECORDER.error(nsax.getMessage(), nsax);
-
             throw new KeyManagementException(nsax.getMessage(), nsax);
         }
         catch (SQLException sqx)
         {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
             throw new KeyManagementException(sqx.getMessage(), sqx);
         }
         finally
@@ -437,8 +428,6 @@ public class SQLKeyManager implements KeyManager
         }
         catch (SQLException sqx)
         {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
             throw new KeyManagementException(sqx.getMessage(), sqx);
         }
         finally

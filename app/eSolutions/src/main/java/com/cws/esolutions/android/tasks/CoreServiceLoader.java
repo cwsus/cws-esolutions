@@ -233,10 +233,10 @@ public class CoreServiceLoader extends AsyncTask<Void, Void, Boolean>
                 {
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("String: {}", source);
+                        DEBUGGER.debug("String: {}", source.trim());
                     }
 
-                    InputStream dsStream = assetMgr.open(source + ".properties");
+                    InputStream dsStream = assetMgr.open(source.trim() + ".properties");
 
                     if (DEBUG)
                     {

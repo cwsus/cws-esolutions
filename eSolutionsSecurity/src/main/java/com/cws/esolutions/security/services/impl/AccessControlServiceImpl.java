@@ -25,7 +25,9 @@ package com.cws.esolutions.security.services.impl;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import com.cws.esolutions.security.dto.UserGroup;
+import java.util.List;
+import java.sql.SQLException;
+
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
@@ -49,17 +51,31 @@ public class AccessControlServiceImpl implements IAccessControlService
             DEBUGGER.debug("serviceGuid: {}", serviceGuid);
         }
 
-        for (UserGroup group : userAccount.getGroups())
+        for (String group : userAccount.getGroups())
         {
             if (DEBUG)
             {
                 DEBUGGER.debug("UserGroup: {}", group);
             }
 
-            if (group.getServices().contains(serviceGuid))
+            try
             {
-                return true;
+                List<String> services = ref.listServicesForGroup(group);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("List<String>: {}", services);
+                }
+
+                if (services.contains(serviceGuid))
+                {
+                    return true;
+                }
             }
+            catch (SQLException sqx)
+            {
+                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+			}
         }
 
         return false;
