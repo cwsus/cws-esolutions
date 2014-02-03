@@ -3,4 +3,70 @@
     android:layout_width = "match_parent"
     android:layout_height = "match_parent"
     android:background="@drawable/logo">
+    <TextView
+        android:id = "@+id/tvUsername"
+        android:layout_width = "wrap_content"
+        android:layout_height = "wrap_content"
+        android:layout_alignBaseline = "@+id/etUsername"
+        android:layout_alignBottom = "@+id/etUsername"
+        android:layout_alignParentLeft = "true"
+        android:layout_marginTop = "10dp"
+        android:text = "@string/tvUsername" />
+    <TextView
+        android:id = "@+id/tvPassword"
+        android:layout_width = "wrap_content"
+        android:layout_height = "wrap_content"
+        android:layout_alignBaseline = "@+id/etPassword"
+        android:layout_alignBottom = "@+id/etPassword"
+        android:layout_alignParentLeft = "true"
+        android:layout_marginTop = "60dp"
+        android:text = "@string/tvPassword" />
+    <EditText
+        android:inputType="text"
+        android:hint="@string/hintUsername"
+        android:id = "@+id/etUsername"
+        android:layout_width = "wrap_content"
+        android:layout_height = "wrap_content"
+        android:layout_alignParentRight = "true"
+        android:layout_marginTop = "10dp"
+        android:ems = "10" />
+    <EditText
+        android:inputType="textPassword"
+        android:hint="@string/hintPassword"
+        android:id = "@+id/etPassword"
+        android:layout_width = "wrap_content"
+        android:layout_height = "wrap_content"
+        android:layout_alignParentRight = "true"
+        android:layout_marginTop = "60dp"
+        android:ems = "10" />
+    <Button
+        android:id = "@+id/btnDoLogin"
+        android:layout_width = "125dp"
+        android:layout_height = "40dp"
+        android:layout_below = "@+id/etPassword"
+		android:layout_centerInParent="true"
+        android:layout_marginTop = "75dp"
+        android:text = "@string/btnDoLogin"
+        android:background="@drawable/button"
+        android:onClick="executeUserLogin" />
+    <Button
+        android:id = "@+id/btnDoLogin"
+        android:layout_width = "125dp"
+        android:layout_height = "40dp"
+        android:layout_alignBaseline = "@+id/btnDoLogin"
+        android:layout_alignBottom = "@+id/btnDoLogin"
+        android:layout_below = "@+id/etPassword"
+		android:layout_centerInParent="true"
+        android:layout_marginTop = "75dp"
+        android:text = "@string/btnForgotLogon"
+        android:background="@drawable/button"
+        android:onClick="loadOnlineReset" />
+    <TextView
+        android:id = "@+id/tvResponseValue"
+        android:layout_width = "wrap_content"
+        android:layout_height = "250dp"
+        android:layout_alignParentLeft = "true"
+        android:layout_alignParentRight = "true"
+        android:layout_below = "@+id/btnDoLogin"
+        android:layout_marginTop = "10dp" />
 </RelativeLayout>

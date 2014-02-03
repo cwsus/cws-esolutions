@@ -17,7 +17,7 @@ package com.cws.esolutions.android.tasks;
 /*
  * eSolutions
  * com.cws.esolutions.core.tasks
- * UserAuthenticationTask.java
+ * OnlineResetTask.java
  *
  * History
  *
@@ -79,7 +79,7 @@ import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcesso
  * @version 1.0
  * @see android.os.AsyncTask
  */
-public class UserAuthenticationTask extends AsyncTask<String, Integer, AuthenticationResponse>
+public class OnlineResetTask extends AsyncTask<String, Integer, AuthenticationResponse>
 {
     private Activity reqActivity = null;
     private AuthRepositoryType repoType = null;
@@ -105,11 +105,11 @@ public class UserAuthenticationTask extends AsyncTask<String, Integer, Authentic
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + UserAuthenticationTask.class.getSimpleName());
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + OnlineResetTask.class.getSimpleName());
 
-    public UserAuthenticationTask(final Activity request)
+    public OnlineResetTask(final Activity request)
     {
-        final String methodName = UserAuthenticationTask.CNAME + "#UserAuthenticationTask(final Activity request)";
+        final String methodName = OnlineResetTask.CNAME + "#UserAuthenticationTask(final Activity request)";
 
         if (DEBUG)
         {
@@ -123,7 +123,7 @@ public class UserAuthenticationTask extends AsyncTask<String, Integer, Authentic
     @Override
     protected void onPreExecute()
     {
-        final String methodName = UserAuthenticationTask.CNAME + "#onPreExecute()";
+        final String methodName = OnlineResetTask.CNAME + "#onPreExecute()";
 
         if (DEBUG)
         {
@@ -170,7 +170,7 @@ public class UserAuthenticationTask extends AsyncTask<String, Integer, Authentic
                 DEBUGGER.debug("Properties: {}", connProps);
             }
 
-            this.repoType = AuthRepositoryType.valueOf(connProps.getProperty(UserAuthenticationTask.REPO_TYPE));
+            this.repoType = AuthRepositoryType.valueOf(connProps.getProperty(OnlineResetTask.REPO_TYPE));
 
             if (DEBUG)
             {
@@ -186,21 +186,21 @@ public class UserAuthenticationTask extends AsyncTask<String, Integer, Authentic
                     connOpts.setAutoReconnect(true);
                     connOpts.setAbandonOnTimeout(true);
                     connOpts.setBindWithDNRequiresPassword(true);
-                    connOpts.setConnectTimeoutMillis(Integer.parseInt(connProps.getProperty(UserAuthenticationTask.CONN_TIMEOUT)));
-                    connOpts.setResponseTimeoutMillis(Integer.parseInt(connProps.getProperty(UserAuthenticationTask.READ_TIMEOUT)));
+                    connOpts.setConnectTimeoutMillis(Integer.parseInt(connProps.getProperty(OnlineResetTask.CONN_TIMEOUT)));
+                    connOpts.setResponseTimeoutMillis(Integer.parseInt(connProps.getProperty(OnlineResetTask.READ_TIMEOUT)));
 
                     if (DEBUG)
                     {
                         DEBUGGER.debug("LDAPConnectionOptions: {}", connOpts);
                     }
 
-                    if (Boolean.valueOf(connProps.getProperty(UserAuthenticationTask.IS_SECURE)))
+                    if (Boolean.valueOf(connProps.getProperty(OnlineResetTask.IS_SECURE)))
                     {
                         SSLUtil sslUtil = new SSLUtil(new TrustStoreTrustManager(
-                                connProps.getProperty(UserAuthenticationTask.TRUST_FILE),
-                                connProps.getProperty(UserAuthenticationTask.TRUST_PASS).toCharArray(),
-                                connProps.getProperty(UserAuthenticationTask.TRUST_TYPE),
-                                true));
+														  connProps.getProperty(OnlineResetTask.TRUST_FILE),
+														  connProps.getProperty(OnlineResetTask.TRUST_PASS).toCharArray(),
+														  connProps.getProperty(OnlineResetTask.TRUST_TYPE),
+														  true));
 
                         if (DEBUG)
                         {
@@ -214,19 +214,19 @@ public class UserAuthenticationTask extends AsyncTask<String, Integer, Authentic
                             DEBUGGER.debug("SSLSocketFactory: {}", sslSocketFactory);
                         }
 
-                        ldapConn = new LDAPConnection(sslSocketFactory, connOpts, connProps.getProperty(UserAuthenticationTask.REPOSITORY_HOST),
-                                Integer.parseInt(connProps.getProperty(UserAuthenticationTask.REPOSITORY_PORT)),
-                                connProps.getProperty(UserAuthenticationTask.REPOSITORY_USER),
-                                PasswordUtils.decryptText(connProps.getProperty(UserAuthenticationTask.REPOSITORY_PASS),
-                                        connProps.getProperty(UserAuthenticationTask.REPOSITORY_SALT).length()));
+                        ldapConn = new LDAPConnection(sslSocketFactory, connOpts, connProps.getProperty(OnlineResetTask.REPOSITORY_HOST),
+													  Integer.parseInt(connProps.getProperty(OnlineResetTask.REPOSITORY_PORT)),
+													  connProps.getProperty(OnlineResetTask.REPOSITORY_USER),
+													  PasswordUtils.decryptText(connProps.getProperty(OnlineResetTask.REPOSITORY_PASS),
+																				connProps.getProperty(OnlineResetTask.REPOSITORY_SALT).length()));
                     }
                     else
                     {
-                        ldapConn = new LDAPConnection(connOpts, connProps.getProperty(UserAuthenticationTask.REPOSITORY_HOST),
-                                Integer.parseInt(connProps.getProperty(UserAuthenticationTask.REPOSITORY_PORT)),
-                                connProps.getProperty(UserAuthenticationTask.REPOSITORY_USER),
-                                PasswordUtils.decryptText(connProps.getProperty(UserAuthenticationTask.REPOSITORY_PASS),
-                                        connProps.getProperty(UserAuthenticationTask.REPOSITORY_SALT).length()));
+                        ldapConn = new LDAPConnection(connOpts, connProps.getProperty(OnlineResetTask.REPOSITORY_HOST),
+													  Integer.parseInt(connProps.getProperty(OnlineResetTask.REPOSITORY_PORT)),
+													  connProps.getProperty(OnlineResetTask.REPOSITORY_USER),
+													  PasswordUtils.decryptText(connProps.getProperty(OnlineResetTask.REPOSITORY_PASS),
+																				connProps.getProperty(OnlineResetTask.REPOSITORY_SALT).length()));
                     }
 
                     if (DEBUG)
@@ -242,8 +242,8 @@ public class UserAuthenticationTask extends AsyncTask<String, Integer, Authentic
                     }
 
                     LDAPConnectionPool connPool = new LDAPConnectionPool(ldapConn,
-						Integer.parseInt(connProps.getProperty(UserAuthenticationTask.MIN_CONNECTIONS)),
-						Integer.parseInt(connProps.getProperty(UserAuthenticationTask.MAX_CONNECTIONS)));
+																		 Integer.parseInt(connProps.getProperty(OnlineResetTask.MIN_CONNECTIONS)),
+																		 Integer.parseInt(connProps.getProperty(OnlineResetTask.MAX_CONNECTIONS)));
 
                     if (DEBUG)
                     {
@@ -262,14 +262,14 @@ public class UserAuthenticationTask extends AsyncTask<String, Integer, Authentic
                     break;
                 case SQL:
                     BasicDataSource dataSource = new BasicDataSource();
-                    dataSource.setInitialSize(Integer.parseInt(connProps.getProperty(UserAuthenticationTask.MIN_CONNECTIONS)));
-                    dataSource.setMaxActive(Integer.parseInt(connProps.getProperty(UserAuthenticationTask.MAX_CONNECTIONS)));
-                    dataSource.setDriverClassName(connProps.getProperty(UserAuthenticationTask.CONN_DRIVER));
-                    dataSource.setUrl(connProps.getProperty(UserAuthenticationTask.REPOSITORY_HOST));
-                    dataSource.setUsername(connProps.getProperty(UserAuthenticationTask.REPOSITORY_USER));
+                    dataSource.setInitialSize(Integer.parseInt(connProps.getProperty(OnlineResetTask.MIN_CONNECTIONS)));
+                    dataSource.setMaxActive(Integer.parseInt(connProps.getProperty(OnlineResetTask.MAX_CONNECTIONS)));
+                    dataSource.setDriverClassName(connProps.getProperty(OnlineResetTask.CONN_DRIVER));
+                    dataSource.setUrl(connProps.getProperty(OnlineResetTask.REPOSITORY_HOST));
+                    dataSource.setUsername(connProps.getProperty(OnlineResetTask.REPOSITORY_USER));
                     dataSource.setPassword(PasswordUtils.decryptText(
-                            connProps.getProperty(UserAuthenticationTask.REPOSITORY_PASS),
-                            connProps.getProperty(UserAuthenticationTask.REPOSITORY_SALT).length()));
+											   connProps.getProperty(OnlineResetTask.REPOSITORY_PASS),
+											   connProps.getProperty(OnlineResetTask.REPOSITORY_SALT).length()));
 
                     if (DEBUG)
                     {
@@ -358,7 +358,7 @@ public class UserAuthenticationTask extends AsyncTask<String, Integer, Authentic
     @Override
     protected AuthenticationResponse doInBackground(final String... request)
     {
-        final String methodName = UserAuthenticationTask.CNAME + "#doInBackground(final List<String>... request)";
+        final String methodName = OnlineResetTask.CNAME + "#doInBackground(final List<String>... request)";
 
         if (DEBUG)
         {

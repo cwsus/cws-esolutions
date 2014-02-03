@@ -27,6 +27,7 @@ package com.cws.esolutions.android;
  */
 import java.util.Map;
 import org.slf4j.Logger;
+import java.io.InputStream;
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
@@ -42,6 +43,7 @@ import com.cws.esolutions.security.processors.dto.RequestHostInfo;
  */
 public class ApplicationServiceBean
 {
+    private InputStream inputStream = null;
     private RequestHostInfo reqInfo = null;
     private Map<String, DataSource> dataSources = null;
 
@@ -109,6 +111,19 @@ public class ApplicationServiceBean
         this.reqInfo = value;
     }
 
+    public final void setInputStream(final InputStream value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setInputStream(final InputStream value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.inputStream = value;
+    }
+
     public final Map<String, DataSource> getDataSources()
     {
         final String methodName = ApplicationServiceBean.CNAME + "#getDataSources()";
@@ -138,6 +153,19 @@ public class ApplicationServiceBean
         }
 
         return this.reqInfo;
+    }
+
+    public final InputStream getInputStream()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getInputStream()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.inputStream);
+        }
+
+        return this.inputStream;
     }
 
     @Override

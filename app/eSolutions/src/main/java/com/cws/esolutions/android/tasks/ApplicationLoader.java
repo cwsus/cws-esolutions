@@ -78,7 +78,6 @@ public class ApplicationLoader extends AsyncTask<Void, Void, Boolean>
         this.reqActivity = activity;
     }
 
-
     @Override
     protected void onPreExecute()
     {
