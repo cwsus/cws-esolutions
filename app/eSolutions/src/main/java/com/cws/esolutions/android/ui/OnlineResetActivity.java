@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import android.view.View;
 import android.os.Bundle;
 import android.app.Activity;
+import android.text.InputType;
 import android.content.Intent;
 import android.graphics.Color;
 import android.widget.EditText;
@@ -75,7 +76,7 @@ public class OnlineResetActivity extends Activity
         super.onCreate(bundle);
         super.setTitle(R.string.mainTitle);
         super.setContentView(R.layout.onlinereset);
-        this.resetType = ResetRequestType.valueOf(bundle.getString("resetType"));
+        this.resetType = (ResetRequestType) super.getIntent().getExtras().get("resetType");
 
         final TextView tvRequest = (TextView) super.findViewById(R.id.tvRequestInput);
         final EditText etRequest = (EditText) super.findViewById(R.id.etRequestInput);
@@ -94,6 +95,7 @@ public class OnlineResetActivity extends Activity
                 tvRequest.setVisibility(View.VISIBLE);
                 etRequest.setHint(R.string.strEmailAddr);
                 etRequest.setVisibility(View.VISIBLE);
+				etRequest.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
 
                 return;
             case PASSWORD:
@@ -126,7 +128,7 @@ public class OnlineResetActivity extends Activity
         super.finish();
     }
 
-    public void executeSubmission(final View view)
+    public void submitOnlineReset(final View view)
     {
         final String methodName = OnlineResetActivity.CNAME + "#executeSubmission(final View view)";
 
@@ -176,7 +178,7 @@ public class OnlineResetActivity extends Activity
             switch (this.resetType)
             {
                 case USERNAME:
-                    task.execute(etRequest.getText().toString());
+                    task.execute(this.resetType.name(), etRequest.getText().toString());
 
                     if (task.isCancelled())
                     {
@@ -207,7 +209,7 @@ public class OnlineResetActivity extends Activity
 
                     return;
                 case PASSWORD:
-                    task.execute(etRequest.getText().toString());
+                    task.execute(this.resetType.name(), etRequest.getText().toString());
 
                     if (task.isCancelled())
                     {
@@ -259,8 +261,9 @@ public class OnlineResetActivity extends Activity
 
                     return;
                 case QUESTIONS:
-                    task.execute(((UserAccount) super.getIntent().getExtras().getSerializable(Constants.USER_DATA)).getUsername(),
-                            etSecQuesOne.getText().toString(), etSecQuesTwo.getText().toString());
+                    task.execute(this.resetType.name(), 
+                        ((UserAccount) super.getIntent().getExtras().getSerializable(Constants.USER_DATA)).getUsername(),
+                        etSecQuesOne.getText().toString(), etSecQuesTwo.getText().toString());
 
                     if (task.isCancelled())
                     {

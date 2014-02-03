@@ -169,7 +169,7 @@ public class CoreServiceLoader extends AsyncTask<Void, Void, Boolean>
         boolean isLoaded = false;
 
         final AssetManager assetMgr = this.reqActivity.getResources().getAssets();
-        final Properties properties = CoreServiceLoader.appBean.getSecProperties();
+        final Properties properties = CoreServiceLoader.appBean.getCoreProperties();
 
         if (DEBUG)
         {

@@ -444,7 +444,8 @@ public class LDAPUserManager implements UserManager
                 SearchScope.SUB,
                 searchFilter,
                 "cn",
-                "uid");
+                "uid",
+                "email");
 
             if (DEBUG)
             {
@@ -466,7 +467,8 @@ public class LDAPUserManager implements UserManager
                 {
                     String[] userData = new String[] {
                             entry.getAttributeValue("cn"),
-                            entry.getAttributeValue("uid")
+                            entry.getAttributeValue("uid"),
+                            entry.getAttributeValue("email")
                     };
 
                     if (DEBUG)

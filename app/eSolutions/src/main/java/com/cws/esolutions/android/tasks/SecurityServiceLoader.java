@@ -136,7 +136,7 @@ public class SecurityServiceLoader extends AsyncTask<Void, Void, Boolean>
 
             SecurityServiceLoader.appBean.setSecProperties(secProps);
 
-            authStream = assetMgr.open(this.reqActivity.getResources().getString(R.string.securityConfigFile));
+            authStream = assetMgr.open(this.reqActivity.getResources().getString(R.string.authRepoConfig));
 
             if (DEBUG)
             {

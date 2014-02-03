@@ -26,8 +26,6 @@ package com.cws.esolutions.android.tasks;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.util.Properties;
 import android.os.AsyncTask;
@@ -102,8 +100,6 @@ public class UserAuthenticationTask extends AsyncTask<String, Integer, Authentic
         {
             DEBUGGER.debug(methodName);
         }
-
-        InputStream iStream = null;
 
         if (!(NetworkUtils.checkNetwork(this.reqActivity)))
         {
@@ -293,17 +289,6 @@ public class UserAuthenticationTask extends AsyncTask<String, Integer, Authentic
             ERROR_RECORDER.error(sx.getMessage(), sx);
 
             super.cancel(true);
-        }
-        finally
-        {
-            try
-            {
-                iStream.close();
-            }
-            catch (IOException iox)
-            {
-                ERROR_RECORDER.error(iox.getMessage(), iox);
-            }
         }
     }
 

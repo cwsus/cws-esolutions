@@ -43,6 +43,7 @@ import java.util.concurrent.ExecutionException;
 
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.android.enums.ResetRequestType;
 import com.cws.esolutions.android.tasks.UserAuthenticationTask;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
@@ -118,8 +119,8 @@ public class LoginActivity extends Activity
             DEBUGGER.debug("View: {}", view);
         }
 
-        Intent intent = new Intent(this, OnlineResetActivity.class);
-        intent.putExtra("forgotUsername", true);
+        Intent intent = new Intent(super.getBaseContext(), OnlineResetActivity.class);
+        intent.putExtra("resetType", ResetRequestType.USERNAME);
 
         if (DEBUG)
         {
@@ -142,8 +143,8 @@ public class LoginActivity extends Activity
             DEBUGGER.debug("View: {}", view);
         }
 
-        Intent intent = new Intent(this, OnlineResetActivity.class);
-        intent.putExtra("forgotPassword", true);
+        Intent intent = new Intent(super.getBaseContext(), OnlineResetActivity.class);
+        intent.putExtra("resetType", ResetRequestType.PASSWORD);
 
         if (DEBUG)
         {
@@ -251,7 +252,7 @@ public class LoginActivity extends Activity
             switch(resAccount.getStatus())
             {
                 case SUCCESS:
-                    Intent intent = new Intent(this, HomeActivity.class);
+                    Intent intent = new Intent(super.getBaseContext(), HomeActivity.class);
                     intent.putExtra("userData", response.getUserAccount());
 
                     if (DEBUG)

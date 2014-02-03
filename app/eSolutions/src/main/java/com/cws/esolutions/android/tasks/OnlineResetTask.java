@@ -26,8 +26,6 @@ package com.cws.esolutions.android.tasks;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.util.Properties;
 import android.os.AsyncTask;
@@ -73,7 +71,6 @@ public class OnlineResetTask extends AsyncTask<String, Integer, AccountResetResp
     private Activity reqActivity = null;
     private AuthRepositoryType repoType = null;
 
-
     private static final String CNAME = OnlineResetTask.class.getName();
     private static final SecurityServiceBean bean = SecurityServiceBean.getInstance();
 	private static final ApplicationServiceBean appBean = ApplicationServiceBean.getInstance();
@@ -105,20 +102,11 @@ public class OnlineResetTask extends AsyncTask<String, Integer, AccountResetResp
             DEBUGGER.debug(methodName);
         }
 
-        InputStream iStream = null;
-
         if (!(NetworkUtils.checkNetwork(this.reqActivity)))
         {
             ERROR_RECORDER.error("Network connections are available but not currently connected.");
 
             super.cancel(true);
-        }
-
-        AssetManager assetMgr = this.reqActivity.getResources().getAssets();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("AssetManager: {}", assetMgr);
         }
 
         try
@@ -296,17 +284,6 @@ public class OnlineResetTask extends AsyncTask<String, Integer, AccountResetResp
 
             super.cancel(true);
         }
-        finally
-        {
-            try
-            {
-                iStream.close();
-            }
-            catch (IOException iox)
-            {
-                ERROR_RECORDER.error(iox.getMessage(), iox);
-            }
-        }
     }
 
     @Override
@@ -332,7 +309,7 @@ public class OnlineResetTask extends AsyncTask<String, Integer, AccountResetResp
             {
                 case USERNAME:
                     reqAccount = new UserAccount();
-                    reqAccount.setEmailAddr(request[0]);
+                    reqAccount.setEmailAddr(request[1]);
 
                     if (DEBUG)
                     {
@@ -359,7 +336,7 @@ public class OnlineResetTask extends AsyncTask<String, Integer, AccountResetResp
                     return resetRes;
                 case PASSWORD:
                     reqAccount = new UserAccount();
-                    reqAccount.setUsername(request[0]);
+                    reqAccount.setUsername(request[1]);
 
                     if (DEBUG)
                     {
@@ -389,8 +366,8 @@ public class OnlineResetTask extends AsyncTask<String, Integer, AccountResetResp
                     reqAccount.setUsername(request[1]); // TODO
 
                     AuthenticationData authData = new AuthenticationData();
-                    authData.setSecAnswerOne(request[1]);
-                    authData.setSecAnswerTwo(request[2]);
+                    authData.setSecAnswerOne(request[2]);
+                    authData.setSecAnswerTwo(request[3]);
 
                     resetReq.setApplicationId(Constants.APPLICATION_ID);
                     resetReq.setApplicationName(Constants.APPLICATION_NAME);
