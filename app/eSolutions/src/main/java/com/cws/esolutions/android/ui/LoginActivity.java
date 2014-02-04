@@ -25,12 +25,9 @@ package com.cws.esolutions.android.ui;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.List;
-import java.util.Arrays;
 import org.slf4j.Logger;
 import android.view.View;
 import android.os.Bundle;
-import java.util.ArrayList;
 import android.app.Activity;
 import android.text.InputType;
 import android.graphics.Color;

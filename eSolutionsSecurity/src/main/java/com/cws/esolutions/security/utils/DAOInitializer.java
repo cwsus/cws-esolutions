@@ -25,7 +25,6 @@ package com.cws.esolutions.security.utils;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.io.File;
 import org.slf4j.Logger;
 import java.io.InputStream;
 import java.io.IOException;
@@ -33,13 +32,11 @@ import java.util.Properties;
 import javax.naming.Context;
 import java.sql.SQLException;
 import org.slf4j.LoggerFactory;
-import java.io.FileInputStream;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.io.FileNotFoundException;
 import com.unboundid.util.ssl.SSLUtil;
 import javax.net.ssl.SSLSocketFactory;
-import org.apache.commons.io.FileUtils;
 import com.unboundid.ldap.sdk.ResultCode;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.LDAPConnection;

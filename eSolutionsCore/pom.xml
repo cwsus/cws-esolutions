@@ -8,10 +8,20 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
+    <groupId>${project.parent.groupId}</groupId>
     <artifactId>eSolutionsCore</artifactId>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
-    <version>1.0-SNAPSHOT</version>
+    <url>${project.parent.url}</url>
+    <description>Core application software utilized by all applications in the eSolutions software suite</description>
+
+    <scm>
+        <connection>${project.parent.scm.connection}</connection>
+        <developerConnection>${project.parent.scm.developerConnection}</developerConnection>
+        <tag>${project.parent.scm.tag}</tag>
+        <url>https://github.com/cwsus/cws-esolutions/tree/master/eSolutionsCore</url>
+    </scm>
 
     <properties>
         <activemq.version>5.8.0</activemq.version>

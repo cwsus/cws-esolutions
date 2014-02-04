@@ -25,9 +25,7 @@ package com.cws.esolutions.android.tasks;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.List;
 import org.slf4j.Logger;
-import java.util.ArrayList;
 import java.io.InputStream;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -36,7 +34,6 @@ import android.os.AsyncTask;
 import android.app.Activity;
 import org.slf4j.LoggerFactory;
 import android.content.res.AssetManager;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import android.content.res.Resources.NotFoundException;
 
@@ -178,7 +175,10 @@ public class ApplicationLoader extends AsyncTask<Void, Void, Boolean>
         {
             try
             {
-                this.iStream.close();
+                if (this.iStream != null)
+                {
+                    this.iStream.close();
+                }
             }
             catch (IOException iox)
             {

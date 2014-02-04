@@ -33,12 +33,10 @@ import android.app.AlertDialog;
 import org.slf4j.LoggerFactory;
 import java.lang.InterruptedException;
 import android.content.DialogInterface;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.ExecutionException;
 
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.android.ui.LoginActivity;
-import com.cws.esolutions.android.ApplicationServiceBean;
 import com.cws.esolutions.android.tasks.CoreServiceLoader;
 import com.cws.esolutions.android.tasks.ApplicationLoader;
 import com.cws.esolutions.android.tasks.SecurityServiceLoader;

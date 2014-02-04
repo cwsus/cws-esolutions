@@ -25,13 +25,11 @@ package com.cws.esolutions.security.dto;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.List;
 import java.util.Date;
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
-import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.processors.enums.LoginStatus;

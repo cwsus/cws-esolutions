@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "./log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+    <appender name="esolutionssvc-info" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="esolutionssvc-info.log" />
+        <param name="DatePattern" value="'.'yy-MM-dd" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelMatchFilter">
+            <param name="LevelToMatch" value="INFO" />
+            <param name="AcceptOnMatch" value="true" />
+        </filter>
+        <filter class="org.apache.log4j.varia.DenyAllFilter" />
+    </appender>
+    <appender name="esolutionssvc-error" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="esolutionssvc-error.log" />
+        <param name="DatePattern" value="'.'yy-MM-dd" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
+        </layout>
+    </appender>
+    <appender name="esolutionssvc-debug" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="esolutionssvc-debug.log" />
+        <param name="DatePattern" value="'.'yy-MM-dd" />
+        <param name="Threshold" value="DEBUG" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelMatchFilter">
+            <param name="LevelToMatch" value="DEBUG" />
+            <param name="AcceptOnMatch" value="true" />
+        </filter>
+        <filter class="org.apache.log4j.varia.DenyAllFilter" />
+    </appender>
+
+    <!-- third party appenders -->
+    <appender name="apache-commons" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="apache-commons.log" />
+        <param name="DatePattern" value="'.'yy-MM-dd" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
+        </layout>
+    </appender>
+    <appender name="quartz" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="quartz.log" />
+        <param name="DatePattern" value="'.'yy-MM-dd" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
+        </layout>
+    </appender>
+    <appender name="virtualbox" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="virtualbox.log" />
+        <param name="DatePattern" value="'.'yy-MM-dd" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
+        </layout>
+    </appender>
+    <appender name="j2ssh" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="j2ssh.log" />
+        <param name="DatePattern" value="'.'yy-MM-dd" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
+        </layout>
+    </appender>
+    <appender name="xbill" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="xbill.log" />
+        <param name="DatePattern" value="'.'yy-MM-dd" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
+        </layout>
+    </appender>
+
+    <category name="INFO_RECORDER.com.cws.esolutions.core" additivity="false">
+        <priority value="INFO" />
+        <appender-ref ref="esolutionssvc-info" />
+    </category>
+    <category name="ERROR_RECORDER.com.cws.esolutions.core" additivity="false">
+        <priority value="ERROR" />
+        <appender-ref ref="esolutionssvc-error" />
+    </category>
+    <category name="CORE_DEBUGGER" additivity="false">
+        <priority value="DEBUG" />
+        <appender-ref ref="esolutionssvc-debug" />
+    </category>
+
+    <!-- third-party loggers -->
+    <!-- apache commons -->
+    <category name="org.apache.commons.httpclient" additivity="false">
+        <priority value="DEBUG" />
+        <appender-ref ref="apache-commons" />
+    </category>
+    <category name="org.apache.commons.lang" additivity="false">
+        <priority value="DEBUG" />
+        <appender-ref ref="apache-commons" />
+    </category>
+    <!-- quartz -->
+    <category name="org.quartz" additivity="false">
+        <priority value="DEBUG" />
+        <appender-ref ref="quartz" />
+    </category>
+    <!-- virtualbox -->
+    <category name="org.virtualbox" additivity="false">
+        <priority value="DEBUG" />
+        <appender-ref ref="virtualbox" />
+    </category>
+    <!-- j2ssh -->
+    <category name="com.sshtools.j2ssh" additivity="false">
+        <priority value="DEBUG" />
+        <appender-ref ref="j2ssh" />
+    </category>
+    <!-- xbill -->
+    <category name="org.xbill" additivity="false">
+        <priority value="DEBUG" />
+        <appender-ref ref="xbill" />
+    </category>
+</log4j:configuration>

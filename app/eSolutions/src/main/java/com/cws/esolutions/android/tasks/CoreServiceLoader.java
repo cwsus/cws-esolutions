@@ -145,7 +145,10 @@ public class CoreServiceLoader extends AsyncTask<Void, Void, Boolean>
         {
             try
             {
-                iStream.close();
+                if (iStream != null)
+                {
+                    iStream.close();
+                }
             }
             catch (IOException iox)
             {

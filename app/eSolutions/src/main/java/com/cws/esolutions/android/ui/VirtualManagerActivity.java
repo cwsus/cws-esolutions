@@ -46,6 +46,8 @@ import com.cws.esolutions.android.ApplicationServiceBean;
  */
 public class VirtualManagerActivity extends Activity
 {
+    private static final ApplicationServiceBean bean = ApplicationServiceBean.getInstance();
+
     private static final String CNAME = VirtualManagerActivity.class.getName();
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

@@ -48,7 +48,6 @@ import com.unboundid.util.ssl.TrustStoreTrustManager;
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.utils.PasswordUtils;
-import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.enums.AuthRepositoryType;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 /**

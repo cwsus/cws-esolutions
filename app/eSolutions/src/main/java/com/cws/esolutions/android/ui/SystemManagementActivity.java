@@ -48,6 +48,8 @@ import com.cws.esolutions.android.ApplicationServiceBean;
  */
 public class SystemManagementActivity extends Activity
 {
+    private static final ApplicationServiceBean bean = ApplicationServiceBean.getInstance();
+
     private static final String CNAME = SystemManagementActivity.class.getName();
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

@@ -61,6 +61,6 @@ public final class Constants
     public static final String READ_TIMEOUT = "repositoryReadTimeout";
 
     /* Logging constants */
-    public static final String ERROR_LOGGER = "ERROR_RECORDER.";
-    public static final String DEBUGGER = "ESOLUTIONS_DEBUGGER";
+    public static final String DEBUGGER = "DEBUGGER";
+    public static final String ERROR_LOGGER = "ERROR.";
 }

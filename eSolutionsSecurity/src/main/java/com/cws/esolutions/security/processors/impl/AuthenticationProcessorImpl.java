@@ -27,7 +27,6 @@ package com.cws.esolutions.security.processors.impl;
  */
 import java.util.List;
 import java.util.Date;
-import java.util.ArrayList;
 import java.sql.SQLException;
 import com.unboundid.ldap.sdk.ResultCode;
 import org.apache.commons.lang.StringUtils;

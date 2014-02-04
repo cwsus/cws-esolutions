@@ -10,9 +10,20 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
+    <groupId>${project.parent.groupId}</groupId>
     <artifactId>eSolutions_web_source</artifactId>
+    <version>${project.parent.version}</version>
     <packaging>war</packaging>
     <name>${project.artifactId}</name>
+    <url>${project.parent.url}</url>
+    <description>WAR file for eSolutions_web_source</description>
+
+    <scm>
+        <connection>${project.parent.scm.connection}</connection>
+        <developerConnection>${project.parent.scm.developerConnection}</developerConnection>
+        <tag>${project.parent.scm.tag}</tag>
+        <url>${project.parent.scm.url}</url>
+    </scm>
 
     <properties>
         <context.root>eSolutions</context.root>

@@ -48,6 +48,8 @@ import com.cws.esolutions.android.ApplicationServiceBean;
  */
 public class UserManagementActivity extends Activity
 {
+    private static final ApplicationServiceBean bean = ApplicationServiceBean.getInstance();
+
     private static final String CNAME = UserManagementActivity.class.getName();
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

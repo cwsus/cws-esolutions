@@ -10,10 +10,20 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
+    <groupId>${project.parent.groupId}</groupId>
     <artifactId>eSolutionsWeb</artifactId>
+    <version>${project.parent.version}</version>
     <packaging>ear</packaging>
-    <url>http://maven.apache.org</url>
+    <url>${project.parent.url}</url>
     <name>${project.artifactId}</name>
+    <description>EAR file for eSolutions_web_source</description>
+
+    <scm>
+        <connection>${project.parent.scm.connection}</connection>
+        <developerConnection>${project.parent.scm.developerConnection}</developerConnection>
+        <tag>${project.parent.scm.tag}</tag>
+        <url>${project.parent.scm.url}</url>
+    </scm>
 
     <dependencies>
         <dependency>
