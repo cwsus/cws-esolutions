@@ -58,6 +58,7 @@ import com.cws.esolutions.security.processors.dto.AccountResetResponse;
 import com.cws.esolutions.security.processors.impl.AccountResetProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
+import com.cws.esolutions.security.enums.*;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -331,7 +332,7 @@ public class OnlineResetTask extends AsyncTask<String, Integer, AccountResetResp
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("AccountControlResponse: {}", resetRes);
+                        DEBUGGER.debug("AccountResetResponse: {}", resetRes);
                     }
 
                     break;
@@ -344,23 +345,51 @@ public class OnlineResetTask extends AsyncTask<String, Integer, AccountResetResp
                         DEBUGGER.debug("UserAccount: {}", reqAccount);
                     }
 
-                    resetReq = new AccountResetRequest();
-                    resetReq.setApplicationId(Constants.APPLICATION_ID);
-                    resetReq.setApplicationName(Constants.APPLICATION_NAME);
-                    resetReq.setHostInfo(appBean.getReqInfo());
-                    resetReq.setUserAccount(reqAccount);
+                    AccountResetRequest acctReq = new AccountResetRequest();
+                    acctReq.setApplicationId(Constants.APPLICATION_ID);
+                    acctReq.setApplicationName(Constants.APPLICATION_NAME);
+                    acctReq.setHostInfo(appBean.getReqInfo());
+                    acctReq.setUserAccount(reqAccount);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("AuthenticationRequest: {}", resetReq);
+                        DEBUGGER.debug("AccountResetRequest: {}", acctReq);
                     }
 
-                    resetRes = processor.obtainUserSecurityConfig(resetReq);
+                    AccountResetResponse acctRes = processor.findUserAccount(acctReq);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("AccountResetResponse: {}", resetRes);
+                        DEBUGGER.debug("AccountResetResponse: {}", acctRes);
                     }
+
+                    if (acctRes.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+					{
+						UserAccount user = acctRes.getUserAccount();
+
+						if (DEBUG)
+						{
+							DEBUGGER.debug("UserAccount: {}", user);
+						}
+
+						resetReq = new AccountResetRequest();
+						resetReq.setApplicationId(Constants.APPLICATION_ID);
+						resetReq.setApplicationName(Constants.APPLICATION_NAME);
+						resetReq.setHostInfo(appBean.getReqInfo());
+						resetReq.setUserAccount(user);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AccountResetResponse: {}", resetReq);
+                        }
+
+                        resetRes = processor.obtainUserSecurityConfig(resetReq);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AccountResetResponse: {}", resetRes);
+                        }
+					}
 
                     break;
                 case QUESTIONS:
