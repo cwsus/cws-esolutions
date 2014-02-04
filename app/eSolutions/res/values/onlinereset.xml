@@ -4,5 +4,5 @@
     <string name = "strUsername">Username: </string>
     <string name = "strSecQuestion">Question: </string>
     <string name = "strSecAnswer">Answer: </string>
-    <string name = "strUserResponse">Your username is: {0}</string>
+    <string name = "strUserResponse">Your username is: %s</string>
 </resources>

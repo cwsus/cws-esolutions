@@ -35,13 +35,16 @@ import android.graphics.Color;
 import android.widget.EditText;
 import android.widget.TextView;
 import org.slf4j.LoggerFactory;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang.StringUtils;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.ExecutionException;
 
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.android.tasks.OnlineResetTask;
 import com.cws.esolutions.android.enums.ResetRequestType;
+import com.cws.esolutions.android.ApplicationServiceBean;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
@@ -57,6 +60,8 @@ import com.cws.esolutions.security.processors.dto.AccountResetResponse;
 public class OnlineResetActivity extends Activity
 {
     private ResetRequestType resetType = null;
+
+    private static final ApplicationServiceBean bean = ApplicationServiceBean.getInstance();
 
     private static final String CNAME = OnlineResetActivity.class.getName();
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
@@ -179,8 +184,14 @@ public class OnlineResetActivity extends Activity
             {
                 case USERNAME:
                     task.execute(this.resetType.name(), etRequest.getText().toString());
+                    response = task.get(bean.getTaskTimeout(), TimeUnit.SECONDS);
 
-                    if (task.isCancelled())
+					if (DEBUG)
+					{
+						DEBUGGER.debug("AccountResetResponse: {}", response);
+					}
+
+                    if ((task.isCancelled()) || (response == null))
                     {
                         tvResponseValue.setTextColor(Color.RED);
                         tvResponseValue.setText(super.getString(R.string.txtSignonError));
@@ -193,8 +204,6 @@ public class OnlineResetActivity extends Activity
                         return;
                     }
 
-                    response = task.get();
-
                     if (response.getRequestStatus() != SecurityRequestStatus.SUCCESS)
                     {
                         tvResponseValue.setTextColor(Color.RED);
@@ -205,13 +214,19 @@ public class OnlineResetActivity extends Activity
 
                     etRequest.setText("");
                     tvResponseValue.setTextColor(Color.BLUE);
-                    tvResponseValue.setText(String.format(super.getString(R.string.strUserResponse, response.getUserAccount().getUsername())));
+                    tvResponseValue.setText(String.format(super.getString(R.string.strUserResponse), response.getUserAccount().getUsername()));
 
                     return;
                 case PASSWORD:
                     task.execute(this.resetType.name(), etRequest.getText().toString());
+                    response = task.get(bean.getTaskTimeout(), TimeUnit.SECONDS);
 
-                    if (task.isCancelled())
+					if (DEBUG)
+					{
+						DEBUGGER.debug("AccountResetResponse: {}", response);
+					}
+
+                    if ((task.isCancelled()) || (response == null))
                     {
                         etRequest.setEnabled(true);
                         etRequest.setText("");
@@ -225,8 +240,6 @@ public class OnlineResetActivity extends Activity
 
                         return;
                     }
-
-                    response = task.get();
 
                     if (response.getRequestStatus() != SecurityRequestStatus.SUCCESS)
                     {
@@ -263,9 +276,16 @@ public class OnlineResetActivity extends Activity
                 case QUESTIONS:
                     task.execute(this.resetType.name(), 
                         ((UserAccount) super.getIntent().getExtras().getSerializable(Constants.USER_DATA)).getUsername(),
+                        ((UserAccount) super.getIntent().getExtras().getSerializable(Constants.USER_DATA)).getGuid(),
                         etSecQuesOne.getText().toString(), etSecQuesTwo.getText().toString());
+                    response = task.get(bean.getTaskTimeout(), TimeUnit.SECONDS);
 
-                    if (task.isCancelled())
+					if (DEBUG)
+					{
+						DEBUGGER.debug("AccountResetResponse: {}", response);
+					}
+
+                    if ((task.isCancelled()) || (response == null))
                     {
                         tvSecQuesOne.setVisibility(View.GONE);
                         tvSecQuesTwo.setVisibility(View.GONE);
@@ -284,8 +304,6 @@ public class OnlineResetActivity extends Activity
 
                         return;
                     }
-
-                    response = task.get();
 
                     if (response.getRequestStatus() != SecurityRequestStatus.SUCCESS)
                     {
@@ -333,6 +351,15 @@ public class OnlineResetActivity extends Activity
             return;
         }
         catch (ExecutionException ex)
+        {
+            etRequest.setEnabled(true);
+            etRequest.setText("");
+            tvResponseValue.setTextColor(Color.RED);
+            tvResponseValue.setText(super.getString(R.string.txtSignonError));
+
+            return;
+        }
+        catch (TimeoutException tx)
         {
             etRequest.setEnabled(true);
             etRequest.setText("");

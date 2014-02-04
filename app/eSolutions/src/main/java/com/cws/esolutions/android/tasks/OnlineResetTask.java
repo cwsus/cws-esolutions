@@ -38,6 +38,7 @@ import android.content.res.AssetManager;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.LDAPConnection;
 import java.security.GeneralSecurityException;
+import java.util.concurrent.ExecutionException;
 import org.apache.commons.dbcp.BasicDataSource;
 import com.unboundid.ldap.sdk.LDAPConnectionPool;
 import com.unboundid.ldap.sdk.LDAPConnectionOptions;
@@ -333,7 +334,7 @@ public class OnlineResetTask extends AsyncTask<String, Integer, AccountResetResp
                         DEBUGGER.debug("AccountControlResponse: {}", resetRes);
                     }
 
-                    return resetRes;
+                    break;
                 case PASSWORD:
                     reqAccount = new UserAccount();
                     reqAccount.setUsername(request[1]);
@@ -361,7 +362,7 @@ public class OnlineResetTask extends AsyncTask<String, Integer, AccountResetResp
                         DEBUGGER.debug("AccountResetResponse: {}", resetRes);
                     }
 
-                    return resetRes;
+                    break;
                 case QUESTIONS:
                     reqAccount.setUsername(request[1]); // TODO
 
@@ -387,7 +388,7 @@ public class OnlineResetTask extends AsyncTask<String, Integer, AccountResetResp
                         DEBUGGER.debug("AccountResetResponse: {}", resetRes);
                     }
 
-                    return resetRes;
+                    break;
                 default:
                     break; // TODO
             }

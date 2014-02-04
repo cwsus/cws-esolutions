@@ -26,7 +26,6 @@ package com.cws.esolutions.android.ui;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
-
 import android.view.Menu;
 import android.view.View;
 import android.os.Bundle;
@@ -34,9 +33,7 @@ import android.app.Activity;
 import android.view.MenuItem;
 import android.content.Intent;
 import android.content.Context;
-
 import org.slf4j.LoggerFactory;
-
 import android.widget.EditText;
 import android.widget.TextView;
 import android.view.inputmethod.InputMethodManager;
@@ -44,6 +41,7 @@ import android.view.inputmethod.InputMethodManager;
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.android.tasks.DNSRequestTask;
+import com.cws.esolutions.android.ApplicationServiceBean;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -55,6 +53,8 @@ import com.cws.esolutions.android.tasks.DNSRequestTask;
  */
 public class DNSServiceActivity extends Activity
 {
+	private static final ApplicationServiceBean bean = ApplicationServiceBean.getInstance();
+
     private static final String CNAME = DNSServiceActivity.class.getName();
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

@@ -38,12 +38,15 @@ import android.content.Intent;
 import org.slf4j.LoggerFactory;
 import android.widget.EditText;
 import android.widget.TextView;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang.StringUtils;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.ExecutionException;
 
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.android.enums.ResetRequestType;
+import com.cws.esolutions.android.ApplicationServiceBean;
 import com.cws.esolutions.android.tasks.UserAuthenticationTask;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
@@ -58,6 +61,8 @@ import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
  */
 public class LoginActivity extends Activity
 {
+	private static final ApplicationServiceBean bean = ApplicationServiceBean.getInstance();
+
     private static final String CNAME = LoginActivity.class.getName();
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -221,7 +226,7 @@ public class LoginActivity extends Activity
                 return;
             }
 
-            AuthenticationResponse response = userLogin.get();
+            AuthenticationResponse response = userLogin.get(bean.getTaskTimeout(), TimeUnit.SECONDS);
 
             if (DEBUG)
             {
@@ -298,6 +303,17 @@ public class LoginActivity extends Activity
             return;
         }
         catch (ExecutionException ex)
+        {
+			etUsername.setEnabled(true);
+			etPassword.setEnabled(true);
+			etUsername.setText("");
+			etPassword.setText("");
+			tvResponseValue.setTextColor(Color.RED);
+			tvResponseValue.setText(super.getString(R.string.txtSignonError));
+
+            return;
+        }
+        catch (TimeoutException tx)
         {
 			etUsername.setEnabled(true);
 			etPassword.setEnabled(true);

@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.android.ApplicationServiceBean;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove

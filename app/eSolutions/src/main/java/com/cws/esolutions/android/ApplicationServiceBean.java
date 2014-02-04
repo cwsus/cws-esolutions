@@ -43,6 +43,7 @@ import com.cws.esolutions.security.processors.dto.RequestHostInfo;
  */
 public class ApplicationServiceBean
 {
+    private int taskTimeout = 10;
     private RequestHostInfo reqInfo = null;
     private Properties secProperties = null;
     private Properties authProperties = null;
@@ -152,6 +153,19 @@ public class ApplicationServiceBean
         this.coreProperties = value;
     }
 
+    public final void setTaskTimeout(final int value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setTaskTimeout(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.taskTimeout = value;
+    }
+
     public final Map<String, DataSource> getDataSources()
     {
         final String methodName = ApplicationServiceBean.CNAME + "#getDataSources()";
@@ -220,6 +234,19 @@ public class ApplicationServiceBean
         }
 
         return this.coreProperties;
+    }
+
+    public final int getTaskTimeout()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getTaskTimeout()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.taskTimeout);
+        }
+
+        return this.taskTimeout;
     }
 
     @Override
