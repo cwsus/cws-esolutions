@@ -146,7 +146,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
         try
         {
-            List<String> securityData = authenticator.obtainSecurityData(userList.get(0)[0], userList.get(0)[1]);
+            List<String> securityData = authenticator.obtainSecurityData(userAccount.getGuid(), userAccount.getUsername());
 
             if (DEBUG)
             {
