@@ -1,39 +1,41 @@
-<manifest xmlns:android = "http://schemas.android.com/apk/res/android"
-    package = "com.cws.esolutions.android.ui"
-    android:versionCode = "1"
-    android:versionName = "1.0"
-    android:installLocation = "auto">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.cws.esolutions.android.ui"
+    android:versionCode="1"
+    android:versionName="1.0"
+    android:installLocation="auto">
 
-    <uses-sdk android:minSdkVersion = "8" android:targetSdkVersion = "16" />
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="1" />
 
-    <uses-permission android:name = "android.permission.INTERNET" />
-    <uses-permission android:name = "android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name = "android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name = "android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
-        android:allowBackup = "false"
-        android:icon = "@drawable/logo"
-        android:label = "@string/appName"
-        android:theme = "@style/AppTheme"
-        android:allowClearUserData = "true">
+        android:allowBackup="false"
+        android:icon="@drawable/logo"
+        android:label="@string/appName"
+        android:theme="@style/AppTheme"
+        android:allowClearUserData="true"
+        android:logo="@drawable/logo">
 
-        <activity android:name = "com.cws.esolutions.android.ui.MainActivity">
+        <activity android:name="com.cws.esolutions.android.ui.MainActivity">
             <intent-filter>
-                <action android:name = "android.intent.action.MAIN" />
-                <category android:name = "android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name = "com.cws.esolutions.android.ui.ApplicationManagementActivity" />
-        <activity android:name = "com.cws.esolutions.android.ui.DNSServiceActivity" />
-        <activity android:name = "com.cws.esolutions.android.ui.HomeActivity" />
-        <activity android:name = "com.cws.esolutions.android.ui.LoginActivity" />
-        <activity android:name = "com.cws.esolutions.android.ui.OnlineResetActivity" />
-        <activity android:name = "com.cws.esolutions.android.ui.ServiceManagementActivity" />
-        <activity android:name = "com.cws.esolutions.android.ui.ServiceMessagingActivity" />
-        <activity android:name = "com.cws.esolutions.android.ui.SystemCheckActivity" />
-        <activity android:name = "com.cws.esolutions.android.ui.SystemManagementActivity" />
-        <activity android:name = "com.cws.esolutions.android.ui.UserAccountActivity" />
-        <activity android:name = "com.cws.esolutions.android.ui.VirtualManagerActivity" />
+        <activity android:name="com.cws.esolutions.android.ui.ApplicationManagementActivity" />
+        <activity android:name="com.cws.esolutions.android.ui.DNSServiceActivity" />
+        <activity android:name="com.cws.esolutions.android.ui.HomeActivity" />
+        <activity android:name="com.cws.esolutions.android.ui.LoginActivity" />
+        <activity android:name="com.cws.esolutions.android.ui.OnlineResetActivity" />
+        <activity android:name="com.cws.esolutions.android.ui.ServiceManagementActivity" />
+        <activity android:name="com.cws.esolutions.android.ui.ServiceMessagingActivity" />
+        <activity android:name="com.cws.esolutions.android.ui.SystemCheckActivity" />
+        <activity android:name="com.cws.esolutions.android.ui.SystemManagementActivity" />
+        <activity android:name="com.cws.esolutions.android.ui.UserAccountActivity" />
+        <activity android:name="com.cws.esolutions.android.ui.VirtualManagerActivity" />
     </application>
 </manifest>

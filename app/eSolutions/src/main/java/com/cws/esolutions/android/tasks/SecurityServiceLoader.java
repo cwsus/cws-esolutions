@@ -26,29 +26,21 @@ package com.cws.esolutions.android.tasks;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.util.Map;
-
 import org.slf4j.Logger;
-
 import java.util.HashMap;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.Properties;
-
 import android.os.AsyncTask;
 import android.app.Activity;
-
 import javax.sql.DataSource;
-import javax.xml.parsers.FactoryConfigurationError;
-
 import org.slf4j.LoggerFactory;
 import org.apache.log4j.helpers.Loader;
-
 import android.content.res.AssetManager;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.commons.dbcp.BasicDataSource;
-
+import javax.xml.parsers.FactoryConfigurationError;
 import android.content.res.Resources.NotFoundException;
 
 import com.cws.esolutions.android.ui.R;
@@ -120,10 +112,7 @@ public class SecurityServiceLoader extends AsyncTask<Void, Void, Boolean>
             try
             {
                 System.out.println("load config");
-                java.net.URL logURL = new java.net.URL("/SecurityService/logging/logging.xml");
-                System.out.println(logURL);
-                System.out.println(logURL.getContent());
-                DOMConfigurator.configure(logURL);
+                DOMConfigurator.configure(Loader.getResource("SecurityService/logging/logging.xml"));
             }
             catch (FactoryConfigurationError fcx)
             {
