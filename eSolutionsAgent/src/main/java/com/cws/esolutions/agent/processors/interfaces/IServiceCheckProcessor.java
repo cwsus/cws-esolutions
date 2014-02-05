@@ -56,7 +56,6 @@ public interface IServiceCheckProcessor
     static final Logger DEBUGGER = LoggerFactory.getLogger(AgentConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(AgentConstants.ERROR_LOGGER + CNAME);
-    static final Logger WARN_RECORDER = LoggerFactory.getLogger(AgentConstants.WARN_LOGGER + CNAME);
 
     ServiceCheckResponse runSystemCheck(final ServiceCheckRequest request) throws ServiceCheckException;
 }
