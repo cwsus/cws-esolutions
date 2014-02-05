@@ -13,18 +13,6 @@
         </filter>
         <filter class="org.apache.log4j.varia.DenyAllFilter" />
     </appender>
-    <appender name="info-logger" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="/opt/cws/eSolutions/log/SecurityService-info.log" />
-        <param name="DatePattern" value=".yyyy-MM-dd" />
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
-        </layout>
-        <filter class="org.apache.log4j.varia.LevelMatchFilter">
-            <param name="LevelToMatch" value="INFO" />
-            <param name="AcceptOnMatch" value="true" />
-        </filter>
-        <filter class="org.apache.log4j.varia.DenyAllFilter" />
-    </appender>
     <appender name="error-logger" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="/opt/cws/eSolutions/log/SecurityService-error.log" />
         <param name="DatePattern" value=".yyyy-MM-dd" />
@@ -51,15 +39,11 @@
         <filter class="org.apache.log4j.varia.DenyAllFilter" />
     </appender>
 
-    <category name="AUDIT_RECORDER.com.cws.esolutions.security.service" additivity="false">
+    <category name="AUDIT_RECORDER.com.cws.esolutions.security" additivity="false">
         <priority value="INFO" />
         <appender-ref ref="audit-logger" />
     </category>
-    <category name="INFO_RECORDER.com.cws.esolutions.security.service" additivity="false">
-        <priority value="INFO" />
-        <appender-ref ref="info-logger" />
-    </category>
-    <category name="ERROR_RECORDER.com.cws.esolutions.security.service" additivity="false">
+    <category name="ERROR_RECORDER.com.cws.esolutions.security" additivity="false">
         <priority value="ERROR" />
         <appender-ref ref="error-logger" />
     </category>

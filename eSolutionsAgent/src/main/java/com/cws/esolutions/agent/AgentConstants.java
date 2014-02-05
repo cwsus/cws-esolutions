@@ -37,8 +37,6 @@ public class AgentConstants
 {
     /* Logging constants */
     public static final String DEBUGGER = "AGENT_DEBUGGER";
-    public static final String WARN_LOGGER = "WARN_RECORDER.";
-    public static final String INFO_LOGGER = "INFO_RECORDER.";
     public static final String ERROR_LOGGER = "ERROR_RECORDER.";
 
     /* Initialization Constants */

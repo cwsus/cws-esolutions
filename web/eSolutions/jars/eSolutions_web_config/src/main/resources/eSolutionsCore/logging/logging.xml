@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE log4j:configuration SYSTEM "./log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
-    <appender name="esolutionssvc-info" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${LOG_ROOT}/esolutionssvc-info.log" />
-        <param name="DatePattern" value="'.'yy-MM-dd" />
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
-        </layout>
-        <filter class="org.apache.log4j.varia.LevelMatchFilter">
-            <param name="LevelToMatch" value="INFO" />
-            <param name="AcceptOnMatch" value="true" />
-        </filter>
-        <filter class="org.apache.log4j.varia.DenyAllFilter" />
-    </appender>
     <appender name="esolutionssvc-error" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="${LOG_ROOT}/esolutionssvc-error.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
@@ -71,10 +59,6 @@
         </layout>
     </appender>
 
-    <category name="INFO_RECORDER.com.cws.esolutions.core" additivity="false">
-        <priority value="INFO" />
-        <appender-ref ref="esolutionssvc-info" />
-    </category>
     <category name="ERROR_RECORDER.com.cws.esolutions.core" additivity="false">
         <priority value="ERROR" />
         <appender-ref ref="esolutionssvc-error" />

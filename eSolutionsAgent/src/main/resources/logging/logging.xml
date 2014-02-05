@@ -2,18 +2,6 @@
 <!DOCTYPE log4j:configuration SYSTEM "./log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
     <!-- eSolutionsCore loggers -->
-    <appender name="agent-info" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${LOG_ROOT}/agent-info.log" />
-        <param name="DatePattern" value="'.'yy-MM-dd" />
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
-        </layout>
-        <filter class="org.apache.log4j.varia.LevelMatchFilter">
-            <param name="LevelToMatch" value="INFO" />
-            <param name="AcceptOnMatch" value="true" />
-        </filter>
-        <filter class="org.apache.log4j.varia.DenyAllFilter" />
-    </appender>
     <appender name="agent-error" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="${LOG_ROOT}/agent-error.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
@@ -40,10 +28,6 @@
         <filter class="org.apache.log4j.varia.DenyAllFilter" />
     </appender>
 
-    <category name="INFO_RECORDER.com.cws.esolutions.agent" additivity="false">
-        <priority value="INFO" />
-        <appender-ref ref="agent-info" />
-    </category>
     <category name="ERROR_RECORDER.com.cws.esolutions.agent" additivity="false">
         <priority value="ERROR" />
         <appender-ref ref="agent-error" />
