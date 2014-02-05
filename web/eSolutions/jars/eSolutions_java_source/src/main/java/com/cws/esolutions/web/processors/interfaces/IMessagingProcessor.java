@@ -58,7 +58,6 @@ public interface IMessagingProcessor
     static final String dateFormat = appConfig.getDateFormat();
     static final String CNAME = IMessagingProcessor.class.getName();
 
-    static final Logger WARN_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.WARN_LOGGER + CNAME);
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
     static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
