@@ -81,7 +81,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
         try
         {
-            List<String[]> userList = userManager.searchUser(request.getSearchData());
+            List<String[]> userList = userManager.searchUsers(request.getSearchData());
 
             if (DEBUG)
             {
