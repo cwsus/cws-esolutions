@@ -14,16 +14,8 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     <artifactId>eSolutionsWeb</artifactId>
     <version>${project.parent.version}</version>
     <packaging>ear</packaging>
-    <url>${project.parent.url}</url>
     <name>${project.artifactId}</name>
     <description>EAR file for eSolutions_web_source</description>
-
-    <scm>
-        <connection>${project.parent.scm.connection}</connection>
-        <developerConnection>${project.parent.scm.developerConnection}</developerConnection>
-        <tag>${project.parent.scm.tag}</tag>
-        <url>${project.parent.scm.url}</url>
-    </scm>
 
     <dependencies>
         <dependency>

@@ -111,7 +111,7 @@ public class OnlineResetActivity extends Activity
 
                 return;
             default:
-                this.startActivity(new Intent(this, LoginActivity.class));
+                this.startActivity(new Intent(OnlineResetActivity.this, LoginActivity.class));
                 super.finish();
 
                 return;
@@ -129,7 +129,7 @@ public class OnlineResetActivity extends Activity
         }
 
         // do signout here
-        this.startActivity(new Intent(this, LoginActivity.class));
+        super.startActivity(new Intent(OnlineResetActivity.this, LoginActivity.class));
         super.finish();
     }
 
@@ -147,7 +147,7 @@ public class OnlineResetActivity extends Activity
         AccountResetResponse response = null;
         AuthenticationData userSecurity = null;
 
-        final OnlineResetTask task = new OnlineResetTask(this);
+        final OnlineResetTask task = new OnlineResetTask(OnlineResetActivity.this);
         final TextView tvRequest = (TextView) super.findViewById(R.id.tvRequestInput);
         final EditText etRequest = (EditText) super.findViewById(R.id.etRequestInput);
         final EditText etSecQuesTwo = (EditText) super.findViewById(R.id.secQuestionTwo);

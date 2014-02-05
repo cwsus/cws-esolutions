@@ -44,7 +44,7 @@ public class SQLAuthenticator implements Authenticator
     private static final DataSource dataSource = (DataSource) svcBean.getAuthDataSource();
 
     /**
-     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String, java.util.List)
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String)
      */
     @Override
     public synchronized List<Object> performLogon(final String username, final String password) throws AuthenticatorException
@@ -148,7 +148,7 @@ public class SQLAuthenticator implements Authenticator
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainSecurityData(java.lang.String, java.lang.String, java.util.List)
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainSecurityData(java.lang.String, java.lang.String)
      */
     @Override
     public synchronized List<String> obtainSecurityData(final String userName, final String userGuid) throws AuthenticatorException
@@ -250,7 +250,7 @@ public class SQLAuthenticator implements Authenticator
     }
     
     /**
-     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainOtpSecret(java.lang.String, java.lang.String, java.lang.String)
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainOtpSecret(java.lang.String, java.lang.String)
      */
     @Override
     public synchronized String obtainOtpSecret(final String userName, final String userGuid) throws AuthenticatorException
@@ -339,7 +339,7 @@ public class SQLAuthenticator implements Authenticator
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#verifySecurityData(java.lang.String, java.lang.String, java.util.Map)
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#verifySecurityData(java.lang.String, java.lang.String, java.util.List)
      */
     @Override
     public synchronized boolean verifySecurityData(final String userId, final String userGuid, final List<String> attributes) throws AuthenticatorException

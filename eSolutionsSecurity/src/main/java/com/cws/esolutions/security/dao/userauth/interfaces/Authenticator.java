@@ -77,7 +77,9 @@ public interface Authenticator
      * a true response is returned back to the frontend signalling that further
      * authentication processing, if required, can take place.
      *
-     * @param request
+     * @param userId
+     * @param guid
+     * @param values
      * @return boolean
      * @throws AuthenticatorException
      */

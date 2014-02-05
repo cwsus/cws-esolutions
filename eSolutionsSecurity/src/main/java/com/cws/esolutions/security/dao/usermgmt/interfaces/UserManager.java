@@ -71,7 +71,7 @@ public interface UserManager
      * credentials - these will be configured by the user on their first
      * logon.
      *
-     * @param createRequest - An <code>ArrayList<String></code> containing the actual user information,
+     * @param userAccount - An <code>ArrayList<String></code> containing the actual user information,
      * such as username, first name, etc.
      * @param roles - An <code>ArrayList<String></code> containing the actual user information,
      * @return boolean - <code>true</code> if user creation was successful, <code>false</code> otherwise
@@ -105,8 +105,6 @@ public interface UserManager
      * <code>LASTNAME</code> - Search based on last name. Multiple accounts
      * may be returned as a result of this search, with or without wildcarding.
      *
-     * @param searchType - The <code>SearchRequestType</code> to utilize for this
-     * this search. This determines which <code>Filter</code> to use.
      * @param searchData - The search string to utilize within the <code>Filter</code>
      * that correlates to the provided <code>SearchRequestType</code>
      * @return List<String[]> - An <code>ArrayList</code> containing a string array of
@@ -122,7 +120,7 @@ public interface UserManager
      * provided information, an <code>UserManagementException</code> is thrown and returned to
      * the requestor.
      *
-     * @param userGuid - The Globally Unique IDentifier of the desired user
+     * @param userId - The Globally Unique IDentifier of the desired user
      * @return List<Object> - The associated user account data
      * @throws UserManagementException if an error occurs during the search process
      */
@@ -179,7 +177,7 @@ public interface UserManager
      * TODO: Add in the method description/comments
      *
      * @param userId - The username to perform the modification against
-     * @param role
+     * @param value
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
@@ -190,6 +188,7 @@ public interface UserManager
      * TODO: Add in the method description/comments
      *
      * @param userId - The username to perform the modification against
+     * @param isLocked
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
@@ -200,6 +199,8 @@ public interface UserManager
      * TODO: Add in the method description/comments
      *
      * @param userId - The username to perform the modification against
+     * @param isLocked
+     * @param increment
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
@@ -211,7 +212,6 @@ public interface UserManager
      *
      * @param userId - The username to perform the modification against
      * @param newPass
-     * @param expiry
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */
@@ -233,8 +233,8 @@ public interface UserManager
      * TODO: Add in the method description/comments
      *
      * @param userId - The username to perform the modification against
+     * @param addSecret
      * @param secret
-     * @param expiry
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException
      */

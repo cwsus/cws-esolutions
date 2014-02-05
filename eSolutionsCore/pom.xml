@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.cws</groupId>
         <artifactId>cws</artifactId>
-        <version>4.2</version>
+        <version>4.3</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -13,13 +13,9 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
-    <url>${project.parent.url}</url>
     <description>Core application software utilized by all applications in the eSolutions software suite</description>
 
     <scm>
-        <connection>${project.parent.scm.connection}</connection>
-        <developerConnection>${project.parent.scm.developerConnection}</developerConnection>
-        <tag>${project.parent.scm.tag}</tag>
         <url>https://github.com/cwsus/cws-esolutions/tree/master/eSolutionsCore</url>
     </scm>
 

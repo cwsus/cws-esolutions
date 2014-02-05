@@ -4,5 +4,5 @@
     android:dither="true"
     android:filter="true"
     android:gravity="bottom"
-    android:src="@drawable/img"
+    android:src="@drawable/logo"
     android:tileMode="disabled" />

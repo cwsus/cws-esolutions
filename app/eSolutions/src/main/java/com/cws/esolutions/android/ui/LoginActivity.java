@@ -79,20 +79,36 @@ public class LoginActivity extends Activity
         super.setContentView(R.layout.login);
         super.setTitle(R.string.loginTitle);
 
-        if (super.getIntent().getExtras() != null)
+        if ((super.getIntent().getExtras() != null) && (super.getIntent().getExtras().containsKey(Constants.USER_DATA)))
         {
-            if (super.getIntent().getExtras().containsKey(Constants.USER_DATA))
+            UserAccount userAccount = (UserAccount) super.getIntent().getExtras().getSerializable(Constants.USER_DATA);
+
+            if (DEBUG)
             {
-                UserAccount userAccount = (UserAccount) super.getIntent().getExtras().getSerializable(Constants.USER_DATA);
+                DEBUGGER.debug("UserAccount: {}", userAccount);
+            }
 
-                if (DEBUG)
+            if (userAccount != null)
+            {
+                switch (userAccount.getStatus())
                 {
-                    DEBUGGER.debug("UserAccount: {}", userAccount);
-                }
+                    case SUCCESS:
+                        Intent intent = new Intent(super.getBaseContext(), HomeActivity.class);
+                        intent.putExtra(Constants.USER_DATA, userAccount);
 
-                if (userAccount != null)
-                {
-                    // home
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Intent: {}", intent);
+                        }
+
+                        super.startActivity(intent);
+                        super.finish();
+
+                        return;
+                    default:
+                        super.getIntent().getExtras().remove(Constants.USER_DATA);
+
+                        return;
                 }
             }
         }
@@ -173,7 +189,7 @@ public class LoginActivity extends Activity
         final EditText etPassword = (EditText) super.findViewById(R.id.etPassword);
 		final TextView tvPassword = (TextView) super.findViewById(R.id.tvPassword);
         final TextView tvResponseValue = (TextView) super.findViewById(R.id.tvResponseValue);
-        final UserAuthenticationTask userLogin = new UserAuthenticationTask(this);
+        final UserAuthenticationTask userLogin = new UserAuthenticationTask(LoginActivity.this);
 
         if (DEBUG)
         {

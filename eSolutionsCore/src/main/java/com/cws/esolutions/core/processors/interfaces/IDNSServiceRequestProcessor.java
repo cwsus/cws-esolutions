@@ -30,10 +30,8 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.CoreServiceConstants;
-import com.cws.esolutions.core.config.xml.DNSConfig;
 import com.cws.esolutions.core.config.xml.SSHConfig;
 import com.cws.esolutions.core.dao.impl.ServerDataDAOImpl;
-import com.cws.esolutions.core.config.xml.ApplicationConfig;
 import com.cws.esolutions.core.dao.interfaces.IServerDataDAO;
 import com.cws.esolutions.core.processors.dto.DNSServiceRequest;
 import com.cws.esolutions.core.processors.dto.DNSServiceResponse;
@@ -57,9 +55,7 @@ public interface IDNSServiceRequestProcessor
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
     static final String CNAME = IDNSServiceRequestProcessor.class.getName();
     static final SSHConfig sshConfig = appBean.getConfigData().getSshConfig();
-    static final DNSConfig dnsConfig = appBean.getConfigData().getDNSConfig();
     static final IAccessControlService accessControl = new AccessControlServiceImpl();
-    static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

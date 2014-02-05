@@ -84,7 +84,7 @@ public final class DAOInitializer
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + DAOInitializer.CNAME);
 
     /**
-     * @param authRepo - The <code>AuthRepo</code> object containing connection information
+     * @param properties - The <code>AuthRepo</code> object containing connection information
      * @param isContainer - A <code>boolean</code> flag indicating if this is in a container
      * @param bean - The <code>SecurityServiceBean</code> that holds the connection
      * @throws SecurityServiceException if an exception occurs opening the connection
@@ -249,7 +249,7 @@ public final class DAOInitializer
     }
 
     /**
-     * @param authRepo - The <code>AuthRepo</code> object containing connection information
+     * @param properties - The <code>AuthRepo</code> object containing connection information
      * @param isContainer - A <code>boolean</code> flag indicating if this is in a container
      * @param bean - The <code>SecurityServiceBean</code> that holds the connection
      * @throws SecurityServiceException if an exception occurs closing the connection

@@ -1,3 +1,4 @@
 <resources>
     <string name = "virtualManagerTitle">eSolutions - Virtual Service Manager</string>
+    <string name = "strManageGuest">Manage</string>
 </resources>

@@ -51,7 +51,7 @@ public class LDAPAuthenticator implements Authenticator
     private static final String CNAME = LDAPAuthenticator.class.getName();
 
     /**
-     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String, java.util.List)
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String)
      */
     @Override
     public synchronized List<Object> performLogon(final String username, final String password) throws AuthenticatorException
@@ -235,7 +235,7 @@ public class LDAPAuthenticator implements Authenticator
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainSecurityData(java.lang.String, java.lang.String, java.util.List)
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainSecurityData(java.lang.String, java.lang.String)
      */
     @Override
     public synchronized List<String> obtainSecurityData(final String userId, final String userGuid) throws AuthenticatorException
@@ -338,7 +338,7 @@ public class LDAPAuthenticator implements Authenticator
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainOtpSecret(java.lang.String, java.lang.String, java.lang.String)
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainOtpSecret(java.lang.String, java.lang.String)
      */
     @Override
     public synchronized String obtainOtpSecret(final String userId, final String userGuid) throws AuthenticatorException
@@ -431,7 +431,7 @@ public class LDAPAuthenticator implements Authenticator
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#verifySecurityData(java.lang.String, java.lang.String, java.util.Map)
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#verifySecurityData(java.lang.String, java.lang.String, java.util.List)
      */
     @Override
     public synchronized boolean verifySecurityData(final String userId, final String userGuid, List<String> values) throws AuthenticatorException

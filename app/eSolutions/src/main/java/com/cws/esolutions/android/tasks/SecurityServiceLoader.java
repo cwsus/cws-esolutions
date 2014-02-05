@@ -35,12 +35,9 @@ import android.os.AsyncTask;
 import android.app.Activity;
 import javax.sql.DataSource;
 import org.slf4j.LoggerFactory;
-import org.apache.log4j.helpers.Loader;
 import android.content.res.AssetManager;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.commons.dbcp.BasicDataSource;
-import javax.xml.parsers.FactoryConfigurationError;
 import android.content.res.Resources.NotFoundException;
 
 import com.cws.esolutions.android.ui.R;

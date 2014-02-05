@@ -31,12 +31,10 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.view.MenuItem;
 import android.content.Intent;
-import android.widget.TextView;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.android.ApplicationServiceBean;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -48,8 +46,6 @@ import com.cws.esolutions.android.ApplicationServiceBean;
  */
 public class ServiceManagementActivity extends Activity
 {
-    private static final ApplicationServiceBean bean = ApplicationServiceBean.getInstance();
-
     private static final String CNAME = ServiceManagementActivity.class.getName();
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -69,29 +65,52 @@ public class ServiceManagementActivity extends Activity
         super.setTitle(R.string.mainTitle);
         super.setContentView(R.layout.servicemanagement);
 
-        final UserAccount userAccount = (UserAccount) super.getIntent().getExtras().getSerializable(Constants.USER_DATA);
-
-        if (DEBUG)
+        if ((super.getIntent().getExtras() != null) && (super.getIntent().getExtras().containsKey(Constants.USER_DATA)))
         {
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-        }
-
-        if (userAccount == null)
-        {
-            // no user, die
-            this.startActivity(new Intent(this, LoginActivity.class));
-            super.finish();
-        }
-        else
-        {
-            TextView showWelcome = (TextView) findViewById(R.id.tvShowWelcome);
-            showWelcome.setText("Welcome, " + userAccount.getDisplayName());
+            UserAccount userAccount = (UserAccount) super.getIntent().getExtras().getSerializable(Constants.USER_DATA);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("TextView: {}", showWelcome);
+                DEBUGGER.debug("UserAccount: {}", userAccount);
+            }
+
+            if (userAccount != null)
+            {
+                switch (userAccount.getStatus())
+                {
+                    case SUCCESS:
+                        // do stuff
+
+                        return;
+                    default:
+                        super.getIntent().removeExtra(Constants.USER_DATA);
+                        super.getIntent().getExtras().remove(Constants.USER_DATA);
+                        super.startActivity(new Intent(ServiceManagementActivity.this, LoginActivity.class));
+                        super.finish();
+
+                        return;
+                }
             }
         }
+        else
+        {
+            super.getIntent().getExtras().remove(Constants.USER_DATA);
+            super.startActivity(new Intent(ServiceManagementActivity.this, LoginActivity.class));
+            super.finish();
+        }
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        final String methodName = ServiceManagementActivity.CNAME + "#onBackPressed()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        super.finish();
     }
 
     @Override
@@ -132,7 +151,7 @@ public class ServiceManagementActivity extends Activity
         switch (item.getItemId())
         {
             case R.id.applicationManagement:
-                intent = new Intent(this, ApplicationManagementActivity.class);
+                intent = new Intent(ServiceManagementActivity.this, ApplicationManagementActivity.class);
                 intent.putExtra(Constants.USER_DATA, userAccount);
 
                 if (DEBUG)
@@ -140,13 +159,12 @@ public class ServiceManagementActivity extends Activity
                     DEBUGGER.debug("Intent: {}", intent);
                 }
 
-                this.startActivity(intent);
-
+                super.startActivity(intent);
                 super.finish();
 
                 return true;
             case R.id.dnsService:
-                intent = new Intent(this, DNSServiceActivity.class);
+                intent = new Intent(ServiceManagementActivity.this, DNSServiceActivity.class);
                 intent.putExtra(Constants.USER_DATA, userAccount);
 
                 if (DEBUG)
@@ -154,13 +172,12 @@ public class ServiceManagementActivity extends Activity
                     DEBUGGER.debug("Intent: {}", intent);
                 }
 
-                this.startActivity(intent);
-
+                super.startActivity(intent);
                 super.finish();
 
                 return true;
             case R.id.home:
-                intent = new Intent(this, HomeActivity.class);
+                intent = new Intent(ServiceManagementActivity.this, HomeActivity.class);
                 intent.putExtra(Constants.USER_DATA, userAccount);
 
                 if (DEBUG)
@@ -168,13 +185,12 @@ public class ServiceManagementActivity extends Activity
                     DEBUGGER.debug("Intent: {}", intent);
                 }
 
-                this.startActivity(intent);
-
+                super.startActivity(intent);
                 super.finish();
 
                 return true;
             case R.id.serviceMessaging:
-                intent = new Intent(this, ServiceMessagingActivity.class);
+                intent = new Intent(ServiceManagementActivity.this, ServiceMessagingActivity.class);
                 intent.putExtra(Constants.USER_DATA, userAccount);
 
                 if (DEBUG)
@@ -182,13 +198,12 @@ public class ServiceManagementActivity extends Activity
                     DEBUGGER.debug("Intent: {}", intent);
                 }
 
-                this.startActivity(intent);
-
+                super.startActivity(intent);
                 super.finish();
 
                 return true;
             case R.id.systemManagement:
-                intent = new Intent(this, SystemManagementActivity.class);
+                intent = new Intent(ServiceManagementActivity.this, SystemManagementActivity.class);
                 intent.putExtra(Constants.USER_DATA, userAccount);
 
                 if (DEBUG)
@@ -196,13 +211,12 @@ public class ServiceManagementActivity extends Activity
                     DEBUGGER.debug("Intent: {}", intent);
                 }
 
-                this.startActivity(intent);
-
+                super.startActivity(intent);
                 super.finish();
 
                 return true;
             case R.id.userAccount:
-                intent = new Intent(this, UserAccountActivity.class);
+                intent = new Intent(ServiceManagementActivity.this, UserAccountActivity.class);
                 intent.putExtra(Constants.USER_DATA, userAccount);
 
                 if (DEBUG)
@@ -210,13 +224,12 @@ public class ServiceManagementActivity extends Activity
                     DEBUGGER.debug("Intent: {}", intent);
                 }
 
-                this.startActivity(intent);
-
+                super.startActivity(intent);
                 super.finish();
 
                 return true;
             case R.id.userManagement:
-                intent = new Intent(this, UserManagementActivity.class);
+                intent = new Intent(ServiceManagementActivity.this, UserManagementActivity.class);
                 intent.putExtra(Constants.USER_DATA, userAccount);
 
                 if (DEBUG)
@@ -224,13 +237,12 @@ public class ServiceManagementActivity extends Activity
                     DEBUGGER.debug("Intent: {}", intent);
                 }
 
-                this.startActivity(intent);
-
+                super.startActivity(intent);
                 super.finish();
 
                 return true;
             case R.id.virtualManager:
-                intent = new Intent(this, VirtualManagerActivity.class);
+                intent = new Intent(ServiceManagementActivity.this, VirtualManagerActivity.class);
                 intent.putExtra(Constants.USER_DATA, userAccount);
 
                 if (DEBUG)
@@ -238,8 +250,7 @@ public class ServiceManagementActivity extends Activity
                     DEBUGGER.debug("Intent: {}", intent);
                 }
 
-                this.startActivity(intent);
-
+                super.startActivity(intent);
                 super.finish();
 
                 return true;
@@ -247,7 +258,7 @@ public class ServiceManagementActivity extends Activity
                 super.getIntent().removeExtra(Constants.USER_DATA);
                 super.getIntent().getExtras().remove(Constants.USER_DATA);
 
-                intent = new Intent(this, LoginActivity.class);
+                intent = new Intent(ServiceManagementActivity.this, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
                 if (DEBUG)
@@ -255,8 +266,7 @@ public class ServiceManagementActivity extends Activity
                     DEBUGGER.debug("Intent: {}", intent);
                 }
 
-                this.startActivity(intent);
-
+                super.startActivity(intent);
                 super.finish();
 
                 return true;

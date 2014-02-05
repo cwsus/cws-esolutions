@@ -55,7 +55,7 @@ public class FileKeyManager implements KeyManager
     private static final String CNAME = FileKeyManager.class.getName();
 
     /**
-     * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#returnKeys(java.lang.String, java.lang.String)
+     * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#returnKeys(java.lang.String)
      */
     @Override
     public synchronized KeyPair returnKeys(final String guid) throws KeyManagementException
@@ -152,7 +152,7 @@ public class FileKeyManager implements KeyManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#createKeys(java.lang.String, java.lang.String)
+     * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#createKeys(java.lang.String)
      */
     @Override
     public synchronized boolean createKeys(final String guid) throws KeyManagementException
@@ -254,7 +254,7 @@ public class FileKeyManager implements KeyManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#removeKeys(java.lang.String, java.lang.String)
+     * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#removeKeys(java.lang.String)
      */
     @Override
     public synchronized boolean removeKeys(final String guid) throws KeyManagementException

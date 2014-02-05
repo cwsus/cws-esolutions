@@ -792,7 +792,6 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             DEBUGGER.debug("ServerManagementRequest: {}", request);
         }
 
-        UserAccount svcAccount = null;
         UserAccount searchAccount = null;
         AccountControlRequest searchRequest = null;
         AccountControlResponse searchResponse = null;
@@ -876,21 +875,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                             DEBUGGER.debug("UserAccount: {}", searchAccount);
                         }
 
-                        svcAccount = new UserAccount();
-                        svcAccount.setUsername(serviceAccount.get(0));
-                        svcAccount.setGuid(serviceAccount.get(1));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("UserAccount: {}", svcAccount);
-                        }
-
                         searchRequest = new AccountControlRequest();
                         searchRequest.setHostInfo(request.getRequestInfo());
                         searchRequest.setUserAccount(searchAccount);
                         searchRequest.setApplicationName(request.getApplicationName());
                         searchRequest.setApplicationId(request.getApplicationId());
-                        searchRequest.setRequestor(svcAccount);
+                        searchRequest.setRequestor(userAccount);
 
                         if (DEBUG)
                         {

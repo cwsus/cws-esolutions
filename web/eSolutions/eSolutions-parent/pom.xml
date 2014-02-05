@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.cws</groupId>
         <artifactId>cws</artifactId>
-        <version>4.2</version>
+        <version>4.3</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -15,13 +15,9 @@
     <artifactId>eSolutions-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <url>${project.parent.url}</url>
     <description>eSolutions</description>
 
     <scm>
-        <connection>${project.parent.scm.connection}</connection>
-        <developerConnection>${project.parent.scm.developerConnection}</developerConnection>
-        <tag>${project.parent.scm.tag}</tag>
         <url>https://github.com/cwsus/cws-esolutions/tree/master/web/eSolutions</url>
     </scm>
 

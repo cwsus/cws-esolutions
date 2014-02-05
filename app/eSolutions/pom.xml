@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.cws</groupId>
         <artifactId>cws</artifactId>
-        <version>4.2</version>
+        <version>4.3</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -15,28 +15,17 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>apk</packaging>
     <name>${project.artifactId}</name>
-    <url>${project.parent.url}</url>
     <description>Android Application code covering eSolutions web frontend</description>
 
     <scm>
-        <connection>${project.parent.scm.connection}</connection>
-        <developerConnection>${project.parent.scm.developerConnection}</developerConnection>
-        <tag>${project.parent.scm.tag}</tag>
         <url>https://github.com/cwsus/cws-esolutions/tree/master/app/eSolutions</url>
     </scm>
 
 	<properties>
 		<mqtt.version>1.6</mqtt.version>
-        <logback.version>1.0.10-2</logback.version>
 	</properties>
 
     <dependencies>
-	    <dependency>
-	        <groupId>junit</groupId>
-	        <artifactId>junit</artifactId>
-	        <version>4.11</version>
-            <scope>provided</scope>
-	    </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
@@ -72,21 +61,6 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-		<dependency>
-			<groupId>com.github.tony19</groupId>
-			<artifactId>logback-android-core</artifactId>
-			<version>${logback.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.github.tony19</groupId>
-			<artifactId>logback-android-classic</artifactId>
-			<version>${logback.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>

@@ -25,17 +25,14 @@ package com.cws.esolutions.core.processors.interfaces;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.config.xml.AgentConfig;
-import com.cws.esolutions.core.dao.impl.ServerDataDAOImpl;
 import com.cws.esolutions.core.dao.impl.ServiceDataDAOImpl;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
-import com.cws.esolutions.core.dao.interfaces.IServerDataDAO;
 import com.cws.esolutions.core.dao.interfaces.IServiceDataDAO;
 import com.cws.esolutions.core.dao.impl.ApplicationDataDAOImpl;
 import com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO;
@@ -56,7 +53,6 @@ import com.cws.esolutions.core.processors.exception.ApplicationManagementExcepti
  */
 public interface IApplicationManagementProcessor
 {
-    static final IServerDataDAO serverDao = new ServerDataDAOImpl();
     static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
     static final IServiceDataDAO serviceDao = new ServiceDataDAOImpl();
@@ -65,9 +61,6 @@ public interface IApplicationManagementProcessor
     static final AgentConfig agentConfig = appBean.getConfigData().getAgentConfig();
     static final IAccessControlService accessControl = new AccessControlServiceImpl();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();    
-    static final List<String> serviceAccount = appBean.getConfigData().getAppConfig().getServiceAccount();
-
-    static final int CONNECT_TIMEOUT = appConfig.getConnectTimeout();
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

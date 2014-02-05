@@ -25,21 +25,13 @@ package com.cws.esolutions.core.processors.interfaces;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.CoreServiceConstants;
-import com.cws.esolutions.core.config.xml.SSHConfig;
 import com.cws.esolutions.core.config.xml.AgentConfig;
-import com.cws.esolutions.core.config.xml.ScriptConfig;
-import com.cws.esolutions.core.dao.impl.ServerDataDAOImpl;
-import com.cws.esolutions.core.dao.impl.ServiceDataDAOImpl;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
-import com.cws.esolutions.core.dao.interfaces.IServerDataDAO;
-import com.cws.esolutions.core.dao.interfaces.IServiceDataDAO;
 import com.cws.esolutions.core.processors.dto.SystemCheckRequest;
 import com.cws.esolutions.core.processors.dto.SystemCheckResponse;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
@@ -58,23 +50,15 @@ import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 public interface ISystemCheckProcessor
 {
     static final IAuditProcessor auditor = new AuditProcessorImpl();
-    static final IServerDataDAO serverDAO = new ServerDataDAOImpl();
-    static final IServiceDataDAO serviceDAO = new ServiceDataDAOImpl();
-    static final IAccessControlService accessControl = new AccessControlServiceImpl();
-
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
-    static final List<String> serviceAccount = appBean.getConfigData().getAppConfig().getServiceAccount();
-
-    static final SSHConfig sshConfig = appBean.getConfigData().getSshConfig();
+    static final String CNAME = IServerManagementProcessor.class.getName();
     static final AgentConfig agentConfig = appBean.getConfigData().getAgentConfig();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
-    static final ScriptConfig scriptConfig = appBean.getConfigData().getScriptConfig();
-
-    static final String CNAME = IServerManagementProcessor.class.getName();
+    static final IAccessControlService accessControl = new AccessControlServiceImpl();
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
+    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + ISystemCheckProcessor.CNAME);
 
     /**
      * 

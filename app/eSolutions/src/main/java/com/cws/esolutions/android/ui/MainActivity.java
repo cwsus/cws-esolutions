@@ -54,7 +54,7 @@ public class MainActivity extends Activity
     private static final String CNAME = MainActivity.class.getName();
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.DEBUGGER + MainActivity.CNAME);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + MainActivity.CNAME);
 
     @Override
     public void onCreate(final Bundle bundle)
@@ -71,20 +71,20 @@ public class MainActivity extends Activity
         super.setTitle(R.string.mainTitle);
         super.setContentView(R.layout.main);
 
-        final ApplicationLoader loader = new ApplicationLoader(this);
+        final ApplicationLoader loader = new ApplicationLoader(MainActivity.this);
         loader.execute();
 
-        final SecurityServiceLoader secLoader = new SecurityServiceLoader(this);
+        final SecurityServiceLoader secLoader = new SecurityServiceLoader(MainActivity.this);
         secLoader.execute();
 
-        final CoreServiceLoader coreLoader = new CoreServiceLoader(this);
+        final CoreServiceLoader coreLoader = new CoreServiceLoader(MainActivity.this);
         coreLoader.execute();
 
         try
         {
             if ((loader.isCancelled()) || (!(loader.get())))
             {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
                     .setMessage("An error occurred while initializing the application. Cannot continue.")
                     .setCancelable(false)
                     .setNeutralButton("Exit",
@@ -102,14 +102,14 @@ public class MainActivity extends Activity
                 return;
             }
 
-            this.startActivity(new Intent(this, LoginActivity.class));
+            MainActivity.this.startActivity(new Intent(MainActivity.this, LoginActivity.class));
             super.finish();
         }
         catch (InterruptedException ix)
         {
             ERROR_RECORDER.error(ix.getMessage(), ix);
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this)
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
                 .setMessage("An error occurred while initializing the application. Cannot continue.")
                 .setCancelable(false)
                 .setNeutralButton("Exit",
@@ -130,7 +130,7 @@ public class MainActivity extends Activity
         {
             ERROR_RECORDER.error(ex.getMessage(), ex);
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this)
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
                 .setMessage("An error occurred while initializing the application. Cannot continue.")
                 .setCancelable(false)
                 .setNeutralButton("Exit",
