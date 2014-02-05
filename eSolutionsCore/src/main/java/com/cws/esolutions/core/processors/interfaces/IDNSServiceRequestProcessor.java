@@ -63,7 +63,6 @@ public interface IDNSServiceRequestProcessor
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger INFO_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.INFO_LOGGER + CNAME);
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
 
     /**
