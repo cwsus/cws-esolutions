@@ -153,7 +153,7 @@ public class DNSRequestTask extends AsyncTask<String, Object, List<String>>
             DEBUGGER.debug("Value: {}", value);
         }
 
-        final TextView responseView = ((TextView) this.reqActivity.findViewById(R.id.tvResponseList));
+        final TextView responseView = ((TextView) this.reqActivity.findViewById(R.id.tvResponseValue));
 
         if ((value != null) && (value.size() != 0))
         {
