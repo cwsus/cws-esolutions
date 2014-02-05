@@ -27,6 +27,7 @@
 
 	<properties>
 		<mqtt.version>1.6</mqtt.version>
+        <logback.version>1.0.10-2</logback.version>
 	</properties>
 
     <dependencies>
@@ -71,20 +72,21 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>${commons-logging.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>${log4j.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
+		<dependency>
+			<groupId>com.github.tony19</groupId>
+			<artifactId>logback-android-core</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.tony19</groupId>
+			<artifactId>logback-android-classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>

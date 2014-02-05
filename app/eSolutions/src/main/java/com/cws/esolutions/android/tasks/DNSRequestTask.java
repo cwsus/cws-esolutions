@@ -61,7 +61,7 @@ public class DNSRequestTask extends AsyncTask<String, Object, List<String>>
     private static final String CNAME = DNSRequestTask.class.getName();
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + DNSRequestTask.class.getSimpleName());
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + DNSRequestTask.CNAME);
 
     public DNSRequestTask(final Activity value)
     {
@@ -100,7 +100,7 @@ public class DNSRequestTask extends AsyncTask<String, Object, List<String>>
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("Value: {}", (Object) value);
         }
 
         List<String> resultsList = new ArrayList<String>();

@@ -76,7 +76,7 @@ public class UserAuthenticationTask extends AsyncTask<String, Integer, Authentic
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + UserAuthenticationTask.class.getSimpleName());
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + UserAuthenticationTask.CNAME);
 
     public UserAuthenticationTask(final Activity request)
     {
@@ -300,7 +300,7 @@ public class UserAuthenticationTask extends AsyncTask<String, Integer, Authentic
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Request: {}", request);
+            DEBUGGER.debug("Request: {}", (Object) request);
         }
 
         AuthenticationResponse response = null;

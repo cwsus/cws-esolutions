@@ -62,5 +62,5 @@ public final class Constants
 
     /* Logging constants */
     public static final String DEBUGGER = "DEBUGGER";
-    public static final String ERROR_LOGGER = "ERROR.";
+    public static final String ERROR_LOGGER = "ERROR_RECORDER.";
 }

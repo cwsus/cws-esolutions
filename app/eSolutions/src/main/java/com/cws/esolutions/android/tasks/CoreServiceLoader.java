@@ -69,7 +69,7 @@ public class CoreServiceLoader extends AsyncTask<Void, Void, Boolean>
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CoreServiceLoader.class.getSimpleName());
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CoreServiceLoader.CNAME);
 
     public CoreServiceLoader(final Activity activity)
     {
@@ -166,7 +166,6 @@ public class CoreServiceLoader extends AsyncTask<Void, Void, Boolean>
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Context: {}", value);
         }
 
         boolean isLoaded = false;
@@ -240,7 +239,7 @@ public class CoreServiceLoader extends AsyncTask<Void, Void, Boolean>
 
             if (DEBUG)
             {
-                DEBUGGER.debug("String[]: {}", coreDataSources);
+                DEBUGGER.debug("String[]: {}", (Object) coreDataSources);
             }
 
             if ((coreDataSources != null) && (coreDataSources.length != 0))

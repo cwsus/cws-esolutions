@@ -45,6 +45,7 @@ import com.cws.esolutions.security.processors.dto.AuthenticationData;
 public class AccountResetRequest implements Serializable
 {
     private int count = 0;
+    private String searchData = null;
     private String resetSmsCode = null;
     private String applicationId = null;
     private String resetRequestId = null;
@@ -73,31 +74,6 @@ public class AccountResetRequest implements Serializable
         this.hostInfo = value;
     }
 
-    public final void setUserAccount(final UserAccount value)
-    {
-        final String methodName = AccountResetRequest.CNAME + "#setLoginType(final UserAccount value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.userAccount = value;
-    }
-
-    public final void setUserSecurity(final AuthenticationData value)
-    {
-        final String methodName = AccountResetRequest.CNAME + "#setLoginType(final AuthenticationData value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        this.userSecurity = value;
-    }
-
     public final void setApplicationName(final String value)
     {
         final String methodName = AccountResetRequest.CNAME + "#setApplicationName(final String value)";
@@ -122,6 +98,44 @@ public class AccountResetRequest implements Serializable
         }
 
         this.applicationId = value;
+    }
+
+    public final void setSearchData(final String value)
+    {
+        final String methodName = AccountResetRequest.CNAME + "#setSearchData(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.searchData = value;
+    }
+
+    public final void setUserAccount(final UserAccount value)
+    {
+        final String methodName = AccountResetRequest.CNAME + "#setLoginType(final UserAccount value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.userAccount = value;
+    }
+
+    public final void setUserSecurity(final AuthenticationData value)
+    {
+        final String methodName = AccountResetRequest.CNAME + "#setLoginType(final AuthenticationData value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        this.userSecurity = value;
     }
 
     public final void setResetRequestId(final String value)
@@ -174,31 +188,6 @@ public class AccountResetRequest implements Serializable
         return this.hostInfo;
     }
 
-    public final UserAccount getUserAccount()
-    {
-        final String methodName = AccountResetRequest.CNAME + "#getLoginType()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.userAccount);
-        }
-
-        return this.userAccount;
-    }
-
-    public final AuthenticationData getUserSecurity()
-    {
-        final String methodName = AccountResetRequest.CNAME + "#getUserSecurity()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        return this.userSecurity;
-    }
-
     public final String getApplicationName()
     {
         final String methodName = AccountResetRequest.CNAME + "#getApplicationName()";
@@ -223,6 +212,44 @@ public class AccountResetRequest implements Serializable
         }
 
         return this.applicationId;
+    }
+
+    public final String getSearchData()
+    {
+        final String methodName = AccountResetRequest.CNAME + "#getSearchData()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.searchData);
+        }
+
+        return this.searchData;
+    }
+
+    public final UserAccount getUserAccount()
+    {
+        final String methodName = AccountResetRequest.CNAME + "#getLoginType()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.userAccount);
+        }
+
+        return this.userAccount;
+    }
+
+    public final AuthenticationData getUserSecurity()
+    {
+        final String methodName = AccountResetRequest.CNAME + "#getUserSecurity()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        return this.userSecurity;
     }
 
     public final int getCount()

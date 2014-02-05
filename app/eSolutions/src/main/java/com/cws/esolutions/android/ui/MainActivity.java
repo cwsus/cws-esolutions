@@ -54,7 +54,7 @@ public class MainActivity extends Activity
     private static final String CNAME = MainActivity.class.getName();
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.DEBUGGER + MainActivity.class.getSimpleName());
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.DEBUGGER + MainActivity.CNAME);
 
     @Override
     public void onCreate(final Bundle bundle)

@@ -11,6 +11,7 @@
 -repackageclasses ''
 -allowaccessmodification
 -keepattributes *Annotation*
+-dontwarn ch.qos.logback.core.net.*
 
 -keep public class * extends android.app.Activity
 -keep public class * extends android.app.Application

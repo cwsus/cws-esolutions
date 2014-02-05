@@ -71,7 +71,7 @@ public final class NetworkUtils
 
         if (DEBUG)
         {
-            DEBUGGER.debug("NetworkInfo[]: {}", networkInfo);
+            DEBUGGER.debug("NetworkInfo[]: {}", (Object) networkInfo);
         }
 
         if ((networkInfo.length == 0) || (networkInfo == null))

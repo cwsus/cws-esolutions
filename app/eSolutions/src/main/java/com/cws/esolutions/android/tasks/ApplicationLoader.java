@@ -60,7 +60,7 @@ public class ApplicationLoader extends AsyncTask<Void, Void, Boolean>
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + ApplicationLoader.class.getSimpleName());
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + ApplicationLoader.CNAME);
 
     public ApplicationLoader(final Activity activity)
     {
@@ -130,7 +130,6 @@ public class ApplicationLoader extends AsyncTask<Void, Void, Boolean>
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Context: {}", value);
         }
 
         boolean isLoaded = false;

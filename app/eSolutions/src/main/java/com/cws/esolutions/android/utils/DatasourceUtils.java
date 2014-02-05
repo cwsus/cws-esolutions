@@ -79,7 +79,7 @@ public final class DatasourceUtils
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + DatasourceUtils.class.getSimpleName());
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + DatasourceUtils.CNAME);
 
     /**
      * @param authRepo - The <code>AuthRepo</code> object containing connection information

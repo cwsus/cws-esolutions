@@ -77,7 +77,7 @@ public class OnlineResetTask extends AsyncTask<String, Integer, AccountResetResp
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + OnlineResetTask.class.getSimpleName());
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + OnlineResetTask.CNAME);
 
     public OnlineResetTask(final Activity request)
     {
@@ -294,7 +294,7 @@ public class OnlineResetTask extends AsyncTask<String, Integer, AccountResetResp
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Request: {}", request);
+            DEBUGGER.debug("Request: {}", (Object) request);
         }
 
         AccountResetResponse resetRes = null;
@@ -308,18 +308,10 @@ public class OnlineResetTask extends AsyncTask<String, Integer, AccountResetResp
             switch (ResetRequestType.valueOf(request[0]))
             {
                 case USERNAME:
-                    reqAccount = new UserAccount();
-                    reqAccount.setEmailAddr(request[1]);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("UserAccount: {}", reqAccount);
-                    }
-
                     resetReq.setApplicationId(Constants.APPLICATION_ID);
                     resetReq.setApplicationName(Constants.APPLICATION_NAME);
                     resetReq.setHostInfo(appBean.getReqInfo());
-                    resetReq.setUserAccount(reqAccount);
+                    resetReq.setSearchData(request[1]);
 
                     if (DEBUG)
                     {
@@ -335,19 +327,11 @@ public class OnlineResetTask extends AsyncTask<String, Integer, AccountResetResp
 
                     break;
                 case PASSWORD:
-                    reqAccount = new UserAccount();
-                    reqAccount.setUsername(request[1]);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("UserAccount: {}", reqAccount);
-                    }
-
                     AccountResetRequest acctReq = new AccountResetRequest();
                     acctReq.setApplicationId(Constants.APPLICATION_ID);
                     acctReq.setApplicationName(Constants.APPLICATION_NAME);
                     acctReq.setHostInfo(appBean.getReqInfo());
-                    acctReq.setUserAccount(reqAccount);
+                    acctReq.setSearchData(request[1]);
 
                     if (DEBUG)
                     {

@@ -73,17 +73,15 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
         AccountResetResponse response = new AccountResetResponse();
 
         final RequestHostInfo reqInfo = request.getHostInfo();
-        final UserAccount userAccount = request.getUserAccount();
 
         if (DEBUG)
         {
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            DEBUGGER.debug("UserAccount: {}", userAccount);
         }
 
         try
         {
-            List<String[]> userList = userManager.searchUsers(userAccount.getEmailAddr());
+            List<String[]> userList = userManager.searchUser(request.getSearchData());
 
             if (DEBUG)
             {

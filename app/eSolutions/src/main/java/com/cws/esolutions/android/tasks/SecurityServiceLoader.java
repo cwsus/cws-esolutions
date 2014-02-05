@@ -72,7 +72,7 @@ public class SecurityServiceLoader extends AsyncTask<Void, Void, Boolean>
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + SecurityServiceLoader.class.getSimpleName());
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + SecurityServiceLoader.CNAME);
 
     public SecurityServiceLoader(final Activity activity)
     {
@@ -107,16 +107,6 @@ public class SecurityServiceLoader extends AsyncTask<Void, Void, Boolean>
             {
                 System.out.println("cancel no nw");
                 super.cancel(true);
-            }
-
-            try
-            {
-                System.out.println("load config");
-                DOMConfigurator.configure(Loader.getResource("SecurityService/logging/logging.xml"));
-            }
-            catch (FactoryConfigurationError fcx)
-            {
-                ERROR_RECORDER.error("No logging");
             }
 
             AssetManager assetMgr = this.reqActivity.getResources().getAssets();
@@ -210,7 +200,6 @@ public class SecurityServiceLoader extends AsyncTask<Void, Void, Boolean>
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Context: {}", value);
         }
 
         boolean isLoaded = false;
@@ -298,7 +287,7 @@ public class SecurityServiceLoader extends AsyncTask<Void, Void, Boolean>
 
             if (DEBUG)
             {
-                DEBUGGER.debug("String[]: {}", secDataSources);
+                DEBUGGER.debug("String[]: {}", (Object) secDataSources);
             }
 
             if ((secDataSources != null) && (secDataSources.length != 0))
