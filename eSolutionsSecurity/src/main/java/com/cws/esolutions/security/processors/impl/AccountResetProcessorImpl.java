@@ -156,16 +156,25 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
 
+            UserAccount resAccount = new UserAccount();
+            resAccount.setGuid(securityData.get(0));
+            resAccount.setUsername(securityData.get(1));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("UserAccount: {}", resAccount);
+            }
+
             AuthenticationData userSecurity = new AuthenticationData();
-            userSecurity.setSecQuestionOne(securityData.get(0));
-            userSecurity.setSecQuestionTwo(securityData.get(1));
+            userSecurity.setSecQuestionOne(securityData.get(2));
+            userSecurity.setSecQuestionTwo(securityData.get(3));
 
             if (DEBUG)
             {
                 DEBUGGER.debug("AuthenticationData: {}", userSecurity);
             }
 
-            response.setUserAccount(userAccount);
+            response.setUserAccount(resAccount);
             response.setRequestStatus(SecurityRequestStatus.SUCCESS);
             response.setUserSecurity(userSecurity);
 

@@ -307,15 +307,16 @@ public class LDAPAuthenticator implements Authenticator
 
             SearchResultEntry entry = searchResult.getSearchEntries().get(0);
 
-            userSecurity = new ArrayList<>();
-            for (String attribute : authData.getEntries())
-            {
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Attribute: {}", attribute);
-                }
+            userSecurity = new ArrayList<>(
+                Arrays.asList(
+                    entry.getAttributeValue(authData.getCommonName()),
+                    entry.getAttributeValue(authData.getUserId()),
+                    entry.getAttributeValue(authData.getSecQuestionOne()),
+                    entry.getAttributeValue(authData.getSecQuestionTwo())));
 
-                userSecurity.add(entry.getAttributeValue(attribute));
+            if (DEBUG)
+            {
+                DEBUGGER.debug("List<String>: {}", userSecurity);
             }
         }
         catch (LDAPException lx)
