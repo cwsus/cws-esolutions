@@ -26,17 +26,24 @@ package com.cws.esolutions.android.ui;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.util.List;
+
 import org.slf4j.Logger;
+
 import android.view.View;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.MenuItem;
 import android.content.Intent;
 import android.widget.TextView;
+
 import org.slf4j.LoggerFactory;
+
 import android.widget.RelativeLayout;
+
 import java.util.concurrent.TimeUnit;
+
 import android.view.View.OnClickListener;
+
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.ExecutionException;
 
@@ -65,7 +72,6 @@ public class VirtualManagerActivity extends Activity
     private static final String CNAME = VirtualManagerActivity.class.getName();
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + VirtualManagerActivity.CNAME);
 
     @Override
     public void onCreate(final Bundle bundle)
@@ -84,6 +90,7 @@ public class VirtualManagerActivity extends Activity
 
         int x = 0;
 
+        final TextView resultView = (TextView) super.findViewById(R.id.tvResponseValue);
         final RelativeLayout layout = (RelativeLayout) super.findViewById(R.layout.virtualmanager);
 
         if (DEBUG)
@@ -117,241 +124,251 @@ public class VirtualManagerActivity extends Activity
                                 DEBUGGER.debug("ServerManagementResponse: {}", response);
                             }
 
-                            if ((response != null) && (response.getRequestStatus() == CoreServicesStatus.SUCCESS))
+                            if ((response == null) || (response.getRequestStatus() != CoreServicesStatus.SUCCESS))
                             {
-                                List<Server> serverList = response.getServerList();
+                                resultView.setText(R.string.errorMessage);
+
+                                return;
+                            }
+
+                            List<Server> serverList = response.getServerList();
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("List<Server>: {}", serverList);
+                            }
+
+                            for (Server server : serverList)
+                            {
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("Server: {}", server);
+                                }
+
+                                final TextView tName = new TextView(VirtualManagerActivity.this);
+                                tName.setText(server.getOperHostName());
 
                                 if (DEBUG)
                                 {
-                                    DEBUGGER.debug("List<Server>: {}", serverList);
+                                    DEBUGGER.debug("TextView: {}", tName);
                                 }
 
-                                for (Server server : serverList)
+                                final TextView tGuid = new TextView(VirtualManagerActivity.this);
+                                tGuid.setText(R.string.strManageGuest);
+                                tGuid.setHint(server.getServerGuid());
+                                tGuid.setClickable(true);
+                                tGuid.setOnClickListener(new OnClickListener()
                                 {
-                                    if (DEBUG)
+                                    @Override
+                                    public void onClick(final View view)
                                     {
-                                        DEBUGGER.debug("Server: {}", server);
-                                    }
-
-                                    final TextView tName = new TextView(VirtualManagerActivity.this);
-                                    tName.setText(server.getOperHostName());
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("TextView: {}", tName);
-                                    }
-
-                                    final TextView tGuid = new TextView(VirtualManagerActivity.this);
-                                    tGuid.setText(R.string.strManageGuest);
-                                    tGuid.setHint(server.getServerGuid());
-                                    tGuid.setClickable(true);
-                                    tGuid.setOnClickListener(new OnClickListener()
-                                    {
-                                        @Override
-                                        public void onClick(final View view)
+                                        final String methodName = VirtualManagerActivity.CNAME + "#onClick(final OnClickListener request)";
+                                        
+                                        if (DEBUG)
                                         {
-                                            final String methodName = VirtualManagerActivity.CNAME + "#onClick(final OnClickListener request)";
-                                            
+                                        	DEBUGGER.debug(methodName);
+                                            DEBUGGER.debug("Value: ", view);
+                                        }
+
+                                        try
+                                        {
+                                            ServerManagementTask task = new ServerManagementTask(VirtualManagerActivity.this);
+                                            task.execute(ServerManagementType.RETRIEVE.name(), tGuid.getHint().toString());
+
+                                            ServerManagementResponse response = (ServerManagementResponse) task.get(bean.getTaskTimeout(), TimeUnit.SECONDS);
+
                                             if (DEBUG)
                                             {
-                                            	DEBUGGER.debug(methodName);
-                                                DEBUGGER.debug("Value: ", view);
+                                                DEBUGGER.debug("ServerManagementResponse: {}", response);
                                             }
 
-                                            try
+                                            if ((response != null) && (response.getRequestStatus() == CoreServicesStatus.SUCCESS))
                                             {
-                                                ServerManagementTask task = new ServerManagementTask(VirtualManagerActivity.this);
-                                                task.execute(ServerManagementType.RETRIEVE.name(), tGuid.getHint().toString());
-
-                                                ServerManagementResponse response = (ServerManagementResponse) task.get(bean.getTaskTimeout(), TimeUnit.SECONDS);
+                                                Server resServer = response.getServer();
 
                                                 if (DEBUG)
                                                 {
-                                                    DEBUGGER.debug("ServerManagementResponse: {}", response);
+                                                    DEBUGGER.debug("Server: {}", resServer);
                                                 }
 
-                                                if ((response != null) && (response.getRequestStatus() == CoreServicesStatus.SUCCESS))
+                                                TextView serverType = new TextView(VirtualManagerActivity.this);
+                                                serverType.setText(resServer.getServerType().name());
+
+                                                TextView serverStatus = new TextView(VirtualManagerActivity.this);
+                                                serverStatus.setText(resServer.getServerStatus().name());
+
+                                                TextView serverRegion = new TextView(VirtualManagerActivity.this);
+                                                serverRegion.setText(resServer.getServerRegion().name());
+
+                                                TextView operHostName = new TextView(VirtualManagerActivity.this);
+                                                operHostName.setText(resServer.getOperHostName());
+
+                                                TextView operIpAddress = new TextView(VirtualManagerActivity.this);
+                                                operIpAddress.setText(resServer.getOperIpAddress());
+
+                                                TextView osName = new TextView(VirtualManagerActivity.this);
+                                                osName.setText(resServer.getOsName());
+
+                                                TextView serialNumber = new TextView(VirtualManagerActivity.this);
+                                                serialNumber.setText(resServer.getSerialNumber());
+
+                                                TextView cpuCount = new TextView(VirtualManagerActivity.this);
+                                                cpuCount.setText(resServer.getCpuCount());
+
+                                                TextView cpuType = new TextView(VirtualManagerActivity.this);
+                                                cpuType.setText(resServer.getCpuType());
+
+                                                TextView installedMemory = new TextView(VirtualManagerActivity.this);
+                                                installedMemory.setText(resServer.getInstalledMemory());
+
+                                                TextView service = new TextView(VirtualManagerActivity.this);
+                                                service.setText(resServer.getService().getName());
+
+                                                TextView serverRack = new TextView(VirtualManagerActivity.this);
+                                                serverRack.setText(resServer.getServerRack());
+
+                                                TextView domainName = new TextView(VirtualManagerActivity.this);
+                                                domainName.setText(resServer.getDomainName());
+
+                                                TextView serverModel = new TextView(VirtualManagerActivity.this);
+                                                serverModel.setText(resServer.getServerModel());
+
+                                                TextView rackPosition = new TextView(VirtualManagerActivity.this);
+                                                rackPosition.setText(resServer.getRackPosition());
+
+                                                TextView networkPartition = new TextView(VirtualManagerActivity.this);
+                                                networkPartition.setText(resServer.getNetworkPartition().name());
+
+                                                TextView mgmtHostName = new TextView(VirtualManagerActivity.this);
+                                                mgmtHostName.setText(resServer.getMgmtHostName());
+
+                                                TextView mgmtIpAddress = new TextView(VirtualManagerActivity.this);
+                                                mgmtIpAddress.setText(resServer.getMgmtIpAddress());
+
+                                                TextView bkHostName = new TextView(VirtualManagerActivity.this);
+                                                bkHostName.setText(resServer.getBkHostName());
+
+                                                TextView bkIpAddress = new TextView(VirtualManagerActivity.this);
+                                                bkIpAddress.setText(resServer.getBkIpAddress());
+
+                                                TextView nasHostName = new TextView(VirtualManagerActivity.this);
+                                                nasHostName.setText(resServer.getNasHostName());
+
+                                                TextView nasIpAddress = new TextView(VirtualManagerActivity.this);
+                                                nasIpAddress.setText(resServer.getNasIpAddress());
+
+                                                TextView natAddress = new TextView(VirtualManagerActivity.this);
+                                                natAddress.setText(resServer.getNatAddress());
+
+                                                TextView serverComments = new TextView(VirtualManagerActivity.this);
+                                                serverComments.setText(resServer.getServerComments());
+
+                                                TextView assignedEngineer = new TextView(VirtualManagerActivity.this);
+                                                assignedEngineer.setText(resServer.getAssignedEngineer().getDisplayName());
+
+                                                if (DEBUG)
                                                 {
-                                                    Server resServer = response.getServer();
-
-                                                    if (DEBUG)
-                                                    {
-                                                        DEBUGGER.debug("Server: {}", resServer);
-                                                    }
-
-                                                    TextView serverType = new TextView(VirtualManagerActivity.this);
-                                                    serverType.setText(resServer.getServerType().name());
-
-                                                    TextView serverStatus = new TextView(VirtualManagerActivity.this);
-                                                    serverStatus.setText(resServer.getServerStatus().name());
-
-                                                    TextView serverRegion = new TextView(VirtualManagerActivity.this);
-                                                    serverRegion.setText(resServer.getServerRegion().name());
-
-                                                    TextView operHostName = new TextView(VirtualManagerActivity.this);
-                                                    operHostName.setText(resServer.getOperHostName());
-
-                                                    TextView operIpAddress = new TextView(VirtualManagerActivity.this);
-                                                    operIpAddress.setText(resServer.getOperIpAddress());
-
-                                                    TextView osName = new TextView(VirtualManagerActivity.this);
-                                                    osName.setText(resServer.getOsName());
-
-                                                    TextView serialNumber = new TextView(VirtualManagerActivity.this);
-                                                    serialNumber.setText(resServer.getSerialNumber());
-
-                                                    TextView cpuCount = new TextView(VirtualManagerActivity.this);
-                                                    cpuCount.setText(resServer.getCpuCount());
-
-                                                    TextView cpuType = new TextView(VirtualManagerActivity.this);
-                                                    cpuType.setText(resServer.getCpuType());
-
-                                                    TextView installedMemory = new TextView(VirtualManagerActivity.this);
-                                                    installedMemory.setText(resServer.getInstalledMemory());
-
-                                                    TextView service = new TextView(VirtualManagerActivity.this);
-                                                    service.setText(resServer.getService().getName());
-
-                                                    TextView serverRack = new TextView(VirtualManagerActivity.this);
-                                                    serverRack.setText(resServer.getServerRack());
-
-                                                    TextView domainName = new TextView(VirtualManagerActivity.this);
-                                                    domainName.setText(resServer.getDomainName());
-
-                                                    TextView serverModel = new TextView(VirtualManagerActivity.this);
-                                                    serverModel.setText(resServer.getServerModel());
-
-                                                    TextView rackPosition = new TextView(VirtualManagerActivity.this);
-                                                    rackPosition.setText(resServer.getRackPosition());
-
-                                                    TextView networkPartition = new TextView(VirtualManagerActivity.this);
-                                                    networkPartition.setText(resServer.getNetworkPartition().name());
-
-                                                    TextView mgmtHostName = new TextView(VirtualManagerActivity.this);
-                                                    mgmtHostName.setText(resServer.getMgmtHostName());
-
-                                                    TextView mgmtIpAddress = new TextView(VirtualManagerActivity.this);
-                                                    mgmtIpAddress.setText(resServer.getMgmtIpAddress());
-
-                                                    TextView bkHostName = new TextView(VirtualManagerActivity.this);
-                                                    bkHostName.setText(resServer.getBkHostName());
-
-                                                    TextView bkIpAddress = new TextView(VirtualManagerActivity.this);
-                                                    bkIpAddress.setText(resServer.getBkIpAddress());
-
-                                                    TextView nasHostName = new TextView(VirtualManagerActivity.this);
-                                                    nasHostName.setText(resServer.getNasHostName());
-
-                                                    TextView nasIpAddress = new TextView(VirtualManagerActivity.this);
-                                                    nasIpAddress.setText(resServer.getNasIpAddress());
-
-                                                    TextView natAddress = new TextView(VirtualManagerActivity.this);
-                                                    natAddress.setText(resServer.getNatAddress());
-
-                                                    TextView serverComments = new TextView(VirtualManagerActivity.this);
-                                                    serverComments.setText(resServer.getServerComments());
-
-                                                    TextView assignedEngineer = new TextView(VirtualManagerActivity.this);
-                                                    assignedEngineer.setText(resServer.getAssignedEngineer().getDisplayName());
-
-                                                    if (DEBUG)
-                                                    {
-                                                        DEBUGGER.debug("TextView: {}", serverType);
-                                                        DEBUGGER.debug("TextView: {}", serverStatus);
-                                                        DEBUGGER.debug("TextView: {}", serverRegion);
-                                                        DEBUGGER.debug("TextView: {}", operHostName);
-                                                        DEBUGGER.debug("TextView: {}", operIpAddress);
-                                                        DEBUGGER.debug("TextView: {}", osName);
-                                                        DEBUGGER.debug("TextView: {}", serialNumber);
-                                                        DEBUGGER.debug("TextView: {}", cpuCount);
-                                                        DEBUGGER.debug("TextView: {}", cpuType);
-                                                        DEBUGGER.debug("TextView: {}", installedMemory);
-                                                        DEBUGGER.debug("TextView: {}", service);
-                                                        DEBUGGER.debug("TextView: {}", serverRack);
-                                                        DEBUGGER.debug("TextView: {}", domainName);
-                                                        DEBUGGER.debug("TextView: {}", serverModel);
-                                                        DEBUGGER.debug("TextView: {}", rackPosition);
-                                                        DEBUGGER.debug("TextView: {}", networkPartition);
-                                                        DEBUGGER.debug("TextView: {}", mgmtHostName);
-                                                        DEBUGGER.debug("TextView: {}", mgmtIpAddress);
-                                                        DEBUGGER.debug("TextView: {}", bkHostName);
-                                                        DEBUGGER.debug("TextView: {}", bkIpAddress);
-                                                        DEBUGGER.debug("TextView: {}", nasHostName);
-                                                        DEBUGGER.debug("TextView: {}", nasIpAddress);
-                                                        DEBUGGER.debug("TextView: {}", natAddress);
-                                                        DEBUGGER.debug("TextView: {}", serverComments);
-                                                        DEBUGGER.debug("TextView: {}", assignedEngineer);
-                                                    }
-
-                                                    layout.removeView(tName);
-                                                    layout.removeView(tGuid);
-                                                    layout.addView(serverType);
-                                                    layout.addView(serverStatus);
-                                                    layout.addView(serverRegion);
-                                                    layout.addView(operHostName);
-                                                    layout.addView(operIpAddress);
-                                                    layout.addView(osName);
-                                                    layout.addView(serialNumber);
-                                                    layout.addView(cpuCount);
-                                                    layout.addView(cpuType);
-                                                    layout.addView(installedMemory);
-                                                    layout.addView(service);
-                                                    layout.addView(serverRack);
-                                                    layout.addView(domainName);
-                                                    layout.addView(serverModel);
-                                                    layout.addView(rackPosition);
-                                                    layout.addView(networkPartition);
-                                                    layout.addView(mgmtHostName);
-                                                    layout.addView(mgmtIpAddress);
-                                                    layout.addView(bkHostName);
-                                                    layout.addView(bkIpAddress);
-                                                    layout.addView(nasHostName);
-                                                    layout.addView(nasIpAddress);
-                                                    layout.addView(natAddress);
-                                                    layout.addView(serverComments);
-                                                    layout.addView(assignedEngineer);
-
-                                                    return;
+                                                    DEBUGGER.debug("TextView: {}", serverType);
+                                                    DEBUGGER.debug("TextView: {}", serverStatus);
+                                                    DEBUGGER.debug("TextView: {}", serverRegion);
+                                                    DEBUGGER.debug("TextView: {}", operHostName);
+                                                    DEBUGGER.debug("TextView: {}", operIpAddress);
+                                                    DEBUGGER.debug("TextView: {}", osName);
+                                                    DEBUGGER.debug("TextView: {}", serialNumber);
+                                                    DEBUGGER.debug("TextView: {}", cpuCount);
+                                                    DEBUGGER.debug("TextView: {}", cpuType);
+                                                    DEBUGGER.debug("TextView: {}", installedMemory);
+                                                    DEBUGGER.debug("TextView: {}", service);
+                                                    DEBUGGER.debug("TextView: {}", serverRack);
+                                                    DEBUGGER.debug("TextView: {}", domainName);
+                                                    DEBUGGER.debug("TextView: {}", serverModel);
+                                                    DEBUGGER.debug("TextView: {}", rackPosition);
+                                                    DEBUGGER.debug("TextView: {}", networkPartition);
+                                                    DEBUGGER.debug("TextView: {}", mgmtHostName);
+                                                    DEBUGGER.debug("TextView: {}", mgmtIpAddress);
+                                                    DEBUGGER.debug("TextView: {}", bkHostName);
+                                                    DEBUGGER.debug("TextView: {}", bkIpAddress);
+                                                    DEBUGGER.debug("TextView: {}", nasHostName);
+                                                    DEBUGGER.debug("TextView: {}", nasIpAddress);
+                                                    DEBUGGER.debug("TextView: {}", natAddress);
+                                                    DEBUGGER.debug("TextView: {}", serverComments);
+                                                    DEBUGGER.debug("TextView: {}", assignedEngineer);
                                                 }
-                                            }
-                                            catch (TimeoutException tx)
-                                            {
-                                                ERROR_RECORDER.error(tx.getMessage(), tx);
-                                            }
-                                            catch (InterruptedException ix)
-                                            {
-                                                ERROR_RECORDER.error(ix.getMessage(), ix);
-                                            }
-                                            catch (ExecutionException ee)
-                                            {
-                                                ERROR_RECORDER.error(ee.getMessage(), ee);
+
+                                                layout.removeView(tName);
+                                                layout.removeView(tGuid);
+                                                layout.addView(serverType);
+                                                layout.addView(serverStatus);
+                                                layout.addView(serverRegion);
+                                                layout.addView(operHostName);
+                                                layout.addView(operIpAddress);
+                                                layout.addView(osName);
+                                                layout.addView(serialNumber);
+                                                layout.addView(cpuCount);
+                                                layout.addView(cpuType);
+                                                layout.addView(installedMemory);
+                                                layout.addView(service);
+                                                layout.addView(serverRack);
+                                                layout.addView(domainName);
+                                                layout.addView(serverModel);
+                                                layout.addView(rackPosition);
+                                                layout.addView(networkPartition);
+                                                layout.addView(mgmtHostName);
+                                                layout.addView(mgmtIpAddress);
+                                                layout.addView(bkHostName);
+                                                layout.addView(bkIpAddress);
+                                                layout.addView(nasHostName);
+                                                layout.addView(nasIpAddress);
+                                                layout.addView(natAddress);
+                                                layout.addView(serverComments);
+                                                layout.addView(assignedEngineer);
+
+                                                return;
                                             }
                                         }
-                                    });
+                                        catch (TimeoutException tx)
+                                        {
+                                            resultView.setText(R.string.errorMessage);
 
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("TextView: {}", tGuid);
+                                            return;
+                                        }
+                                        catch (InterruptedException ix)
+                                        {
+                                            resultView.setText(R.string.errorMessage);
+
+                                            return;
+                                        }
+                                        catch (ExecutionException ee)
+                                        {
+                                            resultView.setText(R.string.errorMessage);
+
+                                            return;
+                                        }
                                     }
+                                });
 
-                                    layout.addView(tName, x);
-                                    layout.addView(tGuid, x);
-
-                                    x++;
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("TextView: {}", tGuid);
                                 }
+
+                                layout.addView(tName, x);
+                                layout.addView(tGuid, x);
+
+                                x++;
                             }
                         }
                         catch (TimeoutException tx)
                         {
-                            ERROR_RECORDER.error(tx.getMessage(), tx);
+                            resultView.setText(R.string.errorMessage);
                         }
                         catch (InterruptedException ix)
                         {
-                            ERROR_RECORDER.error(ix.getMessage(), ix);
+                            resultView.setText(R.string.errorMessage);
                         }
                         catch (ExecutionException ee)
                         {
-                            ERROR_RECORDER.error(ee.getMessage(), ee);
+                            resultView.setText(R.string.errorMessage);
                         }
 
                         return;

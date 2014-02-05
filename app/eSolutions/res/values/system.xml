@@ -4,4 +4,5 @@
     <string name = "coreConfigFile">eSolutionsCore/config/ServiceConfig.properties</string>
     <string name = "authRepoConfig">SecurityService/repository.properties</string>
     <string name = "btnSubmit">Submit</string>
+    <string name = "errorMessage">A system failure occurred while processing your request. Please try again. If the problem persists, please contact your administrator.</string>
 </resources>

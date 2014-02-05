@@ -32,15 +32,20 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.view.MenuItem;
 import android.content.Intent;
-import android.content.Context;
 import org.slf4j.LoggerFactory;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.view.inputmethod.InputMethodManager;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.ExecutionException;
 
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.android.tasks.DNSRequestTask;
+import com.cws.esolutions.core.processors.dto.DNSRecord;
+import com.cws.esolutions.android.ApplicationServiceBean;
+import com.cws.esolutions.core.processors.dto.DNSServiceResponse;
+import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -52,6 +57,8 @@ import com.cws.esolutions.android.tasks.DNSRequestTask;
  */
 public class DNSServiceActivity extends Activity
 {
+    private static final ApplicationServiceBean bean = ApplicationServiceBean.getInstance();
+
     private static final String CNAME = DNSServiceActivity.class.getName();
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -85,8 +92,6 @@ public class DNSServiceActivity extends Activity
                 switch (userAccount.getStatus())
                 {
                     case SUCCESS:
-                        // do stuff
-
                         return;
                     default:
                         super.getIntent().removeExtra(Constants.USER_DATA);
@@ -295,30 +300,74 @@ public class DNSServiceActivity extends Activity
         final EditText hostName = (EditText) super.findViewById(R.id.etHostName);
         final EditText serverName = (EditText) super.findViewById(R.id.etDNSServer);
         final DNSRequestTask dnsRequest = new DNSRequestTask(DNSServiceActivity.this);
+        final TextView resultView = (TextView) super.findViewById(R.id.tvResponseValue);
 
         if (DEBUG)
         {
             DEBUGGER.debug("EditText: {}", hostName);
             DEBUGGER.debug("EditText: {}", serverName);
             DEBUGGER.debug("DNSRequestTask: {}", dnsRequest);
+            DEBUGGER.debug("TextView: {}", resultView);
         }
 
-        InputMethodManager imm = (InputMethodManager) super.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(serverName.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
-
-        dnsRequest.execute(hostName.getText().toString(), serverName.getText().toString());
-
-        if (dnsRequest.isCancelled())
+        try
         {
-            TextView resultView = new TextView(DNSServiceActivity.this);
-            resultView.setText("No network connection is available.");
+            dnsRequest.execute(hostName.getText().toString(), serverName.getText().toString());
+
+            if (dnsRequest.isCancelled())
+            {
+                resultView.setText(R.string.errorMessage);
+
+                return;
+            }
+
+            DNSServiceResponse response = (DNSServiceResponse) dnsRequest.get(bean.getTaskTimeout(), TimeUnit.SECONDS);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("TextView: {}", resultView);
+                DEBUGGER.debug("DNSServiceResponse: {}", response);
             }
 
-            super.setContentView(resultView);
+            if ((response == null) || (response.getRequestStatus() != CoreServicesStatus.SUCCESS))
+            {
+                resultView.setText(R.string.errorMessage);
+
+                return;
+            }
+
+            if ((response.getDnsRecords() != null) && (response.getDnsRecords().size() != 0))
+            {
+                // multiple records were returned
+                for (DNSRecord record : response.getDnsRecords())
+                {
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("DNSRecord: {}", record);
+                    }
+
+                    resultView.setText(record.toString());
+                }
+            }
+            else if (response.getDnsRecord() != null)
+            {
+                resultView.setText(response.getDnsRecord().toString());
+            }
+            else
+            {
+                resultView.setText(R.string.errorMessage);
+            }
+        }
+        catch (TimeoutException tx)
+        {
+            resultView.setText(R.string.errorMessage);
+        }
+        catch (InterruptedException ix)
+        {
+            resultView.setText(R.string.errorMessage);
+        }
+        catch (ExecutionException ee)
+        {
+            resultView.setText(R.string.errorMessage);
         }
     }
 }
