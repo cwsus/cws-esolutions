@@ -25,34 +25,40 @@
     <!-- the authentication repository. the objects below -->
     <!-- are the *minimum* required to populate the user object -->
     <auth-data>
-        <entryName>cn</entryName> <!-- need this -->
-        <entryName>uid</entryName> <!-- need this -->
-        <entryName>userPassword</entryName> <!-- this is ONLY used during authentication. it is NOT kept in memory -->
-        <entryName>cwsfailedpwdcount</entryName> <!-- need this -->
-        <entryName>cwsexpirydate</entryName> <!-- need this -->
-        <entryName>cwslastlogin</entryName> <!-- need this -->
-        <entryName>sn</entryName> <!-- need this -->
-        <entryName>givenName</entryName> <!-- need this -->
-        <entryName>displayName</entryName> <!--  we could remove this and just use the surname, but what if someone wants a different display ? -->
-        <entryName>email</entryName> <!-- need this -->
-        <entryName>cwssecq1</entryName> <!-- only used for authentication (specifically, an online reset) -->
-        <entryName>cwssecq2</entryName> <!-- only used for authentication (specifically, an online reset) -->
-        <entryName>cwssecans1</entryName> <!-- only used for authentication (specifically, an online reset) -->
-        <entryName>cwssecans2</entryName> <!-- only used for authentication (specifically, an online reset) -->
-        <entryName>cwsissuspended</entryName> <!-- need this -->
-        <entryName>cwsisolrsetup</entryName> <!-- only used for authentication (specifically, an online reset) -->
-        <entryName>cwsisolrlocked</entryName> <!-- only used for authentication (specifically, an online reset) -->
-        <entryName>cwspublickey</entryName> <!-- only used during file signature operations. not used any other time and not stored during auth -->
-        <entryName>pager</entryName> <!-- need this -->
-        <entryName>telephoneNumber</entryName> <!-- need this -->
-        <entryName>cwssecretkey</entryName>
+        <baseObjectClass>inetOrgPerson</baseObjectClass>
+		<repositoryBaseDN>dc=caspersbox,dc=com</repositoryBaseDN>
+		<repositoryUserBase>organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com</repositoryUserBase> 
+		<repositoryRoleBase>organizationalUnitName=Groups,organizationName=CWS US,dc=caspersbox,dc=com</repositoryRoleBase> 
+        <userId>uid</userId> <!-- need this -->
+        <userPassword>userPassword</userPassword> <!-- this is ONLY used during authentication. it is NOT kept in memory -->
+        <userRole>cwsrole</userRole> <!-- we need this (although we dont need it for an ldap repo -->
+        <lockCount>cwsfailedpwdcount</lockCount> <!-- need this -->
+        <lastLogin>cwslastlogin</lastLogin> <!-- need this -->
+        <surname>sn</surname> <!-- need this -->
+        <givenName>givenName</givenName> <!-- need this -->
+        <expiryDate>cwsexpirydate</expiryDate> <!-- need this -->
+        <secQuestionOne>cwssecq1</secQuestionOne> <!-- only used for authentication (specifically, an online reset) -->
+        <secQuestionTwo>cwssecq2</secQuestionTwo> <!-- only used for authentication (specifically, an online reset) -->
+        <secAnswerOne>cwssecans1</secAnswerOne> <!-- only used for authentication (specifically, an online reset) -->
+        <secAnswerTwo>cwssecans2</secAnswerTwo> <!-- only used for authentication (specifically, an online reset) -->
+        <emailAddr>email</emailAddr> <!-- need this -->
+        <isSuspended>cwsissuspended</isSuspended> <!-- need this -->
+        <commonName>cn</commonName> <!-- need this -->
+        <olrSetupReq>cwsisolrsetup</olrSetupReq> <!-- only used for authentication (specifically, an online reset) -->
+        <olrLocked>cwsisolrlocked</olrLocked> <!-- only used for authentication (specifically, an online reset) -->
+        <displayName>displayName</displayName> <!--  we could remove this and just use the surname, but what if someone wants a different display ? -->
+        <publicKey>cwspublickey</publicKey> <!-- only used during file signature operations. not used any other time and not stored during auth -->
+        <pagerNumber>pager</pagerNumber> <!-- need this -->
+        <telephoneNumber>telephoneNumber</telephoneNumber> <!-- need this -->
+        <secret>cwssecretkey</secret>
+        <memberOf>memberOf</memberOf>
     </auth-data>
 
     <!-- only required if file-based signing is used. the keys arent used for anything else. -->
     <key-config>
         <keyAlgorithm>RSA</keyAlgorithm> <!-- keygen algorithm -->
         <keySize>4096</keySize> <!-- if algorithm is DSA, this MUST be 1024: http://docs.oracle.com/javase/6/docs/technotes/guides/security/SunProviders.html -->
-        <keyDirectory>/opt/eSolutions/keys</keyDirectory> <!-- this is ONLY required if you're using a file-based keymanager -->
+        <keyDirectory>/opt/cws/eSolutions/keys</keyDirectory> <!-- this is ONLY required if you're using a file-based keymanager -->
         <keyManager>com.cws.esolutions.security.keymgmt.impl.LDAPKeyManager</keyManager>
     </key-config>
 

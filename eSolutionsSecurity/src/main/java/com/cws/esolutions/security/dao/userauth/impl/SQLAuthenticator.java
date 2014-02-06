@@ -183,7 +183,7 @@ public class SQLAuthenticator implements Authenticator
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -286,7 +286,7 @@ public class SQLAuthenticator implements Authenticator
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.execute())

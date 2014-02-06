@@ -135,6 +135,4 @@ public interface IUserSecurityInformationDAO
      * @throws SQLException if an exception occurs during insertion process
      */
     boolean verifySmsForReset(final String commonName, final String resetId, final String smsCode) throws SQLException;
-
-    Object getAuthenticationData(final String commonName, final String dataType) throws SQLException;
 }

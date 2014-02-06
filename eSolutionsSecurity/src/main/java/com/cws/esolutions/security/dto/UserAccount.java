@@ -191,7 +191,7 @@ public class UserAccount implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("Value: {}", (Object) value);
         }
 
         this.groups = value;
@@ -425,7 +425,7 @@ public class UserAccount implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.groups);
+            DEBUGGER.debug("Value: {}", (Object) this.groups);
         }
 
         return this.groups;

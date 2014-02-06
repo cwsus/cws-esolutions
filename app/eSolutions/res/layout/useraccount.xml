@@ -1,6 +1,53 @@
 <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
     xmlns:tools = "http://schemas.android.com/tools"
 	android:background="@drawable/background">
+
+    <TextView
+        style = "@style/textView"
+        android:id = "@+id/tvUsername"
+        android:layout_marginTop = "10dp"
+        android:text = "@string/tvUsername" />
+    <TextView
+        style = "@style/textView"
+        android:id = "@+id/tvDisplayname"
+        android:layout_below="@+id/tvUsername"
+        android:text = "@string/displayName" />
+    <TextView
+        style = "@style/textView"
+        android:id = "@+id/givenName"
+        android:layout_below="@+id/tvDisplayname"
+        android:text = "@string/givenName" />
+    <TextView
+        style = "@style/textView"
+        android:id = "@+id/surname"
+        android:layout_below="@+id/givenName"
+        android:text = "@string/surname" />
+    <TextView
+        style = "@style/linkText"
+        android:id = "@+id/telephoneNumber"
+        android:layout_below="@+id/surname"
+        android:text = "@string/telephoneNumber"
+        android:clickable = "true"
+        android:onClick = "loadForgotPassword" />
+    <TextView
+        style = "@style/linkText"
+        android:id = "@+id/pagerNumber"
+        android:layout_below="@+id/telephoneNumber"
+        android:text = "@string/pagerNumber"
+        android:clickable = "true"
+        android:onClick = "loadForgotPassword" />
+    <TextView
+        style = "@style/linkText"
+        android:id = "@+id/email"
+        android:layout_below="@+id/pagerNumber"
+        android:text = "@string/email"
+        android:clickable = "true"
+        android:onClick = "loadForgotPassword" />
+    <TextView
+        android:id="@+id/role"
+        style="@style/textView"
+        android:layout_below="@+id/email"
+        android:text="@string/role" />
     <TextView
         android:id = "@+id/tvResponseValue"
         android:layout_width = "wrap_content"

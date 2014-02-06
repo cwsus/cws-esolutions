@@ -64,8 +64,8 @@ public class AuditDAOImplTest
             List<String> auditList = new ArrayList<>(
                 Arrays.asList(
                         RandomStringUtils.randomAlphanumeric(32),
-                        "khuntly",
-                        "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95",
+                        "junit",
+                        "f42fb0ba-4d1e-1126-986f-800cd2650000",
                         "6236B840-88B0-4230-BCBC-8EC33EE837D9",
                         "eSolutions-" + x,
                         AuditType.JUNIT.name(),
@@ -88,7 +88,7 @@ public class AuditDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(auditDAO.getAuditInterval("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95", 1));
+            Assert.assertNotNull(auditDAO.getAuditInterval("f42fb0ba-4d1e-1126-986f-800cd2650000", 1));
         }
         catch (SQLException sqx)
         {

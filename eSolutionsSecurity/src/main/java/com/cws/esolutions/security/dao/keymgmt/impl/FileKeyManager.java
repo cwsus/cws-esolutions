@@ -72,7 +72,7 @@ public class FileKeyManager implements KeyManager
         InputStream pubStream = null;
         InputStream privStream = null;
 
-        final File keyDirectory = FileUtils.getFile(keyConfig.getKeyDirectory() + guid + "/");
+        final File keyDirectory = FileUtils.getFile(keyConfig.getKeyDirectory() + "/" + guid);
 
         try
         {
@@ -169,7 +169,7 @@ public class FileKeyManager implements KeyManager
         OutputStream publicStream = null;
         OutputStream privateStream = null;
 
-        final File keyDirectory = FileUtils.getFile(keyConfig.getKeyDirectory() + guid + "/");
+        final File keyDirectory = FileUtils.getFile(keyConfig.getKeyDirectory() + "/" + guid);
 
         try
         {
@@ -269,7 +269,7 @@ public class FileKeyManager implements KeyManager
         
         boolean isComplete = false;
 
-        final File keyDirectory = FileUtils.getFile(keyConfig.getKeyDirectory() + guid + "/");
+        final File keyDirectory = FileUtils.getFile(keyConfig.getKeyDirectory() + "/" + guid);
 
         try
         {

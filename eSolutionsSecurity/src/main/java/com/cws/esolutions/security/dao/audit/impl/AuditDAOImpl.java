@@ -74,7 +74,7 @@ public class AuditDAOImpl implements IAuditDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             stmt.execute();
@@ -137,7 +137,7 @@ public class AuditDAOImpl implements IAuditDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.execute())

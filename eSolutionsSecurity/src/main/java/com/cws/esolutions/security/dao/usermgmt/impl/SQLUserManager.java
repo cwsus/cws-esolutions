@@ -81,7 +81,7 @@ public class SQLUserManager implements UserManager
 
             if (DEBUG)
             {
-                DEBUGGER.debug("stmt: {}", stmt);
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -109,7 +109,7 @@ public class SQLUserManager implements UserManager
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("stmt: {}", stmt);
+                    DEBUGGER.debug("CallableStatement: {}", stmt);
                 }
 
                 if (stmt.execute())
@@ -204,7 +204,7 @@ public class SQLUserManager implements UserManager
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (!(stmt.execute()))
@@ -273,7 +273,7 @@ public class SQLUserManager implements UserManager
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (!(stmt.execute()))
@@ -344,7 +344,7 @@ public class SQLUserManager implements UserManager
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -562,7 +562,7 @@ public class SQLUserManager implements UserManager
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -670,7 +670,7 @@ public class SQLUserManager implements UserManager
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.executeUpdate() == 1)
@@ -744,7 +744,7 @@ public class SQLUserManager implements UserManager
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.executeUpdate() == 1)
@@ -815,7 +815,7 @@ public class SQLUserManager implements UserManager
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             int x = stmt.executeUpdate();
@@ -895,7 +895,7 @@ public class SQLUserManager implements UserManager
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.executeUpdate() == 1)
@@ -968,7 +968,7 @@ public class SQLUserManager implements UserManager
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.executeUpdate() == 1)
@@ -1046,7 +1046,7 @@ public class SQLUserManager implements UserManager
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             return (stmt.executeUpdate() == 0);
@@ -1113,7 +1113,7 @@ public class SQLUserManager implements UserManager
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.executeUpdate() == 1)
@@ -1191,7 +1191,7 @@ public class SQLUserManager implements UserManager
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.executeUpdate() == 1)
@@ -1266,7 +1266,7 @@ public class SQLUserManager implements UserManager
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.executeUpdate() == 1)

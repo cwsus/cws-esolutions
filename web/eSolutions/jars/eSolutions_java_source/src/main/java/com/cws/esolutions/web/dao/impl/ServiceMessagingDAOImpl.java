@@ -157,7 +157,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -246,7 +246,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -349,7 +349,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -461,7 +461,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             isComplete = (!(stmt.execute()));
@@ -526,7 +526,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             isComplete = (!(stmt.execute()));
@@ -616,7 +616,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.execute())

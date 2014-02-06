@@ -38,7 +38,7 @@ import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInforma
 
 public class UserSecurityInformationDAOImplTest
 {
-    private static final String GUID = "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95";
+    private static final String GUID = "f42fb0ba-4d1e-1126-986f-800cd2650000";
     private static final String resetId = RandomStringUtils.randomAlphanumeric(64);
     private static final String smsCode = RandomStringUtils.randomAlphanumeric(8);
     private static final String logonSalt = RandomStringUtils.randomAlphanumeric(64);
@@ -109,7 +109,7 @@ public class UserSecurityInformationDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(dao.getResetData(resetId));
+            Assert.assertNotNull(dao.getResetData("EgSEz9uTDeaCKvekHLB0PbKT9uzNj7vxm6yo8JklXnXRwNSUicI9ikx6dhpP1iGv"));
         }
         catch (SQLException sqx)
         {
@@ -129,23 +129,11 @@ public class UserSecurityInformationDAOImplTest
         }
     }
 
-    @Test public void getAuthenticationData()
-    {
-        try
-        {
-            Assert.assertNotNull(dao.getAuthenticationData(UserSecurityInformationDAOImplTest.GUID, SaltType.LOGON.name()));
-        }
-        catch (SQLException sqx)
-        {
-            Assert.fail(sqx.getMessage());
-        }
-    }
-
     @Test public void removeResetData()
     {
         try
         {
-            Assert.assertTrue(dao.removeResetData(UserSecurityInformationDAOImplTest.GUID, resetId));
+            Assert.assertTrue(dao.removeResetData(UserSecurityInformationDAOImplTest.GUID, "EgSEz9uTDeaCKvekHLB0PbKT9uzNj7vxm6yo8JklXnXRwNSUicI9ikx6dhpP1iGv"));
         }
         catch (SQLException sqx)
         {

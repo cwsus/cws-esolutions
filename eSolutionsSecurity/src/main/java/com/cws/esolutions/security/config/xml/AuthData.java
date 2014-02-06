@@ -425,38 +425,7 @@ public final class AuthData implements Serializable
         this.telephoneNumber = value;
     }
 
-    public final List<String> getEntries()
-    {
-        final String methodName = AuthData.CNAME + "#getEntries()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        this.entries = new ArrayList<>(
-            Arrays.asList(
-                this.secret,
-                this.userId,
-                this.surname,
-                this.memberOf,
-                this.lockCount,
-                this.lastLogin,
-                this.emailAddr,
-                this.olrLocked,
-                this.givenName,
-                this.expiryDate,
-                this.commonName,
-                this.olrSetupReq,
-                this.isSuspended,
-                this.displayName,
-                this.pagerNumber,
-                this.telephoneNumber));
-
-        return this.entries;
-    }
-
-    @XmlElement(name = "baseObject")
+    @XmlElement(name = "baseObjectClass")
     public final String getBaseObject()
     {
         final String methodName = AuthData.CNAME + "#getBaseObject()";
@@ -818,6 +787,37 @@ public final class AuthData implements Serializable
         }
 
         return this.telephoneNumber;
+    }
+
+    public final List<String> getEntries()
+    {
+        final String methodName = AuthData.CNAME + "#getEntries()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        this.entries = new ArrayList<>(
+            Arrays.asList(
+                this.secret,
+                this.userId,
+                this.surname,
+                this.memberOf,
+                this.lockCount,
+                this.lastLogin,
+                this.emailAddr,
+                this.olrLocked,
+                this.givenName,
+                this.expiryDate,
+                this.commonName,
+                this.olrSetupReq,
+                this.isSuspended,
+                this.displayName,
+                this.pagerNumber,
+                this.telephoneNumber));
+
+        return this.entries;
     }
 
     @Override

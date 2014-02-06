@@ -43,8 +43,6 @@ public class SQLKeyManagerTest
     private static UserAccount userAccount = new UserAccount();
     private static RequestHostInfo hostInfo = new RequestHostInfo();
 
-    private static final KeyManager processor = KeyManagementFactory.getKeyManager("com.cws.esolutions.security.dao.keymgmt.impl.SQLKeyManager");
-
     @Before public void setUp()
     {
         try
@@ -53,8 +51,8 @@ public class SQLKeyManagerTest
             hostInfo.setHostName("junit");
 
             userAccount.setStatus(LoginStatus.SUCCESS);
-            userAccount.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
-            userAccount.setUsername("khuntly");
+            userAccount.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
+            userAccount.setUsername("junit");
 
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml");
         }
@@ -68,6 +66,8 @@ public class SQLKeyManagerTest
 
     @Test public void createKeys()
     {
+        KeyManager processor = KeyManagementFactory.getKeyManager("com.cws.esolutions.security.dao.keymgmt.impl.SQLKeyManager");
+
         try
         {
             Assert.assertTrue(processor.createKeys(userAccount.getGuid()));
@@ -80,6 +80,8 @@ public class SQLKeyManagerTest
 
     @Test public void returnKeys()
     {
+        KeyManager processor = KeyManagementFactory.getKeyManager("com.cws.esolutions.security.dao.keymgmt.impl.SQLKeyManager");
+
         try
         {
             Assert.assertNotNull(processor.returnKeys(userAccount.getGuid()));
@@ -92,6 +94,8 @@ public class SQLKeyManagerTest
 
     @Test public void removeKeys()
     {
+        KeyManager processor = KeyManagementFactory.getKeyManager("com.cws.esolutions.security.dao.keymgmt.impl.SQLKeyManager");
+
         try
         {
             Assert.assertTrue(processor.removeKeys(userAccount.getGuid()));

@@ -226,8 +226,9 @@ public class LDAPAuthenticator implements Authenticator
         }
         finally
         {
-            if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
+            if ((ldapPool != null) && (!(ldapPool.isClosed())))
             {
+                ldapConn.close();
                 ldapPool.releaseConnection(ldapConn);
             }
         }
@@ -281,8 +282,8 @@ public class LDAPAuthenticator implements Authenticator
             }
 
             Filter searchFilter = Filter.create("(&(objectClass=" + authData.getBaseObject() + ")" +
-                "(&(cn=" + userId + "))" +
-                "(&(uid=" + userGuid + ")))");
+                "(&(cn=" + userGuid + "))" +
+                "(&(uid=" + userId + ")))");
 
             if (DEBUG)
             {
@@ -330,8 +331,9 @@ public class LDAPAuthenticator implements Authenticator
         }
         finally
         {
-            if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
+            if ((ldapPool != null) && (!(ldapPool.isClosed())))
             {
+                ldapConn.close();
                 ldapPool.releaseConnection(ldapConn);
             }
         }
@@ -423,8 +425,9 @@ public class LDAPAuthenticator implements Authenticator
         }
         finally
         {
-            if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
+            if ((ldapPool != null) && (!(ldapPool.isClosed())))
             {
+                ldapConn.close();
                 ldapPool.releaseConnection(ldapConn);
             }
         }
@@ -447,6 +450,7 @@ public class LDAPAuthenticator implements Authenticator
             DEBUGGER.debug("Value: {}", userGuid);
         }
 
+        boolean isComplete = false;
         LDAPConnection ldapConn = null;
         LDAPConnectionPool ldapPool = null;
 
@@ -500,7 +504,10 @@ public class LDAPAuthenticator implements Authenticator
                 DEBUGGER.debug("searchResult: {}", searchResult);
             }
 
-            return ((searchResult.getResultCode() != ResultCode.SUCCESS) || (searchResult.getEntryCount() != 1));
+            if ((searchResult.getResultCode() == ResultCode.SUCCESS) && (searchResult.getEntryCount() == 1))
+            {
+                return true;
+            }
         }
         catch (LDAPException lx)
         {
@@ -514,8 +521,11 @@ public class LDAPAuthenticator implements Authenticator
         {
             if ((ldapPool != null) && (!(ldapPool.isClosed())))
             {
+                ldapConn.close();
                 ldapPool.releaseConnection(ldapConn);
             }
         }
+
+        return isComplete;
     }
 }

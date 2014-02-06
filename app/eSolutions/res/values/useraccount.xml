@@ -1,9 +1,17 @@
 <resources>
+    <!-- display -->
     <string name="userAccountTitle">eSolutions - User Account</string>
-	<string name="email">Email</string>
-	<string name="contact">Contact</string>
-	<string name="password">Password</string>
-	<string name="security">Security</string>
-	<string name="keys">Keys</string>
-	<string name="otp">OTP</string>
+    <string name="displayName">Display Name: </string>
+    <string name="givenName">Given Name: </string>
+    <string name="surname">Surname: </string>
+    <string name="telephoneNumber"><u>Telephone Number</u>: </string>
+    <string name="pagerNumber"><u>Pager Number</u>: </string>
+    <string name="role">Role: </string>
+    <!-- menu -->
+    <string name="email">Email</string>
+    <string name="contact">Contact</string>
+    <string name="password">Password</string>
+    <string name="security">Security</string>
+    <string name="keys">Keys</string>
+    <string name="otp">OTP</string>
 </resources>

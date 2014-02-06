@@ -39,8 +39,6 @@ import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException
 
 public class LDAPAuthenticatorTest
 {
-    private static final Authenticator authenticator = AuthenticatorFactory.getAuthenticator("com.cws.esolutions.security.dao.userauth.LDAPAuthenticator");
-
     @Before public void setUp()
     {
         try
@@ -49,16 +47,17 @@ public class LDAPAuthenticatorTest
         }
         catch (Exception e)
         {
-            Assert.fail(e.getMessage());
             System.exit(1);
         }
     }
 
     @Test public void performLogon()
     {
+        Authenticator authenticator = AuthenticatorFactory.getAuthenticator("com.cws.esolutions.security.dao.userauth.impl.LDAPAuthenticator");
+
         try
         {
-            Assert.assertNotNull(authenticator.performLogon("khuntly", "VOpqGWznp1flygXFED8FVTxXTRHG9QG/Dj+apuuyeh59JWVbYd9hOgZTOfpLdBWRlPDb1TZnvt7XE3llHOPQQQ=="));
+            Assert.assertNotNull(authenticator.performLogon("junit", "4Uq2ssAjH4S1jquzLkgh466xswdpcrPPNKeQjFFG6jpxV6L9mD5U+bSFF7slFWY6mKK6bJiy84u24qwDmXfuWA=="));
         }
         catch (AuthenticatorException e)
         {
@@ -68,9 +67,11 @@ public class LDAPAuthenticatorTest
 
     @Test public void obtainSecurityData()
     {
+        Authenticator authenticator = AuthenticatorFactory.getAuthenticator("com.cws.esolutions.security.dao.userauth.impl.LDAPAuthenticator");
+
         try
         {
-            Assert.assertNotNull(authenticator.obtainSecurityData("khuntly", "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95"));
+            Assert.assertNotNull(authenticator.obtainSecurityData("junit", "f42fb0ba-4d1e-1126-986f-800cd2650000"));
         }
         catch (AuthenticatorException e)
         {
@@ -80,9 +81,11 @@ public class LDAPAuthenticatorTest
 
     @Test public void obtainOtpSecret()
     {
+        Authenticator authenticator = AuthenticatorFactory.getAuthenticator("com.cws.esolutions.security.dao.userauth.impl.LDAPAuthenticator");
+
         try
         {
-            Assert.assertNotNull(authenticator.obtainOtpSecret("khuntly", "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95"));
+            Assert.assertNotNull(authenticator.obtainOtpSecret("junit", "f42fb0ba-4d1e-1126-986f-800cd2650000"));
         }
         catch (AuthenticatorException e)
         {
@@ -92,12 +95,14 @@ public class LDAPAuthenticatorTest
 
     @Test public void verifySecurityData()
     {
+        Authenticator authenticator = AuthenticatorFactory.getAuthenticator("com.cws.esolutions.security.dao.userauth.impl.LDAPAuthenticator");
+
         try
         {
-            Assert.assertTrue(authenticator.verifySecurityData("khuntly", "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95",
+            Assert.assertTrue(authenticator.verifySecurityData("junit", "f42fb0ba-4d1e-1126-986f-800cd2650000",
                     new ArrayList<String>(
-                            Arrays.asList("2kAghHhR1Kaq4vuXukaY9NDOnt9J9rZzGvn6Fgg2EIsj2kHjsYv4mIp2SGsATUL8d839aqL27+KOVxh704hk5Q==",
-                                    "JeqSyqq3trkDkOwMZDf8lIHCfa2NWPSMJ/rFVnPmooGKXcAzUtwR/wJ18uc5wOQtbsMaa3cK3lB2kwqqi/SpWA=="))));
+                            Arrays.asList("9XSqpcg8ChMQSThsMfF+ZlP6BPxt5urURelW8V+qedVw3nWNnPDhtF2G4jF91WsZ4qlrFzB/qnpCtqSseGvqfg==",
+                                    "zd48ynVDm0t07RRzY07Gs9OqhI7YjUKa0CYrmcp2ESRR4neQOQ8nIgsNJhPVlIGo8n1rfbkYU11VoCqoNv2qPg=="))));
                                     
         }
         catch (AuthenticatorException e)

@@ -84,7 +84,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             isComplete = (!(stmt.execute()));
@@ -155,7 +155,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             isComplete = (!(stmt.execute()));
@@ -218,7 +218,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             isComplete = (!(stmt.execute()));
@@ -284,7 +284,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -410,7 +410,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -510,7 +510,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.execute())

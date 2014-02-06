@@ -26,11 +26,12 @@
         android:id = "@+id/etUsername"
         android:layout_marginTop = "10dp" />
     <EditText
-        style = "@style/editText"
-        android:inputType="textPassword"
+        android:id="@+id/etPassword"
+        style="@style/editText"
+        android:layout_alignLeft="@+id/etUsername"
+        android:layout_marginTop="60dp"
         android:hint="@string/hintPassword"
-        android:id = "@+id/etPassword"
-        android:layout_marginTop = "60dp" />
+        android:inputType="textPassword" />
     <Button
 		style = "@style/button"
         android:id = "@+id/btnDoLogin"

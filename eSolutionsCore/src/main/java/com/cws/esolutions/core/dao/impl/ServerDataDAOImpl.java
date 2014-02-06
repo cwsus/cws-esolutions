@@ -106,7 +106,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             isComplete = (!(stmt.execute()));
@@ -203,7 +203,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             isComplete = (!(stmt.execute()));
@@ -267,7 +267,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             isComplete = (!(stmt.execute()));
@@ -332,7 +332,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -472,7 +472,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -575,7 +575,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug("stmt: {}", stmt);
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.execute())

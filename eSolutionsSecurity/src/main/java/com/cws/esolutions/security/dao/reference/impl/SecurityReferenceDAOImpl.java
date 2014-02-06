@@ -74,7 +74,7 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -167,7 +167,7 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -260,7 +260,7 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -353,7 +353,7 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
 
             if (DEBUG)
             {
-                DEBUGGER.debug(stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.execute())

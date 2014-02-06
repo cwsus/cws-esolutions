@@ -30,7 +30,9 @@ import java.util.Arrays;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.Connection;
+
 import javax.sql.DataSource;
+
 import java.sql.SQLException;
 import java.security.KeyPair;
 import java.security.PublicKey;
@@ -39,8 +41,11 @@ import java.security.PrivateKey;
 import java.net.ConnectException;
 import java.sql.CallableStatement;
 import java.security.SecureRandom;
+
 import com.unboundid.ldap.sdk.Filter;
+
 import java.security.KeyPairGenerator;
+
 import com.unboundid.ldap.sdk.ResultCode;
 import com.unboundid.ldap.sdk.LDAPResult;
 import com.unboundid.ldap.sdk.SearchScope;
@@ -50,13 +55,17 @@ import com.unboundid.ldap.sdk.ModifyRequest;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.SearchRequest;
 import com.unboundid.ldap.sdk.LDAPConnection;
+
 import java.security.spec.X509EncodedKeySpec;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.PKCS8EncodedKeySpec;
+
 import com.unboundid.ldap.sdk.ModificationType;
 import com.unboundid.ldap.sdk.LDAPConnectionPool;
+
 import java.security.spec.InvalidKeySpecException;
 
+import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
 /**
@@ -65,7 +74,207 @@ import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
 public class LDAPKeyManager implements KeyManager
 {
     private static final String CNAME = LDAPKeyManager.class.getName();
-    private static final DataSource dataSource = (DataSource) svcBean.getAuthDataSource();
+    private static final DataSource dataSource = (DataSource) svcBean.getDataSources().get(SecurityServiceConstants.INIT_SECURITYDS_MANAGER);
+
+    /**
+     * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#createKeys(java.lang.String)
+     */
+    @Override
+    public synchronized boolean createKeys(final String guid) throws KeyManagementException
+    {
+        final String methodName = LDAPKeyManager.CNAME + "#createKeys(final String guid) throws KeyManagementException";
+        
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", guid);
+        }
+
+        Connection sqlConn = null;
+        ResultSet resultSet = null;
+        CallableStatement stmt = null;
+        LDAPConnection ldapConn = null;
+        LDAPConnectionPool ldapPool = null;
+
+        try
+        {
+            KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(keyConfig.getKeyAlgorithm());
+            keyGenerator.initialize(keyConfig.getKeySize(), new SecureRandom());
+            KeyPair keyPair = keyGenerator.generateKeyPair();
+
+            if (keyPair == null)
+            {
+                throw new KeyManagementException("Failed to generate keypair.");
+            }
+
+            sqlConn = dataSource.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain datasource connection");
+            }
+
+            // put in the private key first
+            // privkey ALWAYS goes into db
+            stmt = sqlConn.prepareCall("{CALL addPrivateKey(?, ?)}");
+            stmt.setString(1, guid);
+            stmt.setBytes(2, keyPair.getPrivate().getEncoded());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("CallableStatement: {}", stmt);
+            }
+
+            stmt.execute();
+
+            ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPConnectionPool: {}", ldapPool);
+            }
+
+            if ((ldapPool.isClosed()) || (sqlConn.isClosed()))
+            {
+                throw new ConnectException("Failed to connect to datasources");
+            }
+
+            ldapConn = ldapPool.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+            }
+
+            if (!(ldapConn.isConnected()))
+            {
+                throw new LDAPException(ResultCode.CONNECT_ERROR, "Failed to obtain connection to LDAP host");
+            }
+
+            // need to get the DN
+            Filter searchFilter = Filter.create("(&(objectClass=" + authData.getBaseObject() + ")" +
+                    "(&(cn=" + guid + ")))");
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchFilter: {}", searchFilter);
+            }
+
+            SearchRequest searchReq = new SearchRequest(
+                    authData.getRepositoryUserBase(),
+                    SearchScope.SUB,
+                    searchFilter);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchRequest: {}", searchReq);
+            }
+
+            SearchResult searchResult = ldapConn.search(searchReq);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("SearchResult: {}", searchResult);
+            }
+
+            if ((searchResult.getResultCode() != ResultCode.SUCCESS) || (searchResult.getSearchEntries().size() != 1))
+            {
+                throw new KeyManagementException("No users were located with the search data provided");
+            }
+
+            List<Modification> modifyList = new ArrayList<>(
+                    Arrays.asList(
+                            new Modification(ModificationType.ADD, authData.getPublicKey(), keyPair.getPublic().getEncoded())));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("List<Modification>: {}", modifyList);
+            }
+
+            LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(searchResult.getSearchEntries().get(0).getDN(), modifyList));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPResult: {}", ldapResult);
+            }
+
+            if (ldapResult.getResultCode() != ResultCode.SUCCESS)
+            {
+                // failed to insert pubkey
+                // delete the private key we already inserted
+                stmt.close();
+                stmt = null;
+
+                stmt = sqlConn.prepareCall("{ CALL deleteUserKeys(?) }");
+                stmt.setString(1, guid);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("CallableStatement: {}", stmt);
+                }
+
+                if (!(stmt.execute()))
+                {
+                    ERROR_RECORDER.error("Failed to remove generated private key for the provided user");
+                }
+
+                return false;
+            }
+
+            return true;
+        }
+        catch (NoSuchAlgorithmException nsax)
+        {
+            throw new KeyManagementException(nsax.getMessage(), nsax);
+        }
+        catch (SQLException sqx)
+        {
+            throw new KeyManagementException(sqx.getMessage(), sqx);
+        }
+        catch (LDAPException lx)
+        {
+            throw new KeyManagementException(lx.getMessage(), lx);
+        }
+        catch (ConnectException cx)
+        {
+            throw new KeyManagementException(cx.getMessage(), cx);
+        }
+        finally
+        {
+            try
+            {
+                if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
+                {
+                    ldapConn.close();
+                    ldapPool.releaseConnection(ldapConn);
+                }
+
+                if (resultSet != null)
+                {
+                    resultSet.close();
+                }
+
+                if (stmt != null)
+                {
+                    stmt.close();
+                }
+
+                if ((sqlConn != null) && (!(sqlConn.isClosed())))
+                {
+                    sqlConn.close();
+                }
+            }
+            catch (SQLException sqx)
+            {
+                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+            }
+        }
+    }
 
     /**
      * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#returnKeys(java.lang.String)
@@ -81,7 +290,6 @@ public class LDAPKeyManager implements KeyManager
             DEBUGGER.debug("Value: {}", guid);
         }
 
-        KeyPair keyPair = null;
         Connection sqlConn = null;
         ResultSet resultSet = null;
         CallableStatement stmt = null;
@@ -90,16 +298,61 @@ public class LDAPKeyManager implements KeyManager
 
         try
         {
-            ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
             sqlConn = dataSource.getConnection();
 
             if (DEBUG)
             {
-                DEBUGGER.debug("sqlConn: {}", sqlConn);
+                DEBUGGER.debug("Connection: {}", sqlConn);
+            }
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{ CALL retrUserKeys(?) }");
+            stmt.setString(1, guid);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Statement: {}", stmt.toString());
+            }
+
+            if (!(stmt.execute()))
+            {
+                throw new KeyManagementException("No data was obtained for the provided information. Cannot continue.");
+            }
+
+            resultSet = stmt.getResultSet();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ResultSet: {}", resultSet);
+            }
+
+            if (!(resultSet.next()))
+            {
+                throw new KeyManagementException("No data was obtained for the provided information. Cannot continue.");
+            }
+
+            resultSet.first();
+            byte[] privKeyBytes = resultSet.getBytes(1);
+
+            if (privKeyBytes == null)
+            {
+                throw new KeyManagementException("Unable to load key data from datasource");
+            }
+
+            ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
+
+            if (DEBUG)
+            {
                 DEBUGGER.debug("LDAPConnectionPool: {}", ldapPool);
             }
 
-            if ((ldapPool.isClosed()) || (sqlConn.isClosed()))
+            if (ldapPool.isClosed())
             {
                 throw new ConnectException("Failed to connect to datasources");
             }
@@ -150,48 +403,19 @@ public class LDAPKeyManager implements KeyManager
 
             byte[] pubKeyBytes = searchResult.getSearchEntries().get(0).getAttributeValueBytes(authData.getPublicKey());
 
-            // privkey will always be stored in the database
-            // i probably shouldnt mix this but im going to anyway
-            stmt = sqlConn.prepareCall("{ CALL retrUserKeys(?) }");
-            stmt.setString(1, guid);
-
-            if (DEBUG)
+            if (pubKeyBytes == null)
             {
-                DEBUGGER.debug("Statement: {}", stmt.toString());
+                throw new KeyManagementException("Failed to obtain key data. Cannot continue");
             }
-
-            if (!(stmt.execute()))
-            {
-                throw new KeyManagementException("No private key was found for the provided user.");
-            }
-
-            resultSet = stmt.getResultSet();
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ResultSet: {}", resultSet);
-            }
-
-            if (!(resultSet.next()))
-            {
-                throw new KeyManagementException("No private key was found for the provided user.");
-            }
-
-            resultSet.first();
-            byte[] privKeyBytes = resultSet.getBytes(1);
 
             // xlnt, keypair !
             KeyFactory keyFactory = KeyFactory.getInstance(keyConfig.getKeyAlgorithm());
-
-            // generate private key
             PKCS8EncodedKeySpec privateSpec = new PKCS8EncodedKeySpec(privKeyBytes);
             PrivateKey privKey = keyFactory.generatePrivate(privateSpec);
-
-            // generate pubkey
             X509EncodedKeySpec publicSpec = new X509EncodedKeySpec(pubKeyBytes);
             PublicKey pubKey = keyFactory.generatePublic(publicSpec);
 
-            keyPair = new KeyPair(pubKey, privKey);
+            return new KeyPair(pubKey, privKey);
         }
         catch (InvalidKeySpecException iksx)
         {
@@ -219,6 +443,7 @@ public class LDAPKeyManager implements KeyManager
             {
                 if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
                 {
+                    ldapConn.close();
                     ldapPool.releaseConnection(ldapConn);
                 }
 
@@ -242,201 +467,6 @@ public class LDAPKeyManager implements KeyManager
                 ERROR_RECORDER.error(sqx.getMessage(), sqx);
             }
         }
-
-        return keyPair;
-    }
-
-    /**
-     * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#createKeys(java.lang.String)
-     */
-    @Override
-    public synchronized boolean createKeys(final String guid) throws KeyManagementException
-    {
-        final String methodName = LDAPKeyManager.CNAME + "#createKeys(final String guid) throws KeyManagementException";
-        
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", guid);
-        }
-
-        Connection sqlConn = null;
-        boolean isComplete = false;
-        ResultSet resultSet = null;
-        CallableStatement stmt = null;
-        LDAPConnection ldapConn = null;
-        LDAPConnectionPool ldapPool = null;
-
-        try
-        {
-            ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
-            sqlConn = dataSource.getConnection();
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("sqlConn: {}", sqlConn);
-                DEBUGGER.debug("LDAPConnectionPool: {}", ldapPool);
-            }
-
-            if ((ldapPool.isClosed()) || (sqlConn.isClosed()))
-            {
-                throw new ConnectException("Failed to connect to datasources");
-            }
-
-            ldapConn = ldapPool.getConnection();
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("LDAPConnection: {}", ldapConn);
-            }
-
-            if (!(ldapConn.isConnected()))
-            {
-                throw new LDAPException(ResultCode.CONNECT_ERROR, "Failed to obtain connection to LDAP host");
-            }
-
-            // need to get the DN
-            Filter searchFilter = Filter.create("(&(objectClass=" + authData.getBaseObject() + ")" +
-                    "(&(cn=" + guid + ")))");
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("searchFilter: {}", searchFilter);
-            }
-
-            SearchRequest searchReq = new SearchRequest(
-                    authData.getRepositoryUserBase(),
-                    SearchScope.SUB,
-                    searchFilter);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("searchRequest: {}", searchReq);
-            }
-
-            SearchResult searchResult = ldapConn.search(searchReq);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("searchResult: {}", searchResult);
-            }
-
-            if ((searchResult.getResultCode() != ResultCode.SUCCESS) && (searchResult.getSearchEntries().size() != 1))
-            {
-                throw new KeyManagementException("No users were located with the search data provided");
-            }
-
-            KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(keyConfig.getKeyAlgorithm());
-            keyGenerator.initialize(keyConfig.getKeySize(), new SecureRandom());
-            KeyPair keyPair = keyGenerator.generateKeyPair();
-
-            if (keyPair == null)
-            {
-                throw new KeyManagementException("Failed to generate keypair.");
-            }
-
-            // store the privkey
-            // privkey ALWAYS goes into db
-            stmt = sqlConn.prepareCall("{CALL addUserKeys(?, ?)}");
-            stmt.setString(1, guid);
-            stmt.setBytes(2, keyPair.getPrivate().getEncoded());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug(stmt.toString());
-            }
-
-            if (!(stmt.execute()))
-            {
-                List<Modification> modifyList = new ArrayList<>(
-                        Arrays.asList(
-                                new Modification(ModificationType.ADD, authData.getPublicKey(), keyPair.getPublic().getEncoded())));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("modifyList: {}", modifyList);
-                }
-
-                LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(searchResult.getSearchEntries().get(0).getDN(), modifyList));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("LDAPResult: {}", ldapResult);
-                }
-
-                if (ldapResult.getResultCode() != ResultCode.SUCCESS)
-                {
-                    // failed to insert pubkey
-                    // delete the private key we already inserted
-                    stmt.close();
-                    stmt = null;
-
-                    stmt = sqlConn.prepareCall("{ CALL deleteUserKeys(?) }");
-                    stmt.setString(1, guid);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("stmt: {}", stmt);
-                    }
-
-                    if (!(stmt.execute()))
-                    {
-                        ERROR_RECORDER.error("Failed to remove generated private key for the provided user");
-                    }
-
-                    return isComplete;
-                }
-
-                isComplete = true;
-            }
-        }
-        catch (NoSuchAlgorithmException nsax)
-        {
-            throw new KeyManagementException(nsax.getMessage(), nsax);
-        }
-        catch (SQLException sqx)
-        {
-            throw new KeyManagementException(sqx.getMessage(), sqx);
-        }
-        catch (LDAPException lx)
-        {
-            throw new KeyManagementException(lx.getMessage(), lx);
-        }
-        catch (ConnectException cx)
-        {
-            throw new KeyManagementException(cx.getMessage(), cx);
-        }
-        finally
-        {
-            try
-            {
-                if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
-                {
-                    ldapPool.releaseConnection(ldapConn);
-                }
-
-                if (resultSet != null)
-                {
-                    resultSet.close();
-                }
-
-                if (stmt != null)
-                {
-                    stmt.close();
-                }
-
-                if ((sqlConn != null) && (!(sqlConn.isClosed())))
-                {
-                    sqlConn.close();
-                }
-            }
-            catch (SQLException sqx)
-            {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
-            }
-        }
-
-        return isComplete;
     }
 
     /**
@@ -565,6 +595,7 @@ public class LDAPKeyManager implements KeyManager
             {
                 if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
                 {
+                    ldapConn.close();
                     ldapPool.releaseConnection(ldapConn);
                 }
 
