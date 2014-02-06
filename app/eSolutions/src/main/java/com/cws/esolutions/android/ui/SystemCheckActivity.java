@@ -62,7 +62,7 @@ public class SystemCheckActivity extends Activity
         }
 
         super.onCreate(bundle);
-        super.setTitle(R.string.mainTitle);
+        super.setTitle(R.string.systemManagementTitle);
         super.setContentView(R.layout.systemcheck);
 
         if ((super.getIntent().getExtras() != null) && (super.getIntent().getExtras().containsKey(Constants.USER_DATA)))
@@ -124,7 +124,7 @@ public class SystemCheckActivity extends Activity
             DEBUGGER.debug("Menu: {}", menu);
         }
 
-        super.getMenuInflater().inflate(R.menu.menu, menu);
+        super.getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 

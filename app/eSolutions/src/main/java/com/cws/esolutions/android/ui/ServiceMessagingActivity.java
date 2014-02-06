@@ -62,7 +62,7 @@ public class ServiceMessagingActivity extends Activity
         }
 
         super.onCreate(bundle);
-        super.setTitle(R.string.mainTitle);
+        super.setTitle(R.string.serviceMessagingTitle);
         super.setContentView(R.layout.servicemessaging);
 
         if ((super.getIntent().getExtras() != null) && (super.getIntent().getExtras().containsKey(Constants.USER_DATA)))
@@ -124,7 +124,7 @@ public class ServiceMessagingActivity extends Activity
             DEBUGGER.debug("Menu: {}", menu);
         }
 
-        super.getMenuInflater().inflate(R.menu.menu, menu);
+        super.getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 

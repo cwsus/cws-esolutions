@@ -27,6 +27,7 @@ package com.cws.esolutions.android.ui;
  */
 import java.util.List;
 import org.slf4j.Logger;
+import android.view.Menu;
 import android.view.View;
 import android.os.Bundle;
 import android.app.Activity;
@@ -394,6 +395,21 @@ public class VirtualManagerActivity extends Activity
         }
 
         super.finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu)
+    {
+        final String methodName = VirtualManagerActivity.CNAME + "#onCreateOptionsMenu(final Menu menu)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Menu: {}", menu);
+        }
+
+        super.getMenuInflater().inflate(R.menu.virtualmanager, menu);
+        return true;
     }
 
     @Override

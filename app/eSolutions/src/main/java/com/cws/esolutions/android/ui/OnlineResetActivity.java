@@ -79,7 +79,7 @@ public class OnlineResetActivity extends Activity
         }
 
         super.onCreate(bundle);
-        super.setTitle(R.string.mainTitle);
+        super.setTitle(R.string.onlineResetTitle);
         super.setContentView(R.layout.onlinereset);
         this.resetType = (ResetRequestType) super.getIntent().getExtras().get("resetType");
 
@@ -271,6 +271,7 @@ public class OnlineResetActivity extends Activity
                     tvSecQuesTwo.setVisibility(View.VISIBLE);
                     etSecQuesOne.setVisibility(View.VISIBLE);
                     etSecQuesTwo.setVisibility(View.VISIBLE);
+                    this.resetType = ResetRequestType.QUESTIONS;
 
                     return;
                 case QUESTIONS:

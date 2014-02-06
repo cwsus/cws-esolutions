@@ -1,77 +1,56 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/background">
+	android:background="@drawable/background">
     <TextView
+        style = "@style/textView"
         android:id = "@+id/tvRequestInput"
-        android:layout_width = "wrap_content"
-        android:layout_height = "wrap_content"
         android:layout_alignBaseline = "@+id/etRequestInput"
         android:layout_alignBottom = "@+id/etRequestInput"
-        android:layout_alignParentLeft = "true"
         android:layout_marginTop = "10dp"
         android:text = "@string/tvUsername"
         android:clickable = "true"
         android:onClick = "onClick"
         android:visibility = "gone" />
     <EditText
+        style = "@style/editText"
         android:id = "@+id/etRequestInput"
         android:inputType="text"
         android:hint="@string/hintUsername"
-        android:layout_width = "wrap_content"
-        android:layout_height = "wrap_content"
-        android:layout_alignParentRight = "true"
         android:layout_marginTop = "10dp"
-        android:ems = "10"
         android:visibility = "gone" />
     <TextView
+        style = "@style/textView"
         android:id="@+id/tvSecQuestionOne"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_alignBaseline = "@+id/etSecQuestionOne"
         android:layout_alignBottom = "@+id/etSecQuestionOne"
-        android:layout_alignParentLeft = "true"
         android:layout_marginTop = "10dp"
         android:visibility = "gone" />
     <EditText
+        style = "@style/editText"
         android:id = "@+id/etSecQuestionOne"
-        android:inputType="text"
+        android:inputType="textPassword"
         android:hint="@string/hintUsername"
-        android:layout_width = "wrap_content"
-        android:layout_height = "wrap_content"
-        android:layout_alignParentRight = "true"
         android:layout_marginTop = "10dp"
-        android:ems = "10"
         android:visibility = "gone" />
     <TextView
+        style = "@style/textView"
         android:id="@+id/tvSecQuestionTwo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_alignBaseline = "@+id/secQuestionTwo"
         android:layout_alignBottom = "@+id/secQuestionTwo"
-        android:layout_alignParentLeft = "true"
-        android:layout_marginTop = "40dp"
+        android:layout_marginTop = "60dp"
         android:visibility = "gone" />
     <EditText
+        style = "@style/editText"
         android:id = "@+id/secQuestionTwo"
-        android:inputType="text"
+        android:inputType="textPassword"
         android:hint="@string/hintUsername"
-        android:layout_width = "wrap_content"
-        android:layout_height = "wrap_content"
-        android:layout_alignParentRight = "true"
-        android:layout_marginTop = "40dp"
-        android:ems = "10"
+        android:layout_marginTop = "60dp"
         android:visibility = "gone" />
     <Button
+        style = "@style/button"
         android:id="@+id/btnSubmit"
-        android:layout_width="125dp"
-        android:layout_height="40dp"
-        android:layout_centerInParent="true"
         android:layout_marginTop="75dp"
-        android:background="@drawable/button"
-        android:onClick="submitOnlineReset"
-        android:text="@string/btnSubmit" />
+        android:onClick="submitOnlineReset" />
     <TextView
         android:id = "@+id/tvResponseValue"
         android:layout_width = "wrap_content"

@@ -1,8 +1,8 @@
 <resources>
-    <string name = "onlineResetTitle">eSolutions - OnlineReset</string>
-    <string name = "strEmailAddr">Email Address: </string>
-    <string name = "strUsername">Username: </string>
-    <string name = "strSecQuestion">Question: </string>
-    <string name = "strSecAnswer">Answer: </string>
-    <string name = "strUserResponse">Your username is: %s</string>
+    <string name="onlineResetTitle">eSolutions - OnlineReset</string>
+    <string name="strEmailAddr">Email Address: </string>
+    <string name="strUsername">Username: </string>
+    <string name="strSecQuestion">Question: </string>
+    <string name="strSecAnswer">Answer: </string>
+    <string name="strUserResponse">Your username is: %s</string>
 </resources>

@@ -63,7 +63,7 @@ public class HomeActivity extends Activity
         }
 
         super.onCreate(bundle);
-        super.setTitle(R.string.mainTitle);
+        super.setTitle(R.string.homeTitle);
         super.setContentView(R.layout.home);
 
         if ((super.getIntent().getExtras() != null) && (super.getIntent().getExtras().containsKey(Constants.USER_DATA)))
@@ -137,7 +137,7 @@ public class HomeActivity extends Activity
             DEBUGGER.debug("Menu: {}", menu);
         }
 
-        super.getMenuInflater().inflate(R.menu.menu, menu);
+        super.getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 

@@ -1,8 +1,11 @@
 <resources>
-    <string name = "applicationConfigFile">eSolutions/application.properties</string>
-    <string name = "securityConfigFile">SecurityService/config/ServiceConfig.properties</string>
-    <string name = "coreConfigFile">eSolutionsCore/config/ServiceConfig.properties</string>
-    <string name = "authRepoConfig">SecurityService/repository.properties</string>
-    <string name = "btnSubmit">Submit</string>
-    <string name = "errorMessage">A system failure occurred while processing your request. Please try again. If the problem persists, please contact your administrator.</string>
+    <string name="appName">eSolutions</string>
+    <string name="applicationConfigFile">eSolutions/application.properties</string>
+    <string name="securityConfigFile">SecurityService/config/ServiceConfig.properties</string>
+    <string name="coreConfigFile">eSolutionsCore/config/ServiceConfig.properties</string>
+    <string name="authRepoConfig">SecurityService/repository.properties</string>
+    <string name="btnSubmit">Submit</string>
+    <string name="errorMessage">A system failure occurred while processing your request. Please try again. If the problem persists, please contact your administrator.</string>
+	<string name="svcErrorMessage">There was an error while configuring the application. If this problem persists, please contact your administrator.</string>
 </resources>
+

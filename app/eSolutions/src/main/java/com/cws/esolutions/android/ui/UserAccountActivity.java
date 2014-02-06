@@ -62,7 +62,7 @@ public class UserAccountActivity extends Activity
         }
 
         super.onCreate(bundle);
-        super.setTitle(R.string.mainTitle);
+        super.setTitle(R.string.userAccountTitle);
         super.setContentView(R.layout.useraccount);
 
         if ((super.getIntent().getExtras() != null) && (super.getIntent().getExtras().containsKey(Constants.USER_DATA)))
@@ -124,7 +124,7 @@ public class UserAccountActivity extends Activity
             DEBUGGER.debug("Menu: {}", menu);
         }
 
-        super.getMenuInflater().inflate(R.menu.menu, menu);
+        super.getMenuInflater().inflate(R.menu.useraccount, menu);
         return true;
     }
 
@@ -150,109 +150,17 @@ public class UserAccountActivity extends Activity
 
         switch (item.getItemId())
         {
-            case R.id.applicationManagement:
-                intent = new Intent(UserAccountActivity.this, ApplicationManagementActivity.class);
-                intent.putExtra(Constants.USER_DATA, userAccount);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Intent: {}", intent);
-                }
-
-                super.startActivity(intent);
-                super.finish();
-
+            case R.id.email:
                 return true;
-            case R.id.dnsService:
-                intent = new Intent(UserAccountActivity.this, DNSServiceActivity.class);
-                intent.putExtra(Constants.USER_DATA, userAccount);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Intent: {}", intent);
-                }
-
-                super.startActivity(intent);
-                super.finish();
-
+            case R.id.contact:
                 return true;
-            case R.id.home:
-                intent = new Intent(UserAccountActivity.this, HomeActivity.class);
-                intent.putExtra(Constants.USER_DATA, userAccount);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Intent: {}", intent);
-                }
-
-                super.startActivity(intent);
-                super.finish();
-
+            case R.id.password:
                 return true;
-            case R.id.serviceManagement:
-                intent = new Intent(UserAccountActivity.this, ServiceManagementActivity.class);
-                intent.putExtra(Constants.USER_DATA, userAccount);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Intent: {}", intent);
-                }
-
-                super.startActivity(intent);
-                super.finish();
-
+            case R.id.security:
                 return true;
-            case R.id.serviceMessaging:
-                intent = new Intent(UserAccountActivity.this, ServiceMessagingActivity.class);
-                intent.putExtra(Constants.USER_DATA, userAccount);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Intent: {}", intent);
-                }
-
-                super.startActivity(intent);
-                super.finish();
-
+            case R.id.keys:
                 return true;
-            case R.id.systemManagement:
-                intent = new Intent(UserAccountActivity.this, SystemManagementActivity.class);
-                intent.putExtra(Constants.USER_DATA, userAccount);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Intent: {}", intent);
-                }
-
-                super.startActivity(intent);
-                super.finish();
-
-                return true;
-            case R.id.userManagement:
-                intent = new Intent(UserAccountActivity.this, UserManagementActivity.class);
-                intent.putExtra(Constants.USER_DATA, userAccount);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Intent: {}", intent);
-                }
-
-                super.startActivity(intent);
-                super.finish();
-
-                return true;
-            case R.id.virtualManager:
-                intent = new Intent(UserAccountActivity.this, VirtualManagerActivity.class);
-                intent.putExtra(Constants.USER_DATA, userAccount);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Intent: {}", intent);
-                }
-
-                super.startActivity(intent);
-                super.finish();
-
+            case R.id.otp:
                 return true;
             case R.id.signout:
                 super.getIntent().removeExtra(Constants.USER_DATA);

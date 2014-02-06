@@ -1,47 +1,36 @@
 <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
     xmlns:tools = "http://schemas.android.com/tools"
-    android:layout_width = "match_parent"
-    android:layout_height = "match_parent"
-    android:background="@drawable/background">
+	android:background="@drawable/background">
     <EditText
+        style = "@style/editText"
         android:inputType = "text"
         android:hint = "@string/tvHostHint"
         android:id = "@+id/etHostName"
-        android:layout_width = "wrap_content"
-        android:layout_height = "wrap_content"
-        android:layout_alignParentRight = "true" />
+        android:layout_marginTop = "10dp" />
     <EditText
+        style = "@style/editText"
         android:hint = "@string/tvServerHint"
         android:id = "@+id/etDNSServer"
         android:inputType = "text"
-        android:layout_width = "wrap_content"
-        android:layout_height = "wrap_content"
-        android:layout_alignParentRight = "true"
         android:layout_marginTop = "44dp" />
     <TextView
+        style = "@style/textView"
         android:id = "@+id/tvHostname"
-        android:layout_width = "wrap_content"
-        android:layout_height = "wrap_content"
         android:layout_alignBaseline = "@+id/etDNSServer"
         android:layout_alignBottom = "@+id/etDNSServer"
         android:text = "@string/tvHostName" />
     <TextView
+        style = "@style/textView"
         android:id = "@+id/tvDNSServer"
-        android:layout_width = "wrap_content"
-        android:layout_height = "wrap_content"
         android:layout_alignBaseline = "@+id/etHostName"
         android:layout_alignBottom = "@+id/etHostName"
-        android:layout_alignParentLeft = "true"
         android:text = "@string/tvDNSServer" />
     <Button
+        style = "@style/button"
         android:id = "@+id/btnDoLookup"
-        android:layout_width = "125dp"
-        android:layout_height = "40dp"
         android:layout_alignLeft = "@+id/etDNSServer"
         android:layout_below = "@+id/etDNSServer"
         android:layout_marginTop = "27dp"
-        android:text = "@string/btnDoLookup"
-        android:background="@drawable/button"
         android:onClick = "executeDnsLookup" />
     <TextView
         android:id = "@+id/tvResponseValue"

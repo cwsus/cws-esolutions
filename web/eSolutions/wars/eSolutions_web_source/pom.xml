@@ -10,7 +10,6 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>${project.parent.groupId}</groupId>
     <artifactId>eSolutions_web_source</artifactId>
     <version>${project.parent.version}</version>
     <packaging>war</packaging>

@@ -62,7 +62,7 @@ public class ApplicationManagementActivity extends Activity
         }
 
         super.onCreate(bundle);
-        super.setTitle(R.string.mainTitle);
+        super.setTitle(R.string.applicationManagementTitle);
         super.setContentView(R.layout.applicationmanagement);
 
         if ((super.getIntent().getExtras() != null) && (super.getIntent().getExtras().containsKey(Constants.USER_DATA)))
@@ -124,7 +124,7 @@ public class ApplicationManagementActivity extends Activity
             DEBUGGER.debug("Menu: {}", menu);
         }
 
-        super.getMenuInflater().inflate(R.menu.menu, menu);
+        super.getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 

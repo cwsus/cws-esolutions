@@ -1,7 +1,3 @@
 <resources>
-    <string name = "appName">eSolutions</string>
-    <string name = "mainTitle">eSolutions</string>
-    <string name = "btnLoadDNS">DNS</string>
-    <string name = "btnSystemMgmt">Systems</string>
-    <string name = "svcErrorMessage">There was an error while configuring the application. If this problem persists, please contact your administrator.</string>
+    <string name="homeTitle">eSolutions - Home</string>
 </resources>

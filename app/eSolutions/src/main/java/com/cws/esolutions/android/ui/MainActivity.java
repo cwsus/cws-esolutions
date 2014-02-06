@@ -68,7 +68,7 @@ public class MainActivity extends Activity
         }
 
         super.onCreate(bundle);
-        super.setTitle(R.string.mainTitle);
+        super.setTitle(R.string.appName);
         super.setContentView(R.layout.main);
 
         final ApplicationLoader loader = new ApplicationLoader(MainActivity.this);

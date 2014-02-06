@@ -124,7 +124,7 @@ public class UserManagementActivity extends Activity
             DEBUGGER.debug("Menu: {}", menu);
         }
 
-        super.getMenuInflater().inflate(R.menu.menu, menu);
+        super.getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
