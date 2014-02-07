@@ -35,10 +35,15 @@ import android.graphics.Color;
 import android.widget.EditText;
 import android.widget.TextView;
 import org.slf4j.LoggerFactory;
+import android.content.Context;
 import java.util.concurrent.TimeUnit;
+import android.content.SharedPreferences;
 import org.apache.commons.lang.StringUtils;
+import android.preference.PreferenceManager;
+import java.io.UnsupportedEncodingException;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.ExecutionException;
+import org.apache.commons.lang.SerializationUtils;
 
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
@@ -147,6 +152,7 @@ public class OnlineResetActivity extends Activity
         AccountResetResponse response = null;
         AuthenticationData userSecurity = null;
 
+        final SharedPreferences prefs = super.getPreferences(Context.MODE_PRIVATE);
         final OnlineResetTask task = new OnlineResetTask(OnlineResetActivity.this);
         final TextView tvRequest = (TextView) super.findViewById(R.id.tvRequestInput);
         final EditText etRequest = (EditText) super.findViewById(R.id.etRequestInput);
@@ -251,14 +257,16 @@ public class OnlineResetActivity extends Activity
                         return;
                     }
 
-                    UserAccount account = response.getUserAccount();
+                    userAccount = response.getUserAccount();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("UserAccount: {}", account);
+                        DEBUGGER.debug("UserAccount: {}", userAccount);
                     }
 
-                    super.getIntent().getExtras().putSerializable(Constants.USER_DATA, userAccount);
+					SharedPreferences.Editor editor = prefs.edit();
+					editor.putString(Constants.USER_DATA, new String(SerializationUtils.serialize(userAccount), "UTF-8"));
+                    editor.commit();
 
                     userSecurity = response.getUserSecurity();
 
@@ -275,9 +283,21 @@ public class OnlineResetActivity extends Activity
 
                     return;
                 case QUESTIONS:
-                    task.execute(this.resetType.name(), 
-                        ((UserAccount) super.getIntent().getExtras().getSerializable(Constants.USER_DATA)).getUsername(),
-                        ((UserAccount) super.getIntent().getExtras().getSerializable(Constants.USER_DATA)).getGuid(),
+					byte[] stuff = prefs.getString(Constants.USER_DATA, null).getBytes("UTF-8");
+					
+					if (stuff == null)
+					{
+						throw new NullPointerException("null stuff");
+					}
+
+                    UserAccount reqAccount = (UserAccount) SerializationUtils.deserialize(stuff);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("UserAccount: {}", reqAccount);
+                    }
+
+                    task.execute(this.resetType.name(), reqAccount.getUsername(), reqAccount.getGuid(),
                         etSecQuesOne.getText().toString(), etSecQuesTwo.getText().toString());
                     response = task.get(bean.getTaskTimeout(), TimeUnit.SECONDS);
 
@@ -361,6 +381,15 @@ public class OnlineResetActivity extends Activity
             return;
         }
         catch (TimeoutException tx)
+        {
+            etRequest.setEnabled(true);
+            etRequest.setText("");
+            tvResponseValue.setTextColor(Color.RED);
+            tvResponseValue.setText(super.getString(R.string.txtSignonError));
+
+            return;
+        }
+        catch (UnsupportedEncodingException uex)
         {
             etRequest.setEnabled(true);
             etRequest.setText("");
