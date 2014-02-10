@@ -25,11 +25,16 @@ package com.cws.esolutions.security.dao.usermgmt.impl;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import java.util.Arrays;
 import java.util.List;
 import java.sql.ResultSet;
 import java.sql.Connection;
 import java.util.ArrayList;
+
 import javax.sql.DataSource;
+
+import org.apache.commons.lang.StringUtils;
+
 import java.sql.SQLException;
 import java.sql.CallableStatement;
 
@@ -95,35 +100,18 @@ public class SQLUserManager implements UserManager
 
                 if (resultSet.next())
                 {
-                    throw new UserManagementException("A user currently exists with the provided UUID");
-                }
+                    resultSet.beforeFirst();
 
-                resultSet.close();
-                resultSet = null;
-
-                stmt.close();
-                stmt = null;
-
-                stmt = sqlConn.prepareCall("{ CALL getUserByAttribute(?) }");
-                stmt.setString(1, userId);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("CallableStatement: {}", stmt);
-                }
-
-                if (stmt.execute())
-                {
-                    resultSet = stmt.executeQuery();
-
-                    if (DEBUG)
+                    while (resultSet.next())
                     {
-                        DEBUGGER.debug("ResultSet: {}", resultSet);
-                    }
+                        if ((StringUtils.equals(resultSet.getString(1), userGuid)) || (StringUtils.equals(resultSet.getString(2), userId)))
+                        {
+                            resultSet.close();
+                            stmt.close();
+                            sqlConn.close();
 
-                    if (resultSet.next())
-                    {
-                        throw new UserManagementException("A user currently exists with the provided username");
+                            throw new UserManagementException("A user currently exists with the provided information.");
+                        }
                     }
                 }
             }
@@ -164,9 +152,9 @@ public class SQLUserManager implements UserManager
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#addUserAccount(java.util.List, java.util.List)
      */
     @Override
-    public synchronized boolean addUserAccount(final List<String> userAccount, final List<String> roles) throws UserManagementException
+    public synchronized boolean addUserAccount(final List<Object> userAccount, final List<String> roles) throws UserManagementException
     {
-        final String methodName = SQLUserManager.CNAME + "#addUserAccount(final List<String> userAccount, final List<String> roles) throws UserManagementException";
+        final String methodName = SQLUserManager.CNAME + "#addUserAccount(final List<Object> userAccount, final List<String> roles) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -191,16 +179,14 @@ public class SQLUserManager implements UserManager
             sqlConn.setAutoCommit(true);
 
             stmt = sqlConn.prepareCall("{ CALL addUserAccount(?, ?, ?, ?, ?, ?, ?, ?) }");
-
-            for (int x = 1; x < userAccount.size(); x++)
-            {
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Value: {}", userAccount.get(x));
-                }
-
-                stmt.setString(x, userAccount.get(x));
-            }
+            stmt.setString(1, (String) userAccount.get(0)); // guid
+            stmt.setString(2, (String) userAccount.get(1)); // username
+            stmt.setString(3, (String) userAccount.get(2)); // password
+            stmt.setBoolean(4, (Boolean) userAccount.get(3)); // suspended
+            stmt.setString(5, (String) userAccount.get(4)); // surname
+            stmt.setString(6, (String) userAccount.get(5)); // givenname
+            stmt.setString(7, (String) userAccount.get(6)); // displayname
+            stmt.setString(8, (String) userAccount.get(7)); // email
 
             if (DEBUG)
             {
@@ -474,17 +460,23 @@ public class SQLUserManager implements UserManager
                     }
 
                     resultSet.first();
-                    userAccount = new ArrayList<>();
-
-                    for (String attribute : authData.getEntries())
-                    {
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Attribute: {}", attribute);
-                        }
-
-                        userAccount.add(resultSet.getString(attribute));
-                    }
+                    userAccount = new ArrayList<>(
+                        Arrays.asList(
+                            resultSet.getString(authData.getCommonName()),
+                            resultSet.getString(authData.getUserId()),
+                            resultSet.getInt(authData.getLockCount()),
+                            resultSet.getTimestamp(authData.getLastLogin()),
+                            resultSet.getTimestamp(authData.getExpiryDate()),
+                            resultSet.getString(authData.getSurname()),
+                            resultSet.getString(authData.getGivenName()),
+                            resultSet.getString(authData.getDisplayName()),
+                            resultSet.getString(authData.getEmailAddr()),
+                            resultSet.getString(authData.getPagerNumber()),
+                            resultSet.getString(authData.getTelephoneNumber()),
+                            resultSet.getString(authData.getMemberOf()),
+                            resultSet.getBoolean(authData.getIsSuspended()),
+                            resultSet.getBoolean(authData.getOlrSetupReq()),
+                            resultSet.getBoolean(authData.getOlrLocked())));
 
                     if (DEBUG)
                     {
@@ -664,7 +656,7 @@ public class SQLUserManager implements UserManager
 
             // first make sure the existing password is proper
             // then make sure the new password doesnt match the existing password
-            stmt = sqlConn.prepareCall("{ CALL updateUserEmail(?, ?}");
+            stmt = sqlConn.prepareCall("{ CALL updateUserEmail(?, ?) }");
             stmt.setString(1, userId);
             stmt.setString(2, value);
 
@@ -737,7 +729,7 @@ public class SQLUserManager implements UserManager
 
             // first make sure the existing password is proper
             // then make sure the new password doesnt match the existing password
-            stmt = sqlConn.prepareCall("{ CALL updateUserContact(?, ?, ?}");
+            stmt = sqlConn.prepareCall("{ CALL updateUserContact(?, ?, ?) }");
             stmt.setString(1, userId);
             stmt.setString(2, values.get(0));
             stmt.setString(2, values.get(1));

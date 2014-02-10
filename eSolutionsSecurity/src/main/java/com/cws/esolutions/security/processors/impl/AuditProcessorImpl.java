@@ -83,7 +83,6 @@ public class AuditProcessorImpl implements IAuditProcessor
             switch (auditEntry.getAuditType())
             {
                 case LOGON:
-                    auditList.add(hostInfo.getSessionId()); // usr_audit_sessionid
                     auditList.add(userAccount.getUsername()); // usr_audit_userid
                     auditList.add(SecurityServiceConstants.NOT_SET); // usr_audit_userguid
                     auditList.add(auditEntry.getApplicationId()); // usr_audit_applid
@@ -94,7 +93,6 @@ public class AuditProcessorImpl implements IAuditProcessor
 
                     break;
                 default:
-                    auditList.add(hostInfo.getSessionId()); // usr_audit_sessionid
                     auditList.add(userAccount.getUsername()); // usr_audit_userid
                     auditList.add(userAccount.getGuid()); // usr_audit_userguid
                     auditList.add(auditEntry.getApplicationId()); // usr_audit_applid
@@ -209,7 +207,6 @@ public class AuditProcessorImpl implements IAuditProcessor
                             RequestHostInfo hostInfo = new RequestHostInfo();
                             hostInfo.setHostAddress((String) array[7]); // resultSet.getString(9), // SOURCE_ADDRESS
                             hostInfo.setHostName((String) array[8]); // resultSet.getString(10) // SOURCE_HOSTNAME
-                            hostInfo.setSessionId((String) array[0]); // resultSet.getString(2), // SESSION_ID
 
                             if (DEBUG)
                             {

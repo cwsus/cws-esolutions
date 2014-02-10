@@ -42,8 +42,6 @@ import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException
 
 public class SQLAuthenticatorTest
 {
-    private static final Authenticator authenticator = AuthenticatorFactory.getAuthenticator("com.cws.esolutions.security.dao.userauth.SQLAuthenticator");
-
     @Before public void setUp()
     {
         try
@@ -59,9 +57,11 @@ public class SQLAuthenticatorTest
 
     @Test public void performLogon()
     {
+        Authenticator authenticator = AuthenticatorFactory.getAuthenticator("com.cws.esolutions.security.dao.userauth.impl.SQLAuthenticator");
+
         try
         {
-            Assert.assertNotNull(authenticator.performLogon("khuntly", "VOpqGWznp1flygXFED8FVTxXTRHG9QG/Dj+apuuyeh59JWVbYd9hOgZTOfpLdBWRlPDb1TZnvt7XE3llHOPQQQ=="));
+            Assert.assertNotNull(authenticator.performLogon("junit", "VOpqGWznp1flygXFED8FVTxXTRHG9QG/Dj+apuuyeh59JWVbYd9hOgZTOfpLdBWRlPDb1TZnvt7XE3llHOPQQQ=="));
         }
         catch (AuthenticatorException e)
         {
@@ -71,9 +71,11 @@ public class SQLAuthenticatorTest
 
     @Test public void obtainSecurityData()
     {
+        Authenticator authenticator = AuthenticatorFactory.getAuthenticator("com.cws.esolutions.security.dao.userauth.impl.SQLAuthenticator");
+
         try
         {
-            Assert.assertNotNull(authenticator.obtainSecurityData("khuntly", "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95"));
+            Assert.assertNotNull(authenticator.obtainSecurityData("junit", "f42fb0ba-4d1e-1126-986f-800cd2650000"));
         }
         catch (AuthenticatorException e)
         {
@@ -83,9 +85,11 @@ public class SQLAuthenticatorTest
 
     @Test public void obtainOtpSecret()
     {
+        Authenticator authenticator = AuthenticatorFactory.getAuthenticator("com.cws.esolutions.security.dao.userauth.impl.SQLAuthenticator");
+
         try
         {
-            Assert.assertNotNull(authenticator.obtainOtpSecret("khuntly", "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95"));
+            Assert.assertNotNull(authenticator.obtainOtpSecret("junit", "f42fb0ba-4d1e-1126-986f-800cd2650000"));
         }
         catch (AuthenticatorException e)
         {
@@ -95,12 +99,14 @@ public class SQLAuthenticatorTest
 
     @Test public void verifySecurityData()
     {
+        Authenticator authenticator = AuthenticatorFactory.getAuthenticator("com.cws.esolutions.security.dao.userauth.impl.SQLAuthenticator");
+
         try
         {
-            Assert.assertTrue(authenticator.verifySecurityData("khuntly", "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95",
+            Assert.assertTrue(authenticator.verifySecurityData("junit", "f42fb0ba-4d1e-1126-986f-800cd2650000",
                     new ArrayList<String>(
-                            Arrays.asList("2kAghHhR1Kaq4vuXukaY9NDOnt9J9rZzGvn6Fgg2EIsj2kHjsYv4mIp2SGsATUL8d839aqL27+KOVxh704hk5Q==",
-                                    "JeqSyqq3trkDkOwMZDf8lIHCfa2NWPSMJ/rFVnPmooGKXcAzUtwR/wJ18uc5wOQtbsMaa3cK3lB2kwqqi/SpWA=="))));
+                            Arrays.asList("nnVRD0xm0quQrHv2k9AHSfQIHJLoJ6Hp9HWPgiqpiV9zOMDUaboAUOUzI4Vn5lWlqczMl/TzjWWrt6YhHhRjng==",
+                                    "FEwX3hCErzIAaeZThAznod4cIOG1eboOwttIBiW6Fz1Rbe/JzczTN6ANjIdW9KNkKx6Q+g1fDtIZgYX/xEYlOA=="))));
                                     
         }
         catch (AuthenticatorException e)

@@ -484,7 +484,6 @@ public class LoginController
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostAddress(hRequest.getRemoteHost());
             reqInfo.setHostName(hRequest.getRemoteAddr());
-            reqInfo.setSessionId(hSession.getId());
 
             if (DEBUG)
             {
@@ -674,7 +673,6 @@ public class LoginController
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostAddress(hRequest.getRemoteHost());
             reqInfo.setHostName(hRequest.getRemoteAddr());
-            reqInfo.setSessionId(hSession.getId());
 
             if (DEBUG)
             {

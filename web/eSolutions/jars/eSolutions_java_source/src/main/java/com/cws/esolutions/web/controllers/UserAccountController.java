@@ -591,7 +591,6 @@ public class UserAccountController
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostName(hRequest.getRemoteHost());
             reqInfo.setHostAddress(hRequest.getRemoteAddr());
-            reqInfo.setSessionId(hSession.getId());
 
             if (DEBUG)
             {
@@ -951,7 +950,6 @@ public class UserAccountController
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostAddress(hRequest.getRemoteAddr());
             reqInfo.setHostName(hRequest.getRemoteHost());
-            reqInfo.setSessionId(hSession.getId());
 
             if (DEBUG)
             {
@@ -1110,7 +1108,6 @@ public class UserAccountController
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostAddress(hRequest.getRemoteAddr());
             reqInfo.setHostName(hRequest.getRemoteHost());
-            reqInfo.setSessionId(hSession.getId());
 
             if (DEBUG)
             {
@@ -1292,7 +1289,6 @@ public class UserAccountController
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostAddress(hRequest.getRemoteAddr());
             reqInfo.setHostName(hRequest.getRemoteHost());
-            reqInfo.setSessionId(hSession.getId());
 
             if (DEBUG)
             {
@@ -1433,7 +1429,6 @@ public class UserAccountController
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostAddress(hRequest.getRemoteAddr());
             reqInfo.setHostName(hRequest.getRemoteHost());
-            reqInfo.setSessionId(hSession.getId());
 
             if (DEBUG)
             {
@@ -1586,7 +1581,6 @@ public class UserAccountController
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostAddress(hRequest.getRemoteAddr());
             reqInfo.setHostName(hRequest.getRemoteHost());
-            reqInfo.setSessionId(hSession.getId());
 
             if (DEBUG)
             {
@@ -1747,7 +1741,6 @@ public class UserAccountController
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostAddress(hRequest.getRemoteAddr());
             reqInfo.setHostName(hRequest.getRemoteHost());
-            reqInfo.setSessionId(hSession.getId());
 
             if (DEBUG)
             {

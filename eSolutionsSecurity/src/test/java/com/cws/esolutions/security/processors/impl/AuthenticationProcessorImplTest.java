@@ -29,7 +29,6 @@ import org.junit.Test;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Assert;
-import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
@@ -56,7 +55,6 @@ public class AuthenticationProcessorImplTest
             hostInfo = new RequestHostInfo();
             hostInfo.setHostAddress("junit");
             hostInfo.setHostName("junit");
-            hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
         }
         catch (Exception e)
         {
@@ -68,11 +66,10 @@ public class AuthenticationProcessorImplTest
     @Test public void processAgentLogon()
     {
         UserAccount account = new UserAccount();
-        account.setUsername("khuntly");
-        hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
+        account.setUsername("junit");
 
         AuthenticationData userSecurity = new AuthenticationData();
-        userSecurity.setPassword("Ariana21*");
+        userSecurity.setPassword("junit");
 
         AuthenticationRequest request = new AuthenticationRequest();
         request.setApplicationName("esolutions");
@@ -95,13 +92,11 @@ public class AuthenticationProcessorImplTest
     @Test public void processOtpLogon()
     {
         UserAccount account = new UserAccount();
-        account.setUsername("khuntly");
-        account.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
-
-        hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
+        account.setUsername("junit");
+        account.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
 
         AuthenticationData userSecurity = new AuthenticationData();
-        userSecurity.setPassword("Ariana21*");
+        userSecurity.setPassword("junit");
         userSecurity.setSecret("RHmJrNj6KISffPbnksYZDuKr9pookp0oxThyHa0rqkrID+tX8PTVcTl6D/MoA0FCp2r7lv+HaHrRrR/w/FaGSA==");
         userSecurity.setOtpValue(790269);
 

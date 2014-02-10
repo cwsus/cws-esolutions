@@ -39,7 +39,6 @@ import android.content.Context;
 import java.util.concurrent.TimeUnit;
 import android.content.SharedPreferences;
 import org.apache.commons.lang.StringUtils;
-import android.preference.PreferenceManager;
 import java.io.UnsupportedEncodingException;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.ExecutionException;
@@ -284,12 +283,15 @@ public class OnlineResetActivity extends Activity
                     return;
                 case QUESTIONS:
 					byte[] stuff = prefs.getString(Constants.USER_DATA, null).getBytes("UTF-8");
-					
+
+					System.out.println(stuff);
 					if (stuff == null)
 					{
 						throw new NullPointerException("null stuff");
 					}
 
+					Object obj = SerializationUtils.deserialize(stuff);
+					System.out.println(obj);
                     UserAccount reqAccount = (UserAccount) SerializationUtils.deserialize(stuff);
 
                     if (DEBUG)

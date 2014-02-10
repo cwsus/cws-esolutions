@@ -26,10 +26,7 @@ package com.cws.esolutions.security.config.xml;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 
-import java.util.List;
 import org.slf4j.Logger;
-import java.util.Arrays;
-import java.util.ArrayList;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
@@ -61,6 +58,7 @@ public final class AuthData implements Serializable
     private String emailAddr = null;
     private String olrLocked = null;
     private String givenName = null;
+    private String baseObject = null;
     private String expiryDate = null;
     private String commonName = null;
     private String olrSetupReq = null;
@@ -70,12 +68,9 @@ public final class AuthData implements Serializable
     private String userPassword = null;
     private String secAnswerOne = null;
     private String secAnswerTwo = null;
-    private List<String> entries = null;
     private String secQuestionOne = null;
     private String secQuestionTwo = null;
     private String telephoneNumber = null;
-
-    private String baseObject = null;
     private String repositoryBaseDN = null;
     private String repositoryUserBase = null;
     private String repositoryRoleBase = null;
@@ -787,37 +782,6 @@ public final class AuthData implements Serializable
         }
 
         return this.telephoneNumber;
-    }
-
-    public final List<String> getEntries()
-    {
-        final String methodName = AuthData.CNAME + "#getEntries()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        this.entries = new ArrayList<>(
-            Arrays.asList(
-                this.secret,
-                this.userId,
-                this.surname,
-                this.memberOf,
-                this.lockCount,
-                this.lastLogin,
-                this.emailAddr,
-                this.olrLocked,
-                this.givenName,
-                this.expiryDate,
-                this.commonName,
-                this.olrSetupReq,
-                this.isSuspended,
-                this.displayName,
-                this.pagerNumber,
-                this.telephoneNumber));
-
-        return this.entries;
     }
 
     @Override

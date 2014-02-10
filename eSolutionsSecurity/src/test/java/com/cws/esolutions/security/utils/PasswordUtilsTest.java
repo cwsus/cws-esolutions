@@ -58,7 +58,7 @@ public class PasswordUtilsTest
     {
         String salt = RandomStringUtils.randomAlphanumeric(64);
         System.out.println(salt);
-        System.out.println(PasswordUtils.encryptText("answertwo", salt,
+        System.out.println(PasswordUtils.encryptText("answertwo", "7Kne07SOfhO950amO3UaTybwilSimSX5A8GnH1pIfAcz6wWBNTgPTNWjWznxuV2h",
                         bean.getConfigData().getSecurityConfig().getAuthAlgorithm(), bean.getConfigData().getSecurityConfig().getIterations()));
     }
 

@@ -67,7 +67,7 @@ public class ServiceManagementProcessorImplTest
             hostInfo.setHostName("junit");
 
             userAccount.setStatus(LoginStatus.SUCCESS);
-            userAccount.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
+            userAccount.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
             userAccount.setUsername("khuntly");
 
             CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml");

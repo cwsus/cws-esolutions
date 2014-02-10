@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.ArrayList;
 import java.sql.SQLException;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.RandomStringUtils;
 
@@ -98,7 +99,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if (isUserAuthorized)
             {
-                String userGuid = (StringUtils.isNotEmpty(userAccount.getGuid())) ? userAccount.getGuid() : UUID.randomUUID().toString();
+                String userGuid = UUID.randomUUID().toString();
 
                 if (DEBUG)
                 {
@@ -157,15 +158,16 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     String newPassword = PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()), newUserSalt,
                             secConfig.getAuthAlgorithm(), secConfig.getIterations());
 
-                    List<String> accountData = new ArrayList<>(
+                    List<Object> accountData = new ArrayList<>(
                         Arrays.asList(
+                                userGuid,
                                 userAccount.getUsername(),
                                 newPassword,
+                                userAccount.isSuspended(),
                                 userAccount.getSurname(),
                                 userAccount.getGivenName(),
-                                userAccount.getEmailAddr(),
-                                userGuid,
-                                userAccount.getDisplayName()));
+                                userAccount.getGivenName() + " " + userAccount.getSurname(), 
+                                userAccount.getEmailAddr()));
 
                     if (DEBUG)
                     {
@@ -305,7 +307,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             {
                 
                 // delete userAccount
-                boolean isComplete = userManager.removeUserAccount(userAccount.getUsername());
+                boolean isComplete = userManager.removeUserAccount(userAccount.getGuid());
 
                 if (DEBUG)
                 {
@@ -1000,10 +1002,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         UserAccount userInfo = new UserAccount();
                         userInfo.setGuid((String) userData[0]);
                         userInfo.setUsername((String) userData[1]);
-                        userInfo.setGivenName((String) userData[2]);
-                        userInfo.setSurname((String) userData[3]);
-                        userInfo.setEmailAddr((String) userData[5]);
-                        userInfo.setDisplayName((String) userData[4]);
 
                         if (DEBUG)
                         {
@@ -1131,18 +1129,19 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     UserAccount loadAccount = new UserAccount();
                     loadAccount.setGuid((String) userData.get(0));
                     loadAccount.setUsername((String) userData.get(1));
-                    loadAccount.setGivenName((String) userData.get(2));
-                    loadAccount.setSurname((String) userData.get(3));
-                    loadAccount.setDisplayName((String) userData.get(4));
-                    loadAccount.setEmailAddr((String) userData.get(5));
-                    loadAccount.setPagerNumber((userData.get(6) == null) ? SecurityServiceConstants.NOT_SET : (String) userData.get(6));
-                    loadAccount.setTelephoneNumber((userData.get(7) == null) ? SecurityServiceConstants.NOT_SET : (String) userData.get(7));
-                    loadAccount.setFailedCount(((userData.get(8) == null) ? 0 : (Integer) userData.get(8)));
-                    loadAccount.setLastLogin(((userData.get(9) == null) ? new Date(1L) : new Date((Long) userData.get(9))));
-                    loadAccount.setExpiryDate(((userData.get(10) == null) ? new Date(System.currentTimeMillis()) : (Date) userData.get(10)));
-                    loadAccount.setSuspended(((userData.get(11) == null) ? Boolean.FALSE : (Boolean) userData.get(11)));
-                    loadAccount.setOlrSetup(((userData.get(12) == null) ? Boolean.FALSE : (Boolean) userData.get(12)));
-                    loadAccount.setOlrLocked(((userData.get(13) == null) ? Boolean.FALSE : (Boolean) userData.get(13)));
+                    loadAccount.setFailedCount(((userData.get(2) == null) ? 0 : (Integer) userData.get(2)));
+                    loadAccount.setLastLogin(((userData.get(3) == null) ? new Date(1L) : new Date((Long) userData.get(3))));
+                    loadAccount.setExpiryDate(((userData.get(4) == null) ? new Date(System.currentTimeMillis()) : (Date) userData.get(4)));
+                    loadAccount.setSurname((String) userData.get(5));
+                    loadAccount.setGivenName((String) userData.get(6));
+                    loadAccount.setDisplayName((String) userData.get(7));
+                    loadAccount.setEmailAddr((String) userData.get(8));
+                    loadAccount.setPagerNumber((userData.get(9) == null) ? SecurityServiceConstants.NOT_SET : (String) userData.get(9));
+                    loadAccount.setTelephoneNumber((userData.get(10) == null) ? SecurityServiceConstants.NOT_SET : (String) userData.get(10));
+                    loadAccount.setGroups(new String[] { (String) userData.get(11) });
+                    loadAccount.setSuspended(((userData.get(12) == null) ? Boolean.FALSE : (Boolean) userData.get(12)));
+                    loadAccount.setOlrSetup(((userData.get(13) == null) ? Boolean.FALSE : (Boolean) userData.get(13)));
+                    loadAccount.setOlrLocked(((userData.get(14) == null) ? Boolean.FALSE : (Boolean) userData.get(14)));
 
                     if (DEBUG)
                     {

@@ -111,7 +111,7 @@ public interface IUserSecurityInformationDAO
      * @return The commonName (GUID) associated with the reset request identifier
      * @throws SQLException if an exception occurs during insertion process
      */
-    List<String> getResetData(final String resetId) throws SQLException;
+    List<Object> getResetData(final String resetId) throws SQLException;
 
     /**
      * Returns the salt value associated with the given user account to process an

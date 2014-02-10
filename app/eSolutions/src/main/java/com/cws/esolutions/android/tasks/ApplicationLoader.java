@@ -34,7 +34,6 @@ import android.os.AsyncTask;
 import android.app.Activity;
 import org.slf4j.LoggerFactory;
 import android.content.res.AssetManager;
-import org.apache.commons.lang.RandomStringUtils;
 import android.content.res.Resources.NotFoundException;
 
 import com.cws.esolutions.android.ui.R;
@@ -151,7 +150,6 @@ public class ApplicationLoader extends AsyncTask<Void, Void, Boolean>
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostAddress(InetAddress.getLocalHost().getHostAddress());
             reqInfo.setHostName(InetAddress.getLocalHost().getHostName());
-            reqInfo.setSessionId(RandomStringUtils.randomAlphanumeric(Integer.parseInt(props.getProperty("sessIdLength"), 32)));
 
             if (DEBUG)
             {

@@ -487,7 +487,6 @@ public class ApplicationManagementController
                 RequestHostInfo reqInfo = new RequestHostInfo();
                 reqInfo.setHostName(hRequest.getRemoteHost());
                 reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setSessionId(hSession.getId());
 
                 if (DEBUG)
                 {
@@ -629,7 +628,6 @@ public class ApplicationManagementController
                 RequestHostInfo reqInfo = new RequestHostInfo();
                 reqInfo.setHostName(hRequest.getRemoteHost());
                 reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setSessionId(hSession.getId());
 
                 if (DEBUG)
                 {
@@ -774,7 +772,6 @@ public class ApplicationManagementController
                 RequestHostInfo reqInfo = new RequestHostInfo();
                 reqInfo.setHostName(hRequest.getRemoteHost());
                 reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setSessionId(hSession.getId());
 
                 if (DEBUG)
                 {
@@ -917,7 +914,6 @@ public class ApplicationManagementController
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostName(hRequest.getRemoteHost());
             reqInfo.setHostAddress(hRequest.getRemoteAddr());
-            reqInfo.setSessionId(hSession.getId());
 
             if (DEBUG)
             {
@@ -1091,7 +1087,6 @@ public class ApplicationManagementController
                 RequestHostInfo reqInfo = new RequestHostInfo();
                 reqInfo.setHostName(hRequest.getRemoteHost());
                 reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setSessionId(hSession.getId());
 
                 if (DEBUG)
                 {
@@ -1230,7 +1225,6 @@ public class ApplicationManagementController
                 RequestHostInfo reqInfo = new RequestHostInfo();
                 reqInfo.setHostName(hRequest.getRemoteHost());
                 reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setSessionId(hSession.getId());
 
                 if (DEBUG)
                 {
@@ -1399,7 +1393,6 @@ public class ApplicationManagementController
                 RequestHostInfo reqInfo = new RequestHostInfo();
                 reqInfo.setHostName(hRequest.getRemoteHost());
                 reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setSessionId(hSession.getId());
 
                 if (DEBUG)
                 {
@@ -1570,7 +1563,6 @@ public class ApplicationManagementController
                 RequestHostInfo reqInfo = new RequestHostInfo();
                 reqInfo.setHostName(hRequest.getRemoteHost());
                 reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setSessionId(hSession.getId());
 
                 if (DEBUG)
                 {
@@ -1741,7 +1733,6 @@ public class ApplicationManagementController
                 RequestHostInfo reqInfo = new RequestHostInfo();
                 reqInfo.setHostName(hRequest.getRemoteHost());
                 reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setSessionId(hSession.getId());
 
                 if (DEBUG)
                 {
@@ -1989,7 +1980,6 @@ public class ApplicationManagementController
                 RequestHostInfo reqInfo = new RequestHostInfo();
                 reqInfo.setHostName(hRequest.getRemoteHost());
                 reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setSessionId(hSession.getId());
 
                 if (DEBUG)
                 {
@@ -2139,7 +2129,6 @@ public class ApplicationManagementController
                 RequestHostInfo reqInfo = new RequestHostInfo();
                 reqInfo.setHostName(hRequest.getRemoteHost());
                 reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setSessionId(hSession.getId());
 
                 if (DEBUG)
                 {

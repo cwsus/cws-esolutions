@@ -62,15 +62,14 @@ public class AuditDAOImpl implements IAuditDAO
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL insertAuditEntry(?, ?, ?, ?, ?, ?, ?, ?)}");
-            stmt.setString(1, auditRequest.get(0)); // usr_audit_sessionid
-            stmt.setString(2, auditRequest.get(1)); // usr_audit_userid
-            stmt.setString(3, auditRequest.get(2)); // usr_audit_userguid
-            stmt.setString(4, auditRequest.get(3)); // usr_audit_applid
-            stmt.setString(5, auditRequest.get(4)); // usr_audit_applname
-            stmt.setString(6, auditRequest.get(5)); // usr_audit_action
-            stmt.setString(7, auditRequest.get(6)); // usr_audit_srcaddr
-            stmt.setString(8, auditRequest.get(7)); // usr_audit_srchost
+            stmt = sqlConn.prepareCall("{CALL insertAuditEntry(?, ?, ?, ?, ?, ?, ?)}");
+            stmt.setString(2, auditRequest.get(0)); // usr_audit_userid
+            stmt.setString(3, auditRequest.get(1)); // usr_audit_userguid
+            stmt.setString(4, auditRequest.get(2)); // usr_audit_applid
+            stmt.setString(5, auditRequest.get(3)); // usr_audit_applname
+            stmt.setString(6, auditRequest.get(4)); // usr_audit_action
+            stmt.setString(7, auditRequest.get(5)); // usr_audit_srcaddr
+            stmt.setString(8, auditRequest.get(6)); // usr_audit_srchost
 
             if (DEBUG)
             {
@@ -166,15 +165,14 @@ public class AuditDAOImpl implements IAuditDAO
                     {
                         Object[] data = new Object[]
                         {
-                                resultSet.getString(2), // SESSION_ID
-                                resultSet.getString(3), // USERNAME
-                                resultSet.getString(4), // CN
-                                resultSet.getString(5), // APPLICATION_ID
-                                resultSet.getString(6), // APPLICATION_NAME
-                                resultSet.getTimestamp(7), // REQUEST_TIMESTAMP
-                                resultSet.getString(8), // ACTION
-                                resultSet.getString(9), // SOURCE_ADDRESS
-                                resultSet.getString(10) // SOURCE_HOSTNAME
+                            resultSet.getString(3), // USERNAME
+                            resultSet.getString(4), // CN
+                            resultSet.getString(5), // APPLICATION_ID
+                            resultSet.getString(6), // APPLICATION_NAME
+                            resultSet.getTimestamp(7), // REQUEST_TIMESTAMP
+                            resultSet.getString(8), // ACTION
+                            resultSet.getString(9), // SOURCE_ADDRESS
+                            resultSet.getString(10) // SOURCE_HOSTNAME
                         };
 
                         if (DEBUG)

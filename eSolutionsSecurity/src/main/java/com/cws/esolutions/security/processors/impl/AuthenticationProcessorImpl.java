@@ -104,7 +104,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 throw new AuthenticationException("Unable to obtain configured user salt. Cannot continue");
             }
 
-            List<Object> authObject = authenticator.performLogon(userInfo.get(0)[0],
+            List<Object> authObject = authenticator.performLogon(userInfo.get(0)[1],
                     PasswordUtils.encryptText(
                             authSec.getPassword(),
                         userSalt,
@@ -121,7 +121,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 throw new AuthenticationException("Authentication processing failed. Cannot continue.");
             }
 
-            if (((Integer) authObject.get(8) >= secConfig.getMaxAttempts()) || ((Boolean) authObject.get(11)))
+            if (((Integer) authObject.get(3) >= secConfig.getMaxAttempts()) || ((Boolean) authObject.get(13)))
             {
                 // user locked
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
@@ -130,7 +130,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             }
 
             // if the user has enabled otp auth, do it here
-            if (StringUtils.isNotEmpty((String) authObject.get(14)))
+            if (StringUtils.isNotEmpty((String) authObject.get(2)))
             {
                 userAccount = new UserAccount();
                 userAccount.setGuid((String) authObject.get(0));
@@ -146,19 +146,19 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             userAccount = new UserAccount();
             userAccount.setGuid((String) authObject.get(0));
             userAccount.setUsername((String) authObject.get(1));
-            userAccount.setGivenName((String) authObject.get(2));
-            userAccount.setSurname((String) authObject.get(3));
-            userAccount.setDisplayName((String) authObject.get(4));
-            userAccount.setEmailAddr((String) authObject.get(5));
-            userAccount.setPagerNumber((String) authObject.get(6));
-            userAccount.setTelephoneNumber((String) authObject.get(7));
-            userAccount.setFailedCount((Integer) authObject.get(8));
-            userAccount.setLastLogin((Date) authObject.get(9));
-            userAccount.setExpiryDate((Date) authObject.get(10));
-            userAccount.setSuspended((Boolean) authObject.get(11));
-            userAccount.setOlrSetup((Boolean) authObject.get(12));
-            userAccount.setOlrLocked((Boolean) authObject.get(13));
-            userAccount.setGroups(StringUtils.split((String) authObject.get(15), ","));
+            userAccount.setFailedCount((Integer) authObject.get(3));
+            userAccount.setLastLogin((Date) authObject.get(4));
+            userAccount.setExpiryDate((Date) authObject.get(5));
+            userAccount.setSurname((String) authObject.get(6));
+            userAccount.setGivenName((String) authObject.get(7));
+            userAccount.setDisplayName((String) authObject.get(8));
+            userAccount.setEmailAddr((String) authObject.get(9));
+            userAccount.setPagerNumber((String) authObject.get(10));
+            userAccount.setTelephoneNumber((String) authObject.get(11));
+            userAccount.setGroups(StringUtils.split((String) authObject.get(12), ","));
+            userAccount.setSuspended((Boolean) authObject.get(13));
+            userAccount.setOlrSetup((Boolean) authObject.get(14));
+            userAccount.setOlrLocked((Boolean) authObject.get(15));
 
             if (DEBUG)
             {

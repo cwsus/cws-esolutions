@@ -56,15 +56,16 @@ public class AccountControlProcessorImplTest
             hostInfo.setHostName("junit");
 
             userAccount.setStatus(LoginStatus.SUCCESS);
-            userAccount.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
+            userAccount.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
             userAccount.setUsername("khuntly");
 
-            testAccount.setStatus(LoginStatus.SUCCESS);
-            testAccount.setGuid("6ff1cd3b-b214-4388-83f1-9dda49030c8f");
+            testAccount.setGuid("860e873f-8593-4c43-9ec6-a301e0e9840d");
             testAccount.setUsername("junit-test");
-            testAccount.setEmailAddr("junit@test.com");
-            testAccount.setGivenName("junit");
+            testAccount.setSuspended(false);
             testAccount.setSurname("test");
+            testAccount.setGivenName("junit");
+            testAccount.setEmailAddr("junit@test.com");
+            testAccount.setGroups(new String[] { "DNS Operator" });
 
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml");
         }
@@ -93,6 +94,7 @@ public class AccountControlProcessorImplTest
         }
         catch (AccountControlException acx)
         {
+            acx.printStackTrace();
             Assert.fail(acx.getMessage());
         }
     }

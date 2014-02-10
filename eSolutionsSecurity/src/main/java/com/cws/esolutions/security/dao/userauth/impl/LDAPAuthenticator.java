@@ -66,8 +66,8 @@ public class LDAPAuthenticator implements Authenticator
         }
 
         LDAPConnection ldapConn = null;
+        List<Object> userAccount = null;
         LDAPConnectionPool ldapPool = null;
-        List<Object> userAccount = new ArrayList<Object>();
 
         try
         {
@@ -146,15 +146,24 @@ public class LDAPAuthenticator implements Authenticator
                 DEBUGGER.debug("BindResult: {}", bindResult);
             }
 
-            for (String attribute : authData.getEntries())
-            {
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Attribute: {}", attribute);
-                }
-
-                userAccount.add(entry.getAttributeValue(attribute));
-            }
+            userAccount = new ArrayList<>(
+                Arrays.asList(
+                    entry.getAttributeValue(authData.getCommonName()),
+                    entry.getAttributeValue(authData.getUserId()),
+                    entry.getAttributeValue(authData.getSecret()),
+                    entry.getAttributeValueAsInteger(authData.getLockCount()),
+                    entry.getAttributeValueAsDate(authData.getLastLogin()),
+                    entry.getAttributeValueAsDate(authData.getExpiryDate()),
+                    entry.getAttributeValue(authData.getSurname()),
+                    entry.getAttributeValue(authData.getGivenName()),
+                    entry.getAttributeValue(authData.getDisplayName()),
+                    entry.getAttributeValue(authData.getEmailAddr()),
+                    entry.getAttributeValue(authData.getPagerNumber()),
+                    entry.getAttributeValue(authData.getTelephoneNumber()),
+                    entry.getAttributeValue(authData.getMemberOf()),
+                    entry.getAttributeValueAsBoolean(authData.getIsSuspended()),
+                    entry.getAttributeValueAsBoolean(authData.getOlrSetupReq()),
+                    entry.getAttributeValueAsBoolean(authData.getOlrLocked())));
 
             Filter roleFilter = Filter.create("(&(objectClass=groupOfUniqueNames)" +
                     "(&(uniqueMember=" + entry.getDN() + ")))");
@@ -311,8 +320,6 @@ public class LDAPAuthenticator implements Authenticator
 
             userSecurity = new ArrayList<>(
                 Arrays.asList(
-                    entry.getAttributeValue(authData.getCommonName()),
-                    entry.getAttributeValue(authData.getUserId()),
                     entry.getAttributeValue(authData.getSecQuestionOne()),
                     entry.getAttributeValue(authData.getSecQuestionTwo())));
 

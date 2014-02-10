@@ -25,6 +25,7 @@ package com.cws.esolutions.security.processors.impl;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import java.util.Date;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -85,10 +86,10 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
             if (DEBUG)
             {
-                DEBUGGER.debug("userList: {}", userList);
+                DEBUGGER.debug("List<String[]>: {}", userList);
             }
 
-            if ((userList.size() != 1) || (userList == null))
+            if ((userList == null) || (userList.size() == 0))
             {
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
 
@@ -166,8 +167,8 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             }
 
             AuthenticationData userSecurity = new AuthenticationData();
-            userSecurity.setSecQuestionOne(securityData.get(2));
-            userSecurity.setSecQuestionTwo(securityData.get(3));
+            userSecurity.setSecQuestionOne(securityData.get(0));
+            userSecurity.setSecQuestionTwo(securityData.get(1));
 
             if (DEBUG)
             {
@@ -346,142 +347,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
     }
 
     /**
-     * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#verifyResetRequest(com.cws.esolutions.security.processors.dto.AccountResetRequest)
-     */
-    @Override
-    public AccountResetResponse verifyResetRequest(final AccountResetRequest request) throws AccountResetException
-    {
-        final String methodName = IAccountResetProcessor.CNAME + "#verifyResetRequest(final AccountResetRequest request) throws AccountResetException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AccountResetRequest: {}", request);
-        }
-
-        AccountResetResponse response = new AccountResetResponse();
-
-        final Calendar cal = Calendar.getInstance();
-        final RequestHostInfo reqInfo = request.getHostInfo();
-                
-        if (DEBUG)
-        {
-            DEBUGGER.debug("Calendar: {}", cal);
-            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-        }
-        
-        try
-        {
-            cal.add(Calendar.MINUTE, secConfig.getResetTimeout());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Reset expiry: {}", cal.getTimeInMillis());
-            }
-
-            // the request id should be in here, so lets make sure it exists
-            List<String> resetData = userSec.getResetData(request.getResetRequestId());
-
-            final String commonName = resetData.get(0);
-            final Long resetTimestamp = Long.valueOf(resetData.get(1));
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("commonName: {}", commonName);
-                DEBUGGER.debug("resetTimestamp: {}", resetTimestamp);
-            }
-
-            // make sure the timestamp is appropriate
-            if (resetTimestamp <= cal.getTimeInMillis())
-            {
-                if (StringUtils.isNotEmpty(commonName))
-                {
-                    // good, now we have something we can look for
-                    List<String[]> userList = userManager.searchUsers(commonName);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("userList: {}", userList);
-                    }
-
-                    // we expect back only one
-                    if ((userList != null) && (userList.size() == 1))
-                    {
-                        // good, we can continue
-                        Object[] userData = userList.get(0);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("userData: {}", userData);
-                        }
-
-                        UserAccount userAccount = new UserAccount();
-                        userAccount.setStatus(LoginStatus.RESET);
-                        userAccount.setGuid((String) userData[0]);
-                        userAccount.setUsername((String) userData[1]);
-                        userAccount.setGivenName((String) userData[2]);
-                        userAccount.setSurname((String) userData[3]);
-                        userAccount.setDisplayName((String) userData[4]);
-                        userAccount.setEmailAddr((String) userData[5]);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("UserAccount: {}", userAccount);
-                        }
-
-                        // remove the reset request
-                        boolean isRemoved = userSec.removeResetData(userAccount.getGuid(), request.getResetRequestId());
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("isRemoved: {}", isRemoved);
-                        }
-
-                        if (!(isRemoved))
-                        {
-                            ERROR_RECORDER.error("Failed to remove provided reset request from datastore");
-                        }
-
-                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        response.setUserAccount(userAccount);
-                    }
-                    else
-                    {
-                        throw new AccountResetException("Multiple user accounts were located for the provided information");
-                    }
-                }
-                else
-                {
-                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountResetResponse: {}", response);
-                }
-            }
-            else
-            {
-                throw new AccountResetException("Reset request has expired.");
-            }
-        }
-        catch (SecurityServiceException ssx)
-        {
-            ERROR_RECORDER.error(ssx.getMessage(), ssx);
-
-            throw new AccountResetException(ssx.getMessage(), ssx);
-        }
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new AccountResetException(sqx.getMessage(), sqx);
-        }
-
-        return response;
-    }
-
-    /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#resetUserPassword(com.cws.esolutions.security.processors.dto.AccountResetRequest)
      */
     @Override
@@ -539,12 +404,12 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                         UserAccount responseAccount = new UserAccount();
                         responseAccount.setGuid((String) userData.get(0));
                         responseAccount.setUsername((String) userData.get(1));
-                        responseAccount.setGivenName((String) userData.get(2));
-                        responseAccount.setSurname((String) userData.get(3));
-                        responseAccount.setDisplayName((String) userData.get(4));
-                        responseAccount.setEmailAddr((String) userData.get(5));
-                        responseAccount.setPagerNumber((String) userData.get(6));
-                        responseAccount.setTelephoneNumber((String) userData.get(7));
+                        responseAccount.setGivenName((String) userData.get(6));
+                        responseAccount.setSurname((String) userData.get(7));
+                        responseAccount.setDisplayName((String) userData.get(8));
+                        responseAccount.setEmailAddr((String) userData.get(9));
+                        responseAccount.setPagerNumber((String) userData.get(10));
+                        responseAccount.setTelephoneNumber((String) userData.get(11));
 
                         if (DEBUG)
                         {
@@ -620,6 +485,123 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
+        }
+
+        return response;
+    }
+
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#verifyResetRequest(com.cws.esolutions.security.processors.dto.AccountResetRequest)
+     */
+    @Override
+    public AccountResetResponse verifyResetRequest(final AccountResetRequest request) throws AccountResetException
+    {
+        final String methodName = IAccountResetProcessor.CNAME + "#verifyResetRequest(final AccountResetRequest request) throws AccountResetException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("AccountResetRequest: {}", request);
+        }
+
+        AccountResetResponse response = new AccountResetResponse();
+
+        final Calendar cal = Calendar.getInstance();
+        final RequestHostInfo reqInfo = request.getHostInfo();
+                
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Calendar: {}", cal);
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+        }
+        
+        try
+        {
+            cal.add(Calendar.MINUTE, secConfig.getResetTimeout());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Reset expiry: {}", cal.getTimeInMillis());
+            }
+
+            // the request id should be in here, so lets make sure it exists
+            List<Object> resetData = userSec.getResetData(request.getResetRequestId());
+
+            final String commonName = (String) resetData.get(0);
+            final Date resetTimestamp = (Date) resetData.get(1);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("String: {}", commonName);
+                DEBUGGER.debug("Date: {}", resetTimestamp);
+            }
+
+            // make sure the timestamp is appropriate
+            if (resetTimestamp.after(cal.getTime()))
+            {
+                response.setRequestStatus(SecurityRequestStatus.FAILURE);
+            }
+
+            // good, now we have something we can look for
+            List<Object> userList = userManager.loadUserAccount(commonName);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("userList: {}", userList);
+            }
+
+            // we expect back only one
+            if ((userList == null) || (userList.size() == 0))
+            {
+                throw new AccountResetException("Unable to load user account information. Cannot continue.");
+            }
+
+            UserAccount userAccount = new UserAccount();
+            userAccount.setStatus(LoginStatus.RESET);
+            userAccount.setGuid((String) userList.get(0));
+            userAccount.setUsername((String) userList.get(1));
+            userAccount.setSurname((String) userList.get(5));
+            userAccount.setGivenName((String) userList.get(6));
+            userAccount.setDisplayName((String) userList.get(7));
+            userAccount.setEmailAddr((String) userList.get(8));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("UserAccount: {}", userAccount);
+            }
+
+            // remove the reset request
+            boolean isRemoved = userSec.removeResetData(userAccount.getGuid(), request.getResetRequestId());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isRemoved: {}", isRemoved);
+            }
+
+            if (!(isRemoved))
+            {
+                ERROR_RECORDER.error("Failed to remove provided reset request from datastore");
+            }
+
+            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+            response.setUserAccount(userAccount);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountResetResponse: {}", response);
+            }
+        }
+        catch (SecurityServiceException ssx)
+        {
+            ERROR_RECORDER.error(ssx.getMessage(), ssx);
+
+            throw new AccountResetException(ssx.getMessage(), ssx);
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new AccountResetException(sqx.getMessage(), sqx);
         }
 
         return response;

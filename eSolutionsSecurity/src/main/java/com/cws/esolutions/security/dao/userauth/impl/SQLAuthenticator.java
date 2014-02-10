@@ -26,12 +26,14 @@ package com.cws.esolutions.security.dao.userauth.impl;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.util.List;
+import java.util.Arrays;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.Connection;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.sql.CallableStatement;
+import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
@@ -97,21 +99,28 @@ public class SQLAuthenticator implements Authenticator
             if (resultSet.next())
             {
                 resultSet.first();
-                userAccount = new ArrayList<Object>();
-
-                for (String attribute : authData.getEntries())
-                {
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Attribute: {}", attribute);
-                    }
-
-                    userAccount.add(resultSet.getString(attribute));
-                }
+                userAccount = new ArrayList<>(
+                        Arrays.asList(
+                            resultSet.getString(authData.getCommonName()),
+                            resultSet.getString(authData.getUserId()),
+                            resultSet.getString(authData.getSecret()),
+                            resultSet.getInt(authData.getLockCount()),
+                            resultSet.getTimestamp(authData.getLastLogin()),
+                            resultSet.getTimestamp(authData.getExpiryDate()),
+                            resultSet.getString(authData.getSurname()),
+                            resultSet.getString(authData.getGivenName()),
+                            resultSet.getString(authData.getDisplayName()),
+                            resultSet.getString(authData.getEmailAddr()),
+                            resultSet.getString(authData.getPagerNumber()),
+                            resultSet.getString(authData.getTelephoneNumber()),
+                            resultSet.getString(authData.getMemberOf()),
+                            resultSet.getBoolean(authData.getIsSuspended()),
+                            resultSet.getBoolean(authData.getOlrSetupReq()),
+                            resultSet.getBoolean(authData.getOlrLocked())));
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("UserAccount: {}", userAccount);
+                    DEBUGGER.debug("List<Object>: {}", userAccount);
                 }
             }
         }
@@ -178,8 +187,9 @@ public class SQLAuthenticator implements Authenticator
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL getUserByAttribute(?)}");
-            stmt.setString(1, userGuid); // guid
+            stmt = sqlConn.prepareCall("{CALL getUserByAttribute(?, ?)}");
+            stmt.setString(1, userName); // guid
+            stmt.setInt(2, 0); // count
 
             if (DEBUG)
             {
@@ -197,23 +207,59 @@ public class SQLAuthenticator implements Authenticator
 
                 if (resultSet.next())
                 {
-                    resultSet.first();
-                    userSecurity = new ArrayList<>();
+                    resultSet.beforeFirst();
 
-                    for (String attribute : authData.getEntries())
+                    while (resultSet.next())
                     {
-                        if (DEBUG)
+                        if (StringUtils.equals(resultSet.getString(2), userName))
                         {
-                            DEBUGGER.debug("Attribute: {}", attribute);
+                            String cn = resultSet.getString(1);
+                            String username = resultSet.getString(2);
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("String: {}", cn);
+                                DEBUGGER.debug("String: {}", username);
+                            }
+
+                            resultSet.close();
+                            stmt.close();
+
+                            // found the user we want
+                            stmt = sqlConn.prepareCall("{ CALL getSecurityQuestions(?, ?) }");
+                            stmt.setString(1, username); // common name
+                            stmt.setString(2, cn);
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("CallableStatement: {}", stmt);
+                            }
+
+                            if (stmt.execute())
+                            {
+                                resultSet = stmt.getResultSet();
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("ResultSet: {}", resultSet);
+                                }
+
+                                if (resultSet.next())
+                                {
+                                    userSecurity = new ArrayList<>(
+                                        Arrays.asList(
+                                            resultSet.getString(1),
+                                            resultSet.getString(2)));
+
+                                    if (DEBUG)
+                                    {
+                                        DEBUGGER.debug("userSecurity: {}", userSecurity);
+                                    }
+                                }
+                            }
                         }
-
-                        userSecurity.add(resultSet.getString(attribute));
                     }
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("userSecurity: {}", userSecurity);
-                    }
                 }
             }
         }
@@ -367,10 +413,11 @@ public class SQLAuthenticator implements Authenticator
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL verifySecurityQuestions(?, ?, ?)}");
-            stmt.setString(1, userId); // guid
-            stmt.setString(2, attributes.get(0)); // username
-            stmt.setString(3, attributes.get(1)); // username
+            stmt = sqlConn.prepareCall("{CALL verifySecurityQuestions(?, ?, ?, ?)}");
+            stmt.setString(1, userGuid); // guid
+            stmt.setString(2, userId);
+            stmt.setString(3, attributes.get(0)); // username
+            stmt.setString(4, attributes.get(1)); // username
 
             if (DEBUG)
             {

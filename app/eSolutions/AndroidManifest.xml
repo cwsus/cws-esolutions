@@ -9,8 +9,14 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <instrumentation android:name="android.test.InstrumentationTestRunner"
+        android:targetPackage="com.cws.esolutions.android"
+        android:label="junit"
+        android:functionalTest="true"
+        android:handleProfiling="true" />
 
     <application
         android:allowBackup="false"
@@ -19,6 +25,8 @@
         android:theme="@style/global"
         android:allowClearUserData="true"
         android:logo="@drawable/logo">
+
+        <uses-library android:name="android.test.runner" />
 
         <activity android:name="com.cws.esolutions.android.ui.MainActivity">
             <intent-filter>

@@ -398,7 +398,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
      * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#getResetData(java.lang.String)
      */
     @Override
-    public synchronized List<String> getResetData(final String resetId) throws SQLException
+    public synchronized List<Object> getResetData(final String resetId) throws SQLException
     {
         final String methodName = IUserSecurityInformationDAO.CNAME + "#getResetData(final String resetId) throws SQLException";
 
@@ -409,7 +409,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        List<String> resetData = null;
+        List<Object> resetData = null;
         CallableStatement stmt = null;
 
         try
@@ -438,10 +438,10 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
                 {
                     resultSet.first();
 
-                    resetData = new ArrayList<>(
+                    resetData = new ArrayList<Object>(
                             Arrays.asList(
                                     resultSet.getString(1),
-                                    String.valueOf(resultSet.getTimestamp(2))));
+                                    resultSet.getTimestamp(2)));
                 }
             }
         }
