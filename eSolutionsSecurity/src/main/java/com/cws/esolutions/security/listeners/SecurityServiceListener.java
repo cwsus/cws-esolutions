@@ -57,11 +57,10 @@ import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
  */
 public class SecurityServiceListener implements ServletContextListener
 {
-    private static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
-
     private static final String INIT_SYSCONFIG_FILE = "SecurityServiceConfig";
     private static final String INIT_SYSLOGGING_FILE = "SecurityServiceLogger";
     private static final String CNAME = SecurityServiceListener.class.getName();
+    private static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
