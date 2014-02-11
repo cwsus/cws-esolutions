@@ -99,7 +99,7 @@ public class SQLAuthenticator implements Authenticator
             if (resultSet.next())
             {
                 resultSet.first();
-                userAccount = new ArrayList<>(
+                userAccount = new ArrayList<Object>(
                         Arrays.asList(
                             resultSet.getString(authData.getCommonName()),
                             resultSet.getString(authData.getUserId()),

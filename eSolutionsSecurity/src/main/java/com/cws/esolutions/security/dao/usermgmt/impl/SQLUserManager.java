@@ -25,18 +25,15 @@ package com.cws.esolutions.security.dao.usermgmt.impl;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.Arrays;
 import java.util.List;
+import java.util.Arrays;
 import java.sql.ResultSet;
 import java.sql.Connection;
 import java.util.ArrayList;
-
 import javax.sql.DataSource;
-
-import org.apache.commons.lang.StringUtils;
-
 import java.sql.SQLException;
 import java.sql.CallableStatement;
+import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
@@ -460,7 +457,7 @@ public class SQLUserManager implements UserManager
                     }
 
                     resultSet.first();
-                    userAccount = new ArrayList<>(
+                    userAccount = new ArrayList<Object>(
                         Arrays.asList(
                             resultSet.getString(authData.getCommonName()),
                             resultSet.getString(authData.getUserId()),

@@ -32,7 +32,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.ArrayList;
 import java.sql.SQLException;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.RandomStringUtils;
 
@@ -158,7 +157,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     String newPassword = PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()), newUserSalt,
                             secConfig.getAuthAlgorithm(), secConfig.getIterations());
 
-                    List<Object> accountData = new ArrayList<>(
+                    List<Object> accountData = new ArrayList<Object>(
                         Arrays.asList(
                                 userGuid,
                                 userAccount.getUsername(),

@@ -146,7 +146,7 @@ public class LDAPAuthenticator implements Authenticator
                 DEBUGGER.debug("BindResult: {}", bindResult);
             }
 
-            userAccount = new ArrayList<>(
+            userAccount = new ArrayList<Object>(
                 Arrays.asList(
                     entry.getAttributeValue(authData.getCommonName()),
                     entry.getAttributeValue(authData.getUserId()),

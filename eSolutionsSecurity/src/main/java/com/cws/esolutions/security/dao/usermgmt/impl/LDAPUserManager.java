@@ -586,7 +586,7 @@ public class LDAPUserManager implements UserManager
                     }
 
                     // valid user, load the information
-                    userAccount = new ArrayList<>(
+                    userAccount = new ArrayList<Object>(
                         Arrays.asList(
                             entry.getAttributeValue(authData.getCommonName()),
                             entry.getAttributeValue(authData.getUserId()),
