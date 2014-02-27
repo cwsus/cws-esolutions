@@ -141,13 +141,7 @@ public class AccountResetProcessorImplTest
         UserAccount account = new UserAccount();
         account.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
         account.setUsername("junit");
-        account.setSurname("Huntly");
         account.setEmailAddr("kmhuntly@gmail.com");
-        account.setGivenName("Kevin");
-        account.setOlrSetup(false);
-        account.setOlrLocked(false);
-        account.setSuspended(false);
-        account.setFailedCount(0);
 
         AccountResetRequest request = new AccountResetRequest();
         request.setApplicationName("esolutions");
