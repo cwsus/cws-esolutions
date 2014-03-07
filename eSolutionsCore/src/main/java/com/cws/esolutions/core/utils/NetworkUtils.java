@@ -72,6 +72,7 @@ import com.sshtools.j2ssh.authentication.PublicKeyAuthenticationClient;
 import com.sshtools.j2ssh.authentication.AuthenticationProtocolException;
 
 import com.cws.esolutions.core.CoreServiceConstants;
+import com.cws.esolutions.core.config.xml.HTTPConfig;
 import com.cws.esolutions.core.config.xml.ProxyConfig;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.core.utils.exception.UtilityException;
@@ -86,9 +87,7 @@ import com.cws.esolutions.core.utils.exception.UtilityException;
 public final class NetworkUtils
 {
     private static final String CRLF = "\r\n";
-    private static final int HTTP_SOCKET_LINGER = 1;
     private static final String TERMINATE_TELNET = "^]";
-    private static final boolean HTTP_STALE_CHECK = true;
     private static final String PROXY_AUTH_TYPE_NTLM = "NTLM";
     private static final String PROXY_AUTH_TYPE_BASIC = "basic";
     private static final String CNAME = NetworkUtils.class.getName();
@@ -294,7 +293,6 @@ public final class NetworkUtils
         }
     }
 
-
     public static final synchronized void executeSftpTransfer(final Properties authProps, final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
     {
         final String methodName = CNAME + "#executeSftpTransfer(final Properties authProps, final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException";
@@ -463,7 +461,6 @@ public final class NetworkUtils
             }
         }
     }
-
 
     /**
      * Creates an SSH connection to a target host and then executes an SCP
@@ -886,13 +883,14 @@ public final class NetworkUtils
      * @throws UtilityException if the connection cannot be established or if the
      *     response code != 200
      */
-    public static final synchronized byte[] executeHttpConnection(final ProxyConfig proxyConfig, final String hostName, final int timeout, final String method) throws UtilityException
+    public static final synchronized byte[] executeHttpConnection(final HTTPConfig httpConfig, final ProxyConfig proxyConfig, final String hostName, final int timeout, final String method) throws UtilityException
     {
-        final String methodName = NetworkUtils.CNAME + "#executeHttpConnection(final ProxyConfig proxyConfig, final String hostName, final int timeout, final String method) throws UtilityException";
+        final String methodName = NetworkUtils.CNAME + "#executeHttpConnection(final HTTPConfig httpConfig, final ProxyConfig proxyConfig, final String hostName, final int timeout, final String method) throws UtilityException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", httpConfig);
             DEBUGGER.debug("Value: {}", proxyConfig);
             DEBUGGER.debug("Value: {}", hostName);
             DEBUGGER.debug("Value: {}", timeout);
@@ -906,94 +904,112 @@ public final class NetworkUtils
 
         try
         {
-            synchronized(new Object())
+            if (StringUtils.isNotEmpty(httpConfig.getTrustStoreFile()))
             {
-                httpParams.setVersion(HttpVersion.HTTP_1_0);
-                httpParams.setSoTimeout(timeout);
-                httpParams.setParameter("http.socket.linger", NetworkUtils.HTTP_SOCKET_LINGER);
-                httpParams.setParameter("http.socket.timeout", timeout);
-                httpParams.setParameter("http.connection.timeout", timeout);
-                httpParams.setParameter("http.connection-manager.timeout", Long.valueOf(timeout));
-                httpParams.setParameter("http.connection.stalecheck", NetworkUtils.HTTP_STALE_CHECK);
+                System.setProperty("javax.net.ssl.trustStoreType",
+                        (StringUtils.isNotEmpty(httpConfig.getTrustStoreType()) ? httpConfig.getTrustStoreType() : "jks"));
+                System.setProperty("javax.net.ssl.trustStore", httpConfig.getTrustStoreFile());
+                System.setProperty("javax.net.ssl.trustStorePassword",
+                        PasswordUtils.decryptText(httpConfig.getTrustStorePass(), httpConfig.getTrustStoreSalt().length()));
+            }
 
+            if (StringUtils.isNotEmpty(httpConfig.getKeyStoreFile()))
+            {
+                System.setProperty("javax.net.ssl.keyStoreType",
+                        (StringUtils.isNotEmpty(httpConfig.getKeyStoreType()) ? httpConfig.getKeyStoreType() : "jks"));
+                System.setProperty("javax.net.ssl.keyStore", httpConfig.getKeyStoreFile());
+                System.setProperty("javax.net.ssl.keyStorePassword",
+                        PasswordUtils.decryptText(httpConfig.getKeyStorePass(), httpConfig.getKeyStoreSalt().length()));
+            }
+
+            httpParams.setVersion(HttpVersion.parse(httpConfig.getHttpVersion()));
+            httpParams.setSoTimeout(httpConfig.getSoTimeout());
+            httpParams.setParameter("http.socket.linger", httpConfig.getSocketLinger());
+            httpParams.setParameter("http.socket.timeout", httpConfig.getSocketTimeout());
+            httpParams.setParameter("http.connection.timeout", httpConfig.getConnTimeout());
+            httpParams.setParameter("http.connection-manager.timeout", httpConfig.getConnMgrTimeout());
+            httpParams.setParameter("http.connection.stalecheck", httpConfig.getStaleCheck());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("httpParams: {}", httpParams);
+            }
+
+            
+            if (proxyConfig.isProxyServiceRequired())
+            {
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("httpParams: {}", httpParams);
+                    DEBUGGER.debug("ProxyConfig: {}", proxyConfig);
                 }
 
-                if (proxyConfig.isProxyServiceRequired())
+                if (StringUtils.isNotEmpty(proxyConfig.getProxyServerName()))
                 {
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ProxyConfig: {}", proxyConfig);
-                    }
+                    httpClient.getHostConfiguration().setProxy(proxyConfig.getProxyServerName(),
+                            proxyConfig.getProxyServerPort());
 
-                    if (StringUtils.isNotEmpty(proxyConfig.getProxyServerName()))
+                    if (proxyConfig.isProxyAuthRequired())
                     {
-                        httpClient.getHostConfiguration().setProxy(proxyConfig.getProxyServerName(),
-                                proxyConfig.getProxyServerPort());
+                        List<String> authList = new ArrayList<>();
+                        authList.add(AuthPolicy.BASIC);
+                        authList.add(AuthPolicy.DIGEST);
+                        authList.add(AuthPolicy.NTLM);
 
-                        if (proxyConfig.isProxyAuthRequired())
+                        if (DEBUG)
                         {
-                            List<String> authList = new ArrayList<>();
-                            authList.add(AuthPolicy.BASIC);
-                            authList.add(AuthPolicy.DIGEST);
-                            authList.add(AuthPolicy.NTLM);
+                            DEBUGGER.debug("authList: {}", authList);
+                        }
 
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("authList: {}", authList);
-                            }
+                        httpParams.setParameter(AuthPolicy.AUTH_SCHEME_PRIORITY, authList);
 
-                            httpParams.setParameter(AuthPolicy.AUTH_SCHEME_PRIORITY, authList);
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("httpParams: {}", httpParams);
+                        }
 
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("httpParams: {}", httpParams);
-                            }
+                        String proxyPwd = PasswordUtils.decryptText(proxyConfig.getProxyPassword(), proxyConfig.getProxyPwdSalt().length());
 
-                            String proxyPwd = (StringUtils.isNotEmpty(proxyConfig.getProxyPwdSalt())) ?
-                                    PasswordUtils.decryptText(proxyConfig.getProxyPassword(), proxyConfig.getProxyPwdSalt().length()) : proxyConfig.getProxyPassword();
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("proxyPwd: {}", proxyPwd);
+                        }
 
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("proxyPwd: {}", proxyPwd);
-                            }
+                        if (StringUtils.equals(NetworkUtils.PROXY_AUTH_TYPE_BASIC, proxyConfig.getProxyAuthType()))
+                        {
 
-                            if (StringUtils.equals(NetworkUtils.PROXY_AUTH_TYPE_BASIC, proxyConfig.getProxyAuthType()))
-                            {
+                            httpClient.getState().setProxyCredentials(new AuthScope(
+                                    proxyConfig.getProxyServerName(),
+                                    proxyConfig.getProxyServerPort(),
+                                    proxyConfig.getProxyServerRealm()),
+                                    new UsernamePasswordCredentials(proxyConfig.getProxyUserId(), proxyPwd));
+                        }
+                        else if (StringUtils.equals(NetworkUtils.PROXY_AUTH_TYPE_NTLM, proxyConfig.getProxyAuthType()))
+                        {
+                            httpClient.getState().setProxyCredentials(new AuthScope(
+                                    proxyConfig.getProxyServerName(),
+                                    proxyConfig.getProxyServerPort(),
+                                    proxyConfig.getProxyServerRealm()),
+                                    new NTCredentials(
+                                            proxyConfig.getProxyUserId(),
+                                            proxyPwd,
+                                            InetAddress.getLocalHost().getHostName(),
+                                            proxyConfig.getProxyAuthDomain()));
+                        }
 
-                                httpClient.getState().setProxyCredentials(new AuthScope(
-                                        proxyConfig.getProxyServerName(),
-                                        proxyConfig.getProxyServerPort(),
-                                        proxyConfig.getProxyServerRealm()),
-                                        new UsernamePasswordCredentials(proxyConfig.getProxyUserId(), proxyPwd));
-                            }
-                            else if (StringUtils.equals(NetworkUtils.PROXY_AUTH_TYPE_NTLM, proxyConfig.getProxyAuthType()))
-                            {
-                                httpClient.getState().setProxyCredentials(new AuthScope(
-                                        proxyConfig.getProxyServerName(),
-                                        proxyConfig.getProxyServerPort(),
-                                        proxyConfig.getProxyServerRealm()),
-                                        new NTCredentials(
-                                                proxyConfig.getProxyUserId(),
-                                                proxyPwd,
-                                                InetAddress.getLocalHost().getHostName(),
-                                                proxyConfig.getProxyAuthDomain()));
-                            }
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("httpClient: {}", httpClient);
-                            }
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("httpClient: {}", httpClient);
                         }
                     }
-                    else
-                    {
-                        throw new HttpException("Configuration states proxy usage is required, but no proxy is configured.");
-                    }
                 }
+                else
+                {
+                    throw new HttpException("Configuration states proxy usage is required, but no proxy is configured.");
+                }
+            }
 
+            synchronized(new Object())
+            {
                 httpClient.setParams(httpParams);
 
                 httpMethod = (StringUtils.equalsIgnoreCase(method, "POST")) ? new PostMethod(hostName) : new GetMethod(hostName);
