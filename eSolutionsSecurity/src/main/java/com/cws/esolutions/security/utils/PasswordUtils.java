@@ -56,6 +56,17 @@ public final class PasswordUtils
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
+    public static final void main(final String[] args)
+    {
+        final String methodName = PasswordUtils.CNAME + "#main(final String[] args)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", args);
+        }
+    }
+
     public static final String encryptText(final String plainText, final String salt) throws SecurityException
     {
         final String methodName = PasswordUtils.CNAME + "#encryptText(final String plainText, final String salt) throws SecurityException";

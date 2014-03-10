@@ -100,6 +100,26 @@ public final class NetworkUtils
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
 
+    public static final void main(final String[] args)
+    {
+        final String methodName = NetworkUtils.CNAME + "#main(final String[] args)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", args);
+        }
+
+        if (args.length == 0)
+        {
+            System.exit(1);
+        }
+
+        CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml");
+
+        SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml");
+    }
+
     /**
      * Creates an SSH connection to a target host and then executes an SCP
      * request to send or receive a file to or from the target. This is fully
@@ -128,7 +148,7 @@ public final class NetworkUtils
      */
     public static final synchronized void executeSCPTransfer(final Properties sshProps, final Properties authProps, final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
     {
-        final String methodName = CNAME + "#executeSCPTransfer(final Properties sshProps, final Properties authProps, final List<String> authList, final String targetFile, final String targetHost, final String passphrase) throws UtilityException";
+        final String methodName = NetworkUtils.CNAME + "#executeSCPTransfer(final Properties sshProps, final Properties authProps, final List<String> authList, final String targetFile, final String targetHost, final String passphrase) throws UtilityException";
 
         if (DEBUG)
         {
@@ -295,7 +315,7 @@ public final class NetworkUtils
 
     public static final synchronized void executeSftpTransfer(final Properties authProps, final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
     {
-        final String methodName = CNAME + "#executeSftpTransfer(final Properties authProps, final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException";
+        final String methodName = NetworkUtils.CNAME + "#executeSftpTransfer(final Properties authProps, final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException";
 
         if (DEBUG)
         {
@@ -487,7 +507,7 @@ public final class NetworkUtils
      */
     public static final synchronized StringBuilder executeSshConnection(final Properties sshProps, final Properties authProps, final String targetHost, final List<String> commandList) throws UtilityException
     {
-        final String methodName = CNAME + "#executeSshConnection(final Properties sshProps, final Properties authProps, final String targetHost, final List<String> commandList) throws UtilityException";
+        final String methodName = NetworkUtils.CNAME + "#executeSshConnection(final Properties sshProps, final Properties authProps, final String targetHost, final List<String> commandList) throws UtilityException";
 
         if (DEBUG)
         {
@@ -669,7 +689,7 @@ public final class NetworkUtils
 
     public static final synchronized void executeFtpConnection(final Properties authProps, final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
     {
-        final String methodName = CNAME + "#executeFtpConnection(final Properties authProps, final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException";
+        final String methodName = NetworkUtils.CNAME + "#executeFtpConnection(final Properties authProps, final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException";
 
         if (DEBUG)
         {

@@ -63,6 +63,17 @@ public final class MQUtils
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
 
+    public static final void main(final String[] args)
+    {
+        final String methodName = MQUtils.CNAME + "#main(final String[] args)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", args);
+        }
+    }
+
     /**
      * TODO: Add in the method description/comments
      *

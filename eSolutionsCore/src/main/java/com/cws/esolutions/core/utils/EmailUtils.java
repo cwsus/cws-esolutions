@@ -76,6 +76,17 @@ public final class EmailUtils
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
 
+    public static final void main(final String[] args)
+    {
+        final String methodName = EmailUtils.CNAME + "#main(final String[] args)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", args);
+        }
+    }
+
     /**
      * eSolutionsCore
      * com.cws.esolutions.core.utils
