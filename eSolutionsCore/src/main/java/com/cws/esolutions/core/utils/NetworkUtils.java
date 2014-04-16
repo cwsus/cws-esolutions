@@ -75,7 +75,11 @@ import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.config.xml.HTTPConfig;
 import com.cws.esolutions.core.config.xml.ProxyConfig;
 import com.cws.esolutions.security.utils.PasswordUtils;
+import com.cws.esolutions.core.exception.CoreServiceException;
+import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.core.utils.exception.UtilityException;
+import com.cws.esolutions.security.exception.SecurityServiceException;
+import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -115,9 +119,27 @@ public final class NetworkUtils
             System.exit(1);
         }
 
-        CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml");
+        try
+        {
+            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml");
+        }
+        catch (CoreServiceException csx)
+        {
+            System.err.println("An error occurred while loading configuration data: " + csx.getMessage());
 
-        SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml");
+            System.exit(1);
+        }
+
+        try
+        {
+            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml");
+        }
+        catch (SecurityServiceException ssx)
+        {
+            System.err.println("An error occurred while loading configuration data: " + ssx.getMessage());
+
+            System.exit(1);
+        }
     }
 
     /**
@@ -138,7 +160,9 @@ public final class NetworkUtils
      * Hit enter twice without entering a new passphrase
      * Convert the keyfile: ssh-keygen -i -f /path/to/file > /path/to/new-file
      * Re-encrypt the file: ssh-keygen -p -f /path/to/new-file
-     * 
+     *
+     * @param sshProps - The SSH properties file to utilize
+     * @param authProps - A list containing the authentication properties
      * @param sourceFile - The full path to the source file to transfer
      * @param targetFile - The full path (including file name) of the desired target file
      * @param targetHost - The target server to perform the transfer to

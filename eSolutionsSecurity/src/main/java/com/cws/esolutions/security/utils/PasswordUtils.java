@@ -203,6 +203,52 @@ public final class PasswordUtils
         return decPass;
     }
 
+    public static final String base64Encode(final String text) throws SecurityException
+    {
+        final String methodName = PasswordUtils.CNAME + "#base64Encode(final String text) throws SecurityException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        String response = null;
+
+        try
+        {
+            response = Base64.encodeBase64String(text.getBytes("UTF-8"));
+        }
+        catch (UnsupportedEncodingException uex)
+        {
+            throw new SecurityException(uex.getMessage(), uex);
+        }
+
+        return response;
+    }
+
+    public static final String base64Decode(final String text) throws SecurityException
+    {
+        final String methodName = PasswordUtils.CNAME + "#base64Decode(final String text) throws SecurityException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        String response = null;
+
+        try
+        {
+            response = new String(Base64.decodeBase64(text.getBytes("UTF-8")));
+        }
+        catch (UnsupportedEncodingException uex)
+        {
+            throw new SecurityException(uex.getMessage(), uex);
+        }
+
+        return response;
+    }
+
     public static final boolean validateOtpValue(final int variance, final String algorithm, final String secret, final int code) throws SecurityException
     {
         final String methodName = PasswordUtils.CNAME + "#validateOtpValue(final int variance, final String algorithm, final String secret, final int code) throws SecurityException";
