@@ -158,9 +158,9 @@ public class LDAPUserManager implements UserManager
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#addUserAccount(java.util.List, java.util.List)
      */
     @Override
-    public synchronized boolean addUserAccount(final List<Object> userAccount, final List<String> roles) throws UserManagementException
+    public synchronized boolean addUserAccount(final List<String> userAccount, final List<String> roles) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#addUserAccount(final List<Object> userAccount, final List<String> roles) throws UserManagementException";
+        final String methodName = LDAPUserManager.CNAME + "#addUserAccount(final List<String> userAccount, final List<String> roles) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -212,13 +212,13 @@ public class LDAPUserManager implements UserManager
             List<Attribute> newAttributes = new ArrayList<>(
                 Arrays.asList(
                     new Attribute("objectClass", authData.getBaseObject()),
-                    new Attribute(authData.getCommonName(), (String) userAccount.get(0)),
-                    new Attribute(authData.getUserId(), (String) userAccount.get(1)),
-                    new Attribute(authData.getEmailAddr(), (String) userAccount.get(2)),
-                    new Attribute(authData.getGivenName(), (String) userAccount.get(3)),
-                    new Attribute(authData.getSurname(), (String) userAccount.get(4)),
-                    new Attribute(authData.getDisplayName(), (String) userAccount.get(3) + " " + userAccount.get(4)),
-                    new Attribute(authData.getIsSuspended(), (String) userAccount.get(5)),
+                    new Attribute(authData.getCommonName(), userAccount.get(0)),
+                    new Attribute(authData.getUserId(), userAccount.get(1)),
+                    new Attribute(authData.getEmailAddr(), userAccount.get(2)),
+                    new Attribute(authData.getGivenName(), userAccount.get(3)),
+                    new Attribute(authData.getSurname(), userAccount.get(4)),
+                    new Attribute(authData.getDisplayName(), userAccount.get(3) + " " + userAccount.get(4)),
+                    new Attribute(authData.getIsSuspended(), userAccount.get(5)),
                     new Attribute(authData.getLockCount(), "0"),
                     new Attribute(authData.getExpiryDate(), new Date().toString())));
 

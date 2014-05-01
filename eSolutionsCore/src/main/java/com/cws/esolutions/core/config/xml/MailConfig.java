@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Properties;
 import java.lang.reflect.Field;
+import java.io.FileInputStream;
 import org.slf4j.LoggerFactory;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlElement;
@@ -51,7 +52,6 @@ public final class MailConfig implements Serializable
 {
     private String mailFrom = null;
     private String propertyFile = null;
-    private Properties mailProps = null;
     private String dataSourceName = null;
 
     private static final String CNAME = MailConfig.class.getName();
@@ -115,9 +115,9 @@ public final class MailConfig implements Serializable
     }
 
     @XmlElement(name = "propertyFile")
-    public final Properties getMailProps()
+    public final String getPropertyFile()
     {
-        final String methodName = MailConfig.CNAME + "#getMailProps()";
+        final String methodName = MailConfig.CNAME + "#getPropertyFile()";
 
         if (DEBUG)
         {
@@ -125,17 +125,7 @@ public final class MailConfig implements Serializable
             DEBUGGER.debug("Value: {}", this.propertyFile);
         }
 
-        try
-        {
-            this.mailProps = new Properties();
-            this.mailProps.load(MailConfig.class.getClassLoader().getResourceAsStream(this.propertyFile));
-        }
-        catch (IOException iox)
-        {
-            // do nothing
-        }
-
-        return this.mailProps;
+        return this.propertyFile;
     }
 
     @XmlElement(name = "dataSourceName")

@@ -30,15 +30,24 @@ import org.slf4j.Logger;
 import javax.crypto.Cipher;
 import org.slf4j.LoggerFactory;
 import java.security.MessageDigest;
+import org.apache.commons.cli.Options;
 import javax.crypto.spec.SecretKeySpec;
 import javax.crypto.BadPaddingException;
 import java.security.InvalidKeyException;
+import org.apache.commons.cli.PosixParser;
+import org.apache.commons.cli.OptionGroup;
+import org.apache.commons.cli.CommandLine;
 import javax.crypto.NoSuchPaddingException;
+import org.apache.commons.cli.OptionBuilder;
 import java.io.UnsupportedEncodingException;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.ParseException;
 import javax.crypto.IllegalBlockSizeException;
 import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.codec.binary.Base64;
 import java.security.NoSuchAlgorithmException;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
 /**
@@ -49,12 +58,72 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  * @author khuntly
  * @version 1.0
  */
+@SuppressWarnings("static-access")
 public final class PasswordUtils
 {
+    private static Options options = null;
+    private static OptionGroup cryptoOptions = null;
+
     private static final String CNAME = PasswordUtils.class.getName();
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+
+    static
+    {
+        OptionGroup commandOptions = new OptionGroup();
+        commandOptions.addOption(OptionBuilder.withLongOpt("encrypt")
+            .withDescription("Perform an SSH connection to a target host")
+            .isRequired(false)
+            .create());
+        commandOptions.addOption(OptionBuilder.withLongOpt("decrypt")
+            .withDescription("Perform an SCP connection to a target host")
+            .isRequired(false)
+            .create());
+        commandOptions.addOption(OptionBuilder.withLongOpt("encode")
+            .withDescription("Perform an SSH connection to a target host")
+            .isRequired(false)
+            .create());
+        commandOptions.addOption(OptionBuilder.withLongOpt("decode")
+            .withDescription("Perform an SCP connection to a target host")
+            .isRequired(false)
+            .create());
+
+        cryptoOptions = new OptionGroup();
+        cryptoOptions.addOption(OptionBuilder.withLongOpt("length")
+            .withDescription("The port number to connect to the server on")
+            .hasArg(true)
+            .withArgName("LENGTH")
+            .withType(Integer.class)
+            .isRequired(true)
+            .create());
+        cryptoOptions.addOption(OptionBuilder.withLongOpt("reversible")
+            .withDescription("Perform a two-way (reversible) encryption against the string provided")
+            .isRequired(false)
+            .create());
+        cryptoOptions.addOption(OptionBuilder.withLongOpt("salt")
+            .withDescription("The salt value the string was originally encrypted with. Required if option 'decrypt' is selected.")
+            .withArgName("SALT")
+            .withType(String.class)
+            .isRequired(false)
+            .create());
+        cryptoOptions.addOption(OptionBuilder.withLongOpt("algorithm")
+            .withDescription("Algorithm to utilize for encryption. Required unless reversible encryption is requested.")
+            .withArgName("ALGORITHM")
+            .withType(String.class)
+            .isRequired(false)
+            .create());
+        cryptoOptions.addOption(OptionBuilder.withLongOpt("iterations")
+            .withDescription("Number of iterations to pass for encryption. Required unless reversible encryption is requested.")
+            .withArgName("ITERATIONS")
+            .withType(Integer.class)
+            .isRequired(false)
+            .create());
+
+        options = new Options();
+        options.addOptionGroup(commandOptions);
+        options.addOptionGroup(cryptoOptions);
+    }
 
     public static final void main(final String[] args)
     {
@@ -63,7 +132,81 @@ public final class PasswordUtils
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", args);
+            DEBUGGER.debug("Value: {}", (Object) args);
+        }
+
+        if (args.length == 0)
+        {
+            HelpFormatter usage = new HelpFormatter();
+            usage.printHelp(PasswordUtils.CNAME, options, true);
+
+            return;
+        }
+
+        try
+        {
+            CommandLineParser parser = new PosixParser();
+            CommandLine commandLine = parser.parse(options, args);
+
+            if (commandLine.hasOption("encrypt"))
+            {
+                if (commandLine.hasOption("reversible"))
+                {
+                    final String salt = RandomStringUtils.randomAlphanumeric(Integer.parseInt(commandLine.getOptionValue("length", "64")));
+                    final String encrypted = PasswordUtils.encryptText((String) commandLine.getArgList().get(0), salt);
+                    
+                    System.out.println("Plain: " + commandLine.getArgList().get(0) + " - Salt: " + salt + ", Encrypted: " + encrypted);
+                }
+                else
+                {
+                    if (!(commandLine.hasOption("algorithm")) || (!(commandLine.hasOption("iterations"))))
+                    {
+                        HelpFormatter formatter = new HelpFormatter();
+                        formatter.printHelp(PasswordUtils.CNAME, options, true);
+
+                        return;
+                    }
+
+                    final String salt = RandomStringUtils.randomAlphanumeric(Integer.parseInt(commandLine.getOptionValue("length", "64")));
+                    final String encrypted = PasswordUtils.encryptText((String) commandLine.getArgList().get(0), salt,
+                        commandLine.getOptionValue("algorithm"),
+                        Integer.parseInt(commandLine.getOptionValue("iterations", "65535")));
+
+                    System.out.println("Plain: " + commandLine.getArgList().get(0) + " - Salt: " + salt + ", Encrypted: " + encrypted);
+                }
+            }
+            else if (commandLine.hasOption("decrypt"))
+            {
+                if (!(commandLine.hasOption("length")))
+                {
+                    HelpFormatter formatter = new HelpFormatter();
+                    formatter.printHelp(PasswordUtils.CNAME, options, true);
+
+                    return;
+                }
+
+                System.out.println("Encrypted: " + commandLine.getArgList().get(0) + ", Decrypted: " +
+                    PasswordUtils.decryptText((String) commandLine.getArgList().get(0),
+                            Integer.parseInt(commandLine.getOptionValue("length", "64"))));
+            }
+            else if (commandLine.hasOption("encode"))
+            {
+                System.out.println(PasswordUtils.base64Encode((String) commandLine.getArgList().get(0)));
+            }
+            else if (commandLine.hasOption("decode"))
+            {
+                System.out.println(PasswordUtils.base64Decode((String) commandLine.getArgList().get(0)));
+            }
+        }
+        catch (ParseException px)
+        {
+            HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp(PasswordUtils.CNAME, options, true);
+        }
+        catch (SecurityException ssx)
+        {
+            HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp(PasswordUtils.CNAME, options, true);
         }
     }
 

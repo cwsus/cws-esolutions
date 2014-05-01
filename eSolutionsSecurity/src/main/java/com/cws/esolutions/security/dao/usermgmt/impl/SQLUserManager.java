@@ -149,9 +149,9 @@ public class SQLUserManager implements UserManager
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#addUserAccount(java.util.List, java.util.List)
      */
     @Override
-    public synchronized boolean addUserAccount(final List<Object> userAccount, final List<String> roles) throws UserManagementException
+    public synchronized boolean addUserAccount(final List<String> userAccount, final List<String> roles) throws UserManagementException
     {
-        final String methodName = SQLUserManager.CNAME + "#addUserAccount(final List<Object> userAccount, final List<String> roles) throws UserManagementException";
+        final String methodName = SQLUserManager.CNAME + "#addUserAccount(final List<String> userAccount, final List<String> roles) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -176,14 +176,14 @@ public class SQLUserManager implements UserManager
             sqlConn.setAutoCommit(true);
 
             stmt = sqlConn.prepareCall("{ CALL addUserAccount(?, ?, ?, ?, ?, ?, ?, ?) }");
-            stmt.setString(1, (String) userAccount.get(0)); // guid
-            stmt.setString(2, (String) userAccount.get(1)); // username
-            stmt.setString(3, (String) userAccount.get(2)); // password
-            stmt.setBoolean(4, (Boolean) userAccount.get(3)); // suspended
-            stmt.setString(5, (String) userAccount.get(4)); // surname
-            stmt.setString(6, (String) userAccount.get(5)); // givenname
-            stmt.setString(7, (String) userAccount.get(6)); // displayname
-            stmt.setString(8, (String) userAccount.get(7)); // email
+            stmt.setString(1, userAccount.get(0)); // guid
+            stmt.setString(2, userAccount.get(1)); // username
+            stmt.setString(3, userAccount.get(2)); // password
+            stmt.setBoolean(4, Boolean.valueOf(userAccount.get(3))); // suspended
+            stmt.setString(5, userAccount.get(4)); // surname
+            stmt.setString(6, userAccount.get(5)); // givenname
+            stmt.setString(7, userAccount.get(6)); // displayname
+            stmt.setString(8, userAccount.get(7)); // email
 
             if (DEBUG)
             {

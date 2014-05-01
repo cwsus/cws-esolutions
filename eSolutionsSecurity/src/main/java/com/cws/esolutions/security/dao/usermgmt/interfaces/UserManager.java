@@ -77,7 +77,7 @@ public interface UserManager
      * @return boolean - <code>true</code> if user creation was successful, <code>false</code> otherwise
      * @throws UserManagementException if an error occurs during processing
      */
-    boolean addUserAccount(final List<Object> userAccount, final List<String> roles) throws UserManagementException;
+    boolean addUserAccount(final List<String> userAccount, final List<String> roles) throws UserManagementException;
 
     /**
      * Removes a provided user account from the authentication datastore. This

@@ -157,12 +157,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     String newPassword = PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()), newUserSalt,
                             secConfig.getAuthAlgorithm(), secConfig.getIterations());
 
-                    List<Object> accountData = new ArrayList<Object>(
+                    List<String> accountData = new ArrayList<>(
                         Arrays.asList(
                                 userGuid,
                                 userAccount.getUsername(),
                                 newPassword,
-                                userAccount.isSuspended(),
+                                String.valueOf(userAccount.isSuspended()),
                                 userAccount.getSurname(),
                                 userAccount.getGivenName(),
                                 userAccount.getGivenName() + " " + userAccount.getSurname(), 

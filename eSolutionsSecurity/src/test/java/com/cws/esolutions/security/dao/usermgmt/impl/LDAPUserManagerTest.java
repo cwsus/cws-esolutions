@@ -75,7 +75,7 @@ public class LDAPUserManagerTest
         try
         {
             Assert.assertTrue(manager.addUserAccount(
-                    new ArrayList<Object>(
+                    new ArrayList<String>(
                             Arrays.asList(
                                     "junit-test",
                                     RandomStringUtils.randomAlphanumeric(64),

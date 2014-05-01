@@ -28,17 +28,25 @@ import java.io.File;
 import java.util.List;
 import java.net.Socket;
 import java.util.Arrays;
+
 import org.slf4j.Logger;
+
 import java.util.ArrayList;
 import java.io.PrintWriter;
 import java.io.IOException;
+
 import com.jcraft.jsch.JSch;
+
 import java.net.InetAddress;
 import java.io.BufferedReader;
+
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.Session;
+
 import java.io.FileInputStream;
+
 import org.slf4j.LoggerFactory;
+
 import java.io.FileOutputStream;
 import java.net.SocketException;
 import java.io.InputStreamReader;
@@ -46,17 +54,25 @@ import java.io.ObjectInputStream;
 import java.net.ConnectException;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
+
 import com.jcraft.jsch.ChannelExec;
 import com.sshtools.j2ssh.ScpClient;
 import com.sshtools.j2ssh.SshClient;
+
 import java.util.concurrent.TimeUnit;
+
 import com.sshtools.j2ssh.SftpClient;
 import com.jcraft.jsch.OpenSSHConfig;
+
 import java.net.UnknownHostException;
+
 import com.jcraft.jsch.JSchException;
+
 import org.apache.commons.cli.Options;
 import org.apache.commons.io.FileUtils;
+
 import com.jcraft.jsch.ConfigRepository;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.PosixParser;
@@ -75,17 +91,21 @@ import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.auth.AuthPolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+
 import com.sshtools.j2ssh.transport.publickey.SshPrivateKey;
+
 import org.apache.commons.httpclient.params.HttpClientParams;
+
 import com.sshtools.j2ssh.transport.IgnoreHostKeyVerification;
 import com.sshtools.j2ssh.configuration.SshConnectionProperties;
 import com.sshtools.j2ssh.transport.publickey.SshPrivateKeyFile;
+
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
+
 import com.sshtools.j2ssh.authentication.AuthenticationProtocolState;
 import com.sshtools.j2ssh.authentication.PasswordAuthenticationClient;
 import com.sshtools.j2ssh.authentication.PublicKeyAuthenticationClient;
 import com.sshtools.j2ssh.authentication.AuthenticationProtocolException;
-
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.config.xml.FTPConfig;
@@ -277,7 +297,7 @@ public final class NetworkUtils
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", args);
+            DEBUGGER.debug("Value: {}", (Object) args);
         }
 
         if (args.length == 0)
