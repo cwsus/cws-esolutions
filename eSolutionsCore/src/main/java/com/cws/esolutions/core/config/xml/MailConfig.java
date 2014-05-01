@@ -26,11 +26,8 @@ package com.cws.esolutions.core.config.xml;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
-import java.io.IOException;
 import java.io.Serializable;
-import java.util.Properties;
 import java.lang.reflect.Field;
-import java.io.FileInputStream;
 import org.slf4j.LoggerFactory;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlElement;
