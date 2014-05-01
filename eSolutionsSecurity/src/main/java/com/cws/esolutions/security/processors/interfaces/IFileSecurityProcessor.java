@@ -37,7 +37,6 @@ import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.processors.dto.FileSecurityRequest;
 import com.cws.esolutions.security.processors.dto.FileSecurityResponse;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
-import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.processors.exception.FileSecurityException;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -60,11 +59,35 @@ public interface IFileSecurityProcessor
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
+    /**
+     * 
+     * @param request
+     * @return
+     * @throws FileSecurityException 
+     */
     FileSecurityResponse signFile(final FileSecurityRequest request) throws FileSecurityException;
 
+    /**
+     * 
+     * @param request
+     * @return
+     * @throws FileSecurityException 
+     */
     FileSecurityResponse verifyFile(final FileSecurityRequest request) throws FileSecurityException;
 
+    /**
+     * 
+     * @param request
+     * @return
+     * @throws FileSecurityException 
+     */
     FileSecurityResponse encryptFile(final FileSecurityRequest request) throws FileSecurityException;
 
+    /**
+     * 
+     * @param request
+     * @return
+     * @throws FileSecurityException 
+     */
     FileSecurityResponse decryptFile(final FileSecurityRequest request) throws FileSecurityException;
 }

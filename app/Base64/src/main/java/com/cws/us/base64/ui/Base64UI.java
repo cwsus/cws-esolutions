@@ -42,6 +42,7 @@ import java.awt.event.ActionListener;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 import org.apache.log4j.helpers.Loader;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.xml.DOMConfigurator;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -55,7 +56,7 @@ import com.cws.esolutions.security.utils.PasswordUtils;
  * @author khuntly
  * @version 1.0
  */
-public class Base64UI extends JFrame implements ActionListener
+public class Base64UI extends JFrame
 {
     private JPanel jPanel2 = null;
     private JPanel jPanel3 = null;
@@ -120,10 +121,20 @@ public class Base64UI extends JFrame implements ActionListener
         );
 
         this.btnExit.setText("Exit");
-        this.btnExit.addActionListener(this);
+        this.btnExit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent event) {
+                System.exit(0);
+            }
+        });
 
         this.btnDecryptText.setText("Decrypt");
-        this.btnDecryptText.addActionListener(this);
+        this.btnDecryptText.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent event) {
+                processData(event);
+            }
+        });
 
         this.jPanel3.setBorder(BorderFactory.createTitledBorder("Target Data"));
 
@@ -147,7 +158,12 @@ public class Base64UI extends JFrame implements ActionListener
         );
 
         this.btnEncryptText.setText("Encrypt");
-        this.btnEncryptText.addActionListener(this);
+        this.btnEncryptText.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent event) {
+                processData(event);
+            }
+        });
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -208,12 +224,12 @@ public class Base64UI extends JFrame implements ActionListener
         try
         {
             UIManager.LookAndFeelInfo[] installedLookAndFeels = UIManager.getInstalledLookAndFeels();
-            for (int idx = 0; idx < installedLookAndFeels.length; idx++)
-            {
-                if ("Nimbus".equals(installedLookAndFeels[idx].getName()))
-                {
-                    UIManager.setLookAndFeel(installedLookAndFeels[idx].getClassName());
 
+            for (UIManager.LookAndFeelInfo installedLookAndFeel : installedLookAndFeels)
+            {
+                if (StringUtils.equals("Nimbus", installedLookAndFeel.getName()))
+                {
+                    UIManager.setLookAndFeel(installedLookAndFeel.getClassName());
                     break;
                 }
             }
@@ -244,8 +260,7 @@ public class Base64UI extends JFrame implements ActionListener
         });
     }
 
-    @Override
-    public void actionPerformed(final ActionEvent aEvent)
+    private void processData(final ActionEvent aEvent)
     {
         try
         {
@@ -256,10 +271,6 @@ public class Base64UI extends JFrame implements ActionListener
             else if (aEvent.getSource() == this.btnDecryptText)
             {
                 this.txtTargetData.setText(PasswordUtils.base64Decode(this.txtSourceData.getText()));
-            }
-            else if (aEvent.getSource() == this.btnExit)
-            {
-                System.exit(0);
             }
         }
         catch (SecurityException ssx)

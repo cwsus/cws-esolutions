@@ -41,7 +41,7 @@ public class PasswordUtilsTest
 
     @Before public void setUp()
     {
-        try
+        /*try
         {
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml");
         }
@@ -51,15 +51,14 @@ public class PasswordUtilsTest
             Assert.fail(e.getMessage());
 
             System.exit(1);
-        }
+        }*/
     }
 
     @Test public void test()
     {
         String salt = RandomStringUtils.randomAlphanumeric(64);
         System.out.println(salt);
-        System.out.println(PasswordUtils.encryptText("answertwo", "7Kne07SOfhO950amO3UaTybwilSimSX5A8GnH1pIfAcz6wWBNTgPTNWjWznxuV2h",
-                        bean.getConfigData().getSecurityConfig().getAuthAlgorithm(), bean.getConfigData().getSecurityConfig().getIterations()));
+        System.out.println(PasswordUtils.encryptText("8FSQakuUJB\\VZNLewr&Jz,fD*5j2htVC~=G^=qR^@M`%&f58aS9.=bbh4CW$UtWM", salt));
     }
 
     @Test public void encryptText()
@@ -77,8 +76,8 @@ public class PasswordUtilsTest
 
     @Test public void decryptText()
     {
-        Assert.assertEquals("TestTwoWayHash", PasswordUtils.decryptText("bXUNMHkQsn0XYqKYQIqb5/rBcjqgP+iI9oaRqsFwZg6ksO6VXygs7Z1Dw08BaaecTteff8Knx8gnR+l6YoE41l2jLG4ZkFL4y4M6/pqP7fU=",
-                "PWQKRN8J60s9gg7Qg3eM6o19ggPsLiIDfjCXohJ9qgfMMILnDmPl79ipeZ56TEJI".length()));
+        Assert.assertEquals("TUX_t3st", PasswordUtils.decryptText("pLuWwtkdjjqB53CNSskt/Rlkrycbbf4Ds00m9Jm5ywNUXtZ6AeZPfQl5ecJ5A33dMJAXhwhzljtDXSprBzZYatRHUGO84JNenAS0VhyyMTo=",
+                "5wIHMByf3qu9hYQ0WpSoQT1f8oWUjhQIrY9h6lCBWXteCHIS3Ch4De3P6t8EQ55H".length()));
     }
 
     @Test public void validateOtpValue()

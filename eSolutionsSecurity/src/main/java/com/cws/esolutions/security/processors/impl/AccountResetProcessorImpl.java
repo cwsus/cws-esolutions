@@ -259,7 +259,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             if (StringUtils.isNotEmpty(userSalt))
             {
                 boolean isVerified = authenticator.verifySecurityData(userAccount.getUsername(), userAccount.getGuid(),
-                    new ArrayList<String>(
+                    new ArrayList<>(
                         Arrays.asList(
                             PasswordUtils.encryptText(userSecurity.getSecAnswerOne(), userSalt,
                                 secConfig.getAuthAlgorithm(), secConfig.getIterations()),

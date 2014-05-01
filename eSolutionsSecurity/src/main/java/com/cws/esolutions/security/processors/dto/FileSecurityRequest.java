@@ -47,6 +47,7 @@ public class FileSecurityRequest implements Serializable
 {
     private String appName = null;
     private File signedFile = null;
+    private File requestFile = null;
     private File unsignedFile = null;
     private File decryptedFile = null;
     private File encryptedFile = null;
@@ -124,6 +125,19 @@ public class FileSecurityRequest implements Serializable
         }
 
         this.applicationId = value;
+    }
+
+    public final void setRequestFile(final File value)
+    {
+        final String methodName = FileSecurityRequest.CNAME + "#setRequestFile(final File value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.requestFile = value;
     }
 
     public final void setUnsignedFile(final File value)
@@ -240,6 +254,19 @@ public class FileSecurityRequest implements Serializable
         }
 
         return this.applicationId;
+    }
+
+    public final File getRequestFile()
+    {
+        final String methodName = FileSecurityRequest.CNAME + "#getRequestFile()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.requestFile);
+        }
+
+        return this.requestFile;
     }
 
     public final File getUnsignedFile()

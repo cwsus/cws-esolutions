@@ -32,7 +32,6 @@ import org.xbill.DNS.Name;
 import org.xbill.DNS.Type;
 import java.util.ArrayList;
 import java.io.IOException;
-import java.util.Properties;
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Record;
 import java.sql.SQLException;
@@ -657,23 +656,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
                         if ((dnsServers != null) && (dnsServers.size() != 0))
                         {
-                            final Properties sshProps = new Properties();
-                            sshProps.load(this.getClass().getClassLoader().getResourceAsStream(sshConfig.getSshProperties()));
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Properties: {}", sshProps);
-                            }
-
-                            final Properties authProps = new Properties();
-                            authProps.put(CoreServiceConstants.ACCOUNT, sshConfig.getSshAccount());
-                            authProps.put(CoreServiceConstants.PASSWORD, sshConfig.getSshPassword());
-                            authProps.put(CoreServiceConstants.SALT, sshConfig.getSshSalt());
-                            authProps.put(CoreServiceConstants.KEYFILE, sshConfig.getSshKey());
-
-                            NetworkUtils.executeSCPTransfer(sshProps, authProps,
-                                    new ArrayList<>(
-                                            Arrays.asList(zoneFile)),
+                            NetworkUtils.executeSCPTransfer(new ArrayList<>(Arrays.asList(zoneFile.toString())),
                                     zoneFile.getAbsolutePath(), (String) dnsServers.get(0)[18], true);
 
                             List<Object[]> slaveServers = dao.getServersByAttribute(ServerType.DNSSLAVE.name() + " " + request.getServiceRegion().name(), 0);
@@ -691,7 +674,8 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                                 {
                                     try
                                     {
-                                        NetworkUtils.executeSCPTransfer(sshProps, authProps, new ArrayList<>(Arrays.asList(zoneFile)), zoneFile.getAbsolutePath(), (String) server[18], true);
+                                        NetworkUtils.executeSCPTransfer(new ArrayList<>(Arrays.asList(zoneFile.toString())),
+                                                zoneFile.getAbsolutePath(), (String) server[18], true);
                                     }
                                     catch (UtilityException ux)
                                     {

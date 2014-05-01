@@ -347,7 +347,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
                 if (resultSet.next())
                 {
                     resultSet.beforeFirst();
-                    responseData = new ArrayList<String[]>();
+                    responseData = new ArrayList<>();
 
                     while (resultSet.next())
                     {

@@ -90,7 +90,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 DEBUGGER.debug("List<Object[]>: {}", userInfo);
             }
 
-            if ((userInfo.size() != 1) || (userInfo == null))
+            if (userInfo.size() != 1)
             {
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
 
@@ -116,7 +116,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 DEBUGGER.debug("List<Object>: {}", authObject);
             }
 
-            if ((authObject.size() == 0) || (authObject == null))
+            if (authObject.size() == 0)
             {
                 throw new AuthenticationException("Authentication processing failed. Cannot continue.");
             }

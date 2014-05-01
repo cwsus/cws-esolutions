@@ -45,25 +45,23 @@ import com.cws.esolutions.core.CoreServiceConstants;
  */
 @XmlRootElement(name = "ssh-config")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class SSHConfig implements Serializable
+public final class FTPConfig implements Serializable
 {
     private int timeout = 10; // default to 10 seconds
-    private String sshKey = null;
-    private String sshSalt= null;
-    private String sshAccount = null;
-    private String sshPassword = null;
-    private String sshProperties = null;
+    private String ftpSalt= null;
+    private String ftpAccount = null;
+    private String ftpPassword = null;
 
-    private static final String CNAME = SSHConfig.class.getName();
+    private static final String CNAME = FTPConfig.class.getName();
     private static final long serialVersionUID = -4670903285628304991L;
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER);
 
-    public final void setSshAccount(final String value)
+    public final void setFtpAccount(final String value)
     {
-        final String methodName = SSHConfig.CNAME + "#setSshAccount(final String value)";
+        final String methodName = FTPConfig.CNAME + "#setFtpAccount(final String value)";
 
         if (DEBUG)
         {
@@ -71,12 +69,12 @@ public final class SSHConfig implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.sshAccount = value;
+        this.ftpAccount = value;
     }
 
-    public final void setSshPassword(final String value)
+    public final void setFtpPassword(final String value)
     {
-        final String methodName = SSHConfig.CNAME + "#setSshPassword(final String value)";
+        final String methodName = FTPConfig.CNAME + "#setFtpPassword(final String value)";
 
         if (DEBUG)
         {
@@ -84,12 +82,12 @@ public final class SSHConfig implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.sshPassword = value;
+        this.ftpPassword = value;
     }
 
-    public final void setSshSalt(final String value)
+    public final void setFtpSalt(final String value)
     {
-        final String methodName = SSHConfig.CNAME + "#setSshSalt(final String value)";
+        final String methodName = FTPConfig.CNAME + "#setFtpSalt(final String value)";
 
         if (DEBUG)
         {
@@ -97,25 +95,12 @@ public final class SSHConfig implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.sshSalt = value;
-    }
-
-    public final void setSshKey(final String value)
-    {
-        final String methodName = SSHConfig.CNAME + "#setSshKey(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.sshKey = value;
+        this.ftpSalt = value;
     }
 
     public final void setTimeout(final int value)
     {
-        final String methodName = SSHConfig.CNAME + "#setTimeout(final int value)";
+        final String methodName = FTPConfig.CNAME + "#setTimeout(final int value)";
 
         if (DEBUG)
         {
@@ -126,79 +111,52 @@ public final class SSHConfig implements Serializable
         this.timeout = value;
     }
 
-    public final void setSshProperties(final String value)
+    @XmlElement(name = "ftpAccount")
+    public final String getFtpAccount()
     {
-        final String methodName = SSHConfig.CNAME + "#setSshProperties(final String value)";
+        final String methodName = FTPConfig.CNAME + "#getFtpAccount()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("Value: {}", this.ftpAccount);
         }
 
-        this.sshProperties = value;
+        return this.ftpAccount;
     }
 
-    @XmlElement(name = "sshAccount")
-    public final String getSshAccount()
+    @XmlElement(name = "ftpPassword")
+    public final String getFtpPassword()
     {
-        final String methodName = SSHConfig.CNAME + "#getSshAccount()";
+        final String methodName = FTPConfig.CNAME + "#getFtpPassword()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.sshAccount);
+            DEBUGGER.debug("Value: {}", this.ftpPassword);
         }
 
-        return this.sshAccount;
+        return this.ftpPassword;
     }
 
-    @XmlElement(name = "sshPassword")
-    public final String getSshPassword()
+    @XmlElement(name = "ftpSalt")
+    public final String getFtpSalt()
     {
-        final String methodName = SSHConfig.CNAME + "#getSshPassword()";
+        final String methodName = FTPConfig.CNAME + "#getFtpSalt()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.sshPassword);
+            DEBUGGER.debug("Value: {}", this.ftpSalt);
         }
 
-        return this.sshPassword;
-    }
-
-    @XmlElement(name = "sshSalt")
-    public final String getSshSalt()
-    {
-        final String methodName = SSHConfig.CNAME + "#getSshSalt()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.sshSalt);
-        }
-
-        return this.sshSalt;
-    }
-
-    @XmlElement(name = "sshKey")
-    public final String getSshKey()
-    {
-        final String methodName = SSHConfig.CNAME + "#getSshKey()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.sshKey);
-        }
-
-        return this.sshKey;
+        return this.ftpSalt;
     }
 
     @XmlElement(name = "timeout")
     public final int getTimeout()
     {
-        final String methodName = SSHConfig.CNAME + "#getTimeout()";
+        final String methodName = FTPConfig.CNAME + "#getTimeout()";
 
         if (DEBUG)
         {
@@ -209,24 +167,10 @@ public final class SSHConfig implements Serializable
         return this.timeout;
     }
 
-    @XmlElement(name = "sshProperties")
-    public final String getSshProperties()
-    {
-        final String methodName = SSHConfig.CNAME + "#getSshProperties()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.sshProperties);
-        }
-
-        return this.sshProperties;
-    }
-
     @Override
     public final String toString()
     {
-        final String methodName = SSHConfig.CNAME + "#toString()";
+        final String methodName = FTPConfig.CNAME + "#toString()";
 
         if (DEBUG)
         {

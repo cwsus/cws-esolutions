@@ -34,7 +34,7 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<MainActi
         super(activityClass);
     }
 
-    @Before protected void setUp() throws Exception
+    @Override @Before protected void setUp() throws Exception
     {
         super.setUp();
     }
@@ -54,7 +54,7 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<MainActi
         Assert.fail("Not yet implemented"); // TODO
     }
 
-    @After protected void tearDown() throws Exception
+    @Override @After protected void tearDown() throws Exception
     {
         super.tearDown();
     }

@@ -48,8 +48,10 @@ import com.cws.esolutions.core.CoreServiceConstants;
 public final class CoreConfigurationData implements Serializable
 {
     private SSHConfig sshConfig = null;
+    private FTPConfig ftpConfig = null;
     private DNSConfig dnsConfig = null;
     private MailConfig mailConfig = null;
+    private HTTPConfig httpConfig = null;
     private ProxyConfig proxyConfig = null;
     private AgentConfig agentConfig = null;
     private ScriptConfig scriptConfig = null;
@@ -117,6 +119,19 @@ public final class CoreConfigurationData implements Serializable
         this.proxyConfig = value;
     }
 
+    public final void setHttpConfig(final HTTPConfig value)
+    {
+        final String methodName = CoreConfigurationData.CNAME + "#setHttpConfig(final HTTPConfig value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.httpConfig = value;
+    }
+
     public final void setDNSConfig(final DNSConfig value)
     {
         final String methodName = CoreConfigurationData.CNAME + "#setDNSConfig(final DNSConfig value)";
@@ -141,6 +156,19 @@ public final class CoreConfigurationData implements Serializable
         }
 
         this.sshConfig = value;
+    }
+
+    public final void setFtpConfig(final FTPConfig value)
+    {
+        final String methodName = CoreConfigurationData.CNAME + "#setFtpConfig(final FTPConfig value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.ftpConfig = value;
     }
 
     public final void setExceptionConfig(final ExceptionConfig value)
@@ -237,6 +265,20 @@ public final class CoreConfigurationData implements Serializable
         return this.proxyConfig;
     }
 
+    @XmlElement(name = "http-config")
+    public final HTTPConfig getHttpConfig()
+    {
+        final String methodName = CoreConfigurationData.CNAME + "#getHttpConfig()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.httpConfig);
+        }
+
+        return this.httpConfig;
+    }
+
     @XmlElement(name = "dns-config")
     public final DNSConfig getDNSConfig()
     {
@@ -277,6 +319,20 @@ public final class CoreConfigurationData implements Serializable
         }
 
         return this.sshConfig;
+    }
+
+    @XmlElement(name = "ftp-config")
+    public final FTPConfig getFtpConfig()
+    {
+        final String methodName = CoreConfigurationData.CNAME + "#getFtpConfig()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.ftpConfig);
+        }
+
+        return this.ftpConfig;
     }
 
     @XmlElement(name = "exception-config")

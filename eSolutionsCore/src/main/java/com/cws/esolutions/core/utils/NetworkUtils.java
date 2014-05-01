@@ -27,13 +27,16 @@ package com.cws.esolutions.core.utils;
 import java.io.File;
 import java.util.List;
 import java.net.Socket;
+import java.util.Arrays;
 import org.slf4j.Logger;
 import java.util.ArrayList;
 import java.io.PrintWriter;
 import java.io.IOException;
-import java.util.Properties;
+import com.jcraft.jsch.JSch;
 import java.net.InetAddress;
 import java.io.BufferedReader;
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.Session;
 import java.io.FileInputStream;
 import org.slf4j.LoggerFactory;
 import java.io.FileOutputStream;
@@ -43,13 +46,26 @@ import java.io.ObjectInputStream;
 import java.net.ConnectException;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
+import com.jcraft.jsch.ChannelExec;
 import com.sshtools.j2ssh.ScpClient;
 import com.sshtools.j2ssh.SshClient;
+import java.util.concurrent.TimeUnit;
 import com.sshtools.j2ssh.SftpClient;
+import com.jcraft.jsch.OpenSSHConfig;
 import java.net.UnknownHostException;
+import com.jcraft.jsch.JSchException;
+import org.apache.commons.cli.Options;
 import org.apache.commons.io.FileUtils;
+import com.jcraft.jsch.ConfigRepository;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.OptionGroup;
+import org.apache.commons.cli.PosixParser;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpVersion;
@@ -58,7 +74,6 @@ import org.apache.commons.httpclient.NTCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.auth.AuthPolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
-import com.sshtools.j2ssh.session.SessionChannelClient;
 import org.apache.commons.httpclient.methods.PostMethod;
 import com.sshtools.j2ssh.transport.publickey.SshPrivateKey;
 import org.apache.commons.httpclient.params.HttpClientParams;
@@ -71,11 +86,15 @@ import com.sshtools.j2ssh.authentication.PasswordAuthenticationClient;
 import com.sshtools.j2ssh.authentication.PublicKeyAuthenticationClient;
 import com.sshtools.j2ssh.authentication.AuthenticationProtocolException;
 
+import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.CoreServiceConstants;
+import com.cws.esolutions.core.config.xml.FTPConfig;
+import com.cws.esolutions.core.config.xml.SSHConfig;
 import com.cws.esolutions.core.config.xml.HTTPConfig;
 import com.cws.esolutions.core.config.xml.ProxyConfig;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.core.exception.CoreServiceException;
+import com.cws.esolutions.core.jsch.wrapper.JSchCommonsLogger;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.core.utils.exception.UtilityException;
 import com.cws.esolutions.security.exception.SecurityServiceException;
@@ -88,21 +107,168 @@ import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
  * @author khuntly
  * @version 1.0
  */
+@SuppressWarnings("static-access")
 public final class NetworkUtils
 {
+    private static Options options = null;
+    private static OptionGroup sshOptions = null;
+    private static OptionGroup scpOptions = null;
+    private static OptionGroup tcpOptions = null;
+    private static OptionGroup httpOptions = null;
+    private static OptionGroup telnetOptions = null;
+
     private static final String CRLF = "\r\n";
     private static final String TERMINATE_TELNET = "^]";
     private static final String PROXY_AUTH_TYPE_NTLM = "NTLM";
     private static final String PROXY_AUTH_TYPE_BASIC = "basic";
     private static final String CNAME = NetworkUtils.class.getName();
+    private static final CoreServiceBean appBean = CoreServiceBean.getInstance();
 
-    private static final String SALT = "userSalt";
-    private static final String KEYFILE = "userKeyFile";
-    private static final String ACCOUNT = "userAccount";
-    private static final String PASSWORD = "userPassword";
     private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
+
+    static
+    {
+        OptionGroup commandOptions = new OptionGroup();
+        commandOptions.addOption(OptionBuilder.withLongOpt("ssh")
+            .withDescription("Perform an SSH connection to a target host")
+            .isRequired(true)
+            .create());
+        commandOptions.addOption(OptionBuilder.withLongOpt("scp")
+            .withDescription("Perform an SCP connection to a target host")
+            .isRequired(true)
+            .create());
+        commandOptions.addOption(OptionBuilder.withLongOpt("telnet")
+            .withDescription("Perform an telnet connection to a target host")
+            .isRequired(true)
+            .create());
+        commandOptions.addOption(OptionBuilder.withLongOpt("tcp")
+            .withDescription("Perform an TCP connection to a target host and put data on the request")
+            .isRequired(true)
+            .create());
+        commandOptions.addOption(OptionBuilder.withLongOpt("http")
+            .withDescription("Perform an HTTP request to a target host")
+            .isRequired(true)
+            .create());
+
+        options = new Options();
+        options.addOptionGroup(commandOptions);
+
+        sshOptions = new OptionGroup();
+        sshOptions.addOption(OptionBuilder.withLongOpt("targetHost")
+            .withDescription("The hostname of the server to connect to")
+            .hasArg(true)
+            .withArgName("HOSTNAME")
+            .withType(String.class)
+            .isRequired(true)
+            .create());
+        sshOptions.addOption(OptionBuilder.withLongOpt("commandList")
+            .withDescription("A comma separated list of commands to execute on the host")
+            .hasArg(true)
+            .withArgName("COMMANDS")
+            .withType(String.class)
+            .isRequired(false)
+            .create());
+
+        scpOptions = new OptionGroup();
+        scpOptions.addOption(OptionBuilder.withLongOpt("sourceFile")
+            .withDescription("The source file to copy to/from the host")
+            .hasArg(true)
+            .withArgName("SOURCE")
+            .withType(String.class)
+            .isRequired(true)
+            .create());
+        scpOptions.addOption(OptionBuilder.withLongOpt("targetFile")
+            .withDescription("The target file to copy to/from the host")
+            .hasArg(true)
+            .withArgName("TARGET")
+            .withType(String.class)
+            .isRequired(true)
+            .create());
+        scpOptions.addOption(OptionBuilder.withLongOpt("targetHost")
+            .withDescription("The hostname of the server to connect to")
+            .hasArg(true)
+            .withArgName("HOSTNAME")
+            .withType(String.class)
+            .isRequired(true)
+            .create());
+        scpOptions.addOption(OptionBuilder.withLongOpt("isUpload")
+            .withDescription("Determines if this is a local -> remote transfer. True if yes, false otherwise")
+            .hasArg(true)
+            .withArgName("UPLOAD")
+            .withType(Boolean.class)
+            .isRequired(true)
+            .create());
+
+        telnetOptions = new OptionGroup();
+        telnetOptions.addOption(OptionBuilder.withLongOpt("targetHost")
+            .withDescription("The hostname of the server to connect to")
+            .hasArg(true)
+            .withArgName("HOSTNAME")
+            .withType(String.class)
+            .isRequired(true)
+            .create());
+        telnetOptions.addOption(OptionBuilder.withLongOpt("port")
+            .withDescription("The port number to connect to the server on")
+            .hasArg(true)
+            .withArgName("PORT")
+            .withType(Integer.class)
+            .isRequired(true)
+            .create());
+        telnetOptions.addOption(OptionBuilder.withLongOpt("timeout")
+            .withDescription("The length of time to wait for the connection to complete. Defaults to 10 seconds if not specified.")
+            .hasArg(true)
+            .withArgName("TIMEOUT")
+            .withType(Integer.class)
+            .isRequired(false)
+            .create());
+
+        tcpOptions = new OptionGroup();
+        tcpOptions.addOption(OptionBuilder.withLongOpt("targetHost")
+            .withDescription("The hostname of the server to connect to")
+            .hasArg(true)
+            .withArgName("HOSTNAME")
+            .withType(String.class)
+            .isRequired(true)
+            .create());
+        tcpOptions.addOption(OptionBuilder.withLongOpt("port")
+            .withDescription("The port number to connect to the server on")
+            .hasArg(true)
+            .withArgName("PORT")
+            .withType(Integer.class)
+            .isRequired(true)
+            .create());
+        tcpOptions.addOption(OptionBuilder.withLongOpt("timeout")
+            .withDescription("The length of time to wait for the connection to complete. Defaults to 10 seconds if not specified.")
+            .hasArg(true)
+            .withArgName("TIMEOUT")
+            .withType(Integer.class)
+            .isRequired(false)
+            .create());
+        tcpOptions.addOption(OptionBuilder.withLongOpt("data")
+            .withDescription("The data to place on the telnet request for response.")
+            .hasArg(true)
+            .withArgName("OBJECT")
+            .isRequired(false)
+            .create());
+
+        httpOptions = new OptionGroup();
+        httpOptions.addOption(OptionBuilder.withLongOpt("targetHost")
+            .withDescription("The hostname of the server to connect to")
+            .hasArg(true)
+            .withArgName("HOSTNAME")
+            .withType(String.class)
+            .isRequired(true)
+            .create());
+        httpOptions.addOption(OptionBuilder.withLongOpt("method")
+            .withDescription("The data to place on the telnet request for response.")
+            .hasArg(true)
+            .withArgName("HTTP-METHOD")
+            .withType(String.class)
+            .isRequired(true)
+            .create());
+    }
 
     public static final void main(final String[] args)
     {
@@ -116,29 +282,185 @@ public final class NetworkUtils
 
         if (args.length == 0)
         {
-            System.exit(1);
+            HelpFormatter usage = new HelpFormatter();
+            usage.printHelp(NetworkUtils.CNAME, options, true);
+
+            return;
         }
 
         try
         {
-            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml");
+            CoreServiceInitializer.initializeService("C:/opt/cws/eSolutions/etc/eSolutionsCore/config/ServiceConfig.xml",
+                "C:/opt/cws/eSolutions/etc/eSolutionsCore/logging/logging.xml");
         }
         catch (CoreServiceException csx)
         {
-            System.err.println("An error occurred while loading configuration data: " + csx.getMessage());
+            System.err.println("An error occurred while loading configuration data: " + csx.getCause().getMessage());
 
             System.exit(1);
         }
 
         try
         {
-            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml");
+            SecurityServiceInitializer.initializeService("C:/opt/cws/eSolutions/etc/SecurityService/config/ServiceConfig.xml",
+                "C:/opt/cws/eSolutions/etc/SecurityService/logging/logging.xml");
         }
         catch (SecurityServiceException ssx)
         {
-            System.err.println("An error occurred while loading configuration data: " + ssx.getMessage());
+            System.err.println("An error occurred while loading configuration data: " + ssx.getCause().getMessage());
 
             System.exit(1);
+        }
+
+        Options options = new Options();
+        CommandLineParser parser = new PosixParser();
+
+        try
+        {
+            if (StringUtils.equals(args[0], "ssh"))
+            {
+                options.addOptionGroup(sshOptions);
+
+                CommandLine commandLine = parser.parse(options, args);
+
+                if (commandLine.getOptions().length >= 1)
+                {
+                    try
+                    {
+                        NetworkUtils.executeSshConnection(commandLine.getOptionValue("targetHost"),
+                                (commandLine.hasOption("commandList") ? commandLine.getOptionValue("commandList") : null));
+                    }
+                    catch (UtilityException ux)
+                    {
+                        System.err.println("An error occurred while executing the request: " + ux.getMessage());
+                    }
+                }
+                else
+                {
+                    HelpFormatter formatter = new HelpFormatter();
+                    formatter.printHelp(NetworkUtils.CNAME + " ssh", options, true);
+                }
+            }
+
+            if (StringUtils.equals(args[0], "scp"))
+            {
+                options.addOptionGroup(scpOptions);
+
+                CommandLine commandLine = parser.parse(options, args);
+
+                if (commandLine.getOptions().length == 4)
+                {
+                    List<String> sourceList = new ArrayList<>(
+                        Arrays.asList(commandLine.getOptionValue(commandLine.getOptionValue("sourceFile"))));
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("List<String>: {}", sourceList);
+                    }
+
+                    try
+                    {
+                        NetworkUtils.executeSCPTransfer(sourceList,
+                                commandLine.getOptionValue("targetFile"),
+                                commandLine.getOptionValue("targetHost"),
+                                Boolean.valueOf(commandLine.getOptionValue("isUpload")));
+                    }
+                    catch (UtilityException ux)
+                    {
+                        System.err.println("An error occurred while executing the request: " + ux.getMessage());
+                    }
+                }
+                else
+                {
+                    HelpFormatter formatter = new HelpFormatter();
+                    formatter.printHelp(NetworkUtils.CNAME + " scp", options, true);
+                }
+            }
+
+            if (StringUtils.equals(args[0], "telnet"))
+            {
+                options.addOptionGroup(telnetOptions);
+
+                CommandLine commandLine = parser.parse(options, args);
+
+                if (commandLine.getOptions().length >= 2)
+                {
+                    try
+                    {
+                        NetworkUtils.executeTelnetRequest(commandLine.getOptionValue("targetHost"),
+                                Integer.valueOf(commandLine.getOptionValue("port")),
+                                (commandLine.hasOption("timeout") ? Integer.parseInt(commandLine.getOptionValue("timeout"))
+                                        : appBean.getConfigData().getSshConfig().getTimeout()));
+                    }
+                    catch (UtilityException ux)
+                    {
+                        System.err.println("An error occurred while executing the request: " + ux.getMessage());
+                    }
+                }
+                else
+                {
+                    HelpFormatter formatter = new HelpFormatter();
+                    formatter.printHelp(NetworkUtils.CNAME + " telnet", options, true);
+                }
+            }
+
+            if (StringUtils.equals(args[0], "tcp"))
+            {
+                options.addOptionGroup(tcpOptions);
+
+                CommandLine commandLine = parser.parse(options, args);
+
+                if (commandLine.getOptions().length == 4)
+                {
+                    try
+                    {
+                        NetworkUtils.executeTcpRequest(commandLine.getOptionValue("targetHost"),
+                                Integer.valueOf(commandLine.getOptionValue("port")),
+                                (commandLine.hasOption("timeout") ? Integer.parseInt(commandLine.getOptionValue("timeout"))
+                                        : appBean.getConfigData().getSshConfig().getTimeout()),
+                                commandLine.getParsedOptionValue("data"));
+                    }
+                    catch (UtilityException ux)
+                    {
+                        System.err.println("An error occurred while executing the request: " + ux.getMessage());
+                    }
+                }
+                else
+                {
+                    HelpFormatter formatter = new HelpFormatter();
+                    formatter.printHelp(NetworkUtils.CNAME + " telnet", options, true);
+                }
+            }
+
+            if (StringUtils.equals(args[0], "http"))
+            {
+                options.addOptionGroup(httpOptions);
+
+                CommandLine commandLine = parser.parse(options, args);
+
+                if (commandLine.getOptions().length >= 2)
+                {
+                    try
+                    {
+                        NetworkUtils.executeHttpConnection(commandLine.getOptionValue("targetHost"),
+                                commandLine.getOptionValue("method"));
+                    }
+                    catch (UtilityException ux)
+                    {
+                        System.err.println("An error occurred while executing the request: " + ux.getMessage());
+                    }
+                }
+                else
+                {
+                    HelpFormatter formatter = new HelpFormatter();
+                    formatter.printHelp(NetworkUtils.CNAME + " http", options, true);
+                }
+            }
+        }
+        catch (ParseException px)
+        {
+            HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp(NetworkUtils.CNAME, options, true);
         }
     }
 
@@ -161,7 +483,6 @@ public final class NetworkUtils
      * Convert the keyfile: ssh-keygen -i -f /path/to/file > /path/to/new-file
      * Re-encrypt the file: ssh-keygen -p -f /path/to/new-file
      *
-     * @param sshProps - The SSH properties file to utilize
      * @param authProps - A list containing the authentication properties
      * @param sourceFile - The full path to the source file to transfer
      * @param targetFile - The full path (including file name) of the desired target file
@@ -170,154 +491,163 @@ public final class NetworkUtils
      *            is a download 
      * @throws UtilityException - If an error occurs processing SSH keys or file transfer operations
      */
-    public static final synchronized void executeSCPTransfer(final Properties sshProps, final Properties authProps, final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
+    public static final synchronized void executeSCPTransfer(final List<String> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
     {
-        final String methodName = NetworkUtils.CNAME + "#executeSCPTransfer(final Properties sshProps, final Properties authProps, final List<String> authList, final String targetFile, final String targetHost, final String passphrase) throws UtilityException";
+        final String methodName = NetworkUtils.CNAME + "#executeSCPTransfer(final List<String> authList, final String targetFile, final String targetHost, final String passphrase) throws UtilityException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", sshProps);
             DEBUGGER.debug("Value: {}", sourceFile);
             DEBUGGER.debug("Value: {}", targetFile);
             DEBUGGER.debug("Value: {}", targetHost);
         }
 
         final SshClient sshClient = new SshClient();
+        final SSHConfig sshConfig = appBean.getConfigData().getSshConfig();
 
         if (DEBUG)
         {
             DEBUGGER.debug("SshClient: {}", sshClient);
+            DEBUGGER.debug("SSHConfig: {}", sshConfig);
         }
 
         try
         {
-            if ((sourceFile != null) && (sourceFile.size() != 0))
+            SshConnectionProperties connProps = new SshConnectionProperties();
+            connProps.setHost(targetHost); // set as obtained from db
+
+            if (DEBUG)
             {
-                SshConnectionProperties connProps = new SshConnectionProperties();
-                connProps.setHost(targetHost); // set as obtained from db
+                DEBUGGER.debug("SshConnectionProperties: {}", connProps);
+            }
+
+            boolean isKeyAuthentication = false;
+            PasswordAuthenticationClient passAuth = null;
+            PublicKeyAuthenticationClient keyAuth = null;
+
+            if (StringUtils.isNotEmpty(sshConfig.getSshKey()))
+            {
+                isKeyAuthentication = true;
+
+                SshPrivateKeyFile sshPrivateKeyFile = SshPrivateKeyFile.parse(FileUtils.getFile(sshConfig.getSshKey()));
+                SshPrivateKey sshPrivateKey = null;
+
+                switch (sshConfig.getSshPassword().length())
+                {
+                    case 0:
+                        sshPrivateKeyFile.toPrivateKey(null);
+
+                        break;
+                    default:
+                        sshPrivateKeyFile.toPrivateKey(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length()));
+
+                        break;
+                }
+
+                keyAuth = new PublicKeyAuthenticationClient();
+                keyAuth.setKey(sshPrivateKey);
+                keyAuth.setUsername((StringUtils.isNotEmpty(sshConfig.getSshAccount())) ? sshConfig.getSshAccount() : System.getProperty("user.name"));
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("SshConnectionProperties: {}", connProps);
-                }
-
-                boolean isKeyAuthentication = false;
-                PasswordAuthenticationClient passAuth = null;
-                PublicKeyAuthenticationClient keyAuth = null;
-
-                if (authProps.containsKey(NetworkUtils.KEYFILE))
-                {
-                    isKeyAuthentication = true;
-
-                    SshPrivateKeyFile sshPrivateKeyFile = SshPrivateKeyFile.parse(FileUtils.getFile(authProps.getProperty(NetworkUtils.KEYFILE)));
-                    SshPrivateKey sshPrivateKey = null;
-
-                    switch (authProps.getProperty(NetworkUtils.PASSWORD).length())
-                    {
-                        case 0:
-                            sshPrivateKeyFile.toPrivateKey(null);
-
-                            break;
-                        default:
-                            sshPrivateKeyFile.toPrivateKey(PasswordUtils.decryptText(authProps.getProperty(NetworkUtils.PASSWORD), authProps.getProperty(NetworkUtils.SALT).length()));
-
-                            break;
-                    }
-
-                    keyAuth = new PublicKeyAuthenticationClient();
-                    keyAuth.setKey(sshPrivateKey);
-                    keyAuth.setUsername(authProps.getProperty(NetworkUtils.ACCOUNT));
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("PublicKeyAuthenticationClient: {}", keyAuth);
-                    }
-                }
-                else
-                {
-                    passAuth = new PasswordAuthenticationClient();
-                    passAuth.setUsername(authProps.getProperty(NetworkUtils.ACCOUNT));
-                    passAuth.setPassword(PasswordUtils.decryptText(authProps.getProperty(NetworkUtils.PASSWORD), authProps.getProperty(NetworkUtils.SALT).length()));
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("PasswordAuthenticationClient: {}", passAuth);
-                    }
-                }
-
-                sshClient.connect(connProps, new IgnoreHostKeyVerification());
-
-                if (sshClient.isConnected())
-                {
-                    int authResult = -1;
-
-                    if (isKeyAuthentication)
-                    {
-                        authResult = sshClient.authenticate(keyAuth);
-                    }
-                    else
-                    {
-                        authResult = sshClient.authenticate(passAuth);
-                    }
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Authentication Result: {}", authResult);
-                    }
-
-                    if (authResult == AuthenticationProtocolState.COMPLETE)
-                    {
-                        // do stuff...
-                        if (sshClient.isAuthenticated())
-                        {
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("SSH client connected and authenticated");
-                            }
-
-                            ScpClient client = sshClient.openScpClient();
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("ScpClient: {}", client);
-                            }
-
-                            for (File file : sourceFile)
-                            {
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("File: {}", file);
-                                }
-
-                                if (isUpload)
-                                {
-                                    client.put(file.getAbsoluteFile().toString(), targetFile, false);
-                                }
-                                else
-                                {
-                                    client.get(targetFile, file.getAbsoluteFile().toString(), false);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            throw new AuthenticationProtocolException("Failed to authenticate to remote host. Username: " + authProps.getProperty(NetworkUtils.ACCOUNT));
-                        }
-                    }
-                    else
-                    {
-                        throw new AuthenticationProtocolException("Failed to authenticate to remote host. Username: " + authProps.getProperty(NetworkUtils.ACCOUNT));
-                    }
-                }
-                else
-                {
-                    throw new ConnectException("Failed to connect to remote host");
+                    DEBUGGER.debug("PublicKeyAuthenticationClient: {}", keyAuth);
                 }
             }
             else
             {
-                throw new IOException("Requested source file: " + sourceFile + " does not exist");
+                passAuth = new PasswordAuthenticationClient();
+                passAuth.setUsername((StringUtils.isNotEmpty(sshConfig.getSshAccount())) ? sshConfig.getSshAccount() : System.getProperty("user.name"));
+                passAuth.setPassword(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length()));
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("PasswordAuthenticationClient: {}", passAuth);
+                }
+            }
+
+            sshClient.connect(connProps, new IgnoreHostKeyVerification());
+
+            if (sshClient.isConnected())
+            {
+                int authResult = -1;
+
+                if (isKeyAuthentication)
+                {
+                    authResult = sshClient.authenticate(keyAuth);
+                }
+                else
+                {
+                    authResult = sshClient.authenticate(passAuth);
+                }
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Authentication Result: {}", authResult);
+                }
+
+                if (authResult == AuthenticationProtocolState.COMPLETE)
+                {
+                    // do stuff...
+                    if (sshClient.isAuthenticated())
+                    {
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("SSH client connected and authenticated");
+                        }
+
+                        ScpClient client = sshClient.openScpClient();
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("ScpClient: {}", client);
+                        }
+
+                        for (String str : sourceFile)
+                        {
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("File: {}", str);
+                            }
+
+                            if (isUpload)
+                            {
+                                File srcFile = FileUtils.getFile(str);
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("File: {}", srcFile);
+                                }
+
+                                if (!(srcFile.canRead()))
+                                {
+                                    ERROR_RECORDER.error("File {} does not exist or cannot be read. Skipping!", srcFile);
+                                }
+
+                                if (srcFile.canRead())
+                                {
+                                    client.put(srcFile.getAbsoluteFile().toString(), targetFile, false);
+                                }
+                            }
+                            else
+                            {
+                                client.get(targetFile, str, false);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        throw new AuthenticationProtocolException("Failed to authenticate to remote host.");
+                    }
+                }
+                else
+                {
+                    throw new AuthenticationProtocolException("Failed to authenticate to remote host.");
+                }
+            }
+            else
+            {
+                throw new ConnectException("Failed to connect to remote host");
             }
         }
         catch (AuthenticationProtocolException apx)
@@ -337,9 +667,20 @@ public final class NetworkUtils
         }
     }
 
-    public static final synchronized void executeSftpTransfer(final Properties authProps, final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param authProps
+     * @param sourceFile
+     * @param targetFile
+     * @param targetHost
+     * @param isUpload
+     * @throws UtilityException
+     */
+    public static final synchronized void executeSftpTransfer(final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
     {
-        final String methodName = NetworkUtils.CNAME + "#executeSftpTransfer(final Properties authProps, final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException";
+        final String methodName = NetworkUtils.CNAME + "#executeSftpTransfer(final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException";
 
         if (DEBUG)
         {
@@ -351,10 +692,12 @@ public final class NetworkUtils
         }
 
         final SshClient sshClient = new SshClient();
+        final SSHConfig sshConfig = appBean.getConfigData().getSshConfig();
 
         if (DEBUG)
         {
             DEBUGGER.debug("SshClient: {}", sshClient);
+            DEBUGGER.debug("SSHConfig: {}", sshConfig);
         }
 
         try
@@ -373,28 +716,28 @@ public final class NetworkUtils
                 PasswordAuthenticationClient passAuth = null;
                 PublicKeyAuthenticationClient keyAuth = null;
 
-                if (authProps.containsKey(NetworkUtils.KEYFILE))
+                if (StringUtils.isNotEmpty(sshConfig.getSshKey()))
                 {
                     isKeyAuthentication = true;
 
-                    SshPrivateKeyFile sshPrivateKeyFile = SshPrivateKeyFile.parse(FileUtils.getFile(authProps.getProperty(NetworkUtils.KEYFILE)));
+                    SshPrivateKeyFile sshPrivateKeyFile = SshPrivateKeyFile.parse(FileUtils.getFile(sshConfig.getSshKey()));
                     SshPrivateKey sshPrivateKey = null;
 
-                    switch (authProps.getProperty(NetworkUtils.PASSWORD).length())
+                    switch (sshConfig.getSshPassword().length())
                     {
                         case 0:
                             sshPrivateKeyFile.toPrivateKey(null);
 
                             break;
                         default:
-                            sshPrivateKeyFile.toPrivateKey(PasswordUtils.decryptText(authProps.getProperty(NetworkUtils.PASSWORD), authProps.getProperty(NetworkUtils.SALT).length()));
+                            sshPrivateKeyFile.toPrivateKey(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length()));
 
                             break;
                     }
 
                     keyAuth = new PublicKeyAuthenticationClient();
                     keyAuth.setKey(sshPrivateKey);
-                    keyAuth.setUsername(authProps.getProperty(NetworkUtils.ACCOUNT));
+                    keyAuth.setUsername((StringUtils.isNotEmpty(sshConfig.getSshAccount())) ? sshConfig.getSshAccount() : System.getProperty("user.name"));
 
                     if (DEBUG)
                     {
@@ -404,8 +747,8 @@ public final class NetworkUtils
                 else
                 {
                     passAuth = new PasswordAuthenticationClient();
-                    passAuth.setUsername(authProps.getProperty(NetworkUtils.ACCOUNT));
-                    passAuth.setPassword(PasswordUtils.decryptText(authProps.getProperty(NetworkUtils.PASSWORD), authProps.getProperty(NetworkUtils.SALT).length()));
+                    passAuth.setUsername((StringUtils.isNotEmpty(sshConfig.getSshAccount())) ? sshConfig.getSshAccount() : System.getProperty("user.name"));
+                    passAuth.setPassword(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length()));
 
                     if (DEBUG)
                     {
@@ -471,12 +814,12 @@ public final class NetworkUtils
                         }
                         else
                         {
-                            throw new AuthenticationProtocolException("Failed to authenticate to remote host. Username: " + authProps.getProperty(NetworkUtils.ACCOUNT));
+                            throw new AuthenticationProtocolException("Failed to authenticate to remote host.");
                         }
                     }
                     else
                     {
-                        throw new AuthenticationProtocolException("Failed to authenticate to remote host. Username: " + authProps.getProperty(NetworkUtils.ACCOUNT));
+                        throw new AuthenticationProtocolException("Failed to authenticate to remote host.");
                     }
                 }
                 else
@@ -524,201 +867,191 @@ public final class NetworkUtils
      * Hit enter twice without entering a new passphrase
      * Convert the keyfile: ssh-keygen -i -f /path/to/file > /path/to/new-file
      * Re-encrypt the file: ssh-keygen -p -f /path/to/new-file
-     * 
+     *
+     * @param authProps - The authentication properties
      * @param targetHost - The target server to perform the transfer to
      * @param commandList - The list of commands to execute on the remote host. 
      * @throws UtilityException - If an error occurs processing SSH keys or file transfer operations
      */
-    public static final synchronized StringBuilder executeSshConnection(final Properties sshProps, final Properties authProps, final String targetHost, final List<String> commandList) throws UtilityException
+    public static final synchronized StringBuilder executeSshConnection(final String targetHost, final String commandList) throws UtilityException
     {
-        final String methodName = NetworkUtils.CNAME + "#executeSshConnection(final Properties sshProps, final Properties authProps, final String targetHost, final List<String> commandList) throws UtilityException";
+        final String methodName = NetworkUtils.CNAME + "#executeSshConnection(final String targetHost, final String commandList) throws UtilityException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", sshProps);
-            DEBUGGER.debug("Value: {}", authProps);
             DEBUGGER.debug("Value: {}", targetHost);
             DEBUGGER.debug("Value: {}", commandList);
         }
 
+        Session session = null;
+        Channel channel = null;
         StringBuilder sBuilder = null;
-        boolean isKeyAuthentication = false;
-        PasswordAuthenticationClient passAuth = null;
-        PublicKeyAuthenticationClient keyAuth = null;
 
-        final SshClient sshClient = new SshClient();
+        final SSHConfig sshConfig = appBean.getConfigData().getSshConfig();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("SshClient: {}", sshClient);
+            DEBUGGER.debug("SSHConfig: {}", sshConfig);
         }
 
         try
         {
-            SshConnectionProperties connProps = new SshConnectionProperties();
-            connProps.setHost(targetHost); // set as obtained from db
+            ConfigRepository configRepository = OpenSSHConfig.parseFile(sshConfig.getSshProperties());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("SshConnectionProperties: {}", connProps);
+                DEBUGGER.debug("ConfigRepository: {}", configRepository);
             }
 
-            if (authProps.containsKey(NetworkUtils.KEYFILE))
+            JSch jsch = new JSch();
+            JSch.setLogger(new JSchCommonsLogger("com.jcraft.jsch"));
+            jsch.setConfigRepository(configRepository);
+
+            if (DEBUG)
             {
-                isKeyAuthentication = true;
+                DEBUGGER.debug("JSch: {}", jsch);
+            }
 
-                SshPrivateKeyFile sshPrivateKeyFile = SshPrivateKeyFile.parse(FileUtils.getFile(authProps.getProperty(NetworkUtils.KEYFILE)));
-                SshPrivateKey sshPrivateKey = null;
+            session = jsch.getSession((StringUtils.isNotEmpty(sshConfig.getSshAccount())) ? sshConfig.getSshAccount() : System.getProperty("user.name"),
+                    targetHost, 22);
 
-                switch (authProps.getProperty(NetworkUtils.PASSWORD).length())
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Session: {}", session);
+            }
+
+            if (StringUtils.isNotEmpty(sshConfig.getSshKey()))
+            {
+                if (!(FileUtils.getFile(sshConfig.getSshKey()).canRead()))
+                {
+                    throw new UtilityException("Provided keyfile cannot be accessed.");
+                }
+
+                switch (sshConfig.getSshPassword().length())
                 {
                     case 0:
-                        sshPrivateKeyFile.toPrivateKey(null);
+                        jsch.addIdentity(FileUtils.getFile(sshConfig.getSshKey()).toString());
 
                         break;
                     default:
-                        sshPrivateKeyFile.toPrivateKey(PasswordUtils.decryptText(authProps.getProperty(NetworkUtils.PASSWORD), authProps.getProperty(NetworkUtils.SALT).length()));
+                        jsch.addIdentity(FileUtils.getFile(sshConfig.getSshKey()).toString(),
+                            PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length()));
 
                         break;
                 }
-
-                keyAuth = new PublicKeyAuthenticationClient();
-                keyAuth.setKey(sshPrivateKey);
-                keyAuth.setUsername(authProps.getProperty(NetworkUtils.ACCOUNT));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("PublicKeyAuthenticationClient: {}", keyAuth);
-                }
             }
             else
             {
-                passAuth = new PasswordAuthenticationClient();
-                passAuth.setUsername(authProps.getProperty(NetworkUtils.ACCOUNT));
-                passAuth.setPassword(PasswordUtils.decryptText(authProps.getProperty(NetworkUtils.PASSWORD), authProps.getProperty(NetworkUtils.SALT).length()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("PasswordAuthenticationClient: {}", passAuth);
-                }
+                session.setPassword(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length()));
             }
 
-            sshClient.connect(connProps, new IgnoreHostKeyVerification());
+            session.connect((int) TimeUnit.SECONDS.toMillis(appBean.getConfigData().getSshConfig().getTimeout()));
 
-            if (sshClient.isConnected())
+            if (!(session.isConnected()))
             {
-                int authResult = -1;
+                throw new UtilityException("Failed to connect to the target host");
+            }
 
-                if (isKeyAuthentication)
+            if (StringUtils.isNotEmpty(commandList))
+            {
+                for (String cmd : StringUtils.split(commandList, ","))
                 {
-                    authResult = sshClient.authenticate(keyAuth);
-                }
-                else
-                {
-                    authResult = sshClient.authenticate(passAuth);
-                }
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("cmd: {}", cmd);
+                    }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Authentication Result: {}", authResult);
-                }
+                    channel = session.openChannel("exec");
+                    ((ChannelExec) channel).setCommand(cmd.trim());
+                    ((ChannelExec) channel).setErrStream(System.err);
+                    channel.setInputStream(null);
 
-                if (authResult == AuthenticationProtocolState.COMPLETE)
-                {
-                    // do stuff...
-                    if (sshClient.isAuthenticated())
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("ChannelExec: {}", channel);
+                    }
+
+                    channel.connect((int) TimeUnit.SECONDS.toMillis(appBean.getConfigData().getSshConfig().getTimeout()));
+
+                    if (!(channel.isConnected()))
+                    {
+                        throw new UtilityException("Failed to open a channel connection to the target host");
+                    }
+
+                    String line = null;
+                    BufferedReader bReader = new BufferedReader(new InputStreamReader(channel.getInputStream()));
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("BufferedReader: {}", bReader);
+                    }
+
+                    sBuilder = new StringBuilder();
+
+                    while ((line = bReader.readLine()) != null)
                     {
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("SSH client connected and authenticated");
+                            DEBUGGER.debug("Data: {}", line);
                         }
 
-                        for (String command : commandList)
-                        {
-                            SessionChannelClient client = sshClient.openSessionChannel();
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("SessionChannelClient: {}", client);
-                            }
-
-                            if (client.isOpen())
-                            {
-                                if (client.executeCommand(command))
-                                {
-                                    String line = null;
-                                    BufferedReader bReader = new BufferedReader(new InputStreamReader(client.getInputStream()));
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("BufferedReader: {}", bReader);
-                                    }
-
-                                    sBuilder = new StringBuilder();
-
-                                    while ((line = bReader.readLine()) != null)
-                                    {
-                                        sBuilder.append(line + CoreServiceConstants.LINE_BREAK);
-                                    }
-
-                                    bReader.close();
-                                }
-                                else
-                                {
-                                    throw new UtilityException("Failed to execute command " + command + " on host " + targetHost);
-                                }
-
-                                client.close();
-                            }
-                            else
-                            {
-                                throw new UtilityException("Failed to open ssh channel to remote host.");
-                            }
-                        }
+                        sBuilder.append(line + CoreServiceConstants.LINE_BREAK);
                     }
-                    else
+
+                    if (DEBUG)
                     {
-                        throw new AuthenticationProtocolException("Failed to authenticate to remote host. Username: " + authProps.getProperty(NetworkUtils.ACCOUNT));
+                        DEBUGGER.debug("StringBuilder: {}", sBuilder.toString());
                     }
-                }
-                else
-                {
-                    throw new AuthenticationProtocolException("Failed to authenticate to remote host. Username: " + authProps.getProperty(NetworkUtils.ACCOUNT));
+
+                    bReader.close();
+
+                    channel.disconnect();
                 }
             }
-            else
-            {
-                throw new ConnectException("Failed to connect to remote host");
-            }
-        }
-        catch (AuthenticationProtocolException apx)
-        {
-            throw new UtilityException(apx.getMessage());
         }
         catch (IOException iox)
         {
             throw new UtilityException(iox.getMessage(), iox);
         }
+        catch (JSchException jx)
+        {
+            throw new UtilityException(jx.getMessage(), jx);
+        }
         finally
         {
-            if (sshClient.isConnected())
+            if ((channel != null) && (channel.isConnected()))
             {
-                sshClient.disconnect();
+                channel.disconnect();
+            }
+
+            if ((session != null) && (session.isConnected()))
+            {
+                session.disconnect();
             }
         }
 
         return sBuilder;
     }
 
-    public static final synchronized void executeFtpConnection(final Properties authProps, final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param authProps
+     * @param sourceFile
+     * @param targetFile
+     * @param targetHost
+     * @param isUpload
+     * @throws UtilityException
+     */
+    public static final synchronized void executeFtpConnection(final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
     {
-        final String methodName = NetworkUtils.CNAME + "#executeFtpConnection(final Properties authProps, final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException";
+        final String methodName = NetworkUtils.CNAME + "#executeFtpConnection(final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", authProps);
             DEBUGGER.debug("Value: {}", sourceFile);
             DEBUGGER.debug("Value: {}", targetFile);
             DEBUGGER.debug("Value: {}", targetHost);
@@ -726,10 +1059,12 @@ public final class NetworkUtils
         }
 
         final FTPClient client = new FTPClient();
+        final FTPConfig ftpConfig = appBean.getConfigData().getFtpConfig();
 
         if (DEBUG)
         {
             DEBUGGER.debug("FTPClient: {}", client);
+            DEBUGGER.debug("FTPConfig: {}", ftpConfig);
         }
 
         try
@@ -745,14 +1080,14 @@ public final class NetworkUtils
             {
                 boolean isAuthenticated = false;
 
-                if (StringUtils.isNotBlank(authProps.getProperty(NetworkUtils.PASSWORD)))
+                if (StringUtils.isNotBlank(ftpConfig.getFtpAccount()))
                 {
-                    isAuthenticated = client.login(authProps.getProperty(NetworkUtils.ACCOUNT),
-                            PasswordUtils.decryptText(authProps.getProperty(NetworkUtils.PASSWORD), authProps.getProperty(NetworkUtils.SALT).length()));
+                    isAuthenticated = client.login((StringUtils.isNotEmpty(ftpConfig.getFtpAccount())) ? ftpConfig.getFtpAccount() : System.getProperty("user.name"),
+                            PasswordUtils.decryptText(ftpConfig.getFtpPassword(), ftpConfig.getFtpSalt().length()));
                 }
                 else
                 {
-                    isAuthenticated = client.login(authProps.getProperty(NetworkUtils.ACCOUNT), null);
+                    isAuthenticated = client.login(ftpConfig.getFtpAccount(), null);
                 }
 
                 if (DEBUG)
@@ -857,10 +1192,10 @@ public final class NetworkUtils
                     InetSocketAddress socketAddress = new InetSocketAddress(hostName, portNumber);
 
                     socket = new Socket();
-                    socket.setSoTimeout(timeout);
+                    socket.setSoTimeout((int) TimeUnit.SECONDS.toMillis(timeout));
                     socket.setSoLinger(false, 0);
                     socket.setKeepAlive(false);
-                    socket.connect(socketAddress, timeout);
+                    socket.connect(socketAddress, (int) TimeUnit.SECONDS.toMillis(timeout));
 
                     if (socket.isConnected())
                     {
@@ -927,17 +1262,14 @@ public final class NetworkUtils
      * @throws UtilityException if the connection cannot be established or if the
      *     response code != 200
      */
-    public static final synchronized byte[] executeHttpConnection(final HTTPConfig httpConfig, final ProxyConfig proxyConfig, final String hostName, final int timeout, final String method) throws UtilityException
+    public static final synchronized byte[] executeHttpConnection(final String hostName, final String method) throws UtilityException
     {
-        final String methodName = NetworkUtils.CNAME + "#executeHttpConnection(final HTTPConfig httpConfig, final ProxyConfig proxyConfig, final String hostName, final int timeout, final String method) throws UtilityException";
+        final String methodName = NetworkUtils.CNAME + "#executeHttpConnection(final String hostName, final String method) throws UtilityException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", httpConfig);
-            DEBUGGER.debug("Value: {}", proxyConfig);
             DEBUGGER.debug("Value: {}", hostName);
-            DEBUGGER.debug("Value: {}", timeout);
             DEBUGGER.debug("Value: {}", method);
         }
 
@@ -945,7 +1277,16 @@ public final class NetworkUtils
 
         final HttpClient httpClient = new HttpClient();
         final HttpClientParams httpParams = new HttpClientParams();
+        final HTTPConfig httpConfig = appBean.getConfigData().getHttpConfig();
+        final ProxyConfig proxyConfig = appBean.getConfigData().getProxyConfig();
 
+        if (DEBUG)
+        {
+            DEBUGGER.debug("HttpClient: {}", httpClient);
+            DEBUGGER.debug("HttpClientParams: {}", httpParams);
+            DEBUGGER.debug("HTTPConfig: {}", httpConfig);
+            DEBUGGER.debug("ProxyConfig: {}", proxyConfig);
+        }
         try
         {
             if (StringUtils.isNotEmpty(httpConfig.getTrustStoreFile()))
@@ -966,12 +1307,12 @@ public final class NetworkUtils
                         PasswordUtils.decryptText(httpConfig.getKeyStorePass(), httpConfig.getKeyStoreSalt().length()));
             }
 
-            httpParams.setVersion(HttpVersion.parse(httpConfig.getHttpVersion()));
             httpParams.setSoTimeout(httpConfig.getSoTimeout());
-            httpParams.setParameter("http.socket.linger", httpConfig.getSocketLinger());
-            httpParams.setParameter("http.socket.timeout", httpConfig.getSocketTimeout());
-            httpParams.setParameter("http.connection.timeout", httpConfig.getConnTimeout());
-            httpParams.setParameter("http.connection-manager.timeout", httpConfig.getConnMgrTimeout());
+            httpParams.setVersion(HttpVersion.parse(httpConfig.getHttpVersion()));
+            httpParams.setParameter("http.socket.linger", (int) TimeUnit.SECONDS.toMillis(httpConfig.getSocketLinger()));
+            httpParams.setParameter("http.socket.timeout", (int) TimeUnit.SECONDS.toMillis(httpConfig.getSocketTimeout()));
+            httpParams.setParameter("http.connection.timeout", (int) TimeUnit.SECONDS.toMillis(httpConfig.getConnTimeout()));
+            httpParams.setParameter("http.connection-manager.timeout", TimeUnit.SECONDS.toMillis(httpConfig.getConnMgrTimeout()));
             httpParams.setParameter("http.connection.stalecheck", httpConfig.getStaleCheck());
 
             if (DEBUG)
@@ -979,7 +1320,6 @@ public final class NetworkUtils
                 DEBUGGER.debug("httpParams: {}", httpParams);
             }
 
-            
             if (proxyConfig.isProxyServiceRequired())
             {
                 if (DEBUG)
@@ -1022,22 +1362,22 @@ public final class NetworkUtils
                         {
 
                             httpClient.getState().setProxyCredentials(new AuthScope(
-                                    proxyConfig.getProxyServerName(),
-                                    proxyConfig.getProxyServerPort(),
-                                    proxyConfig.getProxyServerRealm()),
-                                    new UsernamePasswordCredentials(proxyConfig.getProxyUserId(), proxyPwd));
+                                proxyConfig.getProxyServerName(),
+                                proxyConfig.getProxyServerPort(),
+                                proxyConfig.getProxyServerRealm()),
+                                new UsernamePasswordCredentials(proxyConfig.getProxyUserId(), proxyPwd));
                         }
                         else if (StringUtils.equals(NetworkUtils.PROXY_AUTH_TYPE_NTLM, proxyConfig.getProxyAuthType()))
                         {
                             httpClient.getState().setProxyCredentials(new AuthScope(
-                                    proxyConfig.getProxyServerName(),
-                                    proxyConfig.getProxyServerPort(),
-                                    proxyConfig.getProxyServerRealm()),
-                                    new NTCredentials(
-                                            proxyConfig.getProxyUserId(),
-                                            proxyPwd,
-                                            InetAddress.getLocalHost().getHostName(),
-                                            proxyConfig.getProxyAuthDomain()));
+                                proxyConfig.getProxyServerName(),
+                                proxyConfig.getProxyServerPort(),
+                                proxyConfig.getProxyServerRealm()),
+                                new NTCredentials(
+                                    proxyConfig.getProxyUserId(),
+                                    proxyPwd,
+                                    InetAddress.getLocalHost().getHostName(),
+                                    proxyConfig.getProxyAuthDomain()));
                         }
 
                         if (DEBUG)
@@ -1143,10 +1483,10 @@ public final class NetworkUtils
                     InetSocketAddress socketAddress = new InetSocketAddress(hostName, portNumber);
 
                     socket = new Socket();
-                    socket.setSoTimeout(timeout);
+                    socket.setSoTimeout((int) TimeUnit.SECONDS.toMillis(timeout));
                     socket.setSoLinger(false, 0);
                     socket.setKeepAlive(false);
-                    socket.connect(socketAddress, timeout);
+                    socket.connect(socketAddress, (int) TimeUnit.SECONDS.toMillis(timeout));
 
                     if (socket.isConnected())
                     {

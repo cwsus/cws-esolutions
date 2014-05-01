@@ -74,7 +74,7 @@ import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
 public class LDAPKeyManager implements KeyManager
 {
     private static final String CNAME = LDAPKeyManager.class.getName();
-    private static final DataSource dataSource = (DataSource) svcBean.getDataSources().get(SecurityServiceConstants.INIT_SECURITYDS_MANAGER);
+    private static final DataSource dataSource = svcBean.getDataSources().get(SecurityServiceConstants.INIT_SECURITYDS_MANAGER);
 
     /**
      * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#createKeys(java.lang.String)

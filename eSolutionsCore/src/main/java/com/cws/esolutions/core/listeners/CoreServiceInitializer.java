@@ -25,17 +25,26 @@ package com.cws.esolutions.core.listeners;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
+
 import org.slf4j.Logger;
+
 import java.util.HashMap;
+
 import javax.sql.DataSource;
+
 import java.sql.SQLException;
+
 import org.slf4j.LoggerFactory;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.JAXBException;
+
 import org.apache.log4j.helpers.Loader;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.commons.dbcp.BasicDataSource;
@@ -63,7 +72,7 @@ public class CoreServiceInitializer
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
 
-    public static void initializeService(final String secConfig, final String logConfig) throws CoreServiceException
+    public static void initializeService(final String coreConfig, final String logConfig) throws CoreServiceException
     {
         URL xmlURL = null;
         JAXBContext context = null;
@@ -81,14 +90,22 @@ public class CoreServiceInitializer
             else
             {
                 // Load logging
-                DOMConfigurator.configure(Loader.getResource(logConfig));
+                try
+                {
+                    DOMConfigurator.configure(Loader.getResource(logConfig));
+                }
+                catch (NullPointerException npx)
+                {
+                    DOMConfigurator.configure(FileUtils.getFile(logConfig).toURI().toURL());
+                }
             }
 
-            xmlURL = classLoader.getResource(secConfig);
+            xmlURL = classLoader.getResource(coreConfig);
 
             if (xmlURL == null)
             {
-                throw new CoreServiceException("Failed to load service configuration.");
+                // try loading from the filesystem
+                xmlURL = FileUtils.getFile(coreConfig).toURI().toURL();
             }
 
             context = JAXBContext.newInstance(CoreConfigurationData.class);
@@ -151,9 +168,9 @@ public class CoreServiceInitializer
         {
             throw new CoreServiceException(jx.getMessage(), jx);
         }
-        catch (CoreServiceException csx)
+        catch (MalformedURLException mux)
         {
-            throw new CoreServiceException(csx.getMessage(), csx);
+            throw new CoreServiceException(mux.getMessage(), mux);
         }
     }
 

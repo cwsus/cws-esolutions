@@ -53,7 +53,6 @@ public final class HTTPConfig implements Serializable
     private int connTimeout = 10;
     private int socketTimeout = 10;
     private Long connMgrTimeout = 1L;
-    private String httpVersion = null;
     private boolean staleCheck = true;
     private String keyStoreType = null;
     private String keyStoreFile = null;
@@ -63,6 +62,7 @@ public final class HTTPConfig implements Serializable
     private String trustStoreFile = null;
     private String trustStorePass = null;
     private String trustStoreSalt = null;
+    private String httpVersion = "HTTP_1_0";
 
     private static final String CNAME = HTTPConfig.class.getName();
     private static final long serialVersionUID = 1351165475299389034L;

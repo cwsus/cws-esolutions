@@ -35,6 +35,7 @@ package com.cws.esolutions.security.config.enums;
  */
 public enum AuthRepositoryType
 {
+    NONE,
     LDAP,
     SQL;
 }

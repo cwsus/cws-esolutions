@@ -242,7 +242,7 @@ public class CommonController
                 DEBUGGER.debug("MessagingRequest: {}", mRequest);
             }
 
-            MessagingResponse mResponse = processor.showMessages(mRequest);
+            MessagingResponse mResponse = this.processor.showMessages(mRequest);
 
             if (DEBUG)
             {
@@ -255,7 +255,7 @@ public class CommonController
                 mView.addObject("messageList", mResponse.getSvcMessages());
             }
 
-            MessagingResponse messageResponse = processor.showAlertMessages(new MessagingRequest());
+            MessagingResponse messageResponse = this.processor.showAlertMessages(new MessagingRequest());
 
             if (DEBUG)
             {

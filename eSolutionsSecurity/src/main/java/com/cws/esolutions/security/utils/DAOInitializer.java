@@ -222,6 +222,8 @@ public final class DAOInitializer
                     }
 
                     break;
+                case NONE:
+                    return;
                 default:
                     throw new SecurityServiceException("Unhandled ResourceType");
             }
@@ -317,6 +319,8 @@ public final class DAOInitializer
                     }
 
                     break;
+                case NONE:
+                    return;
                 default:
                     return;
             }

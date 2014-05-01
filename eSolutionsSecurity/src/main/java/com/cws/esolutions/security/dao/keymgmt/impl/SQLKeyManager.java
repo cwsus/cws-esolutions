@@ -132,10 +132,8 @@ public class SQLKeyManager implements KeyManager
 
                     throw new KeyManagementException("Failed to insert private key. Cannot continue.");
                 }
-                else
-                {
-                    return true;
-                }
+
+                return true;
             }
         }
         catch (NoSuchAlgorithmException nsax)
