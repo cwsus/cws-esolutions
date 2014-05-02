@@ -33,16 +33,25 @@ public class DNSServiceException extends CoreServiceException
 {
     private static final long serialVersionUID = -5329164264206139824L;
 
+    /**
+     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.String) 
+     */
     public DNSServiceException(final String message)
     {
         super(message);
     }
 
+    /**
+     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.Throwable) 
+     */
     public DNSServiceException(final Throwable throwable)
     {
         super(throwable);
     }
 
+    /**
+     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.String, java.lang.Throwable) 
+     */
     public DNSServiceException(final String message, final Throwable throwable)
     {
         super(message, throwable);

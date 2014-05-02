@@ -33,16 +33,25 @@ public class AccessControlServiceException extends SecurityServiceException
 {
     private static final long serialVersionUID = 1950481349510842592L;
 
+    /**
+     * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.String)
+     */
     public AccessControlServiceException(final String message)
     {
         super(message);
     }
 
+    /**
+     * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.Throwable)
+     */
     public AccessControlServiceException(final Throwable throwable)
     {
         super(throwable);
     }
 
+    /**
+     * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.String, java.lang.Throwable)
+     */
     public AccessControlServiceException(final String message, final Throwable throwable)
     {
         super(message, throwable);

@@ -36,12 +36,9 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
- *
  * @author khuntly
  * @version 1.0
+ * @see java.io.Serializable
  */
 public class AccountResetResponse implements Serializable
 {

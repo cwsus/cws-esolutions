@@ -47,9 +47,7 @@ import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDA
 import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
+ * API allowing account reset processing, if enabled.
  *
  * @author khuntly
  * @version 1.0
@@ -70,13 +68,61 @@ public interface IAccountResetProcessor
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
+    /**
+     * Finds and returns the user account associated with the provided search criterion.
+     *
+     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountResetRequest}
+     * which contains the necessary information to complete the request
+     * @return {@link com.cws.esolutions.security.processors.dto.AccountResetResponse} containing
+     * response information regarding the request status
+     * @throws AccountResetException {@link com.cws.esolutions.security.processors.exception.AccountResetException} if an exception occurs during processing
+     */
     AccountResetResponse findUserAccount(final AccountResetRequest request) throws AccountResetException;
 
+    /**
+     * Obtains and returns the associated security information for the selected user account
+     *
+     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountResetRequest}
+     * which contains the necessary information to complete the request
+     * @return {@link com.cws.esolutions.security.processors.dto.AccountResetResponse} containing
+     * response information regarding the request status
+     * @throws AccountResetException {@link com.cws.esolutions.security.processors.exception.AccountResetException} if an exception occurs during processing
+     */
     AccountResetResponse obtainUserSecurityConfig(final AccountResetRequest request) throws AccountResetException;
 
+    /**
+     * Verifies that the provided security information is accurate prior to performing a requested
+     * password reset. This is performed during reset authentication.
+     *
+     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountResetRequest}
+     * which contains the necessary information to complete the request
+     * @return {@link com.cws.esolutions.security.processors.dto.AccountResetResponse} containing
+     * response information regarding the request status
+     * @throws AccountResetException {@link com.cws.esolutions.security.processors.exception.AccountResetException} if an exception occurs during processing
+     */
     AccountResetResponse verifyUserSecurityConfig(final AccountResetRequest request) throws AccountResetException;
 
+    /**
+     * Verifies that the provided security information is accurate prior to performing a requested
+     * password reset. This is performed upon submission of a reset request and the notification
+     * email has been sent with the unique identifier for continuation.
+     *
+     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountResetRequest}
+     * which contains the necessary information to complete the request
+     * @return {@link com.cws.esolutions.security.processors.dto.AccountResetResponse} containing
+     * response information regarding the request status
+     * @throws AccountResetException {@link com.cws.esolutions.security.processors.exception.AccountResetException} if an exception occurs during processing
+     */
     AccountResetResponse verifyResetRequest(final AccountResetRequest request) throws AccountResetException;
 
+    /**
+     * Resets a user account password upon successful completion of the Online Reset process.
+     *
+     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountResetRequest}
+     * which contains the necessary information to complete the request
+     * @return {@link com.cws.esolutions.security.processors.dto.AccountResetResponse} containing
+     * response information regarding the request status
+     * @throws AccountResetException {@link com.cws.esolutions.security.processors.exception.AccountResetException} if an exception occurs during processing
+     */
     AccountResetResponse resetUserPassword(final AccountResetRequest request) throws AccountResetException;
 }

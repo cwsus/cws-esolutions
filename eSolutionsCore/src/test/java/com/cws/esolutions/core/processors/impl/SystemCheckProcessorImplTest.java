@@ -74,7 +74,7 @@ public class SystemCheckProcessorImplTest
     }
 
     @Test
-    public void testRunNetstatCheck()
+    public void runNetstatCheck()
     {
         Server source = new Server();
         source.setOperHostName("localhost");
@@ -99,7 +99,7 @@ public class SystemCheckProcessorImplTest
     }
 
     @Test
-    public void testRunTelnetCheck()
+    public void runTelnetCheck()
     {
         Server source = new Server();
         source.setOperHostName("localhost");
@@ -128,7 +128,7 @@ public class SystemCheckProcessorImplTest
     }
 
     @Test
-    public void testRunRemoteDateCheck()
+    public void runRemoteDateCheck()
     {
         Server target = new Server();
         target.setOperHostName("localhost");

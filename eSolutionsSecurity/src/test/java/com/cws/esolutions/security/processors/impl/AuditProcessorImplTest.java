@@ -70,7 +70,7 @@ public class AuditProcessorImplTest
         }
     }
 
-    @Test public void testAuditRequest()
+    @Test public void auditRequest()
     {
         AuditEntry auditEntry = new AuditEntry();
         auditEntry.setApplicationId("JUNIT");
@@ -92,7 +92,7 @@ public class AuditProcessorImplTest
         }
     }
 
-    @Test public void testGetAuditEntries()
+    @Test public void getAuditEntries()
     {
         AuditEntry auditEntry = new AuditEntry();
         auditEntry.setUserAccount(AuditProcessorImplTest.userAccount);

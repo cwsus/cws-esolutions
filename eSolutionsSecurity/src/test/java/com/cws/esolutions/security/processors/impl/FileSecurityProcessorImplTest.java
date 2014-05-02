@@ -70,7 +70,7 @@ public class FileSecurityProcessorImplTest
         }
     }
 
-    @Test public void testSignFile()
+    @Test public void signFile()
     {
         FileSecurityRequest request = new FileSecurityRequest();
         request.setHostInfo(hostInfo);
@@ -90,7 +90,7 @@ public class FileSecurityProcessorImplTest
         }
     }
 
-    @Test public void testVerifyFile()
+    @Test public void verifyFile()
     {
         FileSecurityRequest request = new FileSecurityRequest();
         request.setHostInfo(hostInfo);
@@ -110,7 +110,7 @@ public class FileSecurityProcessorImplTest
         }
     }
 
-    @Test public void testEncryptFile()
+    @Test public void encryptFile()
     {
         FileSecurityRequest request = new FileSecurityRequest();
         request.setHostInfo(hostInfo);
@@ -130,7 +130,7 @@ public class FileSecurityProcessorImplTest
         }
     }
 
-    @Test public void testDecryptFile()
+    @Test public void decryptFile()
     {
         FileSecurityRequest request = new FileSecurityRequest();
         request.setHostInfo(hostInfo);

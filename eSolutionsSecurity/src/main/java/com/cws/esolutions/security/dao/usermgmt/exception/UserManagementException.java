@@ -33,16 +33,25 @@ public class UserManagementException extends SecurityServiceException
 {
     private static final long serialVersionUID = 530043367177186468L;
 
+    /**
+     * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.String)
+     */
     public UserManagementException(final String message)
     {
         super(message);
     }
 
+    /**
+     * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.Throwable)
+     */
     public UserManagementException(final Throwable throwable)
     {
         super(throwable);
     }
 
+    /**
+     * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.String, java.lang.Throwable)
+     */
     public UserManagementException(final String message, final Throwable throwable)
     {
         super(message, throwable);

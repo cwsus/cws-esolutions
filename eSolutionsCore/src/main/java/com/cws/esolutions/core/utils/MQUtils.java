@@ -47,9 +47,8 @@ import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.core.utils.exception.UtilityException;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
+ * Utility class for MQ operations. Currently supports ActiveMQ. Future
+ * plans to support IBM MQ in the works.
  *
  * @author khuntly
  * @version 1.0
@@ -75,11 +74,16 @@ public final class MQUtils
     }
 
     /**
-     * TODO: Add in the method description/comments
+     * Puts an MQ message on a specified queue and returns the associated
+     * correlation ID for retrieval upon request.
      *
-     * @param value - A serializable object to be sent to the MQ queue
+     * @param connName - The connection name to utilize
+     * @param authData - The authentication data to utilize, if required
+     * @param requestQueue - The request queue name to put the message on
+     * @param targetHost - The target host for the message
+     * @param value - The data to place on the request. MUST be <code>Serialiable</code>
      * @return <code>String</code> - the JMS correlation ID associated with the message
-     * @throws UtilityException if an error occurs while putting the message on the configured queue
+     * @throws UtilityException {@link com.cws.esolutions.core.utils.exception.UtilityException} if an error occurs processing
      */
     public static final synchronized String sendMqMessage(final String connName, final List<String> authData, final String requestQueue, final String targetHost, final Serializable value) throws UtilityException
     {
@@ -234,11 +238,16 @@ public final class MQUtils
     }
 
     /**
-     * TODO: Add in the method description/comments
+     * Gets an MQ message off a specified queue and returns it as an
+     * <code>Object</code> to the requestor for further processing.
      *
-     * @param messageId - The correlation ID associated with the message
-     * @return Object - A serializable object as obtained from the MQ message
-     * @throws UtilityException if an error occurs during the MQ get operation
+     * @param connName - The connection name to utilize
+     * @param authData - The authentication data to utilize, if required
+     * @param responseQueue - The request queue name to put the message on
+     * @param timeout - How long to wait for a connection or response
+     * @param messageId - The JMS correlation ID of the message the response is associated with
+     * @return <code>Object</code> - The serializable data returned by the MQ request
+     * @throws UtilityException {@link com.cws.esolutions.core.utils.exception.UtilityException} if an error occurs processing
      */
     public static final synchronized Object getMqMessage(final String connName, final List<String> authData, final String responseQueue, final long timeout, final String messageId) throws UtilityException
     {

@@ -25,11 +25,11 @@ package com.cws.esolutions.security.utils;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Test;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Assert;
+import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.utils.PasswordUtils;

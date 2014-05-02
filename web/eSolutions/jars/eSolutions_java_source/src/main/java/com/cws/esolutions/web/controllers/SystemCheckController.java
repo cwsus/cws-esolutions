@@ -49,10 +49,6 @@ import com.cws.esolutions.core.processors.impl.SystemCheckProcessorImpl;
 import com.cws.esolutions.core.processors.exception.SystemCheckException;
 import com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
- *
  * @author khuntly
  * @version 1.0
  * @see org.springframework.stereotype.Controller

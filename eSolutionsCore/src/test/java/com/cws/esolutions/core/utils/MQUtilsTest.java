@@ -60,7 +60,7 @@ public class MQUtilsTest
     }
 
     @Test
-    public void testSendMqMessage()
+    public void sendMqMessage()
     {
         SystemManagerRequest system = new SystemManagerRequest();
         system.setMgmtType(SystemManagementType.SYSTEMCHECK);
@@ -89,7 +89,7 @@ public class MQUtilsTest
     }
 
     @Test
-    public void testGetMqMessage()
+    public void getMqMessage()
     {
         try
         {

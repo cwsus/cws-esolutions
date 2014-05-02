@@ -37,12 +37,9 @@ import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.agent.processors.enums.StateManagementType;
 import com.cws.esolutions.agent.processors.enums.ServiceOperationType;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
- *
  * @author khuntly
  * @version 1.0
+ * @see java.io.Serializable
  */
 public class ServerManagementRequest implements Serializable
 {

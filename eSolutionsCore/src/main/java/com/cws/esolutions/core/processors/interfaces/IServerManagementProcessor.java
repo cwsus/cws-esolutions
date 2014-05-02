@@ -39,9 +39,7 @@ import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.core.processors.exception.ServerManagementException;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
+ * API allowing server management functionality within the service datastore
  *
  * @author khuntly
  * @version 1.0
@@ -58,62 +56,77 @@ public interface IServerManagementProcessor
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Adds the provided server to the service datastore.
      *
-     * @param request
-     * @return
-     * @throws ServerManagementException
+     * @param request The {@link com.cws.esolutions.core.processors.dto.ServerManagementRequest}
+     * containing the necessary information to process the request.
+     * @return {@link com.cws.esolutions.core.processors.dto.ServerManagementResponse} containing
+     * the response information for the given request
+     * @throws ServerManagementException {@link com.cws.esolutions.core.processors.exception.ServerManagementException}
+     * if an exception occurs during processing
      */
     ServerManagementResponse addNewServer(final ServerManagementRequest request) throws ServerManagementException;
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Updates the provided server to the service datastore.
      *
-     * @param request
-     * @return
-     * @throws ServerManagementException
+     * @param request The {@link com.cws.esolutions.core.processors.dto.ServerManagementRequest}
+     * containing the necessary information to process the request.
+     * @return {@link com.cws.esolutions.core.processors.dto.ServerManagementResponse} containing
+     * the response information for the given request
+     * @throws ServerManagementException {@link com.cws.esolutions.core.processors.exception.ServerManagementException}
+     * if an exception occurs during processing
      */
     ServerManagementResponse updateServerData(final ServerManagementRequest request) throws ServerManagementException;
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Removes the provided server to the service datastore by marking it as "decommissioned"
      *
-     * @param request
-     * @return
-     * @throws ServerManagementException
+     * @param request The {@link com.cws.esolutions.core.processors.dto.ServerManagementRequest}
+     * containing the necessary information to process the request.
+     * @return {@link com.cws.esolutions.core.processors.dto.ServerManagementResponse} containing
+     * the response information for the given request
+     * @throws ServerManagementException {@link com.cws.esolutions.core.processors.exception.ServerManagementException}
+     * if an exception occurs during processing
      */
     ServerManagementResponse removeServerData(final ServerManagementRequest request) throws ServerManagementException;
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Lists all servers housed within the service datastore and returns to the requestor
+     * for further processing
      *
-     * @param request
-     * @return
-     * @throws ServerManagementException
+     * @param request The {@link com.cws.esolutions.core.processors.dto.ServerManagementRequest}
+     * containing the necessary information to process the request.
+     * @return {@link com.cws.esolutions.core.processors.dto.ServerManagementResponse} containing
+     * the response information for the given request
+     * @throws ServerManagementException {@link com.cws.esolutions.core.processors.exception.ServerManagementException}
+     * if an exception occurs during processing
      */
     ServerManagementResponse listServers(final ServerManagementRequest request) throws ServerManagementException;
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Lists all servers with the provided attribute housed within the service datastore and returns to the requestor
+     * for further processing
      *
-     * @param request
-     * @return
-     * @throws ServerManagementException
+     * @param request The {@link com.cws.esolutions.core.processors.dto.ServerManagementRequest}
+     * containing the necessary information to process the request.
+     * @return {@link com.cws.esolutions.core.processors.dto.ServerManagementResponse} containing
+     * the response information for the given request
+     * @throws ServerManagementException {@link com.cws.esolutions.core.processors.exception.ServerManagementException}
+     * if an exception occurs during processing
      */
     ServerManagementResponse listServersByAttribute(final ServerManagementRequest request) throws ServerManagementException;
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Returns detailed information for the provided server and returns to the requestor for further
+     * processing
      *
-     * @param request
-     * @return
-     * @throws ServerManagementException
+     * @param request The {@link com.cws.esolutions.core.processors.dto.ServerManagementRequest}
+     * containing the necessary information to process the request.
+     * @return {@link com.cws.esolutions.core.processors.dto.ServerManagementResponse} containing
+     * the response information for the given request
+     * @throws ServerManagementException {@link com.cws.esolutions.core.processors.exception.ServerManagementException}
+     * if an exception occurs during processing
      */
     ServerManagementResponse getServerData(final ServerManagementRequest request) throws ServerManagementException;
 }

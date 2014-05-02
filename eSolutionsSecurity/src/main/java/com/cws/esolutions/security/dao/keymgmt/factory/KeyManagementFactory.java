@@ -48,6 +48,13 @@ public class KeyManagementFactory
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
+    /**
+     * Static method to provide a new or existing instance of a
+     * {@link com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager} singleton
+     *
+     * @param className - The fully qualified class name to return
+     * @return an instance of a {@link com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager} singleton
+     */
     public static final KeyManager getKeyManager(final String className)
     {
         final String methodName = CNAME + "#getKeyManager(final String className)";

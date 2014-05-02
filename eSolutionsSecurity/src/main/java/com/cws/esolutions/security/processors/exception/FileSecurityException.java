@@ -33,16 +33,25 @@ public class FileSecurityException extends SecurityServiceException
 {
     private static final long serialVersionUID = -930492911008590921L;
 
+    /**
+     * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.String)
+     */
     public FileSecurityException(final String message)
     {
         super(message);
     }
 
+    /**
+     * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.Throwable)
+     */
     public FileSecurityException(final Throwable throwable)
     {
         super(throwable);
     }
 
+    /**
+     * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.String, java.lang.Throwable)
+     */
     public FileSecurityException(final String message, final Throwable throwable)
     {
         super(message, throwable);

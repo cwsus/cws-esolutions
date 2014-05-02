@@ -51,6 +51,13 @@
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
         </layout>
     </appender>
+    <appender name="jsch" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${LOG_ROOT}/jsch.log" />
+        <param name="DatePattern" value="'.'yy-MM-dd" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
+        </layout>
+    </appender>
     <appender name="xbill" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="${LOG_ROOT}/xbill.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
@@ -92,6 +99,10 @@
     <category name="com.sshtools.j2ssh" additivity="false">
         <priority value="DEBUG" />
         <appender-ref ref="j2ssh" />
+    </category>
+    <category name="com.jcraft.jsch" additivity="false">
+        <priority value="DEBUG" />
+        <appender-ref ref="jsch" />
     </category>
     <!-- xbill -->
     <category name="org.xbill" additivity="false">

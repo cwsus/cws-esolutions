@@ -39,9 +39,8 @@ import com.cws.esolutions.security.processors.dto.FileSecurityResponse;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 import com.cws.esolutions.security.processors.exception.FileSecurityException;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
+ * API allowing file security processing - digital signatures, encryption
+ * and verification.
  *
  * @author khuntly
  * @version 1.0
@@ -60,34 +59,49 @@ public interface IFileSecurityProcessor
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
     /**
-     * 
-     * @param request
-     * @return
-     * @throws FileSecurityException 
+     * Digitally signs a provided file with the given user account's keypair as obtained from the
+     * authorization datastore.
+     *
+     * @param request The {@link com.cws.esolutions.security.processors.dto.FileSecurityRequest}
+     * containing the necessary authentication information to process the request.
+     * @return {@link com.cws.esolutions.security.processors.dto.FileSecurityResponse}
+     * containing the response for the provided request.
+     * @throws FileSecurityException {@link com.cws.esolutions.security.processors.exception.FileSecurityException} if an exception occurs during processing
      */
     FileSecurityResponse signFile(final FileSecurityRequest request) throws FileSecurityException;
 
     /**
-     * 
-     * @param request
-     * @return
-     * @throws FileSecurityException 
+     * Verifies a given digital signature against a provided file to ensure it has not been
+     * altered during transmission.
+     *
+     * @param request The {@link com.cws.esolutions.security.processors.dto.FileSecurityRequest}
+     * containing the necessary authentication information to process the request.
+     * @return {@link com.cws.esolutions.security.processors.dto.FileSecurityResponse}
+     * containing the response for the provided request.
+     * @throws FileSecurityException {@link com.cws.esolutions.security.processors.exception.FileSecurityException} if an exception occurs during processing
      */
     FileSecurityResponse verifyFile(final FileSecurityRequest request) throws FileSecurityException;
 
     /**
-     * 
-     * @param request
-     * @return
-     * @throws FileSecurityException 
+     * Encrypts a provided file with the given user account's keypair as obtained from the
+     * authorization datastore.
+     *
+     * @param request The {@link com.cws.esolutions.security.processors.dto.FileSecurityRequest}
+     * containing the necessary authentication information to process the request.
+     * @return {@link com.cws.esolutions.security.processors.dto.FileSecurityResponse}
+     * containing the response for the provided request.
+     * @throws FileSecurityException {@link com.cws.esolutions.security.processors.exception.FileSecurityException} if an exception occurs during processing
      */
     FileSecurityResponse encryptFile(final FileSecurityRequest request) throws FileSecurityException;
 
     /**
-     * 
-     * @param request
-     * @return
-     * @throws FileSecurityException 
+     * Decrypts a provided file with the given public key for review.
+     *
+     * @param request The {@link com.cws.esolutions.security.processors.dto.FileSecurityRequest}
+     * containing the necessary authentication information to process the request.
+     * @return {@link com.cws.esolutions.security.processors.dto.FileSecurityResponse}
+     * containing the response for the provided request.
+     * @throws FileSecurityException {@link com.cws.esolutions.security.processors.exception.FileSecurityException} if an exception occurs during processing
      */
     FileSecurityResponse decryptFile(final FileSecurityRequest request) throws FileSecurityException;
 }

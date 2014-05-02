@@ -34,12 +34,9 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.processors.enums.DNSRecordType;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
- *
  * @author khuntly
  * @version 1.0
+ * @see java.io.Serializable
  */
 public class DNSRecord implements Serializable
 {
@@ -50,7 +47,7 @@ public class DNSRecord implements Serializable
     private String spfRecord = null; // spf record for mx
     private String recordName = null; // used for all record types
     private String recordClass = "IN"; // used for all record types
-    private String recordOrigin = null; // all records have an origin, apex will be .
+    private String recordOrigin = "."; // all records have an origin, apex will be .
     private boolean mailRecord = false; // set this to true if the record is an mx record
     private String recordService = null; // only used for srv records
     private String recordProtocol = null; // only used for srv records
@@ -66,6 +63,11 @@ public class DNSRecord implements Serializable
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER);
 
+    /**
+     * Utilize this method to set record origin
+     *
+     * @param value the record origin (defaults to "." if not specified)
+     */
     public final void setRecordOrigin(final String value)
     {
         final String methodName = DNSRecord.CNAME + "#setRecordOrigin(final String value)";
@@ -83,7 +85,7 @@ public class DNSRecord implements Serializable
      * Utilize this method to set a port number for an associated
      * SRV record
      *
-     * @param value
+     * @param value The port number to utilize (Only valid for SRV record types)
      */
     public final void setRecordPort(final int value)
     {
@@ -101,7 +103,7 @@ public class DNSRecord implements Serializable
     /**
      * Utilize this method to set the weight for a SRV record
      *
-     * @param value
+     * @param value the record weight
      */
     public final void setRecordWeight(final int value)
     {
@@ -119,7 +121,7 @@ public class DNSRecord implements Serializable
     /**
      * Utilize this method to set the TTL for a SRV record
      *
-     * @param value
+     * @param value the record TTL (time to live)
      */
     public final void setRecordLifetime(final int value)
     {
@@ -138,7 +140,7 @@ public class DNSRecord implements Serializable
      * Utilize this method to set the name for the associated
      * record. This can be utilized for all record types
      *
-     * @param value
+     * @param value the record name
      */
     public final void setRecordName(final String value)
     {
@@ -157,7 +159,7 @@ public class DNSRecord implements Serializable
      * Utilize this method to set the associated record type
      * (e.g. A, CNAME, MX, etc)
      *
-     * @param value
+     * @param value the record type
      */
     public final void setRecordType(final DNSRecordType value)
     {
@@ -176,7 +178,7 @@ public class DNSRecord implements Serializable
      * Utilize this method to set the record class. The most common
      * class will be "IN", which is the default.
      *
-     * @param value
+     * @param value The record class (defaults to "IN" if not specified)
      */
     public final void setRecordClass(final String value)
     {
@@ -192,9 +194,9 @@ public class DNSRecord implements Serializable
     }
 
     /**
-     * Utilize this method to set the target for a SRV record.
+     * Utilize this method to set the target for a record.
      *
-     * @param value
+     * @param value The primary record address
      */
     public final void setPrimaryAddress(final List<String> value)
     {
@@ -209,6 +211,11 @@ public class DNSRecord implements Serializable
         this.primaryAddress = value;
     }
 
+    /**
+     * Utilize this method to set a secondary address for the record
+     *
+     * @param value the secondary record address
+     */
     public final void setSecondaryAddress(final List<String> value)
     {
         final String methodName = DNSRecord.CNAME + "#setSecondaryAddress(final List<String> value)";
@@ -222,6 +229,11 @@ public class DNSRecord implements Serializable
         this.secondaryAddress = value;
     }
 
+    /**
+     * Utilize this method to set a tertiary address for the record
+     *
+     * @param value the tertiary record address
+     */
     public final void setTertiaryAddress(final List<String> value)
     {
         final String methodName = DNSRecord.CNAME + "#setTertiaryAddress(final List<String> value)";
@@ -239,7 +251,7 @@ public class DNSRecord implements Serializable
      * Utilize this method to set the record service for a SRV
      * record, e.g. "sip"
      *
-     * @param value
+     * @param value the record service
      */
     public final void setRecordService(final String value)
     {
@@ -258,7 +270,7 @@ public class DNSRecord implements Serializable
      * Utilize this method to set the protocol for a SRV record,
      * e.g. "tcp"
      *
-     * @param value
+     * @param value the record protocol
      */
     public final void setRecordProtocol(final String value)
     {
@@ -277,7 +289,7 @@ public class DNSRecord implements Serializable
      * Utilize this method to set the priority for a SRV
      * or MX record
      *
-     * @param value
+     * @param value the record priority
      */
     public final void setRecordPriority(final int value)
     {
@@ -298,7 +310,7 @@ public class DNSRecord implements Serializable
      * proxy IN A 192.168.10.6
              IN A 192.168.10.8
      *
-     * @param value
+     * @param value the SPF record information
      */
     public final void setSpfRecord(final String value)
     {
@@ -313,19 +325,11 @@ public class DNSRecord implements Serializable
         this.spfRecord = value;
     }
 
-    public final String getRecordOrigin()
-    {
-        final String methodName = DNSRecord.CNAME + "#getRecordOrigin()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.recordOrigin);
-        }
-
-        return this.recordOrigin;
-    }
-
+    /**
+     * Sets a <code>boolean</code> value to determine if the record is an MX record
+     *
+     * @param value - <code>true</code> if this is an MX record, <code>false</code> otherwise
+     */
     public final void setMailRecord(final boolean value)
     {
         final String methodName = DNSRecord.CNAME + "#setMailRecord(final boolean value)";
@@ -339,6 +343,25 @@ public class DNSRecord implements Serializable
         this.mailRecord = value;
     }
 
+    /**
+     * @return The record origin
+     */
+    public final String getRecordOrigin()
+    {
+        final String methodName = DNSRecord.CNAME + "#getRecordOrigin()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.recordOrigin);
+        }
+
+        return this.recordOrigin;
+    }
+
+    /**
+     * @return The record port (only valid for SRV records)
+     */
     public final int getRecordPort()
     {
         final String methodName = DNSRecord.CNAME + "#getRecordPort()";
@@ -352,6 +375,9 @@ public class DNSRecord implements Serializable
         return this.recordPort;
     }
 
+    /**
+     * @return The record weight (only valid for MX and SRV records)
+     */
     public final int getRecordWeight()
     {
         final String methodName = DNSRecord.CNAME + "#getRecordWeight()";
@@ -365,6 +391,9 @@ public class DNSRecord implements Serializable
         return this.recordWeight;
     }
 
+    /**
+     * @return The record TTL (time to live)
+     */
     public final int getRecordLifetime()
     {
         final String methodName = DNSRecord.CNAME + "#getRecordLifetime()";
@@ -378,6 +407,9 @@ public class DNSRecord implements Serializable
         return this.recordLifetime;
     }
 
+    /**
+     * @return The record name
+     */
     public final String getRecordName()
     {
         final String methodName = DNSRecord.CNAME + "#getRecordName()";
@@ -391,6 +423,9 @@ public class DNSRecord implements Serializable
         return this.recordName;
     }
 
+    /**
+     * @return The record type
+     */
     public final DNSRecordType getRecordType()
     {
         final String methodName = DNSRecord.CNAME + "#getRecordPort()";
@@ -404,6 +439,9 @@ public class DNSRecord implements Serializable
         return this.recordType;
     }
 
+    /**
+     * @return The record class
+     */
     public final String getRecordClass()
     {
         final String methodName = DNSRecord.CNAME + "#getRecordClass()";
@@ -417,6 +455,9 @@ public class DNSRecord implements Serializable
         return this.recordClass;
     }
 
+    /**
+     * @return The primary record address
+     */
     public final List<String> getPrimaryAddress()
     {
         final String methodName = DNSRecord.CNAME + "#getPrimaryAddress()";
@@ -430,6 +471,9 @@ public class DNSRecord implements Serializable
         return this.primaryAddress;
     }
 
+    /**
+     * @return The secondary, if assigned, address for the record
+     */
     public final List<String> getSecondaryAddress()
     {
         final String methodName = DNSRecord.CNAME + "#getSecondaryAddress()";
@@ -443,6 +487,9 @@ public class DNSRecord implements Serializable
         return this.secondaryAddress;
     }
 
+    /**
+     * @return The tertiary, if assigned, address for the record
+     */
     public final List<String> getTertiaryAddress()
     {
         final String methodName = DNSRecord.CNAME + "#getTertiaryAddress()";
@@ -456,6 +503,9 @@ public class DNSRecord implements Serializable
         return this.tertiaryAddress;
     }
 
+    /**
+     * @return The record service (only valid for SRV records)
+     */
     public final String getRecordService()
     {
         final String methodName = DNSRecord.CNAME + "#getRecordService()";
@@ -469,6 +519,9 @@ public class DNSRecord implements Serializable
         return this.recordService;
     }
 
+    /**
+     * @return The record protocol
+     */
     public final String getRecordProtocol()
     {
         final String methodName = DNSRecord.CNAME + "#getRecordProtocol()";
@@ -482,6 +535,9 @@ public class DNSRecord implements Serializable
         return this.recordProtocol;
     }
 
+    /**
+     * @return The record priority
+     */
     public final int getRecordPriority()
     {
         final String methodName = DNSRecord.CNAME + "#getRecordPriority()";
@@ -495,6 +551,9 @@ public class DNSRecord implements Serializable
         return this.recordPriority;
     }
 
+    /**
+     * @return The string representation of an SPF record
+     */
     public final String getSpfRecord()
     {
         final String methodName = DNSRecord.CNAME + "#getSpfRecord()";
@@ -508,6 +567,9 @@ public class DNSRecord implements Serializable
         return this.spfRecord;
     }
 
+    /**
+     * @return <code>true</code> if this is an MX record, <code>false</code> otherwise
+     */
     public final boolean isMailRecord()
     {
         final String methodName = DNSRecord.CNAME + "#isMailRecord()";
@@ -521,6 +583,9 @@ public class DNSRecord implements Serializable
         return this.mailRecord;
     }
 
+    /**
+     * @see java.lang.Object#toString()
+     */
     @Override
     public final String toString()
     {

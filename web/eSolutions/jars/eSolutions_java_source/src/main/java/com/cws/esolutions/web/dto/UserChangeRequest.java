@@ -29,9 +29,7 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.web.enums.ResetRequestType;
 /**
- * TODO: Add class information/description
- *
- * @author 35033355
+ * @author khuntly
  * @version 1.0
  */
 public final class UserChangeRequest implements Serializable

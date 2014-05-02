@@ -31,9 +31,7 @@ import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
 /**
- * TODO: Add class information/description
- *
- * @author 35033355
+ * @author khuntly
  * @version 1.0
  */
 public class PlatformRequest implements Serializable

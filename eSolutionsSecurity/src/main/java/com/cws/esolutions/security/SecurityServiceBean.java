@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security;
-
+/*
+ * Project: eSolutionsSecurity
+ * Package: com.cws.esolutions.security
+ * File: SecurityServiceBean.java
+ *
+ * History
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * Kevin Huntly         12/05/2008 13:36:09             Added method to process change requests
+ */
 import java.util.Map;
 import org.slf4j.Logger;
 import java.io.Serializable;
@@ -23,16 +33,10 @@ import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
-/*
- * Project: eSolutionsSecurity
- * Package: com.cws.esolutions.security.audit.processors.interfaces
- * File: IAuditProcessor.java
- *
- * History
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
- * Kevin Huntly         12/05/2008 13:36:09             Added method to process change requests
+/**
+ * @author khuntly
+ * @version 1.0
+ * @see java.io.Serializable
  */
 public class SecurityServiceBean implements Serializable
 {
@@ -49,11 +53,6 @@ public class SecurityServiceBean implements Serializable
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
 
-    /**
-     * Returns a static instance of this bean
-     *
-     * @return SecurityServiceInitBean
-     */
     public static final SecurityServiceBean getInstance()
     {
         final String method = CNAME + "#getInstance()";

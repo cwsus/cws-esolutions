@@ -33,16 +33,25 @@ public class AccountControlException extends SecurityServiceException
 {
     private static final long serialVersionUID = 7886333091966853193L;
 
+    /**
+     * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.String)
+     */
     public AccountControlException(final String message)
     {
         super(message);
     }
 
+    /**
+     * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.Throwable)
+     */
     public AccountControlException(final Throwable throwable)
     {
         super(throwable);
     }
 
+    /**
+     * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.String, java.lang.Throwable)
+     */
     public AccountControlException(final String message, final Throwable throwable)
     {
         super(message, throwable);

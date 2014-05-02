@@ -40,9 +40,8 @@ import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
+ * API allowing access to system check functionality, such as telnet/netstat
+ * against remote hosts.
  *
  * @author khuntly
  * @version 1.0
@@ -61,42 +60,54 @@ public interface ISystemCheckProcessor
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + ISystemCheckProcessor.CNAME);
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Performs a netstat request against a given host and returns the obtained
+     * output to the requestor for further processing.
      *
-     * @param request
-     * @return
-     * @throws SystemCheckException
+     * @param request The {@link com.cws.esolutions.core.processors.dto.SystemCheckRequest}
+     * containing the necessary information to process the request.
+     * @return {@link com.cws.esolutions.core.processors.dto.SystemCheckResponse} containing
+     * the response information for the given request
+     * @throws SystemCheckException {@link com.cws.esolutions.core.processors.exception.SystemCheckException}
+     * if an exception occurs during processing
      */
     SystemCheckResponse runNetstatCheck(final SystemCheckRequest request) throws SystemCheckException;
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Performs a telnet request against a given host and returns the obtained
+     * output to the requestor for further processing.
      *
-     * @param request
-     * @return
-     * @throws SystemCheckException
+     * @param request The {@link com.cws.esolutions.core.processors.dto.SystemCheckRequest}
+     * containing the necessary information to process the request.
+     * @return {@link com.cws.esolutions.core.processors.dto.SystemCheckResponse} containing
+     * the response information for the given request
+     * @throws SystemCheckException {@link com.cws.esolutions.core.processors.exception.SystemCheckException}
+     * if an exception occurs during processing
      */
     SystemCheckResponse runTelnetCheck(final SystemCheckRequest request) throws SystemCheckException;
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Performs a date request against a given host and returns the obtained
+     * output to the requestor for further processing.
      *
-     * @param request
-     * @return
-     * @throws SystemCheckException
+     * @param request The {@link com.cws.esolutions.core.processors.dto.SystemCheckRequest}
+     * containing the necessary information to process the request.
+     * @return {@link com.cws.esolutions.core.processors.dto.SystemCheckResponse} containing
+     * the response information for the given request
+     * @throws SystemCheckException {@link com.cws.esolutions.core.processors.exception.SystemCheckException}
+     * if an exception occurs during processing
      */
     SystemCheckResponse runRemoteDateCheck(final SystemCheckRequest request) throws SystemCheckException;
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Performs a process list request against a given host and returns the obtained
+     * output to the requestor for further processing.
      *
-     * @param request
-     * @return
-     * @throws SystemCheckException
+     * @param request The {@link com.cws.esolutions.core.processors.dto.SystemCheckRequest}
+     * containing the necessary information to process the request.
+     * @return {@link com.cws.esolutions.core.processors.dto.SystemCheckResponse} containing
+     * the response information for the given request
+     * @throws SystemCheckException {@link com.cws.esolutions.core.processors.exception.SystemCheckException}
+     * if an exception occurs during processing
      */
     SystemCheckResponse runProcessListCheck(final SystemCheckRequest request) throws SystemCheckException;
 }

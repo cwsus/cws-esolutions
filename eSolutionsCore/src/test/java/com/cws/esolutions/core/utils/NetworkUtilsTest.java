@@ -51,7 +51,7 @@ public class NetworkUtilsTest
     }
 
     @Test
-    public void testExecuteTelnetRequest()
+    public void executeTelnetRequest()
     {
         try
         {

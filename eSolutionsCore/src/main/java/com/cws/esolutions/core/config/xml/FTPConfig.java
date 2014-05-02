@@ -17,7 +17,7 @@ package com.cws.esolutions.core.config.xml;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.config.xml
- * File: SSHConfig.java
+ * File: FTPConfig.java
  *
  * History
  *
@@ -36,12 +36,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 import com.cws.esolutions.core.CoreServiceConstants;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
- *
  * @author khuntly
  * @version 1.0
+ * @see java.io.Serializable
  */
 @XmlRootElement(name = "ssh-config")
 @XmlAccessorType(XmlAccessType.NONE)

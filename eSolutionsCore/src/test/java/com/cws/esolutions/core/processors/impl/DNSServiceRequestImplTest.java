@@ -83,7 +83,7 @@ public class DNSServiceRequestImplTest
     }
 
     @Test
-    public void testForwardLookup()
+    public void performLookup()
     {
         DNSRecord record = new DNSRecord();
         record.setRecordName("connect.us.hsbc");
@@ -109,7 +109,7 @@ public class DNSServiceRequestImplTest
     }
 
     @Test
-    public void testCreateService()
+    public void createNewService()
     {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMdd00");
@@ -249,7 +249,7 @@ public class DNSServiceRequestImplTest
     }
 
     @Test
-    public static void testPushNewService()
+    public static void pushNewService()
     {
         StringBuilder builder = new StringBuilder()
             .append("$ORIGIN .\n")

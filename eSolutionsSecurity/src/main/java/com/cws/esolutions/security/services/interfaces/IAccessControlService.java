@@ -34,9 +34,8 @@ import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
+ * API allowing access control to functionality for role-based
+ * or group-based functions.
  *
  * @author khuntly
  * @version 1.0
@@ -57,10 +56,10 @@ public interface IAccessControlService
      * portlet service. It should also query an applicable user datastore,
      * in the event the session data may have been tampered.
      *
-     * @param userAccount
-     * @param serviceGuid
-     * @return boolean
-     * @throws AccessControlServiceException
+     * @param userAccount The {@link com.cws.esolutions.security.dto.UserAccount} to authorize
+     * @param serviceGuid The service to authorize for the given user
+     * @return <code>true</code> if authorization succeeded, <code>false</code> otherwise
+     * @throws AccessControlServiceException {@link com.cws.esolutions.security.services.exception.AccessControlServiceException} if an exception occurs during processing
      */
     boolean isUserAuthorized(final UserAccount userAccount, final String serviceGuid) throws AccessControlServiceException;
 }

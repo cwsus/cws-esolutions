@@ -38,9 +38,9 @@ import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
 import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
 import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
+ * API allowing user key management tasks. Used in conjunction with the
+ * {@link com.cws.esolutions.security.dao.keymgmt.factory.KeyManagementFactory}
+ * to provide functionality for LDAP, SQL and file-based key repositories.
  *
  * @author khuntly
  * @version 1.0
@@ -57,9 +57,32 @@ public interface KeyManager
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + KeyManager.class.getName());
 
+    /**
+     * Obtains the keys associated with a given user account for use
+     * with file encryption/signature processing
+     *
+     * @param guid - the GUID to validate data against
+     * @return a <code>KeyPair</code> if key generation was successful
+     * @throws KeyManagementException {@link com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException} if an exception occurs during processing
+     */
     KeyPair returnKeys(final String guid) throws KeyManagementException;
 
+    /**
+     * Creates keys for the associated user account for use with file
+     * encryption/signature processing.
+     *
+     * @param guid - the GUID to validate data against
+     * @return boolean - <code>true</code> if verified, <code>false</code> otherwise
+     * @throws KeyManagementException {@link com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException} if an exception occurs during processing
+     */
     boolean createKeys(final String guid) throws KeyManagementException;
 
+    /**
+     * Revokes and removes the keys associated with a provided user account so they cannot be re-used.
+     *
+     * @param guid - the GUID to validate data against
+     * @return boolean - <code>true</code> if successful, <code>false</code> otherwise
+     * @throws KeyManagementException {@link com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException} if an exception occurs during processing
+     */
     boolean removeKeys(final String guid) throws KeyManagementException;
 }

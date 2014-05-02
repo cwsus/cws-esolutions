@@ -78,10 +78,10 @@ public class OracleVBoxManagerTest
     }
 
     /**
-     * Test method for {@link com.cws.esolutions.core.processors.impl.OracleVBoxManager#getVBoxManager()}.
+     * Test method for {@link com.cws.esolutions.core.processors.interfaces.VirtualServiceManager#listVirtualMachines(com.cws.esolutions.core.processors.dto.VirtualServiceRequest)}.
      */
     @Test
-    public void testListVirtualMachines()
+    public void listVirtualMachines()
     {
         VirtualServiceManager virtManager = VirtualManagerFactory.createVirtualManager(appBean.getConfigData().getAppConfig().getVirtualManagerClass());
 

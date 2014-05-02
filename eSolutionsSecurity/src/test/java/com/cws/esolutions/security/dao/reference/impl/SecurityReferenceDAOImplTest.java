@@ -51,7 +51,7 @@ public class SecurityReferenceDAOImplTest
         }
     }
 
-    @Test public void testObtainApprovedServers()
+    @Test public void obtainApprovedServers()
     {
         try
         {
@@ -63,7 +63,7 @@ public class SecurityReferenceDAOImplTest
         }
     }
 
-    @Test public void testObtainSecurityQuestionList()
+    @Test public void obtainSecurityQuestionList()
     {
         try
         {

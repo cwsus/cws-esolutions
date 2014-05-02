@@ -32,10 +32,6 @@ import com.cws.esolutions.web.dto.LoginRequest;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
- *
  * @author khuntly
  * @version 1.0
  * @see org.springframework.validation.Validator

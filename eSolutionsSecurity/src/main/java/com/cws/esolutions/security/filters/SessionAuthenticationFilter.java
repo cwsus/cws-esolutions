@@ -26,6 +26,7 @@ package com.cws.esolutions.security.filters;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
+import java.util.Arrays;
 import java.io.IOException;
 import javax.servlet.Filter;
 import java.util.Enumeration;
@@ -194,6 +195,18 @@ public class SessionAuthenticationFilter implements Filter
 
         if ((this.ignoreURIs != null) && (this.ignoreURIs.length != 0))
         {
+            if (Arrays.asList(this.ignoreURIs).contains("ALL"))
+            {
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ALL URIs are ignored. Breaking ...");
+                }
+
+                filterChain.doFilter(sRequest, sResponse);
+
+                return;
+            }
+
             // hostname isnt in ignore list
             for (String uri : this.ignoreURIs)
             {

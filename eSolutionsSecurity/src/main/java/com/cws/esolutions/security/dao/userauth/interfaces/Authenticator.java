@@ -35,9 +35,9 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
+ * API allowing user authentication tasks. Used in conjunction with the
+ * {@link com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory}
+ * to provide functionality for LDAP and SQL datastores.
  *
  * @author khuntly
  * @version 1.0
@@ -61,15 +61,43 @@ public interface Authenticator
      * necessary flags are sent back to the frontend for further
      * handling.
      *
-     * @param username
-     * @param password
-     * @return List<Object>
-     * @throws AuthenticatorException
+     * @param userId - the username to validate data against
+     * @param password - the password to validate data against
+     * @return List<Object> - The account information for the authenticated user
+     * @throws AuthenticatorException {@link com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException} if an exception occurs during processing
      */
-    List<Object> performLogon(final String username, final String password) throws AuthenticatorException;
+    List<Object> performLogon(final String userId, final String password) throws AuthenticatorException;
 
+    /**
+     * Processes an agent logon request via an LDAP user datastore. If the
+     * information provided matches an existing record, the user is
+     * considered authenticated successfully and further processing
+     * is performed to determine if that user is required to modify
+     * their password or setup online reset questions. If yes, the
+     * necessary flags are sent back to the frontend for further
+     * handling.
+     *
+     * @param userId - the username to validate data against
+     * @param guid - the GUID to validate data against
+     * @return List<String> - The security data housed for the given user
+     * @throws AuthenticatorException {@link com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException} if an exception occurs during processing
+     */
     List<String> obtainSecurityData(final String userId, final String guid) throws AuthenticatorException;
 
+    /**
+     * Processes an agent logon request via an LDAP user datastore. If the
+     * information provided matches an existing record, the user is
+     * considered authenticated successfully and further processing
+     * is performed to determine if that user is required to modify
+     * their password or setup online reset questions. If yes, the
+     * necessary flags are sent back to the frontend for further
+     * handling.
+     *
+     * @param userId - the username to validate data against
+     * @param guid - the GUID to validate data against
+     * @return boolean - <code>true</code> if verified, <code>false</code> otherwise
+     * @throws AuthenticatorException {@link com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException} if an exception occurs during processing
+     */
     String obtainOtpSecret(final String userId, final String guid) throws AuthenticatorException;
 
     /**
@@ -77,11 +105,11 @@ public interface Authenticator
      * a true response is returned back to the frontend signalling that further
      * authentication processing, if required, can take place.
      *
-     * @param userId
-     * @param guid
-     * @param values
-     * @return boolean
-     * @throws AuthenticatorException
+     * @param userId - the username to validate data against
+     * @param guid - the GUID to validate data against
+     * @param values - the security information to validate for the given username
+     * @return boolean - <code>true</code> if verified, <code>false</code> otherwise
+     * @throws AuthenticatorException {@link com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException} if an exception occurs during processing
      */
     boolean verifySecurityData(final String userId, final String guid, List<String> values) throws AuthenticatorException;
 }

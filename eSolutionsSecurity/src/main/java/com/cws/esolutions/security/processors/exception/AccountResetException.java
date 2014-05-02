@@ -33,16 +33,25 @@ public class AccountResetException extends SecurityServiceException
 {
     private static final long serialVersionUID = 5165671678201410191L;
 
+    /**
+     * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.String)
+     */
     public AccountResetException(final String message)
     {
         super(message);
     }
 
-    public AccountResetException(Throwable throwable)
+    /**
+     * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.Throwable)
+     */
+    public AccountResetException(final Throwable throwable)
     {
         super(throwable);
     }
 
+    /**
+     * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.String, java.lang.Throwable)
+     */
     public AccountResetException(final String message, final Throwable throwable)
     {
         super(message, throwable);

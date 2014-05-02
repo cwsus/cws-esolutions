@@ -49,9 +49,7 @@ import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDA
 import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
+ * API allowing user authentication request processing.
  *
  * @author khuntly
  * @version 1.0
@@ -82,11 +80,27 @@ public interface IAuthenticationProcessor
      * for application access. This method will be utilized if configured
      * for an LDAP user datastore.
      *
-     * processAgentLogon
-     * @throws AuthorizationException
-     * @return LoginResponse
+     * @param request The {@link com.cws.esolutions.security.processors.dto.AuthenticationRequest}
+     * containing the necessary authentication information to process the request.
+     * @return {@link com.cws.esolutions.security.processors.dto.AuthenticationResponse}
+     * containing the response for the provided request.
+     * @throws AuthenticationException {@link com.cws.esolutions.security.processors.exception.AuthenticationException} if an exception occurs during processing
      */
     AuthenticationResponse processAgentLogon(final AuthenticationRequest request) throws AuthenticationException;
 
+    /**
+     * Performs agent authentication and validation for access to application.
+     * Calls AgentLogonDAO to perform database calls to verify authentication
+     * and authorization to utilize service. Sets up session and entitlements
+     * for application access. This method will be utilized if configured
+     * for an LDAP user datastore. This method provides OTP authentication processing
+     * on top of the normal username/password process.
+     *
+     * @param request The {@link com.cws.esolutions.security.processors.dto.AuthenticationRequest}
+     * containing the necessary authentication information to process the request.
+     * @return {@link com.cws.esolutions.security.processors.dto.AuthenticationResponse}
+     * containing the response for the provided request.
+     * @throws AuthenticationException {@link com.cws.esolutions.security.processors.exception.AuthenticationException} if an exception occurs during processing
+     */
     AuthenticationResponse processOtpLogon(final AuthenticationRequest request) throws AuthenticationException;
 }

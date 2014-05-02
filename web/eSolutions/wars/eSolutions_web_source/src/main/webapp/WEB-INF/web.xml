@@ -102,6 +102,12 @@
             <param-value>SecurityService/filters/SessionAuthenticationFilter</param-value>
         </init-param>
     </filter>
+    <filter id="SessionFixationFilter">
+        <description>Session Fixation Filter</description>
+        <display-name>SessionFixationFilter</display-name>
+        <filter-name>SessionFixationFilter</filter-name>
+        <filter-class>com.cws.esolutions.security.filters.SessionFixationFilter</filter-class>
+    </filter>
     <filter id="SpringEncodingFilter">
         <description>Spring Encoding Filter</description>
         <display-name>SpringEncodingFilter</display-name>
@@ -123,6 +129,10 @@
     </filter-mapping>
     <filter-mapping id="SessionAuthenticationFilter_mapping">
         <filter-name>SessionAuthenticationFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping id="SessionFixationFilter_mapping">
+        <filter-name>SessionFixationFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
     <filter-mapping id="SpringEncodingFilter_mapping">
@@ -237,11 +247,6 @@
             <description>No access to JSP files</description>
             <url-pattern>*.jsp</url-pattern>
         </web-resource-collection>
-        <auth-constraint />
-        <user-data-constraint>
-            <description>Require SSL for ALL requests</description>
-            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
-        </user-data-constraint>
     </security-constraint>
 
     <session-config>

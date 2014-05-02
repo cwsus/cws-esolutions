@@ -40,10 +40,6 @@ import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
- *
  * @author khuntly
  * @version 1.0
  */
@@ -62,53 +58,13 @@ public interface IMessagingProcessor
     static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
-    /**
-     * 
-     * TODO: Add in the method description/comments
-     *
-     * @param request
-     * @return
-     * @throws MessagingServiceException
-     */
     MessagingResponse addNewMessage(final MessagingRequest request) throws MessagingServiceException;
 
-    /**
-     * 
-     * TODO: Add in the method description/comments
-     *
-     * @param request
-     * @return
-     * @throws MessagingServiceException
-     */
     MessagingResponse updateExistingMessage(final MessagingRequest request) throws MessagingServiceException;
 
-    /**
-     * 
-     * TODO: Add in the method description/comments
-     *
-     * @param request
-     * @return
-     * @throws MessagingServiceException
-     */
     MessagingResponse showAlertMessages(final MessagingRequest request) throws MessagingServiceException;
 
-    /**
-     * 
-     * TODO: Add in the method description/comments
-     *
-     * @param request
-     * @return
-     * @throws MessagingServiceException
-     */
     MessagingResponse showMessages(final MessagingRequest request) throws MessagingServiceException;
 
-    /**
-     * 
-     * TODO: Add in the method description/comments
-     *
-     * @param request
-     * @return
-     * @throws MessagingServiceException
-     */
     MessagingResponse showMessage(final MessagingRequest request) throws MessagingServiceException;
 }

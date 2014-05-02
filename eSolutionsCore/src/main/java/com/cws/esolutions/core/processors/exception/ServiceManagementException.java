@@ -33,16 +33,25 @@ public class ServiceManagementException extends CoreServiceException
 {
     private static final long serialVersionUID = 4059137757894563242L;
 
+    /**
+     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.String)
+     */
     public ServiceManagementException(final String message)
     {
         super(message);
     }
 
+    /**
+     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.Throwable)
+     */
     public ServiceManagementException(final Throwable throwable)
     {
         super(throwable);
     }
 
+    /**
+     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.String, java.lang.Throwable)
+     */
     public ServiceManagementException(final String message, final Throwable throwable)
     {
         super(message, throwable);

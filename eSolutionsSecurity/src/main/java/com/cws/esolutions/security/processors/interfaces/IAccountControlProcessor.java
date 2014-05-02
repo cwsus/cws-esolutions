@@ -46,9 +46,8 @@ import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDA
 import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
+ * API allowing administrative action against user account data
+ * housed within the authentication datastore.
  *
  * @author khuntly
  * @version 1.0
@@ -69,21 +68,107 @@ public interface IAccountControlProcessor
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
+    /**
+     * Allows an administrator to create a new user with the provided account information.
+     *
+     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountControlRequest}
+     * which contains the necessary information to complete the request
+     * @return {@link com.cws.esolutions.security.processors.dto.AccountControlResponse} containing
+     * response information regarding the request status
+     * @throws AccountControlException {@link com.cws.esolutions.security.processors.exception.AccountControlException} if an exception occurs during processing
+     */
     AccountControlResponse createNewUser(final AccountControlRequest request) throws AccountControlException;
 
+    /**
+     * Performs a search against the authentication datastore for the provided information and returns
+     * the data as obtained.
+     *
+     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountControlRequest}
+     * which contains the necessary information to complete the request
+     * @return {@link com.cws.esolutions.security.processors.dto.AccountControlResponse} containing
+     * response information regarding the request status
+     * @throws AccountControlException {@link com.cws.esolutions.security.processors.exception.AccountControlException} if an exception occurs during processing
+     */
     AccountControlResponse searchAccounts(final AccountControlRequest request) throws AccountControlException;
 
+    /**
+     * Returns detailed information regarding a provided user account for review, modification or removal.
+     *
+     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountControlRequest}
+     * which contains the necessary information to complete the request
+     * @return {@link com.cws.esolutions.security.processors.dto.AccountControlResponse} containing
+     * response information regarding the request status
+     * @throws AccountControlException {@link com.cws.esolutions.security.processors.exception.AccountControlException} if an exception occurs during processing
+     */
     AccountControlResponse loadUserAccount(final AccountControlRequest request) throws AccountControlException;
 
+    /**
+     * Removes a specified user account from the authentication datastore.
+     *
+     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountControlRequest}
+     * which contains the necessary information to complete the request
+     * @return {@link com.cws.esolutions.security.processors.dto.AccountControlResponse} containing
+     * response information regarding the request status
+     * @throws AccountControlException {@link com.cws.esolutions.security.processors.exception.AccountControlException} if an exception occurs during processing
+     */
     AccountControlResponse removeUserAccount(final AccountControlRequest request) throws AccountControlException;
 
+    /**
+     * Allows modification of a user's suspension flag indicator, to either suspend or unsuspend
+     * the provided account.
+     *
+     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountControlRequest}
+     * which contains the necessary information to complete the request
+     * @return {@link com.cws.esolutions.security.processors.dto.AccountControlResponse} containing
+     * response information regarding the request status
+     * @throws AccountControlException {@link com.cws.esolutions.security.processors.exception.AccountControlException} if an exception occurs during processing
+     */
     AccountControlResponse modifyUserSuspension(final AccountControlRequest request) throws AccountControlException;
 
+    /**
+     * Allows modification of the provided user account's role within the application, to either add
+     * or remove access as provided by the selected role.
+     *
+     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountControlRequest}
+     * which contains the necessary information to complete the request
+     * @return {@link com.cws.esolutions.security.processors.dto.AccountControlResponse} containing
+     * response information regarding the request status
+     * @throws AccountControlException {@link com.cws.esolutions.security.processors.exception.AccountControlException} if an exception occurs during processing
+     */
     AccountControlResponse modifyUserRole(final AccountControlRequest request) throws AccountControlException;
 
+    /**
+     * Allows modification of the provided user's password in the event it has been fully forgotten and
+     * the Online Reset process cannot be used.
+     *
+     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountControlRequest}
+     * which contains the necessary information to complete the request
+     * @return {@link com.cws.esolutions.security.processors.dto.AccountControlResponse} containing
+     * response information regarding the request status
+     * @throws AccountControlException {@link com.cws.esolutions.security.processors.exception.AccountControlException} if an exception occurs during processing
+     */
     AccountControlResponse modifyUserPassword(final AccountControlRequest request) throws AccountControlException;
 
+    /**
+     * Allows modification of a user's lockout status, to either lock or unlock access to the application
+     * as necessary.
+     *
+     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountControlRequest}
+     * which contains the necessary information to complete the request
+     * @return {@link com.cws.esolutions.security.processors.dto.AccountControlResponse} containing
+     * response information regarding the request status
+     * @throws AccountControlException {@link com.cws.esolutions.security.processors.exception.AccountControlException} if an exception occurs during processing
+     */
     AccountControlResponse modifyUserLockout(final AccountControlRequest request) throws AccountControlException;
 
+    /**
+     * Provides a list of user accounts housed within the authentication datastore.
+     *
+     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountControlRequest}
+     * which contains the necessary information to complete the request
+     * @return {@link com.cws.esolutions.security.processors.dto.AccountControlResponse} containing
+     * response information regarding the request status
+     * @throws AccountControlException {@link com.cws.esolutions.security.processors.exception.AccountControlException} if an exception occurs during processing
+     */
     AccountControlResponse listUserAccounts(final AccountControlRequest request) throws AccountControlException;
 }

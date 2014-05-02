@@ -38,16 +38,25 @@ public class CoreServiceException extends Exception
 {
     private static final long serialVersionUID = -4141507100554321719L;
 
+    /**
+     * @see java.lang.Exception#Exception(java.lang.String)
+     */
     public CoreServiceException(final String message)
     {
         super(message);
     }
 
+    /**
+     * @see java.lang.Exception#Exception(java.lang.Throwable)
+     */
     public CoreServiceException(final Throwable throwable)
     {
         super(throwable);
     }
 
+    /**
+     * @see java.lang.Exception#Exception(java.lang.String, java.lang.Throwable)
+     */
     public CoreServiceException(final String message, final Throwable throwable)
     {
         super(message, throwable);

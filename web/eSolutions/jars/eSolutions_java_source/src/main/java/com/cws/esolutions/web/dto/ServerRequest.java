@@ -33,9 +33,7 @@ import com.cws.esolutions.core.processors.enums.ServerStatus;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.core.processors.enums.NetworkPartition;
 /**
- * TODO: Add class information/description
- *
- * @author 35033355
+ * @author khuntly
  * @version 1.0
  */
 public class ServerRequest implements Serializable

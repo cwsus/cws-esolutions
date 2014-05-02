@@ -44,9 +44,7 @@ import com.cws.esolutions.core.processors.dto.ApplicationManagementResponse;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.core.processors.exception.ApplicationManagementException;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
+ * API allowing application management functionality
  *
  * @author khuntly
  * @version 1.0
@@ -67,82 +65,83 @@ public interface IApplicationManagementProcessor
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Allows addition of a new application to the service datastore
      *
-     * @param request The request information to add the new application
-     * @return <code>ApplicationManagementResponse</code> containing the response information
-     * @throws ApplicationManagementException
+     * @param request - The {@link com.cws.esolutions.core.processors.dto.ApplicationManagementRequest}
+     * housing the necessary data to process
+     * @return The {@link com.cws.esolutions.core.processors.dto.ApplicationManagementResponse} containing the response information, or error code
+     * @throws ApplicationManagementException {@link com.cws.esolutions.core.processors.exception.ApplicationManagementException} if an error occurs during processing
      */
     ApplicationManagementResponse addNewApplication(final ApplicationManagementRequest request) throws ApplicationManagementException;
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Allows updates to aa application in the service datastore
      *
-     * @param request
-     * @return
-     * @throws ApplicationManagementException
+     * @param request - The {@link com.cws.esolutions.core.processors.dto.ApplicationManagementRequest}
+     * housing the necessary data to process
+     * @return The {@link com.cws.esolutions.core.processors.dto.ApplicationManagementResponse} containing the response information, or error code
+     * @throws ApplicationManagementException {@link com.cws.esolutions.core.processors.exception.ApplicationManagementException} if an error occurs during processing
      */
     ApplicationManagementResponse updateApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException;
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Allows removal of an application in the service datastore
      *
-     * @param request
-     * @return
-     * @throws ApplicationManagementException
+     * @param request - The {@link com.cws.esolutions.core.processors.dto.ApplicationManagementRequest}
+     * housing the necessary data to process
+     * @return The {@link com.cws.esolutions.core.processors.dto.ApplicationManagementResponse} containing the response information, or error code
+     * @throws ApplicationManagementException {@link com.cws.esolutions.core.processors.exception.ApplicationManagementException} if an error occurs during processing
      */
     ApplicationManagementResponse deleteApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException;
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Lists all applications housed within the service datastore
      *
-     * @param request
-     * @return
-     * @throws ApplicationManagementException
+     * @param request - The {@link com.cws.esolutions.core.processors.dto.ApplicationManagementRequest}
+     * housing the necessary data to process
+     * @return The {@link com.cws.esolutions.core.processors.dto.ApplicationManagementResponse} containing the response information, or error code
+     * @throws ApplicationManagementException {@link com.cws.esolutions.core.processors.exception.ApplicationManagementException} if an error occurs during processing
      */
     ApplicationManagementResponse listApplications(final ApplicationManagementRequest request) throws ApplicationManagementException;
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Lists all applications with the provided attributes housed within the service datastore
      *
-     * @param request
-     * @return
-     * @throws ApplicationManagementException
+     * @param request - The {@link com.cws.esolutions.core.processors.dto.ApplicationManagementRequest}
+     * housing the necessary data to process
+     * @return The {@link com.cws.esolutions.core.processors.dto.ApplicationManagementResponse} containing the response information, or error code
+     * @throws ApplicationManagementException {@link com.cws.esolutions.core.processors.exception.ApplicationManagementException} if an error occurs during processing
      */
     ApplicationManagementResponse listApplicationsByAttribute(final ApplicationManagementRequest request) throws ApplicationManagementException;
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Obtains detailed information regarding a provided application housed within the service datastore
      *
-     * @param request
-     * @return
-     * @throws ApplicationManagementException
+     * @param request - The {@link com.cws.esolutions.core.processors.dto.ApplicationManagementRequest}
+     * housing the necessary data to process
+     * @return The {@link com.cws.esolutions.core.processors.dto.ApplicationManagementResponse} containing the response information, or error code
+     * @throws ApplicationManagementException {@link com.cws.esolutions.core.processors.exception.ApplicationManagementException} if an error occurs during processing
      */
     ApplicationManagementResponse getApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException;
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Obtains file information from a remote node housing a given application and returns
+     * to the requestor for further processing
      *
-     * @param request
-     * @return
-     * @throws ApplicationManagementException
+     * @param request - The {@link com.cws.esolutions.core.processors.dto.ApplicationManagementRequest}
+     * housing the necessary data to process
+     * @return The {@link com.cws.esolutions.core.processors.dto.ApplicationManagementResponse} containing the response information, or error code
+     * @throws ApplicationManagementException {@link com.cws.esolutions.core.processors.exception.ApplicationManagementException} if an error occurs during processing
      */
     ApplicationManagementResponse applicationFileRequest(final ApplicationManagementRequest request) throws ApplicationManagementException;
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Allows deployment of application-related files to target remote nodes
      *
-     * @param request
-     * @return
-     * @throws ApplicationManagementException
+     * @param request - The {@link com.cws.esolutions.core.processors.dto.ApplicationManagementRequest}
+     * housing the necessary data to process
+     * @return The {@link com.cws.esolutions.core.processors.dto.ApplicationManagementResponse} containing the response information, or error code
+     * @throws ApplicationManagementException {@link com.cws.esolutions.core.processors.exception.ApplicationManagementException} if an error occurs during processing
      */
     ApplicationManagementResponse deployApplication(final ApplicationManagementRequest request) throws ApplicationManagementException;
 }

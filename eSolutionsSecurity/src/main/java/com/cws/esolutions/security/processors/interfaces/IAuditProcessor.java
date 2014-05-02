@@ -39,9 +39,7 @@ import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
+ * API allowing audit processing, if enabled.
  *
  * @author khuntly
  * @version 1.0
@@ -61,7 +59,23 @@ public interface IAuditProcessor
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
+    /**
+     * Audits the performed request, if enabled.
+     *
+     * @param request - The {@link com.cws.esolutions.security.processors.dto.AuditRequest}
+     * which contains the necessary information to complete the request
+     * @throws AuditServiceException {@link com.cws.esolutions.security.processors.exception.AuditServiceException} if an exception occurs during processing
+     */
     void auditRequest(final AuditRequest request) throws AuditServiceException;
 
+    /**
+     * Provides a list of audit history for the provided user account, if enabled.
+     *
+     * @param request - The {@link com.cws.esolutions.security.processors.dto.AuditRequest}
+     * which contains the necessary information to complete the request
+     * @return {@link com.cws.esolutions.security.processors.dto.AuditResponse} containing
+     * response information regarding the request status
+     * @throws AuditServiceException {@link com.cws.esolutions.security.processors.exception.AuditServiceException} if an exception occurs during processing
+     */
     AuditResponse getAuditEntries(final AuditRequest request) throws AuditServiceException;
 }

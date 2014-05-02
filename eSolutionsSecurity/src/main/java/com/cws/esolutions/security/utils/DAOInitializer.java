@@ -52,10 +52,6 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.enums.AuthRepositoryType;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
- *
  * @author khuntly
  * @version 1.0
  */
@@ -86,8 +82,9 @@ public final class DAOInitializer
     /**
      * @param properties - The <code>AuthRepo</code> object containing connection information
      * @param isContainer - A <code>boolean</code> flag indicating if this is in a container
-     * @param bean - The <code>SecurityServiceBean</code> that holds the connection
-     * @throws SecurityServiceException if an exception occurs opening the connection
+     * @param bean - The {@link com.cws.esolutions.security.SecurityServiceBean} <code>SecurityServiceBean</code> that holds the connection
+     * @throws SecurityServiceException {@link com.cws.esolutions.security.exception.SecurityServiceException}
+     * if an exception occurs opening the connection
      */
     public synchronized static void configureAndCreateAuthConnection(final InputStream properties, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException
     {
@@ -253,8 +250,9 @@ public final class DAOInitializer
     /**
      * @param properties - The <code>AuthRepo</code> object containing connection information
      * @param isContainer - A <code>boolean</code> flag indicating if this is in a container
-     * @param bean - The <code>SecurityServiceBean</code> that holds the connection
-     * @throws SecurityServiceException if an exception occurs closing the connection
+     * @param bean - The {@link com.cws.esolutions.security.SecurityServiceBean} <code>SecurityServiceBean</code> that holds the connection
+     * @throws SecurityServiceException {@link com.cws.esolutions.security.exception.SecurityServiceException}
+     * if an exception occurs opening the connection
      */
     public synchronized static void closeAuthConnection(final InputStream properties, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException
     {

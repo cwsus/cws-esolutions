@@ -46,21 +46,33 @@ public class AuthenticatorException extends SecurityServiceException
         return this.resultCode;
     }
 
+    /**
+     * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.String)
+     */
     public AuthenticatorException(final String message)
     {
         super(message);
     }
 
+    /**
+     * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.Throwable)
+     */
     public AuthenticatorException(final Throwable throwable)
     {
         super(throwable);
     }
 
+    /**
+     * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.String, java.lang.Throwable)
+     */
     public AuthenticatorException(final String message, final Throwable throwable)
     {
         super(message, throwable);
     }
 
+    /**
+     * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(com.unboundid.ldap.sdk.ResultCode, java.lang.String, java.lang.Throwable)
+     */
     public AuthenticatorException(final ResultCode code, final String message, final Throwable throwable)
     {
         super(code, message, throwable);

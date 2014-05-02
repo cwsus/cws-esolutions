@@ -34,9 +34,8 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.SecurityServiceConstants;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
+ * API allowing data access for user security information, such as salt
+ * or reset data.
  *
  * @author khuntly
  * @version 1.0
@@ -61,7 +60,7 @@ public interface IUserSecurityInformationDAO
      * @param saltValue - The salt value generated for the provided user
      * @param saltType - The provided salt type - logon or reset
      * @return <code>true</code> if successful, <code>false</code> otherwise
-     * @throws SQLException if an exception occurs during insertion process
+     * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
      */
     boolean addOrUpdateSalt(final String commonName, final String saltValue, final String saltType) throws SQLException;
 
@@ -71,8 +70,9 @@ public interface IUserSecurityInformationDAO
      * request.
      *
      * @param commonName - The commonName associated with the user (also known as GUID)
+     * @param saltType - The salt type to remove
      * @return <code>true</code> if successful, <code>false</code> otherwise
-     * @throws SQLException if an exception occurs during insertion process
+     * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
      */
     boolean removeUserData(final String commonName, final String saltType) throws SQLException;
 
@@ -83,7 +83,7 @@ public interface IUserSecurityInformationDAO
      * @param commonName - The commonName associated with the user (also known as GUID)
      * @param saltType - The provided salt type - logon or reset
      * @return String - The salt value for the configured user account
-     * @throws SQLException if an exception occurs during insertion process
+     * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
      */
     String getUserSalt(final String commonName, final String saltType) throws SQLException;
 
@@ -97,10 +97,16 @@ public interface IUserSecurityInformationDAO
      * @param resetId - The reset request identifier provided to the user
      * @param smsCode - The SMS code sent to the user (if any)
      * @return <code>true</code> if the insertion was successful, <code>false</code> otherwise
-     * @throws SQLException if an exception occurs during insertion process
+     * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
      */
     boolean insertResetData(final String commonName, final String resetId, final String smsCode) throws SQLException;
 
+    /**
+     * Lists reset requests housed in the security datastore.
+     *
+     * @return A <code>List<String></code> of all associated reset requests housed.
+     * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
+     */
     List<String[]> listActiveResets() throws SQLException;
 
     /**
@@ -109,7 +115,7 @@ public interface IUserSecurityInformationDAO
      *
      * @param resetId - The reset request identifier provided to the user
      * @return The commonName (GUID) associated with the reset request identifier
-     * @throws SQLException if an exception occurs during insertion process
+     * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
      */
     List<Object> getResetData(final String resetId) throws SQLException;
 
@@ -120,7 +126,7 @@ public interface IUserSecurityInformationDAO
      * @param commonName - The commonName associated with the user (also known as GUID)
      * @param resetId - The reset request identifier provided to the user
      * @return <code>true</code> if the removal was successful, <code>false</code> otherwise
-     * @throws SQLException if an exception occurs during insertion process
+     * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
      */
     boolean removeResetData(final String commonName, final String resetId) throws SQLException;
 
@@ -132,7 +138,7 @@ public interface IUserSecurityInformationDAO
      * @param resetId - The reset request identifier provided to the user
      * @param smsCode - The SMS code provided to the user associated with the reset request
      * @return <code>true</code> if successful, <code>false</code> otherwise
-     * @throws SQLException if an exception occurs during insertion process
+     * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
      */
     boolean verifySmsForReset(final String commonName, final String resetId, final String smsCode) throws SQLException;
 }

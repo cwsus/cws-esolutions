@@ -51,9 +51,8 @@ import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
+ * Performs password related functions, such as string encryption
+ * and (where necessary) decryption, base64 decode/encode.
  *
  * @author khuntly
  * @version 1.0
@@ -210,6 +209,15 @@ public final class PasswordUtils
         }
     }
 
+    /**
+     * Provides two-way (reversible) encryption of a provided string. Can be used where reversibility
+     * is required but encryption (obfuscation, technically) is required.
+     *
+     * @param plainText - The plain text data to encrypt
+     * @param salt - The salt value to utilize for the request
+     * @return The encrypted string in a reversible format
+     * @throws SecurityException {@link java.lang.SecurityException} if an exception occurs during processing
+     */
     public static final String encryptText(final String plainText, final String salt) throws SecurityException
     {
         final String methodName = PasswordUtils.CNAME + "#encryptText(final String plainText, final String salt) throws SecurityException";
@@ -259,6 +267,16 @@ public final class PasswordUtils
         return encPass;
     }
 
+    /**
+     * Provides one-way (irreversible) encryption of a provided string.
+     *
+     * @param plainText - The plain text data to encrypt
+     * @param salt - The salt value to utilize for the request
+     * @param algorithm - The encryption algorithm (e.g. SHA-256) to utilize
+     * @param iterations - The number of times the value should be re-encrypted
+     * @return The encrypted string
+     * @throws SecurityException {@link java.lang.SecurityException} if an exception occurs during processing
+     */
     public static final String encryptText(final String plainText, final String salt, final String algorithm, final int iterations) throws SecurityException
     {
         final String methodName = PasswordUtils.CNAME + "#encryptText(final String plainText, final String salt, final String algorithm, final int iterations) throws SecurityException";
@@ -297,6 +315,14 @@ public final class PasswordUtils
         return response;
     }
 
+    /**
+     * Provides a reversal process for two-way encrypted strings
+     *
+     * @param encrypted - The encrypted data to decrypt
+     * @param saltLength - The length of the salt used to encrypt the data
+     * @return The decrypted string
+     * @throws SecurityException {@link java.lang.SecurityException} if an exception occurs during processing
+     */
     public static final String decryptText(final String encrypted, final int saltLength) throws SecurityException
     {
         final String methodName = PasswordUtils.CNAME + "#decryptText(final String encrypted, final int saltLength) throws SecurityException";
@@ -346,6 +372,13 @@ public final class PasswordUtils
         return decPass;
     }
 
+    /**
+     * Base64 encodes a given string
+     *
+     * @param text - The text to base64 encode
+     * @return The base64-encoded string
+     * @throws SecurityException {@link java.lang.SecurityException} if an exception occurs during processing
+     */
     public static final String base64Encode(final String text) throws SecurityException
     {
         final String methodName = PasswordUtils.CNAME + "#base64Encode(final String text) throws SecurityException";
@@ -369,6 +402,13 @@ public final class PasswordUtils
         return response;
     }
 
+    /**
+     * Base64 decodes a given string
+     *
+     * @param text - The text to base64 decode
+     * @return The base64-decoded string
+     * @throws SecurityException {@link java.lang.SecurityException} if an exception occurs during processing
+     */
     public static final String base64Decode(final String text) throws SecurityException
     {
         final String methodName = PasswordUtils.CNAME + "#base64Decode(final String text) throws SecurityException";
@@ -392,6 +432,16 @@ public final class PasswordUtils
         return response;
     }
 
+    /**
+     * Base64 decodes a given string
+     *
+     * @param variance - The allowed differences in OTP values
+     * @param algorithm - The algorithm used for the OTP hash
+     * @param secret - The OTP secret
+     * @param code - The OTP code
+     * @return <code>true</code> if successful, <code>false</code> otherwise
+     * @throws SecurityException {@link java.lang.SecurityException} if an exception occurs during processing
+     */
     public static final boolean validateOtpValue(final int variance, final String algorithm, final String secret, final int code) throws SecurityException
     {
         final String methodName = PasswordUtils.CNAME + "#validateOtpValue(final int variance, final String algorithm, final String secret, final int code) throws SecurityException";

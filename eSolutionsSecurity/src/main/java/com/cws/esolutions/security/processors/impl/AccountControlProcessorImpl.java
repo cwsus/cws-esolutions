@@ -720,7 +720,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     // we never show the user the password, we're only doing this
                     // to prevent unauthorized access (or further unauthorized access)
                     // we get a return code back but we aren't going to use it really
-                    boolean isComplete = userManager.modifyUserPassword(userAccount.getGuid(), tmpPassword); // TODO ??
+                    boolean isComplete = userManager.modifyUserPassword(userAccount.getGuid(), tmpPassword);
 
                     if (DEBUG)
                     {

@@ -75,7 +75,7 @@ public class ApplicationManagementProcessorImplTest
         }
     }
 
-    @Test public void testAddNewApplication()
+    @Test public void addNewApplication()
     {
         String[] platforms = { "09571c2c-dd88-4d57-b418-dbbd35deb653", "16d15529-2e28-4beb-873c-eb5fba452feb", "54c10a53-5d77-4c54-8041-eb90c33e7c1d" };
 
@@ -117,7 +117,7 @@ public class ApplicationManagementProcessorImplTest
         }
     }
 
-    @Test public void testDeleteApplicationData()
+    @Test public void deleteApplicationData()
     {
         Application app = new Application();
         app.setGuid("6625fc8c-09ed-4579-a3d6-eb43d26b679f");
@@ -140,7 +140,7 @@ public class ApplicationManagementProcessorImplTest
         }
     }
 
-    @Test public void testListApplications()
+    @Test public void listApplications()
     {
         ApplicationManagementRequest request = new ApplicationManagementRequest();
         request.setServiceId("96E4E53E-FE87-446C-AF03-0F5BC6527B9D");
@@ -159,7 +159,7 @@ public class ApplicationManagementProcessorImplTest
         }
     }
 
-    @Test public void testGetApplicationData()
+    @Test public void getApplicationData()
     {
         Application app = new Application();
         app.setGuid("93128772-94b6-49b0-bac7-d16ef42a0794");

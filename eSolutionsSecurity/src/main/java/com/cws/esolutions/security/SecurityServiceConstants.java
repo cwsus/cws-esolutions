@@ -26,25 +26,14 @@ package com.cws.esolutions.security;
  * Kevin Huntly         12/05/2008 13:36:09             Added method to process change requests
  */
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
- *
  * @author khuntly
  * @version 1.0
  */
 public class SecurityServiceConstants
 {
-    /**
-     * Logging constants
-     */
     public static final String DEBUGGER = "SECURITY_DEBUGGER";
     public static final String ERROR_LOGGER = "ERROR_RECORDER.";
     public static final String AUDIT_LOGGER = "AUDIT_RECORDER.";
-
-    /**
-     * Application constants
-     */
     public static final String NOT_SET = "Unconfigured";
     public static final String DS_CONTEXT = "java:comp/env";
     public static final String INIT_AUDITDS_MANAGER = "AuditDataSource";

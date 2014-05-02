@@ -74,7 +74,7 @@ public interface IApplicationDataDAO
      *
      * @param applicationData - The information to store for the application, as outlined above.
      * @return <code>true</code> if the data is successfully inserted, <code>false</code> otherwise
-     * @throws SQLException if an error occurs during data processing
+     * @throws SQLException {@link java.sql.SQLException} if an error occurs during data processing
      */
     boolean addApplication(final List<Object> applicationData) throws SQLException;
 
@@ -100,7 +100,7 @@ public interface IApplicationDataDAO
      *
      * @param applicationData - The information to update for the application, as outlined above.
      * @return <code>true</code> if the data is successfully updated, <code>false</code> otherwise
-     * @throws SQLException if an error occurs during data processing
+     * @throws SQLException {@link java.sql.SQLException} if an error occurs during data processing
      */
     boolean updateApplication(final List<Object> applicationData) throws SQLException;
 
@@ -126,7 +126,7 @@ public interface IApplicationDataDAO
      *
      * @param appGuid - The information to update for the application, as outlined above.
      * @return <code>true</code> if the data is successfully inserted, <code>false</code> otherwise
-     * @throws SQLException if an error occurs during data processing
+     * @throws SQLException {@link java.sql.SQLException} if an error occurs during data processing
      */
     boolean removeApplication(final String appGuid) throws SQLException;
 
@@ -138,7 +138,7 @@ public interface IApplicationDataDAO
      *        pagination.
      * @return A string array of the information contained within the datasource.
      *         Only the application GUID and name are returned.
-     * @throws SQLException if an error occurs during data processing
+     * @throws SQLException {@link java.sql.SQLException} if an error occurs during data processing
      */
     List<String[]> listApplications(final int startRow) throws SQLException;
 
@@ -151,7 +151,7 @@ public interface IApplicationDataDAO
      *        pagination.
      * @return A string array of the information contained within the datasource.
      *         Only the application GUID and name are returned.
-     * @throws SQLException if an error occurs during data processing
+     * @throws SQLException {@link java.sql.SQLException} if an error occurs during data processing
      */
     List<Object[]> getApplicationsByAttribute(final String attribute, final int startRow) throws SQLException;
 
@@ -159,9 +159,10 @@ public interface IApplicationDataDAO
      * Lists applications stored within the asset management database. This listing
      * can then be utilized by the processor to massage and prepare for display.
      *
+     * @param appGuid - The application GUID to obtain information for
      * @return A string array of the information contained within the datasource.
      *         Only the application GUID and name are returned.
-     * @throws SQLException if an error occurs during data processing
+     * @throws SQLException {@link java.sql.SQLException} if an error occurs during data processing
      */
     List<Object> getApplication(final String appGuid) throws SQLException;
 }

@@ -28,25 +28,17 @@ import java.io.File;
 import java.util.List;
 import java.net.Socket;
 import java.util.Arrays;
-
 import org.slf4j.Logger;
-
 import java.util.ArrayList;
 import java.io.PrintWriter;
 import java.io.IOException;
-
 import com.jcraft.jsch.JSch;
-
 import java.net.InetAddress;
 import java.io.BufferedReader;
-
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.Session;
-
 import java.io.FileInputStream;
-
 import org.slf4j.LoggerFactory;
-
 import java.io.FileOutputStream;
 import java.net.SocketException;
 import java.io.InputStreamReader;
@@ -54,25 +46,17 @@ import java.io.ObjectInputStream;
 import java.net.ConnectException;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
-
 import com.jcraft.jsch.ChannelExec;
 import com.sshtools.j2ssh.ScpClient;
 import com.sshtools.j2ssh.SshClient;
-
 import java.util.concurrent.TimeUnit;
-
 import com.sshtools.j2ssh.SftpClient;
 import com.jcraft.jsch.OpenSSHConfig;
-
 import java.net.UnknownHostException;
-
 import com.jcraft.jsch.JSchException;
-
 import org.apache.commons.cli.Options;
 import org.apache.commons.io.FileUtils;
-
 import com.jcraft.jsch.ConfigRepository;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.PosixParser;
@@ -91,21 +75,17 @@ import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.auth.AuthPolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
-
 import com.sshtools.j2ssh.transport.publickey.SshPrivateKey;
-
 import org.apache.commons.httpclient.params.HttpClientParams;
-
 import com.sshtools.j2ssh.transport.IgnoreHostKeyVerification;
 import com.sshtools.j2ssh.configuration.SshConnectionProperties;
 import com.sshtools.j2ssh.transport.publickey.SshPrivateKeyFile;
-
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
-
 import com.sshtools.j2ssh.authentication.AuthenticationProtocolState;
 import com.sshtools.j2ssh.authentication.PasswordAuthenticationClient;
 import com.sshtools.j2ssh.authentication.PublicKeyAuthenticationClient;
 import com.sshtools.j2ssh.authentication.AuthenticationProtocolException;
+
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.config.xml.FTPConfig;
@@ -503,13 +483,12 @@ public final class NetworkUtils
      * Convert the keyfile: ssh-keygen -i -f /path/to/file > /path/to/new-file
      * Re-encrypt the file: ssh-keygen -p -f /path/to/new-file
      *
-     * @param authProps - A list containing the authentication properties
      * @param sourceFile - The full path to the source file to transfer
      * @param targetFile - The full path (including file name) of the desired target file
      * @param targetHost - The target server to perform the transfer to
      * @param isUpload - <code>true</code> is the transfer is an upload, <code>false</code> if it
      *            is a download 
-     * @throws UtilityException - If an error occurs processing SSH keys or file transfer operations
+     * @throws UtilityException {@link com.cws.esolutions.core.utils.exception.UtilityException} if an error occurs processing
      */
     public static final synchronized void executeSCPTransfer(final List<String> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
     {
@@ -688,15 +667,30 @@ public final class NetworkUtils
     }
 
     /**
+     * Creates an SSH connection to a target host and then executes an SCP
+     * request to send or receive a file to or from the target. This is fully
+     * key-based, as a result, a keyfile is required for the connection to
+     * successfully authenticate.
      * 
-     * TODO: Add in the method description/comments
+     * NOTE: The key file provided MUST be an OpenSSH key. If its not, it must
+     * be converted using ssh-keygen:
+     * If no passphrase exists on the key: ssh-keygen -i -f /path/to/file
+     * If a passphrase exists:
+     * Remove the passphrase first: ssh-keygen-g3 -e /path/to/file
+     * <enter passphrase>
+     * Type 'yes'
+     * Type 'no'
+     * Type 'yes'
+     * Hit enter twice without entering a new passphrase
+     * Convert the keyfile: ssh-keygen -i -f /path/to/file > /path/to/new-file
+     * Re-encrypt the file: ssh-keygen -p -f /path/to/new-file
      *
-     * @param authProps
-     * @param sourceFile
-     * @param targetFile
-     * @param targetHost
-     * @param isUpload
-     * @throws UtilityException
+     * @param sourceFile - The full path to the source file to transfer
+     * @param targetFile - The full path (including file name) of the desired target file
+     * @param targetHost - The target server to perform the transfer to
+     * @param isUpload - <code>true</code> is the transfer is an upload, <code>false</code> if it
+     *            is a download 
+     * @throws UtilityException - If an error occurs processing SSH keys or file transfer operations
      */
     public static final synchronized void executeSftpTransfer(final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
     {
@@ -888,10 +882,10 @@ public final class NetworkUtils
      * Convert the keyfile: ssh-keygen -i -f /path/to/file > /path/to/new-file
      * Re-encrypt the file: ssh-keygen -p -f /path/to/new-file
      *
-     * @param authProps - The authentication properties
      * @param targetHost - The target server to perform the transfer to
-     * @param commandList - The list of commands to execute on the remote host. 
-     * @throws UtilityException - If an error occurs processing SSH keys or file transfer operations
+     * @param commandList - The list of commands to execute on the remote host.
+     * @return <code>StringBuilder</code> containing the response information from the provided commandList
+     * @throws UtilityException {@link com.cws.esolutions.core.utils.exception.UtilityException} if an error occurs processing
      */
     public static final synchronized StringBuilder executeSshConnection(final String targetHost, final String commandList) throws UtilityException
     {
@@ -1055,15 +1049,17 @@ public final class NetworkUtils
     }
 
     /**
+     * Creates a connection to a target host and then executes an FTP
+     * request to send or receive a file to or from the target. This is fully
+     * key-based, as a result, a keyfile is required for the connection to
+     * successfully authenticate.
      * 
-     * TODO: Add in the method description/comments
-     *
-     * @param authProps
-     * @param sourceFile
-     * @param targetFile
-     * @param targetHost
-     * @param isUpload
-     * @throws UtilityException
+     * @param sourceFile - The full path to the source file to transfer
+     * @param targetFile - The full path (including file name) of the desired target file
+     * @param targetHost - The target server to perform the transfer to
+     * @param isUpload - <code>true</code> is the transfer is an upload, <code>false</code> if it
+     *            is a download 
+     * @throws UtilityException {@link com.cws.esolutions.core.utils.exception.UtilityException} if an error occurs processing
      */
     public static final synchronized void executeFtpConnection(final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
     {
@@ -1187,7 +1183,7 @@ public final class NetworkUtils
      * @param hostName - The target host to make the connection to
      * @param portNumber - The port number to attempt the connection on
      * @param timeout - The timeout for the connection
-     * @throws UtilityException - If an error occurs during the connection attempt
+     * @throws UtilityException {@link com.cws.esolutions.core.utils.exception.UtilityException} if an error occurs processing
      */
     public static final synchronized void executeTelnetRequest(final String hostName, final int portNumber, final int timeout) throws UtilityException
     {
@@ -1276,11 +1272,9 @@ public final class NetworkUtils
      *
      * @param hostName - The fully qualified URL for the host desired. MUST be
      *     prefixed with http/https:// as necessary
-     * @param timeout - Connection timeout. If not specified, defaults to 10 seconds
      * @param method - GET or POST, depending on what is necessary
      * @return A byte array containing the response data
-     * @throws UtilityException if the connection cannot be established or if the
-     *     response code != 200
+     * @throws UtilityException {@link com.cws.esolutions.core.utils.exception.UtilityException} if an error occurs processing
      */
     public static final synchronized byte[] executeHttpConnection(final String hostName, final String method) throws UtilityException
     {
@@ -1474,9 +1468,10 @@ public final class NetworkUtils
      * 
      * @param hostName - The target host to make the connection to
      * @param portNumber - The port number to attempt the connection on
+     * @param timeout - How long to wait for a connection to establish or a response from the target
      * @param object - The serializable object to send to the target
-     * @return Obj
-     * @throws UtilityException - If an error occurs during the connection attempt
+     * @return <code>Object</code> as output from the request
+     * @throws UtilityException {@link com.cws.esolutions.core.utils.exception.UtilityException} if an error occurs processing
      */
     public static final synchronized Object executeTcpRequest(final String hostName, final int portNumber, final int timeout, final Object object) throws UtilityException
     {

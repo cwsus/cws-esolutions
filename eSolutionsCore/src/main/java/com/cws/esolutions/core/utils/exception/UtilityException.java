@@ -33,16 +33,25 @@ public class UtilityException extends CoreServiceException
 {
     private static final long serialVersionUID = 8068749942395150034L;
 
+    /**
+     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.String)
+     */
     public UtilityException(final String message)
     {
         super(message);
     }
 
+    /**
+     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.Throwable)
+     */
     public UtilityException(final Throwable throwable)
     {
         super(throwable);
     }
 
+    /**
+     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.String, java.lang.Throwable)
+     */
     public UtilityException(final String message, final Throwable throwable)
     {
         super(message, throwable);

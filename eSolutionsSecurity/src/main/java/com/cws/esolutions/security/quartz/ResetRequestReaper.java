@@ -49,16 +49,9 @@ public class ResetRequestReaper implements Job
     private static final Logger AUDIT_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.AUDIT_LOGGER + ResetRequestReaper.CNAME);
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + ResetRequestReaper.CNAME);
 
-    public ResetRequestReaper()
-    {
-        final String methodName = ResetRequestReaper.CNAME + "#ResetRequestReaper()#Constructor";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-    }
-
+    /**
+     * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
+     */
     @Override
     public void execute(final JobExecutionContext context)
     {

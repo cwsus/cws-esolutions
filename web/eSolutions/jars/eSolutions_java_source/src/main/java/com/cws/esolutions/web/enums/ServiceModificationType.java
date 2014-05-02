@@ -22,9 +22,7 @@ package com.cws.esolutions.web.enums;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 /**
- * TODO: Add class information/description
- *
- * @author 35033355
+ * @author khuntly
  * @version 1.0
  */
 public enum ServiceModificationType

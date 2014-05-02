@@ -100,7 +100,7 @@ public class LDAPAuthenticatorTest
         try
         {
             Assert.assertTrue(authenticator.verifySecurityData("junit", "f42fb0ba-4d1e-1126-986f-800cd2650000",
-                    new ArrayList<String>(
+                    new ArrayList<>(
                             Arrays.asList("9XSqpcg8ChMQSThsMfF+ZlP6BPxt5urURelW8V+qedVw3nWNnPDhtF2G4jF91WsZ4qlrFzB/qnpCtqSseGvqfg==",
                                     "zd48ynVDm0t07RRzY07Gs9OqhI7YjUKa0CYrmcp2ESRR4neQOQ8nIgsNJhPVlIGo8n1rfbkYU11VoCqoNv2qPg=="))));
                                     

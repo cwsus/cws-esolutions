@@ -30,9 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.core.processors.enums.DeploymentType;
 /**
- * TODO: Add class information/description
- *
- * @author 35033355
+ * @author khuntly
  * @version 1.0
  */
 public class ApplicationRequest implements Serializable

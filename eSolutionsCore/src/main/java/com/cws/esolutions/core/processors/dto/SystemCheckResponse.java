@@ -33,12 +33,9 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
- *
  * @author khuntly
  * @version 1.0
+ * @see java.io.Serializable
  */
 public class SystemCheckResponse implements Serializable
 {

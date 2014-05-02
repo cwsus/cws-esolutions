@@ -63,7 +63,7 @@ public class EmailUtilsTest
     }
 
     @Test
-    public void testSendEmailMessage()
+    public void sendEmailMessage()
     {
         EmailMessage message = new EmailMessage();
         message.setIsAlert(false);
@@ -85,7 +85,7 @@ public class EmailUtilsTest
     }
 
     @Test
-    public void testSendEmailMessageWithAttachment()
+    public void sendEmailMessageWithAttachment()
     {
         try
         {
@@ -121,7 +121,7 @@ public class EmailUtilsTest
     }
 
     @Test
-    public void testSendSmsMessage()
+    public void sendEmailMessageAsSMS()
     {
         EmailMessage message = new EmailMessage();
         message.setIsAlert(false);
@@ -144,7 +144,7 @@ public class EmailUtilsTest
 
     /*
     @Test
-    public final void testReadEmailMessages()
+    public final void readEmailMessages()
     {
         try
         {

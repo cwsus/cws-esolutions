@@ -60,7 +60,7 @@ public class AccessControlServiceImplTest
         }
     }
 
-    @Test public final void testIsUserAuthorized()
+    @Test public final void isUserAuthorized()
     {
         try
         {

@@ -34,9 +34,8 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.SecurityServiceConstants;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
+ * API allowing audit management tasks - storing audit requests and retrieving
+ * for provided user accounts on demand.
  *
  * @author khuntly
  * @version 1.0
@@ -52,7 +51,22 @@ public interface IAuditDAO
     static final Logger AUDIT_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.AUDIT_LOGGER + CNAME);
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
+    /**
+     * Inserts audit-related data into the audit datastore
+     *
+     * @param auditRequest - A <code>List<String></code> of the audit data to insert
+     * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
+     */
     void auditRequestedOperation(final List<String> auditRequest) throws SQLException;
 
+    /**
+     * Inserts audit-related data into the audit datastore
+     *
+     * @param username - The username to obtain data for
+     * @param startRow - A limit of rows to obtain, if there are more than this limit the remainder
+     * will be paged
+     * @return A <code>List<Object></code> of the associated audit data for the account 
+     * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
+     */
     List<Object> getAuditInterval(final String username, final int startRow) throws SQLException;
 }

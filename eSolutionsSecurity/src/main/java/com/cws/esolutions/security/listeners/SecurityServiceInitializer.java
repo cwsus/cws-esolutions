@@ -25,28 +25,20 @@ package com.cws.esolutions.security.listeners;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.net.MalformedURLException;
+
 import java.net.URL;
 import java.util.Map;
-
 import org.slf4j.Logger;
-
 import java.util.HashMap;
-
 import javax.sql.DataSource;
-
 import java.sql.SQLException;
-
 import org.slf4j.LoggerFactory;
-
 import java.io.FileInputStream;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.JAXBException;
-
 import java.io.FileNotFoundException;
-
+import java.net.MalformedURLException;
 import org.apache.log4j.helpers.Loader;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -61,10 +53,6 @@ import com.cws.esolutions.security.config.xml.DataSourceManager;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
- *
  * @author khuntly
  * @version 1.0
  */
@@ -77,6 +65,15 @@ public class SecurityServiceInitializer
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
+    /**
+     * Initializes the security service in a standalone mode - used for applications outside of a container or when
+     * run as a standalone jar.
+     *
+     * @param secConfig - The security configuration file to utilize
+     * @param logConfig - The logging configuration file to utilize
+     * @throws SecurityServiceException @{link com.cws.esolutions.security.exception.SecurityServiceException}
+     * if an exception occurs during initialization
+     */
     public static void initializeService(final String secConfig, final String logConfig) throws SecurityServiceException
     {
         URL xmlURL = null;
@@ -186,6 +183,9 @@ public class SecurityServiceInitializer
         }
     }
 
+    /**
+     * Shuts down the running security service process.
+     */
     public static void shutdown()
     {
         final String methodName = SecurityServiceInitializer.CNAME + "#shutdown()";

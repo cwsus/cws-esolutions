@@ -34,12 +34,9 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
- *
  * @author khuntly
  * @version 1.0
+ * @see java.io.Serializable
  */
 public class UserAccount implements Serializable
 {
@@ -67,6 +64,9 @@ public class UserAccount implements Serializable
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
 
+    /**
+     * @param value The {@link com.cws.esolutions.security.processors.enums.LoginStatus} for the account
+     */
     public final void setStatus(final LoginStatus value)
     {
         final String methodName = UserAccount.CNAME + "#setStatus(final LoginStatus value)";
@@ -80,6 +80,9 @@ public class UserAccount implements Serializable
         this.status = value;
     }
 
+    /**
+     * @param value The GUID associated with the account
+     */
     public final void setGuid(final String value)
     {
         final String methodName = UserAccount.CNAME + "#setGuid(final String value)";
@@ -93,6 +96,9 @@ public class UserAccount implements Serializable
         this.guid = value;
     }
 
+    /**
+     * @param value The surname associated with the account
+     */
     public final void setSurname(final String value)
     {
         final String methodName = UserAccount.CNAME + "#setSurname(final String value)";
@@ -106,6 +112,9 @@ public class UserAccount implements Serializable
         this.surname = value;
     }
 
+    /**
+     * @param value The expiration date associated with the account
+     */
     public final void setExpiryDate(final Date value)
     {
         final String methodName = UserAccount.CNAME + "#setExpiryDate(final Date value)";
@@ -119,6 +128,9 @@ public class UserAccount implements Serializable
         this.expiryDate = value;
     }
 
+    /**
+     * @param value The failed password count associated with the account
+     */
     public final void setFailedCount(final Integer value)
     {
         final String methodName = UserAccount.CNAME + "#setFailedCount(final Integer value)";
@@ -132,6 +144,9 @@ public class UserAccount implements Serializable
         this.failedCount = value;
     }
 
+    /**
+     * @param value The OLR lockout flag associated with the account
+     */
     public final void setOlrLocked(final boolean value)
     {
         final String methodName = UserAccount.CNAME + "#setOlrLocked(final boolean value)";
@@ -145,6 +160,9 @@ public class UserAccount implements Serializable
         this.olrLocked = value;
     }
 
+    /**
+     * @param value The OLR setup flag associated with the account
+     */
     public final void setOlrSetup(final boolean value)
     {
         final String methodName = UserAccount.CNAME + "#setOlrSetup(final boolean value)";
@@ -158,6 +176,9 @@ public class UserAccount implements Serializable
         this.olrSetup = value;
     }
 
+    /**
+     * @param value The suspension flag associated with the account
+     */
     public final void setSuspended(final boolean value)
     {
         final String methodName = UserAccount.CNAME + "#setSuspended(final boolean value)";
@@ -171,6 +192,9 @@ public class UserAccount implements Serializable
         this.suspended = value;
     }
 
+    /**
+     * @param value The last login timestamp associated with the account
+     */
     public final void setLastLogin(final Date value)
     {
         final String methodName = UserAccount.CNAME + "#setLastLogin(final Date value)";
@@ -184,6 +208,9 @@ public class UserAccount implements Serializable
         this.lastLogin = value;
     }
 
+    /**
+     * @param value The groups associated with the account
+     */
     public final void setGroups(final String[] value)
     {
         final String methodName = UserAccount.CNAME + "#setGroups(final String[] value)";
@@ -197,6 +224,9 @@ public class UserAccount implements Serializable
         this.groups = value;
     }
 
+    /**
+     * @param value The display name associated with the account
+     */
     public final void setDisplayName(final String value)
     {
         final String methodName = UserAccount.CNAME + "#setDisplayName(final String value)";
@@ -210,6 +240,9 @@ public class UserAccount implements Serializable
         this.displayName = value;
     }
 
+    /**
+     * @param value The email address associated with the account
+     */
     public final void setEmailAddr(final String value)
     {
         final String methodName = UserAccount.CNAME + "#setEmailAddr(final String value)";
@@ -223,6 +256,9 @@ public class UserAccount implements Serializable
         this.emailAddr = value;
     }
 
+    /**
+     * @param value The given name associated with the account
+     */
     public final void setGivenName(final String value)
     {
         final String methodName = UserAccount.CNAME + "#setGivenName(final String value)";
@@ -236,6 +272,9 @@ public class UserAccount implements Serializable
         this.givenName = value;
     }
 
+    /**
+     * @param value The username associated with the account
+     */
     public final void setUsername(final String value)
     {
         final String methodName = UserAccount.CNAME + "#setUsername(final String value)";
@@ -249,6 +288,9 @@ public class UserAccount implements Serializable
         this.username = value;
     }
 
+    /**
+     * @param value The pager number associated with the account
+     */
     public final void setPagerNumber(final String value)
     {
         final String methodName = UserAccount.CNAME + "#setPagerNumber(final String value)";
@@ -262,6 +304,9 @@ public class UserAccount implements Serializable
         this.pagerNumber = value;
     }
 
+    /**
+     * @param value The telephone number associated with the account
+     */
     public final void setTelephoneNumber(final String value)
     {
         final String methodName = UserAccount.CNAME + "#setTelephoneNumber(final String value)";
@@ -275,6 +320,9 @@ public class UserAccount implements Serializable
         this.telephoneNumber = value;
     }
 
+    /**
+     * @return The {@link com.cws.esolutions.security.processors.enums.LoginStatus} for the account
+     */
     public final LoginStatus getStatus()
     {
         final String methodName = UserAccount.CNAME + "#getStatus()";
@@ -288,6 +336,9 @@ public class UserAccount implements Serializable
         return this.status;
     }
 
+    /**
+     * @return The GUID associated with the account
+     */
     public final String getGuid()
     {
         final String methodName = UserAccount.CNAME + "#getGuid()";
@@ -301,6 +352,9 @@ public class UserAccount implements Serializable
         return this.guid;
     }
 
+    /**
+     * @return The username associated with the account
+     */
     public final String getUsername()
     {
         final String methodName = UserAccount.CNAME + "#getUsername()";
@@ -314,6 +368,9 @@ public class UserAccount implements Serializable
         return this.username;
     }
 
+    /**
+     * @return The surname associated with the account
+     */
     public final String getSurname()
     {
         final String methodName = UserAccount.CNAME + "#getSurname()";
@@ -327,6 +384,9 @@ public class UserAccount implements Serializable
         return this.surname;
     }
 
+    /**
+     * @return The expiration date associated with the account
+     */
     public final Date getExpiryDate()
     {
         final String methodName = UserAccount.CNAME + "#getExpiryDate()";
@@ -340,6 +400,9 @@ public class UserAccount implements Serializable
         return this.expiryDate;
     }
 
+    /**
+     * @return The failed password count associated with the account
+     */
     public final Integer getFailedCount()
     {
         final String methodName = UserAccount.CNAME + "#getFailedCount()";
@@ -353,6 +416,9 @@ public class UserAccount implements Serializable
         return this.failedCount;
     }
 
+    /**
+     * @return The OLR lockout flag associated with the account
+     */
     public final boolean getOlrLocked()
     {
         final String methodName = UserAccount.CNAME + "#getOlrLocked()";
@@ -366,6 +432,9 @@ public class UserAccount implements Serializable
         return this.olrLocked;
     }
 
+    /**
+     * @return The OLR lockout flag associated with the account
+     */
     public final boolean isOlrLocked()
     {
         final String methodName = UserAccount.CNAME + "#isOlrLocked()";
@@ -379,6 +448,9 @@ public class UserAccount implements Serializable
         return this.olrLocked;
     }
 
+    /**
+     * @return The OLR setup flag associated with the account
+     */
     public final boolean getOlrSetup()
     {
         final String methodName = UserAccount.CNAME + "#getOlrSetup()";
@@ -392,6 +464,9 @@ public class UserAccount implements Serializable
         return this.olrSetup;
     }
 
+    /**
+     * @return The suspension flag associated with the account
+     */
     public final boolean isSuspended()
     {
         final String methodName = UserAccount.CNAME + "#isSuspended()";
@@ -405,6 +480,9 @@ public class UserAccount implements Serializable
         return this.suspended;
     }
 
+    /**
+     * @return The last login timestamp associated with the account
+     */
     public final Date getLastLogin()
     {
         final String methodName = UserAccount.CNAME + "#getLastLogin()";
@@ -418,6 +496,9 @@ public class UserAccount implements Serializable
         return this.lastLogin;
     }
 
+    /**
+     * @return The groups associated with the account
+     */
     public final String[] getGroups()
     {
         final String methodName = UserAccount.CNAME + "#getGroups()";
@@ -431,6 +512,9 @@ public class UserAccount implements Serializable
         return this.groups;
     }
 
+    /**
+     * @return The display name associated with the account
+     */
     public final String getDisplayName()
     {
         final String methodName = UserAccount.CNAME + "#getDisplayName()";
@@ -444,6 +528,9 @@ public class UserAccount implements Serializable
         return this.displayName;
     }
 
+    /**
+     * @return The email address associated with the account
+     */
     public final String getEmailAddr()
     {
         final String methodName = UserAccount.CNAME + "#getEmailAddr()";
@@ -457,6 +544,9 @@ public class UserAccount implements Serializable
         return this.emailAddr;
     }
 
+    /**
+     * @return The given name associated with the account
+     */
     public final String getGivenName()
     {
         final String methodName = UserAccount.CNAME + "#getGivenName()";
@@ -470,6 +560,9 @@ public class UserAccount implements Serializable
         return this.givenName;
     }
 
+    /**
+     * @return The pager number associated with the account
+     */
     public final String getPagerNumber()
     {
         final String methodName = UserAccount.CNAME + "#getPagerNumber()";
@@ -483,6 +576,9 @@ public class UserAccount implements Serializable
         return this.pagerNumber;
     }
 
+    /**
+     * @return The telephone number associated with the account
+     */
     public final String getTelephoneNumber()
     {
         final String methodName = UserAccount.CNAME + "#getTelephoneNumber()";
@@ -496,6 +592,9 @@ public class UserAccount implements Serializable
         return this.telephoneNumber;
     }
 
+    /**
+     * @see java.lang.Object#toString()
+     */
     @Override
     public final String toString()
     {

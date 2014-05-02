@@ -33,15 +33,25 @@ public class VirtualServiceException extends CoreServiceException
 {
     private static final long serialVersionUID = -1845781429123758169L;
 
+    /**
+     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.String)
+     */
     public VirtualServiceException(final String message)
     {
         super(message);
     }
+
+    /**
+     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.Throwable)
+     */
     public VirtualServiceException(final Throwable throwable)
     {
         super(throwable);
     }
 
+    /**
+     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.String, java.lang.Throwable)
+     */
     public VirtualServiceException(final String message, final Throwable throwable)
     {
         super(message, throwable);

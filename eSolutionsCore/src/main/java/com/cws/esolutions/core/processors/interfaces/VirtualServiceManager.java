@@ -35,9 +35,8 @@ import com.cws.esolutions.core.processors.dto.VirtualServiceRequest;
 import com.cws.esolutions.core.processors.dto.VirtualServiceResponse;
 import com.cws.esolutions.core.processors.exception.VirtualServiceException;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
+ * API allowing access into Virtual Machine processing, such as Oracle
+ * VirtualBox or VMWare. Currently supports Oracle VirtualBox.
  *
  * @author khuntly
  * @version 1.0
@@ -54,34 +53,47 @@ public interface VirtualServiceManager
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + VirtualServiceManager.class.getName());
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Lists virtual machines installed against a specified host.
      *
-     * @param request
-     * @return
-     * @throws VirtualServiceException
+     * @param request A {@link com.cws.esolutions.core.processors.dto.VirtualServiceRequest} containing the
+     * request information to process
+     * @return A {@link com.cws.esolutions.core.processors.dto.VirtualServiceResponse} containing the
+     * response associated with the request
+     * @throws VirtualServiceException {@link com.cws.esolutions.core.processors.exception.VirtualServiceException} if an exception occurs during processing
      */
     VirtualServiceResponse listVirtualMachines(final VirtualServiceRequest request) throws VirtualServiceException;
 
+    /**
+     * Obtains detailed information regarding the provided virtual machine and returns to the requestor
+     * for further processing.
+     *
+     * @param request A {@link com.cws.esolutions.core.processors.dto.VirtualServiceRequest} containing the
+     * request information to process
+     * @return A {@link com.cws.esolutions.core.processors.dto.VirtualServiceResponse} containing the
+     * response associated with the request
+     * @throws VirtualServiceException {@link com.cws.esolutions.core.processors.exception.VirtualServiceException} if an exception occurs during processing
+     */
     VirtualServiceResponse getVirtualMachine(final VirtualServiceRequest request) throws VirtualServiceException;
     
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Starts an associated virtual machine on the target host
      *
-     * @param request
-     * @return
-     * @throws VirtualServiceException
+     * @param request A {@link com.cws.esolutions.core.processors.dto.VirtualServiceRequest} containing the
+     * request information to process
+     * @return A {@link com.cws.esolutions.core.processors.dto.VirtualServiceResponse} containing the
+     * response associated with the request
+     * @throws VirtualServiceException {@link com.cws.esolutions.core.processors.exception.VirtualServiceException} if an exception occurs during processing
      */
     VirtualServiceResponse startVirtualMachine(final VirtualServiceRequest request) throws VirtualServiceException;
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Stops an associated virtual machine on the target host
      *
-     * @param request
-     * @return
-     * @throws VirtualServiceException
+     * @param request A {@link com.cws.esolutions.core.processors.dto.VirtualServiceRequest} containing the
+     * request information to process
+     * @return A {@link com.cws.esolutions.core.processors.dto.VirtualServiceResponse} containing the
+     * response associated with the request
+     * @throws VirtualServiceException {@link com.cws.esolutions.core.processors.exception.VirtualServiceException} if an exception occurs during processing
      */
     VirtualServiceResponse stopVirtualMachine(final VirtualServiceRequest request) throws VirtualServiceException;
 }

@@ -57,7 +57,7 @@ public class AuditDAOImplTest
         }
     }
 
-    @Test public void testAuditRequestedOperation()
+    @Test public void auditRequestedOperation()
     {
         for (int x = 0; x < 50; x++)
         {
@@ -84,7 +84,7 @@ public class AuditDAOImplTest
         }
     }
 
-    @Test public void testGetAuditInterval()
+    @Test public void getAuditInterval()
     {
         try
         {

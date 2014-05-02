@@ -32,16 +32,25 @@ public class SecurityServiceException extends Exception
 {
     private static final long serialVersionUID = -5953286132656674063L;
 
+    /**
+     * @see java.lang.Exception#Exception(java.lang.String)
+     */
     public SecurityServiceException(final String message)
     {
         super(message);
     }
 
+    /**
+     * @see java.lang.Exception#Exception(java.lang.Throwable)
+     */
     public SecurityServiceException(final Throwable throwable)
     {
         super(throwable);
     }
 
+    /**
+     * @see java.lang.Exception#Exception(java.lang.String, java.lang.Throwable)
+     */
     public SecurityServiceException(final String message, final Throwable throwable)
     {
         super(message, throwable);

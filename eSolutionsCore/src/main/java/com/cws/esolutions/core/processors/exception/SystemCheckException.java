@@ -33,16 +33,25 @@ public class SystemCheckException extends CoreServiceException
 {
     private static final long serialVersionUID = 6179561480017277813L;
 
+    /**
+     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.String)
+     */
     public SystemCheckException(final String message)
     {
         super(message);
     }
 
+    /**
+     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.Throwable)
+     */
     public SystemCheckException(final Throwable throwable)
     {
         super(throwable);
     }
 
+    /**
+     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.String, java.lang.Throwable)
+     */
     public SystemCheckException(final String message, final Throwable throwable)
     {
         super(message, throwable);

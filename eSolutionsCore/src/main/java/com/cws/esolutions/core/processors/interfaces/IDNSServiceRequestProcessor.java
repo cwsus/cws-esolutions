@@ -41,9 +41,7 @@ import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
+ * API allowing DNS service management and data retrieval
  *
  * @author khuntly
  * @version 1.0
@@ -68,9 +66,10 @@ public interface IDNSServiceRequestProcessor
      * results are found using the default resolver (whatever is listed in /etc/hosts
      * or whatever is provided, as applicable) then the 
      *
-     * @param request - The <code>DNSServiceRequest</code> housing the necessary data to process
-     * @return <code>DNSServiceResponse</code> containing the response information, or error code
-     * @throws DNSServiceException if an error occurs during processing
+     * @param request - The {@link com.cws.esolutions.core.processors.dto.DNSServiceRequest}
+     * housing the necessary data to process
+     * @return The {@link com.cws.esolutions.core.processors.dto.DNSServiceResponse} containing the response information, or error code
+     * @throws DNSServiceException {@link com.cws.esolutions.core.processors.exception.DNSServiceException} if an error occurs during processing
      */
     DNSServiceResponse performLookup(final DNSServiceRequest request) throws DNSServiceException;
 
@@ -78,11 +77,13 @@ public interface IDNSServiceRequestProcessor
      * Creates a new zone service file. This is BIND-specific, it will NOT work with other
      * service implementations at this time.
      *
-     * Requires a <code>DNSEntry</code> with associated <code>DNSRecord</code>s embedded
+     * Requires a {@link com.cws.esolutions.core.processors.dto.DNSEntry} with associated
+     * {@link com.cws.esolutions.core.processors.dto.DNSRecord}s embedded
      *
-     * @param request - The request object containing the necessary data
-     * @return <code>DNSServiceResponse</code> - The response object containing data
-     * @throws DNSServiceException if an exception occurs performing the create operation
+     * @param request - The {@link com.cws.esolutions.core.processors.dto.DNSServiceRequest}
+     * housing the necessary data to process
+     * @return The {@link com.cws.esolutions.core.processors.dto.DNSServiceResponse} containing the response information, or error code
+     * @throws DNSServiceException {@link com.cws.esolutions.core.processors.exception.DNSServiceException} if an error occurs during processing
      */
     DNSServiceResponse createNewService(final DNSServiceRequest request) throws DNSServiceException;
 
@@ -90,9 +91,10 @@ public interface IDNSServiceRequestProcessor
      * Sends a newly created DNS zone to configured nameservers for public consumption. The file
      * is generated and transferred to the given servers via SCP.
      *
-     * @param request - The <code>DNSServiceRequest</code> housing the necessary data to process
-     * @return <code>DNSServiceResponse</code> containing the response information, or error code
-     * @throws DNSServiceException if an error occurs during processing
+     * @param request - The {@link com.cws.esolutions.core.processors.dto.DNSServiceRequest}
+     * housing the necessary data to process
+     * @return The {@link com.cws.esolutions.core.processors.dto.DNSServiceResponse} containing the response information, or error code
+     * @throws DNSServiceException {@link com.cws.esolutions.core.processors.exception.DNSServiceException} if an error occurs during processing
      */
     DNSServiceResponse pushNewService(final DNSServiceRequest request) throws DNSServiceException;
 
@@ -100,9 +102,10 @@ public interface IDNSServiceRequestProcessor
      * Sends a newly created DNS zone to configured nameservers for public consumption. The file
      * is generated and transferred to the given servers via SCP.
      *
-     * @param request - The <code>DNSServiceRequest</code> housing the necessary data to process
-     * @return <code>DNSServiceResponse</code> containing the response information, or error code
-     * @throws DNSServiceException if an error occurs during processing
+     * @param request - The {@link com.cws.esolutions.core.processors.dto.DNSServiceRequest}
+     * housing the necessary data to process
+     * @return The {@link com.cws.esolutions.core.processors.dto.DNSServiceResponse} containing the response information, or error code
+     * @throws DNSServiceException {@link com.cws.esolutions.core.processors.exception.DNSServiceException} if an error occurs during processing
      */
     DNSServiceResponse performSiteTransfer(final DNSServiceRequest request) throws DNSServiceException;
 }

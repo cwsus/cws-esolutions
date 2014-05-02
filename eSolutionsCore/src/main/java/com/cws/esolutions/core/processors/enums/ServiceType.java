@@ -22,9 +22,7 @@ package com.cws.esolutions.core.processors.enums;
  * 35033355              Jan 2, 2014                         Created.
  */
 /**
- * TODO: Add class information/description
- *
- * @author 35033355
+ * @author khuntly
  * @version 1.0
  */
 public enum ServiceType

@@ -58,16 +58,9 @@ public class CheckEmailMessages implements Job
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CheckEmailMessages.CNAME);
 
-    public CheckEmailMessages()
-    {
-        final String methodName = CheckEmailMessages.CNAME + "#CheckEmailMessagesJob()#Constructor";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-    }
-
+    /**
+     * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
+     */
     @Override
     public void execute(final JobExecutionContext jec)
     {

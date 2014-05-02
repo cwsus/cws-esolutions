@@ -61,7 +61,7 @@ public class ServiceDataDAOImplTest
         }
     }
 
-    @Test public void addNewPlatform()
+    @Test public void addServiceAsDatacenterAsPlatform()
     {
         List<String> servers = new ArrayList<>(
                 Arrays.asList(
@@ -91,7 +91,7 @@ public class ServiceDataDAOImplTest
         }
     }
 
-    @Test public void addNewDatacenter()
+    @Test public void addServiceAsDatacenter()
     {
         List<String> serviceData = new ArrayList<>(
                 Arrays.asList(

@@ -28,9 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.web.Constants;
 /**
- * TODO: Add class information/description
- *
- * @author 35033355
+ * @author khuntly
  * @version 1.0
  */
 public class LoginRequest implements Serializable

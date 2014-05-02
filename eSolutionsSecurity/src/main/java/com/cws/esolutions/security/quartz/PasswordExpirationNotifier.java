@@ -55,16 +55,9 @@ public class PasswordExpirationNotifier implements Job
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + PasswordExpirationNotifier.CNAME);
 
-    public PasswordExpirationNotifier()
-    {
-        final String methodName = PasswordExpirationNotifier.CNAME + "#PasswordExpirationNotifier()#Constructor";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-    }
-
+    /**
+     * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
+     */
     @Override
     public void execute(final JobExecutionContext context)
     {

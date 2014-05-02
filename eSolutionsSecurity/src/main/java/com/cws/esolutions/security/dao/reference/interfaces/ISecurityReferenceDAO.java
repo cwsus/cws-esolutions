@@ -53,18 +53,44 @@ public interface ISecurityReferenceDAO
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
+    /**
+     * Processes authentication for the selected security question and user. If successful,
+     * a true response is returned back to the frontend signalling that further
+     * authentication processing, if required, can take place.
+     *
+     * @return List<String> - A list of all approved servers within the authorization datastore
+     * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
+     */
     List<String> obtainApprovedServers() throws SQLException;
 
     /**
-     * Obtains the configured user security questions from a datastore
-     * for display.
+     * Processes authentication for the selected security question and user. If successful,
+     * a true response is returned back to the frontend signalling that further
+     * authentication processing, if required, can take place.
      *
-     * @return List<String> - a list of the available security questions
-     * @throws SQLException
+     * @return List<String> - A list of all approved servers within the authorization datastore
+     * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
      */
     List<String> obtainSecurityQuestionList() throws SQLException;
 
+    /**
+     * Processes authentication for the selected security question and user. If successful,
+     * a true response is returned back to the frontend signalling that further
+     * authentication processing, if required, can take place.
+     *
+     * @return List<String> - A list of all approved servers within the authorization datastore
+     * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
+     */
     Map<String, String> listAvailableServices() throws SQLException;
 
+    /**
+     * Processes authentication for the selected security question and user. If successful,
+     * a true response is returned back to the frontend signalling that further
+     * authentication processing, if required, can take place.
+     *
+     * @param group - The group to obtain available services for
+     * @return List<String> - A list of all approved servers within the authorization datastore
+     * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
+     */
     List<String> listServicesForGroup(final String group) throws SQLException;
 }

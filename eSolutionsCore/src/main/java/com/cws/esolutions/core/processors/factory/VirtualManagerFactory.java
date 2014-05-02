@@ -48,6 +48,13 @@ public class VirtualManagerFactory
 
     private static final String CNAME = VirtualServiceManager.class.getName();
 
+    /**
+     * Static method to provide a new or existing instance of a
+     * {@link com.cws.esolutions.core.processors.interfaces.VirtualServiceManager} singleton
+     *
+     * @param className - The fully qualified class name to return
+     * @return an instance of a {@link com.cws.esolutions.core.processors.interfaces.VirtualServiceManager} singleton
+     */
     public static final VirtualServiceManager createVirtualManager(final String className)
     {
         final String methodName = VirtualManagerFactory.CNAME + "#createVirtualManager()";

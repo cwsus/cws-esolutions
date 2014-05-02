@@ -35,12 +35,9 @@ import org.virtualbox_4_2.MachineState;
 
 import com.cws.esolutions.core.CoreServiceConstants;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
- *
  * @author khuntly
  * @version 1.0
+ * @see java.io.Serializable
  */
 public class VirtualServer implements Serializable
 {

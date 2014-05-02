@@ -48,7 +48,7 @@ import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDA
 import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 /**
- * Allows processing of account change requests for individual user accounts for
+ * API allowing processing of account change requests for individual user accounts for
  * select pieces of information. This does not allow full modification of the
  * entire user account, some modifications are restricted to system adminstrators.
  * Only the owning user account can modify information for itself - methods housed
@@ -77,64 +77,92 @@ public interface IAccountChangeProcessor
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Enables OTP authentication for a provided user account by setting a flag in the user repository
+     * datastore as such. When enabled, the user must have an OTP authentication utility, such as Google
+     * Authenticator, to complete the authentication process in addition to their username/password.
      *
-     * @param request
-     * @return
-     * @throws AccountChangeException
+     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountChangeRequest}
+     * which contains the necessary information to complete the request
+     * @return {@link com.cws.esolutions.security.processors.dto.AccountChangeResponse} containing
+     * response information regarding the request status
+     * @throws AccountChangeException {@link com.cws.esolutions.security.processors.exception.AccountChangeException} if an exception occurs during processing
      */
     AccountChangeResponse enableOtpAuth(final AccountChangeRequest request) throws AccountChangeException;
 
+    /**
+     * Disables OTP authentication for a provided user account by setting a flag in the user repository
+     * datastore as such.
+     *
+     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountChangeRequest}
+     * which contains the necessary information to complete the request
+     * @return {@link com.cws.esolutions.security.processors.dto.AccountChangeResponse} containing
+     * response information regarding the request status
+     * @throws AccountChangeException {@link com.cws.esolutions.security.processors.exception.AccountChangeException} if an exception occurs during processing
+     */
     AccountChangeResponse disableOtpAuth(final AccountChangeRequest request) throws AccountChangeException;
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Allows a provided user to change the email address associated with their account. When performed,
+     * a confirmation email is sent to both the new AND the old email addresses to ensure that the request
+     * was indeed performed by the user and that it is a valid change.
      *
-     * @param request
-     * @return
-     * @throws AccountChangeException
+     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountChangeRequest}
+     * which contains the necessary information to complete the request
+     * @return {@link com.cws.esolutions.security.processors.dto.AccountChangeResponse} containing
+     * response information regarding the request status
+     * @throws AccountChangeException {@link com.cws.esolutions.security.processors.exception.AccountChangeException} if an exception occurs during processing
      */
     AccountChangeResponse changeUserEmail(final AccountChangeRequest request) throws AccountChangeException;
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Allows a provided user to change the password associated with their account. When performed,
+     * a confirmation email is sent to the email address associated with the account to advise of
+     * success and to ensure that the request was valid.
      *
-     * @param request
-     * @return
-     * @throws AccountChangeException
+     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountChangeRequest}
+     * which contains the necessary information to complete the request
+     * @return {@link com.cws.esolutions.security.processors.dto.AccountChangeResponse} containing
+     * response information regarding the request status
+     * @throws AccountChangeException {@link com.cws.esolutions.security.processors.exception.AccountChangeException} if an exception occurs during processing
      */
     AccountChangeResponse changeUserPassword(final AccountChangeRequest request) throws AccountChangeException;
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Allows a provided user to change the security questions/answers associated with their account.
+     * When performed, a confirmation email is sent to the email address associated with the account
+     * to advise of success and to ensure that the request was valid.
      *
-     * @param request
-     * @return
-     * @throws AccountChangeException
+     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountChangeRequest}
+     * which contains the necessary information to complete the request
+     * @return {@link com.cws.esolutions.security.processors.dto.AccountChangeResponse} containing
+     * response information regarding the request status
+     * @throws AccountChangeException {@link com.cws.esolutions.security.processors.exception.AccountChangeException} if an exception occurs during processing
      */
     AccountChangeResponse changeUserSecurity(final AccountChangeRequest request) throws AccountChangeException;
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Allows a provided user to change the pager/telephone numbers associated with their account.
+     * When performed, a confirmation email is sent to the email address associated with the account
+     * to advise of success and to ensure that the request was valid.
      *
-     * @param request
-     * @return
-     * @throws AccountChangeException
+     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountChangeRequest}
+     * which contains the necessary information to complete the request
+     * @return {@link com.cws.esolutions.security.processors.dto.AccountChangeResponse} containing
+     * response information regarding the request status
+     * @throws AccountChangeException {@link com.cws.esolutions.security.processors.exception.AccountChangeException} if an exception occurs during processing
      */
     AccountChangeResponse changeUserContact(final AccountChangeRequest request) throws AccountChangeException;
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Allows a provided user to change the security keys used for encryption/signing associated with
+     * their account. When performed, a confirmation email is sent to the email address associated
+     * with the account to advise of success and to ensure that the request was valid.
      *
-     * @param request
-     * @return
-     * @throws AccountChangeException
+     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountChangeRequest}
+     * which contains the necessary information to complete the request
+     * @return {@link com.cws.esolutions.security.processors.dto.AccountChangeResponse} containing
+     * response information regarding the request status
+     * @throws AccountChangeException {@link com.cws.esolutions.security.processors.exception.AccountChangeException} if an exception occurs during processing
      */
     AccountChangeResponse changeUserKeys(final AccountChangeRequest request) throws AccountChangeException;
 }

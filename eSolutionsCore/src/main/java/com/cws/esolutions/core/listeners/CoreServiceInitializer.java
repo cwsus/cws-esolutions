@@ -27,15 +27,23 @@ package com.cws.esolutions.core.listeners;
  */
 import java.net.URL;
 import java.util.Map;
+
 import org.slf4j.Logger;
+
 import java.util.HashMap;
+
 import javax.sql.DataSource;
+
 import java.sql.SQLException;
+
 import org.slf4j.LoggerFactory;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.JAXBException;
+
 import java.net.MalformedURLException;
+
 import org.apache.log4j.helpers.Loader;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -49,10 +57,6 @@ import com.cws.esolutions.core.config.xml.DataSourceManager;
 import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
- *
  * @author khuntly
  * @version 1.0
  */
@@ -65,6 +69,15 @@ public class CoreServiceInitializer
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
 
+    /**
+     * Initializes the core service in a standalone mode - used for applications outside of a container or when
+     * run as a standalone jar.
+     *
+     * @param coreConfig - The service configuration file to utilize
+     * @param logConfig - The logging configuration file to utilize
+     * @throws CoreServiceException @{link com.cws.esolutions.core.exception.CoreServiceException}
+     * if an exception occurs during initialization
+     */
     public static void initializeService(final String coreConfig, final String logConfig) throws CoreServiceException
     {
         URL xmlURL = null;
@@ -167,6 +180,9 @@ public class CoreServiceInitializer
         }
     }
 
+    /**
+     * Shuts down the running core service process.
+     */
     public static void shutdown()
     {
         final String methodName = CoreServiceInitializer.CNAME + "#shutdown()";

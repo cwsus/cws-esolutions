@@ -41,9 +41,7 @@ import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.core.processors.exception.ServiceManagementException;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
+ * API allowing service management functionality.
  *
  * @author khuntly
  * @version 1.0
@@ -61,72 +59,91 @@ public interface IServiceManagementProcessor
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Adds the provided service from the service datastore.
      *
-     * @param request
-     * @return
-     * @throws ServiceManagementException
+     * @param request The {@link com.cws.esolutions.core.processors.dto.ServiceManagementRequest}
+     * containing the necessary information to process the request.
+     * @return {@link com.cws.esolutions.core.processors.dto.ServiceManagementResponse} containing
+     * the response information for the given request
+     * @throws ServiceManagementException {@link com.cws.esolutions.core.processors.exception.ServiceManagementException}
+     * if an exception occurs during processing
      */
     ServiceManagementResponse addNewService(final ServiceManagementRequest request) throws ServiceManagementException;
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Updates information for a provided service within the service datastore.
      *
-     * @param request
-     * @return
-     * @throws ServiceManagementException
+     * @param request The {@link com.cws.esolutions.core.processors.dto.ServiceManagementRequest}
+     * containing the necessary information to process the request.
+     * @return {@link com.cws.esolutions.core.processors.dto.ServiceManagementResponse} containing
+     * the response information for the given request
+     * @throws ServiceManagementException {@link com.cws.esolutions.core.processors.exception.ServiceManagementException}
+     * if an exception occurs during processing
      */
     ServiceManagementResponse updateServiceData(final ServiceManagementRequest request) throws ServiceManagementException;
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Removes the provided service from the service datastore by marking it as
+     * "decommissioned"
      *
-     * @param request
-     * @return
-     * @throws ServiceManagementException
+     * @param request The {@link com.cws.esolutions.core.processors.dto.ServiceManagementRequest}
+     * containing the necessary information to process the request.
+     * @return {@link com.cws.esolutions.core.processors.dto.ServiceManagementResponse} containing
+     * the response information for the given request
+     * @throws ServiceManagementException {@link com.cws.esolutions.core.processors.exception.ServiceManagementException}
+     * if an exception occurs during processing
      */
     ServiceManagementResponse removeServiceData(final ServiceManagementRequest request) throws ServiceManagementException;
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Lists all services housed within the service datastore to the requestor for
+     * further processing
      *
-     * @param request
-     * @return
-     * @throws ServiceManagementException
+     * @param request The {@link com.cws.esolutions.core.processors.dto.ServiceManagementRequest}
+     * containing the necessary information to process the request.
+     * @return {@link com.cws.esolutions.core.processors.dto.ServiceManagementResponse} containing
+     * the response information for the given request
+     * @throws ServiceManagementException {@link com.cws.esolutions.core.processors.exception.ServiceManagementException}
+     * if an exception occurs during processing
      */
     ServiceManagementResponse listServices(final ServiceManagementRequest request) throws ServiceManagementException;
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Locates a service (or list of services) for the given type attributes and returns to the
+     * requestor for further processing
      *
-     * @param request
-     * @return
-     * @throws ServiceManagementException
+     * @param request The {@link com.cws.esolutions.core.processors.dto.ServiceManagementRequest}
+     * containing the necessary information to process the request.
+     * @return {@link com.cws.esolutions.core.processors.dto.ServiceManagementResponse} containing
+     * the response information for the given request
+     * @throws ServiceManagementException {@link com.cws.esolutions.core.processors.exception.ServiceManagementException}
+     * if an exception occurs during processing
      */
     ServiceManagementResponse listServicesByType(final ServiceManagementRequest request) throws ServiceManagementException;
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Locates a service (or list of services) for the given search attributes and returns to the
+     * requestor for further processing
      *
-     * @param request
-     * @return
-     * @throws ServiceManagementException
+     * @param request The {@link com.cws.esolutions.core.processors.dto.ServiceManagementRequest}
+     * containing the necessary information to process the request.
+     * @return {@link com.cws.esolutions.core.processors.dto.ServiceManagementResponse} containing
+     * the response information for the given request
+     * @throws ServiceManagementException {@link com.cws.esolutions.core.processors.exception.ServiceManagementException}
+     * if an exception occurs during processing
      */
     ServiceManagementResponse getServiceByAttribute(final ServiceManagementRequest request) throws ServiceManagementException;
 
     /**
-     * 
-     * TODO: Add in the method description/comments
+     * Obtains service information for a provide service and returns to the requestor for further
+     * processing as necessary
      *
-     * @param request
-     * @return
-     * @throws ServiceManagementException
+     * @param request The {@link com.cws.esolutions.core.processors.dto.ServiceManagementRequest}
+     * containing the necessary information to process the request.
+     * @return {@link com.cws.esolutions.core.processors.dto.ServiceManagementResponse} containing
+     * the response information for the given request
+     * @throws ServiceManagementException {@link com.cws.esolutions.core.processors.exception.ServiceManagementException}
+     * if an exception occurs during processing
      */
     ServiceManagementResponse getServiceData(final ServiceManagementRequest request) throws ServiceManagementException;
 }

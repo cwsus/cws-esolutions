@@ -190,6 +190,11 @@ public class SSLEnforcementFilter implements Filter
 
         if (SSLEnforcementFilter.LOCALHOST.contains(sRequest.getServerName()))
         {
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Local request. Breaking out...");
+            }
+
             filterChain.doFilter(sRequest, sResponse);
 
             return;
@@ -197,6 +202,18 @@ public class SSLEnforcementFilter implements Filter
 
         if ((this.ignoreHosts != null) && (this.ignoreHosts.length != 0))
         {
+            if (Arrays.asList(this.ignoreHosts).contains("ALL"))
+            {
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ALL URIs are ignored. Breaking ...");
+                }
+
+                filterChain.doFilter(sRequest, sResponse);
+
+                return;
+            }
+
             for (String host : this.ignoreHosts)
             {
                 String requestHost = host.trim();
@@ -223,16 +240,21 @@ public class SSLEnforcementFilter implements Filter
 
         if ((this.ignoreURIs != null) && (this.ignoreURIs.length != 0))
         {
+            if (Arrays.asList(this.ignoreURIs).contains("ALL"))
+            {
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ALL URIs are ignored. Breaking ...");
+                }
+
+                filterChain.doFilter(sRequest, sResponse);
+
+                return;
+            }
+
             // no hosts in ignore list
             for (String uri : this.ignoreURIs)
             {
-                if (StringUtils.equalsIgnoreCase(uri, "ALL"))
-                {
-                    filterChain.doFilter(sRequest, sResponse);
-
-                    return;
-                }
-
                 String requestURI = uri.trim();
 
                 if (DEBUG)

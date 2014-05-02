@@ -33,10 +33,6 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
- *
  * @author khuntly
  * @version 1.0
  */
