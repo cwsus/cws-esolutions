@@ -98,7 +98,14 @@ public class SecurityServiceInitializer
                 }
                 catch (NullPointerException npx)
                 {
-                    DOMConfigurator.configure(FileUtils.getFile(logConfig).toURI().toURL());
+                    try
+                    {
+                        DOMConfigurator.configure(FileUtils.getFile(logConfig).toURI().toURL());
+                    }
+                    catch (NullPointerException npx)
+                    {
+                        System.err.println("Unable to load logging configuration. No logging enabled!")
+                    }
                 }
             }
 
