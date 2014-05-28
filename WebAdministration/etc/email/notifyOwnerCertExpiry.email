@@ -1,0 +1,41 @@
+Production URL:                 &SITE_HOSTNAME
+SSL Certificate Expires:        &EXPIRY_DATE
+Web Instance Name:              &INSTANCE_NAME
+
+     Dear Site Owner,
+
+
+     The SSL certificate for your website will be expiring on &EXPIRY_DATE .
+     To ensure that the highest level of security protection continues, the certificate
+     needs to be renewed prior to expiration.
+
+     This notification is provided to allow you to :
+     1. Notify all business partners of the impending certificate renewal.
+     2. Schedule resources for the renewal process and coordinate with any impacted in-house systems
+        such as TeaLeaf/RUM or any external systems.
+     3. Verify access to the web instance access and error logs.
+
+     IMPORTANT: If this site has 3rd party connections, please review this page.
+     (http://connect.us.hsbc/networked_systems/departments/middleware/ebusiness_infrastructure/services/Cert_Renew_Verisign.html)
+
+     If this site is no longer needed and should be decommissioned, please follow the steps described on this page.
+     (http://connect.us.hsbc/networked_systems/departments/middleware/ebusiness_infrastructure/services/Cert_Renew_Decom.html)
+
+     If you are no longer the owner of this site and should not be receiving this notification, please follow the steps outlined
+     described on this page. .
+     (http://connect.us.hsbc/networked_systems/departments/middleware/ebusiness_infrastructure/services/Cert_Renew_ChgOwner.html)
+
+     If the Minnetonka or RUM Support Team has been included, the certificate renewal needs to be staged with
+     that group to ensure the Tea Leaf/RUM System continues to capture site info after the new certificate is applied.
+     Please send all questions related to Tea Leaf to the Minnetonka Production Support Team, HTS.US.Tealeaf.Support@us.hsbc.com.
+
+
+     CC:  &OWNER_DIST
+
+Regards,
+
+US eBI Certificates
+eBusiness Infrastructure
+Contact: us.ebi.certificates@us.hsbc.com
+Backup Contact: richard.h.giering@us.hsbc.com, kevin.huntly@us.hsbc.com
+

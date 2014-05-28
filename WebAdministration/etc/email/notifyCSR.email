@@ -1,0 +1,9 @@
+Certificate Renewal: &SITE_HOSTNAME
+SME: &SME_NAME
+Requested CA: &CERT_SIGNER
+Requested Type: Extended Validation SSL (EV)
+Server Platform: &WS_PLATFORM
+Contact: us.ebi.certificates@us.hsbc.com
+Backup Contact: richard.h.giering@us.hsbc.com, kevin.huntly@us.hsbc.com
+
+

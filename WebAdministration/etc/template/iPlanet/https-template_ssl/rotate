@@ -1,0 +1,27 @@
+#!/bin/sh
+#
+# Copyright (c) 2003 Sun Microsystems, Inc.  All rights reserved.
+# Use is subject to license terms.
+#
+
+# Rotates server log files
+# This can be run as a cron script
+
+SERVER_ROOT=&SERVER_ROOT&
+INSTANCE_ROOT=&SERVER_ROOT&
+INSTANCE_NAME=&SERVER_ID&
+
+PID_FILE=${SERVER_ROOT}/${INSTANCE_NAME}/logs/pid
+
+if test -f $PID_FILE ; then
+	kill -USR1 `cat $PID_FILE`
+	if test $? -ne 0 ; then
+		exit 1
+	fi
+else
+	echo server not running
+	exit 1
+fi
+
+exit 0
+

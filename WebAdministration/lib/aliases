@@ -1,0 +1,31 @@
+#!/usr/bin/env ksh
+#==============================================================================
+#
+#          FILE:  constants.sh
+#         USAGE:  ./constants.sh
+#   DESCRIPTION:  Sets and unsets system variables
+#
+#       OPTIONS:  ---
+#  REQUIREMENTS:  ---
+#          BUGS:  ---
+#         NOTES:  ---
+#        AUTHOR:  Kevin Huntly <kmhuntly@gmail.com>
+#       COMPANY:  CaspersBox Web Services
+#       VERSION:  1.0
+#       CREATED:  ---
+#      REVISION:  ---
+#==============================================================================
+
+if [ -s /usr/sbin/cryptoadm ]
+then
+    alias getTokenName='/usr/sbin/cryptoadm list metaslot | grep -w token | cut -d ":" -f 2 | sed -e "s/^ *//g"';
+    alias getKeyStoreDir='/usr/sbin/svccfg -s scakiod listprop | grep -w ${KEYSTORE_DIR_IDENTIFIER}';
+fi
+
+## common aliases
+alias keyman='java com.ibm.gsk.ikeyman.ikeycmd';
+alias getWebInfo='cat ${EINFO_WEBSITE_DEFS}';
+alias getPlatformInfo='cat ${EINFO_PLATFORM_DEFS}';
+alias getMachineInfo='cat ${EINFO_MACHINE_DEFS}';
+alias getContactInfo='cat ${EINFO_CONTACT_DEFS}';
+alias getSMEName='echo $(grep -w ${IUSER_AUDIT} /etc/passwd | cut -d ":" -f 5);'

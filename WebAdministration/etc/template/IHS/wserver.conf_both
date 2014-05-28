@@ -1,0 +1,77 @@
+# Config file for &SERVER_ID&
+#
+# Document Root: &WEB_DOC_ROOT&
+# Server ID: &SERVER_ID&
+# Projet Code: &PROJECT_CODE&
+# Site Hostname: &SITE_HOSTNAME&
+# Web root: &WEB_ROOT&
+#
+PidFile                          &WEB_LOG_ROOT&/&SERVER_ID&.pid
+ServerName                       &SITE_HOSTNAME&
+ServerSignature                  On
+ServerTokens                     Prod
+UseCanonicalName                 Off
+DocumentRoot                     "&WEB_DOC_ROOT&"
+AccessFileName                   .htaccess
+
+<Directory />
+    Options                      +FollowSymLinks -SymLinksIfOwnerMatch -ExecCGI -Indexes
+    AllowOverride                none
+    Order                        allow,deny
+    Allow                        from all
+</Directory>
+
+<Directory &WEB_DOC_ROOT&>
+    Options                      +FollowSymLinks -SymLinksIfOwnerMatch -ExecCGI -Indexes
+    AllowOverride                none
+    Order                        allow,deny
+    Allow                        from all
+</Directory>
+
+<Files ~ "^\.ht">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<IfModule headers_module>
+    Header                       add S {SERVER_HEADER}
+</IfModule>
+
+Listen                           {BIND_ADDR}:{NONSEC_PORT_NUM}
+<VirtualHost {BIND_ADDR}:{NONSEC_PORT_NUM}>
+    RewriteEngine                On
+    RewriteLog                   "|&SERVER_ROOT&/bin/rotatelogs '&WEB_LOG_ROOT&/rewrite.%Y%m%d.log' '86400'"
+    RewriteLogLevel              2
+    RewriteCond                  %{REQUEST_METHOD} ^(TRACE|TRACK|PUT|DELETE|OPTIONS) [NC,OR]
+    RewriteCond                  %{ENV:no_access}  yes [NC,OR]
+    RewriteCond                  .*/WEB-INF/.* [NC,OR]
+    RewriteCond                  .*/META-INF/.* [NC,OR]
+    RewriteRule                  .* - [F]
+
+    Include                      conf/{SERVER_INSTANCE}/redirects.conf
+    Include                      conf/{SERVER_INSTANCE}/security.conf
+
+    LogLevel                     error
+    ErrorLog                     "|&SERVER_ROOT&/bin/rotatelogs '&WEB_LOG_ROOT&/error.%Y%m%d.log' '86400'"
+    CustomLog                    "|&SERVER_ROOT&/bin/rotatelogs '&WEB_LOG_ROOT&/access.%Y%m%d.log' '3600'" p14
+</VirtualHost>
+
+Listen                           {SERVER_OP_IP}:{SEC_PORT_NUM}
+<VirtualHost {SERVER_OP_IP}:{SEC_PORT_NUM}>
+    RewriteEngine                On
+    RewriteLog                   "|&SERVER_ROOT&/bin/rotatelogs '&WEB_LOG_ROOT&/rewrite-secure.%Y%m%d.log' '86400'"
+    RewriteLogLevel              2
+    RewriteCond                  %{REQUEST_METHOD} ^(TRACE|TRACK|PUT|DELETE|OPTIONS) [NC,OR]
+    RewriteCond                  %{ENV:no_access}  yes [NC,OR]
+    RewriteCond                  .*/WEB-INF/.* [NC,OR]
+    RewriteCond                  .*/META-INF/.* [NC,OR]
+    RewriteRule                  .* - [F]
+
+    Include                      conf/{SERVER_INSTANCE}/redirects.conf
+    Include                      conf/{SERVER_INSTANCE}/security.conf
+
+    LogLevel                     error
+    ErrorLog                     "|&SERVER_ROOT&/bin/rotatelogs '&WEB_LOG_ROOT&/error-secure.%Y%m%d.log' '86400'"
+    CustomLog                    "|&SERVER_ROOT&/bin/rotatelogs '&WEB_LOG_ROOT&/access-secure.%Y%m%d.log' '3600'" p14
+</VirtualHost>
+

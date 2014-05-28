@@ -1,0 +1,60 @@
+/*  Copyright (c) 2002 Sun Microsystems, Inc.  All rights reserved.  */
+/*  Use is subject to license terms.                                 */
+
+// ========== SYSTEM CODE PERMISSIONS =========================================
+
+
+// These permissions apply to javac
+grant codeBase "file:${java.home}/lib/-" {
+        permission java.security.AllPermission;
+};
+
+// These permissions apply to all shared system extensions
+grant codeBase "file:${java.home}/jre/lib/ext/-" {
+        permission java.security.AllPermission;
+};
+
+// These permissions apply to javac when ${java.home} points at $JAVA_HOME/jre
+grant codeBase "file:${java.home}/../lib/-" {
+        permission java.security.AllPermission;
+};
+
+// These permissions apply to all shared system extensions when
+// ${java.home} points at $JAVA_HOME/jre
+grant codeBase "file:${java.home}/lib/ext/-" {
+        permission java.security.AllPermission;
+};
+
+
+// Core server classes get all permissions by default
+grant codeBase "file:${com.sun.web.installRoot}/bin/https/jar/-" {
+	permission java.security.AllPermission;
+};
+
+// grant all permissions to the search engine classes when they are
+// located under /usr/share/lib when installed as a Solaris package 
+grant codeBase "file:/usr/share/lib/ktsearch.jar" {
+	permission java.security.AllPermission;
+};
+
+// grant all permissions to the search engine classes when they are
+// located under /opt/sun/lib when installed as a Linux RPM package
+grant codeBase "file:/opt/sun/private/share/lib/ktsearch.jar" {
+	permission java.security.AllPermission;
+};
+
+// Basic set of required permissions granted to all application code
+grant {
+	permission java.lang.RuntimePermission  "loadLibrary.*";
+	permission java.lang.RuntimePermission  "queuePrintJob";
+	permission java.net.SocketPermission    "*", "connect";
+	permission java.io.FilePermission       "<<ALL FILES>>", "read,write";
+	permission java.util.PropertyPermission "*", "read";
+};
+
+
+// Following grant block is only required for JSP tag libraries using
+// reflection. If not needed the recommendation is to remove this section.
+grant {
+	permission java.lang.RuntimePermission "accessDeclaredMembers";
+};

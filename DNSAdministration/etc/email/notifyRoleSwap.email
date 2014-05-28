@@ -1,0 +1,7 @@
+DNS Team,
+
+A service role swap has been performed by &USER_NAME.
+
+Slave server &SLAVE has been promoted to master.
+Master server &MASTER has been demoted to slave.
+
