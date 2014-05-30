@@ -112,6 +112,8 @@ typeset -r -x _OK=$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/O
 typeset -r -x DATESYS=$(date +%Y%m%d_%H-%M-%S);
 typeset -r -x CURRENT_DATE=$(date '+%Y%m%d');
 typeset -r -x CURRENT_TIMESTAMP=$(date '+%Y%m%d%H%M');
+typeset -r -x SYSTEM_HOSTNAME="${SYSTEM_HOSTNAME}";
+typeset -r -x SYSTEM_UPTIME="${SYSTEM_UPTIME}";
 set -A IUSER_GROUPS $(groups); typeset -r -x IUSER_GROUPS;
 set -A PROXY_SERVERS $(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/proxy_servers/{print $2}' | sed -e 's/^ *//g;s/ *$//g'); typeset -r -x PROXY_SERVERS;
 [ -z "$(/usr/bin/env who am i | awk '{print $1}')" ] && typeset -r -x IUSER_AUDIT=$(/usr/bin/env whoami) || typeset -r -x IUSER_AUDIT=$(/usr/bin/env who am i | awk '{print $1}');
