@@ -17,7 +17,6 @@
 #      REVISION:  ---
 #==============================================================================
 ## Application constants
-PLUGIN_NAME="webadmin";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
@@ -30,19 +29,19 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 #==============================================================================
 function buildSSLSite
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" == "${_TRUE}" ]] && set -x;
+    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Buildout SSL-enabled website ..";
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Buildout SSL-enabled website ..";
 
-    trap "print '$(grep system.trap.signals "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed "s/%SIGNAL%/Ctrl-C/")'; sleep ${MESSAGE_DELAY}; reset; clear; continue " 1 2 3
+    trap "print '$(grep system.trap.signals "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%SIGNAL%/Ctrl-C/")'; sleep ${MESSAGE_DELAY}; reset; clear; continue " 1 2 3
 
     while true
     do
         if [ ! -z "${BUILD_COMPLETE}" ] && [ "${BUILD_COMPLETE}" = "${_TRUE}" ]
         then
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Received request to break out. ADD_RECORDS->${ADD_RECORDS}, CANCEL_REQ->${CANCEL_REQ}.";
+            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Received request to break out. ADD_RECORDS->${ADD_RECORDS}, CANCEL_REQ->${CANCEL_REQ}.";
 
             break;
         fi
@@ -56,7 +55,7 @@ function buildSSLSite
 
         read SSL_PORTNUM;
 
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SSL_PORTNUM -> ${SSL_PORTNUM}";
+        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SSL_PORTNUM -> ${SSL_PORTNUM}";
 
         reset; clear;
 
@@ -72,7 +71,7 @@ function buildSSLSite
                     rm -rf ${APP_ROOT}/${APP_FLAG};
                 fi
 
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover process aborted";
+                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover process aborted";
 
                 print "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
@@ -80,7 +79,7 @@ function buildSSLSite
                 unset SVC_LIST;
 
                 ## terminate this thread and return control to main
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                 ## temporarily unset stuff
                 unset METHOD_NAME;
@@ -98,7 +97,7 @@ function buildSSLSite
                     if [ ${SSL_PORTNUM} -gt 65535 ]
                     then
                         ## port number invalid
-                        ${LOGGER} ERROR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An invalid port number was provided.";
+                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An invalid port number was provided.";
 
                         print "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
@@ -121,7 +120,7 @@ function buildSSLSite
 
                             read PORT_CONFIRMATION;
 
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PORT_CONFIRMATION -> ${PORT_CONFIRMATION}";
+                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PORT_CONFIRMATION -> ${PORT_CONFIRMATION}";
 
                             reset; clear;
 
@@ -144,7 +143,7 @@ function buildSSLSite
                                     reset; clear; break;
                                     ;;
                                 *)
-                                    ${LOGGER} ERROR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An invalid response was provided.";
+                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An invalid response was provided.";
 
                                     print "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
@@ -165,7 +164,7 @@ function buildSSLSite
                         . ${APP_ROOT}/lib/validators/validatePortNumber.sh ${SSL_PORTNUM};
                         RET_CODE=${?};
 
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
                         if [ ! -z "${RET_CODE}" ] && [ ${RET_CODE} == 0 ]
                         then
@@ -180,7 +179,7 @@ function buildSSLSite
 
                             read NONSSL_PORTNUM;
 
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NONSSL_PORTNUM -> ${NONSSL_PORTNUM}";
+                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NONSSL_PORTNUM -> ${NONSSL_PORTNUM}";
 
                             reset; clear;
 
@@ -196,7 +195,7 @@ function buildSSLSite
                                         rm -rf ${APP_ROOT}/${APP_FLAG};
                                     fi
 
-                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover process aborted";
+                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover process aborted";
 
                                     print "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
@@ -204,7 +203,7 @@ function buildSSLSite
                                     unset SVC_LIST;
 
                                     ## terminate this thread and return control to main
-                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                                     ## temporarily unset stuff
                                     unset METHOD_NAME;
@@ -222,7 +221,7 @@ function buildSSLSite
                                         if [ ${NONSSL_PORTNUM} -gt 65535 ]
                                         then
                                             ## port number invalid
-                                            ${LOGGER} ERROR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An invalid port number was provided.";
+                                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An invalid port number was provided.";
 
                                             print "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
@@ -245,7 +244,7 @@ function buildSSLSite
 
                                                 read PORT_CONFIRMATION;
 
-                                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PORT_CONFIRMATION -> ${PORT_CONFIRMATION}";
+                                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PORT_CONFIRMATION -> ${PORT_CONFIRMATION}";
 
                                                 reset; clear;
 
@@ -268,7 +267,7 @@ function buildSSLSite
                                                         reset; clear; break;
                                                         ;;
                                                     *)
-                                                        ${LOGGER} ERROR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An invalid response was provided.";
+                                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An invalid response was provided.";
 
                                                         print "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
@@ -289,7 +288,7 @@ function buildSSLSite
                                             . ${APP_ROOT}/lib/validators/validatePortNumber.sh ${NONSSL_PORTNUM};
                                             RET_CODE=${?};
 
-                                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+                                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
                                             if [ ! -z "${RET_CODE}" ] && [ ${RET_CODE} == 0 ]
                                             then
@@ -305,7 +304,7 @@ function buildSSLSite
 
                                                     read ENABLE_WEBSPHERE;
 
-                                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ENABLE_WEBSPHERE -> ${ENABLE_WEBSPHERE}";
+                                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ENABLE_WEBSPHERE -> ${ENABLE_WEBSPHERE}";
 
                                                     reset; clear;
 
@@ -321,12 +320,12 @@ function buildSSLSite
                                                                 rm -rf ${APP_ROOT}/${APP_FLAG};
                                                             fi
 
-                                                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover process aborted";
+                                                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover process aborted";
 
                                                             print "$(grep -w system.request.canceled  "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                                             ## terminate this thread and return control to main
-                                                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                                                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                                                             ## temporarily unset stuff
                                                             unset METHOD_NAME;
@@ -343,7 +342,7 @@ function buildSSLSite
                                                             ## re-define ENABLE_WEBSPHERE
                                                             ENABLE_WEBSPHERE=${_TRUE};
 
-                                                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ENABLE_WEBSPHERE -> ${ENABLE_WEBSPHERE}";
+                                                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ENABLE_WEBSPHERE -> ${ENABLE_WEBSPHERE}";
 
                                                             reset; clear; break;
                                                             ;;
@@ -351,7 +350,7 @@ function buildSSLSite
                                                             ## ok. at this point we have enough to work with. start building
                                                             ENABLE_WEBSPHERE=${_FALSE};
 
-                                                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ENABLE_WEBSPHERE -> ${ENABLE_WEBSPHERE}";
+                                                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ENABLE_WEBSPHERE -> ${ENABLE_WEBSPHERE}";
 
                                                             reset; clear; break;
                                                             ;;
@@ -359,7 +358,7 @@ function buildSSLSite
                                                             ## port number provided isnt a number
                                                             reset; clear;
 
-                                                            ${LOGGER} ERROR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not provided.";
+                                                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not provided.";
 
                                                             print "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
@@ -377,12 +376,12 @@ function buildSSLSite
 
                                                     print "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
-                                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command createWebInstance.sh ${BUILD_TYPE_SSL} ..";
+                                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command createWebInstance.sh ${BUILD_TYPE_SSL} ..";
 
                                                     . ${APP_ROOT}/lib/createWebInstance.sh ${BUILD_TYPE_SSL};
                                                     RET_CODE=${?};
 
-                                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+                                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
                                                     reset; clear;
 
@@ -412,7 +411,7 @@ function buildSSLSite
                                                     fi
                                                 else
                                                     ## missing variable, cant continue
-                                                    ${LOGGER} ERROR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No response was obtained for ENABLE_WEBSPHERE.";
+                                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No response was obtained for ENABLE_WEBSPHERE.";
 
                                                     print "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
@@ -423,9 +422,9 @@ function buildSSLSite
                                                 fi
                                             else
                                                 ## port in use
-                                                ${LOGGER} ERROR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Port number provided is already in use.";
+                                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Port number provided is already in use.";
 
-                                                print "$(grep -w provided.port.already.used "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                print "$(grep -w provided.port.already.used -e "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                                 ## unset SVC_LIST, we dont need it now
                                                 unset SSL_PORTNUM;
@@ -435,7 +434,7 @@ function buildSSLSite
                                         else
                                             ## ssl port number not valid
                                             ## port number provided isnt a number
-                                            ${LOGGER} ERROR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided port number, ${SSL_PORTNUM}, is not a number.";
+                                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided port number, ${SSL_PORTNUM}, is not a number.";
 
                                             print "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
@@ -446,7 +445,7 @@ function buildSSLSite
                                         fi
                                     else
                                         ## port number provided isnt a number
-                                        ${LOGGER} ERROR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided port number, ${SSL_PORTNUM}, is not a number.";
+                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided port number, ${SSL_PORTNUM}, is not a number.";
 
                                         print "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
@@ -458,9 +457,9 @@ function buildSSLSite
                                     ;;
                             esac
                         else
-                            ${LOGGER} ERROR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Port number provided is already in use.";
+                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Port number provided is already in use.";
 
-                            print "$(grep -w provided.port.already.used "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                            print "$(grep -w provided.port.already.used -e "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                             ## unset SVC_LIST, we dont need it now
                             unset SSL_PORTNUM;
@@ -470,7 +469,7 @@ function buildSSLSite
                     fi
                 else
                     ## port number provided isnt a number
-                    ${LOGGER} ERROR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided port number, ${SSL_PORTNUM}, is not a number.";
+                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided port number, ${SSL_PORTNUM}, is not a number.";
 
                     print "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
@@ -483,14 +482,14 @@ function buildSSLSite
         esac
     done
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 }
 
 METHOD_NAME="${CNAME}#startup";
 
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID $$";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID $$";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
 buildSSLSite;
 

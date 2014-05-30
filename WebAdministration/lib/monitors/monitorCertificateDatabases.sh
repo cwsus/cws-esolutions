@@ -18,7 +18,7 @@
 #      REVISION:  ---
 #==============================================================================
 ## Application constants
-PLUGIN_NAME="webadmin";
+[ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="WebAdministration";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
@@ -31,11 +31,11 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 #==============================================================================
 function monitorCertDatabases
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" == "${_TRUE}" ]] && set -x;
+    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing monitor on: ${HOSTNAME}";
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing monitor on: ${HOSTNAME}";
 
     if [ ! -z "${1}" ]
     then
@@ -44,12 +44,12 @@ function monitorCertDatabases
         EXPIRY_EPOCH=$(returnEpochTime $(date +"%Y %m %d") ${VALIDATION_PERIOD});
     fi
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXPIRY_EPOCH -> ${EXPIRY_EPOCH}";
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXPIRY_EPOCH -> ${EXPIRY_EPOCH}";
 
     ## ok, lets sort out where we are and what to look for
     if [ ! -z "${WS_PLATFORM}" ]
     then
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WS_PLATFORM -> ${WS_PLATFORM}";
+        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WS_PLATFORM -> ${WS_PLATFORM}";
 
         if [ "${WS_PLATFORM}" = "${IPLANET_TYPE_IDENTIFIER}" ]
         then
@@ -60,10 +60,10 @@ function monitorCertDatabases
             set -A VALIDATE_SERVER_LIST $(${APP_ROOT}/lib/retrieveSiteList.sh certdb);
 
             CNAME=$(basename ${0});
-            [[ ! -z "${TRACE}" && "${TRACE}" == "${_TRUE}" ]] && set -x;
+            [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST -> ${VALIDATE_SERVER_LIST}";
+            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST -> ${VALIDATE_SERVER_LIST}";
 
             if [ ! -z "${VALIDATE_SERVER_LIST}" ]
             then
@@ -72,14 +72,14 @@ function monitorCertDatabases
                     ## ok, validate it
                     for VALIDATE_SITE in ${VALIDATE_SERVER_LIST[@]}
                     do
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SITE -> ${VALIDATE_SITE}";
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SITE -> ${VALIDATE_SITE}";
 
                         CERT_DATABASE="${VALIDATE_SITE}-${HOSTNAME}-";
                         EXP_CERT_NICKNAME=$(grep ${IPLANET_NICKNAME_IDENTIFIER} ${IPLANET_ROOT}/${VALIDATE_SITE}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG} | \
                             sed -e "s/${IPLANET_NICKNAME_IDENTIFIER}=\"/%/" | cut -d "%" -f 2 | cut -d "\"" -f 1 | cut -d ":" -f 2| sort | uniq);
     
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_DATABASE -> ${CERT_DATABASE}";
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXP_CERT_NICKNAME -> ${EXP_CERT_NICKNAME}";
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_DATABASE -> ${CERT_DATABASE}";
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXP_CERT_NICKNAME -> ${EXP_CERT_NICKNAME}";
     
                         if [ -O ${IPLANET_ROOT}/${IPLANET_CERT_DIR}/${CERT_DATABASE}${IPLANET_CERT_STORE_KEY_SUFFIX} ] &&
                             [ -O ${IPLANET_ROOT}/${IPLANET_CERT_DIR}/${CERT_DATABASE}${IPLANET_CERT_STORE_CERT_SUFFIX} ] ||
@@ -97,17 +97,17 @@ function monitorCertDatabases
                                 CERT_EXPIRY=$(echo ${CERT_DETAIL} | cut -d "%" -f 3 | awk '{print $5, $2, $3}');
                                 EXPIRY_MONTH=$(echo ${CERT_EXPIRY} | awk '{print $2}');
     
-                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_NICKNAME -> ${CERT_NICKNAME}";
-                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_HOSTNAME -> ${CERT_HOSTNAME}";
-                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_EXPIRY -> ${CERT_EXPIRY}";
-                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXPIRY_MONTH -> ${EXPIRY_MONTH}";
+                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_NICKNAME -> ${CERT_NICKNAME}";
+                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_HOSTNAME -> ${CERT_HOSTNAME}";
+                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_EXPIRY -> ${CERT_EXPIRY}";
+                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXPIRY_MONTH -> ${EXPIRY_MONTH}";
     
                                 if [ ! -z "${CERT_EXPIRY}" ]
                                 then
                                     ## ok, we have a nickname and an expiration date. convert it
                                     EPOCH_EXPIRY=$(returnEpochTime $(echo ${CERT_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval echo \${${EXPIRY_MONTH}})/"));
     
-                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EPOCH_EXPIRY -> ${EPOCH_EXPIRY}";
+                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EPOCH_EXPIRY -> ${EPOCH_EXPIRY}";
     
                                     if [ ${EPOCH_EXPIRY} -le ${EXPIRY_EPOCH} ]
                                     then
@@ -124,7 +124,7 @@ function monitorCertDatabases
                             fi
                         else
                             ## i cant read the file, error out
-                            ${LOGGER} ERROR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate database ${CERT_DATABASE} cannot be read by the executing user. Cannot provide data.";
+                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate database ${CERT_DATABASE} cannot be read by the executing user. Cannot provide data.";
                             ${LOGGER} MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate database ${CERT_DATABASE} cannot be read by the executing user. Cannot provide data.";
                         fi
                     done
@@ -133,7 +133,7 @@ function monitorCertDatabases
                 RETURN_CODE=0;
             else
                 ## no certificate databases to validate
-                ${LOGGER} ERROR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST was found to be empty. Cannot continue.";
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST was found to be empty. Cannot continue.";
 
                 RETURN_CODE=29;
             fi
@@ -142,14 +142,14 @@ function monitorCertDatabases
             ## ihs host
             set -A VALIDATE_SERVER_LIST $(ls -ltr ${IHS_CERT_DIR} | grep ${IHS_DB_CRT_SUFFIX} | awk '{print $9}');
 
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST -> ${VALIDATE_SERVER_LIST}";
+            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST -> ${VALIDATE_SERVER_LIST}";
 
             if [ ! -z "${VALIDATE_SERVER_LIST}" ]
             then
                 ## ok, validate it
                 for VALIDATE_SITE in ${VALIDATE_SERVER_LIST[@]}
                 do
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SITE -> ${VALIDATE_SITE}";
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SITE -> ${VALIDATE_SITE}";
 
                     if [ -O ${IHS_CERT_DIR}/${VALIDATE_SITE}${IHS_DB_CRT_SUFFIX} ] &&
                         [ -O ${IHS_CERT_DIR}/${VALIDATE_SITE}${IHS_DB_CRT_SUFFIX} ]
@@ -158,7 +158,7 @@ function monitorCertDatabases
                         CERT_NICKNAME=$(keyman -cert -list personal -db ${IHS_CERT_DIR}/${VALIDATE_SITE}${IHS_DB_CRT_SUFFIX} \
                             -pw $(cat ${APP_ROOT}/${IHS_CERT_DB_PASSFILE}) -type ${IHS_KEY_DB_TYPE} | grep -v ${VALIDATE_SITE}${IHS_DB_CRT_SUFFIX} | sed -e "s/^ *//g");
 
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_NICKNAME -> ${CERT_NICKNAME}";
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_NICKNAME -> ${CERT_NICKNAME}";
 
                         if [ ! -z "${CERT_NICKNAME}" ]
                         then
@@ -169,16 +169,16 @@ function monitorCertDatabases
                             CERT_EXPIRY=$(echo ${CERT_DETAIL} | cut -d "@" -f 3 | awk '{print $4, $2, $3}' | sed -e "s/,//");
                             EXPIRY_MONTH=$(echo ${CERT_EXPIRY} | awk '{print $2}' | cut -c 1-3);
 
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_HOSTNAME -> ${CERT_HOSTNAME}";
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_EXPIRY -> ${CERT_EXPIRY}";
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXPIRY_MONTH -> ${EXPIRY_MONTH}";
+                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_HOSTNAME -> ${CERT_HOSTNAME}";
+                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_EXPIRY -> ${CERT_EXPIRY}";
+                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXPIRY_MONTH -> ${EXPIRY_MONTH}";
 
                             if [ ! -z "${CERT_EXPIRY}" ]
                             then
                                 ## ok, we have a nickname and an expiration date. convert it
                                 EPOCH_EXPIRY=$(returnEpochTime $(echo ${CERT_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval echo \${${EXPIRY_MONTH}})/"));
 
-                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EPOCH_EXPIRY -> ${EPOCH_EXPIRY}";
+                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EPOCH_EXPIRY -> ${EPOCH_EXPIRY}";
 
                                 if [ ${EPOCH_EXPIRY} -le ${EXPIRY_EPOCH} ]
                                 then
@@ -200,7 +200,7 @@ function monitorCertDatabases
                         CERT_NICKNAME=$(keyman -cert -list personal -db ${IHS_CERT_DIR}/${VALIDATE_SITE}${IHS_DB_CRT_SUFFIX} \
                             -pw $(cat ${APP_ROOT}/${IHS_CERT_DB_PASSFILE}) -type ${IHS_KEY_DB_TYPE} | grep -v ${VALIDATE_SITE}${IHS_DB_CRT_SUFFIX} | sed -e "s/^ *//g");
 
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_NICKNAME -> ${CERT_NICKNAME}";
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_NICKNAME -> ${CERT_NICKNAME}";
 
                         if [ ! -z "${CERT_NICKNAME}" ]
                         then
@@ -211,16 +211,16 @@ function monitorCertDatabases
                             CERT_EXPIRY=$(echo ${CERT_DETAIL} | cut -d "@" -f 3 | awk '{print $4, $2, $3}' | sed -e "s/,//");
                             EXPIRY_MONTH=$(echo ${CERT_EXPIRY} | awk '{print $2}' | cut -c 1-3);
 
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_HOSTNAME -> ${CERT_HOSTNAME}";
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_EXPIRY -> ${CERT_EXPIRY}";
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXPIRY_MONTH -> ${EXPIRY_MONTH}";
+                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_HOSTNAME -> ${CERT_HOSTNAME}";
+                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_EXPIRY -> ${CERT_EXPIRY}";
+                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXPIRY_MONTH -> ${EXPIRY_MONTH}";
 
                             if [ ! -z "${CERT_EXPIRY}" ]
                             then
                                 ## ok, we have a nickname and an expiration date. convert it
                                 EPOCH_EXPIRY=$(returnEpochTime $(echo ${CERT_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval echo \${${EXPIRY_MONTH}})/"));
 
-                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EPOCH_EXPIRY -> ${EPOCH_EXPIRY}";
+                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EPOCH_EXPIRY -> ${EPOCH_EXPIRY}";
 
                                 if [ ${EPOCH_EXPIRY} -le ${EXPIRY_EPOCH} ]
                                 then
@@ -237,7 +237,7 @@ function monitorCertDatabases
                         fi
                     else
                         ## i cant read the file, error out
-                        ${LOGGER} ERROR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate database ${CERT_DATABASE} cannot be read by the executing user. Cannot provide data.";
+                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate database ${CERT_DATABASE} cannot be read by the executing user. Cannot provide data.";
                         ${LOGGER} MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate database ${CERT_DATABASE} cannot be read by the executing user. Cannot provide data.";
                     fi
                 done
@@ -245,14 +245,14 @@ function monitorCertDatabases
                 RETURN_CODE=0;
             else
                 ## no certificate databases to validate
-                ${LOGGER} ERROR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST was found to be empty. Cannot continue.";
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST was found to be empty. Cannot continue.";
 
                 RETURN_CODE=29;
             fi
         fi
     else
         ## unknown platform type
-        ${LOGGER} ERROR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An unknown platform type was encountered. Cannot continue.";
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An unknown platform type was encountered. Cannot continue.";
 
         RETURN_CODE=29;
     fi
@@ -266,11 +266,10 @@ function monitorCertDatabases
     unset VALIDATE_SERVER_LIST;
     unset EXPIRY_EPOCH;
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh || \
-    echo "Failed to locate configuration data. Cannot continue.";
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 [ ${#} -eq 0 ] && usage;
@@ -278,9 +277,9 @@ function monitorCertDatabases
 OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
 monitorCertDatabases ${@};
 

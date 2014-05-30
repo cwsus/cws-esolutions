@@ -18,7 +18,8 @@
 #==============================================================================
 
 case ${SCRIPT_ROOT} in
-    *lib/plugins/*/executors*|*lib/plugins/*/monitors*|*lib/plugins/*/sys*|*lib/plugins/*/bin*) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../../../../etc" ;;
+    *lib/plugins/*/executors*|*lib/plugins/*/monitors*) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../../../../etc" ;;
+    *lib/plugins/*/sys*|*lib/plugins/*/bin*|*lib/plugins/*/lib*) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../../../../etc" ;;
     *lib/plugins/*) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../../../etc" ;;
     *lib/sys*) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../../etc" ;;
     *lib*|*bin*) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../etc" ;;
@@ -45,76 +46,74 @@ fi
 
 ## source functions
 ## application information
-typeset -r -x APP_ROOT=$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/app_root/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x MAIN_CLASS=$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/main_class/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x BIN_DIRECTORY=$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/bin_directory/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x LIB_DIRECTORY=$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/lib_directory/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x PLUGIN_CONFIG_DIR=$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/plugin_config/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x PLUGIN_LIB_DIR=$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/plugin_lib_dir/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x LIST_DISPLAY_MAX=$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/max_list_display/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x FAILURE_THRESHOLD=$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/datacenter_failure_threshold/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x THREAD_TIMEOUT=$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/thread_timeout/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x SSH_THREAD_TIMEOUT=$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/ssh_thread_timeout/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x MONITOR_THREAD_TIMEOUT=$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/monitor_thread_timeout/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x RESTART_DELAY=$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/service_restart_delay/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x MESSAGE_DELAY=$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/message_delay/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x THREAD_DELAY=$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/thread_delay/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x EXECUTION_DELAY=$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/execution_delay/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x THREAD_INTERVAL=$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/thread_interval/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x OVERRIDE_TARGET_VALIDATION=$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/override_target_validation/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x ENVIRONMENT_SCRIPT=$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/environment_script/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x ORACLE_HOME=$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/oracle_home/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x TNS_ADMIN=$(eval echo $(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/tnsadmin/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g'));
-typeset -r -x JAVA_HOME=$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/java_home/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x RANDOM_GENERATOR=$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/random_generator/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x MAILER_CLASS=$(eval echo $(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/mailer_class/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g'));
-typeset -r -x LOCKFILE=$(eval echo $(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/lock_file/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g'));
+typeset -r -x APP_ROOT=$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/app_root/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x MAIN_CLASS=$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/main_class/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x BIN_DIRECTORY=$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/bin_directory/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x LIB_DIRECTORY=$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/lib_directory/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x ETC_DIRECTORY=$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/etc_directory/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x PLUGIN_DIR=$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/plugin_dir/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x LIST_DISPLAY_MAX=$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/max_list_display/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x FAILURE_THRESHOLD=$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/datacenter_failure_threshold/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x THREAD_TIMEOUT=$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/thread_timeout/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x SSH_THREAD_TIMEOUT=$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/ssh_thread_timeout/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x MONITOR_THREAD_TIMEOUT=$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/monitor_thread_timeout/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x RESTART_DELAY=$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/service_restart_delay/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x MESSAGE_DELAY=$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/message_delay/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x THREAD_DELAY=$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/thread_delay/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x EXECUTION_DELAY=$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/execution_delay/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x THREAD_INTERVAL=$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/thread_interval/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x ORACLE_HOME=$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/oracle_home/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x TNS_ADMIN=$(eval echo $(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/tnsadmin/{print $2}' | sed -e 's/^ *//g;s/ *$//g'));
+typeset -r -x JAVA_HOME=$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/java_home/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x RANDOM_GENERATOR=$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/random_generator/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x MAILER_CLASS=$(eval echo $(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/mailer_class/{print $2}' | sed -e 's/^ *//g;s/ *$//g'));
+typeset -r -x LOCKFILE=$(eval echo $(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/lock_file/{print $2}' | sed -e 's/^ *//g;s/ *$//g'));
 ## path
-typeset -r -x APP_PATH=$(eval echo $(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/app_path/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g'));
-typeset -r -x SYS_PATH=$(eval echo $(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/sys_path/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g'));
-typeset -r -x APP_LIB_PATH=$(eval echo $(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/ld_library_path/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g'));
+typeset -r -x APP_PATH=$(eval echo $(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/app_path/{print $2}' | sed -e 's/^ *//g;s/ *$//g'));
+typeset -r -x SYS_PATH=$(eval echo $(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/sys_path/{print $2}' | sed -e 's/^ *//g;s/ *$//g'));
+typeset -r -x APP_LIB_PATH=$(eval echo $(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/ld_library_path/{print $2}' | sed -e 's/^ *//g;s/ *$//g'));
 
 ## application property files
-typeset -r -x ERROR_MESSAGES=${APP_ROOT}/$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/error_resources/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x SYSTEM_MESSAGES=${APP_ROOT}/$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/message_resources/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
+typeset -r -x ERROR_MESSAGES=${APP_ROOT}/$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/error_resources/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x SYSTEM_MESSAGES=${APP_ROOT}/$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/message_resources/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
 
 ## logging
-typeset -r -x APP_LOGGING_CONFIG=${APP_ROOT}/$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/logging_properties/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x LOGGER=$(eval echo $(sed '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/LOGGER/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g'));
-typeset -r -x VERBOSE=$(sed '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/ENABLE_DEBUG/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x TRACE=$(sed '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/ENABLE_TRACE/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x LOG_ROOT=$(eval echo $(sed '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/LOG_DIR/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g'));
-typeset -r -x ARCHIVE_ENABLED=$(sed '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/ARCHIVE_ENABLED/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x ARCHIVE_LOG_ROOT=$(eval echo $(sed '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/ARCHIVE_DIR/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g'));
-typeset -r -x RECORDER_CONV=$(sed '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/CONVERSION_PATTERN/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x DATE_PATTERN=$(sed '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/DATE_PATTERN/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x ROTATE_ON_SIZE=$(sed '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/FILE_SIZE_LIMIT/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x RETENTION_TIME=$(sed '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/LOG_RETENTION_PERIOD/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x ROLLOVER_PERIOD=$(sed '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/ROLLOVER_PERIOD/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x ERROR_RECORDER_FILE=$(sed '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/ERROR_RECORDER.File/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
+typeset -r -x APP_LOGGING_CONFIG=${APP_ROOT}/$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/logging_properties/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x LOGGER=$(eval echo $(sed -e '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | awk -F  "=" '/LOGGER/{print $2}' | sed -e 's/^ *//g;s/ *$//g'));
+typeset -r -x VERBOSE=$(sed -e '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | awk -F  "=" '/ENABLE_DEBUG/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x TRACE=$(sed -e '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | awk -F  "=" '/ENABLE_TRACE/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x LOG_ROOT=$(eval echo $(sed -e '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | awk -F  "=" '/LOG_DIR/{print $2}' | sed -e 's/^ *//g;s/ *$//g'));
+typeset -r -x ARCHIVE_ENABLED=$(sed -e '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | awk -F  "=" '/ARCHIVE_ENABLED/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x ARCHIVE_LOG_ROOT=$(eval echo $(sed -e '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | awk -F  "=" '/ARCHIVE_DIR/{print $2}' | sed -e 's/^ *//g;s/ *$//g'));
+typeset -r -x RECORDER_CONV=$(sed -e '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | awk -F  "=" '/CONVERSION_PATTERN/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x DATE_PATTERN=$(sed -e '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | awk -F  "=" '/DATE_PATTERN/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x ROTATE_ON_SIZE=$(sed -e '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | awk -F  "=" '/FILE_SIZE_LIMIT/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x RETENTION_TIME=$(sed -e '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | awk -F  "=" '/LOG_RETENTION_PERIOD/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x ROLLOVER_PERIOD=$(sed -e '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | awk -F  "=" '/ROLLOVER_PERIOD/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x ERROR_RECORDER_FILE=$(sed -e '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | awk -F  "=" '/ERROR_RECORDER.File/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
 typeset -r -x ERROR_RECORDER=$(echo ${ERROR_RECORDER_FILE} | sed -e "s^log^$(date +"${DATE_PATTERN}").log^");
-typeset -r -x DEBUG_RECORDER_FILE=$(sed '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/DEBUG_RECORDER.File/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
+typeset -r -x DEBUG_RECORDER_FILE=$(sed -e '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | awk -F  "=" '/DEBUG_RECORDER.File/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
 typeset -r -x DEBUG_RECORDER=$(echo ${DEBUG_RECORDER_FILE} | sed -e "s^log^$(date +"${DATE_PATTERN}").log^");
-typeset -r -x TRACE_RECORDER_FILE=$(sed '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/TRACE_RECORDER.File/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
+typeset -r -x TRACE_RECORDER_FILE=$(sed -e '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | awk -F  "=" '/TRACE_RECORDER.File/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
 typeset -r -x TRACE_RECORDER=$(echo ${TRACE_RECORDER_FILE} | sed -e "s^log^$(date +"${DATE_PATTERN}").log^");
-typeset -r -x AUDIT_RECORDER_FILE=$(sed '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/AUDIT_RECORDER.File/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
+typeset -r -x AUDIT_RECORDER_FILE=$(sed -e '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | awk -F  "=" '/AUDIT_RECORDER.File/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
 typeset -r -x AUDIT_RECORDER=$(echo ${AUDIT_RECORDER_FILE} | sed -e "s^log^$(date +"${DATE_PATTERN}").log^");
-typeset -r -x WARN_RECORDER_FILE=$(sed '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/WARN_RECORDER.File/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
+typeset -r -x WARN_RECORDER_FILE=$(sed -e '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | awk -F  "=" '/WARN_RECORDER.File/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
 typeset -r -x WARN_RECORDER=$(echo ${WARN_RECORDER_FILE} | sed -e "s^log^$(date +"${DATE_PATTERN}").log^");
-typeset -r -x INFO_RECORDER_FILE=$(sed '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/INFO_RECORDER.File/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
+typeset -r -x INFO_RECORDER_FILE=$(sed -e '/^ *#/d;s/#.*//' ${APP_LOGGING_CONFIG} | awk -F  "=" '/INFO_RECORDER.File/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
 typeset -r -x INFO_RECORDER=$(echo ${INFO_RECORDER_FILE} | sed -e "s^log^$(date +"${DATE_PATTERN}").log^");
 
 [[ -z "${APP_LOGGING_CONFIG}" || "${LOGGER}" = "" ]] && typeset +r LOGGER && typeset -r -x LOGGER=/bin/false;
 
 ## uncommon constants
-typeset -r -x _TRUE=$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/TRUE/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x _FALSE=$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/FALSE/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-typeset -r -x _OK=$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/OK/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
+typeset -r -x _TRUE=$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/TRUE/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x _FALSE=$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/FALSE/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+typeset -r -x _OK=$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/OK/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
 typeset -r -x DATESYS=$(date +%Y%m%d_%H-%M-%S);
 typeset -r -x CURRENT_DATE=$(date '+%Y%m%d');
 typeset -r -x CURRENT_TIMESTAMP=$(date '+%Y%m%d%H%M');
 set -A IUSER_GROUPS $(groups); typeset -r -x IUSER_GROUPS;
-set -A PROXY_SERVERS $(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/proxy_servers/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g'); typeset -r -x PROXY_SERVERS;
+set -A PROXY_SERVERS $(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/proxy_servers/{print $2}' | sed -e 's/^ *//g;s/ *$//g'); typeset -r -x PROXY_SERVERS;
 [ -z "$(/usr/bin/env who am i | awk '{print $1}')" ] && typeset -r -x IUSER_AUDIT=$(/usr/bin/env whoami) || typeset -r -x IUSER_AUDIT=$(/usr/bin/env who am i | awk '{print $1}');
 
 ## counters
@@ -127,8 +126,8 @@ typeset -x -i RETRY_COUNT=0;
 typeset -x -i STATUS=0;
 
 ## prompts
-PS3_PROMPT=$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/ps3_prompt/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
-PS4_PROMPT=$(sed '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | sed '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/ps4_prompt/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');
+PS3_PROMPT=$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/ps3_prompt/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
+PS4_PROMPT=$(sed -e '/^ *#/d;s/#.*//' ${APP_SYS_CONFIG} | awk -F  "=" '/ps4_prompt/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
 typeset -r -x PS3="${PS3_PROMPT}";
 typeset -r -x PS4="${PS4_PROMPT}";
 
@@ -140,10 +139,3 @@ typeset -x LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${APP_LIB_PATH}:${PLUGIN_LIB_PATH}
 ## source aliases/functions ..
 [ -f ${APP_ROOT}/${LIB_DIRECTORY}/aliases ] && . ${APP_ROOT}/${LIB_DIRECTORY}/aliases;
 [ -f ${APP_ROOT}/${LIB_DIRECTORY}/functions ] && . ${APP_ROOT}/${LIB_DIRECTORY}/functions;
-
-## and clean up logs...
-for LOG_FILE in ${ERROR_RECORDER} ${DEBUG_RECORDER} ${TRACE_RECORDER} ${AUDIT_RECORDER} ${WARN_RECORDER} ${INFO_RECORDER} ${MONITOR_RECORDER}
-do
-    cleanLogArchive ${ARCHIVE_LOG_ROOT} ${LOG_FILE} ${RETENTION_TIME};
-    rotateLogs ${LOG_FILE};
-done
