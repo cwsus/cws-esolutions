@@ -16,18 +16,31 @@
 #       CREATED:  ---
 #      REVISION:  ---
 #==============================================================================
+
 ## Application constants
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
-trap "print '$(cat ${SYSTEM_MESSAGES} | grep system.trap.signals | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%SIGNAL%/Ctrl-C/")'; sleep ${MESSAGE_DELAY}; reset; clear; continue " 1 2 3
+[ -z "${PLUGIN_ROOT_DIR}" ] && exit 0;
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+
+OPTIND=0;
+METHOD_NAME="${CNAME}#startup";
+
+[ ${#} -eq 0 ] && usage;
+
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+
+trap "print '$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.trap.signals/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g' -e "s/%SIGNAL%/Ctrl-C/")'; sleep "${MESSAGE_DELAY}"; reset; clear; continue " 1 2 3
 
 #===  FUNCTION  ===============================================================
 #          NAME:  add_ip_info
 #   DESCRIPTION:  Processes requests to add additional record types to a zone
 #    PARAMETERS:  None
-#          NAME:  usage
 #==============================================================================
 function add_root_ui_helper
 {
@@ -63,7 +76,7 @@ function add_root_ui_helper
             unset SECONDARY_INFO;
 
             ## clean up our tmp directories
-            rm -rf ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT};
+            rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT};
 
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS query canceled.";
 
@@ -75,7 +88,7 @@ function add_root_ui_helper
             CANCEL_REQ=${_TRUE};
             sleep "${MESSAGE_DELAY}"; reset; clear; break;
         else
-            if [ $(${APP_ROOT}/lib/validators/validate_ip_address.sh ${PRIMARY_INFO}) -ne 0 ]
+            if [ $(${PLUGIN_ROOT_DIR}/lib/validators/validate_ip_address.sh ${PRIMARY_INFO}) -ne 0 ]
             then
                 unset PRIMARY_INFO;
                 unset RET_CODE;
@@ -90,7 +103,7 @@ function add_root_ui_helper
                 unset METHOD_NAME;
                 unset CNAME;
 
-                . ${APP_ROOT}/lib/validators/validate_record_target.sh a ${PRIMARY_INFO};
+                . ${PLUGIN_ROOT_DIR}/lib/validators/validate_record_target.sh a ${PRIMARY_INFO};
                 RET_CODE=${?};
 
                 ## reset methodname/cname
@@ -116,7 +129,7 @@ function add_root_ui_helper
                     unset RET_CODE;
                     unset RETURN_CODE;
 
-                    . ${APP_ROOT}/lib/helpers/data/add_a_record.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -t A -a ${PRIMARY_INFO} -d ${PRIMARY_DC} -r;
+                    . ${PLUGIN_ROOT_DIR}/lib/helpers/data/add_a_record.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -t A -a ${PRIMARY_INFO} -d ${PRIMARY_DC} -r;
                     RET_CODE=${?};
 
                     ## re-set methodname and cname
@@ -160,7 +173,7 @@ function add_root_ui_helper
                                 unset PRIMARY_INFO;
 
                                 ## clean up our tmp directories
-                                rm -rf ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT};
+                                rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT};
 
                                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS query canceled.";
 
@@ -170,7 +183,7 @@ function add_root_ui_helper
                                 CANCEL_REQ=${_TRUE};
                                 sleep "${MESSAGE_DELAY}"; reset; clear; break;
                             else
-                                if [ $(${APP_ROOT}/lib/validators/validate_ip_address.sh ${SECONDARY_INFO}) -ne 0 ]
+                                if [ $(${PLUGIN_ROOT_DIR}/lib/validators/validate_ip_address.sh ${SECONDARY_INFO}) -ne 0 ]
                                 then
                                     unset SECONDARY_INFO;
                                     unset RET_CODE;
@@ -183,7 +196,7 @@ function add_root_ui_helper
                                     unset METHOD_NAME;
                                     unset CNAME;
 
-                                    . ${APP_ROOT}/lib/validators/validate_record_target.sh a ${SECONDARY_INFO};
+                                    . ${PLUGIN_ROOT_DIR}/lib/validators/validate_record_target.sh a ${SECONDARY_INFO};
                                     RET_CODE=${?};
 
                                     ## reset methodname/cname
@@ -208,7 +221,7 @@ function add_root_ui_helper
                                         unset RET_CODE;
                                         unset RETURN_CODE;
 
-                                        . ${APP_ROOT}/lib/helpers/data/add_a_record.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -t A -a ${SECONDARY_INFO} -d ${SECONDARY_DC} -r;
+                                        . ${PLUGIN_ROOT_DIR}/lib/helpers/data/add_a_record.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -t A -a ${SECONDARY_INFO} -d ${SECONDARY_DC} -r;
                                         RET_CODE=${?};
 
                                         ## re-set methodname and cname
@@ -275,6 +288,10 @@ function add_root_ui_helper
             fi
         fi
     done
+
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    return 0;
 }
 
 #===  FUNCTION  ===============================================================
@@ -327,7 +344,7 @@ function add_zone_ui_helper
             reset; clear;
             print "$(grep system.request.canceled ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2)\n";
             sleep "${MESSAGE_DELAY}"; reset; clear; break;
-        elif [ $(${APP_ROOT}/lib/validators/validate_ip_address.sh ${RECORD_DETAIL}) -ne 0 ]
+        elif [ $(${PLUGIN_ROOT_DIR}/lib/validators/validate_ip_address.sh ${RECORD_DETAIL}) -ne 0 ]
         then
             ## an error occurred in the validator
             ## advise and retry
@@ -343,13 +360,12 @@ function add_zone_ui_helper
             unset METHOD_NAME;
             unset CNAME;
 
-            . ${APP_ROOT}/lib/validators/validate_record_target.sh a ${RECORD_DETAIL};
+            . ${PLUGIN_ROOT_DIR}/lib/validators/validate_record_target.sh a ${RECORD_DETAIL};
             RET_CODE=${?};
 
             ## reset methodname/cname
             CNAME="$(basename "${0}")";
-            [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+            local METHOD_NAME="${CNAME}#${0}";
 
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validation complete. RET_CODE -> ${RET_CODE}";
 
@@ -416,12 +432,11 @@ function add_zone_ui_helper
 
                             ## we know what to add and where to add it.
                             ## so lets do it
-                            . ${APP_ROOT}/lib/helpers/data/add_${RECORD_TYPE}_record.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -t ${RECORD_TYPE} -a ${RECORD_DETAIL} -d ${DATACENTER} -r;
+                            . ${PLUGIN_ROOT_DIR}/lib/helpers/data/add_${RECORD_TYPE}_record.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -t ${RECORD_TYPE} -a ${RECORD_DETAIL} -d ${DATACENTER} -r;
                             RET_CODE=${?};
 
                             ## reset vars
-                            [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+                            local METHOD_NAME="${CNAME}#${0}";
                             CNAME="$(basename "${0}")";
 
                             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing complete. Return code -> ${RET_CODE}";
@@ -485,6 +500,10 @@ function add_zone_ui_helper
             fi
         fi
     done
+
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    return 0;
 }
 
 #===  FUNCTION  ===============================================================
@@ -591,7 +610,7 @@ function add_subdomain_ui_helper
                     reset; clear;
                     print "$(grep system.request.canceled ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2)\n";
                     sleep "${MESSAGE_DELAY}"; reset; clear; break;
-                elif [ $(${APP_ROOT}/lib/validators/validate_ip_address.sh ${A_TARGET}) -ne 0 ]
+                elif [ $(${PLUGIN_ROOT_DIR}/lib/validators/validate_ip_address.sh ${A_TARGET}) -ne 0 ]
                 then
                     ## an error occurred in the validator
                     ## advise and retry
@@ -602,7 +621,7 @@ function add_subdomain_ui_helper
                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 else
                     ## run the ip addr through the validator
-                    . ${APP_ROOT}/lib/validators/validate_record_target.sh a ${RECORD_DETAIL};
+                    . ${PLUGIN_ROOT_DIR}/lib/validators/validate_record_target.sh a ${RECORD_DETAIL};
                     RET_CODE=${?};
 
                     if [ ${RET_CODE} -eq 0 ] || [ ${RET_CODE} -eq 63 ] || [ ${RET_CODE} -eq 64 ]
@@ -633,12 +652,11 @@ function add_subdomain_ui_helper
                         unset METHOD_NAME;
                         unset CNAME;
 
-                        . ${APP_ROOT}/lib/helpers/data/add_${RECORD_TYPE}_record.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -t ${RECORD_TYPE} -a ${A_ALIAS},${A_TARGET} -s;
+                        . ${PLUGIN_ROOT_DIR}/lib/helpers/data/add_${RECORD_TYPE}_record.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -t ${RECORD_TYPE} -a ${A_ALIAS},${A_TARGET} -s;
                         RET_CODE=${?};
 
                         ## reset vars
-                        [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+                        local METHOD_NAME="${CNAME}#${0}";
                         CNAME="$(basename "${0}")";
 
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing complete. Return code -> ${RET_CODE}";
@@ -680,6 +698,10 @@ function add_subdomain_ui_helper
             done
         fi
     done
+
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    return 0;
 }
 
 #===  FUNCTION  ===============================================================
@@ -704,14 +726,7 @@ function usage
     return 3;
 }
 
-## make sure we have arguments
-[ ${#} -eq 0 ] && usage;
-
-METHOD_NAME="${CNAME}#startup";
-
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID $$";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments -> ${@}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
 [ "${1}" = "root" ] && add_root_ui_helper;
 [ "${1}" = "zone" ] && add_zone_ui_helper;

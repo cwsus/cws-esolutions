@@ -26,7 +26,7 @@ function validate_change_request
     local METHOD_NAME="${CNAME}#${0}";
 
     ## make sure our output file exists
-    if [ -s ${APP_ROOT}/${DIG_DATA_FILE} ]
+    if [ -s ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} ]
     then
         ## we need to know what got changed and what it got changed to.
         ## this could be the addition of a new zone, the removal of an
@@ -42,7 +42,7 @@ function validate_change_request
                 ## we got some data back for the query. lets see what it is...
                 ## we've configured the first two octets of each datacenter, so
                 ## we can check for their existence in the file
-                if [ $(grep -c ${PRIMARY_DATACENTER_IP} ${APP_ROOT}/${DIG_DATA_FILE}) -eq 1 ]
+                if [ $(grep -c ${PRIMARY_DATACENTER_IP} ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE}) -eq 1 ]
                 then
                     ## site is live in the configured primary datacenter.
                     if [ "${TARGET_DATACENTER}" = "${PRIMARY_DC}" ]
@@ -53,7 +53,7 @@ function validate_change_request
                         ## no dice. the IP we got doesnt match where we were told it should be.
                         RETURN_CODE=1;
                     fi
-                elif [ $(grep -c ${SECONDARY_DATACENTER_IP} ${APP_ROOT}/${DIG_DATA_FILE}) -eq 1 ]
+                elif [ $(grep -c ${SECONDARY_DATACENTER_IP} ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE}) -eq 1 ]
                 then
                     ## site is live in the configured secondary datacenter.
                     if [ "${TARGET_DATACENTER}" = "${SECONDARY_DC}" ]
@@ -90,7 +90,7 @@ function validate_change_request
             if [ ! -z "${VALIDATE_SERVER}" ] && [ ! -z "${VALIDATE_TYPE}" ] && [ ! -z "${VALIDATE_URL}" ]
             then
                 ## all our vars have data. we can continue.
-                ${APP_ROOT}/lib/runQuery.sh -s ${3} -t ${4} -u ${5} -o -e;
+                ${PLUGIN_ROOT_DIR}/lib/runQuery.sh -s ${3} -t ${4} -u ${5} -o -e;
                 RET_CODE=${?};
 
                 ## check our retcode
@@ -123,7 +123,7 @@ function validate_change_request
             if [ ! -z "${VALIDATE_SERVER}" ] && [ ! -z "${VALIDATE_TYPE}" ] && [ ! -z "${VALIDATE_URL}" ]
             then
                 ## all our vars have data. we can continue.
-                ${APP_ROOT}/lib/runQuery.sh -s ${3} -t ${4} -u ${5} -o -e;
+                ${PLUGIN_ROOT_DIR}/lib/runQuery.sh -s ${3} -t ${4} -u ${5} -o -e;
                 RET_CODE=${?};
 
                 ## check our retcode

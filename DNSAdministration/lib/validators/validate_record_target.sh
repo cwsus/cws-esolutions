@@ -232,10 +232,10 @@ function perform_lookup
             if [ "${1}" -eq "fwd" ]
             then
                 ## forward lookup -
-                . ${APP_ROOT}/lib/runQuery.sh -s ${EXTERNAL_SERVER} -t a -u ${2} -o -e;
+                . ${PLUGIN_ROOT_DIR}/lib/runQuery.sh -s ${EXTERNAL_SERVER} -t a -u ${2} -o -e;
             else
                 ## reverse lookup -
-                . ${APP_ROOT}/lib/runQuery.sh -s ${EXTERNAL_SERVER} -r -u ${2} -o -e;
+                . ${PLUGIN_ROOT_DIR}/lib/runQuery.sh -s ${EXTERNAL_SERVER} -r -u ${2} -o -e;
             fi
 
             ## capture the return code
@@ -244,7 +244,7 @@ function perform_lookup
             if [ ${RETURN_CODE} -eq 0 ]
             then
                 ## the provided IP does have a name associated. use it.
-                RESOLVED_NAME=$(cat ${APP_ROOT}/${DIG_DATA_FILE});
+                RESOLVED_NAME=$(cat ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE});
             fi
         else
             ## first one wasnt available, check the remaining

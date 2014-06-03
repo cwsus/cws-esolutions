@@ -15,11 +15,23 @@
 #       CREATED:  ---
 #      REVISION:  ---
 #==============================================================================
+
 ## Application constants
 [ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+
+METHOD_NAME="${CNAME}#startup";
+
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  perform_zone_backup
@@ -31,8 +43,6 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 #==============================================================================
 function perform_zone_backup
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && typeset -ft $(typeset +f);
-
     [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
@@ -46,7 +56,7 @@ function perform_zone_backup
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Search and remove backups older than ${BACKUP_RETENTION_TIME} days...");
 
         ## clean up the old backup files per the configured retention period...
-        for BACKUP_FILE in $(find ${APP_ROOT}/${BACKUP_DIRECTORY} -name "*${ZONE_BACKUP_PREFIX}*" -mtime +${BACKUP_RETENTION_TIME} -print)
+        for BACKUP_FILE in $(find ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY} -name "*${ZONE_BACKUP_PREFIX}*" -mtime +${BACKUP_RETENTION_TIME} -print)
         do
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} AUDIT ${METHOD_NAME}} ${CNAME} ${LINENO} "Removing backup file ${BACKUP_FILE}..");
 
@@ -64,23 +74,23 @@ function perform_zone_backup
         ## we back up everything. we can check if we're on a master/slave but that doesnt take into
         ## account systems that are acting as both a master AND slave, or systems that have dynamic
         ## zones. we exclude any journal files, and tar it up.
-        (cd ${NAMED_ROOT}/${NAMED_ZONE_DIR}; tar cf ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar --exclude='*.jnl' *);
+        (cd ${NAMED_ROOT}/${NAMED_ZONE_DIR}; tar cf ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar --exclude='*.jnl' *);
 
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Archive created. gzipping..");
 
         ## then gzip it.
-        gzip ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar;
+        gzip ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar;
 
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Backup complete. Verifying..");
 
-        if [ -s ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz ]
+        if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz ]
         then
             ## our backup is complete. set permissions accordingly...
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Backup successfully verified. Modifying permissions..");
 
             ## chmod 644 and chown named:named.
-            chmod 644 ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz;
-            chown ${NAMED_USER}:${NAMED_GROUP} ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz;
+            chmod 644 ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz;
+            chown ${NAMED_USER}:${NAMED_GROUP} ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz;
 
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete - exiting.";
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -100,6 +110,10 @@ function perform_zone_backup
 
         RETURN_CODE=88;
     fi
+
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    return ${RETURN_CODE};
 }
 
 #===  FUNCTION  ===============================================================
@@ -112,8 +126,6 @@ function perform_zone_backup
 #==============================================================================
 function perform_master_backup
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && typeset -ft $(typeset +f);
-
     [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
@@ -128,23 +140,23 @@ function perform_master_backup
     ## we back up everything. we can check if we're on a master/slave but that doesnt take into
     ## account systems that are acting as both a master AND slave, or systems that have dynamic
     ## zones. we exclude any journal files, and tar it up.
-    (cd ${NAMED_ROOT}/${NAMED_ZONE_DIR}; tar cf ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar --exclude='*.jnl' *);
+    (cd ${NAMED_ROOT}/${NAMED_ZONE_DIR}; tar cf ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar --exclude='*.jnl' *);
 
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Archive created. gzipping..");
 
     ## then gzip it.
-    gzip ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar;
+    gzip ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar;
 
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Backup complete. Verifying..");
 
-    if [ -s ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz ]
+    if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz ]
     then
         ## our backup is complete. set permissions accordingly...
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Backup successfully verified. Modifying permissions..");
 
         ## chmod 644 and chown named:named.
-        chmod 644 ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz;
-        chown ${NAMED_USER}:${NAMED_GROUP} ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz;
+        chmod 644 ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz;
+        chown ${NAMED_USER}:${NAMED_GROUP} ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz;
 
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete - exiting.";
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -157,6 +169,10 @@ function perform_master_backup
 
         RETURN_CODE=57;
     fi
+
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    return ${RETURN_CODE};
 }
 
 #===  FUNCTION  ===============================================================
@@ -186,7 +202,7 @@ function perform_conf_backup
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Search and remove backups older than ${BACKUP_RETENTION_TIME} days...");
 
         ## clean up the old backup files per the configured retention period...
-        for BACKUP_FILE in $(find ${APP_ROOT}/${BACKUP_DIRECTORY} -name "*${ZONE_BACKUP_PREFIX}*" -mtime +${BACKUP_RETENTION_TIME} -print)
+        for BACKUP_FILE in $(find ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY} -name "*${ZONE_BACKUP_PREFIX}*" -mtime +${BACKUP_RETENTION_TIME} -print)
         do
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} AUDIT ${METHOD_NAME}} ${CNAME} ${LINENO} "Removing backup file ${BACKUP_FILE}..");
 
@@ -220,19 +236,19 @@ function perform_conf_backup
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "TARFILE_NAME -> ${TARFILE_NAME}");
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Creating backup file..");
 
-            (cd ${NAMED_ROOT}/${NAMED_CONF_DIR}; tar cf - ${TARFILE_DIRECTORY_LIST[@]}) | gzip -c > ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz;
+            (cd ${NAMED_ROOT}/${NAMED_CONF_DIR}; tar cf - ${TARFILE_DIRECTORY_LIST[@]}) | gzip -c > ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz;
 
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "All known files backed up. Verifying..");
 
             ## verify the backup exists
-            if [ -s ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz ]
+            if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz ]
             then
                 ## our backup is complete. set permissions accordingly...
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Backup successfully verified. Modifying permissions..");
 
                 ## chmod 644 and chown named:named.
-                chmod 644 ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz;
-                chown ${NAMED_USER}:${NAMED_GROUP} ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz;
+                chmod 644 ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz;
+                chown ${NAMED_USER}:${NAMED_GROUP} ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz;
 
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete - exiting.";
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -259,6 +275,10 @@ function perform_conf_backup
 
         RETURN_CODE=88;
     fi
+
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    return ${RETURN_CODE};
 }
 
 #===  FUNCTION  ===============================================================
@@ -287,14 +307,7 @@ function usage
     return 3;
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
-
-METHOD_NAME="${CNAME}#startup";
-
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
 [ ${#} -eq 0 ] && perform_zone_backup && perform_conf_backup;
 

@@ -17,6 +17,8 @@
 #
 #==============================================================================
 
+[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+
 [ ! -d ${LOG_ROOT} ] && mkdir -p ${LOG_ROOT};
 [ ! -d ${ARCHIVE_LOG_ROOT} ] && mkdir -p ${ARCHIVE_LOG_ROOT};
 
@@ -46,6 +48,8 @@ function cleanLogArchive
 #==============================================================================
 function rotateLogs
 {
+    [[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+
     [ ! -f ${LOG_ROOT}/${1} ] && return 0;
 
     if [ $(( $(date +"%s") - $(stat -L --format %Y ${LOG_ROOT}/${1}) > $(echo "${ROLLOVER_PERIOD} * 60 * 60" | bc) )) == 1 ]
@@ -101,6 +105,8 @@ function rotateLogs
 #==============================================================================
 function writeLogEntry
 {
+    [[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+
     ## always do the timestamp first
     TIMESTAMP_OPTS=$(echo $RECORDER_CONV | cut -d "[" -f 2 | cut -d "]" -f 1 | cut -d ":" -f 2- | sed -e '/^ *#/d;s/#.*//')
     LOG_TIMESTAMP=$(date +"${TIMESTAMP_OPTS}");

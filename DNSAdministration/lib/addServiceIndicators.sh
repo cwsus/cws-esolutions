@@ -16,11 +16,41 @@
 #       CREATED:  ---
 #      REVISION:  ---
 #==============================================================================
+
 ## Application constants
 [ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+
+OPTIND=0;
+METHOD_NAME="${CNAME}#startup";
+
+[ ${#} -eq 0 ] && usage;
+
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+
+unset METHOD_NAME;
+unset CNAME;
+
+## check security
+. ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/security/check_main.sh > /dev/null 2>&1;
+RET_CODE=${?};
+
+[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE};
+
+## unset the return code
+unset RET_CODE;
+
+CNAME="$(basename "${0}")";
+METHOD_NAME="${CNAME}#startup";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  addServiceIndicators
@@ -71,12 +101,12 @@ function addServiceIndicators
         ## take a copy of the target dc file, otherwise none of this works.
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FAILOVER is ${FAILOVER}. Copying file..";
 
-        cp ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${ZONE_ROOT}/${TARGET_DC}/$(echo ${FILENAME} | cut -d "." -f 1-2) ${APP_ROOT}/${TMP_DIRECTORY}/${FILENAME};
+        cp ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${ZONE_ROOT}/${TARGET_DC}/$(echo ${FILENAME} | cut -d "." -f 1-2) ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME};
 
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copy complete.";
     fi
 
-    if [ -s ${APP_ROOT}/${TMP_DIRECTORY}/${FILENAME} ]
+    if [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME} ]
     then
         for INDICATOR in LAST_SERIAL DATACENTER DATE USER_NAME REQUEST_NUMBER SERIAL_NUM
         do
@@ -84,11 +114,11 @@ function addServiceIndicators
 
             if [ "${FAILOVER}" = "${_FALSE}" ]
             then
-                sed -e "s/%${INDICATOR}%/${CHG_ARRAY[${A}]}/" ${APP_ROOT}/${TMP_DIRECTORY}/${FILENAME} > ${APP_ROOT}/${TMP_DIRECTORY}/${FILENAME}.tmp;
-                mv ${APP_ROOT}/${TMP_DIRECTORY}/${FILENAME}.tmp ${APP_ROOT}/${TMP_DIRECTORY}/${FILENAME};
+                sed -e "s/%${INDICATOR}%/${CHG_ARRAY[${A}]}/" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME} > ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME}.tmp;
+                mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME}.tmp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME};
             else
-                sed -e "s/%${INDICATOR}%/${CHG_ARRAY[${A}]}/" ${APP_ROOT}/${TMP_DIRECTORY}/${FILENAME} > ${APP_ROOT}/${TMP_DIRECTORY}/${FILENAME}.tmp;
-                mv ${APP_ROOT}/${TMP_DIRECTORY}/${FILENAME}.tmp ${APP_ROOT}/${TMP_DIRECTORY}/${FILENAME};
+                sed -e "s/%${INDICATOR}%/${CHG_ARRAY[${A}]}/" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME} > ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME}.tmp;
+                mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME}.tmp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME};
             fi            
 
             (( A += 1 ));
@@ -145,18 +175,6 @@ function usage
 
     return 3;
 }
-
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
-
-[ ${#} -eq 0 ] && usage;
-
-OPTIND=0;
-METHOD_NAME="${CNAME}#startup";
-
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
 while getopts ":r:f:t:i:c:xeh:" OPTIONS
 do
@@ -257,12 +275,7 @@ do
                 addServiceIndicators;
             fi
             ;;
-        h)
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-            usage;
-            ;;
-        [\?])
+        h|[\?])
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
             usage;

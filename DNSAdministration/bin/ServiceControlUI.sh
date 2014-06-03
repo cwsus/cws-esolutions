@@ -23,6 +23,26 @@ CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+
+OPTIND=0;
+METHOD_NAME="${CNAME}#startup";
+
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+
+unset METHOD_NAME;
+unset CNAME;
+
+## check security
+. ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/security/check_main.sh > /dev/null 2>&1;
+RET_CODE=${?};
+
+[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE} || unset RET_CODE;
+
 trap "print '$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.trap.signals/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g' -e "s/%SIGNAL%/Ctrl-C/")'; sleep "${MESSAGE_DELAY}"; reset; clear; continue " 1 2 3
 
 #===  FUNCTION  ===============================================================
@@ -145,7 +165,6 @@ function main
         esac
     done
 
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set +x;
 
     return 0;
 }
@@ -464,8 +483,6 @@ function selectTargetSystems
         done
     fi
 
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set +x;
-
     return 0;
 }
 
@@ -593,7 +610,7 @@ function provideCommandName
                                     unset METHOD_NAME;
                                     unset CNAME;
 
-                                    . ${APP_ROOT}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${DNS_SERVER[${D}]} -c ${COMMAND} -z "${ZONE}" -e;
+                                    . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${DNS_SERVER[${D}]} -c ${COMMAND} -z "${ZONE}" -e;
 
                                     CNAME="$(basename "${0}")";
                                     local METHOD_NAME="${CNAME}#${0}";
@@ -625,7 +642,7 @@ function provideCommandName
                                             print "${RET_CODE}\n";
 
                                             continue;
-                                        ;;
+                                            ;;
                                     esac
 
                                     (( D += 1 ));
@@ -661,7 +678,7 @@ function provideCommandName
                                 unset METHOD_NAME;
                                 unset CNAME;
 
-                                . ${APP_ROOT}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${DNS_SERVERS[${SELECTED_SERVER}]} -c ${COMMAND} -z "${ZONE}" -e;
+                                . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${DNS_SERVERS[${SELECTED_SERVER}]} -c ${COMMAND} -z "${ZONE}" -e;
 
                                 CNAME="$(basename "${0}")";
                                 local METHOD_NAME="${CNAME}#${0}";
@@ -744,7 +761,7 @@ function provideCommandName
                         unset METHOD_NAME;
                         unset CNAME;
 
-                        . ${APP_ROOT}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${DNS_SERVER[${D}]} -c ${COMMAND} -e;
+                        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${DNS_SERVER[${D}]} -c ${COMMAND} -e;
 
                         CNAME="$(basename "${0}")";
                         local METHOD_NAME="${CNAME}#${0}";
@@ -779,7 +796,7 @@ function provideCommandName
                     unset METHOD_NAME;
                     unset CNAME;
 
-                    . ${APP_ROOT}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${DNS_SERVER[${D}]} -c ${COMMAND} -e;
+                    . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${DNS_SERVER[${D}]} -c ${COMMAND} -e;
                     RET_CODE=${?};
 
                     CNAME="$(basename "${0}")";
@@ -845,7 +862,6 @@ function provideCommandName
         esac
     done
 
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set +x;
 
     return 0;
 }
@@ -901,7 +917,7 @@ function processServiceRestart
                         unset METHOD_NAME;
                         unset CNAME;
 
-                        . ${APP_ROOT}/${LIB_DIRECTORY}/runControlRequest.sh -s ${HOST} -c restart -e;
+                        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runControlRequest.sh -s ${HOST} -c restart -e;
 
                         CNAME="$(basename "${0}")";
                         local METHOD_NAME="${CNAME}#${0}";
@@ -933,7 +949,7 @@ function processServiceRestart
                     unset METHOD_NAME;
                     unset CNAME;
 
-                    . ${APP_ROOT}/${LIB_DIRECTORY}/runControlRequest.sh -s ${DNS_SERVERS[${SELECTION}]} -c restart -e;
+                    . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runControlRequest.sh -s ${DNS_SERVERS[${SELECTION}]} -c restart -e;
 
                     RET_CODE=${?};
 
@@ -1005,7 +1021,6 @@ function processServiceRestart
 
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set +x;
 
     return 0;
 }
@@ -1107,179 +1122,162 @@ function serviceKeyManagement
 
                 reset; clear;
 
-                print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.provide.changenum/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                while true
+                do
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requesting change information..";
 
-                read CHANGE_CONTROL;
+                    ${PLUGIN_ROOT_DIR}/${BIN_DIRECTORY}/obtainChangeControl.sh;
 
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_CONTROL -> ${CHANGE_CONTROL}";
+                    if [[ ! -z "${CANCEL_REQ}" && "${CANCEL_REQ}" = "${_TRUE}" ]]
+                    then
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover process aborted";
+
+                        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+
+                        ## unset SVC_LIST, we dont need it now
+                        unset SVC_LIST;
+
+                        ## terminate this thread and return control to main
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                        ## temporarily unset stuff
+                        unset METHOD_NAME;
+                        unset CNAME;
+
+                        sleep ${MESSAGE_DELAY}; reset; clear; main;
+                    fi
+
+                    break;
+                done
+
+                reset; clear;
+
+                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Confirming request for key renewal..";
+
+                print "\t\t\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/confirm.request/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+
+                read CONFIRM;
+
+                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONFIRM -> ${CONFIRM}";
 
                 reset; clear;
 
                 print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
 
-                case ${CHANGE_CONTROL} in
-                    [Xx]|[Qq]|[Cc])
-                        ## cancel req
+                case ${CONFIRM} in
+                    [Yy][Ee][Ss]|[Yy])
+                        ## unset confirmation
+                        unset CONFIRM;
                         reset; clear;
 
-                        unset SELECTION;
-                        unset CHANGE_CONTROL;
+                        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
 
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Key management request canceled.";
+                        ## begin processing of key renewal
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing key renewal for ${SELECTION}";
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runKeyGeneration.sh -g ${SELECTION},${CHANGE_CONTROL},${IUSER_AUDIT} -e";
 
-                        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                        ## temp unset
+                        unset METHOD_NAME;
+                        unset CNAME;
 
-                        ## terminate this thread and return control to main
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                        ## execute
+                        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runKeyGeneration.sh -g ${SELECTION},${CHANGE_CONTROL},${IUSER_AUDIT} -e;
 
-                        ## break out
-                        sleep "${MESSAGE_DELAY}"; reset; clear; main;
-                        ;;
-                    *)
-                        if [ $(${APP_ROOT}/${LIB_DIRECTORY}/validators/validateChangeTicket.sh ${CHANGE_CONTROL}) -ne 0 ]
+                        ## capture the return code
+                        RET_CODE=${?};
+
+                        ## put cname and methodname back to this class
+                        CNAME="$(basename "${0}")";
+                        local METHOD_NAME="${CNAME}#${0}";
+
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+                        if [[ -z "${RET_CODE}" || ! -z "${RET_CODE}" && ${RET_CODE} -ne 0 ]]
                         then
-                            ## change control provided was invalid
-                            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A change was attempted with an invalid change order by ${IUSER_AUDIT}. Change request was ${CHANGE_CONTROL}.";
-                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An invalid change control was provided. A valid change control number is required to process the request.";
+                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No return code was received from run_rndc_request. Please review error logs.";
 
-                            reset; clear;
+                            [ -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" '/99/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')";
+                            [ ! -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/${RET_CODE}/{print \$2}" | sed -e 's/^ *//g' -e 's/ *$//g')";
+
+                            unset RESPONSE;
+                            unset SELECTION;
                             unset CHANGE_CONTROL;
+                            unset CONFIRM;
+                            unset RET_CODE;
 
-                            print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/change.control.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                            sleep "${MESSAGE_DELAY}"; reset; clear; break;
+                        fi
 
-                            sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                        else
+                        unset RET_CODE;
+
+                        ## process completed successfully and all nodes were updated
+                        ## audit log it
+                        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS Key Management: Requestor: ${IUSER_AUDIT} - Date: $(date +"%d-%m-%Y") - Keys: ${SELECTION} - Change Request: ${CHANGE_CONTROL} - Keys successfully renewed";
+
+                        ## we've finished our processing, and keys have been renewed
+                        ## what should we do now ?
+                        while true
+                        do
                             reset; clear;
 
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Confirming request for key renewal..";
+                            print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/service.key.management.keys.renewed/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g' -e "s/%KEYTYPE%/${SELECTION}/")\n";
+                            print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/service.key.management.keys.renew.more/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
 
-                            print "\t\t\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/confirm.request/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                            read RESPONSE;
 
-                            read CONFIRM;
-
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONFIRM -> ${CONFIRM}";
-
-                            reset; clear;
+                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RESPONSE -> ${RESPONSE}";
 
                             print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
 
-                            case ${CONFIRM} in
+                            case ${RESPONSE} in
                                 [Yy][Ee][Ss]|[Yy])
-                                    ## unset confirmation
-                                    unset CONFIRM;
-                                    reset; clear;
-
-                                    print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
-
-                                    ## begin processing of key renewal
-                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing key renewal for ${SELECTION}";
-                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/runKeyGeneration.sh -g ${SELECTION},${CHANGE_CONTROL},${IUSER_AUDIT} -e";
-
-                                    ## temp unset
-                                    unset METHOD_NAME;
-                                    unset CNAME;
-
-                                    ## execute
-                                    . ${APP_ROOT}/${LIB_DIRECTORY}/runKeyGeneration.sh -g ${SELECTION},${CHANGE_CONTROL},${IUSER_AUDIT} -e;
-
-                                    ## capture the return code
-                                    RET_CODE=${?};
-
-                                    ## put cname and methodname back to this class
-                                    CNAME="$(basename "${0}")";
-                                    local METHOD_NAME="${CNAME}#${0}";
-
-                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
-
-                                    if [[ -z "${RET_CODE}" || ! -z "${RET_CODE}" && ${RET_CODE} -ne 0 ]]
-                                    then
-                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No return code was received from run_rndc_request. Please review error logs.";
-
-                                        [ -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" '/99/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')";
-                                        [ ! -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/${RET_CODE}/{print \$2}" | sed -e 's/^ *//g' -e 's/ *$//g')";
-
-                                        unset RESPONSE;
-                                        unset SELECTION;
-                                        unset CHANGE_CONTROL;
-                                        unset CONFIRM;
-                                        unset RET_CODE;
-
-                                        sleep "${MESSAGE_DELAY}"; reset; clear; break;
-                                    fi
-
-                                    unset RET_CODE;
-
-                                    ## process completed successfully and all nodes were updated
-                                    ## audit log it
-                                    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS Key Management: Requestor: ${IUSER_AUDIT} - Date: $(date +"%d-%m-%Y") - Keys: ${SELECTION} - Change Request: ${CHANGE_CONTROL} - Keys successfully renewed";
-
-                                    ## we've finished our processing, and keys have been renewed
-                                    ## what should we do now ?
-                                    while true
-                                    do
-                                        reset; clear;
-
-                                        print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/service.key.management.keys.renewed/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g' -e "s/%KEYTYPE%/${SELECTION}/")\n";
-                                        print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/service.key.management.keys.renew.more/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
-
-                                        read RESPONSE;
-
-                                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RESPONSE -> ${RESPONSE}";
-
-                                        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
-
-                                        case ${RESPONSE} in
-                                            [Yy][Ee][Ss]|[Yy])
-                                                ## user has elected to perform further failovers. restart the process
-                                                unset RESPONSE;
-                                                unset SELECTION;
-                                                unset CHANGE_CONTROL;
-                                                unset CONFIRM;                                                
-
-                                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Transferring control back to main..";
-
-                                                sleep "${MESSAGE_DELAY}"; reset; clear; main;
-                                                ;;
-                                            *)
-                                                ## user does not wish to process further failovers. let's exit out and open up the main class.
-                                                unset RESPONSE;
-                                                unset SELECTION;
-                                                unset CHANGE_CONTROL;
-                                                unset CONFIRM;
-
-                                                sleep "${MESSAGE_DELAY}"; reset; clear; exec ${APP_ROOT}/${MAIN_CLASS};
-
-                                                exit 0;
-                                                ;;
-                                        esac
-                                    done
-                                    ;;
-                                [Nn][Oo]|[Nn])
-                                    unset CONFIRM;
+                                    ## user has elected to perform further failovers. restart the process
+                                    unset RESPONSE;
                                     unset SELECTION;
                                     unset CHANGE_CONTROL;
+                                    unset CONFIRM;                                                
 
-                                    ## user opted to cancel
-                                    ## we leave the in-use flag in place
-                                    ## because we aren't starting over
-                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Key management request canceled.";
+                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Transferring control back to main..";
 
-                                    print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
-
-                                    sleep "${MESSAGE_DELAY}"; reset; clear; continue;
+                                    sleep "${MESSAGE_DELAY}"; reset; clear; main;
                                     ;;
                                 *)
-                                    ## user did not provide a yes/no answer
+                                    ## user does not wish to process further failovers. let's exit out and open up the main class.
+                                    unset RESPONSE;
+                                    unset SELECTION;
+                                    unset CHANGE_CONTROL;
                                     unset CONFIRM;
 
-                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Selection provided is invalid";
+                                    sleep "${MESSAGE_DELAY}"; reset; clear; exec ${APP_ROOT}/${MAIN_CLASS};
 
-                                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
-
-                                    sleep "${MESSAGE_DELAY}"; reset; clear; continue;
+                                    exit 0;
                                     ;;
                             esac
-                        fi
+                        done
+                        ;;
+                    [Nn][Oo]|[Nn])
+                        unset CONFIRM;
+                        unset SELECTION;
+                        unset CHANGE_CONTROL;
+
+                        ## user opted to cancel
+                        ## we leave the in-use flag in place
+                        ## because we aren't starting over
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Key management request canceled.";
+
+                        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+
+                        sleep "${MESSAGE_DELAY}"; reset; clear; continue;
+                        ;;
+                    *)
+                        ## user did not provide a yes/no answer
+                        unset CONFIRM;
+
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Selection provided is invalid";
+
+                        print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+
+                        sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                         ;;
                 esac
                 ;;
@@ -1316,7 +1314,6 @@ function serviceKeyManagement
 
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set +x;
 
     return 0;
 }
@@ -1467,7 +1464,7 @@ function processServiceSwitch
                                 unset CNAME;
 
                                 ## we have our change control and our targets. we can call our runners and begin operating.
-                                . ${APP_ROOT}/${LIB_DIRECTORY}/runRoleSwap.sh -s ${NAMED_MASTER} -t ${SWAP_SYSTEM} -c ${CHANGE_CONTROL} -i ${IUSER_AUDIT} -e;
+                                . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRoleSwap.sh -s ${NAMED_MASTER} -t ${SWAP_SYSTEM} -c ${CHANGE_CONTROL} -i ${IUSER_AUDIT} -e;
                                 RET_CODE=${?};
 
                                 CNAME="$(basename "${0}")";
@@ -1502,7 +1499,7 @@ function processServiceSwitch
                                 unset CNAME;
 
                                 ## perform the local modification..
-                                . ${APP_ROOT}/${LIB_DIRECTORY}/runRoleSwap.sh -l -e;
+                                . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRoleSwap.sh -l -e;
                                 RET_CODE=${?};
 
                                 CNAME="$(basename "${0}")";
@@ -1589,7 +1586,6 @@ function processServiceSwitch
 
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set +x;
 
     return 0;
 }
@@ -1605,35 +1601,13 @@ function rndcKeyfileGeneration
 
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set +x;
 
     return 1;
 }
-
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
-
-[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
-
-OPTIND=0;
-METHOD_NAME="${CNAME}#startup";
-
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-
-unset METHOD_NAME;
-unset CNAME;
-
-## check security
-. ${PLUGIN_ROOT_DIR}/lib/security/check_main.sh > /dev/null 2>&1;
-RET_CODE=${?};
-
-[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE} || unset RET_CODE;
 
 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
 main;
 
-[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set +x;
 
 return 0;

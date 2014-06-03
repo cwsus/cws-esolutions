@@ -17,13 +17,50 @@
 #      REVISION:  ---
 #==============================================================================
 
-trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; exit" INT TERM EXIT;
-
-# Application contants
+## Application constants
 [ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+
+OPTIND=0;
+METHOD_NAME="${CNAME}#startup";
+
+[ ${#} -eq 0 ] && usage;
+
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+
+unset METHOD_NAME;
+unset CNAME;
+
+## check security
+. ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/security/check_main.sh > /dev/null 2>&1;
+RET_CODE=${?};
+
+[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && echo ${RET_CODE} && exit ${RET_CODE};
+
+## unset the return code
+unset RET_CODE;
+
+## lock it
+${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/lock.sh lock ${$};
+RET_CODE=${?};
+
+[ ${RET_CODE} != 0 ] && echo "Application currently in use." && echo ${RET_CODE} && exit ${RET_CODE};
+
+unset RET_CODE;
+
+CNAME="$(basename "${0}")";
+METHOD_NAME="${CNAME}#startup";
+
+trap "${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/lock.sh unlock ${$}; exit" INT TERM EXIT;
 
 #===  FUNCTION  ===============================================================
 #          NAME:  failoverInternetSite
@@ -67,7 +104,7 @@ function failoverInternetSite
         if [ -f ${SITE_ROOT}/${FILENAME} ]
         then
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File exists - backup in progress...";
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting backup file to ${APP_ROOT}/${BACKUP_DIRECTORY}/${FILENAME}.\`date +"%m-%d-%Y"\`.${CHANGE_NUM}.${IUSER_AUDIT}";
+            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting backup file to ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${FILENAME}.\`date +"%m-%d-%Y"\`.${CHANGE_NUM}.${IUSER_AUDIT}";
 
             ## Everything exists. Lets backup the zone before
             ## making any modifications
@@ -77,20 +114,20 @@ function failoverInternetSite
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "BACKUP_FILE->${BACKUP_FILE}");
 
             ## tar+gzip
-            tar cf ${APP_ROOT}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar -C ${SITE_ROOT} ${FILENAME} > /dev/null 2>&1;
-            gzip ${APP_ROOT}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar > /dev/null 2>&1;
+            tar cf ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar -C ${SITE_ROOT} ${FILENAME} > /dev/null 2>&1;
+            gzip ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar > /dev/null 2>&1;
 
             ## make sure our backup file got created
-            if [ -s ${APP_ROOT}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar.gz ]
+            if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar.gz ]
             then
                 ## unset BACKUP_FILE var
                 unset BACKUP_FILE;
 
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete - continuing...";
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${DC_FILE} to ${APP_ROOT}/${TMP_DIRECTORY}..";
+                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${DC_FILE} to ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}..";
 
                 ## copy the datacenter-specific zone file for operation
-                cp ${SITE_ROOT}/${TARGET_DC}/${DC_FILE} ${APP_ROOT}/${TMP_DIRECTORY}/${FILENAME};
+                cp ${SITE_ROOT}/${TARGET_DC}/${DC_FILE} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME};
 
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Calling addServiceIndicators.sh to add audit flags..";
 
@@ -99,7 +136,7 @@ function failoverInternetSite
                 unset CNAME;
 
                 ## add our informational and audit indicators
-                . ${APP_ROOT}/lib/addServiceIndicators.sh -r ${GROUP_ID}${BUSINESS_UNIT} -f ${FILENAME} -t ${TARGET_DC} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e;
+                . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/addServiceIndicators.sh -r ${GROUP_ID}${BUSINESS_UNIT} -f ${FILENAME} -t ${TARGET_DC} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e;
                 RET_CODE=${?};
 
                 ## set method_name/cname back to this method
@@ -112,14 +149,14 @@ function failoverInternetSite
                 then
                     ## All our preliminary processing has been completed,
                     ## so lets move the updated zone file into place
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${APP_ROOT}/${TMP_DIRECTORY}/${FILENAME} to ${SITE_ROOT}/${FILENAME}..";
-                    cp ${APP_ROOT}/${TMP_DIRECTORY}/${FILENAME} ${SITE_ROOT}/${FILENAME};
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME} to ${SITE_ROOT}/${FILENAME}..";
+                    cp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME} ${SITE_ROOT}/${FILENAME};
 
                     ## Lets make sure that the copied file and the new file match
-                    MD5_TMP_FILE=$(cksum ${APP_ROOT}/${TMP_DIRECTORY}/${FILENAME} | awk '{print $1}');
+                    MD5_TMP_FILE=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME} | awk '{print $1}');
                     MD5_NEW_FILE=$(cksum ${SITE_ROOT}/${FILENAME} | awk '{print $1}');
 
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "cksum of ${APP_ROOT}/${TMP_DIRECTORY}/${FILENAME} -> ${MD5_TMP_FILE}";
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "cksum of ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME} -> ${MD5_TMP_FILE}";
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "cksum of ${SITE_ROOT}/${FILENAME} -> ${MD5_NEW_FILE}";
 
                     if [ "${MD5_TMP_FILE}" = "${MD5_NEW_FILE}" ]
@@ -128,7 +165,7 @@ function failoverInternetSite
                         ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS Failover: Requestor: ${IUSER_AUDIT} - Date: $(date +"%d-%m-%Y") - Site: ${UNIT}/${FILENAME} - Change Request: ${CHANGE_NUM} - Switched To: ${TARGET_DC}";
 
                         ## Remove the temporary file
-                        rm -rf ${APP_ROOT}/${TMP_DIRECTORY}/${FILENAME};
+                        rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME};
 
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -267,15 +304,15 @@ function failoverIntranetSite
 
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BACKUP_FILE_NAME -> ${BACKUP_FILE_NAME}";
 
-    $(gdctl -k -o ${APP_ROOT}/${BACKUP_DIRECTORY}/${BACKUP_FILE_NAME});
+    $(gdctl -k -o ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${BACKUP_FILE_NAME});
 
     ## and make sure it actually backed up...
-    if [ -s ${APP_ROOT}/${BACKUP_DIRECTORY}/${BACKUP_FILE_NAME} ]
+    if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${BACKUP_FILE_NAME} ]
     then
         ## it did, make the change
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete. Disabling ${DISABLE_POP}..";
 
-        RET_CODE=$(gdaction -t 90 -m ${HOSTNAME} -F ${APP_ROOT}/${GD_PASS_FILE} disable_pop ${DISABLE_POP});
+        RET_CODE=$(gdaction -t 90 -m ${HOSTNAME} -F ${PLUGIN_ROOT_DIR}/${GD_PASS_FILE} disable_pop ${DISABLE_POP});
 
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -285,7 +322,7 @@ function failoverIntranetSite
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${DISABLE_POP} disabled on host ${HOSTNAME}";
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Enabling ${ENABLE_POP} ..";
 
-            RET_CODE=$(gdaction -t 90 -m ${HOSTNAME} -F ${APP_ROOT}/${GD_PASS_FILE} enable_pop ${ENABLE_POP});
+            RET_CODE=$(gdaction -t 90 -m ${HOSTNAME} -F ${PLUGIN_ROOT_DIR}/${GD_PASS_FILE} enable_pop ${ENABLE_POP});
 
             if [ ${RET_CODE} == 0 ]
             then
@@ -355,44 +392,7 @@ function usage
     return 3;
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
-
-[ ${#} -eq 0 ] && usage;
-
-OPTIND=0;
-METHOD_NAME="${CNAME}#startup";
-
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-
-[ -z "${APP_ROOT}" ] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
-
-unset METHOD_NAME;
-unset CNAME;
-
-## check security
-. ${PLUGIN_ROOT_DIR}/lib/security/check_main.sh > /dev/null 2>&1;
-RET_CODE=${?};
-
-[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && echo ${RET_CODE} && exit ${RET_CODE};
-
-## unset the return code
-unset RET_CODE;
-
-## lock it
-${APP_ROOT}/${LIB_DIRECTORY}/lock.sh lock ${$};
-RET_CODE=${?};
-
-[ ${RET_CODE} != 0 ] && echo "Application currently in use." && echo ${RET_CODE} && exit ${RET_CODE};
-
-unset RET_CODE;
-
-CNAME="$(basename "${0}")";
-METHOD_NAME="${CNAME}#startup";
-
-[ ! -d ${APP_ROOT}/${BACKUP_DIRECTORY} ] && mkdir ${APP_ROOT}/${BACKUP_DIRECTORY};
+[ ! -d ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY} ] && mkdir ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY};
 
 while getopts ":d:b:f:t:p:c:i:eh:" OPTIONS
 do
@@ -560,16 +560,6 @@ do
                     fi
                     ;;
             esac
-            ;;
-        h)
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-            usage;
-            ;;
-        [\?])
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-            usage;
             ;;
         *)
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";

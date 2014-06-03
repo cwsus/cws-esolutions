@@ -24,6 +24,26 @@ CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+
+OPTIND=0;
+METHOD_NAME="${CNAME}#startup";
+
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+
+unset METHOD_NAME;
+unset CNAME;
+
+## check security
+. ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/security/check_main.sh > /dev/null 2>&1;
+RET_CODE=${?};
+
+[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE} || unset RET_CODE;
+
 trap "print '$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.trap.signals/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g' -e "s/%SIGNAL%/Ctrl-C/")'; sleep "${MESSAGE_DELAY}"; reset; clear; continue " 1 2 3
 
 #===  FUNCTION  ===============================================================
@@ -169,7 +189,6 @@ function main
         esac
     done
 
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set +x;
 
     return 0;
 }
@@ -207,12 +226,6 @@ function retrieveSiteInfo
 
         case ${SVC_LIST} in
             [Xx]|[Qq]|[Cc])
-                ## user opted to cancel, remove the lockfile
-                if [ -f ${APP_ROOT}/${APP_FLAG} ]
-                then
-                    rm -rf ${APP_ROOT}/${APP_FLAG};
-                fi
-
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover process aborted";
 
                 print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
@@ -244,7 +257,7 @@ function retrieveSiteInfo
                     unset CNAME;
 
                     ## validate the input
-                    . ${APP_ROOT}/${LIB_DIRECTORY}/validators/validate_service_request.sh -s ${SVC_LIST} -e;
+                    . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validate_service_request.sh -s ${SVC_LIST} -e;
                     RET_CODE=${?};
 
                      ## reset METHOD_NAME back to THIS method
@@ -269,7 +282,7 @@ function retrieveSiteInfo
                         ## unset this RET_CODE
                         unset RET_CODE;
 
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/retrieveServiceInfo.sh ${INTERNET_TYPE_IDENTIFIER} ${SVC_LIST}";
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/retrieveServiceInfo.sh ${INTERNET_TYPE_IDENTIFIER} ${SVC_LIST}";
 
                         ## temporarily unset stuff
                         unset METHOD_NAME;
@@ -277,7 +290,7 @@ function retrieveSiteInfo
 
                         ## call out the service method to obtain
                         ## url information for the provided data
-                        . ${APP_ROOT}/${LIB_DIRECTORY}/retrieveServiceInfo.sh ${INTERNET_TYPE_IDENTIFIER} ${SVC_LIST};
+                        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/retrieveServiceInfo.sh ${INTERNET_TYPE_IDENTIFIER} ${SVC_LIST};
                         RET_CODE=${?};
 
                         ## reset METHOD_NAME back to THIS method
@@ -543,7 +556,6 @@ function retrieveSiteInfo
         esac
     done
 
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set +x;
 
     return 0;
 }
@@ -595,190 +607,192 @@ function processDecomRequest
                 ##
                 ## all of these will be used to make the actual change,
                 ## while 3/4 are also used for auditing
-                print "\t\t\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES}system.application.title  | awk -F "=" '/remote_app_root/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
-                print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES}system.provide.changenum  | awk -F "=" '/remote_app_root/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                while true
+                do
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requesting change information..";
 
-                read CHANGE_CONTROL;
-                reset; clear;
-                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                    ${PLUGIN_ROOT_DIR}/${BIN_DIRECTORY}/obtainChangeControl.sh;
 
-                if [ $(${APP_ROOT}/${LIB_DIRECTORY}/validators/validate_change_ticket.sh ${CHANGE_CONTROL}) -ne 0 ]
+                    if [[ ! -z "${CANCEL_REQ}" && "${CANCEL_REQ}" = "${_TRUE}" ]]
+                    then
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover process aborted";
+
+                        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+
+                        ## unset SVC_LIST, we dont need it now
+                        unset SVC_LIST;
+
+                        ## terminate this thread and return control to main
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                        ## temporarily unset stuff
+                        unset METHOD_NAME;
+                        unset CNAME;
+
+                        sleep ${MESSAGE_DELAY}; reset; clear; main;
+                    fi
+
+                    break;
+                done
+
+                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting up required flags..";
+
+                if [[ "${SELECTION}" = "A" || "${SELECTION}" = "a" ]]
                 then
-                    ## change control provided was invalid
-                    ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A change was attempted with an invalid change order by ${IUSER_AUDIT}. Change request was ${CHANGE_CONTROL}.";
-                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An invalid change control was provided. A valid change control number is required to process the request.";
+                    ## user has selected all zones that were returned. this should all be a single business unit, so we process a BU decom
+                    ## TODO: call the right runner
+                    unset DC_MISMATCH;
+                    unset SVC_REQUEST_OPTION;
+                    unset SVC_REQUEST_TYPE;
 
-                    unset CHANGE_CONTROL;
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BU -> ${BU}";
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TDC -> ${TDC}";
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_CONTROL -> ${CHANGE_CONTROL}";
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IUSER_AUDIT -> ${IUSER_AUDIT}";
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command run_decom.sh -b $(echo "${SERVICE_DETAIL[${B}]}" | cut -d "|" -f 3),${BU},${CHANGE_CONTROL},${IUSER_AUDIT} -e";
 
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/change.control.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
-                    sleep "${MESSAGE_DELAY}"; reset; clear; continue;
+                    ## temporarily unset stuff
+                    unset METHOD_NAME;
+                    unset CNAME;
+
+                    . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/run_decom.sh -b ${BU},${CHANGE_CONTROL},${IUSER_AUDIT} -e;
                 else
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting up required flags..";
+                    ## user has selected a single zone. call out to the right runner to perform the work
+                    BU=$(echo ${SERVICE_DETAIL[${SELECTION}]} | cut -d "/" -f 6 | cut -d "_" -f 3);
+                    PCODE=$(echo ${SERVICE_DETAIL[${SELECTION}]} | cut -d "/" -f 7 | cut -d "|" -f 1 | cut -d "." -f 3);
+                    ZNAME=$(echo ${SERVICE_DETAIL[${SELECTION}]} | cut -d "|" -f 3)
 
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BU -> ${BU}";
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FNAME -> ${FNAME}";
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PCODE -> ${PCODE}";
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TDC -> ${TDC}";
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_CONTROL -> ${CHANGE_CONTROL}";
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IUSER_AUDIT -> ${IUSER_AUDIT}";
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command run_decom.sh -s ${BU},${PCODE},${ZNAME},${CHANGE_CONTROL},${IUSER_AUDIT} -e";
+
+                    ## temporarily unset stuff
+                    unset METHOD_NAME;
+                    unset CNAME;
+
+                    . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/run_decom.sh -s ${BU},${PCODE},${ZNAME},${CHANGE_CONTROL},${IUSER_AUDIT} -e;
+                fi
+
+                ## capture the return code
+                RET_CODE=${?};
+
+                ## reset METHOD_NAME back to THIS method
+                local METHOD_NAME="${CNAME}#${0}";
+                CNAME="$(basename "${0}")";
+
+                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "run_decom executed..";
+                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Result code from call: ${RET_CODE}";
+
+                if [ ${RET_CODE} -eq 0 ]
+                then
+                    ## ok, our master went through just fine, loop through and process slaves (if any)
+                    if [[ ! -z "${ERROR_COUNT}" && ${ERROR_COUNT} != 0 ]]
+                    then
+                        ## one or more slave services failed processing
+                        if [ ! -z "${FAILED_SERVERS}" ]
+                        then
+                            print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES}failover.request.servers.success.failure  | awk -F "=" '/remote_app_root/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+
+                            ## make sure d is zero
+                            D=0;
+
+                            while [ ${D} -ne ${#FAILED_SERVERS[@]} ]
+                            do
+                                print "${FAILED_SERVERS[${D}]}\n";
+                                (( D += 1 ));
+                            done
+
+                            ## make d zero again
+                            D=0;
+                        fi
+
+                        sleep "${MESSAGE_DELAY}";
+                    fi
+
+                    ## we're all set here. audit log it
                     if [[ "${SELECTION}" = "A" || "${SELECTION}" = "a" ]]
                     then
-                        ## user has selected all zones that were returned. this should all be a single business unit, so we process a BU decom
-                        ## TODO: call the right runner
-                        unset DC_MISMATCH;
-                        unset SVC_REQUEST_OPTION;
-                        unset SVC_REQUEST_TYPE;
-
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BU -> ${BU}";
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TDC -> ${TDC}";
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_CONTROL -> ${CHANGE_CONTROL}";
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IUSER_AUDIT -> ${IUSER_AUDIT}";
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command run_decom.sh -b $(echo "${SERVICE_DETAIL[${B}]}" | cut -d "|" -f 3),${BU},${CHANGE_CONTROL},${IUSER_AUDIT} -e";
-
-                        ## temporarily unset stuff
-                        unset METHOD_NAME;
-                        unset CNAME;
-
-                        . ${APP_ROOT}/${LIB_DIRECTORY}/run_decom.sh -b ${BU},${CHANGE_CONTROL},${IUSER_AUDIT} -e;
+                        ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS Failover: Requestor: ${IUSER_AUDIT} - Date: $(date +"%d-%m-%Y") - Site: All sites in ${SVC_REQUEST_OPTION} - Change Request: ${CHANGE_CONTROL} - Switched To: ${TDC}";
                     else
-                        ## user has selected a single zone. call out to the right runner to perform the work
-                        BU=$(echo ${SERVICE_DETAIL[${SELECTION}]} | cut -d "/" -f 6 | cut -d "_" -f 3);
-                        PCODE=$(echo ${SERVICE_DETAIL[${SELECTION}]} | cut -d "/" -f 7 | cut -d "|" -f 1 | cut -d "." -f 3);
-                        ZNAME=$(echo ${SERVICE_DETAIL[${SELECTION}]} | cut -d "|" -f 3)
-
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BU -> ${BU}";
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FNAME -> ${FNAME}";
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PCODE -> ${PCODE}";
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TDC -> ${TDC}";
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_CONTROL -> ${CHANGE_CONTROL}";
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IUSER_AUDIT -> ${IUSER_AUDIT}";
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command run_decom.sh -s ${BU},${PCODE},${ZNAME},${CHANGE_CONTROL},${IUSER_AUDIT} -e";
-
-                        ## temporarily unset stuff
-                        unset METHOD_NAME;
-                        unset CNAME;
-
-                        . ${APP_ROOT}/${LIB_DIRECTORY}/run_decom.sh -s ${BU},${PCODE},${ZNAME},${CHANGE_CONTROL},${IUSER_AUDIT} -e;
+                        ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS Failover: Requestor: ${IUSER_AUDIT} - Date: $(date +"%d-%m-%Y") - Site: $(echo ${SERVICE_DETAIL[${SELECTION}]} | cut -d "/" -f 9) - Change Request: ${CHANGE_CONTROL} - Switched To: ${TDC}";
                     fi
 
-                    ## capture the return code
-                    RET_CODE=${?};
+                    ## unset variables
+                    unset SVC_REQUEST_OPTION;
+                    unset SVC_REQUEST_TYPE;
+                    unset SVC_LIST;
+                    unset SELECTION;
+                    unset CONFIRM;
+                    unset DC_MISMATCH;
+                    unset BU;
+                    unset FNAME;
+                    unset PCODE;
+                    unset RET_CODE;
+                    unset TDC;
+                    unset CHANGE_CONTROL;
+                    unset RETURN_CODE;
+                    unset ZNAME;
 
-                    ## reset METHOD_NAME back to THIS method
-                    local METHOD_NAME="${CNAME}#${0}";
-                    CNAME="$(basename "${0}")";
+                    ## TODO: put in slave processing here
+                    ## we've finished our processing. site(s) requested have been failed over,
+                    ## reloaded and verified. what should we do now ?
+                    while true
+                    do
+                        reset; clear;
 
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "run_decom executed..";
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Result code from call: ${RET_CODE}";
+                        print "\t\t\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES}system.application.title  | awk -F "=" '/remote_app_root/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                        print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES}system.process.successful ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%PROCESS%/decommission/")";
+                        print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES}system.process.perform.another ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%PROCESS%/decommission/")\n";
 
-                    if [ ${RET_CODE} -eq 0 ]
-                    then
-                        ## ok, our master went through just fine, loop through and process slaves (if any)
-                        if [[ ! -z "${ERROR_COUNT}" && ${ERROR_COUNT} != 0 ]]
-                        then
-                            ## one or more slave services failed processing
-                            if [ ! -z "${FAILED_SERVERS}" ]
-                            then
-                                print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES}failover.request.servers.success.failure  | awk -F "=" '/remote_app_root/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                        read RESPONSE;
+                        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
 
-                                ## make sure d is zero
-                                D=0;
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RESPONSE -> ${RESPONSE}";
 
-                                while [ ${D} -ne ${#FAILED_SERVERS[@]} ]
-                                do
-                                    print "${FAILED_SERVERS[${D}]}\n";
-                                    (( D += 1 ));
-                                done
+                        case ${RESPONSE} in
+                            [Yy][Ee][Ss]|[Yy])
+                                ## user has elected to perform further failovers. restart the process
+                                unset RESPONSE;
 
-                                ## make d zero again
-                                D=0;
-                            fi
+                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Transferring control back to main..";
 
-                            sleep "${MESSAGE_DELAY}";
-                        fi
+                                sleep "${MESSAGE_DELAY}"; reset; clear; main;
+                                ;;
+                            *)
+                                ## user does not wish to process further failovers. let's exit out and open up the main class.
+                                unset RESPONSE;
 
-                        ## we're all set here. audit log it
-                        if [[ "${SELECTION}" = "A" || "${SELECTION}" = "a" ]]
-                        then
-                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS Failover: Requestor: ${IUSER_AUDIT} - Date: $(date +"%d-%m-%Y") - Site: All sites in ${SVC_REQUEST_OPTION} - Change Request: ${CHANGE_CONTROL} - Switched To: ${TDC}";
-                        else
-                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS Failover: Requestor: ${IUSER_AUDIT} - Date: $(date +"%d-%m-%Y") - Site: $(echo ${SERVICE_DETAIL[${SELECTION}]} | cut -d "/" -f 9) - Change Request: ${CHANGE_CONTROL} - Switched To: ${TDC}";
-                        fi
+                                sleep "${MESSAGE_DELAY}"; reset; clear; exec ${APP_ROOT}/${MAIN_CLASS};
+                                exit 0;
+                                ;;
+                        esac
+                    done
+                else
+                    ## caught an error, log it out and
+                    ## show it
+                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Caught an error performing the failover. RET_CODE -> ${RET_CODE}";
 
-                        ## unset variables
-                        unset SVC_REQUEST_OPTION;
-                        unset SVC_REQUEST_TYPE;
-                        unset SVC_LIST;
-                        unset SELECTION;
-                        unset CONFIRM;
-                        unset DC_MISMATCH;
-                        unset BU;
-                        unset FNAME;
-                        unset PCODE;
-                        unset RET_CODE;
-                        unset TDC;
-                        unset CHANGE_CONTROL;
-                        unset RETURN_CODE;
-                        unset ZNAME;
+                    [ -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" '/99/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                    [ ! -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/${RET_CODE}/{print \$2}" | sed -e 's/^ *//g' -e 's/ *$//g')\n";
 
-                        ## TODO: put in slave processing here
-                        ## we've finished our processing. site(s) requested have been failed over,
-                        ## reloaded and verified. what should we do now ?
-                        while true
-                        do
-                            reset; clear;
+                    unset CHANGE_CONTROL;
+                    unset RET_CODE;
+                    unset SELECTION;
+                    unset CONFIRM;
+                    unset DC_MISMATCH;
+                    unset BU;
+                    unset FNAME;
+                    unset PCODE;
+                    unset SVC_LIST;
+                    unset RETURN_CODE;
+                    unset ZNAME;
 
-                            print "\t\t\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES}system.application.title  | awk -F "=" '/remote_app_root/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
-                            print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES}system.process.successful ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%PROCESS%/decommission/")";
-                            print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES}system.process.perform.another ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%PROCESS%/decommission/")\n";
-
-                            read RESPONSE;
-                            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
-
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RESPONSE -> ${RESPONSE}";
-
-                            case ${RESPONSE} in
-                                [Yy][Ee][Ss]|[Yy])
-                                    ## user has elected to perform further failovers. restart the process
-                                    unset RESPONSE;
-
-                                    ## remove the lockfile
-                                    if [ -s ${APP_ROOT}/${APP_FLAG} ]
-                                    then
-                                        sed -e "/${IUSER_AUDIT}/d" ${APP_ROOT}/${APP_FLAG} >> ${APP_ROOT}/${TMP_DIRECTORY}/tmp;
-                                        mv ${APP_ROOT}/${TMP_DIRECTORY}/tmp ${APP_ROOT}/${APP_FLAG};
-                                    fi
-
-                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Transferring control back to main..";
-
-                                    sleep "${MESSAGE_DELAY}"; reset; clear; main;
-                                    ;;
-                                *)
-                                    ## user does not wish to process further failovers. let's exit out and open up the main class.
-                                    unset RESPONSE;
-
-                                    sleep "${MESSAGE_DELAY}"; reset; clear; exec ${APP_ROOT}/${MAIN_CLASS};
-                                    exit 0;
-                                    ;;
-                            esac
-                        done
-                    else
-                        ## caught an error, log it out and
-                        ## show it
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Caught an error performing the failover. RET_CODE -> ${RET_CODE}";
-
-                        [ -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" '/99/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
-                        [ ! -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/${RET_CODE}/{print \$2}" | sed -e 's/^ *//g' -e 's/ *$//g')\n";
-
-                        unset CHANGE_CONTROL;
-                        unset RET_CODE;
-                        unset SELECTION;
-                        unset CONFIRM;
-                        unset DC_MISMATCH;
-                        unset BU;
-                        unset FNAME;
-                        unset PCODE;
-                        unset SVC_LIST;
-                        unset RETURN_CODE;
-                        unset ZNAME;
-
-                        ## break out
-                        sleep "${MESSAGE_DELAY}"; reset; clear; break;
-                    fi
+                    ## break out
+                    sleep "${MESSAGE_DELAY}"; reset; clear; break;
                 fi
                 ;;
             [Nn][Oo]|[Nn])
@@ -810,7 +824,6 @@ function processDecomRequest
 
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set +x;
 
     return 0;
 }
@@ -831,35 +844,13 @@ function removeZoneEntry
 
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set +x;
 
     return 0;
 }
-
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
-
-[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
-
-OPTIND=0;
-METHOD_NAME="${CNAME}#startup";
-
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-
-unset METHOD_NAME;
-unset CNAME;
-
-## check security
-. ${PLUGIN_ROOT_DIR}/lib/security/check_main.sh > /dev/null 2>&1;
-RET_CODE=${?};
-
-[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE} || unset RET_CODE;
 
 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
 main;
 
-[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set +x;
 
 return 0;

@@ -26,7 +26,7 @@ then
     runsOnEcomServer "ED"
 fi
 
-typeset -r -x [ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
+[ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
 
 ## load application-wide constants if not already done
 if [ -z "${APP_ROOT}" ]
@@ -239,6 +239,6 @@ typeset -r -x SOA_TYPE_STRING=$(sed -e '/^ *#/d;s/#.*//' ${APP_MONITOR_CONFIG} |
 typeset -i AUTHORIZATION_COUNT; AUTHORIZATION_COUNT=0;
 
 ## common aliases
-[ -s ${PLUGIN_ROOT_DIR}/lib/aliases ] && . ${PLUGIN_ROOT_DIR}/lib/aliases;
-[ -s ${PLUGIN_ROOT_DIR}/lib/functions ] && . ${PLUGIN_ROOT_DIR}/lib/functions;
+[ -s ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/aliases ] && . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/aliases;
+[ -s ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/functions ] && . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/functions;
 

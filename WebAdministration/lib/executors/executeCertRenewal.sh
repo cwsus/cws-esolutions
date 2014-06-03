@@ -134,8 +134,6 @@ function applyiPlanetCertificate
                         SHUTDOWN_OUTPUT=$( { sudo ${IPLANET_SUDO_STOP_WEB} ${IPLANET_ROOT} ${WEB_INSTANCE}; } 2>&1 )
                     fi
 
-                    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && typeset -ft $(typeset +f);
-
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SHUTDOWN_OUTPUT -> ${SHUTDOWN_OUTPUT}";
 
                     if [ -s ${PID_LOG_FILE} ]
@@ -406,8 +404,6 @@ function applyiPlanetCertificate
                                                                 ## need to use sudo here to start the web
                                                                 STARTUP_OUTPUT=$( { sudo ${IPLANET_SUDO_START_WEB} ${IPLANET_ROOT} ${WEB_INSTANCE}; } 2>&1 )
                                                             fi
-
-                                                            [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && typeset -ft $(typeset +f);
 
                                                             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "STARTUP_OUTPUT -> ${STARTUP_OUTPUT}";
 

@@ -23,6 +23,35 @@ CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+
+OPTIND=0;
+METHOD_NAME="${CNAME}#startup";
+
+[ ${#} -eq 0 ] && usage;
+
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+
+unset METHOD_NAME;
+unset CNAME;
+
+## check security
+. ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/security/check_main.sh > /dev/null 2>&1;
+RET_CODE=${?};
+
+[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE};
+
+## unset the return code
+unset RET_CODE;
+
+CNAME="$(basename "${0}")";
+METHOD_NAME="${CNAME}#startup";
+
 #===  FUNCTION  ===============================================================
 #          NAME:  obtainInternetService
 #   DESCRIPTION:  Executes the necessary request against the primary DNS server
@@ -54,14 +83,14 @@ function obtainInternetService
     ## If we were invoked with verbosity turned on, carry it through
     if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
     then
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}lib/executors/execute_data_retrieval.sh -${REQUEST_TYPE} ${REQUEST_OPTION} -e";
+        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${PLUGIN_ROOT_DIR}lib/executors/execute_data_retrieval.sh -${REQUEST_TYPE} ${REQUEST_OPTION} -e";
 
-        set -A SERVICE_DETAIL $(${APP_ROOT}lib/executors/execute_data_retrieval.sh -${REQUEST_TYPE} ${REQUEST_OPTION} -e);
+        set -A SERVICE_DETAIL $(${PLUGIN_ROOT_DIR}lib/executors/execute_data_retrieval.sh -${REQUEST_TYPE} ${REQUEST_OPTION} -e);
         RET_CODE=${?};
     else
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${NAMED_MASTER} \"${REMOTE_APP_ROOT}/lib/executors/execute_data_retrieval.sh -${REQUEST_TYPE} ${REQUEST_OPTION} -e\"";
+        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} \"${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/execute_data_retrieval.sh -${REQUEST_TYPE} ${REQUEST_OPTION} -e\"";
 
-        set -A SERVICE_DETAIL $(${APP_ROOT}/lib/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/lib/executors/execute_data_retrieval.sh -${REQUEST_TYPE} ${REQUEST_OPTION} -e");
+        set -A SERVICE_DETAIL $(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/execute_data_retrieval.sh -${REQUEST_TYPE} ${REQUEST_OPTION} -e");
     fi
 
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_DETAIL->${SERVICE_DETAIL[@]}";
@@ -129,7 +158,7 @@ function obtainIntranetService
         then
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command gdctl -k .."; 
 
-            $(gdctl -k | sed -e "s/^M//g" >${APP_ROOT}/${GD_CONFIG_FILE});
+            $(gdctl -k | sed -e "s/^M//g" >${PLUGIN_ROOT_DIR}/${GD_CONFIG_FILE});
         else
             for GD_SERVER in ${GD_SERVERS}
             do
@@ -145,9 +174,9 @@ function obtainIntranetService
                 then
                     ## stop if its available and run the command
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Server availability confirmed. GD_SERVER -> ${GD_SERVER}";
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${GD_SERVER} \"gdctl -k\" > ${APP_ROOT}/${GD_CONFIG_FILE}";
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${GD_SERVER} \"gdctl -k\" > ${PLUGIN_ROOT_DIR}/${GD_CONFIG_FILE}";
 
-                    $(${APP_ROOT}/lib/tcl/runSSHConnection.exp ${GD_SERVER} "gdctl -k" | sed -e "s/^M//g" > ${APP_ROOT}/${GD_CONFIG_FILE});
+                    $(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${GD_SERVER} "gdctl -k" | sed -e "s/^M//g" > ${PLUGIN_ROOT_DIR}/${GD_CONFIG_FILE});
 
                     break;
                 else
@@ -161,10 +190,10 @@ function obtainIntranetService
         fi
 
         ## command executed, verify file exists
-        if [ -s ${APP_ROOT}/${GD_CONFIG_FILE} ]
+        if [ -s ${PLUGIN_ROOT_DIR}/${GD_CONFIG_FILE} ]
         then
             ## xlnt, we have the data file. get the info we need
-            VHOST_LINE_NUMBER=$(sed -n "/${SITE_VHOST_NAME}/=" ${APP_ROOT}/${GD_CONFIG_FILE} | head -1);
+            VHOST_LINE_NUMBER=$(sed -n "/${SITE_VHOST_NAME}/=" ${PLUGIN_ROOT_DIR}/${GD_CONFIG_FILE} | head -1);
 
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VHOST_LINE_NUMBER -> ${VHOST_LINE_NUMBER}";
 
@@ -172,7 +201,7 @@ function obtainIntranetService
             then
                 START_LINE_NUMBER=$((${VHOST_LINE_NUMBER}-2));
                 END_LINE_NUMBER=$((${VHOST_LINE_NUMBER}+19));
-                POP_NAMES=$(sed -n -e "${START_LINE_NUMBER},${END_LINE_NUMBER}p" ${APP_ROOT}/${GD_CONFIG_FILE} \ |
+                POP_NAMES=$(sed -n -e "${START_LINE_NUMBER},${END_LINE_NUMBER}p" ${PLUGIN_ROOT_DIR}/${GD_CONFIG_FILE} \ |
                     grep "${GD_POP_IDENTIFIER}" | cut -d "=" -f 2 | sed -e "s/^ *//g" -e "s/;//g");
 
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VHOST_LINE_NUMBER -> ${VHOST_LINE_NUMBER}";
@@ -187,10 +216,10 @@ function obtainIntranetService
                     do
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "POP_NAME -> ${POP_NAME}";
 
-                        POPS_LINE_NUMBER=$(grep -n "label = ${POP_NAME}" ${APP_ROOT}/${GD_CONFIG_FILE} | cut -d ":" -f 1);
+                        POPS_LINE_NUMBER=$(grep -n "label = ${POP_NAME}" ${PLUGIN_ROOT_DIR}/${GD_CONFIG_FILE} | cut -d ":" -f 1);
                         POPE_LINE_NUMBER=$((${POPS_LINE_NUMBER}+1))
                         set -A POP_STATUS ${POP_STATUS[@]} $(echo "${POP_NAME}|$(sed -n -e "${POPE_LINE_NUMBER}p" \
-                            ${APP_ROOT}/${GD_CONFIG_FILE} | cut -d "=" -f 2 | sed -e "s/^ *//g" -e "s/;//g")")
+                            ${PLUGIN_ROOT_DIR}/${GD_CONFIG_FILE} | cut -d "=" -f 2 | sed -e "s/^ *//g" -e "s/;//g")")
 
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "POPS_LINE_NUMBER -> ${POPS_LINE_NUMBER}";
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "POPE_LINE_NUMBER -> ${POPE_LINE_NUMBER}";
@@ -286,33 +315,6 @@ function usage
     return 3;
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
-
-[ ${#} -eq 0 ] && usage;
-
-OPTIND=0;
-METHOD_NAME="${CNAME}#startup";
-
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-
-unset METHOD_NAME;
-unset CNAME;
-
-## check security
-. ${PLUGIN_ROOT_DIR}/lib/security/check_main.sh > /dev/null 2>&1;
-RET_CODE=${?};
-
-[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE};
-
-## unset the return code
-unset RET_CODE;
-
-CNAME="$(basename "${0}")";
-METHOD_NAME="${CNAME}#startup";
-
 case ${1} in
     ${INTERNET_TYPE_IDENTIFIER})
         obtainInternetService ${2};
@@ -326,4 +328,3 @@ case ${1} in
 esac
 
 return ${RETURN_CODE};
-

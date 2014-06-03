@@ -22,6 +22,35 @@ CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+
+OPTIND=0;
+METHOD_NAME="${CNAME}#startup";
+
+[ ${#} -eq 0 ] && usage;
+
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+
+unset METHOD_NAME;
+unset CNAME;
+
+## check security
+. ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/security/check_main.sh > /dev/null 2>&1;
+RET_CODE=${?};
+
+[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE};
+
+## unset the return code
+unset RET_CODE;
+
+CNAME="$(basename "${0}")";
+METHOD_NAME="${CNAME}#startup";
+
 #===  FUNCTION  ===============================================================
 #          NAME:  returnResponse
 #   DESCRIPTION:  Returns a full response from DiG for a provided address
@@ -38,7 +67,7 @@ function returnResponse
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing DiG query against ${NAMESERVER} for ${SITE_URL}..";
 
     ## kill the file if it exists
-    [ -f ${APP_ROOT}/${DIG_DATA_FILE} ] && rm -rf ${APP_ROOT}/${DIG_DATA_FILE};
+    [ -f ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} ] && rm -rf ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
 
     if [ -z "${NAMESERVER}" ]
     then
@@ -62,7 +91,7 @@ function returnResponse
         then
             $(dig @${NAMESERVER} -t ${RECORD_TYPE} ${SITE_URL});
         else
-            $(dig @${NAMESERVER} -t ${RECORD_TYPE} ${SITE_URL}) > ${APP_ROOT}/${DIG_DATA_FILE};
+            $(dig @${NAMESERVER} -t ${RECORD_TYPE} ${SITE_URL}) > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
         fi
     else
         if [ $(echo ${DNS_SLAVES[@]} | grep -c ${NAMESERVER}) -eq 1 ] || [ "${NAMESERVER}" = "${NAMED_MASTER}" ]
@@ -72,9 +101,9 @@ function returnResponse
 
             if [ ${JAVA_RUNNABLE} ]
             then
-                ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} -t ${RECORD_TYPE} ${SITE_URL}";
+                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} -t ${RECORD_TYPE} ${SITE_URL}";
             else
-                ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} -t ${RECORD_TYPE} ${SITE_URL}" > ${APP_ROOT}/${DIG_DATA_FILE};
+                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} -t ${RECORD_TYPE} ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
             fi
         else
             ## we were asked to run against an external server,
@@ -94,13 +123,13 @@ function returnResponse
                 then
                     ## stop if its available and run the command
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Proxy access confirmed. Proxy: ${PROXY}";
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${PROXY} \"dig @${NAMESERVER} -t ${RECORD_TYPE} ${SITE_URL}\" > ${APP_ROOT}/${DIG_DATA_FILE}";
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} \"dig @${NAMESERVER} -t ${RECORD_TYPE} ${SITE_URL}\" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE}";
 
                     if [ ${JAVA_RUNNABLE} ]
                     then
-                        ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} -t ${RECORD_TYPE} ${SITE_URL}";
+                        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} -t ${RECORD_TYPE} ${SITE_URL}";
                     else
-                        ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} -t ${RECORD_TYPE} ${SITE_URL}" > ${APP_ROOT}/${DIG_DATA_FILE};
+                        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} -t ${RECORD_TYPE} ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
                     fi
 
                     break;
@@ -122,7 +151,7 @@ function returnResponse
 
     if [ ! ${JAVA_RUNNABLE} ]
     then
-        if [ -s ${APP_ROOT}/${DIG_DATA_FILE} ]
+        if [ -s ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} ]
         then
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
             unset NAMESERVER;
@@ -157,7 +186,7 @@ function returnShortResponse
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing DiG query against ${NAMESERVER} for ${SITE_URL}..";
 
     ## kill the file if it exists
-    [ -f ${APP_ROOT}/${DIG_DATA_FILE} ] && rm -rf ${APP_ROOT}/${DIG_DATA_FILE};
+    [ -f ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} ] && rm -rf ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
 
     if [ -z "${NAMESERVER}" ]
     then
@@ -173,16 +202,16 @@ function returnShortResponse
         then
             dig @${NAMESERVER} +short -t ${RECORD_TYPE} ${SITE_URL};
         else
-            dig @${NAMESERVER} +short -t ${RECORD_TYPE} ${SITE_URL} > ${APP_ROOT}/${DIG_DATA_FILE};
+            dig @${NAMESERVER} +short -t ${RECORD_TYPE} ${SITE_URL} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
         fi
     else
         if [ $(echo ${DNS_SLAVES[@]} | grep -c ${NAMESERVER}) -eq 1 ] || [ "${NAMESERVER}" = "${NAMED_MASTER}" ]
         then
             if [ ${JAVA_RUNNABLE} ]
             then
-                ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} +short -t ${RECORD_TYPE} ${SITE_URL}";
+                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} +short -t ${RECORD_TYPE} ${SITE_URL}";
             else
-                ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} +short -t ${RECORD_TYPE} ${SITE_URL}" > ${APP_ROOT}/${DIG_DATA_FILE};
+                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} +short -t ${RECORD_TYPE} ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
             fi
         else
             ## we were asked to run against an external server,
@@ -200,9 +229,9 @@ function returnShortResponse
                     ## stop if its available and run the command
                     if [ ${JAVA_RUNNABLE} ]
                     then
-                        ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} +short -t ${RECORD_TYPE} ${SITE_URL}";
+                        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} +short -t ${RECORD_TYPE} ${SITE_URL}";
                     else
-                        ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} +short -t ${RECORD_TYPE} ${SITE_URL}" > ${APP_ROOT}/${DIG_DATA_FILE};
+                        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} +short -t ${RECORD_TYPE} ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
                     fi
 
                     break;
@@ -220,7 +249,7 @@ function returnShortResponse
 
     if [ ! ${JAVA_RUNNABLE} ]
     then
-        if [ -s ${APP_ROOT}/${DIG_DATA_FILE} ]
+        if [ -s ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} ]
         then
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
             unset NAMESERVER;
@@ -256,7 +285,7 @@ function returnReverseResponse
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing DiG query against ${NAMESERVER} for ${SITE_URL}..";
 
     ## kill the file if it exists
-    [ -f ${APP_ROOT}/${DIG_DATA_FILE}-${SERVER} ] && rm -rf ${APP_ROOT}/${DIG_DATA_FILE};
+    [ -f ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE}-${SERVER} ] && rm -rf ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE}-${SERVER};
 
     if [ -z "${NAMESERVER}" ]
     then
@@ -265,7 +294,7 @@ function returnReverseResponse
     fi
 
     ## make sure we got an IP address. if we didn't we need to translate.
-    if [ $(${APP_ROOT}/lib/validators/validate_ip_address.sh ${SITE_URL}) -ne 0 ]
+    if [ $(${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validate_ip_address.sh ${SITE_URL}) -ne 0 ]
     then
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "We were provided a hostname. Translating to IP address..";
 
@@ -276,7 +305,7 @@ function returnReverseResponse
         else
             if [ $(echo ${DNS_SLAVES[@]} | grep -c ${NAMESERVER}) -eq 1 ] || [ "${NAMESERVER}" = "${NAMED_MASTER}" ]
             then
-                SITE_URL=$(${APP_ROOT}/lib/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} +short -t A ${SITE_URL}");
+                SITE_URL=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} +short -t A ${SITE_URL}");
             else
                 ## we were asked to run against an external server,
                 ## so lets check our proxy list for an available
@@ -291,7 +320,7 @@ function returnReverseResponse
 
                     if [ ${PING_RCODE} == 0 ]
                     then
-                        SITE_URL=$(${APP_ROOT}/lib/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} +short -t A ${SITE_URL}");
+                        SITE_URL=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} +short -t A ${SITE_URL}");
                         break;
                     fi
                 done
@@ -313,16 +342,16 @@ function returnReverseResponse
             then
                 dig @${NAMESERVER} -x ${SITE_URL};
             else
-                dig @${NAMESERVER} -x ${SITE_URL} > ${APP_ROOT}/${DIG_DATA_FILE};
+                dig @${NAMESERVER} -x ${SITE_URL} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
             fi
         else
             if [ $(echo ${DNS_SLAVES[@]} | grep -c ${NAMESERVER}) -eq 1 ] || [ "${NAMESERVER}" = "${NAMED_MASTER}" ]
             then
                 if [ ${JAVA_RUNNABLE} ]
                 then
-                    ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} -x ${SITE_URL}";
+                    ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} -x ${SITE_URL}";
                 else
-                    ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} -x ${SITE_URL}" > ${APP_ROOT}/${DIG_DATA_FILE};
+                    ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
                 fi
             else
                 ## we were asked to run against an external server,
@@ -340,9 +369,9 @@ function returnReverseResponse
                     then
                         if [ ${JAVA_RUNNABLE} ]
                         then
-                            ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} -x ${SITE_URL}";
+                            ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} -x ${SITE_URL}";
                         else
-                            ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} -x ${SITE_URL}" > ${APP_ROOT}/${DIG_DATA_FILE};
+                            ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
                         fi
 
                         break;
@@ -360,7 +389,7 @@ function returnReverseResponse
 
         if [ ! ${JAVA_RUNNABLE} ]
         then
-            if [ -s ${APP_ROOT}/${DIG_DATA_FILE} ]
+            if [ -s ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} ]
             then
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
                 unset NAMESERVER;
@@ -407,7 +436,7 @@ function returnShortReverseResponse
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing DiG query against ${NAMESERVER} for ${SITE_URL}..";
 
     ## kill the file if it exists
-    [ -f ${APP_ROOT}/${DIG_DATA_FILE}-${SERVER} ] && rm -rf ${APP_ROOT}/${DIG_DATA_FILE};
+    [ -f ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE}-${SERVER} ] && rm -rf ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
 
     if [ -z "${NAMESERVER}" ]
     then
@@ -416,7 +445,7 @@ function returnShortReverseResponse
     fi
 
     ## make sure we got an IP address. if we didn't we need to translate.
-    if [ $(${APP_ROOT}/lib/validators/validate_ip_address.sh ${SITE_URL}) -ne 0 ]
+    if [ $(${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validate_ip_address.sh ${SITE_URL}) -ne 0 ]
     then
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "We were provided a hostname. Translating to IP address..";
 
@@ -427,7 +456,7 @@ function returnShortReverseResponse
         else
             if [ $(echo ${DNS_SLAVES[@]} | grep -c ${NAMESERVER}) -eq 1 ] || [ "${NAMESERVER}" = "${NAMED_MASTER}" ]
             then
-                SITE_URL=$(${APP_ROOT}/lib/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} +short -t A ${SITE_URL}");
+                SITE_URL=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} +short -t A ${SITE_URL}");
             else
                 ## we were asked to run against an external server,
                 ## so lets check our proxy list for an available
@@ -442,7 +471,7 @@ function returnShortReverseResponse
 
                     if [ ${PING_RCODE} == 0 ]
                     then
-                        SITE_URL=$(${APP_ROOT}/lib/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} +short -t A ${SITE_URL}");
+                        SITE_URL=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} +short -t A ${SITE_URL}");
                         break;
                     fi
                 done
@@ -464,16 +493,16 @@ function returnShortReverseResponse
             then
                 dig @${NAMESERVER} -x ${SITE_URL};
             else
-                dig @${NAMESERVER} -x ${SITE_URL} > ${APP_ROOT}/${DIG_DATA_FILE};
+                dig @${NAMESERVER} -x ${SITE_URL} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
             fi
         else
             if [ $(echo ${DNS_SLAVES[@]} | grep -c ${NAMESERVER}) -eq 1 ] || [ "${NAMESERVER}" = "${NAMED_MASTER}" ]
             then
                 if [ ${JAVA_RUNNABLE} ]
                 then
-                    ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} +short -x ${SITE_URL}";
+                    ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} +short -x ${SITE_URL}";
                 else
-                    ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} +short -x ${SITE_URL}" > ${APP_ROOT}/${DIG_DATA_FILE};
+                    ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} +short -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
                 fi
             else
                 ## we were asked to run against an external server,
@@ -491,9 +520,9 @@ function returnShortReverseResponse
                     then
                         if [ ${JAVA_RUNNABLE} ]
                         then
-                            ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} +short -x ${SITE_URL}";
+                            ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} +short -x ${SITE_URL}";
                         else
-                            ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} +short -x ${SITE_URL}" > ${APP_ROOT}/${DIG_DATA_FILE};
+                            ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} +short -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
                         fi
 
                         break;
@@ -511,7 +540,7 @@ function returnShortReverseResponse
 
         if [ ! ${JAVA_RUNNABLE} ]
         then
-            if [ -s ${APP_ROOT}/${DIG_DATA_FILE} ]
+            if [ -s ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} ]
             then
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
                 unset NAMESERVER;
@@ -569,33 +598,6 @@ function usage
 
     return 3;
 }
-
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
-
-[ ${#} -eq 0 ] && usage;
-
-OPTIND=0;
-METHOD_NAME="${CNAME}#startup";
-
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-
-unset METHOD_NAME;
-unset CNAME;
-
-## check security
-. ${PLUGIN_ROOT_DIR}/lib/security/check_main.sh > /dev/null 2>&1;
-RET_CODE=${?};
-
-[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE};
-
-## unset the return code
-unset RET_CODE;
-
-CNAME="$(basename "${0}")";
-METHOD_NAME="${CNAME}#startup";
 
 while getopts ":s:t:u:roeh:" OPTIONS
 do
@@ -671,12 +673,7 @@ do
                 fi
             fi
             ;;
-        h)
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-            usage;
-            ;;
-        [\?])
+        h|[\?])
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
             usage;

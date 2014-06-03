@@ -154,8 +154,6 @@ function monitorWebInstances
                                     STARTUP_OUTPUT=$( { sudo ${IPLANET_SUDO_START_WEB} ${IPLANET_ROOT} ${WEBSERVER}; } 2>&1 )
                                 fi
 
-                                [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && typeset -ft $(typeset +f);
-
                                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "STARTUP_OUTPUT -> ${STARTUP_OUTPUT}";
 
                                 PID_LOG_FILE=$(grep -w ${IPLANET_PID_IDENTIFIER} ${IPLANET_ROOT}/${WEBSERVER}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG} | awk '{print $2}');
@@ -193,8 +191,6 @@ function monitorWebInstances
                                 ## need to use sudo here to start the web
                                 STARTUP_OUTPUT=$( { sudo ${IPLANET_SUDO_START_WEB} ${IPLANET_ROOT} ${WEBSERVER}; } 2>&1 )
                             fi
-
-                            [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && typeset -ft $(typeset +f);
 
                             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "STARTUP_OUTPUT -> ${STARTUP_OUTPUT}";
 

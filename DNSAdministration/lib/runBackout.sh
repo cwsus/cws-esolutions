@@ -22,6 +22,35 @@ CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+
+OPTIND=0;
+METHOD_NAME="${CNAME}#startup";
+
+[ ${#} -eq 0 ] && usage;
+
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+
+unset METHOD_NAME;
+unset CNAME;
+
+## check security
+. ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/security/check_main.sh > /dev/null 2>&1;
+RET_CODE=${?};
+
+[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE};
+
+## unset the return code
+unset RET_CODE;
+
+CNAME="$(basename "${0}")";
+METHOD_NAME="${CNAME}#startup";
+
 #===  FUNCTION  ===============================================================
 #          NAME:  obtainBackoutList
 #   DESCRIPTION:  Processes and implements a DNS site failover
@@ -40,10 +69,10 @@ function obtainBackoutList
     ## available backout tarballs
     if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
     then
-        . ${APP_ROOT}/lib/executors/execute_backout.sh -a;
+        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/execute_backout.sh -a;
         RETURN_CODE=${?};
     else
-        ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${NAMED_MASTER} "${APP_ROOT}/lib/executors/execute_backout.sh -a";
+        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/execute_backout.sh -a";
         RETURN_CODE=${?};
     fi
 
@@ -59,9 +88,9 @@ function obtainBackoutList
 
         if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
         then
-            set -A FILE_LIST $(sed -e "s/^M//g" ${APP_ROOT}/${BACKUP_LIST});
+            set -A FILE_LIST $(sed -e "s/^M//g" ${PLUGIN_ROOT_DIR}/${BACKUP_LIST});
         else
-            set -A FILE_LIST $(${APP_ROOT}/lib/tcl/runSSHConnection.exp ${NAMED_MASTER} "sed \"s/^M//g\" ${APP_ROOT}/${BACKUP_LIST}");
+            set -A FILE_LIST $(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "sed \"s/^M//g\" ${PLUGIN_ROOT_DIR}/${BACKUP_LIST}");
         fi
 
         if [ ${#FILE_LIST[@]} -eq 0 ]
@@ -108,12 +137,12 @@ function runBackoutWithOptions
     then
         if [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]]
         then
-            exec ksh -v -x ${APP_ROOT}/lib/executors/execute_backout.sh -b ${BUSINESS_UNIT} -c ${CHANGE_NUM} -d ${CHANGE_DATE} -e;
+            exec ksh -v -x ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/execute_backout.sh -b ${BUSINESS_UNIT} -c ${CHANGE_NUM} -d ${CHANGE_DATE} -e;
         else
-            . ${APP_ROOT}/lib/executors/execute_backout.sh -b ${BUSINESS_UNIT} -c ${CHANGE_NUM} -d ${CHANGE_DATE} -e;
+            . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/execute_backout.sh -b ${BUSINESS_UNIT} -c ${CHANGE_NUM} -d ${CHANGE_DATE} -e;
         fi
     else
-        ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${NAMED_MASTER} "${APP_ROOT}/lib/executors/execute_backout.sh -b ${BUSINESS_UNIT} -c ${CHANGE_NUM} -d ${CHANGE_DATE} -e";
+        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/execute_backout.sh -b ${BUSINESS_UNIT} -c ${CHANGE_NUM} -d ${CHANGE_DATE} -e";
     fi
 
     ## capture the return code
@@ -128,7 +157,7 @@ function runBackoutWithOptions
         unset RETURN_CODE;
 
         ## ok our logging is done. reload config.
-        . ${APP_ROOT}/lib/runRNDCCommands.sh -c reload -e;
+        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -c reload -e;
         RETURN_CODE=${?};
 
         if [ ${RETURN_CODE} -eq 0 ]
@@ -153,7 +182,7 @@ function runBackoutWithOptions
                     unset CNAME;
 
                     ## send an rndc reload to the server to make it active
-                    . ${APP_ROOT}/lib/runRNDCCommands.sh -s ${DNS_SLAVE[${D}]} -c reload -e;
+                    . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${DNS_SLAVE[${D}]} -c reload -e;
                     RETURN_CODE=${?};
 
                     if [ ${RETURN_CODE} -eq 0 ]
@@ -191,9 +220,9 @@ function runBackoutWithOptions
         ## multiple backup files exist for the lookup provided
         if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
         then
-            set -A BACKUP_FILES $(cat ${APP_ROOT}/${BACKUP_LIST});
+            set -A BACKUP_FILES $(cat ${PLUGIN_ROOT_DIR}/${BACKUP_LIST});
         else
-            set -A BACKUP_FILES $(${APP_ROOT}/lib/tcl/runSSHConnection.exp ${NAMED_MASTER} "sed \"s/^M//g\" ${APP_ROOT}/${BACKUP_LIST}");
+            set -A BACKUP_FILES $(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "sed \"s/^M//g\" ${PLUGIN_ROOT_DIR}/${BACKUP_LIST}");
         fi
 
         if [ ${VERBOSE} ]
@@ -236,12 +265,12 @@ function runBackoutWithFileName
     then
         if [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]]
         then
-            exec ksh -v -x ${APP_ROOT}/lib/executors/execute_backout.sh -f ${FILE_NAME};
+            exec ksh -v -x ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/execute_backout.sh -f ${FILE_NAME};
         else
-            . ${APP_ROOT}/lib/executors/execute_backout.sh -f ${FILE_NAME};
+            . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/execute_backout.sh -f ${FILE_NAME};
         fi
     else
-        ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${NAMED_MASTER} "${APP_ROOT}/lib/executors/execute_backout.sh -f ${FILE_NAME}";
+        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/execute_backout.sh -f ${FILE_NAME}";
     fi
 
     ## capture the return code
@@ -256,7 +285,7 @@ function runBackoutWithFileName
         unset RETURN_CODE;
 
         ## ok our logging is done. reload config.
-        . ${APP_ROOT}/lib/runRNDCCommands.sh -c reload -e;
+        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -c reload -e;
         RETURN_CODE=${?};
 
         if [ ${RETURN_CODE} -eq 0 ]
@@ -281,7 +310,7 @@ function runBackoutWithFileName
                     unset CNAME;
 
                     ## send an rndc reload to the server to make it active
-                    . ${APP_ROOT}/lib/runRNDCCommands.sh -s ${DNS_SLAVE[${D}]} -c reload -e;
+                    . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${DNS_SLAVE[${D}]} -c reload -e;
                     RETURN_CODE=${?};
 
                     if [ ${RETURN_CODE} -eq 0 ]
@@ -353,33 +382,6 @@ function usage
 
     return 3;
 }
-
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
-
-[ ${#} -eq 0 ] && usage;
-
-OPTIND=0;
-METHOD_NAME="${CNAME}#startup";
-
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-
-unset METHOD_NAME;
-unset CNAME;
-
-## check security
-. ${PLUGIN_ROOT_DIR}/lib/security/check_main.sh > /dev/null 2>&1;
-RET_CODE=${?};
-
-[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE};
-
-## unset the return code
-unset RET_CODE;
-
-CNAME="$(basename "${0}")";
-METHOD_NAME="${CNAME}#startup";
 
 while getopts ":af:b:d:c:eh:" OPTIONS
 do
@@ -463,12 +465,7 @@ do
                 runBackoutWithOptions;
             fi
             ;;
-        h)
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-            usage;
-            ;;
-        [\?])
+        h|[\?])
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
             usage;

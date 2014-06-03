@@ -17,13 +17,50 @@
 #      REVISION:  ---
 #==============================================================================
 
-trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; exit" INT TERM EXIT;
-
-## Application contants
+## Application constants
 [ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+
+OPTIND=0;
+METHOD_NAME="${CNAME}#startup";
+
+[ ${#} -eq 0 ] && usage;
+
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+
+unset METHOD_NAME;
+unset CNAME;
+
+## check security
+. ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/security/check_main.sh > /dev/null 2>&1;
+RET_CODE=${?};
+
+[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && echo ${RET_CODE} && exit ${RET_CODE};
+
+## unset the return code
+unset RET_CODE;
+
+## lock it
+${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/lock.sh lock ${$};
+RET_CODE=${?};
+
+[ ${RET_CODE} != 0 ] && echo "Application currently in use." && echo ${RET_CODE} && exit ${RET_CODE};
+
+unset RET_CODE;
+
+CNAME="$(basename "${0}")";
+METHOD_NAME="${CNAME}#startup";
+
+trap "${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/lock.sh unlock ${$}; exit" INT TERM EXIT;
 
 #===  FUNCTION  ===============================================================
 #          NAME:  failover_bu
@@ -74,11 +111,11 @@ function failover_bu
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "BACKUP_FILE->${BACKUP_FILE}");
 
         ## tar+gzip
-        tar cf ${APP_ROOT}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar -C ${SITE_ROOT} ${NAMED_ZONE_PREFIX}.* > /dev/null 2>&1;
-        gzip ${APP_ROOT}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar > /dev/null 2>&1;
+        tar cf ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar -C ${SITE_ROOT} ${NAMED_ZONE_PREFIX}.* > /dev/null 2>&1;
+        gzip ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar > /dev/null 2>&1;
 
         ## make sure backup file got created
-        if [ -s ${APP_ROOT}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar.gz ]
+        if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar.gz ]
         then
             unset BACKUP_FILE;
 
@@ -93,7 +130,7 @@ function failover_bu
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating operational copy in ${TMP_DIRECTORY}..";
 
                 ## take operational copy
-                cp ${SITE_ROOT}/${TARGET_DC}/${DC_FILE} ${APP_ROOT}/${TMP_DIRECTORY}/${FILENAME};
+                cp ${SITE_ROOT}/${TARGET_DC}/${DC_FILE} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME};
 
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Calling addServiceIndicators.sh..";
 
@@ -102,7 +139,7 @@ function failover_bu
                 unset CNAME;
 
                 ## add our informational and audit indicators
-                . ${APP_ROOT}/lib/addServiceIndicators.sh -r ${GROUP_ID}${BUSINESS_UNIT} -f ${FILENAME} -t ${TARGET_DC} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e;
+                . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/addServiceIndicators.sh -r ${GROUP_ID}${BUSINESS_UNIT} -f ${FILENAME} -t ${TARGET_DC} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e;
                 RET_CODE=${?};
 
                 ## set method_name and cname back to this
@@ -118,7 +155,7 @@ function failover_bu
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Indicators set - checksumming..";
 
                     ## set the checksum
-                    set -A TMP_MD5SUM $(echo "${TMP_MD5SUM[@]}" "$(cksum ${APP_ROOT}/${TMP_DIRECTORY}/${FILENAME} | awk '{print $1}')");
+                    set -A TMP_MD5SUM $(echo "${TMP_MD5SUM[@]}" "$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME} | awk '{print $1}')");
 
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksum complete -> ${TMP_MD5SUM[${A}]}";
 
@@ -145,11 +182,11 @@ function failover_bu
 
             ## All our preliminary processing has been completed,
             ## so lets move the updated zone file into place
-            for FILENAME in $(ls -ltr ${APP_ROOT}/${TMP_DIRECTORY} | awk '{print $9}' | cut -d ":" -f 1-1 | grep -v "[PV]H" | uniq | sed -e '/ *#/d; /^ *$/d')
+            for FILENAME in $(ls -ltr ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY} | awk '{print $9}' | cut -d ":" -f 1-1 | grep -v "[PV]H" | uniq | sed -e '/ *#/d; /^ *$/d')
             do
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${FILENAME} to ${SITE_ROOT}..";
 
-                cp ${APP_ROOT}/${TMP_DIRECTORY}/${FILENAME} ${SITE_ROOT}/${FILENAME};
+                cp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME} ${SITE_ROOT}/${FILENAME};
 
                 ## configure the checksum array
                 set -A NEW_MD5SUM $(echo "${NEW_MD5SUM[@]}" "$(cksum ${SITE_ROOT}/${FILENAME} | awk '{print $1}')");
@@ -198,7 +235,7 @@ function failover_bu
             ## we can clean up our temp files now
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Deleting temp files..";
 
-            rm ${APP_ROOT}/${TMP_DIRECTORY}/*;
+            rm ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/*;
 
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -268,41 +305,6 @@ function usage
 
     return 3;
 }
-
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
-
-[ ${#} -eq 0 ] && usage;
-
-OPTIND=0;
-METHOD_NAME="${CNAME}#startup";
-
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-
-unset METHOD_NAME;
-unset CNAME;
-
-## check security
-. ${PLUGIN_ROOT_DIR}/lib/security/check_main.sh > /dev/null 2>&1;
-RET_CODE=${?};
-
-[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && echo ${RET_CODE} && exit ${RET_CODE};
-
-## unset the return code
-unset RET_CODE;
-
-## lock it
-${APP_ROOT}/${LIB_DIRECTORY}/lock.sh lock ${$};
-RET_CODE=${?};
-
-[ ${RET_CODE} != 0 ] && echo "Application currently in use." && echo ${RET_CODE} && exit ${RET_CODE};
-
-unset RET_CODE;
-
-CNAME="$(basename "${0}")";
-METHOD_NAME="${CNAME}#startup";
 
 while getopts ":b:t:c:i:eh:" OPTIONS
 do
@@ -379,16 +381,6 @@ do
 
                 failover_bu;
             fi
-            ;;
-        h)
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-            usage;
-            ;;
-        [\?])
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-            usage;
             ;;
         *)
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";

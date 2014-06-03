@@ -16,10 +16,24 @@
 #       CREATED:  ---
 #      REVISION:  ---
 #==============================================================================
+
 ## Application constants
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+
+[ -z "${PLUGIN_ROOT_DIR}" ] && exit 0;
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+
+OPTIND=0;
+METHOD_NAME="${CNAME}#startup";
+
+[ ${#} -eq 0 ] && usage;
+
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  add_zone_addr
@@ -41,13 +55,13 @@ function add_zone_addr
 
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONEFILE_NAME -> ${ZONEFILE_NAME}";
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DC_ZONEFILE_NAME -> ${DC_ZONEFILE_NAME}";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "checking for ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${DATACENTER}/${DC_ZONEFILE_NAME}..";
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "checking for ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${DATACENTER}/${DC_ZONEFILE_NAME}..";
 
     if [ "${DATACENTER}" = "BOTH" ]
     then
         ## user has requested to operate against both datacenters
-        if [ -s ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/${DC_ZONEFILE_NAME} ] &&
-            [ -s ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/${DC_ZONEFILE_NAME} ]
+        if [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/${DC_ZONEFILE_NAME} ] &&
+            [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/${DC_ZONEFILE_NAME} ]
         then
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zonefiles exists. Checking for record type..";
 
@@ -72,12 +86,12 @@ function add_zone_addr
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A required entry was blank. Cannot continue.";
                     RETURN_CODE=30;
                 else
-                    printf "${ALIAS}      IN      ${RECORD_TYPE}      \"${IPADDR}\"\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/${DC_ZONEFILE_NAME};
-                    printf "${ALIAS}      IN      ${RECORD_TYPE}      \"${IPADDR}\"\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/${DC_ZONEFILE_NAME};
+                    printf "${ALIAS}      IN      ${RECORD_TYPE}      \"${IPADDR}\"\n" >> ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/${DC_ZONEFILE_NAME};
+                    printf "${ALIAS}      IN      ${RECORD_TYPE}      \"${IPADDR}\"\n" >> ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/${DC_ZONEFILE_NAME};
 
                     ## validate the record was written
-                    if [ $(grep -c "${ALIAS}      IN      ${RECORD_TYPE}      \"${IPADDR}\"" ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/${DC_ZONEFILE_NAME}) -eq 1 ] &&
-                         [ $(grep -c "${ALIAS}      IN      ${RECORD_TYPE}      \"${IPADDR}\"" ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/${DC_ZONEFILE_NAME}) -eq 1 ]
+                    if [ $(grep -c "${ALIAS}      IN      ${RECORD_TYPE}      \"${IPADDR}\"" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/${DC_ZONEFILE_NAME}) -eq 1 ] &&
+                         [ $(grep -c "${ALIAS}      IN      ${RECORD_TYPE}      \"${IPADDR}\"" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/${DC_ZONEFILE_NAME}) -eq 1 ]
                     then
                         ## record was successfully written
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printed ${RECORD_TYPE} record to ${DC_ZONEFILE_NAME}";
@@ -106,7 +120,7 @@ function add_zone_addr
         fi
     else
         ## set up the datacenter-specific copies
-        if [ -s ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${DATACENTER}/${DC_ZONEFILE_NAME} ]
+        if [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${DATACENTER}/${DC_ZONEFILE_NAME} ]
         then
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zonefile exists. Checking for record type..";
 
@@ -131,10 +145,10 @@ function add_zone_addr
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A required entry was blank. Cannot continue.";
                     RETURN_CODE=30;
                 else
-                    printf "${ALIAS}      IN      ${RECORD_TYPE}      \"${IPADDR}\"\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${DATACENTER}/${DC_ZONEFILE_NAME};
+                    printf "${ALIAS}      IN      ${RECORD_TYPE}      \"${IPADDR}\"\n" >> ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${DATACENTER}/${DC_ZONEFILE_NAME};
 
                     ## validate the record was written
-                    if [ $(grep -c "${ALIAS}      IN      ${RECORD_TYPE}      \"${IPADDR}\"" ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${DATACENTER}/${DC_ZONEFILE_NAME}) -eq 1 ]
+                    if [ $(grep -c "${ALIAS}      IN      ${RECORD_TYPE}      \"${IPADDR}\"" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${DATACENTER}/${DC_ZONEFILE_NAME}) -eq 1 ]
                     then
                         ## record was successfully written
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printed ${RECORD_TYPE} record to ${DC_ZONEFILE_NAME}";
@@ -184,8 +198,8 @@ function add_subdomains
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONEFILE_NAME -> ${ZONEFILE_NAME}";
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DC_ZONEFILE_NAME -> ${DC_ZONEFILE_NAME}";
 
-    if [ -s ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/${DC_ZONEFILE_NAME} ] ||
-        [ -s ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/${DC_ZONEFILE_NAME} ]
+    if [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/${DC_ZONEFILE_NAME} ] ||
+        [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/${DC_ZONEFILE_NAME} ]
     then
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checking if an \$ORIGIN ${ZONE_NAME}. line exists..";
 
@@ -193,12 +207,12 @@ function add_subdomains
         ## if there is, we dont want to add another, its just tacky
         ## we only check the primary datacenter because if it isnt
         ## there, it isnt in the secondary either
-        if [ $(grep -c "\$ORIGIN ${ZONE_NAME}." ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/${DC_ZONEFILE_NAME}) -eq 0 ]
+        if [ $(grep -c "\$ORIGIN ${ZONE_NAME}." ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/${DC_ZONEFILE_NAME}) -eq 0 ]
         then
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "\$ORIGIN ${ZONE_NAME}. does NOT exist. Writing..";
 
-            printf "\n\$ORIGIN ${ZONE_NAME}.\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/${DC_ZONEFILE_NAME};
-            printf "\n\$ORIGIN ${ZONE_NAME}.\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/${DC_ZONEFILE_NAME};
+            printf "\n\$ORIGIN ${ZONE_NAME}.\n" >> ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/${DC_ZONEFILE_NAME};
+            printf "\n\$ORIGIN ${ZONE_NAME}.\n" >> ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/${DC_ZONEFILE_NAME};
         fi
 
         ## set up our record information
@@ -220,12 +234,12 @@ function add_subdomains
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A required entry was blank. Cannot continue.";
             RETURN_CODE=30;
         else
-            printf "${ALIAS}      IN      ${RECORD_TYPE}      \"${IPADDR}\"\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/${DC_ZONEFILE_NAME};
-            printf "${ALIAS}      IN      ${RECORD_TYPE}      \"${IPADDR}\"\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/${DC_ZONEFILE_NAME};
+            printf "${ALIAS}      IN      ${RECORD_TYPE}      \"${IPADDR}\"\n" >> ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/${DC_ZONEFILE_NAME};
+            printf "${ALIAS}      IN      ${RECORD_TYPE}      \"${IPADDR}\"\n" >> ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/${DC_ZONEFILE_NAME};
 
             ## validate the record was written
-            if [ $(grep -c "${ALIAS}      IN      ${RECORD_TYPE}      \"${IPADDR}\"" ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/${DC_ZONEFILE_NAME}) -eq 1 ] &&
-                 [ $(grep -c "${ALIAS}      IN      ${RECORD_TYPE}      \"${IPADDR}\"" ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/${DC_ZONEFILE_NAME}) -eq 1 ]
+            if [ $(grep -c "${ALIAS}      IN      ${RECORD_TYPE}      \"${IPADDR}\"" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/${DC_ZONEFILE_NAME}) -eq 1 ] &&
+                 [ $(grep -c "${ALIAS}      IN      ${RECORD_TYPE}      \"${IPADDR}\"" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/${DC_ZONEFILE_NAME}) -eq 1 ]
             then
                 ## record was successfully written
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printed ${RECORD_TYPE} record to ${DC_ZONEFILE_NAME}";
@@ -322,15 +336,6 @@ function usage
 
     return 3;
 }
-
-[ ${#} -eq 0 ] && usage;
-
-OPTIND=0;
-METHOD_NAME="${CNAME}#startup";
-
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID $$";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments -> ${@}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
 while getopts ":b:p:z:i:c:t:a:d:rsh:" OPTIONS
 do
@@ -510,16 +515,6 @@ do
                 add_subdomains;
             fi
             ;;
-        h)
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-            usage;
-            ;;
-        [\?])
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-            usage;
-            ;;
         *)
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -529,5 +524,5 @@ do
 done
 
 shift ${OPTIND}-1;
+
 return ${RETURN_CODE};
-unset RETURN_CODE;

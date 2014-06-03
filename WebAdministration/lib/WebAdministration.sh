@@ -26,7 +26,7 @@ then
     runsOnEcomServer "ED"
 fi
 
-typeset -r -x [ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="WebAdministration";
+[ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="WebAdministration";
 
 ## load application-wide constants if not already done
 if [ -z "${APP_ROOT}" ]

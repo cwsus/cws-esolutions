@@ -16,13 +16,50 @@
 #      REVISION:  ---
 #==============================================================================
 
-trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; exit" INT TERM EXIT;
-
-## Application contants
+## Application constants
 [ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+
+OPTIND=0;
+METHOD_NAME="${CNAME}#startup";
+
+[ ${#} -eq 0 ] && usage;
+
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+
+unset METHOD_NAME;
+unset CNAME;
+
+## check security
+. ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/security/check_main.sh > /dev/null 2>&1;
+RET_CODE=${?};
+
+[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && echo ${RET_CODE} && exit ${RET_CODE};
+
+## unset the return code
+unset RET_CODE;
+
+## lock it
+${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/lock.sh lock ${$};
+RET_CODE=${?};
+
+[ ${RET_CODE} != 0 ] && echo "Application currently in use." && echo ${RET_CODE} && exit ${RET_CODE};
+
+unset RET_CODE;
+
+CNAME="$(basename "${0}")";
+METHOD_NAME="${CNAME}#startup";
+
+trap "${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/lock.sh unlock ${$}; exit" INT TERM EXIT;
 
 #===  FUNCTION  ===============================================================
 #          NAME:  failover_bu
@@ -58,18 +95,18 @@ function failover_dc
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "BACKUP_FILE->${BACKUP_FILE}");
 
             ## tar+gzip
-            tar cf ${APP_ROOT}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar \
+            tar cf ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar \
                 -C ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT} ${UNIT}/${NAMED_ZONE_PREFIX}.* > /dev/null 2>&1;
-            gzip ${APP_ROOT}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar > /dev/null 2>&1;
+            gzip ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar > /dev/null 2>&1;
 
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Backup for ${UNIT} complete - continuing..");
 
             ## make sure we got a good backup
-            if [ -s ${APP_ROOT}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar.gz ]
+            if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar.gz ]
             then
                 ## we did. keep going.
                 ## create the business unit directories
-                mkdir ${APP_ROOT}/${TMP_DIRECTORY}/${UNIT};
+                mkdir ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${UNIT};
 
                 ## loop through the zone files
                 for FILENAME in $(ls -ltr ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${UNIT} | awk '{print $9}' | cut -d ":" -f 1-1 | grep -v "[PV]H" | uniq | sed -e '/ *#/d; /^ *$/d');
@@ -77,7 +114,7 @@ function failover_dc
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Now operating on ${UNIT}/${FILENAME}..");
 
                     ## copy the target datacenter file
-                    cp ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${UNIT}/${TARGET_DC}/$(echo ${FILENAME} | cut -d "." -f 1-2) ${APP_ROOT}/${TMP_DIRECTORY}/${UNIT}/${FILENAME};
+                    cp ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${UNIT}/${TARGET_DC}/$(echo ${FILENAME} | cut -d "." -f 1-2) ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${UNIT}/${FILENAME};
 
                     ## setup serial numbers
                     LAST_SERIAL=$(grep "; serial" ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME} | awk '{print $1}' | sed -e '/^$/d');
@@ -95,7 +132,7 @@ function failover_dc
                         ## here. well, probably can, but its easier here. its not good
                         ## code re-use, but whatever, it should work
                         ## TODO: try and make this work with addServiceIndicators
-                        . ${APP_ROOT}/lib/addServiceIndicators.sh -r ${GROUP_ID}${UNIT} -f ${FILENAME} -t ${TARGET_DC} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e;
+                        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/addServiceIndicators.sh -r ${GROUP_ID}${UNIT} -f ${FILENAME} -t ${TARGET_DC} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e;
                         RET_CODE=${?};
 
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "RET_CODE_>${RET_CODE}");
@@ -156,19 +193,19 @@ function failover_dc
             ## shouldn't need to do more than that
             ERROR_COUNT=0;
 
-            for UNIT in $(ls -ltr ${APP_ROOT}/${TMP_DIRECTORY} | awk '{print $9}' | grep -v '^$')
+            for UNIT in $(ls -ltr ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY} | awk '{print $9}' | grep -v '^$')
             do
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Now operating on ${UNIT}..");
 
                 ## loop through the zone files
-                for FILENAME in $(ls -ltr ${APP_ROOT}/${TMP_DIRECTORY}/${UNIT} | awk '{print $9}' | cut -d ":" -f 1-1 | uniq | sed -e '/ *#/d; /^ *$/d');
+                for FILENAME in $(ls -ltr ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${UNIT} | awk '{print $9}' | cut -d ":" -f 1-1 | uniq | sed -e '/ *#/d; /^ *$/d');
                 do
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Copying ${APP_ROOT}/${TMP_DIRECTORY}/${UNIT}/${FILENAME} to ${NAMED_ROOT}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME}");
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Copying ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${UNIT}/${FILENAME} to ${NAMED_ROOT}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME}");
 
                     ## copy the target datacenter file
-                    cp ${APP_ROOT}/${TMP_DIRECTORY}/${UNIT}/${FILENAME} ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME};
+                    cp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${UNIT}/${FILENAME} ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME};
 
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Copied ${APP_ROOT}/${TMP_DIRECTORY}/${UNIT}/${FILENAME} to ${NAMED_ROOT}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME}");
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Copied ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${UNIT}/${FILENAME} to ${NAMED_ROOT}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME}");
                 done
             done
 
@@ -177,15 +214,15 @@ function failover_dc
 
             ## files should be in place, change should be complete
             ## perform a checksum to make sure
-            for UNIT in $(ls -ltr ${APP_ROOT}/${TMP_DIRECTORY} | awk '{print $9}' | grep -v '^$')
+            for UNIT in $(ls -ltr ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY} | awk '{print $9}' | grep -v '^$')
             do
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Now operating on ${UNIT}..");
 
                 ## loop through the zone files
-                for FILENAME in $(ls -ltr ${APP_ROOT}/${TMP_DIRECTORY}/${UNIT} | awk '{print $9}' | cut -d ":" -f 1-1 | uniq | sed -e '/ *#/d; /^ *$/d');
+                for FILENAME in $(ls -ltr ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${UNIT} | awk '{print $9}' | cut -d ":" -f 1-1 | uniq | sed -e '/ *#/d; /^ *$/d');
                 do
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Checksum ${APP_ROOT}/${TMP_DIRECTORY}/${UNIT}/${FILENAME} <-> ${NAMED_ROOT}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME}");
-                    TMP_CHECKSUM=$(cksum ${APP_ROOT}/${TMP_DIRECTORY}/${UNIT}/${FILENAME} | awk '{print $1}');
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Checksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${UNIT}/${FILENAME} <-> ${NAMED_ROOT}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME}");
+                    TMP_CHECKSUM=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${UNIT}/${FILENAME} | awk '{print $1}');
                     OP_CHECKSUM=$(cksum ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME} | awk '{print $1}');
 
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "${FILENAME} -> TMP_CHECKSUM -> ${TMP_CHECKSUM}");
@@ -194,7 +231,7 @@ function failover_dc
                     ## copy the target datacenter file
                     if [ ${TMP_CHECKSUM} -eq ${OP_CHECKSUM} ]
                     then
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Checksum ${APP_ROOT}/${TMP_DIRECTORY}/${UNIT}/${FILENAME} <-> ${NAMED_ROOT}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME} match - continuing..");
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Checksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${UNIT}/${FILENAME} <-> ${NAMED_ROOT}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME} match - continuing..");
                         ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS Failover: Requestor: ${IUSER_AUDIT} - Date: \`date +"%d-%m-%Y"\` - Site: ${UNIT}/${FILENAME} - Change Request: ${CHANGE_NUM} - Switched To: ${TARGET_DC}";
 
                         unset TMP_CHECKSUM;
@@ -203,7 +240,7 @@ function failover_dc
                         unset TMP_CHECKSUM;
                         unset OP_CHECKSUM;
 
-                        $(${LOGGER} "ERROR" ${METHOD_NAME} ${CNAME} ${LINENO} "Checksum ${APP_ROOT}/${TMP_DIRECTORY}/${UNIT}/${FILENAME} <-> ${NAMED_ROOT}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME} mismatch - continuing..");
+                        $(${LOGGER} "ERROR" ${METHOD_NAME} ${CNAME} ${LINENO} "Checksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${UNIT}/${FILENAME} <-> ${NAMED_ROOT}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME} mismatch - continuing..");
 
                         (( ERROR_COUNT += 1 ));
 
@@ -229,7 +266,7 @@ function failover_dc
             done
 
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing temporary files..";
-            rm -rf ${APP_ROOT}/${TMP_DIRECTORY}/*;
+            rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/*;
         fi
     fi
 
@@ -265,41 +302,6 @@ function usage
 
     return 3;
 }
-
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
-
-[ ${#} -eq 0 ] && usage;
-
-OPTIND=0;
-METHOD_NAME="${CNAME}#startup";
-
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-
-unset METHOD_NAME;
-unset CNAME;
-
-## check security
-. ${PLUGIN_ROOT_DIR}/lib/security/check_main.sh > /dev/null 2>&1;
-RET_CODE=${?};
-
-[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && echo ${RET_CODE} && exit ${RET_CODE};
-
-## unset the return code
-unset RET_CODE;
-
-## lock it
-${APP_ROOT}/${LIB_DIRECTORY}/lock.sh lock ${$};
-RET_CODE=${?};
-
-[ ${RET_CODE} != 0 ] && echo "Application currently in use." && echo ${RET_CODE} && exit ${RET_CODE};
-
-unset RET_CODE;
-
-CNAME="$(basename "${0}")";
-METHOD_NAME="${CNAME}#startup";
 
 while getopts ":t:c:i:eh:" OPTIONS
 do
@@ -361,16 +363,6 @@ do
 
                 failover_dc;
             fi
-            ;;
-        h)
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-            usage;
-            ;;
-        [\?])
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-            usage;
             ;;
         *)
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";

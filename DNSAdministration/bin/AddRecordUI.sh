@@ -23,6 +23,26 @@ CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+
+OPTIND=0;
+METHOD_NAME="${CNAME}#startup";
+
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+
+unset METHOD_NAME;
+unset CNAME;
+
+## check security
+. ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/security/check_main.sh > /dev/null 2>&1;
+RET_CODE=${?};
+
+[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE} || unset RET_CODE;
+
 trap "print '$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.trap.signals/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g' -e "s/%SIGNAL%/Ctrl-C/")'; sleep "${MESSAGE_DELAY}"; reset; clear; continue " 1 2 3
 
 #===  FUNCTION  ===============================================================
@@ -239,10 +259,10 @@ function provideSiteHostname
             [Hh])
                 ## we want to print out the available record type list
                 print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/allowed.gtld.list/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
-                awk 'NR>17' ${APP_ROOT}/${ALLOWED_GTLD_LIST};
+                awk 'NR>17' ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_GTLD_LIST};
 
                 print "\nsed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES}  | awk -F "=" '/allowed.cctld.list/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
-                awk 'NR>16' ${APP_ROOT}/${ALLOWED_GTLD_LIST};
+                awk 'NR>16' ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_GTLD_LIST};
 
                 print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.continue.enter/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
 
@@ -286,8 +306,8 @@ function provideSiteHostname
 
                 ## make sure we got a valid tld. we're only checking the gTLD's,
                 ## for a list, see http://en.wikipedia.org/wiki/List_of_Internet_top-level_domains
-                if [ $(grep -c $(echo ${SITE_HOSTNAME} | cut -d "." -f 2) ${APP_ROOT}/${ALLOWED_GTLD_LIST}) -ne 1 ] || \
-                    [ $(grep -c $(echo ${SITE_HOSTNAME} | cut -d "." -f 2) ${APP_ROOT}/${ALLOWED_CCTLD_LIST}) -ne 1 ]
+                if [ $(grep -c $(echo ${SITE_HOSTNAME} | cut -d "." -f 2) ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_GTLD_LIST}) -ne 1 ] || \
+                    [ $(grep -c $(echo ${SITE_HOSTNAME} | cut -d "." -f 2) ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_CCTLD_LIST}) -ne 1 ]
                 then
                     $(${LOGGER} ERROR ${METHOD_NAME} ${CNAME} ${LINENO} "${SITE_HOSTNAME} is not properly formatted.");
 
@@ -304,7 +324,7 @@ function provideSiteHostname
                 unset METHOD_NAME;
                 unset CNAME;
 
-                . ${APP_ROOT}/${LIB_DIRECTORY}/retrieveServiceInfo.sh ${INTERNET_TYPE_IDENTIFIER} u,${SITE_HOSTNAME} chk-info;
+                . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/retrieveServiceInfo.sh ${INTERNET_TYPE_IDENTIFIER} u,${SITE_HOSTNAME} chk-info;
                 RET_CODE=${?};
 
                 ## re-set our info
@@ -431,107 +451,30 @@ function provideChangeControl
 
     while true
     do
-        print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.provide.changenum/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
-        print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.option.cancel/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requesting change information..";
 
-        read CHG_CTRL;
+        ${PLUGIN_ROOT_DIR}/${BIN_DIRECTORY}/obtainChangeControl.sh;
 
-        reset; clear;
-        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+        if [[ ! -z "${CANCEL_REQ}" && "${CANCEL_REQ}" = "${_TRUE}" ]]
+        then
+            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover process aborted";
 
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHG_CTRL -> ${CHG_CTRL}";
+            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
 
-        case ${CHG_CTRL} in
-            [Xx]|[Qq]|[Cc])
-                ## cancel request
-                reset; clear;
+            ## unset SVC_LIST, we dont need it now
+            unset SVC_LIST;
 
-                ## unset variables
-                unset BIZ_UNIT;
-                unset SITE_HOSTNAME;
-                unset SITE_PRJCODE;
-                unset CHG_CTRL;
+            ## terminate this thread and return control to main
+            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS query canceled.";
+            ## temporarily unset stuff
+            unset METHOD_NAME;
+            unset CNAME;
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+            sleep ${MESSAGE_DELAY}; reset; clear; main;
+        fi
 
-                sleep "${MESSAGE_DELAY}"; reset; clear; break;
-                ;;
-            *)
-                if [ -z "${CHG_CTRL}" ]
-                then
-                    ## provided change control is blank. must have something.
-                    unset CHG_CTRL;
-
-                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change control provided was blank. Cannot continue.";
-
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
-
-                    unset RET_CODE;
-
-                    sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                fi
-
-                if [ $(${APP_ROOT}/${LIB_DIRECTORY}/validators/validate_change_ticket.sh ${CHG_CTRL}) -ne 0 ]
-                then
-                    ## change request # provided was not valid
-                    ## we got a change control value that isn't right
-                    ## send a message back for clarification, audit log
-                    ## it and error log it
-                    unset CHG_CTRL;
-                    unset RET_CODE;
-
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/change.control.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
-
-                    sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                fi
-
-                ## looks like we got some valid data. at this point,
-                ## we have enough information to create skeleton
-                ## zonefiles. kick it
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating zone files..";
-
-                ## unset methodname and cname
-                unset METHOD_NAME;
-                unset CNAME;
-                unset RET_CODE;
-
-                . ${APP_ROOT}/${LIB_DIRECTORY}/createNewZone.sh -b ${BIZ_UNIT} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -e;
-                RET_CODE=${?};
-
-                ## re-set methodname and cname
-                [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
-                local METHOD_NAME="${CNAME}#${0}";
-                CNAME="$(basename "${0}")";
-
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Execution of create_zone complete. RET_CODE -> ${RET_CODE}";
-
-                if [ ${RET_CODE} -eq 0 ]
-                then
-                    unset RET_CODE;
-                    unset RETURN_CODE;
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone creation complete. Proceeding to record addition";
-
-                    reset; clear;
-
-                    addDomainAddress;
-                else
-                    unset CHG_CTRL;
-                    unset SITE_PRJCODE;
-                    unset SITE_HOSTNAME;
-
-                    $(${LOGGER} "ERROR"  "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone creation FAILED. RET_CODE -> ${RET_CODE}");
-                    [ -z ${RET_CODE} ] && print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" "/99/{print \$2}" | sed -e 's/^ *//g' -e 's/ *$//g');";
-                    [ ! -z ${RET_CODE} ] && print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" "/${RET_CODE}/{print \$2}" | sed -e 's/^ *//g' -e 's/ *$//g');";
-
-                    unset RETURN_CODE;
-                    unset RET_CODE;
-
-                    sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                fi
-                ;;
-        esac
+        break;
     done
 
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -680,7 +623,7 @@ function addDomainAddress
                 ## nameserver this zone gets applied to really doesnt need it there,
                 ## because another nameserver already has it and can do it on its own.
                 ## for this reason, we dont ask.
-                . ${APP_ROOT}/${LIB_DIRECTORY}/helpers/ui/add_a_ui_helper.sh root;
+                . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/helpers/ui/add_a_ui_helper.sh root;
             fi
         done
     done
@@ -728,7 +671,7 @@ function addZoneData
             unset RECORD_TYPE;
 
             ## remove the files we just created
-            rm -rf ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT};
+            rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT};
 
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS record add canceled..";
 
@@ -739,7 +682,7 @@ function addZoneData
         elif [[ ${RECORD_TYPE} == [Hh] ]]
         then
             ## we want to print out the available record type list
-            awk 'NR>16' ${APP_ROOT}/${ALLOWED_RECORD_LIST};
+            awk 'NR>16' ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_RECORD_LIST};
 
             print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.continue.enter/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
             read COMPLETE;
@@ -754,7 +697,7 @@ function addZoneData
             esac
         else
             ## validate the request
-            if [ $(${APP_ROOT}/${LIB_DIRECTORY}/validators/validate_record_type.sh ${RECORD_TYPE} ${APP_ROOT}/${ALLOWED_RECORD_LIST}) -eq 0 ]
+            if [ $(${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validate_record_type.sh ${RECORD_TYPE} ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_RECORD_LIST}) -eq 0 ]
             then
                 ## record type successfully validated. continue with request
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Obtained request for ${RECORD_TYPE}. Validating..";
@@ -874,7 +817,7 @@ function addZoneData
                         unset METHOD_NAME;
                         unset CNAME;
 
-                        . ${APP_ROOT}/${LIB_DIRECTORY}/helpers/ui/add_${RECORD_TYPE}_ui_helper.sh zone;
+                        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/helpers/ui/add_${RECORD_TYPE}_ui_helper.sh zone;
                     fi
                 done
             else
@@ -933,7 +876,7 @@ function addSubdomainAddresses
             unset RECORD_TYPE;
 
             ## remove the files we just created
-            rm -rf ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT};
+            rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT};
 
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS record add canceled..";
 
@@ -944,7 +887,7 @@ function addSubdomainAddresses
         elif [[ ${RECORD_TYPE} == [Hh] ]]
         then
             ## we want to print out the available record type list
-            awk 'NR>16' ${APP_ROOT}/${ALLOWED_RECORD_LIST};
+            awk 'NR>16' ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_RECORD_LIST};
 
             print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.continue.enter/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
             read COMPLETE;
@@ -958,9 +901,9 @@ function addSubdomainAddresses
                 ;;
             esac
         else
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Calling validate_record_type.sh ${RECORD_TYPE} ${APP_ROOT}/${ALLOWED_RECORD_LIST}..";
+            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Calling validate_record_type.sh ${RECORD_TYPE} ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_RECORD_LIST}..";
 
-            if [ $(${APP_ROOT}/${LIB_DIRECTORY}/validators/validate_record_type.sh ${RECORD_TYPE} ${APP_ROOT}/${ALLOWED_RECORD_LIST}) -eq 0 ]
+            if [ $(${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validate_record_type.sh ${RECORD_TYPE} ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_RECORD_LIST}) -eq 0 ]
             then
                 ## unset return code
                 unset RETURN_CODE;
@@ -1057,7 +1000,7 @@ function addSubdomainAddresses
                         unset METHOD_NAME;
                         unset CNAME;
 
-                        . ${APP_ROOT}/${LIB_DIRECTORY}/helpers/ui/add_${RECORD_TYPE}_ui_helper.sh subdomain;
+                        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/helpers/ui/add_${RECORD_TYPE}_ui_helper.sh subdomain;
                     fi
                 done
             else
@@ -1098,7 +1041,7 @@ function reviewZone
     unset CNAME;
     unset METHOD_NAME;
 
-    . ${APP_ROOT}/${LIB_DIRECTORY}/run_addition.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -e;
+    . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/run_addition.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -e;
     RET_CODE=${?};
 
     ## re-set vars
@@ -1129,7 +1072,7 @@ function reviewZone
                     unset ANSWER;
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printing zonefile content..";
 
-                    cat ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1).${SITE_PRJCODE};
+                    cat ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1).${SITE_PRJCODE};
 
                     print "\n$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/add.review.accurate.zone.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g' -e "s/%ZONE%/${SITE_HOSTNAME}/");";
 
@@ -1183,16 +1126,16 @@ function reviewZone
                                             unset ANSWER;
                                             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Manual update requested. Copying zone directory..";
 
-                                            cp -R ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT} ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}.mod;
+                                            cp -R ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}.mod;
 
                                             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copy complete. Validating..";
 
-                                            if [ -d ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}.mod ]
+                                            if [ -d ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}.mod ]
                                             then
                                                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validation complete. Launching vi..";
 
                                                 ## modify the primary datacenter
-                                                vi ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}.mod/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1);
+                                                vi ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}.mod/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1);
                                                 RET_CODE=${?};
 
                                                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Manual edits complete. Return code -> ${RET_CODE}";
@@ -1202,8 +1145,8 @@ function reviewZone
                                                     unset RET_CODE;
                                                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksumming..";
 
-                                                    MOD_FILE_CKSUM=$(cksum ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}.mod/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1) | awk '{print $1}');
-                                                    OP_FILE_CKSUM=$(cksum ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1) | awk '{print $1}');
+                                                    MOD_FILE_CKSUM=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}.mod/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1) | awk '{print $1}');
+                                                    OP_FILE_CKSUM=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1) | awk '{print $1}');
 
                                                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MOD_FILE_CKSUM->${MOD_FILE_CKSUM}";
                                                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OP_FILE_CKSUM->${OP_FILE_CKSUM}";
@@ -1266,15 +1209,15 @@ function reviewZone
                                                         unset MOD_FILE_CKSUM;
                                                         unset OP_FILE_CKSUM;
 
-                                                        diff ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1) ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}.mod/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1) > ${APP_ROOT}/${TMP_DIRECTORY}/output;
+                                                        diff ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1) ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}.mod/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1) > ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/output;
 
-                                                        if [ -s ${APP_ROOT}/${TMP_DIRECTORY}/output ]
+                                                        if [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/output ]
                                                         then
-                                                            patch ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1) < ${APP_ROOT}/${TMP_DIRECTORY}/output;
+                                                            patch ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1) < ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/output;
 
                                                             ## file has been patched, verify
-                                                            MOD_FILE_CKSUM=$(cksum ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}.mod/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1) | awk '{print $1}');
-                                                            OP_FILE_CKSUM=$(cksum ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1) | awk '{print $1}');
+                                                            MOD_FILE_CKSUM=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}.mod/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1) | awk '{print $1}');
+                                                            OP_FILE_CKSUM=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1) | awk '{print $1}');
 
                                                             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Post-patch: MOD_FILE_CKSUM->${MOD_FILE_CKSUM}";
                                                             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Post-patch: OP_FILE_CKSUM->${OP_FILE_CKSUM}";
@@ -1393,7 +1336,7 @@ function sendZone
     unset METHOD_NAME;
     unset CNAME;
 
-    . ${APP_ROOT}/${LIB_DIRECTORY}/run_addition.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -x -e;
+    . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/run_addition.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -x -e;
     RET_CODE=${?};
 
     ## reset vars
@@ -1455,7 +1398,7 @@ function sendZone
             unset METHOD_NAME;
             unset CNAME;
 
-            . ${APP_ROOT}/${LIB_DIRECTORY}/run_addition.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -s ${DNS_SLAVES[${C}]} -e;
+            . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/run_addition.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -s ${DNS_SLAVES[${C}]} -e;
             RET_CODE=${?};
 
             ## reset vars
@@ -1495,11 +1438,11 @@ function sendZone
     fi
 
     ## all processing successfully completed. we can remove our temp files
-    [ -f ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${TARFILE_DATE}.${IUSER_AUDIT}.tar.gz ] && \
-        rm -rf ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${TARFILE_DATE}.${IUSER_AUDIT}.tar.gz;
-    [ -f ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${TARFILE_DATE}.${IUSER_AUDIT}.tar.gz ] && \
-        rm -rf ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${TARFILE_DATE}.${IUSER_AUDIT}.tar;
-    [ -d ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT} ] && rm -rf ${APP_ROOT}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT};
+    [ -f ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${TARFILE_DATE}.${IUSER_AUDIT}.tar.gz ] && \
+        rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${TARFILE_DATE}.${IUSER_AUDIT}.tar.gz;
+    [ -f ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${TARFILE_DATE}.${IUSER_AUDIT}.tar.gz ] && \
+        rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${TARFILE_DATE}.${IUSER_AUDIT}.tar;
+    [ -d ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT} ] && rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT};
 
     while true
     do
@@ -1556,24 +1499,9 @@ function sendZone
     return ${RETURN_CODE};
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
-
-OPTIND=0;
-METHOD_NAME="${CNAME}#startup";
-
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-
-unset METHOD_NAME;
-unset CNAME;
-
-## check security
-. ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/security/check_main.sh > /dev/null 2>&1;
-RET_CODE=${?};
-
-[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE} || unset RET_CODE;
-
 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
 main;
+
+
+return 0;

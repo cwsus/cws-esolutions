@@ -16,13 +16,47 @@
 #      REVISION:  ---
 #==============================================================================
 
-trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; exit" INT TERM EXIT;
-
-# Application contants
+## Application constants
 [ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+
+OPTIND=0;
+METHOD_NAME="${CNAME}#startup";
+
+[ ${#} -eq 0 ] && usage;
+
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+
+unset METHOD_NAME;
+unset CNAME;
+
+## check security
+. ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/security/check_main.sh > /dev/null 2>&1;
+RET_CODE=${?};
+
+[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && echo ${RET_CODE} && exit ${RET_CODE};
+
+## lock it
+${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/lock.sh lock ${$};
+RET_CODE=${?};
+
+[ ${RET_CODE} != 0 ] && echo "Application currently in use." && echo ${RET_CODE} && exit ${RET_CODE};
+
+unset RET_CODE;
+
+CNAME="$(basename "${0}")";
+METHOD_NAME="${CNAME}#startup";
+
+trap "${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/lock.sh unlock ${$}; exit" INT TERM EXIT;
 
 #===  FUNCTION  ===============================================================
 #          NAME:  retrieve_file_list
@@ -42,10 +76,10 @@ function retrieve_file_list
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_DATE -> ${CHANGE_DATE}";
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Retrieving backout files..";
 
-    if [ -d ${APP_ROOT}/${BACKUP_DIRECTORY} ]
+    if [ -d ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY} ]
     then
         ## see if theres an available backup file
-        set -A FILE_LIST $(find ${APP_ROOT}/${BACKUP_DIRECTORY} -type f -name "*.tar.gz");
+        set -A FILE_LIST $(find ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY} -type f -name "*.tar.gz");
 
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Search complete. Processing..";
 
@@ -58,7 +92,7 @@ function retrieve_file_list
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Multiple backout files located.. listing.";
 
             ## check if the list exists, if it does, clear it
-            [ -s ${APP_ROOT}/${BACKUP_LIST} ] && cat /dev/null > ${APP_ROOT}/${BACKUP_LIST};
+            [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_LIST} ] && cat /dev/null > ${PLUGIN_ROOT_DIR}/${BACKUP_LIST};
 
             ## found more than 1 backup file. we need to get clarification
             ## before we can continue - so we'll write out the list to a
@@ -67,7 +101,7 @@ function retrieve_file_list
             do
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FILE_LIST->${FILE_LIST[${A}]}";
 
-                echo ${FILE_LIST[${A}]} >> ${APP_ROOT}/${BACKUP_LIST};
+                echo ${FILE_LIST[${A}]} >> ${PLUGIN_ROOT_DIR}/${BACKUP_LIST};
 
                 (( A += 1 ));
             done
@@ -106,14 +140,14 @@ function backout_change
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_DATE -> ${CHANGE_DATE}";
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checking for available backup file...";
 
-    if [ -d ${APP_ROOT}/${BACKUP_DIRECTORY} ]
+    if [ -d ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY} ]
     then
         if [ -z "${FILE_NAME}" ]
         then
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No FILE_NAME was provided. Searching for files..";
 
             ## see if theres an available backup file
-            set -A FILE_LIST $(find ${APP_ROOT}/${BACKUP_DIRECTORY} -type f -name "${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_DATE}*.${CHANGE_NUM}.*");
+            set -A FILE_LIST $(find ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY} -type f -name "${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_DATE}*.${CHANGE_NUM}.*");
 
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Search complete. Processing..";
 
@@ -134,7 +168,7 @@ function backout_change
                     do
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FILE_LIST->${FILE_LIST[${A}]}";
 
-                        echo ${FILE_LIST[${A}]} >> ${APP_ROOT}/${BACKUP_LIST};
+                        echo ${FILE_LIST[${A}]} >> ${PLUGIN_ROOT_DIR}/${BACKUP_LIST};
 
                         (( A += 1 ));
                     done
@@ -188,16 +222,16 @@ function backout_change
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BIZ_UNIT -> ${BIZ_UNIT}";
 
             ## copy the backup tarfile to the tmp directory to work on
-            cp ${APP_ROOT}/${BACKUP_DIRECTORY}/${FILE_NAME} ${APP_ROOT}/${TMP_DIRECTORY}/${FILE_NAME};
+            cp ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${FILE_NAME} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILE_NAME};
 
             ## make sure the file copied
-            if [ -s ${APP_ROOT}/${TMP_DIRECTORY}/${FILE_NAME} ]
+            if [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILE_NAME} ]
             then
                 ## ok, we have it. decompress it -
-                gzip -dc ${APP_ROOT}/${TMP_DIRECTORY}/${FILE_NAME} | (cd ${APP_ROOT}/${TMP_DIRECTORY}; tar xf -)
+                gzip -dc ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILE_NAME} | (cd ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}; tar xf -)
 
                 ## and make sure it was indeed decompressed...
-                if [ -d ${APP_ROOT}/${TMP_DIRECTORY}/${BIZ_UNIT} ]
+                if [ -d ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${BIZ_UNIT} ]
                 then
                     ## we can be pretty confident that it was indeed extracted. move forward.
                     ## make a backup of the existing files just in case we need them for some reason
@@ -215,17 +249,17 @@ function backout_change
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BACKUP_FILE -> ${BACKUP_FILE}";
 
                         ## we dont know what the tarfile contains, so backup everything
-                        gzip ${APP_ROOT}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar | (cd ${SITE_ROOT}; tar cf * > /dev/null 2>&1);
+                        gzip ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar | (cd ${SITE_ROOT}; tar cf * > /dev/null 2>&1);
 
                         ## make sure that it did indeed get created
-                        if [ -s ${APP_ROOT}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar.gz ]
+                        if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar.gz ]
                         then
                             ## it did, lets keep going.
                             ## copy, not move, the files into place
                             ## make sure error_count is zero
                             ERROR_COUNT=0;
 
-                            for BACKUP_FILE in $(find ${APP_ROOT}/${TMP_DIRECTORY}/${BIZ_UNIT} -type f -name "db.*" -print)
+                            for BACKUP_FILE in $(find ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${BIZ_UNIT} -type f -name "db.*" -print)
                             do
                                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating on ${BACKUP_FILE}";
 
@@ -260,22 +294,22 @@ function backout_change
                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more files failed to restore. Reverting to pristine state..";
 
                                 ## first, kill off everything in our tmp directory so as not to cloud issues.
-                                rm -rf ${APP_ROOT}/${TMP_DIRECTORY}/${BIZ_UNIT};
-                                rm -rf ${APP_ROOT}/${TMP_DIRECTORY}/${FILE_NAME};
+                                rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${BIZ_UNIT};
+                                rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILE_NAME};
 
                                 ## ok. we should be clean now. start the process of reversion
-                                cp ${APP_ROOT}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar.gz ${APP_ROOT}/${TMP_DIRECTORY}/${BACKUP_FILE}.tar.gz
+                                cp ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar.gz ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${BACKUP_FILE}.tar.gz
 
                                 ## copy complete, now untar and move the stuff back where it belongs
-                                gzip -dc ${APP_ROOT}/${TMP_DIRECTORY}/${BACKUP_FILE}.tar.gz | (cd ${APP_ROOT}/${TMP_DIRECTORY}; tar xf -);
+                                gzip -dc ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${BACKUP_FILE}.tar.gz | (cd ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}; tar xf -);
 
                                 ## we're unzipped and untarred. make sure
-                                if [ -d ${APP_ROOT}/${TMP_DIRECTORY}/${BIZ_UNIT} ]
+                                if [ -d ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${BIZ_UNIT} ]
                                 then
                                     ## we're good here. run the copies.
                                     ERROR_COUNT=0;
 
-                                    for BACKOUT_FILE in $(find ${APP_ROOT}/${TMP_DIRECTORY}/${BIZ_UNIT} -type f -name "db.*" -print)
+                                    for BACKOUT_FILE in $(find ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${BIZ_UNIT} -type f -name "db.*" -print)
                                     do
                                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating on ${BACKOUT_FILE}";
 
@@ -348,7 +382,7 @@ function backout_change
                             ## make sure error_count is zero
                             ERROR_COUNT=0;
 
-                            for BACKUP_FILE in $(find ${APP_ROOT}/${TMP_DIRECTORY}/${BIZ_UNIT} -type f -name "db.*" -print)
+                            for BACKUP_FILE in $(find ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${BIZ_UNIT} -type f -name "db.*" -print)
                             do
                                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating on ${BACKUP_FILE}";
 
@@ -384,7 +418,7 @@ function backout_change
                                     ## and $include it into named.conf
                                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying existing files..";
 
-                                    cp ${APP_ROOT}/${BACKUP_DIRECTORY}/$(echo ${BIZ_UNIT} "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHG_NUM} \
+                                    cp ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${BIZ_UNIT} "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHG_NUM} \
                                         ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BIZ_UNIT} "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
 
                                     ## ok, copy should be done
@@ -551,41 +585,6 @@ function usage
     return 3;
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
-
-[ ${#} -eq 0 ] && usage;
-
-OPTIND=0;
-METHOD_NAME="${CNAME}#startup";
-
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-
-unset METHOD_NAME;
-unset CNAME;
-
-## check security
-. ${PLUGIN_ROOT_DIR}/lib/security/check_main.sh > /dev/null 2>&1;
-RET_CODE=${?};
-
-[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && echo ${RET_CODE} && exit ${RET_CODE};
-
-## unset the return code
-unset RET_CODE;
-
-## lock it
-${APP_ROOT}/${LIB_DIRECTORY}/lock.sh lock ${$};
-RET_CODE=${?};
-
-[ ${RET_CODE} != 0 ] && echo "Application currently in use." && echo ${RET_CODE} && exit ${RET_CODE};
-
-unset RET_CODE;
-
-CNAME="$(basename "${0}")";
-METHOD_NAME="${CNAME}#startup";
-
 while getopts ":af:b:c:d:eh:" OPTIONS
 do
     case "${OPTIONS}" in
@@ -671,16 +670,6 @@ do
 
                 backout_change;
             fi
-            ;;
-        h)
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-            usage;
-            ;;
-        [\?])
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-            usage;
             ;;
         *)
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";

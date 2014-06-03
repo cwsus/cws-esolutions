@@ -22,6 +22,35 @@ CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+
+OPTIND=0;
+METHOD_NAME="${CNAME}#startup";
+
+[ ${#} -eq 0 ] && usage;
+
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+
+unset METHOD_NAME;
+unset CNAME;
+
+## check security
+. ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/security/check_main.sh > /dev/null 2>&1;
+RET_CODE=${?};
+
+[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE};
+
+## unset the return code
+unset RET_CODE;
+
+CNAME="$(basename "${0}")";
+METHOD_NAME="${CNAME}#startup";
+
 #===  FUNCTION  ===============================================================
 #          NAME:  executeMonitoringScript
 #   DESCRIPTION:  Processes and implements a DNS site failover
@@ -37,7 +66,7 @@ function executeMonitoringScript
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing monitor on: ${HOSTNAME}";
 
     ## clean up the output file
-    echo "" > ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
+    echo "" > ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
 
     ## set up our execution date
     EXECUTION_DATE=$(date +"%d %b %Y");
@@ -62,12 +91,12 @@ function executeMonitoringScript
 
                 if [ ${PING_RCODE} == 0 ]
                 then
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${MONITORED_HOST} \"${REMOTE_APP_ROOT}/lib/monitors/${MONITORING_SCRIPT}.sh\" ${MONITOR_THREAD_TIMEOUT}";
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${MONITORED_HOST} \"${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/monitors/${MONITORING_SCRIPT}.sh\" ${MONITOR_THREAD_TIMEOUT}";
 
                     ## unset ret code from prior execution
                     unset RET_CODE;
     
-                    $(${APP_ROOT}/lib/tcl/runSSHConnection.exp ${MONITORED_HOST} "${REMOTE_APP_ROOT}/lib/monitors/${MONITORING_SCRIPT}.sh" ${MONITOR_THREAD_TIMEOUT});
+                    $(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${MONITORED_HOST} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/monitors/${MONITORING_SCRIPT}.sh" ${MONITOR_THREAD_TIMEOUT});
                     RET_CODE=${?};
         
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
@@ -78,7 +107,7 @@ function executeMonitoringScript
                         ## if not, pull it back
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Command execution successful. Checking for anomolies..";
         
-                        IS_LOGFILE_PRESENT=$(${APP_ROOT}/lib/tcl/runSSHConnection.exp ${MONITORED_HOST} "[ -s ${REMOTE_APP_ROOT}/${LOG_ROOT}/${BASE_LOG_NAME}-${MONITOR_RECORDER} ] && echo true || echo false" ${IPLANET_OWNING_USER});
+                        IS_LOGFILE_PRESENT=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${MONITORED_HOST} "[ -s ${REMOTE_APP_ROOT}/${LOG_ROOT}/${BASE_LOG_NAME}-${MONITOR_RECORDER} ] && echo true || echo false" ${IPLANET_OWNING_USER});
         
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IS_LOGFILE_PRESENT -> ${IS_LOGFILE_PRESENT}";
         
@@ -86,16 +115,16 @@ function executeMonitoringScript
                         then
                             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Obtaining logfiles..";
         
-                            $(${APP_ROOT}/lib/tcl/runSCPConnection.exp remote-copy ${MONITORED_HOST} ${REMOTE_APP_ROOT}/${LOG_ROOT}/${BASE_LOG_NAME}-${MONITOR_RECORDER} ${APP_ROOT}/${TMP_DIRECTORY}/${MONITORED_HOST}.${BASE_LOG_NAME}-${MONITOR_RECORDER} ${IPLANET_OWNING_USER});
+                            $(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp remote-copy ${MONITORED_HOST} ${REMOTE_APP_ROOT}/${LOG_ROOT}/${BASE_LOG_NAME}-${MONITOR_RECORDER} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${MONITORED_HOST}.${BASE_LOG_NAME}-${MONITOR_RECORDER} ${IPLANET_OWNING_USER});
         
                             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Logfiles obtained. Scanning..";
     
-                            print "${MONITORED_HOST}:\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
+                            print "${MONITORED_HOST}:\n" >> ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
     
-                            sed -n "/${MONITORING_SCRIPT}/p" ${APP_ROOT}/${TMP_DIRECTORY}/${MONITORED_HOST}.${BASE_LOG_NAME}-${MONITOR_RECORDER} | \
-                                grep "${EXECUTION_DATE}" | cut -d "-" -f 3- | uniq >> ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
+                            sed -n "/${MONITORING_SCRIPT}/p" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${MONITORED_HOST}.${BASE_LOG_NAME}-${MONITOR_RECORDER} | \
+                                grep "${EXECUTION_DATE}" | cut -d "-" -f 3- | uniq >> ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
     
-                            print "\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
+                            print "\n" >> ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
                         else
                             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No logfile present - no anomalies found.";
                         fi
@@ -103,7 +132,7 @@ function executeMonitoringScript
                         ## an error occurred executing the monitor.
                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred executing ${MONITORING_SCRIPT} on ${MONITORED_HOST}. Return code -> ${RET_CODE}";
 
-                        print "1i\n${MONITORED_HOST}: Execution failure. RET_CODE -> ${RET_CODE}.\n\n.\nwq" | ex -s ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
+                        print "1i\n${MONITORED_HOST}: Execution failure. RET_CODE -> ${RET_CODE}.\n\n.\nwq" | ex -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
 
                         (( ERROR_COUNT += 1 ));
                     fi
@@ -111,7 +140,7 @@ function executeMonitoringScript
                     ## ping test failure
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${MONITORED_HOST} appears unavailable. PING_RCODE -> ${PING_RCODE}";
 
-                    print "1i\n${MONITORED_HOST}: Connection failure. PING_RCODE -> ${PING_RCODE}.\n\n.\nwq" | ex -s ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
+                    print "1i\n${MONITORED_HOST}: Connection failure. PING_RCODE -> ${PING_RCODE}.\n\n.\nwq" | ex -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
 
                     (( ERROR_COUNT += 1 ));
                 fi
@@ -138,12 +167,12 @@ function executeMonitoringScript
 
             if [ ${PING_RCODE} == 0 ]
             then
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${MONITORED_HOST} \"${REMOTE_APP_ROOT}/lib/monitors/${MONITORING_SCRIPT}.sh\" ${MONITOR_THREAD_TIMEOUT}";
+                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${MONITORED_HOST} \"${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/monitors/${MONITORING_SCRIPT}.sh\" ${MONITOR_THREAD_TIMEOUT}";
 
                 ## unset ret code from prior execution
                 unset RET_CODE;
     
-                $(${APP_ROOT}/lib/tcl/runSSHConnection.exp ${MONITORED_HOST} "${REMOTE_APP_ROOT}/lib/monitors/${MONITORING_SCRIPT}.sh" ${MONITOR_THREAD_TIMEOUT});
+                $(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${MONITORED_HOST} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/monitors/${MONITORING_SCRIPT}.sh" ${MONITOR_THREAD_TIMEOUT});
                 RET_CODE=${?};
         
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
@@ -154,7 +183,7 @@ function executeMonitoringScript
                     ## if not, pull it back
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Command execution successful. Checking for anomolies..";
         
-                    IS_LOGFILE_PRESENT=$(${APP_ROOT}/lib/tcl/runSSHConnection.exp ${MONITORED_HOST} "[ -s ${REMOTE_APP_ROOT}/${LOG_ROOT}/${BASE_LOG_NAME}-${MONITOR_RECORDER} ] && echo true || echo false" ${IPLANET_OWNING_USER});
+                    IS_LOGFILE_PRESENT=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${MONITORED_HOST} "[ -s ${REMOTE_APP_ROOT}/${LOG_ROOT}/${BASE_LOG_NAME}-${MONITOR_RECORDER} ] && echo true || echo false" ${IPLANET_OWNING_USER});
         
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IS_LOGFILE_PRESENT -> ${IS_LOGFILE_PRESENT}";
         
@@ -162,16 +191,16 @@ function executeMonitoringScript
                     then
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Obtaining logfiles..";
         
-                        $(${APP_ROOT}/lib/tcl/runSCPConnection.exp remote-copy ${MONITORED_HOST} ${REMOTE_APP_ROOT}/${LOG_ROOT}/${BASE_LOG_NAME}-${MONITOR_RECORDER} ${APP_ROOT}/${TMP_DIRECTORY}/${MONITORED_HOST}.${BASE_LOG_NAME}-${MONITOR_RECORDER} ${IPLANET_OWNING_USER});
+                        $(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp remote-copy ${MONITORED_HOST} ${REMOTE_APP_ROOT}/${LOG_ROOT}/${BASE_LOG_NAME}-${MONITOR_RECORDER} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${MONITORED_HOST}.${BASE_LOG_NAME}-${MONITOR_RECORDER} ${IPLANET_OWNING_USER});
         
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Logfiles obtained. Scanning..";
     
-                        print "${MONITORED_HOST}:\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
+                        print "${MONITORED_HOST}:\n" >> ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
     
-                        sed -n "/${MONITORING_SCRIPT}/p" ${APP_ROOT}/${TMP_DIRECTORY}/${MONITORED_HOST}.${BASE_LOG_NAME}-${MONITOR_RECORDER} | \
-                            grep "${EXECUTION_DATE}" | cut -d "-" -f 3- | uniq >> ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
+                        sed -n "/${MONITORING_SCRIPT}/p" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${MONITORED_HOST}.${BASE_LOG_NAME}-${MONITOR_RECORDER} | \
+                            grep "${EXECUTION_DATE}" | cut -d "-" -f 3- | uniq >> ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
     
-                        print "\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
+                        print "\n" >> ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
                     else
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No logfile present - no anomalies found.";
                     fi
@@ -179,7 +208,7 @@ function executeMonitoringScript
                     ## an error occurred executing the monitor.
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred executing ${MONITORING_SCRIPT} on ${MONITORED_HOST}. Return code -> ${RET_CODE}";
 
-                    print "1i\n${MONITORED_HOST}: Execution failure. RET_CODE -> ${RET_CODE}.\n\n.\nwq" | ex -s ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
+                    print "1i\n${MONITORED_HOST}: Execution failure. RET_CODE -> ${RET_CODE}.\n\n.\nwq" | ex -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
 
                     (( ERROR_COUNT += 1 ));
                 fi
@@ -187,7 +216,7 @@ function executeMonitoringScript
                 ## ping test failure
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${MONITORED_HOST} appears unavailable. PING_RCODE -> ${PING_RCODE}";
 
-                print "1i\n${MONITORED_HOST}: Connection failure. PING_RCODE -> ${PING_RCODE}.\n\n.\nwq" | ex -s ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
+                print "1i\n${MONITORED_HOST}: Connection failure. PING_RCODE -> ${PING_RCODE}.\n\n.\nwq" | ex -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
 
                 (( ERROR_COUNT += 1 ));
             fi
@@ -198,7 +227,7 @@ function executeMonitoringScript
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing completed. Validating..";
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ERROR_COUNT -> ${ERROR_COUNT}";
 
-    if [ -s ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE} ]
+    if [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE} ]
     then
         ## we do, run it out
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Alert notifications obtained. Processing..";
@@ -210,8 +239,7 @@ function executeMonitoringScript
         NOTIFY_CODE=${?};
 
         CNAME="$(basename "${0}")";
-        [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+        local METHOD_NAME="${CNAME}#${0}";
 
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NOTIFY_CODE -> ${NOTIFY_CODE}";
 
@@ -286,35 +314,6 @@ function usage
     return 3;
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
-
-[ ${#} -eq 0 ] && usage;
-
-OPTIND=0;
-METHOD_NAME="${CNAME}#startup";
-
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-
-[ -z "${APP_ROOT}" ] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
-
-unset METHOD_NAME;
-unset CNAME;
-
-## check security
-. ${PLUGIN_ROOT_DIR}/lib/security/check_main.sh > /dev/null 2>&1;
-RET_CODE=${?};
-
-[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE};
-
-## unset the return code
-unset RET_CODE;
-
-CNAME="$(basename "${0}")";
-METHOD_NAME="${CNAME}#startup";
-
 while getopts ":m:s:a:eh:" OPTIONS
 do
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -372,12 +371,7 @@ do
                 fi
             fi
             ;;
-        h)
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-            usage;
-            ;;
-        [\?])
+        h|[\?])
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
             usage;

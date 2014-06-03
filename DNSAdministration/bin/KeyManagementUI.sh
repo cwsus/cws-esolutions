@@ -23,6 +23,26 @@ CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+
+OPTIND=0;
+METHOD_NAME="${CNAME}#startup";
+
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+
+unset METHOD_NAME;
+unset CNAME;
+
+## check security
+. ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/security/check_main.sh > /dev/null 2>&1;
+RET_CODE=${?};
+
+[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE} || unset RET_CODE;
+
 trap "print '$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.trap.signals/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g' -e "s/%SIGNAL%/Ctrl-C/")'; sleep "${MESSAGE_DELAY}"; reset; clear; continue " 1 2 3
 
 #===  FUNCTION  ===============================================================
@@ -103,7 +123,7 @@ function main
                 ## service request is role swap. process accordingly
                 unset SELECTION;
 
-                ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validateChangeRequest.sh;
+                ${APP_ROOT}/${LIB_DIRECTORY}/validators/validateChangeRequest.sh;
 
                 if [ -z ${CHANGE_CONTROL} ]
                 then
@@ -139,7 +159,7 @@ function main
                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 fi
 
-                ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validateChangeRequest.sh;
+                ${APP_ROOT}/${LIB_DIRECTORY}/validators/validateChangeRequest.sh;
 
                 if [ -z ${CHANGE_CONTROL} ]
                 then
@@ -177,7 +197,7 @@ function main
                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 fi
 
-                ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validateChangeRequest.sh;
+                ${APP_ROOT}/${LIB_DIRECTORY}/validators/validateChangeRequest.sh;
 
                 if [ -z ${CHANGE_CONTROL} ]
                 then
@@ -215,7 +235,7 @@ function main
                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 fi
 
-                ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validateChangeRequest.sh;
+                ${APP_ROOT}/${LIB_DIRECTORY}/validators/validateChangeRequest.sh;
 
                 if [ -z ${CHANGE_CONTROL} ]
                 then
@@ -271,7 +291,6 @@ function main
 
     serviceKeyManagement;
 
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set +x;
 
     return 0;
 }
@@ -431,35 +450,13 @@ function serviceKeyManagement
 
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set +x;
 
     return 0;
 }
-
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
-
-[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
-
-OPTIND=0;
-METHOD_NAME="${CNAME}#startup";
-
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-
-unset METHOD_NAME;
-unset CNAME;
-
-## check security
-. ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/security/check_main.sh > /dev/null 2>&1;
-RET_CODE=${?};
-
-[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE} || unset RET_CODE;
 
 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
 main;
 
-[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set +x;
 
 return 0;

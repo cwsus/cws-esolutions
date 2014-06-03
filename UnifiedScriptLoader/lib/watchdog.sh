@@ -18,6 +18,8 @@
 #
 #==============================================================================
 
+[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+
 #===  FUNCTION  ===============================================================
 #          NAME:  usage
 #   DESCRIPTION:  Provide information on the usage of this application

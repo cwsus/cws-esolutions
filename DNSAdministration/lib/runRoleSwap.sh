@@ -22,6 +22,35 @@ CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+
+OPTIND=0;
+METHOD_NAME="${CNAME}#startup";
+
+[ ${#} -eq 0 ] && usage;
+
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+
+unset METHOD_NAME;
+unset CNAME;
+
+## check security
+. ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/security/check_main.sh > /dev/null 2>&1;
+RET_CODE=${?};
+
+[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE};
+
+## unset the return code
+unset RET_CODE;
+
+CNAME="$(basename "${0}")";
+METHOD_NAME="${CNAME}#startup";
+
 #===  FUNCTION  ===============================================================
 #          NAME:  failover_site
 #   DESCRIPTION:  Processes and implements a DNS site failover
@@ -47,9 +76,9 @@ function run_role_swap
     ## first things first. we need to get a tarfile from the existing master and pull it down.
     if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
     then
-        . ${APP_ROOT}/lib/sys/systemBackup.sh zone master;
+        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/sys/systemBackup.sh zone master;
     else
-        ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/lib/sys/systemBackup.sh zone master";
+        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/sys/systemBackup.sh zone master";
     fi
 
     ## capture the return code
@@ -66,14 +95,14 @@ function run_role_swap
         ## got our file. bring it over.
         if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
         then
-            cp ${NAMED_ROOT}/${TMP_DIRECTORY}/${TARFILE_NAME} ${APP_ROOT}/${TMP_DIRECTORY}/${TARFILE_NAME};
+            cp ${NAMED_ROOT}/${TMP_DIRECTORY}/${TARFILE_NAME} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${TARFILE_NAME};
         else
-            ${APP_ROOT}/lib/tcl/runSCPConnection.exp remote-copy ${NAMED_MASTER} ${NAMED_ROOT}/${TMP_DIRECTORY}/${TARFILE_NAME} ${APP_ROOT}/${TMP_DIRECTORY}/${TARFILE_NAME};
+            ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp remote-copy ${NAMED_MASTER} ${NAMED_ROOT}/${TMP_DIRECTORY}/${TARFILE_NAME} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${TARFILE_NAME};
         fi
 
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File transfer complete. Verifying..";
 
-        if [ -s ${APP_ROOT}/${TMP_DIRECTORY}/${TARFILE_NAME} ]
+        if [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${TARFILE_NAME} ]
         then
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File transfer successfully verified. Continuing..";
 
@@ -91,16 +120,16 @@ function run_role_swap
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "We are in local execution mode. Working..";
 
                     ## run the switch
-                    ${APP_ROOT}/lib/executors/execute_role_swap.sh -p ${APP_ROOT}/${TMP_DIRECTORY}/${TARFILE_NAME} -t ${MASTER_TARGET} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e;
+                    ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/execute_role_swap.sh -p ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${TARFILE_NAME} -t ${MASTER_TARGET} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e;
                 else
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Transferring ${APP_ROOT}/${TMP_DIRECTORY}/${TARFILE_NAME} to ${REMOTE_APP_ROOT}/${TMP_DIRECTORY}/${TARFILE_NAME}";
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Transferring ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${TARFILE_NAME} to ${REMOTE_APP_ROOT}/${TMP_DIRECTORY}/${TARFILE_NAME}";
 
-                    ${APP_ROOT}/lib/tcl/runSCPConnection.exp local-copy ${MASTER_TARGET} ${NAMED_ROOT}/${TMP_DIRECTORY}/${TARFILE_NAME} ${APP_ROOT}/${TMP_DIRECTORY}/${TARFILE_NAME};
+                    ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp local-copy ${MASTER_TARGET} ${NAMED_ROOT}/${TMP_DIRECTORY}/${TARFILE_NAME} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${TARFILE_NAME};
 
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Transfer complete. Executing execute_role_swap.sh -p ${REMOTE_APP_ROOT}/${TMP_DIRECTORY}/${TARFILE_NAME} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e ..";
 
                     ## once the copy is complete we run the switch.
-                    ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${MASTER_TARGET} "${REMOTE_APP_ROOT}/lib/executors/execute_role_swap.sh -p ${REMOTE_APP_ROOT}/${TMP_DIRECTORY}/${TARFILE_NAME} -t ${MASTER_TARGET} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e";
+                    ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${MASTER_TARGET} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/execute_role_swap.sh -p ${REMOTE_APP_ROOT}/${TMP_DIRECTORY}/${TARFILE_NAME} -t ${MASTER_TARGET} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e";
                     RET_CODE=${?};
 
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Execution complete. RET_CODE -> ${RET_CODE}";
@@ -115,7 +144,7 @@ function run_role_swap
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command execute_role_swap.sh -s -t ${MASTER_TARGET} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e ..";
 
                         ## good, we're done with that. now we move forward and re-config the existing master as a slave
-                        ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/lib/executors/execute_role_swap.sh -s -t ${MASTER_TARGET} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e";
+                        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/execute_role_swap.sh -s -t ${MASTER_TARGET} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e";
                         RET_CODE=${?};
 
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Execution complete. RET_CODE -> ${RET_CODE}";
@@ -193,8 +222,8 @@ function switch_local_config
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating backup and operational copies..";
 
         ## take a backup and make a working copy
-        TMP_NAMED_CONFIG=${APP_ROOT}/${TMP_DIRECTORY}/$(grep named_config_file ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2- | sed -e 's| ||g' | cut -d "/" -f 2);
-        BKUP_NAMED_CONFIG=${APP_ROOT}/${BACKUP_DIRECTORY}/$(grep named_config_file ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2- | sed -e 's| ||g' | cut -d "/" -f 2).${CHANGE_NUM};
+        TMP_NAMED_CONFIG=${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(grep named_config_file ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2- | sed -e 's| ||g' | cut -d "/" -f 2);
+        BKUP_NAMED_CONFIG=${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(grep named_config_file ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2- | sed -e 's| ||g' | cut -d "/" -f 2).${CHANGE_NUM};
 
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_NAMED_CONFIG -> ${TMP_NAMED_CONFIG}";
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BKUP_NAMED_CONFIG -> ${BKUP_NAMED_CONFIG}";
@@ -326,33 +355,6 @@ function usage
     return 3;
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh || \
-    echo "Failed to locate configuration data. Cannot continue." && exit 1
-
-[ ${#} -eq 0 ] && usage;
-
-OPTIND=0;
-METHOD_NAME="${CNAME}#startup";
-
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-
-unset METHOD_NAME;
-unset CNAME;
-
-## check security
-. ${PLUGIN_ROOT_DIR}/lib/security/check_main.sh > /dev/null 2>&1;
-RET_CODE=${?};
-
-[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE};
-
-## unset the return code
-unset RET_CODE;
-
-CNAME="$(basename "${0}")";
-METHOD_NAME="${CNAME}#startup";
-
 while getopts ":s:t:lc:eh" OPTIONS
 do
     case "${OPTIONS}" in
@@ -429,12 +431,7 @@ do
                 [ ! -z "${LOCAL_CONFIG}" ] && [ "${LOCAL_CONFIG}" = "${_TRUE}" ] && switch_local_config || run_role_swap;
             fi
             ;;
-        h)
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-            usage;
-            ;;
-        [\?])
+        h|[\?])
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
             usage;

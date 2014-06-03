@@ -22,6 +22,35 @@ CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+
+OPTIND=0;
+METHOD_NAME="${CNAME}#startup";
+
+[ ${#} -eq 0 ] && usage;
+
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+
+unset METHOD_NAME;
+unset CNAME;
+
+## check security
+. ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/security/check_main.sh > /dev/null 2>&1;
+RET_CODE=${?};
+
+[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE};
+
+## unset the return code
+unset RET_CODE;
+
+CNAME="$(basename "${0}")";
+METHOD_NAME="${CNAME}#startup";
+
 #===  FUNCTION  ===============================================================
 #          NAME:  run_rndc
 #   DESCRIPTION:  Returns a full response from DiG for a provided address
@@ -77,13 +106,13 @@ function runCommandRequest
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "HORIZON -> ${HORIZON}";
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command executeRNDCommands.sh -s ${SERVER_NAME} -p ${LISTENING_PORT} -y ${KEYFILE} -c ${COMMAND_NAME} ${ZONEFILE} -i ${HORIZON} -e";
 
-                        RET_CODE=$(${APP_ROOT}/lib/executors/executeRNDCommands.sh -s ${SERVER_NAME} -p ${LISTENING_PORT} -y ${KEYFILE} -c ${COMMAND_NAME} ${ZONEFILE} -i ${HORIZON} -e);
+                        RET_CODE=$(${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/executeRNDCommands.sh -s ${SERVER_NAME} -p ${LISTENING_PORT} -y ${KEYFILE} -c ${COMMAND_NAME} ${ZONEFILE} -i ${HORIZON} -e);
                     done
                     ;;
                 reconfig|stats|status|flush|dumpdb)
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command executeRNDCommands.sh -s ${SERVER_NAME} -p ${LISTENING_PORT} -y ${KEYFILE} -c ${COMMAND_NAME} ${ZONEFILE} -e";
 
-                    RET_CODE=$(${APP_ROOT}/lib/executors/executeRNDCommands.sh -s ${SERVER_NAME} -p ${LISTENING_PORT} -y ${KEYFILE} -c ${COMMAND_NAME} ${ZONEFILE} -e);
+                    RET_CODE=$(${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/executeRNDCommands.sh -s ${SERVER_NAME} -p ${LISTENING_PORT} -y ${KEYFILE} -c ${COMMAND_NAME} ${ZONEFILE} -e);
                     ;;
                 *)
                     ## unsupported command
@@ -95,7 +124,7 @@ function runCommandRequest
         else
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command executeRNDCommands.sh -s ${SERVER_NAME} -p ${LISTENING_PORT} -y ${KEYFILE} -c ${COMMAND_NAME} ${ZONEFILE} -e";
 
-            RET_CODE=$(${APP_ROOT}/lib/executors/executeRNDCommands.sh -s ${SERVER_NAME} -p ${LISTENING_PORT} -y ${KEYFILE} -c ${COMMAND_NAME} ${ZONEFILE} -e);
+            RET_CODE=$(${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/executeRNDCommands.sh -s ${SERVER_NAME} -p ${LISTENING_PORT} -y ${KEYFILE} -c ${COMMAND_NAME} ${ZONEFILE} -e);
         fi
     else
         if [ "${SPLIT_HORIZON}" = "${_TRUE}" ]
@@ -105,15 +134,15 @@ function runCommandRequest
                     for HORIZON in ${HORIZONS}
                     do
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "HORIZON -> ${HORIZON}";
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${SERVER_NAME} \"${REMOTE_APP_ROOT}/lib/executors/executeRNDCommands.sh -s ${SERVER_NAME} -p ${LISTENING_PORT} -y ${KEYFILE} -c ${COMMAND_NAME} ${ZONEFILE} -i ${HORIZON} -e\"";
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${SERVER_NAME} \"${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeRNDCommands.sh -s ${SERVER_NAME} -p ${LISTENING_PORT} -y ${KEYFILE} -c ${COMMAND_NAME} ${ZONEFILE} -i ${HORIZON} -e\"";
 
-                        RET_CODE=$(${APP_ROOT}/lib/tcl/runSSHConnection.exp ${SERVER_NAME} "${REMOTE_APP_ROOT}/lib/executors/executeRNDCommands.sh -s ${SERVER_NAME} -p ${LISTENING_PORT} -y ${KEYFILE} -c ${COMMAND_NAME} ${ZONEFILE} -i ${HORIZON} -e");
+                        RET_CODE=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${SERVER_NAME} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeRNDCommands.sh -s ${SERVER_NAME} -p ${LISTENING_PORT} -y ${KEYFILE} -c ${COMMAND_NAME} ${ZONEFILE} -i ${HORIZON} -e");
                     done
                     ;;
                 reconfig|stats|status|flush|dumpdb)
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${SERVER_NAME} \"${REMOTE_APP_ROOT}/lib/executors/executeRNDCommands.sh -s ${SERVER_NAME} -p ${LISTENING_PORT} -y ${KEYFILE} -c ${COMMAND_NAME} -e\"";
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${SERVER_NAME} \"${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeRNDCommands.sh -s ${SERVER_NAME} -p ${LISTENING_PORT} -y ${KEYFILE} -c ${COMMAND_NAME} -e\"";
 
-                    RET_CODE=$(${APP_ROOT}/lib/tcl/runSSHConnection.exp ${SERVER_NAME} "${REMOTE_APP_ROOT}/lib/executors/executeRNDCommands.sh -s ${SERVER_NAME} -p ${LISTENING_PORT} -y ${KEYFILE} -c ${COMMAND_NAME} -e");
+                    RET_CODE=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${SERVER_NAME} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeRNDCommands.sh -s ${SERVER_NAME} -p ${LISTENING_PORT} -y ${KEYFILE} -c ${COMMAND_NAME} -e");
                     ;;
                 *)
                     ## unsupported command
@@ -123,9 +152,9 @@ function runCommandRequest
                     ;;
             esac
         else
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${SERVER_NAME} \"${REMOTE_APP_ROOT}/lib/executors/executeRNDCommands.sh -s ${SERVER_NAME} -p ${LISTENING_PORT} -y ${KEYFILE} -c ${COMMAND_NAME} ${ZONEFILE} -e\"";
+            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${SERVER_NAME} \"${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeRNDCommands.sh -s ${SERVER_NAME} -p ${LISTENING_PORT} -y ${KEYFILE} -c ${COMMAND_NAME} ${ZONEFILE} -e\"";
 
-            RET_CODE=$(${APP_ROOT}/lib/tcl/runSSHConnection.exp ${SERVER_NAME} "${REMOTE_APP_ROOT}/lib/executors/executeRNDCommands.sh -s ${SERVER_NAME} -p ${LISTENING_PORT} -y ${KEYFILE} -c ${COMMAND_NAME} ${ZONEFILE} -e");
+            RET_CODE=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${SERVER_NAME} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeRNDCommands.sh -s ${SERVER_NAME} -p ${LISTENING_PORT} -y ${KEYFILE} -c ${COMMAND_NAME} ${ZONEFILE} -e");
         fi
     fi
 
@@ -198,33 +227,6 @@ function usage
 
     return 3;
 }
-
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
-
-[ ${#} -eq 0 ] && usage;
-
-OPTIND=0;
-METHOD_NAME="${CNAME}#startup";
-
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-
-unset METHOD_NAME;
-unset CNAME;
-
-## check security
-. ${PLUGIN_ROOT_DIR}/lib/security/check_main.sh > /dev/null 2>&1;
-RET_CODE=${?};
-
-[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE};
-
-## unset the return code
-unset RET_CODE;
-
-CNAME="$(basename "${0}")";
-METHOD_NAME="${CNAME}#startup";
 
 while getopts ":s:p:y:c:z:eh:" OPTIONS
 do
@@ -315,12 +317,7 @@ do
                 run_rndc;
             fi
             ;;
-        h)
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-            usage;
-            ;;
-        [\?])
+        h|[\?])
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
             usage;

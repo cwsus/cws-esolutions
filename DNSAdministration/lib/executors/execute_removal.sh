@@ -17,13 +17,50 @@
 #      REVISION:  ---
 #==============================================================================
 
-trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; exit" INT TERM EXIT;
-
 ## Application constants
 [ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+
+OPTIND=0;
+METHOD_NAME="${CNAME}#startup";
+
+[ ${#} -eq 0 ] && usage;
+
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+
+unset METHOD_NAME;
+unset CNAME;
+
+## check security
+. ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/security/check_main.sh > /dev/null 2>&1;
+RET_CODE=${?};
+
+[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && echo ${RET_CODE} && exit ${RET_CODE};
+
+## unset the return code
+unset RET_CODE;
+
+## lock it
+${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/lock.sh lock ${$};
+RET_CODE=${?};
+
+[ ${RET_CODE} != 0 ] && echo "Application currently in use." && echo ${RET_CODE} && exit ${RET_CODE};
+
+unset RET_CODE;
+
+CNAME="$(basename "${0}")";
+METHOD_NAME="${CNAME}#startup";
+
+trap "${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/lock.sh unlock ${$}; exit" INT TERM EXIT;
 
 #===  FUNCTION  ===============================================================
 #          NAME:  install_zone
@@ -56,17 +93,17 @@ function remove_master_zone
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backing up files..";
 
         ## take backups
-        tar cf ${APP_ROOT}/${BACKUP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${IUSER_AUDIT}.tar \
+        tar cf ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${IUSER_AUDIT}.tar \
             -C ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR} \
             ${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1).${PROJECT_CODE} \
             ${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1) \
             ${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1) >> /dev/null 2>&1;
-        gzip ${APP_ROOT}/${BACKUP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${IUSER_AUDIT}.tar >> /dev/null 2>&1;
+        gzip ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${IUSER_AUDIT}.tar >> /dev/null 2>&1;
 
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete. Verifying..";
 
         ## make sure the backup tarball exists. if it doesnt, dont continue
-        if [ -s ${APP_ROOT}/${BACKUP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${IUSER_AUDIT}.tar.gz ]
+        if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${IUSER_AUDIT}.tar.gz ]
         then
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup verified. Continuing..";
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing files..";
@@ -96,9 +133,9 @@ function remove_master_zone
                 if [ -s ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE} ]
                 then
                     ## it does. take a backup..
-                    cp ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE} ${APP_ROOT}/${BACKUP_DIRECTORY}/${DECOM_CONF_FILE}.${CHANGE_NUM};
+                    cp ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE} ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${DECOM_CONF_FILE}.${CHANGE_NUM};
 
-                    if [ -s ${APP_ROOT}/${BACKUP_DIRECTORY}/${DECOM_CONF_FILE}.${CHANGE_NUM} ]
+                    if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${DECOM_CONF_FILE}.${CHANGE_NUM} ]
                     then
                         ## backup complete.
                         ## remove entry. get the line numbers we need
@@ -108,20 +145,20 @@ function remove_master_zone
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "START_LINE_NUMBER -> ${START_LINE_NUMBER}";
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "END_LINE_NUMBER -> ${END_LINE_NUMBER}";
 
-                        sed -e "${START_LINE_NUMBER},${END_LINE_NUMBER} d" ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE} >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                        sed -e "${START_LINE_NUMBER},${END_LINE_NUMBER} d" ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE} >> ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
 
                         ## ok, should now be removed from the tmp file we've created. validate.
-                        if [ $(grep -c "zone \"${ZONE_NAME}\" IN {" ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE}) -eq 0 ]
+                        if [ $(grep -c "zone \"${ZONE_NAME}\" IN {" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${DECOM_CONF_FILE}) -eq 0 ]
                         then
                             ## verified removal. lets make this file the active file and call it a day.
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Moving ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE} to ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}..";
+                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Moving ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${DECOM_CONF_FILE} to ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}..";
 
                             ## checksum tmp file
-                            CONF_TMP_CKSUM=$(cksum ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE} | awk '{print $1}');
+                            CONF_TMP_CKSUM=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${DECOM_CONF_FILE} | awk '{print $1}');
 
                             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONF_TMP_CKSUM -> ${CONF_TMP_CKSUM}";
 
-                            mv ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE} ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE};
+                            mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${DECOM_CONF_FILE} ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE};
 
                             ## checksum operational
                             CONF_OP_CKSUM=$(cksum ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE} | awk '{print $1}');
@@ -221,17 +258,17 @@ function remove_slave_zone
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backing up files..";
 
         ## take backups
-        tar cf ${APP_ROOT}/${BACKUP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${IUSER_AUDIT}.tar \
+        tar cf ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${IUSER_AUDIT}.tar \
             -C ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT} \
             ${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1).${PROJECT_CODE} \
             ${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1) \
             ${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1) >> /dev/null 2>&1;
-        gzip ${APP_ROOT}/${BACKUP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${IUSER_AUDIT}.tar >> /dev/null 2>&1;
+        gzip ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${IUSER_AUDIT}.tar >> /dev/null 2>&1;
 
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete. Verifying..";
 
         ## make sure the backup tarball exists. if it doesnt, dont continue
-        if [ -s ${APP_ROOT}/${BACKUP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${IUSER_AUDIT}.tar.gz ]
+        if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${IUSER_AUDIT}.tar.gz ]
         then
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup verified. Continuing..";
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing files..";
@@ -261,9 +298,9 @@ function remove_slave_zone
                 if [ -s ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE} ]
                 then
                     ## it does. take a backup..
-                    cp ${NAMED_ROOT}/${DECOM_CONF_FILE} ${APP_ROOT}/${BACKUP_DIRECTORY}/${DECOM_CONF_FILE}.${CHANGE_NUM};
+                    cp ${NAMED_ROOT}/${DECOM_CONF_FILE} ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${DECOM_CONF_FILE}.${CHANGE_NUM};
 
-                    if [ -s ${APP_ROOT}/${BACKUP_DIRECTORY}/${DECOM_CONF_FILE}.${CHANGE_NUM} ]
+                    if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${DECOM_CONF_FILE}.${CHANGE_NUM} ]
                     then
                         ## backup complete.
                         ## remove entry. get the line numbers we need
@@ -273,20 +310,20 @@ function remove_slave_zone
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "START_LINE_NUMBER -> ${START_LINE_NUMBER}";
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "END_LINE_NUMBER -> ${END_LINE_NUMBER}";
 
-                        sed -e "${START_LINE_NUMBER},${END_LINE_NUMBER} d" ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE} >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                        sed -e "${START_LINE_NUMBER},${END_LINE_NUMBER} d" ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE} >> ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
 
                         ## ok, should now be removed from the tmp file we've created. validate.
-                        if [ $(grep -c "zone \"${ZONE_NAME}\" IN {" ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE}) -eq 0 ]
+                        if [ $(grep -c "zone \"${ZONE_NAME}\" IN {" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${DECOM_CONF_FILE}) -eq 0 ]
                         then
                             ## verified removal. lets make this file the active file and call it a day.
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Moving ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE} to ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}..";
+                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Moving ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${DECOM_CONF_FILE} to ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}..";
 
                             ## checksum tmp file
-                            CONF_TMP_CKSUM=$(cksum ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE} | awk '{print $1}');
+                            CONF_TMP_CKSUM=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${DECOM_CONF_FILE} | awk '{print $1}');
 
                             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONF_TMP_CKSUM -> ${CONF_TMP_CKSUM}";
 
-                            mv ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE} ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE};
+                            mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${DECOM_CONF_FILE} ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE};
 
                             ## checksum operational
                             CONF_OP_CKSUM=$(cksum ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE} | awk '{print $1}');
@@ -403,7 +440,7 @@ function remove_zone_entry
             unset CNAME;
 
             ## add our informational and audit indicators
-            . ${APP_ROOT}/lib/addServiceIndicators.sh -r ${GROUP_ID}${BUSINESS_UNIT} -f ${ZONEFILE_NAME} -t $(grep "Currently live in" ${SITE_ROOT}/${ZONEFILE_NAME} | awk '{print $5}') -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e;
+            . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/addServiceIndicators.sh -r ${GROUP_ID}${BUSINESS_UNIT} -f ${ZONEFILE_NAME} -t $(grep "Currently live in" ${SITE_ROOT}/${ZONEFILE_NAME} | awk '{print $5}') -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e;
             RET_CODE=${?};
 
             ## set method_name/cname back to this method
@@ -642,14 +679,14 @@ function remove_zone_entry
                                     for HORIZON in ${HORIZONS}
                                     do
                                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "HORIZON -> ${HORIZON}";
-                                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${NAMED_ROOT}/lib/executors/executeRNDCCommands.sh -s ${NAMED_MASTER} -p ${RNDC_LOCAL_PORT} -y ${RNDC_LOCAL_KEY} -c reload -z "${ZONE_NAME}" -i ${HORIZON} -e";
+                                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${NAMED_ROOT}/${LIB_DIRECTORY}/executors/executeRNDCCommands.sh -s ${NAMED_MASTER} -p ${RNDC_LOCAL_PORT} -y ${RNDC_LOCAL_KEY} -c reload -z "${ZONE_NAME}" -i ${HORIZON} -e";
 
-                                        RET_CODE=$(${NAMED_ROOT}/lib/executors/executeRNDCCommands.sh -s ${NAMED_MASTER} -p ${RNDC_LOCAL_PORT} -y ${RNDC_LOCAL_KEY} -c reload -z "${ZONE_NAME}" -i ${HORIZON} -e);
+                                        RET_CODE=$(${NAMED_ROOT}/${LIB_DIRECTORY}/executors/executeRNDCCommands.sh -s ${NAMED_MASTER} -p ${RNDC_LOCAL_PORT} -y ${RNDC_LOCAL_KEY} -c reload -z "${ZONE_NAME}" -i ${HORIZON} -e);
                                     done
                                 else
-                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${NAMED_ROOT}/lib/executors/executeRNDCCommands.sh -s ${NAMED_MASTER} -p ${RNDC_LOCAL_PORT} -y ${RNDC_LOCAL_KEY} -c reload -z "${ZONE_NAME}" -e";
+                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${NAMED_ROOT}/${LIB_DIRECTORY}/executors/executeRNDCCommands.sh -s ${NAMED_MASTER} -p ${RNDC_LOCAL_PORT} -y ${RNDC_LOCAL_KEY} -c reload -z "${ZONE_NAME}" -e";
 
-                                    RET_CODE=$(${NAMED_ROOT}/lib/executors/executeRNDCCommands.sh -s ${NAMED_MASTER} -p ${RNDC_LOCAL_PORT} -y ${RNDC_LOCAL_KEY} -c reload -z "${ZONE_NAME}" -e);
+                                    RET_CODE=$(${NAMED_ROOT}/${LIB_DIRECTORY}/executors/executeRNDCCommands.sh -s ${NAMED_MASTER} -p ${RNDC_LOCAL_PORT} -y ${RNDC_LOCAL_KEY} -c reload -z "${ZONE_NAME}" -e);
                                 fi
 
                                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE->${RET_CODE}";
@@ -680,9 +717,9 @@ function remove_zone_entry
                                                 for HORIZON in ${HORIZONS}
                                                 do
                                                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "HORIZON -> ${HORIZON}";
-                                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${NAMED_ROOT}/lib/executors/executeRNDCCommands.sh -s ${SLAVE} -p ${RNDC_REMOTE_PORT} -y ${RNDC_REMOTE_KEY} -c reload -z "${ZONE_NAME}" -i ${HORIZON} -e";
+                                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${NAMED_ROOT}/${LIB_DIRECTORY}/executors/executeRNDCCommands.sh -s ${SLAVE} -p ${RNDC_REMOTE_PORT} -y ${RNDC_REMOTE_KEY} -c reload -z "${ZONE_NAME}" -i ${HORIZON} -e";
 
-                                                    RET_CODE=$(${NAMED_ROOT}/lib/executors/executeRNDCCommands.sh -s ${SLAVE} -p ${RNDC_REMOTE_PORT} -y ${RNDC_REMOTE_KEY} -c reload -z "${ZONE_NAME}" -i ${HORIZON} -e);
+                                                    RET_CODE=$(${NAMED_ROOT}/${LIB_DIRECTORY}/executors/executeRNDCCommands.sh -s ${SLAVE} -p ${RNDC_REMOTE_PORT} -y ${RNDC_REMOTE_KEY} -c reload -z "${ZONE_NAME}" -i ${HORIZON} -e);
 
                                                     if [ ${RET_CODE} != 0 ]
                                                     then
@@ -692,9 +729,9 @@ function remove_zone_entry
                                                     fi
                                                 done
                                             else
-                                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${NAMED_ROOT}/lib/executors/executeRNDCCommands.sh -s ${SLAVE} -p ${RNDC_REMOTE_PORT} -y ${RNDC_REMOTE_KEY} -c reload -z "${ZONE_NAME}" -e";
+                                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${NAMED_ROOT}/${LIB_DIRECTORY}/executors/executeRNDCCommands.sh -s ${SLAVE} -p ${RNDC_REMOTE_PORT} -y ${RNDC_REMOTE_KEY} -c reload -z "${ZONE_NAME}" -e";
 
-                                                RET_CODE=$(${NAMED_ROOT}/lib/executors/executeRNDCCommands.sh -s ${SLAVE} -p ${RNDC_REMOTE_PORT} -y ${RNDC_REMOTE_KEY} -c reload -z "${ZONE_NAME}" -e);
+                                                RET_CODE=$(${NAMED_ROOT}/${LIB_DIRECTORY}/executors/executeRNDCCommands.sh -s ${SLAVE} -p ${RNDC_REMOTE_PORT} -y ${RNDC_REMOTE_KEY} -c reload -z "${ZONE_NAME}" -e);
 
                                                 if [ ${RET_CODE} != 0 ]
                                                 then
@@ -822,43 +859,6 @@ function usage
 
     return 3;
 }
-
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
-
-[ ${#} -eq 0 ] && usage;
-
-OPTIND=0;
-METHOD_NAME="${CNAME}#startup";
-
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-
-[ -z "${APP_ROOT}" ] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
-
-unset METHOD_NAME;
-unset CNAME;
-
-## check security
-. ${PLUGIN_ROOT_DIR}/lib/security/check_main.sh > /dev/null 2>&1;
-RET_CODE=${?};
-
-[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && echo ${RET_CODE} && exit ${RET_CODE};
-
-## unset the return code
-unset RET_CODE;
-
-## lock it
-${APP_ROOT}/${LIB_DIRECTORY}/lock.sh lock ${$};
-RET_CODE=${?};
-
-[ ${RET_CODE} != 0 ] && echo "Application currently in use." && echo ${RET_CODE} && exit ${RET_CODE};
-
-unset RET_CODE;
-
-CNAME="$(basename "${0}")";
-METHOD_NAME="${CNAME}#startup";
 
 while getopts ":b:p:z:i:c:r:xseh:" OPTIONS
 do
@@ -1010,16 +1010,6 @@ do
                     RETURN_CODE=67;
                 fi
             fi
-            ;;
-        h)
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-            usage;
-            ;;
-        [\?])
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-            usage;
             ;;
         *)
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
