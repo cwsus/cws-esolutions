@@ -19,6 +19,9 @@
 #      REVISION:  ---
 #==============================================================================
 
+[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+
+## Application constants
 NAMED_BIN=/usr/sbin/named;
 NAMED_CHKCONF=/usr/sbin/named-checkconf;
 NAMED_CHECKZONE=/usr/sbin/named-checkzone;

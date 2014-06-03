@@ -16,14 +16,17 @@
 #       CREATED:  ---
 #      REVISION:  ---
 #==============================================================================
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+
 ## Application constants
 [ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
+[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && echo "Failed to locate configuration data. Cannot continue." && exit 1;
 
 [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
 
@@ -40,7 +43,7 @@ unset METHOD_NAME;
 unset CNAME;
 
 ## check security
-. ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/security/check_main.sh > /dev/null 2>&1;
+${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
 RET_CODE=${?};
 
 [ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE};
@@ -170,12 +173,12 @@ function copyZoneToMaster
 
                 if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
                 then
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local execution set to TRUE. Executing command execute_addition.sh -b ${BUSINESS_UNIT} -p ${PROJECT_CODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e..";
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local execution set to TRUE. Executing command executeServiceAddition.sh -b ${BUSINESS_UNIT} -p ${PROJECT_CODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e..";
 
                     unset METHOD_NAME;
                     unset CNAME;
 
-                    . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/execute_addition.sh -b ${BUSINESS_UNIT} -p ${PROJECT_CODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e;
+                    . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/executeServiceAddition.sh -b ${BUSINESS_UNIT} -p ${PROJECT_CODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e;
 
                     CNAME="$(basename "${0}")";
                     local METHOD_NAME="${CNAME}#${0}";
@@ -193,9 +196,9 @@ function copyZoneToMaster
                     local METHOD_NAME="${CNAME}#${0}";
 
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Secure copy complete. Unpacking..";
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${NAMED_MASTER} \"${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/execute_addition.sh -b ${BUSINESS_UNIT} -p ${PROJECT_CODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -d ${TARFILE_DATE} -e..\"";
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${NAMED_MASTER} \"executeServiceAddition.sh -b ${BUSINESS_UNIT} -p ${PROJECT_CODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -d ${TARFILE_DATE} -e..\"";
 
-                    ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/execute_addition.sh -b ${BUSINESS_UNIT} -p ${PROJECT_CODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -d ${TARFILE_DATE} -e";
+                    ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeServiceAddition.sh -b ${BUSINESS_UNIT} -p ${PROJECT_CODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -d ${TARFILE_DATE} -e";
                 fi
 
                 ## capture the return code
@@ -356,12 +359,12 @@ function copyZoneToSlave
             ## its physically possible, we leave the code here.. but realistically it should never ever get executed.
             if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
             then
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local execution set to TRUE. Executing command execute_addition.sh -b ${BUSINESS_UNIT} -p ${PROJECT_CODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e..";
+                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local execution set to TRUE. Executing command executeServiceAddition.sh -b ${BUSINESS_UNIT} -p ${PROJECT_CODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e..";
 
                 unset METHOD_NAME;
                 unset CNAME;
 
-                . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/execute_addition.sh -b ${BUSINESS_UNIT} -p ${PROJECT_CODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -s -e;
+                . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/executeServiceAddition.sh -b ${BUSINESS_UNIT} -p ${PROJECT_CODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -s -e;
 
                 CNAME="$(basename "${0}")";
                 local METHOD_NAME="${CNAME}#${0}";
@@ -378,9 +381,9 @@ function copyZoneToSlave
                 local METHOD_NAME="${CNAME}#${0}";
 
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Secure copy complete. Unpacking..";
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${SLAVE_SERVER} \"${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/execute_addition.sh -b ${BUSINESS_UNIT} -p ${PROJECT_CODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -d ${TARFILE_DATE} -s -e..\"";
+                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${SLAVE_SERVER} \"executeServiceAddition.sh -b ${BUSINESS_UNIT} -p ${PROJECT_CODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -d ${TARFILE_DATE} -s -e..\"";
 
-                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${SLAVE_SERVER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/execute_addition.sh -b ${BUSINESS_UNIT} -p ${PROJECT_CODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -d ${TARFILE_DATE} -s -e";
+                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${SLAVE_SERVER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeServiceAddition.sh -b ${BUSINESS_UNIT} -p ${PROJECT_CODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -d ${TARFILE_DATE} -s -e";
             fi
 
             ## capture the return code
@@ -514,7 +517,7 @@ function addZoneEntry
                     ## we have our data, continue
                     if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
                     then
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local execution set to TRUE. Executing command execute_addition.sh -b ${BUSINESS_UNIT} -p ${PROJECT_CODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -a ${ENTRY_TYPE},${ENTRY_NAME},${ENTRY_RECORD} -e..";
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local execution set to TRUE. Executing command executeServiceAddition.sh -b ${BUSINESS_UNIT} -p ${PROJECT_CODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -a ${ENTRY_TYPE},${ENTRY_NAME},${ENTRY_RECORD} -e..";
 
                         unset METHOD_NAME;
                         unset CNAME;
@@ -551,7 +554,7 @@ function addZoneEntry
                     ## we have our data, continue
                     if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
                     then
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local execution set to TRUE. Executing command execute_addition.sh -b ${BUSINESS_UNIT} -p ${PROJECT_CODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -a ${ENTRY_TYPE},${ENTRY_NAME},${ENTRY_RECORD} -e..";
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local execution set to TRUE. Executing command executeServiceAddition.sh -b ${BUSINESS_UNIT} -p ${PROJECT_CODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -a ${ENTRY_TYPE},${ENTRY_NAME},${ENTRY_RECORD} -e..";
 
                         unset METHOD_NAME;
                         unset CNAME;
@@ -613,7 +616,7 @@ function addZoneEntry
                     ## we have our data, continue
                     if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
                     then
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local execution set to TRUE. Executing command execute_addition.sh -b ${BUSINESS_UNIT} -p ${PROJECT_CODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -a ${ENTRY_TYPE},${ENTRY_PROTOCOL},${ENTRY_NAME},${ENTRY_TTL},${ENTRY_PRIORITY},${ENTRY_WEIGHT},${ENTRY_PORT},${ENTRY_RECORD} -e..";
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local execution set to TRUE. Executing command executeServiceAddition.sh -b ${BUSINESS_UNIT} -p ${PROJECT_CODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -a ${ENTRY_TYPE},${ENTRY_PROTOCOL},${ENTRY_NAME},${ENTRY_TTL},${ENTRY_PRIORITY},${ENTRY_WEIGHT},${ENTRY_PORT},${ENTRY_RECORD} -e..";
 
                         unset METHOD_NAME;
                         unset CNAME;
@@ -866,7 +869,7 @@ do
 
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting SLAVE_SERVER..";
 
-            typset -l SLAVE_SERVER="${OPTARG}";
+            typeset -l SLAVE_SERVER="${OPTARG}";
 
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SLAVE_SERVER ->${SLAVE_SERVER}";
             ;;

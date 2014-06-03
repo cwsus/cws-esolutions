@@ -16,6 +16,8 @@
 #      REVISION:  ---
 #==============================================================================
 
+[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+
 ## Application constants
 [ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
 CNAME="$(basename "${0}")";

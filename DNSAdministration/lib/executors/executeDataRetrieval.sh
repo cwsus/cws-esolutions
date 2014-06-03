@@ -1,8 +1,8 @@
 #!/usr/bin/env ksh
 #==============================================================================
 #
-#          FILE:  execute_data_RETRIEVAL.sh
-#         USAGE:  ./execute_data_RETRIEVAL.sh [-v] [-u] [-d] [-h] [-?]
+#          FILE:  executeDataRetrieval.sh
+#         USAGE:  ./executeDataRetrieval.sh [-v] [-u] [-d] [-h] [-?]
 #   DESCRIPTION:  Obtains service information for a provided value, which
 #                 can be one of Business Unit, Project Code or URL
 #
@@ -17,14 +17,16 @@
 #      REVISION:  ---
 #==============================================================================
 
+[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+
 ## Application constants
 [ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
+[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && echo "Failed to locate configuration data. Cannot continue." && exit 1;
 
 [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
 

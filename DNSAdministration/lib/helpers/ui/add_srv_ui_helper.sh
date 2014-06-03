@@ -90,7 +90,7 @@ function add_zone_helper
             print "$(grep system.request.canceled ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2)\n";
             sleep "${MESSAGE_DELAY}"; reset; clear; break;
         else
-            if [ $(${PLUGIN_ROOT_DIR}/lib/validators/validate_srv_type.sh ${SERVICE_TYPE} ${PLUGIN_ROOT_DIR}/${ALLOWED_SERVICE_TYPES}) -eq 0 ]
+            if [ $(${PLUGIN_ROOT_DIR}/lib/validators/validateServiceRecordData.sh type ${SERVICE_TYPE}) -eq 0 ]
             then
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_TYPE->${SERVICE_TYPE}";
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requesting service protocol..";
@@ -139,7 +139,7 @@ function add_zone_helper
                         print "$(grep system.request.canceled ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2)\n";
                         sleep "${MESSAGE_DELAY}"; reset; clear; break;
                     else
-                        if [ $(${PLUGIN_ROOT_DIR}/lib/validators/validate_srv_proto.sh ${SERVICE_PROTO}) -eq 0 ]
+                        if [ $(${PLUGIN_ROOT_DIR}/lib/validators/validateServiceRecordData.sh protocol ${SERVICE_PROTO}) -eq 0 ]
                         then
                             ## protocol is valid, move forward
                             ## now we need to request the service name
@@ -630,7 +630,7 @@ function add_subdomain_helper
             print "$(grep system.request.canceled ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2)\n";
             sleep "${MESSAGE_DELAY}"; reset; clear; break;
         else
-            if [ $(${PLUGIN_ROOT_DIR}/lib/validators/validate_srv_type.sh ${SERVICE_TYPE}) -eq 0 ]
+            if [ $(${PLUGIN_ROOT_DIR}/lib/validators/validateServiceRecordData.sh type ${SERVICE_TYPE}) -eq 0 ]
             then
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_TYPE->${SERVICE_TYPE}";
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requesting service protocol..";
@@ -679,7 +679,7 @@ function add_subdomain_helper
                         print "$(grep system.request.canceled ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2)\n";
                         sleep "${MESSAGE_DELAY}"; reset; clear; break;
                     else
-                        if [ $(${PLUGIN_ROOT_DIR}/lib/validators/validate_srv_proto.sh ${SERVICE_PROTO}) -eq 0 ]
+                        if [ $(${PLUGIN_ROOT_DIR}/lib/validators/validateServiceRecordData.sh protocol ${SERVICE_PROTO}) -eq 0 ]
                         then
                             ## protocol is valid, move forward
                             ## now we need to request the service name

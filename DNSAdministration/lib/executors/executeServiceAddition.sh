@@ -1,8 +1,8 @@
 #!/usr/bin/env ksh
 #==============================================================================
 #
-#          FILE:  execute_addition.sh
-#         USAGE:  ./execute_addition.sh
+#          FILE:    executeServiceAddition.sh.sh
+#         USAGE:  ./executeServiceAddition.sh.sh
 #   DESCRIPTION:  Adds and updates various indicators utilized by named, as
 #                 well as adding auditory information.
 #
@@ -17,14 +17,16 @@
 #      REVISION:  ---
 #==============================================================================
 
+[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+
 ## Application constants
 [ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
+[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && echo "Failed to locate configuration data. Cannot continue." && exit 1;
 
 [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
 
@@ -41,7 +43,7 @@ unset METHOD_NAME;
 unset CNAME;
 
 ## check security
-. ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/security/check_main.sh > /dev/null 2>&1;
+${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
 RET_CODE=${?};
 
 [ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && echo ${RET_CODE} && exit ${RET_CODE};
@@ -69,14 +71,26 @@ trap "${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/lock.sh unlock ${$}; exit" INT TERM EX
 #    PARAMETERS:  Parameters obtained via command-line flags
 #          NAME:  usage for positive result, >1 for non-positive
 #==============================================================================
-function install_master_zone
+function installMasterZone
 {
     [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    CHANGE_DATE=$(date +"%m-%d-%Y");
-
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+    unset METHOD_NAME;
+    unset CNAME;
+
+    ## check security
+    ${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -s ${NAMED_MASTER};
+    RET_CODE=${?};
+
+    [ ${RET_CODE} != 0 ] && echo "This command cannot be performed on a non-master nameserver." && echo ${RET_CODE} && exit ${RET_CODE};
+
+    ## unset the return code
+    unset RET_CODE;
+
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Installation of group ${GROUP_ID}${BUSINESS_UNIT} starting..";
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Tarfile name -> ${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${IUSER_AUDIT}.tar.gz";
 
@@ -209,20 +223,26 @@ function install_master_zone
                 else
                     ## something happened while we were creating our new conf file. send an error back
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred creating the zone configuration file.";
+
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
                     RETURN_CODE=33;
                 fi
             else
                 ## the new zone didnt copy in. send an error back
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred copying the new zone.";
+
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
                 RETURN_CODE=32;
             fi
         fi
     else
         ## tarfile provided doesnt exist. send an error back, we cant continue
         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "The provided tarfile does not exist.";
+
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
         RETURN_CODE=14;
     fi
 
@@ -232,202 +252,216 @@ function install_master_zone
     rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${PROJECT_CODE};
 
     unset ZONE_CONF_NAME;
+    unset CHANGE_DATE;
 
     return ${RETURN_CODE};
 }
 
 #===  FUNCTION  ===============================================================
-#          NAME:  install_slave_zone
+#          NAME:  installSlaveZone
 #   DESCRIPTION:  Searches for and replaces audit indicators for the provided
 #                 filename.
 #    PARAMETERS:  Parameters obtained via command-line flags
 #          NAME:  usage for positive result, >1 for non-positive
 #==============================================================================
-function install_slave_zone
+function installSlaveZone
 {
     [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+    unset METHOD_NAME;
+    unset CNAME;
+
+    ## check security
+    ${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -s ${DNS_SLAVES[@]};
+    RET_CODE=${?};
+
+    [ ${RET_CODE} != 0 ] && echo "This command cannot be performed on a non-slave nameserver." && echo ${RET_CODE} && exit ${RET_CODE};
+
+    ## unset the return code
+    unset RET_CODE;
+
     CHANGE_DATE=$(date +"%m-%d-%Y");
 
-    ## make sure we are indeed running on a slave server. executing
-    ## these steps on a master would break.
-    if [ ! $(echo ${DNS_SLAVES[@]} | grep -c $(uname -n)) -eq 1 ]
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_DATE -> ${CHANGE_DATE}";
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Installation of group ${GROUP} starting..";
+
+    if [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${IUSER_AUDIT}.tar.gz ]
     then
-        ## we are not on a slave server we know about. abort.
-        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Slave zone installations are only supported on configured slave nameservers. Aborting.";
+        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Tarfile exists, proceeding..";
+
+        ## decompress the archive
+        gzip -dc ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${IUSER_AUDIT}.tar.gz | (cd ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}; tar xf -);
+
+        ## make sure the tar extracted properly
+        if [ ! -d ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT} ]
+        then
+            ## tar did not extract properly. throw out an error
+            $(${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "tarfile extraction FAILED. Cannot continue.")
+
+            RETURN_CODE=54;
+        else
+            ## clean up the datacenter-specific directories, they do not need to be there
+            ## if the install is on a slave AND the slave is not a failsafe master
+            if [ ! $(echo ${EXT_SLAVES[@]} | grep -c $(uname -n)) -eq 1 ]
+            then
+                ## we're on an external slave. remove the site-specific directories prior to placement
+                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "External slave detected. Removing site-specific directories..";
+
+                rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC};
+                rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC};
+
+                ## check if they were removed, if not, warn
+                if [ -d ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC} ] && [ -d ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC} ]
+                then
+                    ## oops. theyre still there. warn, but do not fail
+                    ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to remove site-specific directories.";
+                fi
+            fi
+
+            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Moving group directory ${GROUP_ID}${BUSINESS_UNIT} into ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}";
+
+            ## directory should exist now, lets move it into place
+            mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT} ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT};
+
+            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Move complete. Proceeding..";
+
+            ## zonefiles should be in place, verify
+            if [ -d ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT} ]
+            then
+                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Move verified. Proceeding..";
+                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}";
+
+                ## generate our conf file name
+                typeset -l ZONE_CONF_NAME=${BUSINESS_UNIT}.${NAMED_ZONE_CONF_NAME};
+
+                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONE_CONF_NAME -> ${ZONE_CONF_NAME}";
+
+                if [ ! -z "${USE_TRANSFER_ACL}" ] && [ "${USE_TRANSFER_ACL}" = "${_TRUE}" ]
+                then
+                    ## ok, time to create a conf file for the new zone
+                    ## and update named.conf so it gets loaded
+                    print "zone \"${ZONE_NAME}\" IN {" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    print "    type               slave;" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    print "    masters            { \"${NAMED_MASTER_ACL}\"; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    print "    allow-update       { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    print "    allow-transfer     { key ${TSIG_TRANSFER_KEY}; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    print "    file               \"${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1).$(echo ${PROJECT_CODE} | tr "[a-z]" "[A-Z]")\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    print "};\n" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                elif [ ! -z "${USE_NAMED_ACL}" ] && [ "${USE_NAMED_ACL}" = "${_TRUE}" ]
+                then
+                    ## ok, time to create a conf file for the new zone
+                    ## and update named.conf so it gets loaded
+                    print "zone \"${ZONE_NAME}\" IN {" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    print "    type               slave;" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    print "    masters            { \"${NAMED_MASTER_ACL}\"; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    print "    allow-update       { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    print "    allow-transfer     { ${NAMED_TRANSFER_ACL}; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    print "    file               \"${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1).$(echo ${PROJECT_CODE} | tr "[a-z]" "[A-Z]")\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    print "};\n" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                elif [ ! -z "${USE_NAMED_ACL}" ] && [ "${USE_NAMED_ACL}" = "${_TRUE}" ] && [ ! -z "${USE_TRANSFER_ACL}" ] && [ "${USE_TRANSFER_ACL}" = "${_TRUE}" ]
+                then
+                    ## ok, time to create a conf file for the new zone
+                    ## and update named.conf so it gets loaded
+                    print "zone \"${ZONE_NAME}\" IN {" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    print "    type               slave;" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    print "    masters            { \"${NAMED_MASTER_ACL}\"; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    print "    allow-update       { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    print "    allow-transfer     { key ${TSIG_TRANSFER_KEY}; ${NAMED_TRANSFER_ACL}; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    print "    file               \"${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1).$(echo ${PROJECT_CODE} | tr "[a-z]" "[A-Z]")\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    print "};\n" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                else
+                    ## no transfer acl is specified. this could be an oversight or on purpose. assume on purpose
+                    ## and specify none for allow-transfer
+                    print "zone \"${ZONE_NAME}\" IN {" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    print "    type               slave;" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    print "    masters            { \"${NAMED_MASTER_ACL}\"; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    print "    allow-update       { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    print "    allow-transfer     { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    print "    file               \"${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1).$(echo ${PROJECT_CODE} | tr "[a-z]" "[A-Z]")\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    print "};\n" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                fi
+
+                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Created ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME}";
+
+                ## we should have our conf file created and it should contain our new zone information.
+                ## lets include that file into the named conf now
+                if [ -s ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME} ]
+                then
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printing include statement to ${NAMED_CONF_FILE}";
+
+                    ## take a backup first
+                    cp ${NAMED_CONF_FILE} ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+
+                    ## make sure the backup file exists -
+                    if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ]
+                    then
+                        print "include \"/${NAMED_CONF_DIR}/${ZONE_CONF_NAME}\";" >> ${NAMED_CONF_FILE};
+
+                        ## should have our new zone included now. verify it
+                        if [ $(grep -c ${ZONE_CONF_NAME} ${NAMED_CONF_FILE}) -eq 1 ]
+                        then
+                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printed include statement to ${NAMED_CONF_FILE}";
+
+                            ## ok, we're done. zone has been created, installed,
+                            ## conf files have been created and updated.
+                            ## clean up the files we were provided
+                            rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${IUSER_AUDIT}.tar.gz;
+                            rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${IUSER_AUDIT}.tar;
+                            rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT};
+
+                            ## audit log
+                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} installed by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+
+                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                            ## and finally return zero
+                            RETURN_CODE=0;
+                        else
+                            ## the new zone wasnt added to named.conf
+                            ## we send back an error code informing
+                            RETURN_CODE=34;
+                        fi
+                    else
+                        ## we couldnt take a backup of the named conf file. fail out.
+                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to create backup of ${NAMED_CONF_FILE}. Cannot continue.";
+
+                        RETURN_CODE=57;
+                    fi
+                else
+                    ## something happened while we were creating our new conf file. send an error back
+                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred creating the zone configuration file.";
+
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                    RETURN_CODE=33;
+                fi
+            else
+                ## the new zone didnt copy in. send an error back
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred copying the new zone.";
+
+                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                RETURN_CODE=32;
+            fi
+        fi
+    else
+        ## tarfile provided doesnt exist. send an error back, we cant continue
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "The provided tarfile does not exist.";
 
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        RETURN_CODE=998;
-    else
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Installation of group ${GROUP} starting..";
-
-        if [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${IUSER_AUDIT}.tar.gz ]
-        then
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Tarfile exists, proceeding..";
-
-            ## decompress the archive
-            gzip -dc ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${IUSER_AUDIT}.tar.gz | (cd ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}; tar xf -);
-
-            ## make sure the tar extracted properly
-            if [ ! -d ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT} ]
-            then
-                ## tar did not extract properly. throw out an error
-                $(${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "tarfile extraction FAILED. Cannot continue.")
-
-                RETURN_CODE=54;
-            else
-                ## clean up the datacenter-specific directories, they do not need to be there
-                ## if the install is on a slave AND the slave is not a failsafe master
-                if [ ! $(echo ${EXT_SLAVES[@]} | grep -c $(uname -n)) -eq 1 ]
-                then
-                    ## we're on an external slave. remove the site-specific directories prior to placement
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "External slave detected. Removing site-specific directories..";
-
-                    rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC};
-                    rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC};
-
-                    ## check if they were removed, if not, warn
-                    if [ -d ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC} ] && [ -d ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC} ]
-                    then
-                        ## oops. theyre still there. warn, but do not fail
-                        ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to remove site-specific directories.";
-                    fi
-                fi
-
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Moving group directory ${GROUP_ID}${BUSINESS_UNIT} into ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}";
-
-                ## directory should exist now, lets move it into place
-                mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT} ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT};
-
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Move complete. Proceeding..";
-
-                ## zonefiles should be in place, verify
-                if [ -d ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT} ]
-                then
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Move verified. Proceeding..";
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}";
-
-                    ## generate our conf file name
-                    typset -l ZONE_CONF_NAME=${BUSINESS_UNIT}.${NAMED_ZONE_CONF_NAME};
-
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONE_CONF_NAME -> ${ZONE_CONF_NAME}";
-
-                    if [ ! -z "${USE_TRANSFER_ACL}" ] && [ "${USE_TRANSFER_ACL}" = "${_TRUE}" ]
-                    then
-                        ## ok, time to create a conf file for the new zone
-                        ## and update named.conf so it gets loaded
-                        print "zone \"${ZONE_NAME}\" IN {" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                        print "    type               slave;" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                        print "    masters            { \"${NAMED_MASTER_ACL}\"; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                        print "    allow-update       { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                        print "    allow-transfer     { key ${TSIG_TRANSFER_KEY}; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                        print "    file               \"${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1).$(echo ${PROJECT_CODE} | tr "[a-z]" "[A-Z]")\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                        print "};\n" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    elif [ ! -z "${USE_NAMED_ACL}" ] && [ "${USE_NAMED_ACL}" = "${_TRUE}" ]
-                    then
-                        ## ok, time to create a conf file for the new zone
-                        ## and update named.conf so it gets loaded
-                        print "zone \"${ZONE_NAME}\" IN {" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                        print "    type               slave;" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                        print "    masters            { \"${NAMED_MASTER_ACL}\"; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                        print "    allow-update       { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                        print "    allow-transfer     { ${NAMED_TRANSFER_ACL}; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                        print "    file               \"${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1).$(echo ${PROJECT_CODE} | tr "[a-z]" "[A-Z]")\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                        print "};\n" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    elif [ ! -z "${USE_NAMED_ACL}" ] && [ "${USE_NAMED_ACL}" = "${_TRUE}" ] && [ ! -z "${USE_TRANSFER_ACL}" ] && [ "${USE_TRANSFER_ACL}" = "${_TRUE}" ]
-                    then
-                        ## ok, time to create a conf file for the new zone
-                        ## and update named.conf so it gets loaded
-                        print "zone \"${ZONE_NAME}\" IN {" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                        print "    type               slave;" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                        print "    masters            { \"${NAMED_MASTER_ACL}\"; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                        print "    allow-update       { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                        print "    allow-transfer     { key ${TSIG_TRANSFER_KEY}; ${NAMED_TRANSFER_ACL}; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                        print "    file               \"${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1).$(echo ${PROJECT_CODE} | tr "[a-z]" "[A-Z]")\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                        print "};\n" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    else
-                        ## no transfer acl is specified. this could be an oversight or on purpose. assume on purpose
-                        ## and specify none for allow-transfer
-                        print "zone \"${ZONE_NAME}\" IN {" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                        print "    type               slave;" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                        print "    masters            { \"${NAMED_MASTER_ACL}\"; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                        print "    allow-update       { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                        print "    allow-transfer     { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                        print "    file               \"${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1).$(echo ${PROJECT_CODE} | tr "[a-z]" "[A-Z]")\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                        print "};\n" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    fi
-
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Created ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME}";
-
-                    ## we should have our conf file created and it should contain our new zone information.
-                    ## lets include that file into the named conf now
-                    if [ -s ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME} ]
-                    then
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printing include statement to ${NAMED_CONF_FILE}";
-
-                        ## take a backup first
-                        cp ${NAMED_CONF_FILE} ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
-
-                        ## make sure the backup file exists -
-                        if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ]
-                        then
-                            print "include \"/${NAMED_CONF_DIR}/${ZONE_CONF_NAME}\";" >> ${NAMED_CONF_FILE};
-
-                            ## should have our new zone included now. verify it
-                            if [ $(grep -c ${ZONE_CONF_NAME} ${NAMED_CONF_FILE}) -eq 1 ]
-                            then
-                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printed include statement to ${NAMED_CONF_FILE}";
-
-                                ## ok, we're done. zone has been created, installed,
-                                ## conf files have been created and updated.
-                                ## clean up the files we were provided
-                                rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${IUSER_AUDIT}.tar.gz;
-                                rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${IUSER_AUDIT}.tar;
-                                rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT};
-
-                                ## audit log
-                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} installed by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
-
-                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-                                ## and finally return zero
-                                RETURN_CODE=0;
-                            else
-                                ## the new zone wasnt added to named.conf
-                                ## we send back an error code informing
-                                RETURN_CODE=34;
-                            fi
-                        else
-                            ## we couldnt take a backup of the named conf file. fail out.
-                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to create backup of ${NAMED_CONF_FILE}. Cannot continue.";
-
-                            RETURN_CODE=57;
-                        fi
-                    else
-                        ## something happened while we were creating our new conf file. send an error back
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred creating the zone configuration file.";
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-                        RETURN_CODE=33;
-                    fi
-                else
-                    ## the new zone didnt copy in. send an error back
-                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred copying the new zone.";
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-                    RETURN_CODE=32;
-                fi
-            fi
-        else
-            ## tarfile provided doesnt exist. send an error back, we cant continue
-            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "The provided tarfile does not exist.";
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-            RETURN_CODE=14;
-        fi
+        RETURN_CODE=14;
     fi
 
     unset ZONE_CONF_NAME;
+    unset CHANGE_DATE;
+
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     return ${RETURN_CODE};
 }
@@ -444,11 +478,26 @@ function add_zone_entry
     [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    CHANGE_DATE=$(date +"%m-%d-%Y");
-    TARFILE_DATE=$(date +"%m-%d-%Y");
-    BACKUP_FILE=${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${TARFILE_DATE}.${IUSER_AUDIT};
-
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+    unset METHOD_NAME;
+    unset CNAME;
+
+    ## check security
+    ${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -s ${NAMED_MASTER};
+    RET_CODE=${?};
+
+    [ ${RET_CODE} != 0 ] && echo "This command cannot be performed on a non-master nameserver." && echo ${RET_CODE} && exit ${RET_CODE};
+
+    ## unset the return code
+    unset RET_CODE;
+
+    CHANGE_DATE=$(date +"%m-%d-%Y");
+    BACKUP_FILE=${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${IUSER_AUDIT};
+
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_DATE -> ${CHANGE_DATE}";
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BACKUP_FILE -> ${BACKUP_FILE}";
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Update of zone ${ZONE_NAME} starting..";
 
     ## make sure our zone data exists
@@ -877,18 +926,22 @@ function add_zone_entry
     fi
 
     ## unsets
-    unset OP_FILE_CKSUM;
-    unset TMP_FILE_CKSUM;
-    unset ENTRY_WRITTEN;
-    unset ZONEFILE_NAME;
-    unset ZONEFILE;
-    unset ZONEFILES;
-    unset SITE_ROOT;
     unset CHANGE_DATE;
-    unset TARFILE_DATE;
     unset BACKUP_FILE;
-    unset DATACENTER;
+    unset SITE_ROOT;
+    unset ZONEFILES;
+    unset ZONEFILE;
+    unset ZONEFILE_NAME;
+    unset WARNING_CODE;
+    unset ENTRY_WRITTEN;
+    unset TMP_FILE_CKSUM;
+    unset OP_FILE_CKSUM;
+    unset HORIZON;
+    unset RET_CODE;
+    unset LOOKUP_RESPONSE;
+    unset SLAVE;
 
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "RETURN_CODE -> ${RETURN_CODE}");
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "${METHOD_NAME} -> exit");
 
     return ${RETURN_CODE};
@@ -898,7 +951,6 @@ function add_zone_entry
 #          NAME:  usage
 #   DESCRIPTION:  Provide information on the function usage of this application
 #    PARAMETERS:  None
-#          NAME:  usage
 #==============================================================================
 function usage
 {
@@ -1086,9 +1138,9 @@ do
                     then
                         if [ -z "${SLAVE_OPERATION}" ] && [ "${SLAVE_OPERATION}" = "${_TRUE}" ]
                         then
-                            install_slave_zone;
+                            installSlaveZone;
                         else
-                            install_master_zone;
+                            installMasterZone;
                         fi
                     else
                         ## no valid command type

@@ -16,14 +16,17 @@
 #       CREATED:  ---
 #      REVISION:  ---
 #==============================================================================
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+
 ## Application constants
 [ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
+[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && echo "Failed to locate configuration data. Cannot continue." && exit 1;
 
 [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
 
@@ -40,7 +43,7 @@ unset METHOD_NAME;
 unset CNAME;
 
 ## check security
-. ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/security/check_main.sh > /dev/null 2>&1;
+${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
 RET_CODE=${?};
 
 [ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE};
@@ -95,7 +98,7 @@ function runInternetSiteFailover
 
         unset RFR_OPTIND;
     else
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${NAMED_MASTER} \"${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeSiteFailover.sh -d x -b ${UNIT} -f ${FILENAME} -t ${TARGET} -p ${PRJCODE} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e\"";
+        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${NAMED_MASTER} \"executeSiteFailover.sh -d x -b ${UNIT} -f ${FILENAME} -t ${TARGET} -p ${PRJCODE} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e\"";
 
         ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeSiteFailover.sh -d x -b ${UNIT} -f ${FILENAME} -t ${TARGET} -p ${PRJCODE} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e";
 
@@ -111,7 +114,7 @@ function runInternetSiteFailover
         unset RETURN_CODE;
 
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover completed. Reloading server configuration..";
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command run_rndc_request.sh -s ${NAMED_MASTER} -c reload -e..";
+        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runRNDCCommands.sh -s ${NAMED_MASTER} -c reload -e..";
 
         unset CNAME;
         unset METHOD_NAME;
@@ -120,7 +123,7 @@ function runInternetSiteFailover
         RFR_OPTIND=${OPTIND};
 
         ## send an rndc reload to the server to make it active
-        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/run_rndc_request.sh -s ${NAMED_MASTER} -c reload -e;
+        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${NAMED_MASTER} -c reload -e;
         RNDC_CODE=${?};
 
         CNAME="$(basename "${0}")";
@@ -220,7 +223,7 @@ function runInternetSiteFailover
                     while [ ${D} -ne ${#DNS_SLAVES[@]} ]
                     do
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating against ${DNS_SLAVES[${D}]}..";
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command run_rndc_request.sh -s ${DNS_SLAVES[${D}]} -c reload -e..";
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runRNDCCommands.sh -s ${DNS_SLAVES[${D}]} -c reload -e..";
 
                         ## temp unset
                         unset METHOD_NAME;
@@ -230,7 +233,7 @@ function runInternetSiteFailover
                         RFR_OPTIND=${OPTIND};
 
                         ## send an rndc reload to the server to make it active
-                        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/run_rndc_request.sh -s ${DNS_SLAVES[${D}]} -c reload -e;
+                        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${DNS_SLAVES[${D}]} -c reload -e;
                         RNDC_CODE=${?};
 
                         CNAME="$(basename "${0}")";
@@ -413,7 +416,7 @@ function runIntranetSiteFailover
 
             if [ ${PING_RCODE} == 0 ]
             then
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${GD_SERVER} \"${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeSiteFailover.sh -d i -f ${DISABLE_POP} -t ${ENABLE_POP} -c ${CHANGE_NUM} -i ${IUSER_AUDIT} -e\"";
+                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${GD_SERVER} \"executeSiteFailover.sh -d i -f ${DISABLE_POP} -t ${ENABLE_POP} -c ${CHANGE_NUM} -i ${IUSER_AUDIT} -e\"";
 
                 ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${GD_SERVER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeSiteFailover.sh -d i -f ${DISABLE_POP} -t ${ENABLE_POP} -c ${CHANGE_NUM} -i ${IUSER_AUDIT} -e";
                 FAILOVER_CODE=${?};
@@ -428,7 +431,7 @@ function runIntranetSiteFailover
                     unset RETURN_CODE;
 
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover completed. Reloading server configuration..";
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command run_rndc_request.sh -s ${NAMED_MASTER} -c reload -e..";
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runRNDCCommands.sh -s ${NAMED_MASTER} -c reload -e..";
 
                     ## validate that it was indeed changed
                     unset CNAME;
@@ -490,7 +493,7 @@ function failover_bu
     ## call out to execute_bu_failover.sh
     if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
     then
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/execute_bu_failover.sh -b ${UNIT} -t ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e";
+        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e;";
 
         unset METHOD_NAME;
         unset CNAME;
@@ -498,20 +501,15 @@ function failover_bu
         ## capture the current optind
         RFR_OPTIND=${OPTIND};
 
-        FAILOVER_CODE-$(${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/execute_bu_failover.sh -b ${UNIT} -t ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e);
+        ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e;
+        FAILOVER_CODE=${?};
 
         CNAME="$(basename "${0}")";
         local METHOD_NAME="${CNAME}#${0}";
-
-        ## and put it back
-        OPTIND=${RFR_OPTIND};
-
-        unset RFR_OPTIND;
     else
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${NAMED_MASTER} \"${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/execute_bu_failover.sh -b ${UNIT} -t ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e\"";
+        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${NAMED_MASTER} \"executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e\"";
 
-        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/execute_bu_failover.sh -b ${UNIT} -t ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e";
-
+        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e";
         FAILOVER_CODE=${?};
     fi
 
@@ -525,17 +523,12 @@ function failover_bu
         unset METHOD_NAME;
         unset CNAME;
 
-        ## capture the current optind
-        RFR_OPTIND=${OPTIND};
-
         ## send an rndc reload to the server to make it active
-        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/run_rndc_request.sh -s ${NAMED_MASTER} -c reload -e;
+        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${NAMED_MASTER} -c reload -e;
         RETURN_CODE=${?};
 
-        ## and put it back
-        OPTIND=${RFR_OPTIND};
-
-        unset RFR_OPTIND;
+        CNAME="$(basename "${0}")";
+        local METHOD_NAME="${CNAME}#${0}";
 
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 
@@ -564,17 +557,12 @@ function failover_bu
                     unset METHOD_NAME;
                     unset CNAME;
 
-                    ## capture the current optind
-                    RFR_OPTIND=${OPTIND};
-
                     ## send an rndc reload to the server to make it active
-                    . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/run_rndc_request.sh -s ${DNS_SLAVE[${D}]} -c reload -e;
+                    . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${DNS_SLAVE[${D}]} -c reload -e;
                     RETURN_CODE=${?};
 
-                    ## and put it back
-                    OPTIND=${RFR_OPTIND};
-
-                    unset RFR_OPTIND;
+                    CNAME="$(basename "${0}")";
+                    local METHOD_NAME="${CNAME}#${0}";
 
                     if [ ${RETURN_CODE} -eq 0 ]
                     then
@@ -659,27 +647,20 @@ function failover_project
     ## call out to execute_bu_failover.sh
     if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
     then
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/execute_project_failover.sh -b ${UNIT} -p ${PRJCODE} -t ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e";
+        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -p ${PRJCODE} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e;";
 
         unset METHOD_NAME;
         unset CNAME;
 
-        ## capture the current optind
-        RFR_OPTIND=${OPTIND};
-
-        FAILOVER_CODE=$(${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/execute_project_failover.sh -b ${UNIT} -p ${PRJCODE} -t ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e);
+        ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -p ${PRJCODE} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e;
+        FAILOVER_CODE=${?};
 
         CNAME="$(basename "${0}")";
         local METHOD_NAME="${CNAME}#${0}";
-
-        ## and put it back
-        OPTIND=${RFR_OPTIND};
-
-        unset RFR_OPTIND;
     else
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${NAMED_MASTER} \"${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/execute_project_failover.sh -b ${UNIT} -p ${PRJCODE} -t ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e\"";
+        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${NAMED_MASTER} \"executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -p ${PRJCODE} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e\"";
 
-        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/execute_project_failover.sh -b ${UNIT} -p ${PRJCODE} -t ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e";
+        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -p ${PRJCODE} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e";
     fi
 
     if [ ${FAILOVER_CODE} -eq 0 ]
@@ -696,7 +677,7 @@ function failover_project
         RFR_OPTIND=${OPTIND};
 
         ## send an rndc reload to the server to make it active
-        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/run_rndc_request.sh -s ${NAMED_MASTER} -c reload -e;
+        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${NAMED_MASTER} -c reload -e;
         RETURN_CODE=${?};
 
         CNAME="$(basename "${0}")";
@@ -738,7 +719,7 @@ function failover_project
                     RFR_OPTIND=${OPTIND};
 
                     ## send an rndc reload to the server to make it active
-                    . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/run_rndc_request.sh -s ${DNS_SLAVE[${D}]} -c reload -e;
+                    . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${DNS_SLAVE[${D}]} -c reload -e;
                     RETURN_CODE=${?};
 
                     CNAME="$(basename "${0}")";
@@ -833,20 +814,13 @@ function failover_datacenter
         unset METHOD_NAME;
         unset CNAME;
 
-        ## capture the current optind
-        RFR_OPTIND=${OPTIND};
-
-        $(${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/execute_dc_failover.sh -t ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e);
+        ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -a -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e;
+        FAILOVER_CODE=${?};
 
         CNAME="$(basename "${0}")";
         local METHOD_NAME="${CNAME}#${0}";
-
-        ## and put it back
-        OPTIND=${RFR_OPTIND};
-
-        unset RFR_OPTIND;
     else
-        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/execute_dc_failover.sh -t ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e";
+        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -a -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e";
     fi
 
     ## capture the return code
@@ -866,7 +840,7 @@ function failover_datacenter
         RFR_OPTIND=${OPTIND};
 
         ## send an rndc reload to the server to make it active
-        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/run_rndc_request.sh -s ${NAMED_MASTER} -c reload -e;
+        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${NAMED_MASTER} -c reload -e;
         RETURN_CODE=${?};
 
         CNAME="$(basename "${0}")";
@@ -911,7 +885,7 @@ function failover_datacenter
                     RFR_OPTIND=${OPTIND};
 
                     ## send an rndc reload to the server to make it active
-                    . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/run_rndc_request.sh -s ${DNS_SLAVE[${D}]} -c reload -e;
+                    . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${DNS_SLAVE[${D}]} -c reload -e;
                     RETURN_CODE=${?};
 
                     CNAME="$(basename "${0}")";

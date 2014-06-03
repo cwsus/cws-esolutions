@@ -18,14 +18,16 @@
 #      REVISION:  ---
 #==============================================================================
 
+[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+
 ## Application constants
 [ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/${PLUGIN_NAME}.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
+[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && echo "Failed to locate configuration data. Cannot continue." && exit 1;
 
 [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
 
@@ -42,7 +44,7 @@ unset METHOD_NAME;
 unset CNAME;
 
 ## check security
-. ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/security/check_main.sh > /dev/null 2>&1;
+${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
 RET_CODE=${?};
 
 [ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE};
