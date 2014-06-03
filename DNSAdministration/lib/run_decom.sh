@@ -60,8 +60,7 @@ function decom_site
             . ${APP_ROOT}/lib/executors/execute_decom.sh -b ${UNIT} -p ${PRJCODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -s -e;
 
             CNAME="$(basename "${0}")";
-            [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+            local METHOD_NAME="${CNAME}#${0}";
         else
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command execute_decom.sh -b ${UNIT} -p ${PRJCODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -s -e ..";
 
@@ -72,8 +71,7 @@ function decom_site
             . ${APP_ROOT}/lib/executors/execute_decom.sh -b ${UNIT} -p ${PRJCODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -e;
 
             CNAME="$(basename "${0}")";
-            [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+            local METHOD_NAME="${CNAME}#${0}";
         fi
     else
         ## remote exec
@@ -113,8 +111,7 @@ function decom_site
         RNDC_CODE=${?};
 
         CNAME="$(basename "${0}")";
-        [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+        local METHOD_NAME="${CNAME}#${0}";
 
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RNDC_CODE -> ${RNDC_CODE}";
 
@@ -138,8 +135,7 @@ function decom_site
             . ${MAILER_CLASS} -m notifyDecommission -p ${PROJECT_CODE} -a "${DNS_SERVER_ADMIN_EMAIL}" -e;
 
             CNAME="$(basename "${0}")";
-            [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+            local METHOD_NAME="${CNAME}#${0}";
 
             ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "$(${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS decommission: Requestor: ${IUSER_AUDIT} - Date: $(date +"%d-%m-%Y") - Site: ${UNIT}/${PRJCODE}/${FILENAME} - Change Request: ${CHG_CTRL} - Switched To: ${TARGET}");";
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -205,8 +201,7 @@ function decom_bu
             . ${APP_ROOT}/lib/executors/execute_decom.sh -b ${UNIT} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -s -e;
 
             CNAME="$(basename "${0}")";
-            [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+            local METHOD_NAME="${CNAME}#${0}";
         else
             unset CNAME;
             unset METHOD_NAME;
@@ -214,8 +209,7 @@ function decom_bu
             . ${APP_ROOT}/lib/executors/execute_decom.sh -b ${UNIT} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -s -e;
 
             CNAME="$(basename "${0}")";
-            [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+            local METHOD_NAME="${CNAME}#${0}";
         fi
     else
         ## remote exec
@@ -252,8 +246,7 @@ function decom_bu
         RNDC_CODE=${?};
 
         CNAME="$(basename "${0}")";
-        [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+        local METHOD_NAME="${CNAME}#${0}";
 
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RNDC_CODE -> ${RNDC_CODE}";
 
@@ -281,8 +274,7 @@ function decom_bu
             fi
 
             CNAME="$(basename "${0}")";
-            [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+            local METHOD_NAME="${CNAME}#${0}";
 
             ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "$(${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS decommission: Requestor: ${IUSER_AUDIT} - Date: $(date +"%d-%m-%Y") - Site: ${UNIT}/${PRJCODE}/${FILENAME} - Change Request: ${CHG_CTRL} - Switched To: ${TARGET}");";
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";

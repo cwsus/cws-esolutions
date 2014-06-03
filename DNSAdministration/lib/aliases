@@ -17,4 +17,7 @@
 #==============================================================================
 
 ## common aliases
-alias rndc='rndc -c ${NAMED_ROOT}/${RNDC_CONF_FILE}';
+alias rndc='/usr/bin/env rndc -c ${NAMED_ROOT}/${RNDC_CONF_FILE}';
+alias dnssec-keygen='/usr/bin/env dnssec-keygen';
+alias dnssec-signzone='/usr/bin/env dnssec-signzone';
+alias rndc-confgen='/usr/bin/env rndc-confgen';

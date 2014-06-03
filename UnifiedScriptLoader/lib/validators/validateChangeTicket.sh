@@ -53,5 +53,4 @@ METHOD_NAME="${CNAME}#startup";
 
 validateChangeNumber ${1};
 
-echo ${RETURN_CODE};
 return ${RETURN_CODE};
