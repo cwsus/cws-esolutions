@@ -63,6 +63,12 @@ if { [ expr $argc < 4 ] } {
     set _TARGET_SYSTEM [ lindex $argv 3 ]
     set _USER_LOGINID [ lindex $argv 4 ]
 
+    if { [ string compare -nocase $_USER_LOGINID "root" ] == 0 } {
+        puts "This utility cannot be used to perform superuser functionality.";
+
+        exit 99
+    }
+
     # type it
     if { [string compare -nocase [ lindex $argv 5 ] ""] != 0 } {
         set _AUTH_STRING [ split [ lindex $argv 5 ] ":" ]

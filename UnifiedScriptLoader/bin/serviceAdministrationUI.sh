@@ -24,9 +24,8 @@ CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
-[[ -z "${APP_ROOT}" && ! -s ${SCRIPT_ROOT}/../lib/constants.sh ]] && echo "Failed to locate configuration data. Cannot continue." && exit 1;
-
-[ -z "${APP_ROOT}" ] && . ${SCRIPT_ROOT}/../lib/constants.sh;
+[[ -z "${APP_ROOT}" && -f ${SCRIPT_ROOT}/../lib/constants.sh ]] && . ${SCRIPT_ROOT}/../lib/constants.sh;
+[ -z "${APP_ROOT}" ] && echo "Failed to locate configuration data. Cannot continue." && exit 1;
 
 [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
 

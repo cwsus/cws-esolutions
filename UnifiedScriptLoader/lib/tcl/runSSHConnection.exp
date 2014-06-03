@@ -59,6 +59,12 @@ if { [ expr $argc < 3 ] } {
     set _EXEC_CMD [ lindex $argv 1 ]
     set _USER_LOGINID [ lindex $argv 2 ]
 
+    if { [ string compare -nocase $_USER_LOGINID "root" ] == 0 } {
+        puts "This utility cannot be used to perform superuser functionality.";
+
+        exit 99
+    }
+
     ## type it
     if { [string compare -nocase [ lindex $argv 3 ] ""] != 0 } {
         set _AUTH_STRING [ split [ lindex $argv 3 ] ":" ]
