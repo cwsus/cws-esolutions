@@ -45,7 +45,7 @@ RET_CODE=${?};
 
 [ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE} || unset RET_CODE;
 
-trap "print '$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.trap.signals/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g' -e "s/%SIGNAL%/Ctrl-C/")'; sleep "${MESSAGE_DELAY}"; reset; clear; continue " 1 2 3
+trap "print '$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.trap.signals\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%SIGNAL%/Ctrl-C/")'; sleep "${MESSAGE_DELAY}"; reset; clear; continue " 1 2 3
 
 #===  FUNCTION  ===============================================================
 #
@@ -67,11 +67,11 @@ function main
     then
         reset; clear;
 
-        $(${LOGGER} "ERROR" $METHOD_NAME ${CNAME} ${LINENO} "Service management has not been enabled. Cannot continue.");
+        $(${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Service management has not been enabled. Cannot continue.");
 
-        print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/request.not.authorized/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')";
+        print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<request.not.authorized\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
-        exec ${PLUGIN_ROOT_DIR}/${MAIN_CLASS};
+        exec ${MAIN_CLASS};
 
         exit 0;
     fi
@@ -82,21 +82,19 @@ function main
 
         print "\n";
         print "\t\t+-------------------------------------------------------------------+";
-        print "\t\t               WELCOME TO \E[0;31m $(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/plugin.application.title/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g') \033[0m";
+        print "\t\t               WELCOME TO \E[0;31m $(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<plugin.application.title\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g') \033[0m";
         print "\t\t+-------------------------------------------------------------------+";
-        print "";
         print "\t\tSystem Type         : \E[0;36m ${SYSTEM_HOSTNAME} \033[0m";
         print "\t\tSystem Uptime       : \E[0;36m ${SYSTEM_UPTIME} \033[0m";
         print "\t\tUser                : \E[0;36m ${IUSER_AUDIT} \033[0m";
-        print "";
         print "\t\t+-------------------------------------------------------------------+";
         print "";
-        print "\t\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.available.options/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
-        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/service.control.rndc.generate.keys/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')";
-        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/service.control.dnssec.generate.keys/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')";
-        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/service.control.dhcpd.generate.keys/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')";
-        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/service.control.tsig.generate.keys/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')";
-        print "\t\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.option.cancel/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+        print "\t\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.available.options\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<service.control.rndc.generate.keys\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<service.control.dnssec.generate.keys\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<service.control.dhcpd.generate.keys\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<service.control.tsig.generate.keys\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+        print "\t\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.option.cancel\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
         read SELECTION;
 
@@ -104,7 +102,7 @@ function main
 
         reset; clear;
 
-        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
         case ${SELECTION} in
             1)
@@ -115,9 +113,9 @@ function main
 
                     reset; clear;
 
-                    $(${LOGGER} "ERROR" $METHOD_NAME ${CNAME} ${LINENO} "RNDC Key management has not been enabled. Cannot continue.");
+                    $(${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RNDC Key management has not been enabled. Cannot continue.");
 
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/request.not.authorized/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<request.not.authorized\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 fi
@@ -133,9 +131,9 @@ function main
 
                     reset; clear;
 
-                    $(${LOGGER} "ERROR" $METHOD_NAME ${CNAME} ${LINENO} "No change request has been provided. Cannot continue.");
+                    $(${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No change request has been provided. Cannot continue.");
 
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/change.request.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<change.request.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 fi
@@ -154,9 +152,9 @@ function main
 
                     reset; clear;
 
-                    $(${LOGGER} "ERROR" $METHOD_NAME ${CNAME} ${LINENO} "DNSSEC Key management has not been enabled. Cannot continue.");
+                    $(${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNSSEC Key management has not been enabled. Cannot continue.");
 
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/request.not.authorized/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<request.not.authorized\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 fi
@@ -169,9 +167,9 @@ function main
 
                     reset; clear;
 
-                    $(${LOGGER} "ERROR" $METHOD_NAME ${CNAME} ${LINENO} "No change request has been provided. Cannot continue.");
+                    $(${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No change request has been provided. Cannot continue.");
 
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/change.request.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<change.request.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 fi
@@ -192,9 +190,9 @@ function main
 
                     reset; clear;
 
-                    $(${LOGGER} "ERROR" $METHOD_NAME ${CNAME} ${LINENO} "DHCPD Key management has not been enabled. Cannot continue.");
+                    $(${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DHCPD Key management has not been enabled. Cannot continue.");
 
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/request.not.authorized/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<request.not.authorized\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 fi
@@ -207,9 +205,9 @@ function main
 
                     reset; clear;
 
-                    $(${LOGGER} "ERROR" $METHOD_NAME ${CNAME} ${LINENO} "No change request has been provided. Cannot continue.");
+                    $(${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No change request has been provided. Cannot continue.");
 
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/change.request.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<change.request.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 fi
@@ -230,9 +228,9 @@ function main
 
                     reset; clear;
 
-                    $(${LOGGER} "ERROR" $METHOD_NAME ${CNAME} ${LINENO} "TSIG Key management has not been enabled. Cannot continue.");
+                    $(${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TSIG Key management has not been enabled. Cannot continue.");
 
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/request.not.authorized/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<request.not.authorized\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 fi
@@ -245,9 +243,9 @@ function main
 
                     reset; clear;
 
-                    $(${LOGGER} "ERROR" $METHOD_NAME ${CNAME} ${LINENO} "No change request has been provided. Cannot continue.");
+                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No change request has been provided. Cannot continue.";
 
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/change.request.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<change.request.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 fi
@@ -265,7 +263,7 @@ function main
 
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Restart request canceled.";
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                 ## terminate this thread and return control to main
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -274,7 +272,7 @@ function main
                 unset METHOD_NAME;
                 unset CNAME;
 
-                exec ${PLUGIN_ROOT_DIR}/${MAIN_CLASS};
+                exec ${MAIN_CLASS};
 
                 exit 0;
                 ;;
@@ -284,7 +282,7 @@ function main
 
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 ;;
@@ -317,7 +315,7 @@ function serviceKeyManagement
 
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Confirming request for key renewal..";
 
-        print "\t\t\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/confirm.request/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+        print "\t\t\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<confirm.request\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
         read CONFIRM;
 
@@ -325,7 +323,7 @@ function serviceKeyManagement
 
         reset; clear;
 
-        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
         case ${CONFIRM} in
             [Yy][Ee][Ss]|[Yy])
@@ -333,7 +331,7 @@ function serviceKeyManagement
                 unset CONFIRM;
                 reset; clear;
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                 ## begin processing of key renewal
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing key renewal for ${SELECTION}";
@@ -364,8 +362,8 @@ function serviceKeyManagement
                 then
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No return code was received from run_rndc_request. Please review error logs.";
 
-                    [ -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" '/99/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')";
-                    [ ! -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/${RET_CODE}/{print \$2}" | sed -e 's/^ *//g' -e 's/ *$//g')";
+                    [ -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" '/\<99\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+                    [ ! -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/${RET_CODE}/{print \$2}" | sed -e 's/^ *//g;s/ *$//g')";
 
                     unset RESPONSE;
                     unset SELECTION;
@@ -388,14 +386,14 @@ function serviceKeyManagement
                 do
                     reset; clear;
 
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/service.key.management.keys.renewed/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g' -e "s/%KEYTYPE%/${SELECTION}/")\n";
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/service.key.management.keys.renew.more/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<service.key.management.keys.renewed\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%KEYTYPE%/${SELECTION}/")\n";
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<service.key.management.keys.renew.more\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                     read RESPONSE;
 
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RESPONSE -> ${RESPONSE}";
 
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                     case ${RESPONSE} in
                         [Yy][Ee][Ss]|[Yy])
@@ -416,7 +414,7 @@ function serviceKeyManagement
                             unset CHANGE_CONTROL;
                             unset CONFIRM;
 
-                            sleep "${MESSAGE_DELAY}"; reset; clear; exec ${PLUGIN_ROOT_DIR}/${MAIN_CLASS};
+                            sleep "${MESSAGE_DELAY}"; reset; clear; exec ${MAIN_CLASS};
 
                             exit 0;
                             ;;
@@ -433,7 +431,7 @@ function serviceKeyManagement
                 ## because we aren't starting over
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Key management request canceled.";
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 ;;
@@ -443,7 +441,7 @@ function serviceKeyManagement
 
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Selection provided is invalid";
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 ;;

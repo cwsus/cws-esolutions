@@ -46,7 +46,7 @@ RET_CODE=${?};
 
 [ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE} || unset RET_CODE;
 
-trap "print '$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.trap.signals/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g' -e "s/%SIGNAL%/Ctrl-C/")'; sleep "${MESSAGE_DELAY}"; reset; clear; continue " 1 2 3
+trap "print '$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.trap.signals\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%SIGNAL%/Ctrl-C/")'; sleep "${MESSAGE_DELAY}"; reset; clear; continue " 1 2 3
 
 #===  FUNCTION  ===============================================================
 #
@@ -66,11 +66,11 @@ function main
 
     if [ ! -z "${IS_DNS_RECORD_MOD_ENABLED}" ] && [ "${IS_DNS_RECORD_MOD_ENABLED}" = "${_FALSE}" ]
     then
-        $(${LOGGER} "ERROR" $METHOD_NAME ${CNAME} ${LINENO} "DNS zone modification has not been enabled. Cannot continue.");
+        $(${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS zone modification has not been enabled. Cannot continue.");
 
-        print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/request.not.authorized/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+        print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<request.not.authorized\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
-        exec ${APP_ROOT}/${MAIN_CLASS};
+        exec ${MAIN_CLASS};
 
         exit 0;
     fi
@@ -81,22 +81,20 @@ function main
 
         print "\n";
         print "\t\t+-------------------------------------------------------------------+";
-        print "\t\t               WELCOME TO \E[0;31m $(sed -e '/^ *#/d;s/#.*//' | awk -F "=" '/plugin.application.title/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g') \033[0m";
+        print "\t\t               WELCOME TO \E[0;31m $(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<plugin.application.title\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g') \033[0m";
         print "\t\t+-------------------------------------------------------------------+";
-        print "";
         print "\t\tSystem Type         : \E[0;36m ${SYSTEM_HOSTNAME} \033[0m";
         print "\t\tSystem Uptime       : \E[0;36m ${SYSTEM_UPTIME} \033[0m";
         print "\t\tUser                : \E[0;36m ${IUSER_AUDIT} \033[0m";
-        print "";
         print "\t\t+-------------------------------------------------------------------+";
         print "";
-        print "\t\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.available.options/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
-        print "\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/update.zone.remove.record/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
-        print "\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/update.zone.decom.zone/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
-        print "\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/update.zone.decom.bu/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
-        print "\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/update.zone.remove.zone/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
-        print "\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/update.zone.remove.bu/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
-        print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.option.cancel/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+        print "\t\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.available.options\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<update.zone.remove.record\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<update.zone.decom.zone\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<update.zone.decom.bu\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<update.zone.remove.zone\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<update.zone.remove.bu\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.option.cancel\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
         ## get the requested project code/url or business unit
         read MAINTENANCE_TYPE;
@@ -107,7 +105,7 @@ function main
             [Xx]|[Qq]|[Cc])
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover process aborted";
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                 ## unset SVC_LIST, we dont need it now
                 unset SVC_LIST;
@@ -119,7 +117,7 @@ function main
                 unset METHOD_NAME;
                 unset CNAME;
 
-                exec ${APP_ROOT}/${MAIN_CLASS};
+                exec ${MAIN_CLASS};
 
                 exit 0;
                 ;;
@@ -130,7 +128,7 @@ function main
                 ## so not really sure. zone will at a minimum probably need to be re-signed.
                 ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Function not currently available.";
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.function.not.available/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.function.not.available\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                 ## unset SVC_LIST, we dont need it now
                 unset MAINTENANCE_TYPE;
@@ -142,7 +140,7 @@ function main
                 ## decommission a zone
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone decommission requested. Processing..";
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                 ## unset SVC_LIST, we dont need it now
                 MAINTENANCE_TYPE=site_decom;
@@ -154,7 +152,7 @@ function main
                 ## decomssion a business unit
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Business Unit decommission requested. Processing..";
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                 ## unset SVC_LIST, we dont need it now
                 MAINTENANCE_TYPE=bu_decom;
@@ -167,7 +165,7 @@ function main
                 ## must have already been decommissioned
                 ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Function not currently available.";
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.function.not.available/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.function.not.available\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                 ## unset SVC_LIST, we dont need it now
                 unset MAINTENANCE_TYPE;
@@ -180,7 +178,7 @@ function main
                 ## must have already been decommissioned
                 ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Function not currently available.";
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.function.not.available/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.function.not.available\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                 ## unset SVC_LIST, we dont need it now
                 unset MAINTENANCE_TYPE;
@@ -217,11 +215,11 @@ function retrieveSiteInfo
     ## get the request information
     while true
     do
-        print "\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/failover.request.info/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
-        print "\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/failover.pcode.format/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
-        print "\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/failover.bu.format/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
-        print "\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/failover.url.format/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
-        print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.option.cancel/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<failover.request.info\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<failover.pcode.format\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<failover.bu.format\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<failover.url.format\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.option.cancel\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
         ## get the requested project code/url or business unit
         read SVC_LIST;
@@ -230,7 +228,7 @@ function retrieveSiteInfo
             [Xx]|[Qq]|[Cc])
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover process aborted";
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                 ## unset SVC_LIST, we dont need it now
                 unset SVC_LIST;
@@ -244,7 +242,7 @@ function retrieveSiteInfo
                 then
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
 
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 else
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Read in SVC_LIST -> ${SVC_LIST}";
@@ -252,7 +250,7 @@ function retrieveSiteInfo
 
                     reset; clear;
 
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                     ## temporarily unset stuff
                     unset METHOD_NAME;
@@ -270,8 +268,8 @@ function retrieveSiteInfo
 
                     if [[ -z "${RET_CODE}" || ${RET_CODE} -ne 0 ]]
                     then
-                        [ ! -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/${RET_CODE}/{print \$2}" | sed -e 's/^ *//g' -e 's/ *$//g');";
-                        [ -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/99/{print \$2}" | sed -e 's/^ *//g' -e 's/ *$//g');";
+                        [ ! -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/${RET_CODE}/{print \$2}" | sed -e 's/^ *//g;s/ *$//g')";
+                        [ -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/99/{print \$2}" | sed -e 's/^ *//g;s/ *$//g')";
 
                         ## unset variables
                         unset RET_CODE;
@@ -320,8 +318,8 @@ function retrieveSiteInfo
                             then
                                 while true
                                 do
-                                    print "\t\t\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.application.title/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
-                                    print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.list.available/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                                    print "\t\t\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.application.title\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+                                    print "\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.list.available\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                                     while [ ${A} -ne ${LIST_DISPLAY_MAX} ]
                                     do
@@ -341,15 +339,15 @@ function retrieveSiteInfo
 
                                     if [ $(expr ${B} - ${LIST_DISPLAY_MAX}) -eq 0 ]
                                     then
-                                        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.display.next/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                                        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.display.next\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
                                     else
-                                        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.display.prev/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
-                                        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.display.next/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                                        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.display.prev\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+                                        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.display.next\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
                                     fi
 
                                     ## add the option to run against all sites listed
-                                    print "A - $(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.display.next/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g' -e "s/%SITE%/all sites for ${SVC_REQUEST_OPTION}/")\n";
-                                    print "C - $(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.option.cancel/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                                    print "A - $(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.display.next\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%SITE%/all sites for ${SVC_REQUEST_OPTION}/")\n";
+                                    print "C - $(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.option.cancel\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                                     read SELECTION;
 
@@ -360,7 +358,7 @@ function retrieveSiteInfo
 
                                             if [ ${B} -ge ${#SERVICE_DETAIL[@]} ]
                                             then
-                                                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/forward.shift.failed/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                                                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<forward.shift.failed\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
                                                 A=0;
                                                 B=0;
                                                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
@@ -375,7 +373,7 @@ function retrieveSiteInfo
 
                                             if [ $(expr ${B} - ${LIST_DISPLAY_MAX}) -eq 0 ]
                                             then
-                                                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/previous.shift.failed/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                                                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<previous.shift.failed\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                                                 A=0; B=0;
 
@@ -420,7 +418,7 @@ function retrieveSiteInfo
                                             ## make b 0 again
                                             A=0; B=0;
 
-                                            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                                            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                                             sleep "${MESSAGE_DELAY}"; reset; clear; break;
                                             ;;
@@ -432,7 +430,7 @@ function retrieveSiteInfo
 
                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
 
-                                            print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                                            print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                                             sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                             ;;
@@ -441,7 +439,7 @@ function retrieveSiteInfo
                             else
                                 while true
                                 do
-                                    print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.list.available/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                                    print "\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.list.available\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                                     while [ ${A} -ne ${#SERVICE_DETAIL[@]} ]
                                     do
@@ -453,8 +451,8 @@ function retrieveSiteInfo
                                     done
 
                                     ## add the option to run against all sites listed
-                                    [ ${#SERVICE_DETAIL[@]} -ge 1 ] && print "A - $(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.display.next/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g' -e "s/%SITE%/all sites for ${SVC_REQUEST_OPTION}/")\n";
-                                    print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.option.cancel/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                                    [ ${#SERVICE_DETAIL[@]} -ge 1 ] && print "A - $(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.display.next\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%SITE%/all sites for ${SVC_REQUEST_OPTION}/")\n";
+                                    print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.option.cancel\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                                     read SELECTION;
 
@@ -492,7 +490,7 @@ function retrieveSiteInfo
 
                                                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
 
-                                                        print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                                                        print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                                                         sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                                     else
@@ -508,7 +506,7 @@ function retrieveSiteInfo
                                         [Xx]|[Qq]|[Cc])
                                             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover request has been cancelled.";
 
-                                            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                                            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                                             A=0; B=0;
 
@@ -523,7 +521,7 @@ function retrieveSiteInfo
 
                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
 
-                                            print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                                            print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                                             sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                             ;;
@@ -535,8 +533,8 @@ function retrieveSiteInfo
                             ## return message to user
                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Result code from retrieve_service->${RET_CODE}";
 
-                            [ ! -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/${RET_CODE}/{print \$2}" | sed -e 's/^ *//g' -e 's/ *$//g');";
-                            [ -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/99/{print \$2}" | sed -e 's/^ *//g' -e 's/ *$//g');";
+                            [ ! -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/${RET_CODE}/{print \$2}" | sed -e 's/^ *//g;s/ *$//g')";
+                            [ -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/99/{print \$2}" | sed -e 's/^ *//g;s/ *$//g')";
 
                             ## unset our variables
                             unset SVC_LIST;
@@ -584,7 +582,7 @@ function processDecomRequest
 
     while true
     do
-        print "\t\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/confirm.request/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+        print "\t\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<confirm.request\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
         read CONFIRM;
 
@@ -592,7 +590,7 @@ function processDecomRequest
 
         reset; clear;
 
-        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
         case ${CONFIRM} in
             [Yy][Ee][Ss]|[Yy])
@@ -619,7 +617,7 @@ function processDecomRequest
                     then
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover process aborted";
 
-                        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                         ## unset SVC_LIST, we dont need it now
                         unset SVC_LIST;
@@ -697,7 +695,7 @@ function processDecomRequest
                         ## one or more slave services failed processing
                         if [ ! -z "${FAILED_SERVERS}" ]
                         then
-                            print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES}failover.request.servers.success.failure  | awk -F "=" '/remote_app_root/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                            print "\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES}failover.request.servers.success.failure  | awk -F "=" '/\<remote_app_root\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                             ## make sure d is zero
                             D=0;
@@ -746,12 +744,12 @@ function processDecomRequest
                     do
                         reset; clear;
 
-                        print "\t\t\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES}system.application.title  | awk -F "=" '/remote_app_root/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
-                        print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES}system.process.successful ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%PROCESS%/decommission/")";
-                        print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES}system.process.perform.another ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%PROCESS%/decommission/")\n";
+                        print "\t\t\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES}system.application.title  | awk -F "=" '/\<remote_app_root\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+                        print "\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES}system.process.successful ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%PROCESS%/decommission/")";
+                        print "\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES}system.process.perform.another ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%PROCESS%/decommission/")\n";
 
                         read RESPONSE;
-                        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RESPONSE -> ${RESPONSE}";
 
@@ -768,7 +766,7 @@ function processDecomRequest
                                 ## user does not wish to process further failovers. let's exit out and open up the main class.
                                 unset RESPONSE;
 
-                                sleep "${MESSAGE_DELAY}"; reset; clear; exec ${APP_ROOT}/${MAIN_CLASS};
+                                sleep "${MESSAGE_DELAY}"; reset; clear; exec ${MAIN_CLASS};
                                 exit 0;
                                 ;;
                         esac
@@ -778,8 +776,8 @@ function processDecomRequest
                     ## show it
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Caught an error performing the failover. RET_CODE -> ${RET_CODE}";
 
-                    [ -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" '/99/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
-                    [ ! -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/${RET_CODE}/{print \$2}" | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                    [ -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" '/\<99\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+                    [ ! -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/${RET_CODE}/{print \$2}" | sed -e 's/^ *//g;s/ *$//g')\n";
 
                     unset CHANGE_CONTROL;
                     unset RET_CODE;
@@ -808,7 +806,7 @@ function processDecomRequest
                 ## because we aren't starting over
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover request has been cancelled.";
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 ;;
@@ -817,7 +815,7 @@ function processDecomRequest
                 unset CONFIRM;
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Selection provided is invalid";
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 ;;

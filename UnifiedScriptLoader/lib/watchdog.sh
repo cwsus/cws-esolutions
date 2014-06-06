@@ -42,7 +42,10 @@ OPTIND=0;
 
 ## make sure we have arguments, if we do
 ## then load our constants and continue
-[ ${#} -eq 0 ] && usage || . ${APP_ROOT}/lib/functions;
+[ ${#} -eq 0 ] && usage;
+
+[ -f ${APP_ROOT}/lib/functions ] && . ${APP_ROOT}/lib/functions;
+[ -f ${APP_ROOT}/lib/aliases ] && . ${APP_ROOT}/lib/aliases;
 
 while getopts ":t:i:d:" OPTIONS; do
     case ${OPTIONS} in

@@ -45,7 +45,7 @@ RET_CODE=${?};
 
 [ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE} || unset RET_CODE;
 
-trap "print '$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.trap.signals/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g' -e "s/%SIGNAL%/Ctrl-C/")'; sleep "${MESSAGE_DELAY}"; reset; clear; continue " 1 2 3
+trap "print '$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.trap.signals\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%SIGNAL%/Ctrl-C/")'; sleep "${MESSAGE_DELAY}"; reset; clear; continue " 1 2 3
 
 #===  FUNCTION  ===============================================================
 #
@@ -69,30 +69,32 @@ function main
     do
         print "\n";
         print "\t\t+-------------------------------------------------------------------+";
-        print "\t\t               WELCOME TO \E[0;31m $(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/plugin.application.title/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g') \033[0m";
+        print "\t\t               WELCOME TO \E[0;31m $(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<plugin.application.title\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g') \033[0m";
         print "\t\t+-------------------------------------------------------------------+";
-        print "";
         print "\t\tSystem Type         : \E[0;36m ${SYSTEM_HOSTNAME} \033[0m";
         print "\t\tSystem Uptime       : \E[0;36m ${SYSTEM_UPTIME} \033[0m";
         print "\t\tUser                : \E[0;36m ${IUSER_AUDIT} \033[0m";
-        print "";
         print "\t\t+-------------------------------------------------------------------+";
         print "";
-        print "\t\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.available.options/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
-        print "\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES}  | awk -F "=" '/backout.enter.info/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')";
-        print "\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES}  | awk -F "=" '/backout.request.format/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')";
-        print "\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES}  | awk -F "=" '/backout.retrieve.all/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')";
-        print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.option.cancel/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+        print "\t\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.available.options\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES}  | awk -F "=" '/\<backout.enter.info\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES}  | awk -F "=" '/\<backout.request.format\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES}  | awk -F "=" '/\<backout.retrieve.all\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.option.cancel\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
         
         ## get the requested project code/url or business unit
         read SVC_LIST;
+
+        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SVC_LIST -> ${SVC_LIST}";
+
+        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
         case ${SVC_LIST} in
             [Xx]|[Qq]|[Cc])
                 ## cancel, return control back to dns_administration.sh
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                 reset; clear;
 
@@ -100,7 +102,7 @@ function main
                 unset METHOD_NAME;
                 unset CNAME;
 
-                exec ${APP_ROOT}/${MAIN_CLASS};
+                exec ${MAIN_CLASS};
 
                 exit 0;
                 ;;
@@ -110,7 +112,7 @@ function main
 
                 reset; clear;
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')";
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                 ## temporarily unset stuff
                 unset METHOD_NAME;
@@ -135,7 +137,7 @@ function main
                     then
                         while true
                         do
-                            print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.list.available/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                            print "\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.list.available\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                             while [ ${A} -ne ${LIST_DISPLAY_MAX} ]
                             do
@@ -155,13 +157,13 @@ function main
 
                             if [ $(expr ${B} - ${LIST_DISPLAY_MAX}) -eq 0 ]
                             then
-                                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.display.next/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.display.next\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
                             else
-                                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.display.prev/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
-                                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.display.next/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.display.prev\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+                                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.display.next\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
                             fi
 
-                            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.option.cancel/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.option.cancel\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
                             
                             read SELECTION;
 
@@ -176,7 +178,7 @@ function main
                                     then
                                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Cannot shift past end of data.";
 
-                                        print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/forward.shift.failed/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')";
+                                        print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<forward.shift.failed\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                                         B=0;
                                         A=0;
@@ -197,7 +199,7 @@ function main
                                     then
                                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Cannot shift past end of data.";
 
-                                        print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/previous.shift.failed/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')";
+                                        print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<previous.shift.failed\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
                                         A=0;
                                         B=0;
                                         sleep "${MESSAGE_DELAY}"; reset; clear; continue;
@@ -223,7 +225,7 @@ function main
 
                                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover request has been cancelled.";
 
-                                    print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')";
+                                    print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                                     sleep "${MESSAGE_DELAY}"; reset; clear; break;
                                     ;;
@@ -233,7 +235,7 @@ function main
                                     unset SELECTION;
                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
 
-                                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')";
+                                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                     ;;
@@ -244,7 +246,7 @@ function main
 
                         while true
                         do
-                            print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.list.available/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                            print "\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.list.available\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                             while [ ${A} -ne ${#FILE_LIST[@]} ]
                             do
@@ -255,7 +257,7 @@ function main
                                 (( A += 1 ));
                             done
 
-                            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.option.cancel/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.option.cancel\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
                             
                             read SELECTION;
 
@@ -275,7 +277,7 @@ function main
                                     B=0;
 
                                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover request has been cancelled.";
-                                    print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')";
+                                    print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
                                     sleep "${MESSAGE_DELAY}"; reset; clear; break;
                                     ;;
                                 *)
@@ -284,7 +286,7 @@ function main
                                     A=0;
                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
 
-                                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')";
+                                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
                                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                     ;;
                             esac
@@ -293,7 +295,7 @@ function main
                 else
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backout request FAILED. Return code -> ${RET_CODE}";
 
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" "/${RET_CODE}/{print \$2}" | sed -e 's/^ *//g' -e 's/ *$//g')";
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" "/${RET_CODE}/{print \$2}" | sed -e 's/^ *//g;s/ *$//g')";
 
                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 fi
@@ -305,7 +307,7 @@ function main
                     unset SVC_LIST;
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
 
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')";
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 else
                     ## we need to make sure we were given real options.
@@ -327,7 +329,7 @@ function main
                         unset SVC_LIST;
                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${SVC_LIST} invalid";
 
-                        print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')";
+                        print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                         sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                     fi
@@ -367,13 +369,13 @@ function process_backout_file
     do
         ## provide user a chance to confirm the request
         ## prior to execution
-        print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/backout.request.confirmation/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g' -e "s/%CHANGE_REQ%/${CHANGE_REQ}/" -e "s/%BUSINESS_UNIT%/${BU}/")";
+        print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<backout.request.confirmation\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%CHANGE_REQ%/${CHANGE_REQ}/" -e "s/%BUSINESS_UNIT%/${BU}/")";
 
         read CONFIRM;
 
         reset; clear;
 
-        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')";
+        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONFIRM -> ${CONFIRM}";
 
@@ -415,10 +417,10 @@ function process_backout_file
                     do
                         reset; clear;
 
-                        print "\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/backout.process.complete/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<backout.process.complete\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                         read RESPONSE;
-                        print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                        print "\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RESPONSE -> ${RESPONSE}";
 
@@ -437,7 +439,7 @@ function process_backout_file
 
                                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Additional backout requests not required. Exiting.";
 
-                                reset; clear; exec ${APP_ROOT}/${MAIN_CLASS};
+                                reset; clear; exec ${MAIN_CLASS};
 
                                 exit 0;
                                 ;;
@@ -452,8 +454,8 @@ function process_backout_file
                     ## decision
                     while true
                     do
-                        print "\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/backout.select.file/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
-                        print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.option.cancel/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<backout.select.file\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+                        print "\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.option.cancel\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                         while [ ${A} -ne ${#FILE_LIST[@]} ]
                         do
@@ -463,7 +465,7 @@ function process_backout_file
                         done
 
                         ## allow cancel
-                        print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.option.cancel/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                        print "\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.option.cancel\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
                         
                         ## read in the request
                         read SELECTION;
@@ -476,7 +478,7 @@ function process_backout_file
                                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SELECTION->${SELECTION}";
                                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover request has been cancelled.";
 
-                                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')";
+                                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                 ;;
@@ -487,7 +489,7 @@ function process_backout_file
                                 CHANGE_REQ=$(echo ${FILE_LIST[${SELECTION}]} | cut -d "." -f 4);
                                 BU=$(echo ${FILE_LIST[${SELECTION}]} | cut -d "_" -f 3 | cut -d "." -f 1);
 
-                                print "\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/backout.request.confirmation/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g' -e "s/%CHANGE_REQ%/${CHANGE_REQ}/" -e "s/%BUSINESS_UNIT%/${BU}/")\n";
+                                print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<backout.request.confirmation\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%CHANGE_REQ%/${CHANGE_REQ}/" -e "s/%BUSINESS_UNIT%/${BU}/")\n";
 
                                 read CONFIRM;
 
@@ -518,11 +520,11 @@ function process_backout_file
                                             do
                                                 reset; clear;
 
-                                                print "\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_MESSAGES} | awk -F "=" '/backout.process.complete/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                                                print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_MESSAGES} | awk -F "=" '/\<backout.process.complete\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                                                 read RESPONSE;
 
-                                                print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                                                print "\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                                                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RESPONSE -> ${RESPONSE}";
 
@@ -541,7 +543,7 @@ function process_backout_file
 
                                                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Additional backout requests not required. Exiting.";
 
-                                                        reset; clear; exec ${APP_ROOT}/${MAIN_CLASS};
+                                                        reset; clear; exec ${MAIN_CLASS};
 
                                                         exit 0;
                                                         ;;
@@ -550,7 +552,7 @@ function process_backout_file
                                         else
                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while processing the requested backout. Return code from call: ${RET_CODE}";
 
-                                            print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" '/backout.failure/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')";
+                                            print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" '/\<backout.failure\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                                             sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                         fi
@@ -559,14 +561,14 @@ function process_backout_file
                                         ## request canceled
                                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backout request canceled";
 
-                                        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')";
+                                        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                                         sleep "${MESSAGE_DELAY}"; reset; clear; break;
                                         ;;
                                     *)
                                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Selection ${CONFIRM} is invalid.";
 
-                                        print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')";
+                                        print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                                         sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                         ;;
@@ -575,7 +577,7 @@ function process_backout_file
                            *)
                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Selection ${SELECTION} is invalid.";
 
-                                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')";
+                                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                 ;;
@@ -590,7 +592,7 @@ function process_backout_file
 
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while processing run_backout.sh. Return code->${RET_CODE}.";
 
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" "/${RET_CODE}/{print \$2}" | sed -e 's/^ *//g' -e 's/ *$//g')";
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" "/${RET_CODE}/{print \$2}" | sed -e 's/^ *//g;s/ *$//g')";
 
                     sleep "${MESSAGE_DELAY}"; reset; clear; break;
                 fi
@@ -605,7 +607,7 @@ function process_backout_file
 
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while processing run_backout.sh. Return code->${RET_CODE}.";
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" "/${RET_CODE}/{print \$2}" | sed -e 's/^ *//g' -e 's/ *$//g')";
+                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" "/${RET_CODE}/{print \$2}" | sed -e 's/^ *//g;s/ *$//g')";
 
                 sleep "${MESSAGE_DELAY}"; reset; clear; break;
                 ;;
@@ -616,7 +618,7 @@ function process_backout_file
 
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No valid response was provided.";
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')";
+                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 ;;

@@ -10,12 +10,15 @@
 #  REQUIREMENTS:  ---
 #          BUGS:  ---
 #         NOTES:  ---
-#        AUTHOR:  $Author$
+#        AUTHOR:  Kevin Huntly <kmhuntly@gmail.com>
 #       COMPANY:  CaspersBox Web Services
-#       VERSION:  $Revision$
-#       CREATED:  $Date$
+#       VERSION:  1.0
+#       CREATED:  ---
 #      REVISION:  ---
 #==============================================================================
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+
 ## Application constants
 [ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="WebAdministration";
 CNAME="$(basename "${0}")";

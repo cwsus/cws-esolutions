@@ -16,6 +16,9 @@
 #       CREATED:  ---
 #      REVISION:  ---
 #==============================================================================
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+
 ## Application constants
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
@@ -166,7 +169,7 @@ function implementCertificate
                                             sleep "${MESSAGE_DELAY}"; reset; clear; break;
                                             ;;
                                         *)
-                                            if [ "$(echo ${AVAILABLE_DATACENTERS} | grep -i ${REQ_DATACENTER})" = "" ]
+                                            if [ -z "$(echo ${AVAILABLE_DATACENTERS} | grep -i ${REQ_DATACENTER})" ]
                                             then
                                                 ## selected datacenter is NOT valid
                                                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Selected datacenter is not valid. Please utilize a different datacenter.";
@@ -321,7 +324,7 @@ function implementCertificate
                                                 unset SITE_HOSTNAME;
                                                 unset RESPONSE;
 
-                                                sleep "${MESSAGE_DELAY}"; reset; clear; exec ${APP_ROOT}/${MAIN_CLASS} -c;
+                                                sleep "${MESSAGE_DELAY}"; reset; clear; exec ${MAIN_CLASS};
 
                                                 exit 0;
                                                 ;;
@@ -374,7 +377,7 @@ function implementCertificate
                                                 unset SITE_HOSTNAME;
                                                 unset RESPONSE;
 
-                                                sleep "${MESSAGE_DELAY}"; reset; clear; exec ${APP_ROOT}/${MAIN_CLASS} -c;
+                                                sleep "${MESSAGE_DELAY}"; reset; clear; exec ${MAIN_CLASS};
 
                                                 exit 0;
                                                 ;;
@@ -426,7 +429,7 @@ function implementCertificate
                                             unset METHOD_NAME;
                                             unset CNAME;
 
-                                            sleep "${MESSAGE_DELAY}"; reset; clear; exec ${APP_ROOT}/${MAIN_CLASS} -c;
+                                            sleep "${MESSAGE_DELAY}"; reset; clear; exec ${MAIN_CLASS};
 
                                             exit 0;
                                             ;;
@@ -475,7 +478,7 @@ function implementCertificate
                                         unset METHOD_NAME;
                                         unset CNAME;
 
-                                        sleep "${MESSAGE_DELAY}"; reset; clear; exec ${APP_ROOT}/${MAIN_CLASS} -c;
+                                        sleep "${MESSAGE_DELAY}"; reset; clear; exec ${MAIN_CLASS};
 
                                         exit 0;
                                         ;;

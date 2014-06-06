@@ -47,7 +47,7 @@ function main
 
         print "$(grep -w request.not.authorized "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
-        exec ${APP_ROOT}/${MAIN_CLASS} -c;
+        exec ${MAIN_CLASS};
 
         exit 0;
     fi
@@ -58,7 +58,7 @@ function main
 
         print "\n";
         print "\t\t+-------------------------------------------------------------------+";
-        print "\t\t               WELCOME TO \E[0;31m $(sed -e '/^ *#/d;s/#.*//' | awk -F "=" '/plugin.application.title/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g') \033[0m";
+        print "\t\t               WELCOME TO \E[0;31m $(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<plugin.application.title\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g') \033[0m";
         print "\t\t+-------------------------------------------------------------------+";
         print "\t\tSystem Type         : \E[0;36m ${SYSTEM_HOSTNAME} \033[0m";
         print "\t\tSystem Uptime       : \E[0;36m ${SYSTEM_UPTIME} \033[0m";
@@ -66,10 +66,10 @@ function main
         print "";
         print "\t\t+-------------------------------------------------------------------+";
         print "";
-        print "\t\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.available.options/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
-        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/createsite.application.title/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
-        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/createsite.provide.hostname/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
-        print "\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.option.cancel/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+        print "\t\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.available.options\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<createsite.application.title\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<createsite.provide.hostname\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.option.cancel\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
         read SITE_HOSTNAME;
 
@@ -107,7 +107,7 @@ function main
 
                 sleep "${MESSAGE_DELAY}"; reset; clear;
 
-                exec ${APP_ROOT}/${MAIN_CLASS} -c;
+                exec ${MAIN_CLASS};
 
                 exit 0;
                 ;;
@@ -277,7 +277,7 @@ local METHOD_NAME="${CNAME}#${0}";
                                                                     unset CNAME;
                                                                     unset RESPONSE;
 
-                                                                    sleep "${MESSAGE_DELAY}"; reset; clear; exec ${APP_ROOT}/${MAIN_CLASS} -c;
+                                                                    sleep "${MESSAGE_DELAY}"; reset; clear; exec ${MAIN_CLASS};
 
                                                                     exit 0;
                                                                     ;;
@@ -345,7 +345,7 @@ local METHOD_NAME="${CNAME}#${0}";
                                                                     unset CNAME;
                                                                     unset RESPONSE;
 
-                                                                    sleep "${MESSAGE_DELAY}"; reset; clear; exec ${APP_ROOT}/${MAIN_CLASS} -c;
+                                                                    sleep "${MESSAGE_DELAY}"; reset; clear; exec ${MAIN_CLASS};
 
                                                                     exit 0;
                                                                     ;;
@@ -410,7 +410,7 @@ local METHOD_NAME="${CNAME}#${0}";
                                                         unset CNAME;
                                                         unset RESPONSE;
 
-                                                        sleep "${MESSAGE_DELAY}"; reset; clear; exec ${APP_ROOT}/${MAIN_CLASS} -c;
+                                                        sleep "${MESSAGE_DELAY}"; reset; clear; exec ${MAIN_CLASS};
 
                                                         exit 0;
                                                         ;;
@@ -852,7 +852,7 @@ function buildServerInstance
                                                 unset CNAME;
                                                 unset RESPONSE;
 
-                                                sleep "${MESSAGE_DELAY}"; reset; clear; exec ${APP_ROOT}/${MAIN_CLASS} -c;
+                                                sleep "${MESSAGE_DELAY}"; reset; clear; exec ${MAIN_CLASS};
 
                                                 exit 0;
                                                 ;;
@@ -920,7 +920,7 @@ function buildServerInstance
                                                 unset CNAME;
                                                 unset RESPONSE;
 
-                                                sleep "${MESSAGE_DELAY}"; reset; clear; exec ${APP_ROOT}/${MAIN_CLASS} -c;
+                                                sleep "${MESSAGE_DELAY}"; reset; clear; exec ${MAIN_CLASS};
 
                                                 exit 0;
                                                 ;;
@@ -987,7 +987,7 @@ function buildServerInstance
                                     unset CNAME;
                                     unset RESPONSE;
 
-                                    sleep "${MESSAGE_DELAY}"; reset; clear; exec ${APP_ROOT}/${MAIN_CLASS} -c;
+                                    sleep "${MESSAGE_DELAY}"; reset; clear; exec ${MAIN_CLASS};
 
                                     exit 0;
                                     ;;

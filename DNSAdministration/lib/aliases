@@ -8,8 +8,8 @@
 #  REQUIREMENTS:  ---
 #          BUGS:  ---
 #         NOTES:  ---
-#        AUTHOR:  Kevin Huntly <kevin.m.huntly@us.hsbc.com>
-#       COMPANY:  HSBC Technology and Services USA, NA
+#        AUTHOR:  Kevin Huntly <kmhuntly@gmail.com>
+#       COMPANY:  CaspersBox Web Services
 #       VERSION:  1.0
 #       CREATED:  ---
 #      REVISION:  ---
@@ -21,3 +21,4 @@ alias rndc='/usr/bin/env rndc -c ${NAMED_ROOT}/${RNDC_CONF_FILE}';
 alias dnssec-keygen='/usr/bin/env dnssec-keygen';
 alias dnssec-signzone='/usr/bin/env dnssec-signzone';
 alias rndc-confgen='/usr/bin/env rndc-confgen';
+alias dig='/usr/bin/env dig +noedns'

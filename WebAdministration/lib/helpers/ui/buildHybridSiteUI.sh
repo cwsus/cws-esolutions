@@ -16,6 +16,9 @@
 #       CREATED:  ---
 #      REVISION:  ---
 #==============================================================================
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+
 ## Application constants
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
@@ -87,7 +90,7 @@ function buildSSLSite
 
                 sleep "${MESSAGE_DELAY}"; reset; clear;
 
-                exec ${APP_ROOT}/${MAIN_CLASS} -c;
+                exec ${MAIN_CLASS};
 
                 exit 0;
                 ;;
@@ -211,7 +214,7 @@ function buildSSLSite
 
                                     sleep "${MESSAGE_DELAY}"; reset; clear;
 
-                                    exec ${APP_ROOT}/${MAIN_CLASS} -c;
+                                    exec ${MAIN_CLASS};
 
                                     exit 0;
                                     ;;
@@ -333,7 +336,7 @@ function buildSSLSite
 
                                                             sleep "${MESSAGE_DELAY}"; reset; clear;
 
-                                                            exec ${APP_ROOT}/${MAIN_CLASS} -c;
+                                                            exec ${MAIN_CLASS};
 
                                                             exit 0;
                                                             ;;

@@ -16,6 +16,9 @@
 #       CREATED:  ---
 #      REVISION:  ---
 #==============================================================================
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+
 ## Application constants
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
@@ -79,7 +82,7 @@ function returnARecord
                         $(echo ${DNS_SERVICE_URL} | sed -e "s/{SITE_HOSTNAME}/${SITE_URL}/")" | awk 'NR>10' | awk 'NR<5' | \
                         grep -v ";;" | awk '{print $5}' | sed -e "s^<br^ ^g" | tail -2);
 
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURNED_IP -> $RETURNED_IP}";
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURNED_IP -> ${RETURNED_IP}";
 
                     break;
                 else
@@ -236,6 +239,6 @@ do
     esac
 done
 
-shift $OPTIND-1;
+shift ${OPTIND}-1;
 
 return ${RETURN_CODE};

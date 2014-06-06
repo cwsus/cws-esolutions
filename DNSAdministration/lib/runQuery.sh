@@ -1,4 +1,4 @@
-#!/usr/bin/env ksh
+#!/usr/bin/ksh -x
 #==============================================================================
 #
 #          FILE:  runQuery.sh.sh
@@ -33,8 +33,6 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
-[ ${#} -eq 0 ] && usage;
-
 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -58,7 +56,6 @@ METHOD_NAME="${CNAME}#startup";
 #          NAME:  returnResponse
 #   DESCRIPTION:  Returns a full response from DiG for a provided address
 #    PARAMETERS:  None
-#          NAME:  usage
 #==============================================================================
 function returnResponse
 {
@@ -66,23 +63,21 @@ function returnResponse
     local METHOD_NAME="${CNAME}#${0}";
 
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing DiG query against ${NAMESERVER} for ${SITE_URL}..";
+
+    [[ -z "${NAMESERVER}" && -z "${SHORT_RESPONSE}" ]] && DIG_CMD="/usr/bin/env dig +noedns";
+    [[ ! -z "${NAMESERVER}" && -z "${SHORT_RESPONSE}" ]] && DIG_CMD="/usr/bin/env dig @${NAMESERVER} +noedns";
+    [[ -z "${NAMESERVER}" && "${SHORT_RESPONSE}" = "${_TRUE}" ]] && DIG_CMD="/usr/bin/env dig +noedns +short";
+    [[ ! -z "${NAMESERVER}" && "${SHORT_RESPONSE}" = "${_TRUE}" ]] && DIG_CMD="/usr/bin/env dig @${NAMESERVER} +noedns +short";
 
     ## kill the file if it exists
     [ -f ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} ] && rm -rf ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
 
-    if [ -z "${NAMESERVER}" ]
-    then
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Nameserver not provided. Defaulting to ${NAMED_MASTER}";
-        NAMESERVER=${NAMED_MASTER};
-    fi
+    [ -z "${RECORD_TYPE}" ] && RECORD_TYPE="A";
 
-    if [ -z "${RECORD_TYPE}" ]
-    then
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Record type not provided. Defaulting to A";
-        RECORD_TYPE=A;
-    fi
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NAMESERVER -> ${NAMESERVER}";
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RECORD_TYPE -> ${RECORD_TYPE}";
 
     ## spawn an ssh connection to the provided server to run a DiG query
     ## check to see if we have an internal or external box
@@ -90,194 +85,86 @@ function returnResponse
     then
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local execution is ON. Processing..";
 
-        if [ ${JAVA_RUNNABLE} ]
-        then
-            $(dig @${NAMESERVER} -t ${RECORD_TYPE} ${SITE_URL});
-        else
-            $(dig @${NAMESERVER} -t ${RECORD_TYPE} ${SITE_URL}) > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
-        fi
+        ${DIG_CMD} -t ${RECORD_TYPE} ${SITE_URL} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
     else
-        if [ $(echo ${DNS_SLAVES[@]} | grep -c ${NAMESERVER}) -eq 1 ] || [ "${NAMESERVER}" = "${NAMED_MASTER}" ]
-        then
-            unset VALIDATE;
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Nameserver provided is DNS master. Processing..";
+        for SERVER in ${NAMESERVERS[@]}
+        do
+            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVER -> ${SERVER}";
 
-            if [ ${JAVA_RUNNABLE} ]
+            if [ "${NAMESERVER}" = "${SERVER}" ]
             then
-                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} -t ${RECORD_TYPE} ${SITE_URL}";
-            else
-                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} -t ${RECORD_TYPE} ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
+                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${SERVER} "${DIG_CMD} +short -t ${RECORD_TYPE} ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
+
+                REQUEST_COMPLETE="${_TRUE}";
+
+                break;
             fi
-        else
-            ## we were asked to run against an external server,
-            ## so lets check our proxy list for an available
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "External service requested. Verifying proxy access.";
 
-            for PROXY in ${PROXY_SERVERS[@]}
-            do
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now validating proxy ${PROXY}..";
+            continue;
+        done
 
-                $(ping ${PROXY} > /dev/null 2>&1);
-                PING_RCODE=${?};
+        if [[ -z "${REQUEST_COMPLETE}" || "${REQUEST_COMPLETE}" = "${_FALSE}" ]]
+        then
+            ## check to see if this is an internal or external host. if its internal we don't need to
+            ## route through a proxy, if its external then we do
+            if [[ ! -z "$(dig +short ${NAMESERVER})" || ! -z "$(dig +short -x ${NAMESERVER})" ]]
+            then
+                ## internal
+                ${DIG_CMD} -t ${RECORD_TYPE} ${SITE_URL} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
+            else
+                ## we were asked to run against an external server,
+                ## so lets check our proxy list for an available
+                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "External service requested. Verifying proxy access.";
 
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
+                for PROXY in ${PROXY_SERVERS[@]}
+                do
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROXY -> ${PROXY}";
 
-                if [ ${PING_RCODE} == 0 ]
-                then
-                    ## stop if its available and run the command
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Proxy access confirmed. Proxy: ${PROXY}";
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} \"dig @${NAMESERVER} -t ${RECORD_TYPE} ${SITE_URL}\" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE}";
+                    ping ${PROXY} > /dev/null 2>&1;
+                    PING_RCODE=${?};
 
-                    if [ ${JAVA_RUNNABLE} ]
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
+
+                    if [ ${PING_RCODE} -eq 0 ]
                     then
-                        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} -t ${RECORD_TYPE} ${SITE_URL}";
-                    else
-                        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} -t ${RECORD_TYPE} ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
+                        ## stop if its available and run the command
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Proxy access confirmed. Proxy: ${PROXY}";
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} \"dig @${NAMESERVER} -t ${RECORD_TYPE} ${SITE_URL}\" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE}";
+
+                        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "${DIG_CMD} -t ${RECORD_TYPE} ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
+
+                        break;
                     fi
 
-                    break;
-                else
-                    ## first one wasnt available, check the remaining
-                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Proxy access failed. Proxy: ${PROXY}";
-
-                    unset PING_RCODE;
                     continue;
-                fi
-            done
-
-            ## unset unneeded variable
-            unset PROXY;
-            unset PING_RCODE;
-            unset PING_CMD;
-        fi
-    fi
-
-    if [ ! ${JAVA_RUNNABLE} ]
-    then
-        if [ -s ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} ]
-        then
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-            unset NAMESERVER;
-            unset RECORD_TYPE;
-            unset SITE_URL;
-            RETURN_CODE=0;
-        else
-            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while processing the request. Please try again.";
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-            unset NAMESERVER;
-            unset RECORD_TYPE;
-            unset SITE_URL;
-            RETURN_CODE=999;
-        fi
-    fi
-
-    return ${RETURN_CODE};
-}
-
-#===  FUNCTION  ===============================================================
-#          NAME:  returnShortResponse
-#   DESCRIPTION:  Returns a short response from DiG for a provided address
-#    PARAMETERS:  None
-#          NAME:  usage
-#==============================================================================
-function returnShortResponse
-{
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing DiG query against ${NAMESERVER} for ${SITE_URL}..";
-
-    ## kill the file if it exists
-    [ -f ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} ] && rm -rf ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
-
-    if [ -z "${NAMESERVER}" ]
-    then
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Nameserver not provided. Defaulting to ${NAMED_MASTER}";
-        NAMESERVER=${NAMED_MASTER};
-    fi
-
-    ## spawn an ssh connection to the provided server to run a DiG query
-    ## check to see if we have an internal or external box
-    if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
-    then
-        if [ ${JAVA_RUNNABLE} ]
-        then
-            dig @${NAMESERVER} +short -t ${RECORD_TYPE} ${SITE_URL};
-        else
-            dig @${NAMESERVER} +short -t ${RECORD_TYPE} ${SITE_URL} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
-        fi
-    else
-        if [ $(echo ${DNS_SLAVES[@]} | grep -c ${NAMESERVER}) -eq 1 ] || [ "${NAMESERVER}" = "${NAMED_MASTER}" ]
-        then
-            if [ ${JAVA_RUNNABLE} ]
-            then
-                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} +short -t ${RECORD_TYPE} ${SITE_URL}";
-            else
-                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} +short -t ${RECORD_TYPE} ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
+                done
             fi
-        else
-            ## we were asked to run against an external server,
-            ## so lets check our proxy list for an available
-            for PROXY in ${PROXY_SERVERS[@]}
-            do
-                $(ping ${PROXY} > /dev/null 2>&1);
-
-                PING_RCODE=${?}
-
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
-
-                if [ ${PING_RCODE} == 0 ]
-                then
-                    ## stop if its available and run the command
-                    if [ ${JAVA_RUNNABLE} ]
-                    then
-                        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} +short -t ${RECORD_TYPE} ${SITE_URL}";
-                    else
-                        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} +short -t ${RECORD_TYPE} ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
-                    fi
-
-                    break;
-                ## first one wasnt available, check the remaining
-                else
-                    continue;
-                fi
-            done
-
-            ## unset unneeded variable
-            unset PING_RCODE;
-            unset PROXY;
         fi
     fi
 
-    if [ ! ${JAVA_RUNNABLE} ]
-    then
-        if [ -s ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} ]
-        then
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-            unset NAMESERVER;
-            unset RECORD_TYPE;
-            unset SITE_URL;
-            RETURN_CODE=0;
-        else
-            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while processing the request. Please try again.";
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-            unset NAMESERVER;
-            unset RECORD_TYPE;
-            unset SITE_URL;
-            RETURN_CODE=999;
-        fi
-    fi
+    [ -s ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} ] && RETURN_CODE=0 || RETURN_CODE=99;
+    [[ ! -z "${PRINT_RESPONSE}" && "${PRINT_RESPONSE}" = "${_TRUE}" && -s ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} ]] && cat ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
+    [[ ! -z "${PRINT_RESPONSE}" && "${PRINT_RESPONSE}" = "${_TRUE}" && -s ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} ]] && rm -f ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
+
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    unset NAMESERVER;
+    unset RECORD_TYPE;
+    unset VALIDATE;
+    unset PROXY;
+    unset PING_RCODE;
+    unset NAMESERVER;
+    unset RECORD_TYPE;
+    unset SITE_URL;
 
     return ${RETURN_CODE};
 }
 
 #===  FUNCTION  ===============================================================
 #          NAME:  returnReverseResponse
-#   DESCRIPTION:  Returns a full reverse lookup response from DiG for a
-#                 provided address
+#   DESCRIPTION:  Returns a full response from DiG for a provided address
 #    PARAMETERS:  None
-#          NAME:  usage
 #==============================================================================
 function returnReverseResponse
 {
@@ -285,291 +172,119 @@ function returnReverseResponse
     local METHOD_NAME="${CNAME}#${0}";
 
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing DiG query against ${NAMESERVER} for ${SITE_URL}..";
 
     ## kill the file if it exists
-    [ -f ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE}-${SERVER} ] && rm -rf ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE}-${SERVER};
+    [ -f ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} ] && rm -rf ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
 
-    if [ -z "${NAMESERVER}" ]
+    [ -z "${NAMESERVER}" ] && NAMESERVER="${NAMED_MASTER}";
+    [ -z "${RECORD_TYPE}" ] && RECORD_TYPE="A";
+
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NAMESERVER -> ${NAMESERVER}";
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RECORD_TYPE -> ${RECORD_TYPE}";
+
+    ## spawn an ssh connection to the provided server to run a DiG query
+    ## check to see if we have an internal or external box
+    if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
     then
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Nameserver not provided. Defaulting to ${NAMED_MASTER}";
-        NAMESERVER=${NAMED_MASTER};
-    fi
+        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local execution is ON. Processing..";
 
-    ## make sure we got an IP address. if we didn't we need to translate.
-    if [ $(${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validate_ip_address.sh ${SITE_URL}) -ne 0 ]
-    then
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "We were provided a hostname. Translating to IP address..";
-
-        ## we got a name. translate it back to an IP.
-        if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
+        if [[ ! -z "${SHORT_RESPONSE}" && "${SHORT_RESPONSE}" = "${_TRUE}" ]]
         then
-            SITE_URL=$(dig @${NAMESERVER} +short -t A ${SITE_URL});
+            [ -z "${NAMESERVER}" ] && dig +short -x ${SITE_URL} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} || dig @${NAMESERVER} +short -x ${SITE_URL} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
         else
-            if [ $(echo ${DNS_SLAVES[@]} | grep -c ${NAMESERVER}) -eq 1 ] || [ "${NAMESERVER}" = "${NAMED_MASTER}" ]
-            then
-                SITE_URL=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} +short -t A ${SITE_URL}");
-            else
-                ## we were asked to run against an external server,
-                ## so lets check our proxy list for an available
-                for PROXY in ${PROXY_SERVERS[@]}
-                do
-                    ## stop if its available and run the command
-                    $(ping ${PROXY} > /dev/null 2>&1);
-
-                    PING_RCODE=${?}
-
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
-
-                    if [ ${PING_RCODE} == 0 ]
-                    then
-                        SITE_URL=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} +short -t A ${SITE_URL}");
-                        break;
-                    fi
-                done
-
-                ## unset unneeded variable
-                unset PING_RCODE;
-                unset PROXY;
-            fi
+            [ -z "${NAMESERVER}" ] && dig -x ${SITE_URL} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} || dig @${NAMESERVER} -x ${SITE_URL} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
         fi
-    fi
+    else
+        for SERVER in ${DNS_SLAVES[@]} ${NAMED_MASTER}
+        do
+            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVER -> ${SERVER}";
 
-    if [ ! -z "${SITE_URL}" ]
-    then
-        ## spawn an ssh connection to the provided server to run a DiG query
-        ## check to see if we have an internal or external box
-        if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
-        then
-            if [ ${JAVA_RUNNABLE} ]
+            if [ "${NAMESERVER}" = "${SERVER}" ]
             then
-                dig @${NAMESERVER} -x ${SITE_URL};
-            else
-                dig @${NAMESERVER} -x ${SITE_URL} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
-            fi
-        else
-            if [ $(echo ${DNS_SLAVES[@]} | grep -c ${NAMESERVER}) -eq 1 ] || [ "${NAMESERVER}" = "${NAMED_MASTER}" ]
-            then
-                if [ ${JAVA_RUNNABLE} ]
+                if [[ ! -z "${SHORT_RESPONSE}" && "${SHORT_RESPONSE}" = "${_TRUE}" ]]
                 then
-                    ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} -x ${SITE_URL}";
+                    [ -z "${NAMESERVER}" ] && ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig +short -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} || \
+                        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} +short -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
                 else
-                    ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
+                    [ -z "${NAMESERVER}" ] && ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} || \
+                        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
+                fi
+
+                REQUEST_COMPLETE="${_TRUE}";
+
+                break;
+            fi
+
+            continue;
+        done
+
+        if [[ -z "${REQUEST_COMPLETE}" || "${REQUEST_COMPLETE}" = "${_FALSE}" ]]
+        then
+            ## check to see if this is an internal or external host. if its internal we don't need to
+            ## route through a proxy, if its external then we do
+            if [[ ! -z "$(dig +short ${NAMESERVER})" || ! -z "$(dig +short -x ${NAMESERVER})" ]]
+            then
+                ## external
+                if [[ ! -z "${SHORT_RESPONSE}" && "${SHORT_RESPONSE}" = "${_TRUE}" ]]
+                then
+                    [ -z "${NAMESERVER}" ] && dig +short -x ${SITE_URL} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} || dig @${NAMESERVER} +short -x ${SITE_URL} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
+                else
+                    [ -z "${NAMESERVER}" ] && dig -x ${SITE_URL} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} || dig @${NAMESERVER} -x ${SITE_URL} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
                 fi
             else
                 ## we were asked to run against an external server,
                 ## so lets check our proxy list for an available
+                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "External service requested. Verifying proxy access.";
+
                 for PROXY in ${PROXY_SERVERS[@]}
                 do
-                    ## stop if its available and run the command
-                    $(ping ${PROXY} > /dev/null 2>&1);
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROXY -> ${PROXY}";
 
-                    PING_RCODE=${?}
+                    ping ${PROXY} > /dev/null 2>&1;
+                    PING_RCODE=${?};
 
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
 
-                    if [ ${PING_RCODE} == 0 ]
+                    if [ ${PING_RCODE} -eq 0 ]
                     then
-                        if [ ${JAVA_RUNNABLE} ]
+                        ## stop if its available and run the command
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Proxy access confirmed. Proxy: ${PROXY}";
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} \"dig @${NAMESERVER} -x ${SITE_URL}\" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE}";
+
+                        if [[ ! -z "${SHORT_RESPONSE}" && "${SHORT_RESPONSE}" = "${_TRUE}" ]]
                         then
-                            ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} -x ${SITE_URL}";
+                            [ -z "${NAMESERVER}" ] && ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig +short -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} || \
+                                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} +short -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
                         else
-                            ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
+                            [ -z "${NAMESERVER}" ] && ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} || \
+                                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
                         fi
 
                         break;
-                    ## first one wasnt available, check the remaining
-                    else
-                        continue;
                     fi
+
+                    continue;
                 done
-
-                ## unset unneeded variable
-                unset PING_RCODE;
-                unset PROXY;
-            fi
-        fi
-
-        if [ ! ${JAVA_RUNNABLE} ]
-        then
-            if [ -s ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} ]
-            then
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-                unset NAMESERVER;
-                unset RECORD_TYPE;
-                unset SITE_URL;
-                RETURN_CODE=0;
-            else
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while processing the request. Please try again.";
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-                unset NAMESERVER;
-                unset RECORD_TYPE;
-                unset SITE_URL;
-                RETURN_CODE=999;
-            fi
-        fi
-    else
-        ## we were given a name to do a reverse check on,
-        ## and we couldnt translate to an ip.
-        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while processing the request. Please try again.";
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-        
-        unset NAMESERVER;
-        unset SITE_URL;
-        
-        RETURN_CODE=999;
-    fi
-
-    return ${RETURN_CODE};
-}
-
-#===  FUNCTION  ===============================================================
-#          NAME:  returnShortReverseResponse
-#   DESCRIPTION:  Returns a short reverse lookup response from DiG for a
-#                 provided address
-#    PARAMETERS:  None
-#          NAME:  usage
-#==============================================================================
-function returnShortReverseResponse
-{
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing DiG query against ${NAMESERVER} for ${SITE_URL}..";
-
-    ## kill the file if it exists
-    [ -f ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE}-${SERVER} ] && rm -rf ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
-
-    if [ -z "${NAMESERVER}" ]
-    then
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Nameserver not provided. Defaulting to ${NAMED_MASTER}";
-        NAMESERVER=${NAMED_MASTER};
-    fi
-
-    ## make sure we got an IP address. if we didn't we need to translate.
-    if [ $(${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validate_ip_address.sh ${SITE_URL}) -ne 0 ]
-    then
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "We were provided a hostname. Translating to IP address..";
-
-        ## we got a name. translate it back to an IP.
-        if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
-        then
-            SITE_URL=$(dig @${NAMESERVER} +short -t A ${SITE_URL});
-        else
-            if [ $(echo ${DNS_SLAVES[@]} | grep -c ${NAMESERVER}) -eq 1 ] || [ "${NAMESERVER}" = "${NAMED_MASTER}" ]
-            then
-                SITE_URL=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} +short -t A ${SITE_URL}");
-            else
-                ## we were asked to run against an external server,
-                ## so lets check our proxy list for an available
-                for PROXY in ${PROXY_SERVERS[@]}
-                do
-                    ## stop if its available and run the command
-                    $(ping ${PROXY} > /dev/null 2>&1);
-
-                    PING_RCODE=${?}
-
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
-
-                    if [ ${PING_RCODE} == 0 ]
-                    then
-                        SITE_URL=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} +short -t A ${SITE_URL}");
-                        break;
-                    fi
-                done
-
-                ## unset unneeded variable
-                unset PING_RCODE;
-                unset PROXY;
             fi
         fi
     fi
 
-    if [ ! -z "${SITE_URL}" ]
-    then
-        ## spawn an ssh connection to the provided server to run a DiG query
-        ## check to see if we have an internal or external box
-        if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
-        then
-            if [ ${JAVA_RUNNABLE} ]
-            then
-                dig @${NAMESERVER} -x ${SITE_URL};
-            else
-                dig @${NAMESERVER} -x ${SITE_URL} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
-            fi
-        else
-            if [ $(echo ${DNS_SLAVES[@]} | grep -c ${NAMESERVER}) -eq 1 ] || [ "${NAMESERVER}" = "${NAMED_MASTER}" ]
-            then
-                if [ ${JAVA_RUNNABLE} ]
-                then
-                    ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} +short -x ${SITE_URL}";
-                else
-                    ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} +short -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
-                fi
-            else
-                ## we were asked to run against an external server,
-                ## so lets check our proxy list for an available
-                for PROXY in ${PROXY_SERVERS[@]}
-                do
-                    ## stop if its available and run the command
-                    $(ping ${PROXY} > /dev/null 2>&1);
+    [ -s ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} ] && RETURN_CODE=0 || RETURN_CODE=99;
+    [[ ! -z "${PRINT_RESPONSE}" && "${PRINT_RESPONSE}" = "${_TRUE}" && -s ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} ]] && cat ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
 
-                    PING_RCODE=${?}
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
-
-                    if [ ${PING_RCODE} == 0 ]
-                    then
-                        if [ ${JAVA_RUNNABLE} ]
-                        then
-                            ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} +short -x ${SITE_URL}";
-                        else
-                            ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} +short -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
-                        fi
-
-                        break;
-                    ## first one wasnt available, check the remaining
-                    else
-                        continue;
-                    fi
-                done
-
-                ## unset unneeded variable
-                unset PING_RCODE;
-                unset PROXY;
-            fi
-        fi
-
-        if [ ! ${JAVA_RUNNABLE} ]
-        then
-            if [ -s ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} ]
-            then
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-                unset NAMESERVER;
-                unset RECORD_TYPE;
-                unset SITE_URL;
-                RETURN_CODE=0;
-            else
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while processing the request. Please try again.";
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-                unset NAMESERVER;
-                unset RECORD_TYPE;
-                unset SITE_URL;
-                RETURN_CODE=999;
-            fi
-        fi
-    else
-        ## we were given a name to do a reverse check on,
-        ## and we couldnt translate to an ip.
-        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while processing the request. Please try again.";
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-        
-        unset NAMESERVER;
-        unset SITE_URL;
-        
-        RETURN_CODE=999;
-    fi
+    unset NAMESERVER;
+    unset RECORD_TYPE;
+    unset VALIDATE;
+    unset PROXY;
+    unset PING_RCODE;
+    unset NAMESERVER;
+    unset RECORD_TYPE;
+    unset SITE_URL;
 
     return ${RETURN_CODE};
 }
@@ -588,12 +303,13 @@ function usage
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
     print "${CNAME} - Performs a DNS query against the nameserver specified.";
-    print "Usage: ${CNAME} [-s nameserver] [-t record type] [-u url] [-r] [-e execute] [-?|-h show this help]";
-    print "  -s      Nameserver to query against. If no server is provided, the configured master nameserver is assumed.";
+    print "Usage: ${CNAME} [ -s nameserver ] [ -t record type ] [ -u url ] [ -r ] [ -o ] [ -p ] [ -e execute ] [ -?|-h show this help ]";
+    print "  -s      Nameserver to query against. If no server is provided, the system default nameserver is utilized.";
     print "  -t      Type of record to retrieve (if blank, A assumed)";
     print "  -u      URL/IP address to query";
     print "  -r      Request reverse mapping for provided IP address";
     print "  -o      Return a short response instead of a full response";
+    print "  -p      Print output to terminal";
     print "  -e      Execute processing";
     print "  -h|-?   Show this help";
 
@@ -602,24 +318,26 @@ function usage
     return 3;
 }
 
-while getopts ":s:t:u:roeh:" OPTIONS
+[ ${#} -eq 0 ] && usage;
+
+while getopts ":s:t:u:ropeh:" OPTIONS
 do
     case "${OPTIONS}" in
         s)
             ## retrieve a list of all available zone files
 
+            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting NAMESERVER..";
 
             NAMESERVER="${OPTARG}";
 
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NAMESERVER -> ${NAMESERVER}";
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
             ;;
         t)
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting RECORD_TYPE..";
 
-            typeset -u RECORD_TYPE;
+            typeset -u RECORD_TYPE="${OPTARG}";
 
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RECORD_TYPE -> ${RECORD_TYPE}";
             ;;
@@ -648,6 +366,14 @@ do
 
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SHORT_RESPONSE -> ${SHORT_RESPONSE}";
             ;;
+        p)
+            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
+            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting PRINT_RESPONSE..";
+
+            PRINT_RESPONSE=${_TRUE};
+
+            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRINT_RESPONSE -> ${PRINT_RESPONSE}";
+            ;;
         e)
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating request..";
 
@@ -656,30 +382,15 @@ do
             if [ -z "${SITE_URL}" ]
             then
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "The site url was not provided. Unable to continue processing.";
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                unset VALIDATE;
-                unset SITE_URL;
                 RETURN_CODE=29;
             else
                 ## We have enough information to process the request, continue
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                unset VALIDATE;
-
-                if [ ! -z "${REVERSE_MAP}" ]
-                then
-                    [ ! -z "${SHORT_RESPONSE}" ] && returnShortReverseResponse || returnReverseResponse;
-                else
-                    [ ! -z "${SHORT_RESPONSE}" ] && returnShortResponse || returnResponse;
-                fi
+                [[ ! -z "${REVERSE_MAP}" && "${REVERSE_MAP}" = "${_TRUE}" ]] && returnReverseResponse || returnResponse;
             fi
-            ;;
-        h|[\?])
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-            usage;
             ;;
         *)
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -689,6 +400,9 @@ do
     esac
 done
 
-shift $OPTIND-1;
+shift ${OPTIND}-1;
+
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
 return ${RETURN_CODE};

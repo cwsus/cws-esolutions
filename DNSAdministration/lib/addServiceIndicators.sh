@@ -33,8 +33,6 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
-[ ${#} -eq 0 ] && usage;
-
 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -76,7 +74,7 @@ function addServiceIndicators
     then
         SERIAL_NUM=$(( ${LAST_SERIAL} + 1 ));
     else
-        SERIAL_NUM=$(date +"%Y%m%d")00;
+        SERIAL_NUM=${DEFAULT_SERIAL_NUMBER};
     fi
 
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "LAST_SERIAL -> ${LAST_SERIAL}";
@@ -177,6 +175,8 @@ function usage
 
     return 3;
 }
+
+[ ${#} -eq 0 ] && usage;
 
 while getopts ":r:f:t:i:c:xeh:" OPTIONS
 do

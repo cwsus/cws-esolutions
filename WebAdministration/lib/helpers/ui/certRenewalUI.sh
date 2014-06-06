@@ -16,6 +16,9 @@
 #       CREATED:  ---
 #      REVISION:  ---
 #==============================================================================
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+
 ## Application constants
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
@@ -80,8 +83,8 @@ function updateCertificate
             if [ -s ${APP_ROOT}/${CERTSTORE}/${CERTDB}.cer ]
             then
                 ## make sure its actually a certificate
-                if [ "$(grep "BEGIN CERTIFICATE" ${APP_ROOT}/${CERTSTORE}/${CERTDB}.cer)" != "" ] \
-                    && [ "$(grep "END CERTIFICATE" ${APP_ROOT}/${CERTSTORE}/${CERTDB}.cer)" != "" ]
+                if [ ! -z "$(grep "BEGIN CERTIFICATE" ${APP_ROOT}/${CERTSTORE}/${CERTDB}.cer)" ] \
+                    && [ ! -z "$(grep "END CERTIFICATE" ${APP_ROOT}/${CERTSTORE}/${CERTDB}.cer)" ]
                 then
                     ## looks good, pop it off
                     reset; clear; break;

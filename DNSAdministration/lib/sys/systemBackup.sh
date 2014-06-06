@@ -309,6 +309,8 @@ function usage
     return 3;
 }
 
+[ ${#} -eq 0 ] && usage;
+
 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
 [ ${#} -eq 0 ] && perform_zone_backup && perform_conf_backup;

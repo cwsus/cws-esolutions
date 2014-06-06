@@ -187,7 +187,7 @@ case ${ACTION} in
             unset PIDID;
 
             ## ok, everything should be started now
-            [ ! "${SUN_INSTANCE_LIST}" = "" ] && set ${SUN_INSTANCE_LIST} || exit 1;
+            [ ! -z "${SUN_INSTANCE_LIST}" ] && set ${SUN_INSTANCE_LIST} || exit 1;
 
             while [ ${#} -ne 0 ]
     		do
@@ -195,25 +195,25 @@ case ${ACTION} in
 
                 if [ "`/usr/ucb/whoami`" = "${RUN_AS_USER}" ]
                 then
-        			[ ! "${1}" = "" ] && [ `grep -w -c ${1} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${1}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${2}" = "" ] && [ `grep -w -c ${2} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${2}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${3}" = "" ] && [ `grep -w -c ${3} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${3}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${4}" = "" ] && [ `grep -w -c ${4} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${4}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${5}" = "" ] && [ `grep -w -c ${5} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${5}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${6}" = "" ] && [ `grep -w -c ${6} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${6}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${7}" = "" ] && [ `grep -w -c ${7} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${7}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${8}" = "" ] && [ `grep -w -c ${8} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${8}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${9}" = "" ] && [ `grep -w -c ${9} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${9}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${1}" ] && [ `grep -w -c ${1} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${1}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${2}" ] && [ `grep -w -c ${2} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${2}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${3}" ] && [ `grep -w -c ${3} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${3}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${4}" ] && [ `grep -w -c ${4} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${4}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${5}" ] && [ `grep -w -c ${5} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${5}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${6}" ] && [ `grep -w -c ${6} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${6}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${7}" ] && [ `grep -w -c ${7} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${7}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${8}" ] && [ `grep -w -c ${8} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${8}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${9}" ] && [ `grep -w -c ${9} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${9}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
     			else
-        			[ ! "${1}" = "" ] && [ `grep -w -c ${1} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${1}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${2}" = "" ] && [ `grep -w -c ${2} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${2}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${3}" = "" ] && [ `grep -w -c ${3} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${3}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${4}" = "" ] && [ `grep -w -c ${4} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${4}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${5}" = "" ] && [ `grep -w -c ${5} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${5}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${6}" = "" ] && [ `grep -w -c ${6} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${6}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${7}" = "" ] && [ `grep -w -c ${7} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${7}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${8}" = "" ] && [ `grep -w -c ${8} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${8}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${9}" = "" ] && [ `grep -w -c ${9} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${9}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${1}" ] && [ `grep -w -c ${1} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${1}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${2}" ] && [ `grep -w -c ${2} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${2}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${3}" ] && [ `grep -w -c ${3} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${3}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${4}" ] && [ `grep -w -c ${4} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${4}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${5}" ] && [ `grep -w -c ${5} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${5}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${6}" ] && [ `grep -w -c ${6} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${6}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${7}" ] && [ `grep -w -c ${7} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${7}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${8}" ] && [ `grep -w -c ${8} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${8}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${9}" ] && [ `grep -w -c ${9} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${9}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
                 fi
 
                 echo "wait;" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
@@ -246,7 +246,7 @@ case ${ACTION} in
             wait ${PIDID};
             unset PIDID;
         else
-            [ ! "${SUN_INSTANCE_LIST}" = "" ] && set ${SUN_INSTANCE_LIST} || exit 1;
+            [ ! -z "${SUN_INSTANCE_LIST}" ] && set ${SUN_INSTANCE_LIST} || exit 1;
 
             while [ ${#} -ne 0 ]
     		do
@@ -254,25 +254,25 @@ case ${ACTION} in
 
                 if [ "`/usr/ucb/whoami`" = "${RUN_AS_USER}" ]
                 then
-        			[ ! "${1}" = "" ] && [ `grep -w -c ${1} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${1}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${2}" = "" ] && [ `grep -w -c ${2} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${2}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${3}" = "" ] && [ `grep -w -c ${3} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${3}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${4}" = "" ] && [ `grep -w -c ${4} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${4}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${5}" = "" ] && [ `grep -w -c ${5} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${5}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${6}" = "" ] && [ `grep -w -c ${6} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${6}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${7}" = "" ] && [ `grep -w -c ${7} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${7}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${8}" = "" ] && [ `grep -w -c ${8} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${8}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${9}" = "" ] && [ `grep -w -c ${9} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${9}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${1}" ] && [ `grep -w -c ${1} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${1}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${2}" ] && [ `grep -w -c ${2} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${2}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${3}" ] && [ `grep -w -c ${3} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${3}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${4}" ] && [ `grep -w -c ${4} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${4}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${5}" ] && [ `grep -w -c ${5} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${5}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${6}" ] && [ `grep -w -c ${6} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${6}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${7}" ] && [ `grep -w -c ${7} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${7}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${8}" ] && [ `grep -w -c ${8} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${8}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${9}" ] && [ `grep -w -c ${9} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${9}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
     			else
-        			[ ! "${1}" = "" ] && [ `grep -w -c ${1} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${1}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${2}" = "" ] && [ `grep -w -c ${2} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${2}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${3}" = "" ] && [ `grep -w -c ${3} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${3}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${4}" = "" ] && [ `grep -w -c ${4} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${4}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${5}" = "" ] && [ `grep -w -c ${5} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${5}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${6}" = "" ] && [ `grep -w -c ${6} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${6}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${7}" = "" ] && [ `grep -w -c ${7} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${7}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${8}" = "" ] && [ `grep -w -c ${8} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${8}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-        			[ ! "${9}" = "" ] && [ `grep -w -c ${9} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${9}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${1}" ] && [ `grep -w -c ${1} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${1}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${2}" ] && [ `grep -w -c ${2} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${2}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${3}" ] && [ `grep -w -c ${3} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${3}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${4}" ] && [ `grep -w -c ${4} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${4}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${5}" ] && [ `grep -w -c ${5} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${5}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${6}" ] && [ `grep -w -c ${6} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${6}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${7}" ] && [ `grep -w -c ${7} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${7}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${8}" ] && [ `grep -w -c ${8} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${8}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+        			[ ! -z "${9}" ] && [ `grep -w -c ${9} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${9}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
                 fi
 
                 echo "wait;" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
@@ -316,19 +316,19 @@ case ${ACTION} in
         fi
         ;;
     status)
-        [ ! "${SUN_INSTANCE_LIST}" = "" ] && set ${SUN_INSTANCE_LIST} || exit 1;
+        [ ! -z "${SUN_INSTANCE_LIST}" ] && set ${SUN_INSTANCE_LIST} || exit 1;
 
         while [ ${#} -ne 0 ]
 		do
-			[ ! "${1}" = "" ] && [ `grep -w -c ${1} ${EXCEPTION_FILE}` -eq 0 ] && [ "`/usr/ucb/ps -auxwww | grep \`cat ${SUN_INSTALL_ROOT}/${1}/logs/pid 2> /dev/null\``" != "" ] && echo "${1} is running..." || echo "${1} not currently started..";
-			[ ! "${2}" = "" ] && [ `grep -w -c ${2} ${EXCEPTION_FILE}` -eq 0 ] && [ "`/usr/ucb/ps -auxwww | grep \`cat ${SUN_INSTALL_ROOT}/${2}/logs/pid 2> /dev/null\``" != "" ] && echo "${2} is running..." || echo "${2} not currently started..";
-			[ ! "${3}" = "" ] && [ `grep -w -c ${3} ${EXCEPTION_FILE}` -eq 0 ] && [ "`/usr/ucb/ps -auxwww | grep \`cat ${SUN_INSTALL_ROOT}/${3}/logs/pid 2> /dev/null\``" != "" ] && echo "${3} is running..." || echo "${3} not currently started..";
-			[ ! "${4}" = "" ] && [ `grep -w -c ${4} ${EXCEPTION_FILE}` -eq 0 ] && [ "`/usr/ucb/ps -auxwww | grep \`cat ${SUN_INSTALL_ROOT}/${4}/logs/pid 2> /dev/null\``" != "" ] && echo "${4} is running..." || echo "${4} not currently started..";
-			[ ! "${5}" = "" ] && [ `grep -w -c ${5} ${EXCEPTION_FILE}` -eq 0 ] && [ "`/usr/ucb/ps -auxwww | grep \`cat ${SUN_INSTALL_ROOT}/${5}/logs/pid 2> /dev/null\``" != "" ] && echo "${5} is running..." || echo "${5} not currently started..";
-			[ ! "${6}" = "" ] && [ `grep -w -c ${6} ${EXCEPTION_FILE}` -eq 0 ] && [ "`/usr/ucb/ps -auxwww | grep \`cat ${SUN_INSTALL_ROOT}/${6}/logs/pid 2> /dev/null\``" != "" ] && echo "${6} is running..." || echo "${6} not currently started..";
-			[ ! "${7}" = "" ] && [ `grep -w -c ${7} ${EXCEPTION_FILE}` -eq 0 ] && [ "`/usr/ucb/ps -auxwww | grep \`cat ${SUN_INSTALL_ROOT}/${7}/logs/pid 2> /dev/null\``" != "" ] && echo "${7} is running..." || echo "${7} not currently started..";
-			[ ! "${8}" = "" ] && [ `grep -w -c ${8} ${EXCEPTION_FILE}` -eq 0 ] && [ "`/usr/ucb/ps -auxwww | grep \`cat ${SUN_INSTALL_ROOT}/${8}/logs/pid 2> /dev/null\``" != "" ] && echo "${8} is running..." || echo "${8} not currently started..";
-            [ ! "${9}" = "" ] && [ `grep -w -c ${9} ${EXCEPTION_FILE}` -eq 0 ] && [ "`/usr/ucb/ps -auxwww | grep \`cat ${SUN_INSTALL_ROOT}/${9}/logs/pid 2> /dev/null\``" != "" ] && echo "${9} is running..." || echo "${9} not currently started..";
+			[ ! -z "${1}" ] && [ `grep -w -c ${1} ${EXCEPTION_FILE}` -eq 0 ] && [ ! -z "`/usr/ucb/ps -auxwww | grep \`cat ${SUN_INSTALL_ROOT}/${1}/logs/pid 2> /dev/null\``" ] && echo "${1} is running..." || echo "${1} not currently started..";
+			[ ! -z "${2}" ] && [ `grep -w -c ${2} ${EXCEPTION_FILE}` -eq 0 ] && [ ! -z "`/usr/ucb/ps -auxwww | grep \`cat ${SUN_INSTALL_ROOT}/${2}/logs/pid 2> /dev/null\``" ] && echo "${2} is running..." || echo "${2} not currently started..";
+			[ ! -z "${3}" ] && [ `grep -w -c ${3} ${EXCEPTION_FILE}` -eq 0 ] && [ ! -z "`/usr/ucb/ps -auxwww | grep \`cat ${SUN_INSTALL_ROOT}/${3}/logs/pid 2> /dev/null\``" ] && echo "${3} is running..." || echo "${3} not currently started..";
+			[ ! -z "${4}" ] && [ `grep -w -c ${4} ${EXCEPTION_FILE}` -eq 0 ] && [ ! -z "`/usr/ucb/ps -auxwww | grep \`cat ${SUN_INSTALL_ROOT}/${4}/logs/pid 2> /dev/null\``" ] && echo "${4} is running..." || echo "${4} not currently started..";
+			[ ! -z "${5}" ] && [ `grep -w -c ${5} ${EXCEPTION_FILE}` -eq 0 ] && [ ! -z "`/usr/ucb/ps -auxwww | grep \`cat ${SUN_INSTALL_ROOT}/${5}/logs/pid 2> /dev/null\``" ] && echo "${5} is running..." || echo "${5} not currently started..";
+			[ ! -z "${6}" ] && [ `grep -w -c ${6} ${EXCEPTION_FILE}` -eq 0 ] && [ ! -z "`/usr/ucb/ps -auxwww | grep \`cat ${SUN_INSTALL_ROOT}/${6}/logs/pid 2> /dev/null\``" ] && echo "${6} is running..." || echo "${6} not currently started..";
+			[ ! -z "${7}" ] && [ `grep -w -c ${7} ${EXCEPTION_FILE}` -eq 0 ] && [ ! -z "`/usr/ucb/ps -auxwww | grep \`cat ${SUN_INSTALL_ROOT}/${7}/logs/pid 2> /dev/null\``" ] && echo "${7} is running..." || echo "${7} not currently started..";
+			[ ! -z "${8}" ] && [ `grep -w -c ${8} ${EXCEPTION_FILE}` -eq 0 ] && [ ! -z "`/usr/ucb/ps -auxwww | grep \`cat ${SUN_INSTALL_ROOT}/${8}/logs/pid 2> /dev/null\``" ] && echo "${8} is running..." || echo "${8} not currently started..";
+            [ ! -z "${9}" ] && [ `grep -w -c ${9} ${EXCEPTION_FILE}` -eq 0 ] && [ ! -z "`/usr/ucb/ps -auxwww | grep \`cat ${SUN_INSTALL_ROOT}/${9}/logs/pid 2> /dev/null\``" ] && echo "${9} is running..." || echo "${9} not currently started..";
 
 			A=`expr "$A" + 1`;
 
@@ -366,31 +366,31 @@ case ${ACTION} in
         fi
         ;;
     config-test)
-        [ ! "${SUN_INSTANCE_LIST}" = "" ] && set ${SUN_INSTANCE_LIST} || exit 1;
+        [ ! -z "${SUN_INSTANCE_LIST}" ] && set ${SUN_INSTANCE_LIST} || exit 1;
 
         while [ ${#} -ne 0 ]
 		do
             if [ "`/usr/ucb/whoami`" = "${RUN_AS_USER}" ]
             then
-        		[ ! "${1}" = "" ] && [ `grep -w -c ${1} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${1}/start -configtest &" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
-        		[ ! "${2}" = "" ] && [ `grep -w -c ${2} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${2}/start -configtest &" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
-        		[ ! "${3}" = "" ] && [ `grep -w -c ${3} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${3}/start -configtest &" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
-        		[ ! "${4}" = "" ] && [ `grep -w -c ${4} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${4}/start -configtest &" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
-        		[ ! "${5}" = "" ] && [ `grep -w -c ${5} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${5}/start -configtest &" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
-        		[ ! "${6}" = "" ] && [ `grep -w -c ${6} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${6}/start -configtest &" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
-        		[ ! "${7}" = "" ] && [ `grep -w -c ${7} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${7}/start -configtest &" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
-        		[ ! "${8}" = "" ] && [ `grep -w -c ${8} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${8}/start -configtest &" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
-        		[ ! "${9}" = "" ] && [ `grep -w -c ${9} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${9}/start -configtest &" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
+        		[ ! -z "${1}" ] && [ `grep -w -c ${1} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${1}/start -configtest &" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
+        		[ ! -z "${2}" ] && [ `grep -w -c ${2} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${2}/start -configtest &" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
+        		[ ! -z "${3}" ] && [ `grep -w -c ${3} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${3}/start -configtest &" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
+        		[ ! -z "${4}" ] && [ `grep -w -c ${4} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${4}/start -configtest &" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
+        		[ ! -z "${5}" ] && [ `grep -w -c ${5} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${5}/start -configtest &" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
+        		[ ! -z "${6}" ] && [ `grep -w -c ${6} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${6}/start -configtest &" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
+        		[ ! -z "${7}" ] && [ `grep -w -c ${7} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${7}/start -configtest &" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
+        		[ ! -z "${8}" ] && [ `grep -w -c ${8} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${8}/start -configtest &" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
+        		[ ! -z "${9}" ] && [ `grep -w -c ${9} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${9}/start -configtest &" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
     		else
-			    [ ! "${1}" = "" ] && [ `grep -w -c ${2} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${1}/start -configtest &\"" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
-			    [ ! "${2}" = "" ] && [ `grep -w -c ${3} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${2}/start -configtest &\"" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
-			    [ ! "${3}" = "" ] && [ `grep -w -c ${4} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${3}/start -configtest &\"" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
-			    [ ! "${4}" = "" ] && [ `grep -w -c ${5} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${4}/start -configtest &\"" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
-			    [ ! "${5}" = "" ] && [ `grep -w -c ${6} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${5}/start -configtest &\"" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
-			    [ ! "${6}" = "" ] && [ `grep -w -c ${7} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${6}/start -configtest &\"" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
-			    [ ! "${7}" = "" ] && [ `grep -w -c ${8} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${7}/start -configtest &\"" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
-                [ ! "${8}" = "" ] && [ `grep -w -c ${9} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${8}/start -configtest &\"" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
-                [ ! "${9}" = "" ] && [ `grep -w -c ${9} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${9}/start -configtest &\"" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
+			    [ ! -z "${1}" ] && [ `grep -w -c ${2} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${1}/start -configtest &\"" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
+			    [ ! -z "${2}" ] && [ `grep -w -c ${3} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${2}/start -configtest &\"" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
+			    [ ! -z "${3}" ] && [ `grep -w -c ${4} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${3}/start -configtest &\"" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
+			    [ ! -z "${4}" ] && [ `grep -w -c ${5} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${4}/start -configtest &\"" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
+			    [ ! -z "${5}" ] && [ `grep -w -c ${6} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${5}/start -configtest &\"" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
+			    [ ! -z "${6}" ] && [ `grep -w -c ${7} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${6}/start -configtest &\"" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
+			    [ ! -z "${7}" ] && [ `grep -w -c ${8} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${7}/start -configtest &\"" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
+                [ ! -z "${8}" ] && [ `grep -w -c ${9} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${8}/start -configtest &\"" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
+                [ ! -z "${9}" ] && [ `grep -w -c ${9} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${9}/start -configtest &\"" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
             fi
 
             echo "wait;" >> ${TMP_PATH}/${CONFIGTEST_SCRIPT_FILE_NAME}-${A}.sh;
@@ -408,31 +408,31 @@ case ${ACTION} in
         A=0;
         ;;
     test-start)
-        [ ! "${SUN_INSTANCE_LIST}" = "" ] && set ${SUN_INSTANCE_LIST} || exit 1;
+        [ ! -z "${SUN_INSTANCE_LIST}" ] && set ${SUN_INSTANCE_LIST} || exit 1;
 
         while [ ${#} -ne 0 ]
 		do
             if [ "`/usr/ucb/whoami`" = "${RUN_AS_USER}" ]
             then
-        		[ ! "${1}" = "" ] && [ `grep -w -c ${1} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${1}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        		[ ! "${2}" = "" ] && [ `grep -w -c ${2} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${2}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        		[ ! "${3}" = "" ] && [ `grep -w -c ${3} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${3}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        		[ ! "${4}" = "" ] && [ `grep -w -c ${4} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${4}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        		[ ! "${5}" = "" ] && [ `grep -w -c ${5} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${5}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        		[ ! "${6}" = "" ] && [ `grep -w -c ${6} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${6}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        		[ ! "${7}" = "" ] && [ `grep -w -c ${7} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${7}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        		[ ! "${8}" = "" ] && [ `grep -w -c ${8} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${8}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        		[ ! "${9}" = "" ] && [ `grep -w -c ${9} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${9}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        		[ ! -z "${1}" ] && [ `grep -w -c ${1} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${1}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        		[ ! -z "${2}" ] && [ `grep -w -c ${2} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${2}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        		[ ! -z "${3}" ] && [ `grep -w -c ${3} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${3}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        		[ ! -z "${4}" ] && [ `grep -w -c ${4} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${4}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        		[ ! -z "${5}" ] && [ `grep -w -c ${5} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${5}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        		[ ! -z "${6}" ] && [ `grep -w -c ${6} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${6}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        		[ ! -z "${7}" ] && [ `grep -w -c ${7} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${7}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        		[ ! -z "${8}" ] && [ `grep -w -c ${8} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${8}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        		[ ! -z "${9}" ] && [ `grep -w -c ${9} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${9}/start &" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
     		else
-        		[ ! "${1}" = "" ] && [ `grep -w -c ${1} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${1}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        		[ ! "${2}" = "" ] && [ `grep -w -c ${2} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${2}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        		[ ! "${3}" = "" ] && [ `grep -w -c ${3} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${3}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        		[ ! "${4}" = "" ] && [ `grep -w -c ${4} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${4}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        		[ ! "${5}" = "" ] && [ `grep -w -c ${5} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${5}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        		[ ! "${6}" = "" ] && [ `grep -w -c ${6} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${6}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        		[ ! "${7}" = "" ] && [ `grep -w -c ${7} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${7}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        		[ ! "${8}" = "" ] && [ `grep -w -c ${8} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${8}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
-        		[ ! "${9}" = "" ] && [ `grep -w -c ${9} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${9}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        		[ ! -z "${1}" ] && [ `grep -w -c ${1} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${1}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        		[ ! -z "${2}" ] && [ `grep -w -c ${2} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${2}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        		[ ! -z "${3}" ] && [ `grep -w -c ${3} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${3}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        		[ ! -z "${4}" ] && [ `grep -w -c ${4} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${4}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        		[ ! -z "${5}" ] && [ `grep -w -c ${5} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${5}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        		[ ! -z "${6}" ] && [ `grep -w -c ${6} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${6}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        		[ ! -z "${7}" ] && [ `grep -w -c ${7} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${7}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        		[ ! -z "${8}" ] && [ `grep -w -c ${8} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${8}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
+        		[ ! -z "${9}" ] && [ `grep -w -c ${9} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${9}/start &\"" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
             fi
 
             echo "wait;" >> ${TMP_PATH}/${START_SCRIPT_FILE_NAME}-${A}.sh;
@@ -456,31 +456,31 @@ case ${ACTION} in
         exit 0;
         ;;
     test-stop)
-        [ ! "${SUN_INSTANCE_LIST}" = "" ] && set ${SUN_INSTANCE_LIST} || exit 1;
+        [ ! -z "${SUN_INSTANCE_LIST}" ] && set ${SUN_INSTANCE_LIST} || exit 1;
 
         while [ ${#} -ne 0 ]
 		do
             if [ "`/usr/ucb/whoami`" = "${RUN_AS_USER}" ]
             then
-       			[ ! "${1}" = "" ] && [ `grep -w -c ${1} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${1}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-       			[ ! "${2}" = "" ] && [ `grep -w -c ${2} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${2}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-       			[ ! "${3}" = "" ] && [ `grep -w -c ${3} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${3}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-       			[ ! "${4}" = "" ] && [ `grep -w -c ${4} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${4}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-       			[ ! "${5}" = "" ] && [ `grep -w -c ${5} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${5}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-       			[ ! "${6}" = "" ] && [ `grep -w -c ${6} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${6}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-       			[ ! "${7}" = "" ] && [ `grep -w -c ${7} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${7}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-       			[ ! "${8}" = "" ] && [ `grep -w -c ${8} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${8}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-       			[ ! "${9}" = "" ] && [ `grep -w -c ${9} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${9}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+       			[ ! -z "${1}" ] && [ `grep -w -c ${1} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${1}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+       			[ ! -z "${2}" ] && [ `grep -w -c ${2} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${2}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+       			[ ! -z "${3}" ] && [ `grep -w -c ${3} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${3}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+       			[ ! -z "${4}" ] && [ `grep -w -c ${4} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${4}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+       			[ ! -z "${5}" ] && [ `grep -w -c ${5} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${5}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+       			[ ! -z "${6}" ] && [ `grep -w -c ${6} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${6}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+       			[ ! -z "${7}" ] && [ `grep -w -c ${7} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${7}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+       			[ ! -z "${8}" ] && [ `grep -w -c ${8} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${8}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+       			[ ! -z "${9}" ] && [ `grep -w -c ${9} ${EXCEPTION_FILE}` -eq 0 ] && echo "${SUN_INSTALL_ROOT}/${9}/stop &" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
  			else
-       			[ ! "${1}" = "" ] && [ `grep -w -c ${1} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${1}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-       			[ ! "${2}" = "" ] && [ `grep -w -c ${2} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${2}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-       			[ ! "${3}" = "" ] && [ `grep -w -c ${3} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${3}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-       			[ ! "${4}" = "" ] && [ `grep -w -c ${4} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${4}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-       			[ ! "${5}" = "" ] && [ `grep -w -c ${5} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${5}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-       			[ ! "${6}" = "" ] && [ `grep -w -c ${6} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${6}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-       			[ ! "${7}" = "" ] && [ `grep -w -c ${7} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${7}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-       			[ ! "${8}" = "" ] && [ `grep -w -c ${8} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${8}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
-       			[ ! "${9}" = "" ] && [ `grep -w -c ${9} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${9}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+       			[ ! -z "${1}" ] && [ `grep -w -c ${1} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${1}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+       			[ ! -z "${2}" ] && [ `grep -w -c ${2} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${2}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+       			[ ! -z "${3}" ] && [ `grep -w -c ${3} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${3}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+       			[ ! -z "${4}" ] && [ `grep -w -c ${4} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${4}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+       			[ ! -z "${5}" ] && [ `grep -w -c ${5} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${5}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+       			[ ! -z "${6}" ] && [ `grep -w -c ${6} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${6}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+       			[ ! -z "${7}" ] && [ `grep -w -c ${7} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${7}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+       			[ ! -z "${8}" ] && [ `grep -w -c ${8} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${8}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
+       			[ ! -z "${9}" ] && [ `grep -w -c ${9} ${EXCEPTION_FILE}` -eq 0 ] && echo "su - ${RUN_AS_USER} -c \"${SUN_INSTALL_ROOT}/${9}/stop &\"" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh;
             fi
 
             echo "wait;" >> ${TMP_PATH}/${STOP_SCRIPT_FILE_NAME}-${A}.sh

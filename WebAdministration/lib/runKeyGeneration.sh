@@ -16,6 +16,9 @@
 #       CREATED:  ---
 #      REVISION:  ---
 #==============================================================================
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+
 ## Application constants
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
@@ -58,7 +61,7 @@ function createNewCertificate
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Obtaining certificate information..";
 
         ## determine the subject to utilize
-        if [ "$(grep -w ${SITE_DOMAIN_NAME} ${APP_ROOT}/${SITE_OVERRIDES})" != "" ]
+        if [ ! -z "$(grep -w ${SITE_DOMAIN_NAME} ${APP_ROOT}/${SITE_OVERRIDES})" ]
         then
             ## site exists in the site overrides file
             CERT_SIGNER=$(grep -w ${SITE_DOMAIN_NAME} ${APP_ROOT}/${SITE_OVERRIDES} | cut -d ":" -f 2);
@@ -77,10 +80,10 @@ function createNewCertificate
                         CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
                         ;;
                     [Nn][Ww]|[Ss][Yy]|[Nn][Ww][Nn]|[Ss][Yy][Gg]|[Ss][Hh]|[Ll][Pp])
-                        if [ "$(echo ${SITE_DOMAIN_NAME} | grep .ca)" != "" ]
+                        if [ ! -z "$(echo ${SITE_DOMAIN_NAME} | grep .ca)" ]
                         then
                             CERT_SUBJECT=$(echo ${CA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-                        elif [ "$(echo ${SITE_DOMAIN_NAME} | grep .au)" != "" ]
+                        elif [ ! -z "$(echo ${SITE_DOMAIN_NAME} | grep .au)" ]
                         then
                             CERT_SUBJECT=$(echo ${AU_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
                         else
@@ -105,7 +108,7 @@ function createNewCertificate
         then
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_SIGNER -> ${CERT_SIGNER}";
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_SUBJECT -> ${CERT_SUBJECT}";
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing certutil -R -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} -s ${CERT_SUBJECT} -o ${APP_ROOT}/${CSRSTORE}/${CERT_NICKNAME}.csr -p ${REQUEST_CONTACT_NUM} -a -f ${APP_ROOT}/${IPLANET_CERT_DB_PASSFILE} -z "${APP_ROOT}"/${ENTROPY_FILE} -g ${CERT_BIT_LENGTH} > ${APP_ROOT}/${LOG_ROOT}/certutil.csr-gen.${SITE_DOMAIN_NAME}.${IUSER_AUDIT} 2>&1;";
+            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing certutil -R -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} -s ${CERT_SUBJECT} -o ${APP_ROOT}/${CSRSTORE}/${CERT_NICKNAME}.csr -p ${REQUEST_CONTACT_NUM} -a -f ${APP_ROOT}/${IPLANET_CERT_DB_PASSFILE} -z "${APP_ROOT}"/${ENTROPY_FILE} -g ${CERT_BIT_LENGTH} > ${APP_ROOT}/${LOG_ROOT}/certutil.csr-gen.${SITE_DOMAIN_NAME}.${IUSER_AUDIT} 2>&1";
 
             ## add all available root and intermediate certificates to the database
             for SIGNATORY in $(find ${APP_ROOT}/${ROOT_CERT_STORE} -type f -name \*.cer)
@@ -318,7 +321,7 @@ function createiPlanetCSR
         fi
 
         ## determine the subject to utilize
-        if [ "$(grep -w ${SITE_DOMAIN_NAME} ${APP_ROOT}/${SITE_OVERRIDES})" != "" ]
+        if [ ! -z "$(grep -w ${SITE_DOMAIN_NAME} ${APP_ROOT}/${SITE_OVERRIDES})" ]
         then
             ## site exists in the site overrides file
             CERT_SIGNER=$(grep -w ${SITE_DOMAIN_NAME} ${APP_ROOT}/${SITE_OVERRIDES} | cut -d ":" -f 2);
@@ -337,10 +340,10 @@ function createiPlanetCSR
                         CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
                         ;;
                     [Nn][Ww]|[Ss][Yy]|[Nn][Ww][Nn]|[Ss][Yy][Gg]|[Ss][Hh]|[Ll][Pp])
-                        if [ "$(echo ${SITE_DOMAIN_NAME} | grep .ca)" != "" ]
+                        if [ ! -z "$(echo ${SITE_DOMAIN_NAME} | grep .ca)" ]
                         then
                             CERT_SUBJECT=$(echo ${CA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-                        elif [ "$(echo ${SITE_DOMAIN_NAME} | grep .au)" != "" ]
+                        elif [ ! -z "$(echo ${SITE_DOMAIN_NAME} | grep .au)" ]
                         then
                             CERT_SUBJECT=$(echo ${AU_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
                         else
@@ -365,7 +368,7 @@ function createiPlanetCSR
         then
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_SIGNER -> ${CERT_SIGNER}";
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_SUBJECT -> ${CERT_SUBJECT}";
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing certutil -R -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} -s ${CERT_SUBJECT} -o ${APP_ROOT}/${CSRSTORE}/${CERT_NICKNAME}.csr -p ${REQUEST_CONTACT_NUM} -a -f ${APP_ROOT}/${IPLANET_CERT_DB_PASSFILE} -z "${APP_ROOT}"/${ENTROPY_FILE} -g ${CERT_BIT_LENGTH} > ${APP_ROOT}/${LOG_ROOT}/certutil.csr-gen.${SITE_DOMAIN_NAME}.${IUSER_AUDIT} 2>&1;";
+            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing certutil -R -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} -s ${CERT_SUBJECT} -o ${APP_ROOT}/${CSRSTORE}/${CERT_NICKNAME}.csr -p ${REQUEST_CONTACT_NUM} -a -f ${APP_ROOT}/${IPLANET_CERT_DB_PASSFILE} -z "${APP_ROOT}"/${ENTROPY_FILE} -g ${CERT_BIT_LENGTH} > ${APP_ROOT}/${LOG_ROOT}/certutil.csr-gen.${SITE_DOMAIN_NAME}.${IUSER_AUDIT} 2>&1";
 
             if [ ! -z "${VERBOSE}" ] && [ "${VERBOSE}" = "${_TRUE}" ]
             then
@@ -478,7 +481,7 @@ function createiPlanetCSR
                 fi
 
 		        ## determine the subject to utilize
-		        if [ "$(grep -w ${SITE_DOMAIN_NAME} ${APP_ROOT}/${SITE_OVERRIDES})" != "" ]
+		        if [ ! -z "$(grep -w ${SITE_DOMAIN_NAME} ${APP_ROOT}/${SITE_OVERRIDES})" ]
 		        then
 		            ## site exists in the site overrides file
 		            CERT_SIGNER=$(grep -w ${SITE_DOMAIN_NAME} ${APP_ROOT}/${SITE_OVERRIDES} | cut -d ":" -f 2);
@@ -497,10 +500,10 @@ function createiPlanetCSR
 		                        CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
 		                        ;;
 		                    [Nn][Ww]|[Ss][Yy]|[Nn][Ww][Nn]|[Ss][Yy][Gg]|[Ss][Hh]|[Ll][Pp])
-		                        if [ "$(echo ${SITE_DOMAIN_NAME} | grep .ca)" != "" ]
+		                        if [ ! -z "$(echo ${SITE_DOMAIN_NAME} | grep .ca)" ]
 		                        then
 		                            CERT_SUBJECT=$(echo ${CA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-		                        elif [ "$(echo ${SITE_DOMAIN_NAME} | grep .au)" != "" ]
+		                        elif [ ! -z "$(echo ${SITE_DOMAIN_NAME} | grep .au)" ]
 		                        then
 		                            CERT_SUBJECT=$(echo ${AU_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
 		                        else
@@ -525,7 +528,7 @@ function createiPlanetCSR
                 then
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_SIGNER -> ${CERT_SIGNER}";
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_SUBJECT -> ${CERT_SUBJECT}";
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing certutil -R -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} -s ${CERT_SUBJECT} -o ${APP_ROOT}/${CSRSTORE}/${CERT_NICKNAME}.csr -p ${REQUEST_CONTACT_NUM} -a -f ${APP_ROOT}/${IPLANET_CERT_DB_PASSFILE} -z "${APP_ROOT}"/${ENTROPY_FILE} -g ${CERT_BIT_LENGTH} > ${APP_ROOT}/${LOG_ROOT}/certutil.csr-gen.${SITE_DOMAIN_NAME}.${IUSER_AUDIT} 2>&1;";
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing certutil -R -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} -s ${CERT_SUBJECT} -o ${APP_ROOT}/${CSRSTORE}/${CERT_NICKNAME}.csr -p ${REQUEST_CONTACT_NUM} -a -f ${APP_ROOT}/${IPLANET_CERT_DB_PASSFILE} -z "${APP_ROOT}"/${ENTROPY_FILE} -g ${CERT_BIT_LENGTH} > ${APP_ROOT}/${LOG_ROOT}/certutil.csr-gen.${SITE_DOMAIN_NAME}.${IUSER_AUDIT} 2>&1";
 
                     if [ ! -z "${VERBOSE}" ] && [ "${VERBOSE}" = "${_TRUE}" ]
                     then
@@ -677,7 +680,7 @@ function createIHSCSR
                 fi
 
                 ## determine the subject to utilize
-                if [ "$(grep -w ${SITE_DOMAIN_NAME} ${APP_ROOT}/${SITE_OVERRIDES})" != "" ]
+                if [ ! -z "$(grep -w ${SITE_DOMAIN_NAME} ${APP_ROOT}/${SITE_OVERRIDES})" ]
                 then
                     ## site exists in the site overrides file
                     CERT_SIGNER=$(grep -w ${SITE_DOMAIN_NAME} ${APP_ROOT}/${SITE_OVERRIDES} | cut -d ":" -f 2);
@@ -696,10 +699,10 @@ function createIHSCSR
                                 CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
                                 ;;
                             [Nn][Ww]|[Ss][Yy]|[Nn][Ww][Nn]|[Ss][Yy][Gg]|[Ss][Hh]|[Ll][Pp])
-                                if [ "$(echo ${SITE_DOMAIN_NAME} | grep .ca)" != "" ]
+                                if [ ! -z "$(echo ${SITE_DOMAIN_NAME} | grep .ca)" ]
                                 then
                                     CERT_SUBJECT=$(echo ${CA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-                                elif [ "$(echo ${SITE_DOMAIN_NAME} | grep .au)" != "" ]
+                                elif [ ! -z "$(echo ${SITE_DOMAIN_NAME} | grep .au)" ]
                                 then
                                     CERT_SUBJECT=$(echo ${AU_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
                                 else
@@ -916,10 +919,10 @@ function createIHSCSR
                                     CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
                                     ;;
                                 [Nn][Ww]|[Ss][Yy]|[Nn][Ww][Nn]|[Ss][Yy][Gg]|[Ss][Hh]|[Ll][Pp])
-                                    if [ "$(echo ${SITE_DOMAIN_NAME} | grep .ca)" != "" ]
+                                    if [ ! -z "$(echo ${SITE_DOMAIN_NAME} | grep .ca)" ]
                                     then
                                         CERT_SUBJECT=$(echo ${CA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-                                    elif [ "$(echo ${SITE_DOMAIN_NAME} | grep .au)" != "" ]
+                                    elif [ ! -z "$(echo ${SITE_DOMAIN_NAME} | grep .au)" ]
                                     then
                                         CERT_SUBJECT=$(echo ${AU_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
                                     else

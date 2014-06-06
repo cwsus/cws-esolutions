@@ -155,7 +155,7 @@ function createSecuredInstance
 
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating...";
 
-                    if [ "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG}.tmp)" != "" ]
+                    if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG}.tmp)" !]
                     then
                         ## ok, move it over now..
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -164,7 +164,7 @@ function createSecuredInstance
                             ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG} > /dev/null 2>&1;
 
                         ## and ensure..
-                        if [ "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG})" != "" ]
+                        if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG})" !]
                         then
                             ## good, keep going
                             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -211,7 +211,7 @@ function createSecuredInstance
                             sed -e "14a ${IPLANET_WAS_HANDLER}" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${WEB_CONFIG} \
                                 > ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${WEB_CONFIG}.tmp;
 
-                            if [ "$(grep "${IPLANET_WAS_HANDLER}" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${WEB_CONFIG}.tmp)" != "" ]
+                            if [ ! -z "$(grep "${IPLANET_WAS_HANDLER}" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${WEB_CONFIG}.tmp)" !]
                             then
                                 ## ok, move it over now..
                                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -220,7 +220,7 @@ function createSecuredInstance
                                     ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${WEB_CONFIG} > /dev/null 2>&1;
 
                                 ## and ensure..
-                                if [ "$(grep "${IPLANET_WAS_HANDLER}" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${WEB_CONFIG})" != "" ]
+                                if [ ! -z "$(grep "${IPLANET_WAS_HANDLER}" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${WEB_CONFIG})" !]
                                 then
                                     ## good, keep going
                                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -261,7 +261,7 @@ function createSecuredInstance
 
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating...";
 
-                        if [ "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG}.tmp)" != "" ]
+                        if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG}.tmp)" !]
                         then
                             ## ok, move it over now..
                             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -270,7 +270,7 @@ function createSecuredInstance
                                 ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG} > /dev/null 2>&1;
 
                             ## and ensure..
-                            if [ "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG})" != "" ]
+                            if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG})" !]
                             then
                                 ## good, keep going
                                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -313,7 +313,7 @@ function createSecuredInstance
 
                                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating...";
 
-                                if [ "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT}.tmp)" != "" ]
+                                if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT}.tmp)" !]
                                 then
                                     ## ok, move it over now..
                                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -322,7 +322,7 @@ function createSecuredInstance
                                         ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT} > /dev/null 2>&1;
 
                                     ## and ensure..
-                                    if [ "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT})" != "" ]
+                                    if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT})" !]
                                     then
                                         ## good, keep going
                                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -564,7 +564,7 @@ function createUnsecuredInstance
 
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating...";
 
-                    if [ "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG}.tmp)" != "" ]
+                    if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG}.tmp)" !]
                     then
                         ## ok, move it over now..
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -573,7 +573,7 @@ function createUnsecuredInstance
                             ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG} > /dev/null 2>&1;
 
                         ## and ensure..
-                        if [ "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG})" != "" ]
+                        if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG})" !]
                         then
                             ## good, keep going
                             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -620,7 +620,7 @@ function createUnsecuredInstance
                             sed -e "14a ${IPLANET_WAS_HANDLER}" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${WEB_CONFIG} \
                                 > ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${WEB_CONFIG}.tmp;
 
-                            if [ "$(grep "${IPLANET_WAS_HANDLER}" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${WEB_CONFIG}.tmp)" != "" ]
+                            if [ ! -z "$(grep "${IPLANET_WAS_HANDLER}" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${WEB_CONFIG}.tmp)" !]
                             then
                                 ## ok, move it over now..
                                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -629,7 +629,7 @@ function createUnsecuredInstance
                                     ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${WEB_CONFIG} > /dev/null 2>&1;
 
                                 ## and ensure..
-                                if [ "$(grep "${IPLANET_WAS_HANDLER}" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${WEB_CONFIG})" != "" ]
+                                if [ ! -z "$(grep "${IPLANET_WAS_HANDLER}" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${WEB_CONFIG})" !]
                                 then
                                     ## good, keep going
                                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -670,7 +670,7 @@ function createUnsecuredInstance
 
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating...";
 
-                        if [ "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG}.tmp)" != "" ]
+                        if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG}.tmp)" !]
                         then
                             ## ok, move it over now..
                             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -679,7 +679,7 @@ function createUnsecuredInstance
                                 ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG} > /dev/null 2>&1;
 
                             ## and ensure..
-                            if [ "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG})" != "" ]
+                            if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG})" !]
                             then
                                 ## good, keep going
                                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -722,7 +722,7 @@ function createUnsecuredInstance
 
                                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating...";
 
-                                if [ "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT}.tmp)" != "" ]
+                                if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT}.tmp)" !]
                                 then
                                     ## ok, move it over now..
                                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -731,7 +731,7 @@ function createUnsecuredInstance
                                         ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT} > /dev/null 2>&1;
 
                                     ## and ensure..
-                                    if [ "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT})" != "" ]
+                                    if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT})" !]
                                     then
                                         ## good, keep going
                                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";

@@ -33,8 +33,6 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
-[ ${#} -eq 0 ] && usage;
-
 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -178,7 +176,7 @@ function generateRNDCKeys
                             OP_FILE_CKSUM=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${KEYFILE} | awk '{print $1}');
 
                             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OP_FILE_CKSUM -> ${OP_FILE_CKSUM}";
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp local-copy ${AVAILABLE_MASTER} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${KEYFILE} ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE};";
+                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp local-copy ${AVAILABLE_MASTER} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${KEYFILE} ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE}";
 
                             ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp local-copy ${AVAILABLE_MASTER} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${KEYFILE} ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE};
 
@@ -278,7 +276,7 @@ function generateRNDCKeys
                         OP_FILE_CKSUM=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${KEYFILE} | awk '{print $1}');
 
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OP_FILE_CKSUM -> ${OP_FILE_CKSUM}";
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp local-copy ${DNS_SLAVES[${A}]} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${KEYFILE} ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE};";
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp local-copy ${DNS_SLAVES[${A}]} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${KEYFILE} ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE}";
 
                         ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp local-copy ${DNS_SLAVES[${A}]} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${KEYFILE} ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE};
 
@@ -361,7 +359,7 @@ function generateRNDCKeys
                         OP_FILE_CKSUM=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${KEYFILE} | awk '{print $1}');
 
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OP_FILE_CKSUM -> ${OP_FILE_CKSUM}";
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp local-copy ${EXT_SLAVES[${A}]} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${KEYFILE} ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE};";
+                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp local-copy ${EXT_SLAVES[${A}]} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${KEYFILE} ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE}";
 
                         ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp local-copy ${EXT_SLAVES[${A}]} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${KEYFILE} ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE};
 
@@ -574,7 +572,7 @@ function generateTSIGKeys
             OP_FILE_CKSUM=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(echo ${TRANSFER_KEY_FILE} | cut -d "/" -f 3) | awk '{print $1}');
 
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OP_FILE_CKSUM -> ${OP_FILE_CKSUM}";
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp local-copy ${DNS_SLAVES[${A}]} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(echo ${TRANSFER_KEY_FILE} | cut -d \"/\" -f 3) ${NAMED_ROOT}/${TRANSFER_KEY_FILE};";
+            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp local-copy ${DNS_SLAVES[${A}]} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(echo ${TRANSFER_KEY_FILE} | cut -d \"/\" -f 3) ${NAMED_ROOT}/${TRANSFER_KEY_FILE}";
 
             ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp local-copy ${DNS_SLAVES[${A}]} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(echo ${TRANSFER_KEY_FILE} | cut -d "/" -f 3) ${NAMED_ROOT}/${TRANSFER_KEY_FILE};
 
@@ -785,6 +783,8 @@ function usage
 
     return 3;
 }
+
+[ ${#} -eq 0 ] && usage;
 
 while getopts ":rdDtc:eh:" OPTIONS
 do

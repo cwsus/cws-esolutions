@@ -16,11 +16,51 @@
 #       CREATED:  ---
 #      REVISION:  ---
 #==============================================================================
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+
 ## Application constants
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
+METHOD_NAME="${CNAME}#startup";
+
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+
+#===  FUNCTION  ===============================================================
+#          NAME:  checkIfPortFree
+#   DESCRIPTION:  Cleans up the archived log directory
+#    PARAMETERS:  Archive Directory, Logfile Name, Retention Time
+#       RETURNS:  0 regardless of result.
+#==============================================================================
+function checkIfPortFree
+{
+    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    local METHOD_NAME="${CNAME}#${0}";
+
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+
+    PORT_CHECK_RESULTS=$(netstat -an | grep ${PORT_NUMBER});
+
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PORT_CHECK_RESULTS -> ${PORT_CHECK_RESULTS}";
+
+    [ ! -z "${PORT_CHECK_RESULTS}" ] && VALIDATE_CODE=1 || VALIDATE_CODE=0;
+
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_CODE -> ${VALIDATE_CODE}";
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    return ${VALIDATE_CODE};
+}
+
+#===  FUNCTION  ===============================================================
+#          NAME:  validateFreePort
+#   DESCRIPTION:  Cleans up the archived log directory
+#    PARAMETERS:  Archive Directory, Logfile Name, Retention Time
+#       RETURNS:  0 regardless of result.
+#==============================================================================
 function validateFreePort
 {
     [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
@@ -80,7 +120,10 @@ function validateFreePort
         VALIDATE_CODE=1;
     fi
 
+    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_CODE -> ${VALIDATE_CODE}";
     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    return ${VALIDATE_CODE};
 }
 
 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";

@@ -16,6 +16,9 @@
 #       CREATED:  ---
 #      REVISION:  ---
 #==============================================================================
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+
 ## Application constants
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
@@ -73,8 +76,8 @@ function addStartupException
 
                 if [ ! -z "${WEB_PROJECT_CODE}" ]
                 then
-                    [ "$(getWebInfo | grep -w ${WEB_PROJECT_CODE} | grep -v "#" | grep "${SITE_HOSTNAME}" | \
-                        cut -d "|" -f 10 | sort | uniq | grep enterprise)" = "" ] \
+                    [ -z "$(getWebInfo | grep -w ${WEB_PROJECT_CODE} | grep -v "#" | grep "${SITE_HOSTNAME}" | \
+                        cut -d "|" -f 10 | sort | uniq | grep enterprise)" ] \
                         && WEBSERVER_PLATFORM=${IHS_TYPE_IDENTIFIER} \
                         || WEBSERVER_PLATFORM=${IPLANET_TYPE_IDENTIFIER};
 
@@ -130,8 +133,8 @@ function addStartupException
 
             if [ ! -z "${WEB_PROJECT_CODE}" ]
             then
-                [ "$(getWebInfo | grep -w ${WEB_PROJECT_CODE} | grep -v "#" | grep "${SITE_HOSTNAME}" | \
-                    cut -d "|" -f 10 | sort | uniq | grep enterprise)" = "" ] \
+                [ -z "$(getWebInfo | grep -w ${WEB_PROJECT_CODE} | grep -v "#" | grep "${SITE_HOSTNAME}" | \
+                    cut -d "|" -f 10 | sort | uniq | grep enterprise)" ] \
                     && WEBSERVER_PLATFORM=${IHS_TYPE_IDENTIFIER} \
                     || WEBSERVER_PLATFORM=${IPLANET_TYPE_IDENTIFIER};
 
@@ -419,8 +422,8 @@ function addSSLException
 
                 if [ ! -z "${WEB_PROJECT_CODE}" ]
                 then
-                    [ "$(getWebInfo | grep -w ${WEB_PROJECT_CODE} | grep -v "#" | grep "${SITE_HOSTNAME}" | \
-                        cut -d "|" -f 10 | sort | uniq | grep enterprise)" = "" ] \
+                    [ -z "$(getWebInfo | grep -w ${WEB_PROJECT_CODE} | grep -v "#" | grep "${SITE_HOSTNAME}" | \
+                        cut -d "|" -f 10 | sort | uniq | grep enterprise)" ] \
                         && WEBSERVER_PLATFORM=${IHS_TYPE_IDENTIFIER} \
                         || WEBSERVER_PLATFORM=${IPLANET_TYPE_IDENTIFIER};
 
@@ -476,8 +479,8 @@ function addSSLException
 
             if [ ! -z "${WEB_PROJECT_CODE}" ]
             then
-                [ "$(getWebInfo | grep -w ${WEB_PROJECT_CODE} | grep -v "#" | grep "${SITE_HOSTNAME}" | \
-                    cut -d "|" -f 10 | sort | uniq | grep enterprise)" = "" ] \
+                [ -z "$(getWebInfo | grep -w ${WEB_PROJECT_CODE} | grep -v "#" | grep "${SITE_HOSTNAME}" | \
+                    cut -d "|" -f 10 | sort | uniq | grep enterprise)" ] \
                     && WEBSERVER_PLATFORM=${IHS_TYPE_IDENTIFIER} \
                     || WEBSERVER_PLATFORM=${IPLANET_TYPE_IDENTIFIER};
 

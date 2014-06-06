@@ -34,7 +34,7 @@ function cleanLogArchive
 
     for ARCHIVED_FILE in $(find ${ARCHIVE_LOG_ROOT} -type f -name \*.log\* -ctime +${RETENTION_TIME})
     do
-        [ -f  ] && rm -f ${ARCHIVED_FILE} >/dev/null 2>&1;
+        [ -f ${ARCHIVED_FILE} ] && rm -f ${ARCHIVED_FILE} >/dev/null 2>&1;
     done
 
     return 0;
@@ -108,7 +108,7 @@ function writeLogEntry
     [[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
 
     ## always do the timestamp first
-    TIMESTAMP_OPTS=$(echo $RECORDER_CONV | cut -d "[" -f 2 | cut -d "]" -f 1 | cut -d ":" -f 2- | sed -e '/^ *#/d;s/#.*//')
+    TIMESTAMP_OPTS=$(echo ${RECORDER_CONV} | cut -d "[" -f 2 | cut -d "]" -f 1 | cut -d ":" -f 2- | sed -e '/^ *#/d;s/#.*//')
     LOG_TIMESTAMP=$(date +"${TIMESTAMP_OPTS}");
     RECORDER=$(echo ${RECORDER_CONV} | sed -e "s^${TIMESTAMP_OPTS}^${LOG_TIMESTAMP}^");
 
@@ -118,36 +118,35 @@ function writeLogEntry
 
     case ${1} in
         ERROR)
-            RECORDER=$(echo ${RECORDER} | sed -e "s^%c^${ERROR_RECORDER_FILE}^");
+            RECORDER=$(echo ${RECORDER} | sed -e "s^%c^${ERROR_LOG_FILE}^");
 
-            print "${RECORDER}" >> ${LOG_ROOT}/${ERROR_RECORDER};
+            print "${RECORDER}" >> ${LOG_ROOT}/${ERROR_LOG_FILE};
             ;;
         DEBUG)
-            RECORDER=$(echo ${RECORDER} | sed -e "s^%c^${DEBUG_RECORDER_FILE}^");
+            RECORDER=$(echo ${RECORDER} | sed -e "s^%c^${DEBUG_LOG_FILE}^");
 
-            print "${RECORDER}" >> ${LOG_ROOT}/${DEBUG_RECORDER};
+            print "${RECORDER}" >> ${LOG_ROOT}/${DEBUG_LOG_FILE};
             ;;
         AUDIT)
-            RECORDER=$(echo ${RECORDER} | sed -e "s^%c^${AUDIT_RECORDER_FILE}^");
+            RECORDER=$(echo ${RECORDER} | sed -e "s^%c^${AUDIT_LOG_FILE}^");
 
-            print "${RECORDER}" >> ${LOG_ROOT}/${AUDIT_RECORDER};
+            print "${RECORDER}" >> ${LOG_ROOT}/${AUDIT_LOG_FILE};
             ;;
         WARN)
-            RECORDER=$(echo ${RECORDER} | sed -e "s^%c^${WARN_RECORDER_FILE}^");
+            RECORDER=$(echo ${RECORDER} | sed -e "s^%c^${WARN_LOG_FILE}^");
 
-            print "${RECORDER}" >> ${LOG_ROOT}/${WARN_RECORDER};
-            ;;
-        INFO)
-            RECORDER=$(echo ${RECORDER} | sed -e "s^%c^${INFO_RECORDER_FILE}^");
-
-            print "${RECORDER}" >> ${LOG_ROOT}/${INFO_RECORDER};
+            print "${RECORDER}" >> ${LOG_ROOT}/${WARN_LOG_FILE};
             ;;
         *)
-            RECORDER=$(echo ${RECORDER} | sed -e "s^%c^${INFO_RECORDER_FILE}^");
+            RECORDER=$(echo ${RECORDER} | sed -e "s^%c^${INFO_LOG_FILE}^");
 
-            print "${RECORDER}" >> ${LOG_ROOT}/${INFO_RECORDER};
+            print "${RECORDER}" >> ${LOG_ROOT}/${INFO_LOG_FILE};
             ;;
     esac
+
+    unset TIMESTAMP_OPTS;
+    unset LOG_TIMESTAMP;
+    unset RECORDER;
 
     return 0;
 }

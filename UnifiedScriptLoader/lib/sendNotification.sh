@@ -32,8 +32,6 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 METHOD_NAME="${CNAME}#startup";
 
-[ ${#} -eq 0 ] && usage;
-
 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -56,43 +54,43 @@ function sendNotificationEmail
     unset MAILER_CODE;
 
     ## and cleanup a little..
-    [ -f ${APP_ROOT}/${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S") ] && \
-        rm -rf ${APP_ROOT}/${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")> /dev/null 2>&1;
+    [ -f ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S") ] && \
+        rm -rf ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")> /dev/null 2>&1;
 
-    if [ -s ${APP_ROOT}/${MAIL_TEMPLATE_DIR}/${MESSAGE_TEMPLATE} ]
+    if [ -s ${MAIL_TEMPLATE_DIR}/${MESSAGE_TEMPLATE} ]
     then
         ## the message provided exists - process
         ## create copy
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating working copy of ${MESSAGE_TEMPLATE}..";
 
-        sed -e '1d' ${APP_ROOT}/${MAIL_TEMPLATE_DIR}/${MESSAGE_TEMPLATE} > ${APP_ROOT}/${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")2>/dev/null;
+        sed -e '1d' ${MAIL_TEMPLATE_DIR}/${MESSAGE_TEMPLATE} > ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")2>/dev/null;
 
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copy complete. Operating..";
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Obtaining message subject from template..";
 
-        local MESSAGE_SUBJECT=$(head -1 ${APP_ROOT}/${MAIL_TEMPLATE_DIR}/${MESSAGE_TEMPLATE});
+        local MESSAGE_SUBJECT=$(head -1 ${MAIL_TEMPLATE_DIR}/${MESSAGE_TEMPLATE});
 
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MESSAGE_SUBJECT - ${MESSAGE_SUBJECT}";
 
-        for REPLACEMENT_ITEM in $(grep "&" ${APP_ROOT}/${MAIL_TEMPLATE_DIR}/${MESSAGE_TEMPLATE} | cut -d "&" -f 2)
+        for REPLACEMENT_ITEM in $(grep "&" ${MAIL_TEMPLATE_DIR}/${MESSAGE_TEMPLATE} | cut -d "&" -f 2)
         do
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REPLACEMENT_ITEM - ${REPLACEMENT_ITEM}";
 
             sed -e "s/&${REPLACEMENT_ITEM}/$(eval echo \${${REPLACEMENT_ITEM}})/g" \
-                ${APP_ROOT}/${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")> ${APP_ROOT}/${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.tmp;
+                ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")> ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.tmp;
 
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating...";
 
-            if [ "$(grep $(eval echo \${${REPLACEMENT_ITEM}}) ${APP_ROOT}/${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.tmp)" != "" ]
+            if [ "$(grep $(eval echo \${${REPLACEMENT_ITEM}}) ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.tmp)" != "" ]
             then
                 ## ok, move it over now..
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
 
-                mv ${APP_ROOT}/${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.tmp \
-                    ${APP_ROOT}/${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")> /dev/null 2>&1;
+                mv ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.tmp \
+                    ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")> /dev/null 2>&1;
 
                 ## and ensure..
-                if [ "$(grep $(eval echo \${${REPLACEMENT_ITEM}}) ${APP_ROOT}/${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT})" != "" ]
+                if [ "$(grep $(eval echo \${${REPLACEMENT_ITEM}}) ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT})" != "" ]
                 then
                     ## good, keep going
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -121,21 +119,21 @@ function sendNotificationEmail
             unset MAILER_CODE;
 
             ## message generated, mail it out
-            if [ -s ${APP_ROOT}/${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")]
+            if [ -s ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")]
             then
                 if [ ! -z "${FILE_CONTENT}" ]
                 then
                     ## we've been asked to include file content within the email. slide it in ...
                     ## print in the zone..
                     ## cut the filesize
-                    local PRE_FILE_SIZE=$(wc -c ${APP_ROOT}/${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")| awk '{print $1}');
+                    local PRE_FILE_SIZE=$(wc -c ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")| awk '{print $1}');
 
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRE_FILE_SIZE -> ${PRE_FILE_SIZE}";
 
                     ## echo in the zone
-                    cat ${FILE_CONTENT} >> ${APP_ROOT}/${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT};
+                    cat ${FILE_CONTENT} >> ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT};
 
-                    local POST_FILE_SIZE=$(wc -c ${APP_ROOT}/${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")| awk '{print $1}');
+                    local POST_FILE_SIZE=$(wc -c ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")| awk '{print $1}');
 
                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "POST_FILE_SIZE -> ${POST_FILE_SIZE}";
 
@@ -155,26 +153,26 @@ function sendNotificationEmail
                 if [ -z "${RETURN_CODE}" || ${RETURN_CODE} == 0 ]
                 then
                     ## send it out
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command mailx -s \"${NOTIFY_SUBJECT}\" -r \"${NOTIFY_FROM_ADDRESS}\" \"${TARGET_AUDIENCE}\" < ${APP_ROOT}/${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}";
+                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command mailx -s \"${NOTIFY_SUBJECT}\" -r \"${NOTIFY_FROM_ADDRESS}\" \"${TARGET_AUDIENCE}\" < ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}";
 
                     if [ ! -z "${ATTACH_FILE}" ]
                     then
                         if [ "${VERBOSE}" = "${_TRUE}" ]
                         then
                             $(/usr/bin/env uuencode ${ATTACH_FILE} $(basename ${ATTACH_FILE}) | mailx -v -s "${MESSAGE_SUBJECT}" -r "${NOTIFY_FROM_ADDRESS}" \
-                                "${TARGET_AUDIENCE}" < ${APP_ROOT}/${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT} > ${APP_ROOT}/${LOG_ROOT}/${MESSAGE_TEMPLATE}.log 2>&1;);
+                                "${TARGET_AUDIENCE}" < ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT} > ${LOG_ROOT}/${MESSAGE_TEMPLATE}.log 2>&1;);
                         else
                             $(/usr/bin/env uuencode ${ATTACH_FILE} $(basename ${ATTACH_FILE}) | mailx -s "${MESSAGE_SUBJECT}" -r "${NOTIFY_FROM_ADDRESS}" \
-                                "${TARGET_AUDIENCE}" < ${APP_ROOT}/${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT});
+                                "${TARGET_AUDIENCE}" < ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT});
                         fi
                     else
                         if [ "${VERBOSE}" = "${_TRUE}" ]
                         then
                             $(mailx -v -s "${MESSAGE_SUBJECT}" -r "${NOTIFY_FROM_ADDRESS}" \
-                                "${TARGET_AUDIENCE}" < ${APP_ROOT}/${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT} > ${APP_ROOT}/${LOG_ROOT}/${MESSAGE_TEMPLATE}.log 2>&1;);
+                                "${TARGET_AUDIENCE}" < ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT} > ${LOG_ROOT}/${MESSAGE_TEMPLATE}.log 2>&1;);
                         else
                             $(mailx -s "${MESSAGE_SUBJECT}" -r "${NOTIFY_FROM_ADDRESS}" \
-                                "${TARGET_AUDIENCE}" < ${APP_ROOT}/${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT});
+                                "${TARGET_AUDIENCE}" < ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT});
                         fi
                     fi
                     local RET_CODE=${?};
@@ -189,7 +187,7 @@ function sendNotificationEmail
                         local RETURN_CODE=1;
                     else
                         ## we're done. we no longer need the email file so lets get rid of it
-                        rm -rf ${APP_ROOT}/${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT};
+                        rm -rf ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT};
 
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -254,6 +252,8 @@ function usage
 
     return 3;
 }
+
+[ ${#} -eq 0 ] && usage;
 
 while getopts ":m:f:t:a:eh" OPTIONS
 do

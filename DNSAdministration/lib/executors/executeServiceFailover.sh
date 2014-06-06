@@ -33,8 +33,6 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
-[ ${#} -eq 0 ] && usage;
-
 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -448,7 +446,7 @@ function failoverDatacenter
 
                     ## setup serial numbers
                     LAST_SERIAL=$(grep "; serial" ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME} | awk '{print $1}' | sed -e '/^$/d');
-                    [ $(echo ${LAST_SERIAL} | cut -c 1-8) -eq $(date +"%Y%m%d") ] && SERIAL_NUM=$(( ${LAST_SERIAL} + 1 )) || SERIAL_NUM=$(date +"%Y%m%d")00
+                    [ $(echo ${LAST_SERIAL} | cut -c 1-8) -eq $(date +"%Y%m%d") ] && SERIAL_NUM=$(( ${LAST_SERIAL} + 1 )) || SERIAL_NUM=${DEFAULT_SERIAL_NUMBER};
 
                     ## fill it
                     set -A CHG_ARRAY ${LAST_SERIAL} ${TARGET_DC} $(date +"%m-%d-%Y") ${IUSER_AUDIT} ${CHANGE_NUM} ${SERIAL_NUM};
@@ -1098,6 +1096,8 @@ function usage
 
     return 3;
 }
+
+[ ${#} -eq 0 ] && usage;
 
 [ ! -d ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY} ] && mkdir ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY};
 

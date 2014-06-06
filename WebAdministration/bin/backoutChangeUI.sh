@@ -16,6 +16,9 @@
 #       CREATED:  ---
 #      REVISION:  ---
 #==============================================================================
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+
 ## Application constants
 [ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="WebAdministration";
 CNAME="$(basename "${0}")";
@@ -90,7 +93,7 @@ function main
                         unset METHOD_NAME;
                         unset CNAME;
 
-                        exec ${APP_ROOT}/${MAIN_CLASS} -c;
+                        exec ${MAIN_CLASS};
 
                         exit 0;
                         ;;
@@ -337,7 +340,7 @@ function main
 
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        exec ${APP_ROOT}/${MAIN_CLASS} -c;
+        exec ${MAIN_CLASS};
 
         exit 0;
     fi
@@ -440,7 +443,7 @@ function process_backout_file
                                 ## user has elected not to perform further backouts. send to main class
                                 unset RESPONSE;
                                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Additional backout requests not required. Exiting.";
-                                reset; clear; exec ${APP_ROOT}/${MAIN_CLASS};
+                                reset; clear; exec ${MAIN_CLASS};
                                 exit 0;
                                 ;;
                         esac
@@ -542,7 +545,7 @@ function process_backout_file
                                                         ## user has elected not to perform further backouts. send to main class
                                                         unset RESPONSE;
                                                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Additional backout requests not required. Exiting.";
-                                                        reset; clear; exec ${APP_ROOT}/${MAIN_CLASS};
+                                                        reset; clear; exec ${MAIN_CLASS};
                                                         exit 0;
                                                         ;;
                                                 esac

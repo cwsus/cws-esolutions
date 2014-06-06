@@ -45,7 +45,7 @@ RET_CODE=${?};
 
 [ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE} || unset RET_CODE;
 
-trap "print '$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.trap.signals/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g' -e "s/%SIGNAL%/Ctrl-C/")'; sleep "${MESSAGE_DELAY}"; reset; clear; continue " 1 2 3
+trap "print '$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.trap.signals\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%SIGNAL%/Ctrl-C/")'; sleep "${MESSAGE_DELAY}"; reset; clear; continue " 1 2 3
 
 #===  FUNCTION  ===============================================================
 #
@@ -71,23 +71,22 @@ function main
 
             print "\n";
             print "\t\t+-------------------------------------------------------------------+";
-            print "\t\t               WELCOME TO \E[0;31m $(sed -e '/^ *#/d;s/#.*//' | awk -F "=" '/plugin.application.title/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g') \033[0m";
+            print "\t\t               WELCOME TO \E[0;31m $(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<plugin.application.title\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g') \033[0m";
             print "\t\t+-------------------------------------------------------------------+";
             print "\t\tSystem Type         : \E[0;36m ${SYSTEM_HOSTNAME} \033[0m";
             print "\t\tSystem Uptime       : \E[0;36m ${SYSTEM_UPTIME} \033[0m";
             print "\t\tUser                : \E[0;36m ${IUSER_AUDIT} \033[0m";
-            print "";
             print "\t\t+-------------------------------------------------------------------+";
             print "";
-            print "\t\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.available.options/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
-            print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/add.enter.business.unit/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
-            print "\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.option.cancel/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+            print "\t\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.available.options\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+            print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.enter.business.unit\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+            print "\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.option.cancel\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
     
             read BIZ_UNIT;
 
             reset; clear;
 
-            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
             case ${BIZ_UNIT} in
                 [Xx]|[Qq]|[Cc])
@@ -96,10 +95,10 @@ function main
 
                     reset; clear;
 
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled /{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled \>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                     ## close out this app and reload the main
-                    exec ${APP_ROOT}/${MAIN_CLASS};
+                    exec ${MAIN_CLASS};
 
                     exit 0;
                     ;;
@@ -109,7 +108,7 @@ function main
                         ## business unit provided was blank
                         unset BIZ_UNIT;
 
-                        print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                        print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                         sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                     else
@@ -125,11 +124,11 @@ function main
             esac
         done
     else
-        $(${LOGGER} "ERROR" $METHOD_NAME ${CNAME} ${LINENO} "DNS zone additions has not been enabled. Cannot continue.");
+        $(${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS zone additions has not been enabled. Cannot continue.");
 
-        print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/request.not.authorized/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+        print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<request.not.authorized\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
-        exec ${APP_ROOT}/${MAIN_CLASS};
+        exec ${MAIN_CLASS};
 
         exit 0;
     fi
@@ -159,14 +158,14 @@ function provideProjectCode
     do
         reset; clear;
 
-        print "\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/add.enter.prjcode/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
-        print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.option.cancel/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.enter.prjcode\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.option.cancel\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
         
         read SITE_PRJCODE;
 
         reset; clear;
 
-        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
         case ${SITE_PRJCODE} in
             [Xx]|[Qq]|[Cc])
@@ -176,7 +175,7 @@ function provideProjectCode
 
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS record add canceled.";
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                 ## terminate this thread and return control to main
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -191,7 +190,7 @@ function provideProjectCode
                     reset; clear;
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No site project code was provided. Cannot continue.";
 
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 else
@@ -232,16 +231,16 @@ function provideSiteHostname
 
     while true
     do
-        print "\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/add.enter.hostname/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
-        print "\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/add.enter.format.hostname/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
-        print "\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/add.enter.format.allowed.tlds/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
-        print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.option.cancel/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.enter.hostname\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.enter.format.hostname\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.enter.format.allowed.tlds\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.option.cancel\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
         read SITE_HOSTNAME;
 
         reset; clear;
 
-        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
         case ${SITE_HOSTNAME} in
             [Xx]|[Qq]|[Cc])
@@ -254,19 +253,19 @@ function provideSiteHostname
 
                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS query canceled.";
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                 sleep "${MESSAGE_DELAY}"; reset; clear; break;
                 ;;
             [Hh])
                 ## we want to print out the available record type list
-                print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/allowed.gtld.list/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<allowed.gtld.list\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
                 awk 'NR>17' ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_GTLD_LIST};
 
-                print "\nsed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES}  | awk -F "=" '/allowed.cctld.list/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                print "\nsed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES}  | awk -F "=" '/\<allowed.cctld.list\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
                 awk 'NR>16' ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_GTLD_LIST};
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.continue.enter/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.continue.enter\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                 read COMPLETE;
 
@@ -287,7 +286,7 @@ function provideSiteHostname
                 then
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No site hostname was provided. Cannot continue.";
 
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 fi
@@ -298,7 +297,7 @@ function provideSiteHostname
 
                     unset SITE_HOSTNAME;
 
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                     sleep ${MESSAGE_DELAY}; reset; clear; continue;
                 fi
@@ -315,7 +314,7 @@ function provideSiteHostname
 
                     unset SITE_HOSTNAME;
 
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                     sleep ${MESSAGE_DELAY}; reset; clear; continue;
                 fi
@@ -359,14 +358,14 @@ function provideSiteHostname
 
                     while true
                     do
-                        print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_MESSAGES} | awk -F "=" '/add.zone.already.exists/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g' -e "s/%HOSTNAME%/${SITE_HOSTNAME}/");";
-                        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.option.cancel/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                        print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_MESSAGES} | awk -F "=" '/\<add.zone.already.exists\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%HOSTNAME%/${SITE_HOSTNAME}/")";
+                        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.option.cancel\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                         read ADD_EXISTING;
 
                         reset; clear;
 
-                        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG ${METHOD_NAME} ${CNAME} ${LINENO} "ADD_EXISTING -> ${ADD_EXISTING}";
 
@@ -392,7 +391,7 @@ function provideSiteHostname
                             [Nn][Oo]|[Nn])
                                 $(${LOGGER} ERROR ${METHOD_NAME} ${CNAME} ${LINENO} "${SITE_HOSTNAME} already exists in the DNS infrastructure.");
 
-                                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/add.zone.already.exists.no.add/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g' -e "s/%HOSTNAME%/${SITE_HOSTNAME}/");";
+                                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<add.zone.already.exists.no.add\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%HOSTNAME%/${SITE_HOSTNAME}/")";
 
                                 unset RET_CODE;
                                 unset RETURN_CODE;
@@ -410,7 +409,7 @@ function provideSiteHostname
 
                                 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS add request canceled.";
 
-                                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                                 sleep ${MESSAGE_DELAY}; reset; clear; break;
                                 ;;
@@ -419,7 +418,7 @@ function provideSiteHostname
 
                                 unset RESPONSE;
 
-                                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                                 sleep ${MESSAGE_DELAY}; reset; clear; continue;
                                 ;;
@@ -461,7 +460,7 @@ function provideChangeControl
         then
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover process aborted";
 
-            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
             ## unset SVC_LIST, we dont need it now
             unset SVC_LIST;
@@ -538,13 +537,13 @@ function addDomainAddress
 
                     reset; clear;
 
-                    print "\t\t\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/add.zone.build.complet/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g' -e "s/%ZONE_NAME%/${SITE_HOSTNAME}/")\n";
+                    print "\t\t\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.zone.build.complet\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%ZONE_NAME%/${SITE_HOSTNAME}/")\n";
 
                     read ANSWER;
 
                     reset; clear;
 
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                     case ${ANSWER} in
                         [Yy][Ee][Ss]|[Yy])
@@ -566,13 +565,13 @@ function addDomainAddress
                             do
                                 reset; clear;
 
-                                print "\t\t\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/add.record.subdomains/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g' -e "s/%ZONE_NAME%/${SITE_HOSTNAME}/")\n";
+                                print "\t\t\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.record.subdomains\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%ZONE_NAME%/${SITE_HOSTNAME}/")\n";
 
                                 read ANSWER;
 
                                 reset; clear;
 
-                                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                                 case ${ANSWER} in
                                     [Yy][Ee][Ss]|[Yy])
@@ -596,7 +595,7 @@ function addDomainAddress
                                         unset ANSWER;
                                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not received. Please try again";
 
-                                        print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                                        print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                                         sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                         ;;
@@ -609,7 +608,7 @@ function addDomainAddress
 
                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not received. Please try again";
 
-                            print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                            print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                             sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                             ;;
@@ -657,13 +656,13 @@ function addZoneData
 
         reset; clear;
 
-        print "\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/add.enter.record.type/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
-        print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.option.cancel/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.enter.record.type\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.option.cancel\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
         read RECORD_TYPE;
 
         reset; clear;
-        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RECORD_TYPE->${RECORD_TYPE}";
 
@@ -677,7 +676,7 @@ function addZoneData
 
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS record add canceled..";
 
-            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
             ## terminate this thread and return control to main
             sleep "${MESSAGE_DELAY}"; reset; clear; main;
@@ -686,7 +685,7 @@ function addZoneData
             ## we want to print out the available record type list
             awk 'NR>16' ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_RECORD_LIST};
 
-            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.continue.enter/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.continue.enter\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
             read COMPLETE;
 
             case ${COMPLETE} in
@@ -737,11 +736,11 @@ function addZoneData
                             fi
 
                             reset; clear;
-                            print "\t\t\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/add.record.type.added/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g' -e "s/%ZONE_NAME%/${SITE_HOSTNAME}/")\n";
+                            print "\t\t\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.record.type.added\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%ZONE_NAME%/${SITE_HOSTNAME}/")\n";
 
                             read ANSWER;
                             reset; clear;
-                            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                             case ${ANSWER} in
                                 [Yy][Ee][Ss]|[Yy])
@@ -763,13 +762,13 @@ function addZoneData
                                     do
                                         reset; clear;
 
-                                        print "\t\t\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/add.record.subdomains/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g' -e "s/%ZONE_NAME%/${SITE_HOSTNAME}/")\n";
+                                        print "\t\t\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.record.subdomains\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%ZONE_NAME%/${SITE_HOSTNAME}/")\n";
 
                                         read ANSWER;
 
                                         reset; clear;
 
-                                        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                                        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                                         case ${ANSWER} in
                                             [Yy][Ee][Ss]|[Yy])
@@ -794,7 +793,7 @@ function addZoneData
 
                                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not received. Please try again";
 
-                                                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                                                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                                                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                                 ;;
@@ -806,7 +805,7 @@ function addZoneData
                                     unset ANSWER;
                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not received. Please try again";
 
-                                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                     ;;
@@ -828,7 +827,7 @@ function addZoneData
                 unset RECORD_TYPE;
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requested record type failed validation. Cannot continue.";
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                 ## terminate this thread and return control to main
                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
@@ -861,13 +860,13 @@ function addSubdomainAddresses
 
         reset; clear;
 
-        print "\t\t\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/add.enter.record.type/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
-        print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.option.cancel/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+        print "\t\t\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.enter.record.type\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.option.cancel\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
         read RECORD_TYPE;
 
         reset; clear;
-        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RECORD_TYPE->${RECORD_TYPE}";
 
@@ -882,7 +881,7 @@ function addSubdomainAddresses
 
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS record add canceled..";
 
-            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.request.canceled/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
             ## terminate this thread and return control to main
             sleep "${MESSAGE_DELAY}"; reset; clear; main;
@@ -891,7 +890,7 @@ function addSubdomainAddresses
             ## we want to print out the available record type list
             awk 'NR>16' ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_RECORD_LIST};
 
-            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.continue.enter/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.continue.enter\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
             read COMPLETE;
 
             case ${COMPLETE} in
@@ -940,13 +939,13 @@ function addSubdomainAddresses
                         do
                             reset; clear;
 
-                            print "\t\t\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/add.record.type.added/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g' -e "s/%ZONE_NAME%/${SITE_HOSTNAME}/")\n";
+                            print "\t\t\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.record.type.added\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%ZONE_NAME%/${SITE_HOSTNAME}/")\n";
 
                             read ANSWER;
 
                             reset; clear;
 
-                            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                             case ${ANSWER} in
                                 [Yy][Ee][Ss]|[Yy])
@@ -989,7 +988,7 @@ function addSubdomainAddresses
 
                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not received. Please try again";
 
-                                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                     ;;
@@ -1012,7 +1011,7 @@ function addSubdomainAddresses
 
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No response was provided for record type.";
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                 ## terminate this thread and return control to main
                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
@@ -1061,11 +1060,11 @@ function reviewZone
         do
             reset; clear;
 
-            print "\t\t\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/add.review.zone/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g' -e "s/%ZONE%/${SITE_HOSTNAME}/")\n";
+            print "\t\t\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.review.zone\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%ZONE%/${SITE_HOSTNAME}/")\n";
 
             read ANSWER;
             reset; clear;
-            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
             case ${ANSWER} in
                 [Yy][Ee][Ss]|[Yy])
@@ -1076,13 +1075,13 @@ function reviewZone
 
                     cat ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1).${SITE_PRJCODE};
 
-                    print "\n$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/add.review.accurate.zone.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g' -e "s/%ZONE%/${SITE_HOSTNAME}/");";
+                    print "\n$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.review.accurate.zone.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%ZONE%/${SITE_HOSTNAME}/")";
 
                     read ANSWER;
 
                     reset; clear;
 
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                     while true
                     do
@@ -1105,13 +1104,13 @@ function reviewZone
                                 do
                                     reset; clear;
 
-                                    print "\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/add.zone.inaccurate/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
-                                    print "\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/add.zone.inaccurate.restart/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
-                                    print "\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/add.zone.inaccurate.manual/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                                    print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.zone.inaccurate\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+                                    print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.zone.inaccurate.restart\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+                                    print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.zone.inaccurate.manual\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                                     read ANSWER;
                                     reset; clear;
-                                    print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                                    print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                                     case ${ANSWER} in
                                         1)
@@ -1162,13 +1161,13 @@ function reviewZone
 
                                                             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksums match - no changes detected. Validating..";
 
-                                                            print "\t\t\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/add.zone.no.changes.made/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                                                            print "\t\t\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.zone.no.changes.made\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
                                                     
                                                             read ANSWER;
 
                                                             reset; clear;
 
-                                                            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                                                            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                                                             case ${ANSWER} in
                                                                 [Yy][Ee][Ss]|[Yy])
@@ -1184,7 +1183,7 @@ function reviewZone
                                                                     ## reload into this method and restart the process
                                                                     [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No file changes were detected. Confirmed this is incorrect.";
 
-                                                                    print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/add.zone.changes.declined/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+                                                                    print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.zone.changes.declined\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                                                                     unset ANSWER;
                                                                     unset MOD_FILE_CKSUM;
@@ -1197,7 +1196,7 @@ function reviewZone
                                                                     ## advise and re-try
                                                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Reponse ${ANSWER} invalid";
 
-                                                                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                                                                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                                                                     unset ANSWER;
                                                                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
@@ -1260,7 +1259,7 @@ function reviewZone
                                             ## advise and re-try
                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Reponse ${ANSWER} invalid";
 
-                                            print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                                            print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                                             unset ANSWER;
 
@@ -1273,7 +1272,7 @@ function reviewZone
                                 ## we need a yes or no here
                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Reponse ${ANSWER} invalid";
 
-                                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                                 unset RET_CODE;
                                 unset RETURN_CODE;
@@ -1295,7 +1294,7 @@ function reviewZone
                 *)
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Invalid response received for request.";
 
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES}system.selection.invalid "${ERROR_MESSAGES}" | awk -F "=" '/remote_app_root/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES}system.selection.invalid "${ERROR_MESSAGES}" | awk -F "=" '/\<remote_app_root\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                     unset ANSWER;
 
@@ -1306,7 +1305,7 @@ function reviewZone
     else
         ## return code from run_addition to create the operational zone was non-zero
         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Return code from run_addition nonzero -> ${RET_CODE}";
-        print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" "/${RET_CODE}/{print \$2}" | sed -e 's/^ *//g' -e 's/ *$//g');";
+        print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" "/${RET_CODE}/{print \$2}" | sed -e 's/^ *//g;s/ *$//g')";
 
         unset RET_CODE;
         unset RETURN_CODE;
@@ -1352,8 +1351,8 @@ function sendZone
     then
         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone installation FAILED on node ${NAMED_MASTER}.";
 
-        [ ! -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/${RET_CODE}/{print \$2}" | sed -e 's/^ *//g' -e 's/ *$//g');";
-        [ -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" '/99/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+        [ ! -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/${RET_CODE}/{print \$2}" | sed -e 's/^ *//g;s/ *$//g')";
+        [ -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" '/\<99\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
         unset RET_CODE;
         unset RETURN_CODE;
@@ -1369,7 +1368,7 @@ function sendZone
     then
         ## our zone installed just fine. server failed to reconfig with the new
         ## data, probably because of invalid syntax in a file.
-        print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" '/possible.zone.syntax.error/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+        print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" '/\<possible.zone.syntax.error\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
         sleep "${MESSAGE_DELAY}"; reset; clear;
     fi
@@ -1391,7 +1390,7 @@ function sendZone
         do
             reset; clear;
 
-            print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/add.zone.send.slave/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+            print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.zone.send.slave\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
             ## send out to slave servers
             [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Sending zone to slave server ${DNS_SLAVES[${C}]}";
@@ -1415,7 +1414,7 @@ function sendZone
                 
                 unset RET_CODE;
 
-                print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES}${RET_CODE} "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%ZONE%/${SITE_HOSTNAME}/" -e "s/%SERVER%/${DNS_SLAVES[${C}]}/")";
+                print "\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES}${RET_CODE} "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%ZONE%/${SITE_HOSTNAME}/" -e "s/%SERVER%/${DNS_SLAVES[${C}]}/")";
 
                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
             fi
@@ -1434,7 +1433,7 @@ function sendZone
     ## be necessary.
     if [[ ${ERROR_COUNT} -ne 0 ]]
     then
-        print "\t$( -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES}slave.installation.possible.failure "${ERROR_MESSAGES}" | awk -F "=" '/remote_app_root/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES}slave.installation.possible.failure "${ERROR_MESSAGES}" | awk -F "=" '/\<remote_app_root\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
         sleep "${MESSAGE_DELAY}";
     fi
@@ -1450,7 +1449,7 @@ function sendZone
     do
         reset; clear;
 
-        print "\t$( -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/add.zone.add.another/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.zone.add.another\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
         read ANSWER;
 
@@ -1458,7 +1457,7 @@ function sendZone
 
         reset; clear;
 
-        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g')\n";
+        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
         case ${ANSWER} in
             [Yy][Ee][Ss]|[Yy])
@@ -1479,7 +1478,7 @@ function sendZone
 
                 unset ANSWER;
 
-                reset; clear; exec ${APP_ROOT}/${MAIN_CLASS};
+                reset; clear; exec ${MAIN_CLASS};
                 exit 0;
                 ;;
             *)
@@ -1489,7 +1488,7 @@ function sendZone
                 ## unset variables
                 unset ANSWER;
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/selection.invalid/{print $2}' | sed -e 's/^ *//g' -e 's/ *$//g');";
+                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 ;;

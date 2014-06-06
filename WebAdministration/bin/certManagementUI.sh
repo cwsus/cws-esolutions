@@ -16,6 +16,9 @@
 #       CREATED:  ---
 #      REVISION:  ---
 #==============================================================================
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+
 ## Application constants
 [ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="WebAdministration";
 CNAME="$(basename "${0}")";
@@ -103,7 +106,7 @@ function main
 
                     sleep "${MESSAGE_DELAY}"; reset; clear;
 
-                    exec ${APP_ROOT}/${MAIN_CLASS} -c;
+                    exec ${MAIN_CLASS};
 
                     exit 0;
                     ;;
@@ -160,8 +163,8 @@ function main
                                             cut -d "|" -f 2 | sort | uniq | tr "[\n]" "[ ]"); ## get the platform code, if multiples spit with space
                                         MASTER_WEBSERVER=$(getPlatformInfo | grep -w $(echo ${PLATFORM_CODE} | awk '{print $1}') | \
                                             grep -v "#" | cut -d "|" -f 5 | sort | uniq | sed -e "s/,/ /g" | awk '{print $1}');
-                                        [ "$(getWebInfo | grep -w ${WEB_PROJECT_CODE} | grep -v "#" | grep -w ${SITE_HOSTNAME} | \
-                                            cut -d "|" -f 10 | sort | uniq | grep enterprise)" = "" ] \
+                                        [ -z "$(getWebInfo | grep -w ${WEB_PROJECT_CODE} | grep -v "#" | grep -w ${SITE_HOSTNAME} | \
+                                            cut -d "|" -f 10 | sort | uniq | grep enterprise)" ] \
                                                 && WEBSERVER_PLATFORM=${IHS_TYPE_IDENTIFIER} \
                                                 || WEBSERVER_PLATFORM=${IPLANET_TYPE_IDENTIFIER};
                                         ENVIRONMENT_TYPE=$(getWebInfo | grep -w ${WEB_PROJECT_CODE} | grep -v "#" | grep "${SITE_HOSTNAME}" | \
@@ -616,7 +619,7 @@ function main
 
         print "$(grep -w request.not.authorized "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
-        exec ${APP_ROOT}/${MAIN_CLASS} -c;
+        exec ${MAIN_CLASS};
 
         exit 0;
     fi
@@ -737,7 +740,7 @@ function createCSR
                         unset CNAME;
                         unset RESPONSE;
 
-                        sleep "${MESSAGE_DELAY}"; reset; clear; exec ${APP_ROOT}/${MAIN_CLASS} -c;
+                        sleep "${MESSAGE_DELAY}"; reset; clear; exec ${MAIN_CLASS};
 
                         exit 0;
                         ;;
@@ -880,7 +883,7 @@ function applyLocalCertificate
                         unset CNAME;
                         unset RESPONSE;
 
-                        sleep "${MESSAGE_DELAY}"; reset; clear; exec ${APP_ROOT}/${MAIN_CLASS} -c;
+                        sleep "${MESSAGE_DELAY}"; reset; clear; exec ${MAIN_CLASS};
 
                         exit 0;
                         ;;
@@ -1025,7 +1028,7 @@ function implementCertificateChange
                         unset CNAME;
                         unset RESPONSE;
 
-                        sleep "${MESSAGE_DELAY}"; reset; clear; exec ${APP_ROOT}/${MAIN_CLASS} -c;
+                        sleep "${MESSAGE_DELAY}"; reset; clear; exec ${MAIN_CLASS};
 
                         exit 0;
                         ;;

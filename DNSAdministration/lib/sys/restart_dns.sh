@@ -83,7 +83,7 @@ case "${ACTION}" in
 
             RETVAL=${?};
 
-            if [ $RETVAL -eq 0 ]
+            if [ ${RETVAL} -eq 0 ]
             then
                 rm -f /var/run/${NAMED_PID};
                 ln -s ${NAMED_PID} /var/run/named.pid;
@@ -93,9 +93,9 @@ case "${ACTION}" in
 
             echo
             echo "Error in named configuration:";
-            echo "$named_err";
+            echo "${named_err}";
 
-            [ -x /usr/bin/logger ] && echo "$named_err" | /usr/bin/logger -pdaemon.error -tnamed;
+            [ -x /usr/bin/logger ] && echo "${named_err}" | /usr/bin/logger -pdaemon.error -tnamed;
 
             exit 2;
         fi

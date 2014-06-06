@@ -112,6 +112,8 @@ function usage
     return 3;
 }
 
+[ ${#} -eq 0 ] && usage;
+
 while getopts ":t:i:neh:" OPTIONS
 do
     case "${OPTIONS}" in

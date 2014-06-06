@@ -16,6 +16,9 @@
 #       CREATED:  ---
 #      REVISION:  ---
 #==============================================================================
+
+[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+
 ## Application constants
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
@@ -570,7 +573,7 @@ function applyiPlanetCert
 
                         for SUFFIX in ${IPLANET_CERT_STORE_KEY_SUFFIX} ${IPLANET_CERT_STORE_CERT_SUFFIX}
                         do
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSCPConnection.exp local-copy ${WEBSERVER} ${APP_ROOT}/${CERTDB_STORE}/${CERTIFICATE_DATABASE}${SUFFIX} ${APP_ROOT}/${CERTDB_STORE}/${REMOTE_CERT_DB}${SUFFIX} ${IPLANET_OWNING_USER};";
+                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSCPConnection.exp local-copy ${WEBSERVER} ${APP_ROOT}/${CERTDB_STORE}/${CERTIFICATE_DATABASE}${SUFFIX} ${APP_ROOT}/${CERTDB_STORE}/${REMOTE_CERT_DB}${SUFFIX} ${IPLANET_OWNING_USER}";
 
                             ${APP_ROOT}/lib/tcl/runSCPConnection.exp local-copy ${WEBSERVER} \
                                 ${APP_ROOT}/${CERTDB_STORE}/${CERTIFICATE_DATABASE}${SUFFIX} \

@@ -34,7 +34,7 @@ METHOD_NAME="${CNAME}#startup";
 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-[ -z "${ENFORCE_SECURITY}" || "${ENFORCE_SECURITY}" = "${_FALSE}" ]] && return 0;
+[[ -z "${ENFORCE_SECURITY}" || "${ENFORCE_SECURITY}" = "${_FALSE}" ]] && return 0;
 
 #===  FUNCTION  ===============================================================
 #          NAME:  validateAccountAccess
@@ -127,7 +127,7 @@ function validateSystemAccess
     do
         [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "HOST -> ${HOST}";
 
-        if [ "${HOST}" = "${SYSTEM_HOSTNAME}" ] || 
+        if [ "${HOST}" = "${SYSTEM_HOSTNAME}" ]
         then
             RETURN_CODE=0;
 
