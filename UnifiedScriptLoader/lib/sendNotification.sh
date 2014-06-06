@@ -18,7 +18,7 @@
 #
 #==============================================================================
 
-[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 ## Application constants
 CNAME="$(basename "${0}")";
@@ -28,13 +28,13 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 [[ -z "${APP_ROOT}" && ! -s ${SCRIPT_ROOT}/../lib/constants.sh ]] && echo "Failed to locate configuration data. Cannot continue." && exit 1;
 [ -z "${APP_ROOT}" ] && . ${SCRIPT_ROOT}/../lib/constants.sh;
 
-[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 METHOD_NAME="${CNAME}#startup";
 
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  sendNotificationEmail
@@ -44,11 +44,11 @@ METHOD_NAME="${CNAME}#startup";
 #==============================================================================
 function sendNotificationEmail
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing notification email for ${MESSAGE_TEMPLATE}..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing notification email for ${MESSAGE_TEMPLATE}..";
 
     ## make sure mail code doesnt exist
     unset MAILER_CODE;
@@ -61,30 +61,30 @@ function sendNotificationEmail
     then
         ## the message provided exists - process
         ## create copy
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating working copy of ${MESSAGE_TEMPLATE}..";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating working copy of ${MESSAGE_TEMPLATE}..";
 
         sed -e '1d' ${MAIL_TEMPLATE_DIR}/${MESSAGE_TEMPLATE} > ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")2>/dev/null;
 
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copy complete. Operating..";
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Obtaining message subject from template..";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copy complete. Operating..";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Obtaining message subject from template..";
 
         local MESSAGE_SUBJECT=$(head -1 ${MAIL_TEMPLATE_DIR}/${MESSAGE_TEMPLATE});
 
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MESSAGE_SUBJECT - ${MESSAGE_SUBJECT}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MESSAGE_SUBJECT - ${MESSAGE_SUBJECT}";
 
         for REPLACEMENT_ITEM in $(grep "&" ${MAIL_TEMPLATE_DIR}/${MESSAGE_TEMPLATE} | cut -d "&" -f 2)
         do
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REPLACEMENT_ITEM - ${REPLACEMENT_ITEM}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REPLACEMENT_ITEM - ${REPLACEMENT_ITEM}";
 
             sed -e "s/&${REPLACEMENT_ITEM}/$(eval echo \${${REPLACEMENT_ITEM}})/g" \
                 ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")> ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.tmp;
 
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating...";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating...";
 
             if [ "$(grep $(eval echo \${${REPLACEMENT_ITEM}}) ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.tmp)" != "" ]
             then
                 ## ok, move it over now..
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
 
                 mv ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.tmp \
                     ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")> /dev/null 2>&1;
@@ -93,7 +93,7 @@ function sendNotificationEmail
                 if [ "$(grep $(eval echo \${${REPLACEMENT_ITEM}}) ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT})" != "" ]
                 then
                     ## good, keep going
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
 
                     continue;
                 else
@@ -113,7 +113,7 @@ function sendNotificationEmail
             fi
         done
 
-        if [ -z "${MAILER_CODE}" || ${MAILER_CODE} == 0 ]
+        if [ -z "${MAILER_CODE}" || ${MAILER_CODE} -eq 0 ]
         then
             ## unset mailer code so we can re-use it
             unset MAILER_CODE;
@@ -128,14 +128,14 @@ function sendNotificationEmail
                     ## cut the filesize
                     local PRE_FILE_SIZE=$(wc -c ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")| awk '{print $1}');
 
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRE_FILE_SIZE -> ${PRE_FILE_SIZE}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRE_FILE_SIZE -> ${PRE_FILE_SIZE}";
 
                     ## echo in the zone
                     cat ${FILE_CONTENT} >> ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT};
 
                     local POST_FILE_SIZE=$(wc -c ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")| awk '{print $1}');
 
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "POST_FILE_SIZE -> ${POST_FILE_SIZE}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "POST_FILE_SIZE -> ${POST_FILE_SIZE}";
 
                     ## and make sure it got there..
                     if [ ${PRE_FILE_SIZE} != ${POST_FILE_SIZE} ]
@@ -150,10 +150,10 @@ function sendNotificationEmail
                     fi
                 fi
 
-                if [ -z "${RETURN_CODE}" || ${RETURN_CODE} == 0 ]
+                if [ -z "${RETURN_CODE}" || ${RETURN_CODE} -eq 0 ]
                 then
                     ## send it out
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command mailx -s \"${NOTIFY_SUBJECT}\" -r \"${NOTIFY_FROM_ADDRESS}\" \"${TARGET_AUDIENCE}\" < ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command mailx -s \"${NOTIFY_SUBJECT}\" -r \"${NOTIFY_FROM_ADDRESS}\" \"${TARGET_AUDIENCE}\" < ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}";
 
                     if [ ! -z "${ATTACH_FILE}" ]
                     then
@@ -177,9 +177,9 @@ function sendNotificationEmail
                     fi
                     local RET_CODE=${?};
 
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-                    if [ ${RET_CODE} != 0 ]
+                    if [ ${RET_CODE} -ne 0 ]
                     then
                         ## failed to send the email
                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to send the requested notification. Please process manually.";
@@ -189,7 +189,7 @@ function sendNotificationEmail
                         ## we're done. we no longer need the email file so lets get rid of it
                         rm -rf ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT};
 
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                         ## and return
                         local RETURN_CODE=0;
@@ -209,7 +209,7 @@ function sendNotificationEmail
         local RETURN_CODE=1;
     fi
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     unset MESSAGE_TEMPLATE;
     unset FILE_CONTENT;
@@ -234,10 +234,10 @@ function sendNotificationEmail
 #==============================================================================
 function usage
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
     print "${CNAME} - Generates notification email to send to a selected audience.";
     print "Usage: ${CNAME} [ -m <message template> ] [ -f <file> ] [ -t <send to> ] [ -a ] [ -e ] [ -?|-h show this help ]";
@@ -248,7 +248,7 @@ function usage
     print " -e    -> Execute processing.";
     print " -h|-? -> Show this help";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     return 3;
 }
@@ -259,79 +259,79 @@ while getopts ":m:f:t:a:eh" OPTIONS
 do
     METHOD_NAME="${CNAME}#init()";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
     case "${OPTIONS}" in
         m)
             ## set the message
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting MESSAGE_TEMPLATE..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting MESSAGE_TEMPLATE..";
 
             ## Capture the site root
             MESSAGE_TEMPLATE=${OPTARG};
 
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MESSAGE_TEMPLATE -> ${MESSAGE_TEMPLATE}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MESSAGE_TEMPLATE -> ${MESSAGE_TEMPLATE}";
             ;;
         f)
             ## set the message
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting FILE_CONTENT..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting FILE_CONTENT..";
 
             ## Capture the site root
             FILE_CONTENT=${OPTARG};
 
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FILE_CONTENT -> ${FILE_CONTENT}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FILE_CONTENT -> ${FILE_CONTENT}";
             ;;
         t)
             ## set the message
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting TARGET_AUDIENCE..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting TARGET_AUDIENCE..";
 
             ## Capture the site root
             typeset -l TARGET_AUDIENCE="${OPTARG}";
 
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TARGET_AUDIENCE -> ${TARGET_AUDIENCE}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TARGET_AUDIENCE -> ${TARGET_AUDIENCE}";
             ;;
         a)
             ## set the message
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting ATTACH_FILE..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting ATTACH_FILE..";
 
             ## Capture the site root
             [ ! -z "${OPTARG}" ] && ATTACH_FILE=${OPTARG};
 
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ATTACH_FILE -> ${ATTACH_FILE}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ATTACH_FILE -> ${ATTACH_FILE}";
             ;;
         e)
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating request..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating request..";
 
             ## Make sure we have enough information to process
             ## and execute
-            if [[ -z "${RETURN_CODE}" || ${RETURN_CODE} == 0 ]]
+            if [[ -z "${RETURN_CODE}" || ${RETURN_CODE} -eq 0 ]]
             then
                 if [ -z "${MESSAGE_TEMPLATE}" ]
                 then
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No message template was provided. Cannot continue.";
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
     
                     RETURN_CODE=1;
                 elif [ -z "${TARGET_AUDIENCE}" ]
                 then
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No target audience was provided. Cannot continue.";
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
     
                     RETURN_CODE=1;
                 else
                     ## We have enough information to process the request, continue
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                     sendNotificationEmail;
                 fi
             fi
             ;;
         *)
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
             usage;
             ;;

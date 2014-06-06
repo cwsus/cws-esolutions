@@ -18,7 +18,7 @@
 #      REVISION:  ---
 #==============================================================================
 
-[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 ## Application constants
 [ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
@@ -29,42 +29,42 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 [[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
-[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 METHOD_NAME="${CNAME}#startup";
 
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
 function obtainAndInstallRoots
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Retrieving updates to ${NAMED_ROOT_CACHE}..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Retrieving updates to ${NAMED_ROOT_CACHE}..";
 
     ## check if we have a tmp file, if we do, kill
     [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_ROOT_CACHE} ] && rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_ROOT_CACHE};
 
     if [ $(echo ${EXT_SLAVES[@]} | grep -c $(uname -n)) -eq 1 ]
     then
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "This is an external server. Executing DiG..";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "This is an external server. Executing DiG..";
 
         ## we're on an external slave. we don't need to run through a proxy
         $(dig +bufsize=1200 +norec NS . @a.root-servers.net > ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_ROOT_CACHE});
         RET_CODE=${?};
 
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Execution complete. Validating..";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Execution complete. Validating..";
 
-        if [ ${RET_CODE} == 0 ]
+        if [ ${RET_CODE} -eq 0 ]
         then
             ## we should have a populated file. lets check
             if [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_ROOT_CACHE} ]
             then
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Updated root file created..";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Updated root file created..";
 
                 ## file exists, make sure it doesn't contain errors
                 if [ $(grep -c "couldn\'t get address" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_ROOT_CACHE}) -ne 0 ] ||
@@ -76,7 +76,7 @@ function obtainAndInstallRoots
                     RETURN_CODE=77;
                 else
                     ## got some updates, lets go ahead and apply them
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying updates to named installation..";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying updates to named installation..";
 
                     ## backup the existing root servers file
                     (cd ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}; \
@@ -85,35 +85,35 @@ function obtainAndInstallRoots
                     ## take a pre-file checksum
                     PRE_FILE_CKSUM=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_ROOT_CACHE} | awk '{print $1}');
 
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRE_FILE_CKSUM -> ${PRE_FILE_CKSUM}";
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing existing ${NAMED_ROOT_CACHE} ..";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRE_FILE_CKSUM -> ${PRE_FILE_CKSUM}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing existing ${NAMED_ROOT_CACHE} ..";
 
                     ## remove the existing and copy in the new
                     rm -rf ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_ROOT_CACHE} > /dev/null 2>&1;
 
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal complete. Validating..";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal complete. Validating..";
 
                     ## make sure it was removed..
                     if [ ! -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_ROOT_CACHE} ]
                     then
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal validated. Moving new file..";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal validated. Moving new file..";
 
                         ## ok, it was, move in the new
                         mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_ROOT_CACHE} \
                             ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_ROOT_CACHE} > /dev/null 2>&1;
 
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Move complete. Validating..";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Move complete. Validating..";
 
                         ## and make sure it worked..
                         if [ -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_ROOT_CACHE} ]
                         then
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File validation complete. Validating content..";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File validation complete. Validating content..";
 
                             POST_FILE_CKSUM=$(cksum ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_ROOT_CACHE} | awk '{print $2}');
 
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "POST_FILE_CKSUM -> ${POST_FILE_CKSUM}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "POST_FILE_CKSUM -> ${POST_FILE_CKSUM}";
 
-                            if [ ${PRE_FILE_CKSUM} == ${POST_FILE_CKSUM} ]
+                            if [ ${PRE_FILE_CKSUM} -eq ${POST_FILE_CKSUM} ]
                             then
                                 ## all set
                                 ${LOGGER} "INFO" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Installation of ${NAMED_ROOT_CACHE} complete.";
@@ -159,11 +159,11 @@ function obtainAndInstallRoots
 
             PING_RCODE=${?}
 
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
 
-            if [ ${PING_RCODE} == 0 ]
+            if [ ${PING_RCODE} -eq 0 ]
             then
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${EXTERNAL_SERVER} \"dig +bufsize=1200 +norec NS . @a.root-servers.net\" > ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_ROOT_CACHE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${EXTERNAL_SERVER} \"dig +bufsize=1200 +norec NS . @a.root-servers.net\" > ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_ROOT_CACHE}";
 
                 ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${EXTERNAL_SERVER} "dig +bufsize=1200 +norec NS . @a.root-servers.net" > ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_ROOT_CACHE};
 
@@ -181,7 +181,7 @@ function obtainAndInstallRoots
                         RETURN_CODE=77;
                     else
                         ## we got our file and its valid. break out to continue execution
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File obtained. Clearing error counters..";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File obtained. Clearing error counters..";
 
                         ## check if our failure points are set, if they are, unset them
                         if [ ! -z "${RETURN_CODE}" ] || [ ! -z "${GENERATION_FAILURE}" ] || [ ! -z "${PROXY_FAILURE}" ]
@@ -210,7 +210,7 @@ function obtainAndInstallRoots
         if [ -z "${RETURN_CODE}" ] && [ -z "${GENERATION_FAILURE}" ] && [ -z "${PROXY_FAILURE}" ]
         then
             ## we should have a populated file. lets check
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying updates to named installation..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying updates to named installation..";
 
             ## backup the existing root servers file
             (cd ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}; \
@@ -219,35 +219,35 @@ function obtainAndInstallRoots
             ## take a pre-file checksum
             PRE_FILE_CKSUM=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_ROOT_CACHE} | awk '{print $1}');
 
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRE_FILE_CKSUM -> ${PRE_FILE_CKSUM}";
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing existing ${NAMED_ROOT_CACHE} ..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRE_FILE_CKSUM -> ${PRE_FILE_CKSUM}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing existing ${NAMED_ROOT_CACHE} ..";
 
             ## remove the existing and copy in the new
             rm -rf ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_ROOT_CACHE} > /dev/null 2>&1;
 
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal complete. Validating..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal complete. Validating..";
 
             ## make sure it was removed..
             if [ ! -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_ROOT_CACHE} ]
             then
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal validated. Moving new file..";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal validated. Moving new file..";
 
                 ## ok, it was, move in the new
                 mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_ROOT_CACHE} \
                     ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_ROOT_CACHE} > /dev/null 2>&1;
 
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Move complete. Validating..";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Move complete. Validating..";
 
                 ## and make sure it worked..
                 if [ -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_ROOT_CACHE} ]
                 then
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File validation complete. Validating content..";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File validation complete. Validating content..";
 
                     POST_FILE_CKSUM=$(cksum ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_ROOT_CACHE} | awk '{print $2}');
 
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "POST_FILE_CKSUM -> ${POST_FILE_CKSUM}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "POST_FILE_CKSUM -> ${POST_FILE_CKSUM}";
 
-                    if [ ${PRE_FILE_CKSUM} == ${POST_FILE_CKSUM} ]
+                    if [ ${PRE_FILE_CKSUM} -eq ${POST_FILE_CKSUM} ]
                     then
                         ## all set
                         ${LOGGER} "INFO" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Installation of ${NAMED_ROOT_CACHE} complete.";
@@ -287,12 +287,12 @@ function obtainAndInstallRoots
     ## post-execution cleanup
     [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_ROOT_CACHE} ] && rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_ROOT_CACHE} > /dev/null 2>&1;
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     return ${RETURN_CODE};
 }
 
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
 obtainAndInstallRoots;
 

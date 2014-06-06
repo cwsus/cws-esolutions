@@ -17,7 +17,7 @@
 #      REVISION:  ---
 #==============================================================================
 
-[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 ## Application constants
 [ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
@@ -26,9 +26,9 @@ SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 METHOD_NAME="${CNAME}#startup";
 
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  validateIPAddress
@@ -37,7 +37,7 @@ METHOD_NAME="${CNAME}#startup";
 #==============================================================================
 function validateIPAddress
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     if [ ! -z "${1}" ] && [ $(echo ${1} | tr -dc "." | wc -c) -eq 3 ]
@@ -47,10 +47,10 @@ function validateIPAddress
         THIRD_OCTET=$(echo ${1} | cut -d "." -f 3);
         FOURTH_OCTET=$(echo ${1} | cut -d "." -f 4);
 
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FIRST_OCTET -> ${FIRST_OCTET}";
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SECOND_OCTET -> ${SECOND_OCTET}";
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "THIRD_OCTET -> ${THIRD_OCTET}";
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FOURTH_OCTET -> ${FOURTH_OCTET}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FIRST_OCTET -> ${FIRST_OCTET}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SECOND_OCTET -> ${SECOND_OCTET}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "THIRD_OCTET -> ${THIRD_OCTET}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FOURTH_OCTET -> ${FOURTH_OCTET}";
 
         if [ ! ${FIRST_OCTET} -le 255 ] && [ ! ${SECOND_OCTET} -le 255 ] &&
             [ ! ${THIRD_OCTET} -le 255 ] && [ ! ${FOURTH_OCTET} -le 255 ]
@@ -87,17 +87,17 @@ function validateIPAddress
 #==============================================================================
 function validateRecordType
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
     [[ -z "${ALLOWED_RECORD_LIST}" || ! -f ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_RECORD_LIST} ]] && RETURN_CODE=0;
 
     egrep -v "^$|^#" ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_RECORD_LIST} | while read -r ALLOWED_RECORD
     do
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ALLOWED_RECORD -> ${ALLOWED_RECORD}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ALLOWED_RECORD -> ${ALLOWED_RECORD}";
 
         if [ "${1}" = "${ALLOWED_RECORD}" ]
         then
@@ -109,8 +109,8 @@ function validateRecordType
         RETURN_CODE=1;
     done
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     unset ALLOWED_RECORD;
 
@@ -125,17 +125,17 @@ function validateRecordType
 #==============================================================================
 function validateType
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
     [[ -z "${ALLOWED_RECORD_LIST}" || ! -f ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_RECORD_LIST} ]] && RETURN_CODE=0;
 
     egrep -v "^$|^#" ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_RECORD_LIST} | while read -r ALLOWED_RECORD
     do
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ALLOWED_RECORD -> ${ALLOWED_RECORD}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ALLOWED_RECORD -> ${ALLOWED_RECORD}";
 
         if [ "${1}" = "${ALLOWED_RECORD}" ]
         then
@@ -147,8 +147,8 @@ function validateType
         RETURN_CODE=1;
     done
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     unset VALIDATE_TYPE;
 
@@ -163,7 +163,7 @@ function validateType
 #==============================================================================
 function validateRecordTarget
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     ## first things first. lets find out what type of record we're
@@ -173,7 +173,7 @@ function validateRecordTarget
     then
         typeset -u RR_TYPE=${1};
 
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RR_TYPE -> ${RR_TYPE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RR_TYPE -> ${RR_TYPE}";
 
         case ${RR_TYPE} in
             [Aa]|[Nn][Ss])
@@ -190,9 +190,9 @@ function validateRecordTarget
                         ping ${2} > /dev/null 2>&1;
                         PING_RCODE=${?}
 
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
 
-                        if [ ${PING_RCODE} == 0 ]
+                        if [ ${PING_RCODE} -eq 0 ]
                         then
                             ## IP is up and responsive. all set.
                             RETURN_CODE=0;
@@ -209,9 +209,9 @@ function validateRecordTarget
                             ping ${2} > /dev/null 2>&1;
                             PING_RCODE=${?}
 
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
 
-                            if [ ${PING_RCODE} == 0 ]
+                            if [ ${PING_RCODE} -eq 0 ]
                             then
                                 ## all set
                                 RETURN_CODE=0;
@@ -237,7 +237,7 @@ function validateRecordTarget
                         ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runQuery.sh -t ${RR_TYPE} -u ${2} -o -e;
                         RET_CODE=${?};
 
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
                         if [[ -z "${RET_CODE}" || ${RET_CODE} -ne 0 ]]
                         then
@@ -249,9 +249,9 @@ function validateRecordTarget
                             ping ${RESOLVED_NAME} > /dev/null 2>&1;
                             PING_RCODE=${?}
 
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
 
-                            if [ ${PING_RCODE} == 0 ]
+                            if [ ${PING_RCODE} -eq 0 ]
                             then
                                 ## all set.
                                 RETURN_CODE=0;
@@ -275,9 +275,9 @@ function validateRecordTarget
                             ping ${RESOLVED_NAME} > /dev/null 2>&1;
                             PING_RCODE=${?}
 
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
 
-                            if [ ${PING_RCODE} == 0 ]
+                            if [ ${PING_RCODE} -eq 0 ]
                             then
                                 ## all set.
                                 RETURN_CODE=0;
@@ -302,7 +302,7 @@ function validateRecordTarget
                 ## need to know what file to look at
                 SOURCE_FILE=${3};
 
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SOURCE_FILE -> ${SOURCE_FILE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SOURCE_FILE -> ${SOURCE_FILE}";
 
                 if [ -s ${SOURCE_FILE} ]
                 then
@@ -342,8 +342,8 @@ function validateRecordTarget
     unset RESOLVED_NAME;
     unset PING_RESPONSE;
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     return ${RETURN_CODE};
 }
@@ -357,7 +357,7 @@ function validateRecordTarget
 #==============================================================================
 function perform_lookup
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     for EXTERNAL_SERVER in ${EXT_SLAVES[@]}
@@ -366,12 +366,12 @@ function perform_lookup
 
         PING_RCODE=${?}
 
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
 
-        if [ ${PING_RCODE} == 0 ]
+        if [ ${PING_RCODE} -eq 0 ]
         then
             ## stop if its available and run the command
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command on ${EXTERNAL_SERVER}..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command on ${EXTERNAL_SERVER}..";
 
             ## find out if we should do a forward or reverse lookup
             if [ "${1}" -eq "fwd" ]
@@ -393,7 +393,7 @@ function perform_lookup
             fi
         else
             ## first one wasnt available, check the remaining
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${EXTERNAL_SERVER} not responding to ping. Continuing..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${EXTERNAL_SERVER} not responding to ping. Continuing..";
         fi
     done
 
@@ -411,7 +411,7 @@ function perform_lookup
 #==============================================================================
 function usage
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     print "${CNAME} - Validate data provided for a SRV record.";
@@ -425,9 +425,9 @@ function usage
 [ ${#} -eq 0 ] && usage;
 METHOD_NAME="${CNAME}#startup";
 
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
 ## make sure we have args
 [ ${#} -eq 0 ] && usage || validate_protocol ${@};

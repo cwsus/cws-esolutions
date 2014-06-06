@@ -17,7 +17,7 @@
 #      REVISION:  ---
 #==============================================================================
 
-[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 ## Application constants
 CNAME="$(basename "${0}")";
@@ -32,11 +32,11 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 #==============================================================================
 function addStartupException
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing previous temporary files..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing previous temporary files..";
 
     EXCEPTION_FILE_NAME=$(echo ${CORE_EXCEPTION_LIST} | cut -d "/" -f 2);
     TMP_EXCEPTION_FILE=${APP_ROOT}/${TMP_DIRECTORY}/${EXCEPTION_FILE_NAME};
@@ -46,33 +46,33 @@ function addStartupException
     [ -f ${TMP_EXCEPTION_FILE} ] && rm -rf ${TMP_EXCEPTION_FILE};
     [ -f ${NEW_EXCEPTION_FILE} ] && rm -rf ${NEW_EXCEPTION_FILE};
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Cleanup complete. Continuing..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Cleanup complete. Continuing..";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXCEPTION_FILE_NAME -> ${EXCEPTION_FILE_NAME}";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_EXCEPTION_FILE -> ${TMP_EXCEPTION_FILE}";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NEW_EXCEPTION_FILE -> ${NEW_EXCEPTION_FILE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXCEPTION_FILE_NAME -> ${EXCEPTION_FILE_NAME}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_EXCEPTION_FILE -> ${TMP_EXCEPTION_FILE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NEW_EXCEPTION_FILE -> ${NEW_EXCEPTION_FILE}";
         
     ## populate our tmp file with the current contents
     cat ${APP_ROOT}/${CORE_EXCEPTION_LIST} > ${TMP_EXCEPTION_FILE};
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Population complete. Validating..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Population complete. Validating..";
 
     if [ -f ${TMP_EXCEPTION_FILE} ]
     then
         ## file exists, continue
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validation complete. Adding new entry..";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validation complete. Adding new entry..";
 
         if [ ! -z "${1}" ]
         then
             for SITE_ENTRY in ${1}
             do
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding ${SITE_ENTRY}..";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding ${SITE_ENTRY}..";
 
                 ## get the site info
                 WEB_PROJECT_CODE=$(getWebInfo | grep -w ${SITE_ENTRY} | grep -v "#" | \
                     cut -d "|" -f 1 | cut -d ":" -f 2 | sort | uniq); ## get the webcode
 
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WEB_PROJECT_CODE -> ${WEB_PROJECT_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WEB_PROJECT_CODE -> ${WEB_PROJECT_CODE}";
 
                 if [ ! -z "${WEB_PROJECT_CODE}" ]
                 then
@@ -92,17 +92,17 @@ function addStartupException
                             ;;
                     esac
 
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INSTANCE_NAME -> ${INSTANCE_NAME}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INSTANCE_NAME -> ${INSTANCE_NAME}";
 
                     if [ ! -z "${INSTANCE_NAME}" ]
                     then
-                        if [ $(grep -c ${INSTANCE_NAME} ${APP_ROOT}/${CORE_EXCEPTION_LIST}) == 0 ]
+                        if [ $(grep -c ${INSTANCE_NAME} ${APP_ROOT}/${CORE_EXCEPTION_LIST}) -eq 0 ]
                         then
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding ${SITE_ENTRY} / ${INSTANCE_NAME} to ${CORE_EXCEPTION_LIST} ..";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding ${SITE_ENTRY} / ${INSTANCE_NAME} to ${CORE_EXCEPTION_LIST} ..";
 
                             print ${INSTANCE_NAME} >> ${TMP_EXCEPTION_FILE};
 
-                            if [ $(grep -c ${INSTANCE_NAME} ${TMP_EXCEPTION_FILE}) == 0 ]
+                            if [ $(grep -c ${INSTANCE_NAME} ${TMP_EXCEPTION_FILE}) -eq 0 ]
                             then
                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to add ${SITE_ENTRY}, ${INSTANCE_NAME} to exception file";
 
@@ -123,13 +123,13 @@ function addStartupException
                 fi
             done
         else
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding ${SITE_HOSTNAME}..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding ${SITE_HOSTNAME}..";
 
             ## get the site info
             WEB_PROJECT_CODE=$(getWebInfo | grep -w ${SITE_HOSTNAME} | grep -v "#" | \
                 cut -d "|" -f 1 | cut -d ":" -f 2 | sort | uniq); ## get the webcode
 
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WEB_PROJECT_CODE -> ${WEB_PROJECT_CODE}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WEB_PROJECT_CODE -> ${WEB_PROJECT_CODE}";
 
             if [ ! -z "${WEB_PROJECT_CODE}" ]
             then
@@ -149,17 +149,17 @@ function addStartupException
                         ;;
                 esac
 
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INSTANCE_NAME -> ${INSTANCE_NAME}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INSTANCE_NAME -> ${INSTANCE_NAME}";
 
                 if [ ! -z "${INSTANCE_NAME}" ]
                 then
-                    if [ $(grep -c ${INSTANCE_NAME} ${APP_ROOT}/${CORE_EXCEPTION_LIST}) == 0 ]
+                    if [ $(grep -c ${INSTANCE_NAME} ${APP_ROOT}/${CORE_EXCEPTION_LIST}) -eq 0 ]
                     then
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding ${SITE_HOSTNAME} / ${INSTANCE_NAME} to ${CORE_EXCEPTION_LIST} ..";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding ${SITE_HOSTNAME} / ${INSTANCE_NAME} to ${CORE_EXCEPTION_LIST} ..";
 
                         print ${INSTANCE_NAME} >> ${TMP_EXCEPTION_FILE};
 
-                        if [ $(grep -c ${INSTANCE_NAME} ${TMP_EXCEPTION_FILE}) == 0 ]
+                        if [ $(grep -c ${INSTANCE_NAME} ${TMP_EXCEPTION_FILE}) -eq 0 ]
                         then
                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to add ${SITE_HOSTNAME}, ${INSTANCE_NAME} to exception file";
 
@@ -180,34 +180,34 @@ function addStartupException
             fi
         fi
 
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ERROR_COUNT -> ${ERROR_COUNT}";
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "New entry added. Validating..";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ERROR_COUNT -> ${ERROR_COUNT}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "New entry added. Validating..";
 
-        if [ ${ERROR_COUNT} == 0 ]
+        if [ ${ERROR_COUNT} -eq 0 ]
         then
             ## entry added
             ## cksum the copy
             ## backup the existing file..
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backing up configuration..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backing up configuration..";
 
             BACKUP_FILENAME=$(echo ${CORE_EXCEPTION_LIST} | cut -d "/" -f 2).$(date +"%m-%d-%Y").${IUSER_AUDIT};
 
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BACKUP_FILENAME -> ${BACKUP_FILENAME}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BACKUP_FILENAME -> ${BACKUP_FILENAME}";
 
             cp -p ${APP_ROOT}/${CORE_EXCEPTION_LIST} ${APP_ROOT}/${BACKUP_DIRECTORY}/${BACKUP_FILENAME} > /dev/null 2>&1;
 
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete. Validating..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete. Validating..";
 
             ## make sure we have a backup..
             if [ -f ${APP_ROOT}/${BACKUP_DIRECTORY}/${BACKUP_FILENAME} ]
             then
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup validated. Patching files..";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup validated. Patching files..";
 
                 ## backup complete. checksum the original pre-patch..
                 ORIG_CKSUM=$(cksum ${APP_ROOT}/${CORE_EXCEPTION_LIST} | awk '{print $1}');
 
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ORIG_CKSUM -> ${ORIG_CKSUM}";
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Performing diff..";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ORIG_CKSUM -> ${ORIG_CKSUM}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Performing diff..";
 
                 ## our additions to the file are complete. now we need to patch the existing with the new
                 ## first diff..
@@ -215,30 +215,30 @@ function addStartupException
                     ${TMP_EXCEPTION_FILE} > ${NEW_EXCEPTION_FILE} 2>/dev/null;
                 RET_CODE=${?};
 
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Diff complete. Validating output..";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Diff complete. Validating output..";
 
-                if [ ${RET_CODE} == 1 ]
+                if [ ${RET_CODE} -eq 1 ]
                 then
                     ## make sure the diff got printed..
                     if [ -s ${NEW_EXCEPTION_FILE} ]
                     then
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing patch..";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing patch..";
 
                         ## got our diff.. patch..
                         patch ${APP_ROOT}/${CORE_EXCEPTION_LIST} < ${NEW_EXCEPTION_FILE} > /dev/null 2>&1;
                         RET_CODE=${?};
 
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-                        if [ ${RET_CODE} == 0 ]
+                        if [ ${RET_CODE} -eq 0 ]
                         then
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Patch complete. Validating..";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Patch complete. Validating..";
 
                             ## checksum the updates..
                             UPDATE_CKSUM=$(cksum ${NEW_EXCEPTION_FILE} | awk '{print $1}');
 
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "UPDATE_CKSUM -> ${UPDATE_CKSUM}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "UPDATE_CKSUM -> ${UPDATE_CKSUM}";
 
                             ## make sure file got updated..
                             if [ ${ORIG_CKSUM} -ne ${UPDATE_CKSUM} ]
@@ -249,20 +249,20 @@ function addStartupException
                                     getMachineInfo | grep -v "^#" | grep WEB | grep sol9 | cut -d "|" -f 1 | sort | uniq; \
                                     getMachineInfo | grep -v "^#" | grep WEB | grep sol10 | cut -d "|" -f 1 | sort | uniq;)
                                 do
-                                    if [ $(echo ${SERVER_IGNORE_LIST} | grep -c ${MONITORED_HOST}) == 0 ]
+                                    if [ $(echo ${SERVER_IGNORE_LIST} | grep -c ${MONITORED_HOST}) -eq 0 ]
                                     then
-                                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating against ${MONITORED_HOST}..";
-                                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now validating proxy ${PROXY}..";
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating against ${MONITORED_HOST}..";
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now validating proxy ${PROXY}..";
 
                                         $(ping ${MONITORED_HOST} > /dev/null 2>&1);
 
                                         PING_RCODE=${?}
 
-                                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
 
-                                        if [ ${PING_RCODE} == 0 ]
+                                        if [ ${PING_RCODE} -eq 0 ]
                                         then
-                                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${MONITORED_HOST} \"${REMOTE_APP_ROOT}/lib/monitors/${MONITORING_SCRIPT}.sh\" websrv";
+                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${MONITORED_HOST} \"${REMOTE_APP_ROOT}/lib/monitors/${MONITORING_SCRIPT}.sh\" websrv";
 
                                             ## unset ret code from prior execution
                                             unset RET_CODE;
@@ -272,9 +272,9 @@ function addStartupException
                                             ## make sure it was copied..
                                             REMOTE_CKSUM=$(${APP_ROOT}/lib/tcl/runSSHConnection.exp ${MONITORED_HOST} "cksum ${APP_ROOT}/${CORE_EXCEPTION_LIST}" websrv);
 
-                                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REMOTE_CKSUM -> ${REMOTE_CKSUM}";
+                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REMOTE_CKSUM -> ${REMOTE_CKSUM}";
 
-                                            if [ ${REMOTE_CKSUM} == ${UPDATE_CKSUM} ]
+                                            if [ ${REMOTE_CKSUM} -eq ${UPDATE_CKSUM} ]
                                             then
                                                 ## successfully copied.
                                                 ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${SSL_EXCEPTION_LIST} updated: Site: ${SITE_HOSTNAME}; User: ${IUSER_AUDIT}; Server: ${MONITORED_HOST}";
@@ -291,11 +291,11 @@ function addStartupException
                                         fi
                                     else
                                         ## server found in exclusion list
-                                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${MONITORED_HOST} was found in exclusion list. Skippiing.";
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${MONITORED_HOST} was found in exclusion list. Skippiing.";
                                     fi
                                 done
 
-                                if [ ${ERROR_COUNT} == 0 ]
+                                if [ ${ERROR_COUNT} -eq 0 ]
                                 then
                                     ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${SSL_EXCEPTION_LIST} updated: Site: ${SITE_HOSTNAME}; User: ${IUSER_AUDIT}; Server: ${MONITORED_HOST}";
 
@@ -324,7 +324,7 @@ function addStartupException
                         RETURN_CODE=44;
                     fi
                 else
-                    if [ ${RET_CODE} == 0 ]
+                    if [ ${RET_CODE} -eq 0 ]
                     then
                         ## files are the same, no differences
                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No differences were found. Cannot continue.";
@@ -367,7 +367,7 @@ function addStartupException
     unset TMP_EXCEPTION_FILE;
     unset EXCEPTION_FILE_NAME;
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 }
 
 #===  FUNCTION  ===============================================================
@@ -378,11 +378,11 @@ function addStartupException
 #==============================================================================
 function addSSLException
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing previous temporary files..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing previous temporary files..";
 
     EXCEPTION_FILE_NAME=$(echo ${SSL_EXCEPTION_LIST} | cut -d "/" -f 2);
     TMP_EXCEPTION_FILE=${APP_ROOT}/${TMP_DIRECTORY}/${EXCEPTION_FILE_NAME};
@@ -392,33 +392,33 @@ function addSSLException
     [ -f ${TMP_EXCEPTION_FILE} ] && rm -rf ${TMP_EXCEPTION_FILE};
     [ -f ${NEW_EXCEPTION_FILE} ] && rm -rf ${NEW_EXCEPTION_FILE};
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Cleanup complete. Continuing..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Cleanup complete. Continuing..";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXCEPTION_FILE_NAME -> ${EXCEPTION_FILE_NAME}";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_EXCEPTION_FILE -> ${TMP_EXCEPTION_FILE}";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NEW_EXCEPTION_FILE -> ${NEW_EXCEPTION_FILE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXCEPTION_FILE_NAME -> ${EXCEPTION_FILE_NAME}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_EXCEPTION_FILE -> ${TMP_EXCEPTION_FILE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NEW_EXCEPTION_FILE -> ${NEW_EXCEPTION_FILE}";
         
     ## populate our tmp file with the current contents
     cat ${APP_ROOT}/${SSL_EXCEPTION_LIST} > ${TMP_EXCEPTION_FILE};
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Population complete. Validating..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Population complete. Validating..";
 
     if [ -f ${TMP_EXCEPTION_FILE} ]
     then
         ## file exists, continue
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validation complete. Adding new entry..";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validation complete. Adding new entry..";
 
         if [ ! -z "${1}" ]
         then
             for SITE_ENTRY in ${1}
             do
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding ${SITE_ENTRY}..";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding ${SITE_ENTRY}..";
 
                 ## get the site info
                 WEB_PROJECT_CODE=$(getWebInfo | grep -w ${SITE_ENTRY} | grep -v "#" | \
                     cut -d "|" -f 1 | cut -d ":" -f 2 | sort | uniq); ## get the webcode
 
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WEB_PROJECT_CODE -> ${WEB_PROJECT_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WEB_PROJECT_CODE -> ${WEB_PROJECT_CODE}";
 
                 if [ ! -z "${WEB_PROJECT_CODE}" ]
                 then
@@ -438,17 +438,17 @@ function addSSLException
                             ;;
                     esac
 
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INSTANCE_NAME -> ${INSTANCE_NAME}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INSTANCE_NAME -> ${INSTANCE_NAME}";
 
                     if [ ! -z "${INSTANCE_NAME}" ]
                     then
-                        if [ $(grep -c ${INSTANCE_NAME} ${APP_ROOT}/${SSL_EXCEPTION_LIST}) == 0 ]
+                        if [ $(grep -c ${INSTANCE_NAME} ${APP_ROOT}/${SSL_EXCEPTION_LIST}) -eq 0 ]
                         then
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding ${SITE_ENTRY} / ${INSTANCE_NAME} to ${SSL_EXCEPTION_LIST} ..";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding ${SITE_ENTRY} / ${INSTANCE_NAME} to ${SSL_EXCEPTION_LIST} ..";
 
                             print ${INSTANCE_NAME} >> ${TMP_EXCEPTION_FILE};
 
-                            if [ $(grep -c ${INSTANCE_NAME} ${TMP_EXCEPTION_FILE}) == 0 ]
+                            if [ $(grep -c ${INSTANCE_NAME} ${TMP_EXCEPTION_FILE}) -eq 0 ]
                             then
                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to add ${SITE_ENTRY}, ${INSTANCE_NAME} to exception file";
 
@@ -469,13 +469,13 @@ function addSSLException
                 fi
             done
         else
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding ${SITE_HOSTNAME}..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding ${SITE_HOSTNAME}..";
 
             ## get the site info
             WEB_PROJECT_CODE=$(getWebInfo | grep -w ${SITE_HOSTNAME} | grep -v "#" | \
                 cut -d "|" -f 1 | cut -d ":" -f 2 | sort | uniq); ## get the webcode
 
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WEB_PROJECT_CODE -> ${WEB_PROJECT_CODE}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WEB_PROJECT_CODE -> ${WEB_PROJECT_CODE}";
 
             if [ ! -z "${WEB_PROJECT_CODE}" ]
             then
@@ -495,17 +495,17 @@ function addSSLException
                         ;;
                 esac
 
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INSTANCE_NAME -> ${INSTANCE_NAME}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INSTANCE_NAME -> ${INSTANCE_NAME}";
 
                 if [ ! -z "${INSTANCE_NAME}" ]
                 then
-                    if [ $(grep -c ${INSTANCE_NAME} ${APP_ROOT}/${SSL_EXCEPTION_LIST}) == 0 ]
+                    if [ $(grep -c ${INSTANCE_NAME} ${APP_ROOT}/${SSL_EXCEPTION_LIST}) -eq 0 ]
                     then
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding ${SITE_HOSTNAME} / ${INSTANCE_NAME} to ${SSL_EXCEPTION_LIST} ..";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding ${SITE_HOSTNAME} / ${INSTANCE_NAME} to ${SSL_EXCEPTION_LIST} ..";
 
                         print ${INSTANCE_NAME} >> ${TMP_EXCEPTION_FILE};
 
-                        if [ $(grep -c ${INSTANCE_NAME} ${TMP_EXCEPTION_FILE}) == 0 ]
+                        if [ $(grep -c ${INSTANCE_NAME} ${TMP_EXCEPTION_FILE}) -eq 0 ]
                         then
                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to add ${SITE_HOSTNAME}, ${INSTANCE_NAME} to exception file";
 
@@ -526,34 +526,34 @@ function addSSLException
             fi
         fi
 
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ERROR_COUNT -> ${ERROR_COUNT}";
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "New entry added. Validating..";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ERROR_COUNT -> ${ERROR_COUNT}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "New entry added. Validating..";
 
-        if [ ${ERROR_COUNT} == 0 ]
+        if [ ${ERROR_COUNT} -eq 0 ]
         then
             ## entry added
             ## cksum the copy
             ## backup the existing file..
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backing up configuration..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backing up configuration..";
 
             BACKUP_FILENAME=$(echo ${SSL_EXCEPTION_LIST} | cut -d "/" -f 2).$(date +"%m-%d-%Y").${IUSER_AUDIT};
 
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BACKUP_FILENAME -> ${BACKUP_FILENAME}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BACKUP_FILENAME -> ${BACKUP_FILENAME}";
 
             cp -p ${APP_ROOT}/${SSL_EXCEPTION_LIST} ${APP_ROOT}/${BACKUP_DIRECTORY}/${BACKUP_FILENAME} > /dev/null 2>&1;
 
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete. Validating..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete. Validating..";
 
             ## make sure we have a backup..
             if [ -f ${APP_ROOT}/${BACKUP_DIRECTORY}/${BACKUP_FILENAME} ]
             then
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup validated. Patching files..";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup validated. Patching files..";
 
                 ## backup complete. checksum the original pre-patch..
                 ORIG_CKSUM=$(cksum ${APP_ROOT}/${SSL_EXCEPTION_LIST} | awk '{print $1}');
 
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ORIG_CKSUM -> ${ORIG_CKSUM}";
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Performing diff..";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ORIG_CKSUM -> ${ORIG_CKSUM}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Performing diff..";
 
                 ## our additions to the file are complete. now we need to patch the existing with the new
                 ## first diff..
@@ -561,30 +561,30 @@ function addSSLException
                     ${TMP_EXCEPTION_FILE} > ${NEW_EXCEPTION_FILE} 2>/dev/null;
                 RET_CODE=${?};
 
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Diff complete. Validating output..";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Diff complete. Validating output..";
 
-                if [ ${RET_CODE} == 1 ]
+                if [ ${RET_CODE} -eq 1 ]
                 then
                     ## make sure the diff got printed..
                     if [ -s ${NEW_EXCEPTION_FILE} ]
                     then
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing patch..";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing patch..";
 
                         ## got our diff.. patch..
                         patch ${APP_ROOT}/${SSL_EXCEPTION_LIST} < ${NEW_EXCEPTION_FILE} > /dev/null 2>&1;
                         RET_CODE=${?};
 
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-                        if [ ${RET_CODE} == 0 ]
+                        if [ ${RET_CODE} -eq 0 ]
                         then
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Patch complete. Validating..";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Patch complete. Validating..";
 
                             ## checksum the updates..
                             UPDATE_CKSUM=$(cksum ${NEW_EXCEPTION_FILE} | awk '{print $1}');
 
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "UPDATE_CKSUM -> ${UPDATE_CKSUM}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "UPDATE_CKSUM -> ${UPDATE_CKSUM}";
 
                             ## make sure file got updated..
                             if [ ${ORIG_CKSUM} -ne ${UPDATE_CKSUM} ]
@@ -595,20 +595,20 @@ function addSSLException
                                     getMachineInfo | grep -v "^#" | grep WEB | grep sol9 | cut -d "|" -f 1 | sort | uniq; \
                                     getMachineInfo | grep -v "^#" | grep WEB | grep sol10 | cut -d "|" -f 1 | sort | uniq;)
                                 do
-                                    if [ $(echo ${SERVER_IGNORE_LIST} | grep -c ${MONITORED_HOST}) == 0 ]
+                                    if [ $(echo ${SERVER_IGNORE_LIST} | grep -c ${MONITORED_HOST}) -eq 0 ]
                                     then
-                                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating against ${MONITORED_HOST}..";
-                                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now validating proxy ${PROXY}..";
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating against ${MONITORED_HOST}..";
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now validating proxy ${PROXY}..";
 
                                         $(ping ${MONITORED_HOST} > /dev/null 2>&1);
 
                                         PING_RCODE=${?}
 
-                                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
 
-                                        if [ ${PING_RCODE} == 0 ]
+                                        if [ ${PING_RCODE} -eq 0 ]
                                         then
-                                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command run_ssh_connection.exp monitor ${MONITORED_HOST} \"${REMOTE_APP_ROOT}/lib/monitors/${MONITORING_SCRIPT}.sh\" websrv";
+                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command run_ssh_connection.exp monitor ${MONITORED_HOST} \"${REMOTE_APP_ROOT}/lib/monitors/${MONITORING_SCRIPT}.sh\" websrv";
 
                                             ## unset ret code from prior execution
                                             unset RET_CODE;
@@ -618,9 +618,9 @@ function addSSLException
                                             ## make sure it was copied..
                                             REMOTE_CKSUM=$(${APP_ROOT}/lib/tcl/run_ssh_connection.exp return-data ${MONITORED_HOST} "cksum ${APP_ROOT}/${SSL_EXCEPTION_LIST}" websrv);
 
-                                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REMOTE_CKSUM -> ${REMOTE_CKSUM}";
+                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REMOTE_CKSUM -> ${REMOTE_CKSUM}";
 
-                                            if [ ${REMOTE_CKSUM} == ${UPDATE_CKSUM} ]
+                                            if [ ${REMOTE_CKSUM} -eq ${UPDATE_CKSUM} ]
                                             then
                                                 ## successfully copied.
                                                 ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${SSL_EXCEPTION_LIST} updated: Site: ${SITE_HOSTNAME}; User: ${IUSER_AUDIT}; Server: ${MONITORED_HOST}";
@@ -637,11 +637,11 @@ function addSSLException
                                         fi
                                     else
                                         ## server found in exclusion list
-                                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${MONITORED_HOST} was found in exclusion list. Skippiing.";
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${MONITORED_HOST} was found in exclusion list. Skippiing.";
                                     fi
                                 done
 
-                                if [ ${ERROR_COUNT} == 0 ]
+                                if [ ${ERROR_COUNT} -eq 0 ]
                                 then
                                     ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${SSL_EXCEPTION_LIST} updated: Site: ${SITE_HOSTNAME}; User: ${IUSER_AUDIT}; Server: ${MONITORED_HOST}";
 
@@ -670,7 +670,7 @@ function addSSLException
                         RETURN_CODE=44;
                     fi
                 else
-                    if [ ${RET_CODE} == 0 ]
+                    if [ ${RET_CODE} -eq 0 ]
                     then
                         ## files are the same, no differences
                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No differences were found. Cannot continue.";
@@ -713,7 +713,7 @@ function addSSLException
     unset TMP_EXCEPTION_FILE;
     unset EXCEPTION_FILE_NAME;
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 }
 
 #===  FUNCTION  ===============================================================
@@ -724,10 +724,10 @@ function addSSLException
 #==============================================================================
 function usage
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
     print "${CNAME} - Updates a selected exception list.";
     print "Usage: ${CNAME} <exception list>";
@@ -735,7 +735,7 @@ function usage
     print "    ${CORE_EXCEPTION_LIST}";
     print "    ${SSL_EXCEPTION_LIST}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     return 3;
 }
@@ -748,9 +748,9 @@ function usage
 OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
 
 [ "${1}" = "${SSL_EXCEPTION_LIST}" ] && addSSLException "${2}";

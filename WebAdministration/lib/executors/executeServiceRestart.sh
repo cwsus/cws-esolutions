@@ -18,7 +18,7 @@
 #      REVISION:  ---
 #==============================================================================
 
-[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 ## Application constants
 [ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="WebAdministration";
@@ -34,29 +34,29 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 #==============================================================================
 function serviceControl
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     INSTANCE_NAME=${1};
     COMMAND_NAME=${2};
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INSTANCE_NAME -> ${INSTANCE_NAME}";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "COMMAND_NAME -> ${COMMAND_NAME}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INSTANCE_NAME -> ${INSTANCE_NAME}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "COMMAND_NAME -> ${COMMAND_NAME}";
 
     ## ok, lets sort out where we are and what to look for
     if [ ! -z "${WS_PLATFORM}" ]
     then
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WS_PLATFORM -> ${WS_PLATFORM}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WS_PLATFORM -> ${WS_PLATFORM}";
 
         if [ "${WS_PLATFORM}" = "${IPLANET_TYPE_IDENTIFIER}" ]
         then
             if [ -d ${IPLANET_ROOT}/${INSTANCE_NAME} ]
             then
                 ## instance provided is valid for this server
-                if [ $(grep -c ${INSTANCE_NAME} ${APP_ROOT}/${CORE_EXCEPTION_LIST}) == 0 ] \
-                        && [ $(grep -c ${INSTANCE_NAME} ${APP_ROOT}/${TMP_EXCEPTION_LIST}) == 0 ] \
-                        && [ $(echo ${IPLANET_STARTUP_IGNORE_LIST} | grep -c ${INSTANCE_NAME}) == 0 ]
+                if [ $(grep -c ${INSTANCE_NAME} ${APP_ROOT}/${CORE_EXCEPTION_LIST}) -eq 0 ] \
+                        && [ $(grep -c ${INSTANCE_NAME} ${APP_ROOT}/${TMP_EXCEPTION_LIST}) -eq 0 ] \
+                        && [ $(echo ${IPLANET_STARTUP_IGNORE_LIST} | grep -c ${INSTANCE_NAME}) -eq 0 ]
                 then
                     ## pull out the port number. it drives what we alert
                     ## get the pid (if it exists) too
@@ -66,19 +66,19 @@ function serviceControl
                         cut -d "@" -f 2 | awk '{print $1}' | sed -e "s/\"//g");
                     PID_LOG_FILE=$(grep -w ${IPLANET_PID_IDENTIFIER} ${IPLANET_ROOT}/${INSTANCE_NAME}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG} | awk '{print $2}');
 
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_PORT_NUMBER -> ${SITE_PORT_NUMBER}";
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LOG_FILE -> ${PID_LOG_FILE}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_PORT_NUMBER -> ${SITE_PORT_NUMBER}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LOG_FILE -> ${PID_LOG_FILE}";
 
                     ## see if the pidfile exists, if it does, see if theres a pid in it
                     if [ -s ${PID_LOG_FILE} ]
                     then
                         SERVICE_PID=$(cat ${PID_LOG_FILE});
 
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_PID -> ${SERVICE_PID}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_PID -> ${SERVICE_PID}";
 
                         PROCESS_OUTPUT=$(ps | grep ${SERVICE_PID} | grep -v grep | grep -v ${CNAME});
 
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
 
                         if [ ! -z "${PROCESS_OUTPUT}" ]
                         then
@@ -90,11 +90,11 @@ function serviceControl
                         fi
                     else
                         ## no pidfile, check to see if theres a running process
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No pid file was located. Checking for process..";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No pid file was located. Checking for process..";
 
                         PROCESS_OUTPUT=$(ps | grep ${INSTANCE_NAME} | grep -v grep | grep -v ${CNAME});
 
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
 
                         if [ ! -z "${PROCESS_OUTPUT}" ]
                         then
@@ -106,7 +106,7 @@ function serviceControl
                         fi
                     fi
 
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IS_RUNNING -> ${IS_RUNNING}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IS_RUNNING -> ${IS_RUNNING}";
 
                     if [ ! -z "${IS_RUNNING}" ]
                     then
@@ -122,7 +122,7 @@ function serviceControl
                                     ## service isnt running, start it up
                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${INSTANCE_NAME} does not appear to be running. Restarting..";
     
-                                    [ ! -z "${TRACE}" ] && [ "${TRACE}" = "${_TRUE}" ] && set +x;
+                                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
     
                                     if [ ${SITE_PORT_NUMBER} -lt ${HIGH_PRIVILEGED_PORT} ]
                                     then
@@ -133,7 +133,7 @@ function serviceControl
                                     fi
     
                                     
-                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "STARTUP_OUTPUT -> ${STARTUP_OUTPUT}";
+                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "STARTUP_OUTPUT -> ${STARTUP_OUTPUT}";
     
                                     PID_LOG_FILE=$(grep -w ${IPLANET_PID_IDENTIFIER} ${IPLANET_ROOT}/${INSTANCE_NAME}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG} | awk '{print $2}');
     
@@ -141,12 +141,12 @@ function serviceControl
                                     then
                                         SERVICE_PID=$(cat ${PID_LOG_FILE});
     
-                                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LOG_FILE -> ${PID_LOG_FILE}";
-                                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_PID -> ${SERVICE_PID}";
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LOG_FILE -> ${PID_LOG_FILE}";
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_PID -> ${SERVICE_PID}";
     
                                         PROCESS_OUTPUT=$(ps -auxwww | grep -w ${SERVICE_PID} | grep -v grep);
     
-                                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
     
                                         if [ -z "${PROCESS_OUTPUT}" ]
                                         then
@@ -176,9 +176,9 @@ function serviceControl
                                     RETURN_CODE=39;
                                 else
                                     ## service isnt running, start it up
-                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Stopping ${INSTANCE_NAME} ..";
+                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Stopping ${INSTANCE_NAME} ..";
 
-                                    [ ! -z "${TRACE}" ] && [ "${TRACE}" = "${_TRUE}" ] && set +x;
+                                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
     
                                     if [ ${SITE_PORT_NUMBER} -lt ${HIGH_PRIVILEGED_PORT} ]
                                     then
@@ -189,7 +189,7 @@ function serviceControl
                                     fi
     
                                     
-                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SHUTDOWN_OUTPUT -> ${SHUTDOWN_OUTPUT}";
+                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SHUTDOWN_OUTPUT -> ${SHUTDOWN_OUTPUT}";
     
                                     PID_LOG_FILE=$(grep -w ${IPLANET_PID_IDENTIFIER} ${IPLANET_ROOT}/${INSTANCE_NAME}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG} | awk '{print $2}');
     
@@ -197,12 +197,12 @@ function serviceControl
                                     then
                                         SERVICE_PID=$(cat ${PID_LOG_FILE});
     
-                                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LOG_FILE -> ${PID_LOG_FILE}";
-                                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_PID -> ${SERVICE_PID}";
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LOG_FILE -> ${PID_LOG_FILE}";
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_PID -> ${SERVICE_PID}";
     
                                         PROCESS_OUTPUT=$(ps -auxww | grep -w ${SERVICE_PID} | grep -v grep);
     
-                                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
     
                                         if [ -z "${PROCESS_OUTPUT}" ]
                                         then
@@ -258,40 +258,40 @@ function serviceControl
             ## IHS host.
             set -A VALIDATE_SERVER_LIST $(ls -ltr ${IHS_ROOT} | grep ${IHS_WEB_IDENTIFIER} | awk '{print $9}');
 
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST -> ${VALIDATE_SERVER_LIST[@]}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST -> ${VALIDATE_SERVER_LIST[@]}";
 
             if [ ! -z "${VALIDATE_SERVER_LIST}" ]
             then
                 ## ok, validate it
                 for WEBSERVER in ${VALIDATE_SERVER_LIST[@]}
                 do
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WEBSERVER -> ${WEBSERVER}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WEBSERVER -> ${WEBSERVER}";
 
-                    if [ $(grep -c ${WEBSERVER} ${APP_ROOT}/${CORE_EXCEPTION_LIST}) == 0 ] \
-                        && [ $(grep -c ${WEBSERVER} ${APP_ROOT}/${TMP_EXCEPTION_LIST}) == 0 ] \
-                        && [ $(echo ${IPLANET_STARTUP_IGNORE_LIST} | grep -c ${WEBSERVER}) == 0 ]
+                    if [ $(grep -c ${WEBSERVER} ${APP_ROOT}/${CORE_EXCEPTION_LIST}) -eq 0 ] \
+                        && [ $(grep -c ${WEBSERVER} ${APP_ROOT}/${TMP_EXCEPTION_LIST}) -eq 0 ] \
+                        && [ $(echo ${IPLANET_STARTUP_IGNORE_LIST} | grep -c ${WEBSERVER}) -eq 0 ]
                     then
                         ## ok, we can run it. its not in an exception list
                         PID_LOG_FILE=$(grep -w ${IHS_PID_IDENTIFIER} ${IHS_ROOT}/${IHS_CONFIG_PATH}/${WEBSERVER}/${IHS_SERVER_CONFIG} | awk '{print $2}');
 
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LOG_FILE -> ${PID_LOG_FILE}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LOG_FILE -> ${PID_LOG_FILE}";
 
                         if [ -s ${PID_LOG_FILE} ]
                         then
                             SERVICE_PID=$(cat ${PID_LOG_FILE});
 
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_PID -> ${SERVICE_PID}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_PID -> ${SERVICE_PID}";
 
                             PROCESS_OUTPUT=$(ps -axww | grep -w ${SERVICE_PID} | grep -v grep);
 
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
 
                             if [ ! -z "${PROCESS_OUTPUT}" ]
                             then
                                 ## server is running, check to see who its running as
                                 PROCESS_OWNER=$(echo ${PROCESS_OUTPUT} | awk '{print $1}');
 
-                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OWNER -> ${PROCESS_OWNER}";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OWNER -> ${PROCESS_OWNER}";
 
                                 if [ "${PROCESS_OWNER}" != "${IHS_PROCESS_USER}" ]
                                 then
@@ -312,21 +312,21 @@ function serviceControl
                                 startIHS ${WEBSERVER};
                                 RET_CODE=${?};
 
-                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
                                 PID_LOG_FILE=$(grep -w ${IHS_PID_IDENTIFIER} ${IHS_ROOT}/${IHS_CONFIG_PATH}/${WEBSERVER}/${IHS_SERVER_CONFIG} | awk '{print $2}');
 
-                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LOG_FILE -> ${PID_LOG_FILE}";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LOG_FILE -> ${PID_LOG_FILE}";
 
                                 if [ -s ${PID_LOG_FILE} ]
                                 then
                                     SERVICE_PID=$(cat ${PID_LOG_FILE});
 
-                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_PID -> ${SERVICE_PID}";
+                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_PID -> ${SERVICE_PID}";
 
                                     PROCESS_OUTPUT=$(ps -auxww | grep -w ${SERVICE_PID} | grep -v grep);
 
-                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
+                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
 
                                     if [ -z "${PROCESS_OUTPUT}" ]
                                     then
@@ -349,21 +349,21 @@ function serviceControl
                             startIHS ${WEBSERVER};
                             RET_CODE=${?};
 
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
                             PID_LOG_FILE=$(grep -w ${IHS_PID_IDENTIFIER} ${IHS_ROOT}/${IHS_CONFIG_PATH}/${WEBSERVER}/${IHS_SERVER_CONFIG} | awk '{print $2}');
 
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LOG_FILE -> ${PID_LOG_FILE}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LOG_FILE -> ${PID_LOG_FILE}";
 
                             if [ -s ${PID_LOG_FILE} ]
                             then
                                 SERVICE_PID=$(cat ${PID_LOG_FILE});
 
-                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_PID -> ${SERVICE_PID}";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_PID -> ${SERVICE_PID}";
 
                                 PROCESS_OUTPUT=$(ps -auxww | grep -w ${SERVICE_PID} | grep -v grep);
 
-                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
 
                                 if [ -z "${PROCESS_OUTPUT}" ]
                                 then
@@ -406,7 +406,7 @@ function serviceControl
     unset RET_CODE;
     unset STARTUP_OUTPUT;
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 }
 
 #===  FUNCTION  ===============================================================
@@ -417,17 +417,17 @@ function serviceControl
 #==============================================================================
 function usage
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
     print "${CNAME} - stop, start, or restart a selected service.";
     print "Usage: ${CNAME} <instance> <control command>";
     print " No arguments are required to operate this utility.";
     print " -h|-? -> Show this help";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     return 3;
 }
@@ -440,9 +440,9 @@ function usage
 OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
 serviceControl ${@};
 

@@ -24,7 +24,7 @@
 #==============================================================================
 function returnEpochTime
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+    [ ! -z ${ENABLE_TRACE} ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
     if [ ${#} -eq 0 ]
     then
@@ -66,7 +66,7 @@ function returnEpochTime
             ;;
     esac
 
-    [[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set +x;
+    [ ! -z ${ENABLE_TRACE} ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
     return 0;
 }
@@ -79,13 +79,13 @@ function returnEpochTime
 #==============================================================================
 function obtainLogWatchStamp
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+    [ ! -z ${ENABLE_TRACE} ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
     /usr/bin/env perl -e '
         @d=localtime time() - $ENV{"LOG_FILE_DELAY"};
         printf "%02d:%02d:%02d\n", $d[2],$d[1],$d[0];';
 
-    [[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set +x;
+    [ ! -z ${ENABLE_TRACE} ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
     return 0;
 }
@@ -98,13 +98,13 @@ function obtainLogWatchStamp
 #==============================================================================
 function getFileStat
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+    [ ! -z ${ENABLE_TRACE} ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
     /usr/bin/env perl -e '
         @d=localtime ((stat(shift)) [10]);
         printf "%4d%02d%02d\n", $d[5]+1900,$d[4]+1,$d[3]' ${1};
 
-    [[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set +x;
+    [ ! -z ${ENABLE_TRACE} ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
     return 0;
 }
@@ -117,18 +117,19 @@ function getFileStat
 #==============================================================================
 function isNaN
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+    [ ! -z ${ENABLE_TRACE} ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    local RETURN_CODE=0;
 
-    [ -z "${1}" ] && echo 1;
+    [ -z "${1}" ] && local RETURN_CODE=1;
 
     case ${1} in
-        ?([+-])+([0-9])) echo 0 ;;
-        *) echo 1 ;;
+        ?([+-])+([0-9])) RETURN_CODE=0;;
+        *) RETURN_CODE=1 ;;
     esac
 
-    [[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set +x;
+    [ ! -z ${ENABLE_TRACE} ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
-    return 0;
+    return ${RETURN_CODE};
 }
 
 #===  FUNCTION  ===============================================================
@@ -139,7 +140,7 @@ function isNaN
 #==============================================================================
 function contains
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+    [ ! -z ${ENABLE_TRACE} ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
     typeset -i COUNTER=0;
 
@@ -148,9 +149,9 @@ function contains
 
     for ARGUMENT in ${@}
     do
-        [ ${COUNTER} == ${LAST_ARG} ] && break;
+        [ ${COUNTER} -eq ${LAST_ARG} ] && break;
 
-        [ "${ARGUMENT}" == "${SEARCH_STRING}" ] && return 0;
+        [ "${ARGUMENT}" = "${SEARCH_STRING}" ] && return 0;
 
         (( COUNTER += 1 ));
     done
@@ -160,7 +161,7 @@ function contains
     unset ARGUMENT;
     unset SEARCH_STRING;
 
-    [[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set +x;
+    [ ! -z ${ENABLE_TRACE} ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
     return 1;
 }
@@ -173,21 +174,17 @@ function contains
 #==============================================================================
 function cancelRequest
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+    [ ! -z ${ENABLE_TRACE} ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
     reset; clear;
-
-    [[ ! -z ${VERBOSE} && "${VERBOSE}" == "${_TRUE}" ]] && $(${LOGGER} DEBUG ${METHOD_NAME} ${CNAME} ${LINENO} "Request processing canceled.");
 
     print "$(cat ${SYSTEM_MESSAGES} | grep system.request.canceled | grep -v "#" | cut -d "=" -f 2)\n";
 
     ## terminate this thread and return control to main
-    [[ ! -z ${VERBOSE} && "${VERBOSE}" == "${_TRUE}" ]] && $(${LOGGER} DEBUG ${METHOD_NAME} ${CNAME} ${LINENO} "${METHOD_NAME} -> exit");
-
     sleep ${MESSAGE_DELAY}; reset; clear;
-    [ -z "${1}" ] && exec ${APP_ROOT}/${MAIN_CLASS} || exec ${1};
+    [ -z "${1}" ] && exec ${MAIN_CLASS} || exec ${1};
 
-    [[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set +x;
+    [ ! -z ${ENABLE_TRACE} ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
     return 0;
 }
@@ -201,7 +198,7 @@ function cancelRequest
 #==============================================================================
 function stringCrypt
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+    [ ! -z ${ENABLE_TRACE} ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
     if [ ${#} -ne 3 ]
     then
@@ -235,7 +232,7 @@ function stringCrypt
             ;;
     esac
 
-    [[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set +x;
+    [ ! -z ${ENABLE_TRACE} ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
     return ${RETURN_CODE};
 }
@@ -248,7 +245,7 @@ function stringCrypt
 #==============================================================================
 function getKey
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+    [ ! -z ${ENABLE_TRACE} ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
     [ ${#} -eq 0 ] && echo "A hostname must be provided" && return 1;
     [ "$(/usr/bin/env dig +short -t a ${1})" != ""] && echo "Host ${1} not found in DNS" && return 1;
@@ -256,7 +253,7 @@ function getKey
     /usr/bin/env ssh-keyscan -t rsa ${1} 2>>~/.ssh/known_hosts 1>>~/.ssh/known_hosts;
     /usr/bin/env ssh-keyscan -t dsa ${1} 2>/dev/null 1>>~/.ssh/known_hosts;
 
-    [[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set +x;
+    [ ! -z ${ENABLE_TRACE} ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
     return ${?};
 }
@@ -269,7 +266,7 @@ function getKey
 #==============================================================================
 function distributePackage
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+    [ ! -z ${ENABLE_TRACE} ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
     if [ ${#} -ne 4 ]
     then
@@ -291,7 +288,7 @@ function distributePackage
 
     unset TIMEOUT_VALUE;
 
-    [[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set +x;
+    [ ! -z ${ENABLE_TRACE} ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
     return ${?};
 }
@@ -304,7 +301,7 @@ function distributePackage
 #==============================================================================
 function createBackup
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+    [ ! -z ${ENABLE_TRACE} ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
     if [ ${#} -ne 4 ]
     then
@@ -327,7 +324,7 @@ function createBackup
 
     unset TIMEOUT_VALUE;
 
-    [[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set +x;
+    [ ! -z ${ENABLE_TRACE} ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
     return ${?};
 }

@@ -17,7 +17,7 @@
 #      REVISION:  ---
 #==============================================================================
 
-[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 ## Application constants
 [ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
@@ -28,13 +28,13 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 [[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && echo "Failed to locate configuration data. Cannot continue." && exit 1;
 
-[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
 unset METHOD_NAME;
 unset CNAME;
@@ -43,7 +43,7 @@ unset CNAME;
 ${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
 RET_CODE=${?};
 
-[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE} || unset RET_CODE;
+[ ${RET_CODE} -ne 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE} || unset RET_CODE;
 
 trap "print '$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.trap.signals\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%SIGNAL%/Ctrl-C/")'; sleep "${MESSAGE_DELAY}"; reset; clear; continue " 1 2 3
 
@@ -57,83 +57,87 @@ trap "print '$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<syst
 #==============================================================================
 function main
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    if [ ! -z "${IS_DNS_RECORD_ADD_ENABLED}" ] && [ "${IS_DNS_RECORD_ADD_ENABLED}" = "${_TRUE}" ]
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+    if [ -z "${IS_DNS_RECORD_ADD_ENABLED}" ] || [ "${IS_DNS_RECORD_ADD_ENABLED}" != "${_TRUE}" ]
     then
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-
-        while true
-        do
-            reset; clear;
-
-            print "\n";
-            print "\t\t+-------------------------------------------------------------------+";
-            print "\t\t               WELCOME TO \E[0;31m $(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<plugin.application.title\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g') \033[0m";
-            print "\t\t+-------------------------------------------------------------------+";
-            print "\t\tSystem Type         : \E[0;36m ${SYSTEM_HOSTNAME} \033[0m";
-            print "\t\tSystem Uptime       : \E[0;36m ${SYSTEM_UPTIME} \033[0m";
-            print "\t\tUser                : \E[0;36m ${IUSER_AUDIT} \033[0m";
-            print "\t\t+-------------------------------------------------------------------+";
-            print "";
-            print "\t\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.available.options\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
-            print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.enter.business.unit\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
-            print "\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.option.cancel\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
-    
-            read BIZ_UNIT;
-
-            reset; clear;
-
-            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
-
-            case ${BIZ_UNIT} in
-                [Xx]|[Qq]|[Cc])
-                    ## user chose to cancel
-                    unset BIZ_UNIT;
-
-                    reset; clear;
-
-                    print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled \>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
-
-                    ## close out this app and reload the main
-                    exec ${MAIN_CLASS};
-
-                    exit 0;
-                    ;;
-                *)
-                    if [ -z "${BIZ_UNIT}" ]
-                    then
-                        ## business unit provided was blank
-                        unset BIZ_UNIT;
-
-                        print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
-
-                        sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                    else
-                        ## capitalize it
-                        typeset -u BIZ_UNIT;
-
-                        reset; clear;
-
-                        ## go to another method here
-                        provideProjectCode;
-                    fi
-                    ;;
-            esac
-        done
-    else
         $(${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS zone additions has not been enabled. Cannot continue.");
 
         print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<request.not.authorized\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
         exec ${MAIN_CLASS};
 
         exit 0;
     fi
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    while true
+    do
+        reset; clear;
+
+        print "\n";
+        print "\t\t+-------------------------------------------------------------------+";
+        print "\t\t               WELCOME TO \E[0;31m $(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<plugin.application.title\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g') \033[0m";
+        print "\t\t+-------------------------------------------------------------------+";
+        print "\t\tSystem Type         : \E[0;36m ${SYSTEM_HOSTNAME} \033[0m";
+        print "\t\tSystem Uptime       : \E[0;36m ${SYSTEM_UPTIME} \033[0m";
+        print "\t\tUser                : \E[0;36m ${IUSER_AUDIT} \033[0m";
+        print "\t\t+-------------------------------------------------------------------+";
+        print "";
+        print "\t\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.available.options\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.enter.business.unit\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+        print "\t$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.option.cancel\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+
+        read BIZ_UNIT;
+
+        reset; clear;
+
+        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+
+        case ${BIZ_UNIT} in
+            [Xx]|[Qq]|[Cc])
+                ## user chose to cancel
+                unset BIZ_UNIT;
+
+                reset; clear;
+
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled \>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+
+                ## close out this app and reload the main
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+                exec ${MAIN_CLASS};
+
+                exit 0;
+                ;;
+            *)
+                if [ -z "${BIZ_UNIT}" ]
+                then
+                    ## business unit provided was blank
+                    unset BIZ_UNIT;
+
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+
+                    sleep "${MESSAGE_DELAY}"; reset; clear; continue;
+                else
+                    ## capitalize it
+                    typeset -u BIZ_UNIT;
+
+                    reset; clear;
+
+                    ## go to another method here
+                    provideProjectCode;
+                fi
+                ;;
+        esac
+    done
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     return 0;
 }
@@ -148,11 +152,11 @@ function main
 #==============================================================================
 function provideProjectCode
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
     while true
     do
@@ -173,12 +177,12 @@ function provideProjectCode
                 unset SITE_PRJCODE;
                 unset BIZ_UNIT;
 
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS record add canceled.";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS record add canceled.";
 
                 print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                 ## terminate this thread and return control to main
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                 sleep "${MESSAGE_DELAY}"; reset; clear; break;
                 ;;
@@ -199,7 +203,7 @@ function provideProjectCode
 
                     reset; clear;
 
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_PRJCODE -> ${SITE_PRJCODE}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_PRJCODE -> ${SITE_PRJCODE}";
 
                     ## keep going
                     provideSiteHostname;
@@ -208,7 +212,7 @@ function provideProjectCode
         esac
     done
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     return 0;
 }
@@ -223,11 +227,11 @@ function provideProjectCode
 #==============================================================================
 function provideSiteHostname
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
     while true
     do
@@ -251,7 +255,7 @@ function provideSiteHostname
                 unset BIZ_UNIT;
                 unset SITE_HOSTNAME;
 
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS query canceled.";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS query canceled.";
 
                 print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
@@ -302,8 +306,8 @@ function provideSiteHostname
                     sleep ${MESSAGE_DELAY}; reset; clear; continue;
                 fi
 
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_HOSTNAME -> ${SITE_HOSTNAME}";
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating TLD..";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_HOSTNAME -> ${SITE_HOSTNAME}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating TLD..";
 
                 ## make sure we got a valid tld. we're only checking the gTLD's,
                 ## for a list, see http://en.wikipedia.org/wiki/List_of_Internet_top-level_domains
@@ -320,7 +324,7 @@ function provideSiteHostname
                 fi
 
                 ## make sure there isnt already a zone with this hostname
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Calling retrieve_service to ensure that no records exist with ${SITE_HOSTNAME}..";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Calling retrieve_service to ensure that no records exist with ${SITE_HOSTNAME}..";
 
                 unset METHOD_NAME;
                 unset CNAME;
@@ -329,11 +333,11 @@ function provideSiteHostname
                 RET_CODE=${?};
 
                 ## re-set our info
-                [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
                 local METHOD_NAME="${CNAME}#${0}";
                 CNAME="$(basename "${0}")";
 
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Execution of retrieve_service complete. RET_CODE -> ${RET_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Execution of retrieve_service complete. RET_CODE -> ${RET_CODE}";
 
                 if [ ${RET_CODE} -eq 12 ] || [ ${RET_CODE} -eq 13 ]
                 then
@@ -341,7 +345,7 @@ function provideSiteHostname
                     ## now we need to get the associated change control. we
                     ## dont need it to create the zone other than for audit
                     ## purposes
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${SITE_HOSTNAME} does NOT already exist in the DNS infrastructure";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${SITE_HOSTNAME} does NOT already exist in the DNS infrastructure";
 
                     unset RET_CODE;
                     unset RETURN_CODE;
@@ -367,7 +371,7 @@ function provideSiteHostname
 
                         print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} DEBUG ${METHOD_NAME} ${CNAME} ${LINENO} "ADD_EXISTING -> ${ADD_EXISTING}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} DEBUG ${METHOD_NAME} ${CNAME} ${LINENO} "ADD_EXISTING -> ${ADD_EXISTING}";
 
                         case ${ADD_EXISTING} in
                             [Yy][Ee][Ss]|[Yy])
@@ -379,8 +383,8 @@ function provideSiteHostname
 
                                 ADD_EXISTING_RECORD=${_TRUE};
 
-                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request to add additional records to existing zone confirmed.";
-                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ADD_EXISTING_RECORD->${ADD_EXISTING_RECORD}";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request to add additional records to existing zone confirmed.";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ADD_EXISTING_RECORD->${ADD_EXISTING_RECORD}";
 
                                 ## need to capture change order number here
                                 reset; clear;
@@ -407,7 +411,7 @@ function provideSiteHostname
                                 unset ADD_EXISTING;
                                 unset SITE_HOSTNAME;
 
-                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS add request canceled.";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS add request canceled.";
 
                                 print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
@@ -429,7 +433,7 @@ function provideSiteHostname
         esac
     done
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     return 0;
 }
@@ -444,21 +448,21 @@ function provideSiteHostname
 #==============================================================================
 function provideChangeControl
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
     while true
     do
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requesting change information..";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requesting change information..";
 
         ${PLUGIN_ROOT_DIR}/${BIN_DIRECTORY}/obtainChangeControl.sh;
 
         if [[ ! -z "${CANCEL_REQ}" && "${CANCEL_REQ}" = "${_TRUE}" ]]
         then
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover process aborted";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover process aborted";
 
             print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
@@ -466,7 +470,7 @@ function provideChangeControl
             unset SVC_LIST;
 
             ## terminate this thread and return control to main
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
             ## temporarily unset stuff
             unset METHOD_NAME;
@@ -478,7 +482,7 @@ function provideChangeControl
         break;
     done
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     return 0;
 }
@@ -491,11 +495,11 @@ function provideChangeControl
 #==============================================================================
 function addDomainAddress
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing via add_a_ui_helper to add root ip addresses..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing via add_a_ui_helper to add root ip addresses..";
 
     while true
     do
@@ -514,10 +518,10 @@ function addDomainAddress
                 unset CHG_CTRL;
 
                 ## user chose to cancel out of the subshell
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Received request to break. CANCEL_REQ->${CANCEL_REQ}, ADD_RECORDS->${ADD_RECORDS}, ADD_SUBDOMAINS->${ADD_SUBDOMAINS}. Breaking..";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Received request to break. CANCEL_REQ->${CANCEL_REQ}, ADD_RECORDS->${ADD_RECORDS}, ADD_SUBDOMAINS->${ADD_SUBDOMAINS}. Breaking..";
 
                 ## put methodname and cname back
-                [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
                 local METHOD_NAME="${CNAME}#${0}";
                 CNAME="$(basename "${0}")";
 
@@ -527,7 +531,7 @@ function addDomainAddress
                 ## record has been added successfully through the helper
                 ## ask if we want to add additional records to the zone
                 ## put methodname and cname back
-                [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
                 local METHOD_NAME="${CNAME}#${0}";
                 CNAME="$(basename "${0}")";
 
@@ -551,14 +555,14 @@ function addDomainAddress
                             ## make sure our variables are empty and break to restart
                             unset ANSWER;
 
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request to add additional records confirmed. ADD_RECORDS has been set to true. Breaking..";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request to add additional records confirmed. ADD_RECORDS has been set to true. Breaking..";
 
                             reset; clear; addZoneData;
                             ;;
                         [Nn][Oo]|[Nn])
                             ## user does not wish to add additional records to root zone
                             ## ask if user wishes to add subdomains to zone
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request to add additional records declined. Request for subdomains..";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request to add additional records declined. Request for subdomains..";
                             unset ANSWER;
 
                             while true
@@ -577,7 +581,7 @@ function addDomainAddress
                                     [Yy][Ee][Ss]|[Yy])
                                         ## user wishes to now add subdomain records.
                                         ## process via add_records
-                                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request to add subdomain records confirmed. ADD_SUBDOMAINS has been set to true. Breaking..";
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request to add subdomain records confirmed. ADD_SUBDOMAINS has been set to true. Breaking..";
                                         unset ANSWER;
 
                                         reset; clear; addSubdomainAddresses;
@@ -585,7 +589,7 @@ function addDomainAddress
                                     [Nn][Oo]|[Nn])
                                         ## user does not wish to add subdomain records
                                         ## this completes processing, send to reviewZone
-                                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request to add subdomain records declined. ADD_SUBDOMAINS has been set to false. Breaking..";
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request to add subdomain records declined. ADD_SUBDOMAINS has been set to false. Breaking..";
                                         unset ANSWER;
 
                                         reset; clear; reviewZone;
@@ -640,12 +644,12 @@ function addDomainAddress
 #==============================================================================
 function addZoneData
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requesting zone-level record types..";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing zone-level record requests..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requesting zone-level record types..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing zone-level record requests..";
 
     while true
     do
@@ -664,175 +668,177 @@ function addZoneData
         reset; clear;
         print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RECORD_TYPE->${RECORD_TYPE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RECORD_TYPE->${RECORD_TYPE}";
 
-        if [[ ${RECORD_TYPE} == [Xx] || ${RECORD_TYPE} == [Qq] || ${RECORD_TYPE} == [Cc] ]]
-        then
-            reset; clear;
-            unset RECORD_TYPE;
-
-            ## remove the files we just created
-            rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT};
-
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS record add canceled..";
-
-            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
-
-            ## terminate this thread and return control to main
-            sleep "${MESSAGE_DELAY}"; reset; clear; main;
-        elif [[ ${RECORD_TYPE} == [Hh] ]]
-        then
-            ## we want to print out the available record type list
-            awk 'NR>16' ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_RECORD_LIST};
-
-            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.continue.enter\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
-            read COMPLETE;
-
-            case ${COMPLETE} in
-                *)
-                    unset COMPLETE;
-                    unset RECORD_TYPE;
-
-                    reset; clear; continue;
-                ;;
-            esac
-        else
-            ## validate the request
-            if [ $(${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validate_record_type.sh ${RECORD_TYPE} ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_RECORD_LIST}) -eq 0 ]
-            then
-                ## record type successfully validated. continue with request
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Obtained request for ${RECORD_TYPE}. Validating..";
-
-                while true
-                do
-					if [ ! -z "${CANCEL_REQ}" ] || [ ! -z "${ADD_RECORDS}" ] || [ ! -z "${ADD_SUBDOMAINS}" ]
-                    then
-                        ## user chose to cancel out of the subshell
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Received request to break. CANCEL_REQ->${CANCEL_REQ}, ADD_RECORDS->${ADD_RECORDS}, ADD_SUBDOMAINS->${ADD_SUBDOMAINS}. Breaking..";
-
-                        ## put methodname and cname back
-                        local METHOD_NAME="${CNAME}#${0}";
-                        CNAME="$(basename "${0}")";
-
-                        unset CANCEL_REQ;
-
-                        break;
-                    elif [[ ! -z "${ADD_COMPLETE}" && "${ADD_COMPLETE}" = "${_TRUE}" ]]
-                    then
-                        ## record has been added successfully through the helper
-                        ## ask if we want to add additional records to the zone
-                        ## put methodname and cname back
-                        [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
-                        local METHOD_NAME="${CNAME}#${0}";
-                        CNAME="$(basename "${0}")";
-
-                        while true
-                        do
-                            if [ ! -z "${ADD_RECORDS}" ] || [ ! -z "${ADD_SUBDOMAINS}" ]
-                            then
-                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request to add additional records received. ADD_RECORDS->${ADD_RECORDS}, ADD_SUBDOMAINS->${ADD_SUBDOMAINS}. Breaking..";
-
-                                break;
-                            fi
-
-                            reset; clear;
-                            print "\t\t\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.record.type.added\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%ZONE_NAME%/${SITE_HOSTNAME}/")\n";
-
-                            read ANSWER;
-                            reset; clear;
-                            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
-
-                            case ${ANSWER} in
-                                [Yy][Ee][Ss]|[Yy])
-                                    ## user wishes to add additional records to root of zone
-                                    ## make sure our variables are empty and break to restart
-                                    unset ANSWER;
-                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request to add additional records confirmed. ADD_RECORDS has been set to true. Breaking..";
-
-                                    ADD_RECORDS=${_TRUE};
-                                    reset; clear; break;
-                                    ;;
-                                [Nn][Oo]|[Nn])
-                                    ## user does not wish to add additional records to root zone
-                                    ## ask if user wishes to add subdomains to zone
-                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request to add additional records declined. Request for subdomains..";
-                                    unset ANSWER;
-
-                                    while true
-                                    do
-                                        reset; clear;
-
-                                        print "\t\t\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.record.subdomains\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%ZONE_NAME%/${SITE_HOSTNAME}/")\n";
-
-                                        read ANSWER;
-
-                                        reset; clear;
-
-                                        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
-
-                                        case ${ANSWER} in
-                                            [Yy][Ee][Ss]|[Yy])
-                                                ## user wishes to now add subdomain records.
-                                                ## process via add_records
-                                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request to add subdomain records confirmed. ADD_SUBDOMAINS has been set to true. Breaking..";
-                                                unset ANSWER;
-
-                                                reset; clear; addSubdomainAddresses;
-                                                ;;
-                                            [Nn][Oo]|[Nn])
-                                                ## user does not wish to add subdomain records
-                                                ## this completes processing, send to reviewZone
-                                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request to add subdomain records declined. ADD_SUBDOMAINS has been set to false. Breaking..";
-                                                unset ANSWER;
-
-                                                reset; clear; reviewZone;
-                                                ;;
-                                            *)
-                                                ## no valid selection provided
-                                                unset ANSWER;
-
-                                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not received. Please try again";
-
-                                                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
-
-                                                sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                                                ;;
-                                        esac
-                                    done
-                                    ;;
-                                *)
-                                    ## no valid response provided
-                                    unset ANSWER;
-                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not received. Please try again";
-
-                                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
-
-                                    sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                                    ;;
-                            esac
-                        done
-                    else
-                        ## unset methodname and cname
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing subshell lib/helpers/ui/add_${RECORD_TYPE}_ui_helper";
-
-                        unset METHOD_NAME;
-                        unset CNAME;
-
-                        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/helpers/ui/add_${RECORD_TYPE}_ui_helper.sh zone;
-                    fi
-                done
-            else
-                ## provided response was blank
+        case ${RECORD_TYPE} in
+            [Xx]|[Qq]|[Cc])
                 reset; clear;
                 unset RECORD_TYPE;
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requested record type failed validation. Cannot continue.";
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+                ## remove the files we just created
+                rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT};
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS record add canceled..";
+
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                 ## terminate this thread and return control to main
-                sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-            fi
-        fi
+                sleep "${MESSAGE_DELAY}"; reset; clear; main;
+                ;;
+            [Hh])
+                ## we want to print out the available record type list
+                awk 'NR>16' ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_RECORD_LIST};
+
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.continue.enter\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+                read COMPLETE;
+
+                case ${COMPLETE} in
+                    *)
+                        unset COMPLETE;
+                        unset RECORD_TYPE;
+
+                        reset; clear; continue;
+                    ;;
+                esac
+                ;;
+            *)
+                ## validate the request
+                if [ $(${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validate_record_type.sh ${RECORD_TYPE} ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_RECORD_LIST}) -eq 0 ]
+                then
+                    ## record type successfully validated. continue with request
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Obtained request for ${RECORD_TYPE}. Validating..";
+
+                    while true
+                    do
+                        if [ ! -z "${CANCEL_REQ}" ] || [ ! -z "${ADD_RECORDS}" ] || [ ! -z "${ADD_SUBDOMAINS}" ]
+                        then
+                            ## user chose to cancel out of the subshell
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Received request to break. CANCEL_REQ->${CANCEL_REQ}, ADD_RECORDS->${ADD_RECORDS}, ADD_SUBDOMAINS->${ADD_SUBDOMAINS}. Breaking..";
+
+                            ## put methodname and cname back
+                            local METHOD_NAME="${CNAME}#${0}";
+                            CNAME="$(basename "${0}")";
+
+                            unset CANCEL_REQ;
+
+                            break;
+                        elif [[ ! -z "${ADD_COMPLETE}" && "${ADD_COMPLETE}" = "${_TRUE}" ]]
+                        then
+                            ## record has been added successfully through the helper
+                            ## ask if we want to add additional records to the zone
+                            ## put methodname and cname back
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                            local METHOD_NAME="${CNAME}#${0}";
+                            CNAME="$(basename "${0}")";
+
+                            while true
+                            do
+                                if [ ! -z "${ADD_RECORDS}" ] || [ ! -z "${ADD_SUBDOMAINS}" ]
+                                then
+                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request to add additional records received. ADD_RECORDS->${ADD_RECORDS}, ADD_SUBDOMAINS->${ADD_SUBDOMAINS}. Breaking..";
+
+                                    break;
+                                fi
+
+                                reset; clear;
+                                print "\t\t\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.record.type.added\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%ZONE_NAME%/${SITE_HOSTNAME}/")\n";
+
+                                read ANSWER;
+                                reset; clear;
+                                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+
+                                case ${ANSWER} in
+                                    [Yy][Ee][Ss]|[Yy])
+                                        ## user wishes to add additional records to root of zone
+                                        ## make sure our variables are empty and break to restart
+                                        unset ANSWER;
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request to add additional records confirmed. ADD_RECORDS has been set to true. Breaking..";
+
+                                        ADD_RECORDS=${_TRUE};
+                                        reset; clear; break;
+                                        ;;
+                                    [Nn][Oo]|[Nn])
+                                        ## user does not wish to add additional records to root zone
+                                        ## ask if user wishes to add subdomains to zone
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request to add additional records declined. Request for subdomains..";
+                                        unset ANSWER;
+
+                                        while true
+                                        do
+                                            reset; clear;
+
+                                            print "\t\t\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.record.subdomains\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%ZONE_NAME%/${SITE_HOSTNAME}/")\n";
+
+                                            read ANSWER;
+
+                                            reset; clear;
+
+                                            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+
+                                            case ${ANSWER} in
+                                                [Yy][Ee][Ss]|[Yy])
+                                                    ## user wishes to now add subdomain records.
+                                                    ## process via add_records
+                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request to add subdomain records confirmed. ADD_SUBDOMAINS has been set to true. Breaking..";
+                                                    unset ANSWER;
+
+                                                    reset; clear; addSubdomainAddresses;
+                                                    ;;
+                                                [Nn][Oo]|[Nn])
+                                                    ## user does not wish to add subdomain records
+                                                    ## this completes processing, send to reviewZone
+                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request to add subdomain records declined. ADD_SUBDOMAINS has been set to false. Breaking..";
+                                                    unset ANSWER;
+
+                                                    reset; clear; reviewZone;
+                                                    ;;
+                                                *)
+                                                    ## no valid selection provided
+                                                    unset ANSWER;
+
+                                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not received. Please try again";
+
+                                                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+
+                                                    sleep "${MESSAGE_DELAY}"; reset; clear; continue;
+                                                    ;;
+                                            esac
+                                        done
+                                        ;;
+                                    *)
+                                        ## no valid response provided
+                                        unset ANSWER;
+                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not received. Please try again";
+
+                                        print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+
+                                        sleep "${MESSAGE_DELAY}"; reset; clear; continue;
+                                        ;;
+                                esac
+                            done
+                        else
+                            ## unset methodname and cname
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing subshell lib/helpers/ui/add_${RECORD_TYPE}_ui_helper";
+
+                            unset METHOD_NAME;
+                            unset CNAME;
+
+                            . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/helpers/ui/add_${RECORD_TYPE}_ui_helper.sh zone;
+                        fi
+                    done
+                else
+                    ## provided response was blank
+                    reset; clear;
+                    unset RECORD_TYPE;
+                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requested record type failed validation. Cannot continue.";
+
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+
+                    ## terminate this thread and return control to main
+                    sleep "${MESSAGE_DELAY}"; reset; clear; continue;
+                fi
+                ;;
+        esac
     done
 
     return ${RETURN_CODE};
@@ -846,11 +852,11 @@ function addZoneData
 #==============================================================================
 function addSubdomainAddresses
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requesting subdomain record type..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requesting subdomain record type..";
 
     while true
     do
@@ -868,155 +874,157 @@ function addSubdomainAddresses
         reset; clear;
         print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RECORD_TYPE->${RECORD_TYPE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RECORD_TYPE->${RECORD_TYPE}";
 
-        if [[ ${RECORD_TYPE} == [Xx] || ${RECORD_TYPE} == [Qq] || ${RECORD_TYPE} == [Cc] ]]
-        then
-            ## user chose to cancel
-            reset; clear;
-            unset RECORD_TYPE;
-
-            ## remove the files we just created
-            rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT};
-
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS record add canceled..";
-
-            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
-
-            ## terminate this thread and return control to main
-            sleep "${MESSAGE_DELAY}"; reset; clear; main;
-        elif [[ ${RECORD_TYPE} == [Hh] ]]
-        then
-            ## we want to print out the available record type list
-            awk 'NR>16' ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_RECORD_LIST};
-
-            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.continue.enter\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
-            read COMPLETE;
-
-            case ${COMPLETE} in
-                *)
-                    unset COMPLETE;
-                    unset RECORD_TYPE;
-
-                    reset; clear; continue;
-                ;;
-            esac
-        else
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Calling validate_record_type.sh ${RECORD_TYPE} ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_RECORD_LIST}..";
-
-            if [ $(${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validate_record_type.sh ${RECORD_TYPE} ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_RECORD_LIST}) -eq 0 ]
-            then
-                ## unset return code
-                unset RETURN_CODE;
-
-                ## record type passed validation, continue
-                ## call pluggable helper interfaces
-                while true
-                do
-                    if [[ ! -z "${CANCEL_REQ}" && "${CANCEL_REQ}" = "${_TRUE}" || ! -z "${ADD_RECORDS}" && "${ADD_RECORDS}" = "${_TRUE}" ]]
-                    then
-                        ## user chose to cancel out of the subshell
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Received request to cancel. CANCEL_REQ->${CANCEL_REQ}";
-
-                        unset CANCEL_REQ;
-
-                        ## put methodname and cname back
-                        [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
-                        local METHOD_NAME="${CNAME}#${0}";
-
-                        [ ${#0} -ne 8 ] && addSubdomainAddresses=$(echo ${0} | tr -dc '/' | wc -c); SPLIT=$((${SPLIT}+1)); CNAME=$(echo ${0} | cut -d "/" -f ${SPLIT}-) || CNAME=$(echo ${0} | sed -e 's|\.\/||g');
-
-                        break;
-                    elif [[ ! -z "${ADD_COMPLETE}" && "${ADD_COMPLETE}" = "${_TRUE}" ]]
-                    then
-                        ## record was successfully added. ask if we should add more
-                        ## put methodname and cname back
-                        [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
-                        local METHOD_NAME="${CNAME}#${0}";
-                        CNAME="$(basename "${0}")";
-
-                        while true
-                        do
-                            reset; clear;
-
-                            print "\t\t\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.record.type.added\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%ZONE_NAME%/${SITE_HOSTNAME}/")\n";
-
-                            read ANSWER;
-
-                            reset; clear;
-
-                            print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
-
-                            case ${ANSWER} in
-                                [Yy][Ee][Ss]|[Yy])
-                                    ## user wishes to add additional records to root of zone
-                                    ## make sure our variables are empty and break to restart
-                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request to add additional records confirmed. ADD_RECORDS has been set to true. Breaking..";
-
-                                    unset ANSWER;
-
-                                    ADD_RECORDS=${_TRUE};
-                                    reset; clear; break;
-                                    ;;
-                                [Nn][Oo]|[Nn])
-                                    ## user does not wish to add additional records to root zone
-                                    ## ask if user wishes to add subdomains to zone
-                                    unset ANSWER;
-
-                                    if [ ! -z "${ADD_EXISTING_RECORD}" ] && [ "${ADD_EXISTING_RECORD}" = "${_TRUE}" ]
-                                    then
-                                        ## we were adding a new record to an existing zone
-                                        ## theres nothing to review so we arent taking the
-                                        ## user there. we're going to break out
-                                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request to add additional records to existing zone canceled. Breaking..";
-
-                                        unset ANSWER;
-                                        unset SITE_HOSTNAME;
-                                        unset CHANGE_NUM;
-                                        unset RECORD_TYPE;
-
-                                        reset; clear; main;
-                                    else
-                                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request to add additional records declined. ADD_RECORDS has been set to false. Breaking..";
-
-                                        reset; clear; reviewZone;
-                                    fi
-                                    ;;
-                                *)
-                                    ## no valid response provided
-                                    unset ANSWER;
-
-                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not received. Please try again";
-
-                                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
-
-                                    sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                                    ;;
-                            esac
-                        done
-                    else
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing subshell lib/helpers/ui/add_${RECORD_TYPE}_ui_helper";
-
-                        ## unset methodname and cname
-                        unset METHOD_NAME;
-                        unset CNAME;
-
-                        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/helpers/ui/add_${RECORD_TYPE}_ui_helper.sh subdomain;
-                    fi
-                done
-            else
+        case ${RECORD_TYPE} in
+            [Xx]|[Qq]|[Cc])
+                ## user chose to cancel
                 reset; clear;
-
                 unset RECORD_TYPE;
 
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No response was provided for record type.";
+                ## remove the files we just created
+                rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT};
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS record add canceled..";
+
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                 ## terminate this thread and return control to main
-                sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-            fi
-        fi
+                sleep "${MESSAGE_DELAY}"; reset; clear; main;
+                ;;
+            [Hh])
+                ## we want to print out the available record type list
+                awk 'NR>16' ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_RECORD_LIST};
+
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.continue.enter\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+                read COMPLETE;
+
+                case ${COMPLETE} in
+                    *)
+                        unset COMPLETE;
+                        unset RECORD_TYPE;
+
+                        reset; clear; continue;
+                    ;;
+                esac
+                ;;
+            *)
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Calling validate_record_type.sh ${RECORD_TYPE} ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_RECORD_LIST}..";
+
+                if [ $(${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validate_record_type.sh ${RECORD_TYPE} ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_RECORD_LIST}) -eq 0 ]
+                then
+                    ## unset return code
+                    unset RETURN_CODE;
+
+                    ## record type passed validation, continue
+                    ## call pluggable helper interfaces
+                    while true
+                    do
+                        if [[ ! -z "${CANCEL_REQ}" && "${CANCEL_REQ}" = "${_TRUE}" || ! -z "${ADD_RECORDS}" && "${ADD_RECORDS}" = "${_TRUE}" ]]
+                        then
+                            ## user chose to cancel out of the subshell
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Received request to cancel. CANCEL_REQ->${CANCEL_REQ}";
+
+                            unset CANCEL_REQ;
+
+                            ## put methodname and cname back
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                            local METHOD_NAME="${CNAME}#${0}";
+
+                            [ ${#0} -ne 8 ] && addSubdomainAddresses=$(echo ${0} | tr -dc '/' | wc -c); SPLIT=$((${SPLIT}+1)); CNAME=$(echo ${0} | cut -d "/" -f ${SPLIT}-) || CNAME=$(echo ${0} | sed -e 's|\.\/||g');
+
+                            break;
+                        elif [[ ! -z "${ADD_COMPLETE}" && "${ADD_COMPLETE}" = "${_TRUE}" ]]
+                        then
+                            ## record was successfully added. ask if we should add more
+                            ## put methodname and cname back
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                            local METHOD_NAME="${CNAME}#${0}";
+                            CNAME="$(basename "${0}")";
+
+                            while true
+                            do
+                                reset; clear;
+
+                                print "\t\t\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.record.type.added\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%ZONE_NAME%/${SITE_HOSTNAME}/")\n";
+
+                                read ANSWER;
+
+                                reset; clear;
+
+                                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+
+                                case ${ANSWER} in
+                                    [Yy][Ee][Ss]|[Yy])
+                                        ## user wishes to add additional records to root of zone
+                                        ## make sure our variables are empty and break to restart
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request to add additional records confirmed. ADD_RECORDS has been set to true. Breaking..";
+
+                                        unset ANSWER;
+
+                                        ADD_RECORDS=${_TRUE};
+                                        reset; clear; break;
+                                        ;;
+                                    [Nn][Oo]|[Nn])
+                                        ## user does not wish to add additional records to root zone
+                                        ## ask if user wishes to add subdomains to zone
+                                        unset ANSWER;
+
+                                        if [ ! -z "${ADD_EXISTING_RECORD}" ] && [ "${ADD_EXISTING_RECORD}" = "${_TRUE}" ]
+                                        then
+                                            ## we were adding a new record to an existing zone
+                                            ## theres nothing to review so we arent taking the
+                                            ## user there. we're going to break out
+                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request to add additional records to existing zone canceled. Breaking..";
+
+                                            unset ANSWER;
+                                            unset SITE_HOSTNAME;
+                                            unset CHANGE_NUM;
+                                            unset RECORD_TYPE;
+
+                                            reset; clear; main;
+                                        else
+                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request to add additional records declined. ADD_RECORDS has been set to false. Breaking..";
+
+                                            reset; clear; reviewZone;
+                                        fi
+                                        ;;
+                                    *)
+                                        ## no valid response provided
+                                        unset ANSWER;
+
+                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not received. Please try again";
+
+                                        print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+
+                                        sleep "${MESSAGE_DELAY}"; reset; clear; continue;
+                                        ;;
+                                esac
+                            done
+                        else
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing subshell lib/helpers/ui/add_${RECORD_TYPE}_ui_helper";
+
+                            ## unset methodname and cname
+                            unset METHOD_NAME;
+                            unset CNAME;
+
+                            . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/helpers/ui/add_${RECORD_TYPE}_ui_helper.sh subdomain;
+                        fi
+                    done
+                else
+                    reset; clear;
+
+                    unset RECORD_TYPE;
+
+                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No response was provided for record type.";
+
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+
+                    ## terminate this thread and return control to main
+                    sleep "${MESSAGE_DELAY}"; reset; clear; continue;
+                fi
+                ;;
+        esac
     done
 
     return ${RETURN_CODE};
@@ -1030,11 +1038,11 @@ function addSubdomainAddresses
 #==============================================================================
 function reviewZone
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating operational zone..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating operational zone..";
 
     print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES}system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%ZONE%/${SITE_HOSTNAME}/")";
 
@@ -1046,7 +1054,7 @@ function reviewZone
     RET_CODE=${?};
 
     ## re-set vars
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
     CNAME="$(basename "${0}")";
 
@@ -1071,7 +1079,7 @@ function reviewZone
                     reset; clear;
 
                     unset ANSWER;
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printing zonefile content..";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printing zonefile content..";
 
                     cat ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1).${SITE_PRJCODE};
 
@@ -1090,8 +1098,8 @@ function reviewZone
                                 ## zone was created and is accurate. send to master
                                 unset ANSWER;
 
-                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Calling send_zone to stage the files";
-                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Calling send_zone to stage the files";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
                                 send_zone;
                                 ;;
                             [Nn][Oo]|[Nn])
@@ -1125,32 +1133,32 @@ function reviewZone
                                             ## and correct any errors
                                             ## create a copy of the existing
                                             unset ANSWER;
-                                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Manual update requested. Copying zone directory..";
+                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Manual update requested. Copying zone directory..";
 
                                             cp -R ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}.mod;
 
-                                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copy complete. Validating..";
+                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copy complete. Validating..";
 
                                             if [ -d ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}.mod ]
                                             then
-                                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validation complete. Launching vi..";
+                                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validation complete. Launching vi..";
 
                                                 ## modify the primary datacenter
                                                 vi ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}.mod/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1);
                                                 RET_CODE=${?};
 
-                                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Manual edits complete. Return code -> ${RET_CODE}";
+                                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Manual edits complete. Return code -> ${RET_CODE}";
 
                                                 if [ ${RET_CODE} -eq 0 ]
                                                 then
                                                     unset RET_CODE;
-                                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksumming..";
+                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksumming..";
 
                                                     MOD_FILE_CKSUM=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}.mod/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1) | awk '{print $1}');
                                                     OP_FILE_CKSUM=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1) | awk '{print $1}');
 
-                                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MOD_FILE_CKSUM->${MOD_FILE_CKSUM}";
-                                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OP_FILE_CKSUM->${OP_FILE_CKSUM}";
+                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MOD_FILE_CKSUM->${MOD_FILE_CKSUM}";
+                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OP_FILE_CKSUM->${OP_FILE_CKSUM}";
 
                                                     if [ ${MOD_FILE_CKSUM} -eq ${OP_FILE_CKSUM} ]
                                                     then
@@ -1159,7 +1167,7 @@ function reviewZone
                                                         do
                                                             reset; clear;
 
-                                                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksums match - no changes detected. Validating..";
+                                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksums match - no changes detected. Validating..";
 
                                                             print "\t\t\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.zone.no.changes.made\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
                                                     
@@ -1174,14 +1182,14 @@ function reviewZone
                                                                     ## user has confirmed no changes were made and this is correct
                                                                     ## move forward with processing
 
-                                                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Calling send_zone to stage the files";
-                                                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Calling send_zone to stage the files";
+                                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
                                                                     send_zone;
                                                                     ;;
                                                                 [Nn][Oo]|[Nn])
                                                                     ## user has confirmed no changes were made and this is NOT correct
                                                                     ## reload into this method and restart the process
-                                                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No file changes were detected. Confirmed this is incorrect.";
+                                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No file changes were detected. Confirmed this is incorrect.";
 
                                                                     print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.zone.changes.declined\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
@@ -1220,8 +1228,8 @@ function reviewZone
                                                             MOD_FILE_CKSUM=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}.mod/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1) | awk '{print $1}');
                                                             OP_FILE_CKSUM=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1) | awk '{print $1}');
 
-                                                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Post-patch: MOD_FILE_CKSUM->${MOD_FILE_CKSUM}";
-                                                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Post-patch: OP_FILE_CKSUM->${OP_FILE_CKSUM}";
+                                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Post-patch: MOD_FILE_CKSUM->${MOD_FILE_CKSUM}";
+                                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Post-patch: OP_FILE_CKSUM->${OP_FILE_CKSUM}";
 
                                                             if [ ${MOD_FILE_CKSUM} -eq ${OP_FILE_CKSUM} ]
                                                             then
@@ -1287,8 +1295,8 @@ function reviewZone
                     ## user chose not to review the zone - send it up
                     unset ANSWER;
 
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Calling send_zone to stage the files";
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Calling send_zone to stage the files";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
                     send_zone;
                     ;;
                 *)
@@ -1313,7 +1321,7 @@ function reviewZone
         exit 0;
     fi
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     return ${RETURN_CODE};
 }
@@ -1327,11 +1335,11 @@ function reviewZone
 #==============================================================================
 function sendZone
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command run_addition.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -x -e..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command run_addition.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -x -e..";
 
     ## temp unset
     unset METHOD_NAME;
@@ -1341,11 +1349,11 @@ function sendZone
     RET_CODE=${?};
 
     ## reset vars
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
     CNAME="$(basename "${0}")";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
     if [[ -z "${RET_CODE}" || ${RET_CODE} -ne 0 || ${RET_CODE} -ne 66 || ${RET_CODE} -ne 52 ]]
     then
@@ -1393,7 +1401,7 @@ function sendZone
             print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.zone.send.slave\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
             ## send out to slave servers
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Sending zone to slave server ${DNS_SLAVES[${C}]}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Sending zone to slave server ${DNS_SLAVES[${C}]}";
 
             ## temp unset
             unset METHOD_NAME;
@@ -1419,7 +1427,7 @@ function sendZone
                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
             fi
 
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Changes successfully applied to ${DNS_SLAVES[${C}]}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Changes successfully applied to ${DNS_SLAVES[${C}]}";
 
             (( C += 1 ));
         done
@@ -1453,7 +1461,7 @@ function sendZone
 
         read ANSWER;
 
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ANSWER -> ${ANSWER}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ANSWER -> ${ANSWER}";
 
         reset; clear;
 
@@ -1463,8 +1471,8 @@ function sendZone
             [Yy][Ee][Ss]|[Yy])
                 ## user has selected to add more stuff
                 ## set it up.
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "User has elected to add further data. Reloading..";
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "User has elected to add further data. Reloading..";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                 unset ANSWER;
 
@@ -1473,12 +1481,16 @@ function sendZone
             [Nn][Oo]|[Nn])
                 ## user does not wish to add more stuff
                 ## redirect user back to main class
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "User has elected to add further data. Reloading..";
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "User has elected to add further data. Reloading..";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                 unset ANSWER;
 
-                reset; clear; exec ${MAIN_CLASS};
+                reset; clear;
+
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+                exec ${MAIN_CLASS};
                 exit 0;
                 ;;
             *)
@@ -1495,12 +1507,12 @@ function sendZone
         esac
     done
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     return ${RETURN_CODE};
 }
 
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
 main;
 

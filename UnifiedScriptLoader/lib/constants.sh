@@ -17,7 +17,7 @@
 #
 #==============================================================================
 
-[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 case ${SCRIPT_ROOT} in
     *lib/plugins/*/executors*|*lib/plugins/*/monitors*) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../../../../etc" ;;

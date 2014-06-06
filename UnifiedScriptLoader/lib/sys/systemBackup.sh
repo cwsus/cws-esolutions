@@ -17,7 +17,7 @@
 #
 #==============================================================================
 
-[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 ## Application constants
 CNAME="$(basename "${0}")";
@@ -27,13 +27,13 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 [[ -z "${APP_ROOT}" && ! -s ${SCRIPT_ROOT}/../lib/constants.sh ]] && echo "Failed to locate configuration data. Cannot continue." && exit 1;
 [ -z "${APP_ROOT}" ] && . ${SCRIPT_ROOT}/../lib/constants.sh;
 
-[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 METHOD_NAME="${CNAME}#startup";
 
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  addServiceIndicators
@@ -44,18 +44,18 @@ METHOD_NAME="${CNAME}#startup";
 #==============================================================================
 function cleanup_filesystems
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TIMESPAN->${ZONE_ROOT}";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IUSER_AUDIT->${IUSER_AUDIT}";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Cleaning up backup directories..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TIMESPAN->${ZONE_ROOT}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IUSER_AUDIT->${IUSER_AUDIT}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Cleaning up backup directories..";
 
     for FILENAME in $(find ${APP_ROOT}/${BACKUP_DIRECTORY} -type f -mtime +${TIMESPAN})
     do
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Cleaning ${APP_ROOT}/${BACKUP_DIRECTORY}..";
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FILENAME->${FILENAME}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Cleaning ${APP_ROOT}/${BACKUP_DIRECTORY}..";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FILENAME->${FILENAME}";
 
         ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File ${APP_ROOT}/${BACKUP_DIRECTORY}/${FILENAME} removed on $(date +"%m-%d-%Y") by ${IUSER_AUDIT}";
         rm ${APP_ROOT}/${BACKUP_DIRECTORY}/${FILENAME};
@@ -68,8 +68,8 @@ function cleanup_filesystems
 
         for FILENAME in $(find ${NAMED_ROOT}/${NAMED_BACKUP_DIRECTORY} -type f -mtime +${TIMESPAN})
         do
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Cleaning ${NAMED_ROOT}/${NAMED_BACKUP_DIRECTORY}..";
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FILENAME->${FILENAME}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Cleaning ${NAMED_ROOT}/${NAMED_BACKUP_DIRECTORY}..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FILENAME->${FILENAME}";
 
             ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File ${NAMED_ROOT}/${NAMED_BACKUP_DIRECTORY}/${FILENAME} removed on \`date +"%m-%d-%Y"\` by ${IUSER_AUDIT}";
             rm ${NAMED_ROOT}/${NAMED_BACKUP_DIRECTORY}/${FILENAME};
@@ -80,7 +80,7 @@ function cleanup_filesystems
     unset TIMESPAN;
     unset FILENAME;
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     return 0;
 }
@@ -95,63 +95,63 @@ function cleanup_filesystems
 #==============================================================================
 function perform_zone_backup
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IS_BACKUP_ENABLED -> ${IS_BACKUP_ENABLED}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IS_BACKUP_ENABLED -> ${IS_BACKUP_ENABLED}";
 
     ## check if backups are enabled. in a production environment, this should always be true
     if [ ! -z "${IS_BACKUP_ENABLED}" && "${IS_BACKUP_ENABLED}" = "${_TRUE}" ]
     then
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Global backups enabled - processing..");
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Search and remove backups older than ${BACKUP_RETENTION_TIME} days...");
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Global backups enabled - processing..");
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Search and remove backups older than ${BACKUP_RETENTION_TIME} days...");
 
         ## clean up the old backup files per the configured retention period...
         for BACKUP_FILE in $(find ${APP_ROOT}/${BACKUP_DIRECTORY} -name "*${ZONE_BACKUP_PREFIX}*" -mtime +${BACKUP_RETENTION_TIME} -print)
         do
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} AUDIT ${METHOD_NAME}} ${CNAME} ${LINENO} "Removing backup file ${BACKUP_FILE}..");
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} AUDIT ${METHOD_NAME}} ${CNAME} ${LINENO} "Removing backup file ${BACKUP_FILE}..");
 
             ## and remove it
             rm -rf ${BACKUP_FILE};
         done
 
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Cleanup complete. Continuing..");
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Cleanup complete. Continuing..");
 
         TARFILE_NAME=$(echo ${BACKUP_FILE_NAME} | sed -e "s/%TYPE%/${ZONE_BACKUP_PREFIX}/" -e "s/%SERVER_NAME%/$(uname -n)/" -e "s/%DATE%/$(date +"%m-%d-%Y_%H:%M:%S")/");
 
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "TARFILE_NAME -> ${TARFILE_NAME}");
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Creating backup file..");
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "TARFILE_NAME -> ${TARFILE_NAME}");
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Creating backup file..");
 
         ## we back up everything. we can check if we're on a master/slave but that doesnt take into
         ## account systems that are acting as both a master AND slave, or systems that have dynamic
         ## zones. we exclude any journal files, and tar it up.
         (cd ${NAMED_ROOT}/${NAMED_ZONE_DIR}; tar cf ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar --exclude='*.jnl' *);
 
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Archive created. gzipping..");
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Archive created. gzipping..");
 
         ## then gzip it.
         gzip ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar;
 
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Backup complete. Verifying..");
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Backup complete. Verifying..");
 
         if [ -s ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz ]
         then
             ## our backup is complete. set permissions accordingly...
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Backup successfully verified. Modifying permissions..");
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Backup successfully verified. Modifying permissions..");
 
             ## chmod 644 and chown named:named.
             chmod 644 ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz;
             chown ${NAMED_USER}:${NAMED_GROUP} ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz;
 
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete - exiting.";
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete - exiting.";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
             RETURN_CODE=0;
         else
             ## backup failed. send a fault code
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to verify backup tarfile generation.";
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
             RETURN_CODE=57;
         fi
@@ -162,7 +162,7 @@ function perform_zone_backup
         RETURN_CODE=88;
     fi
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     return ${RETURN_CODE};
 }
@@ -177,39 +177,39 @@ function perform_zone_backup
 #==============================================================================
 function perform_master_backup
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
     ## check if backups are enabled. in a production environment, this should always be true
     TARFILE_NAME=$(echo ${BACKUP_FILE_NAME} | sed -e "s/%TYPE%/${ZONE_BACKUP_PREFIX}/" -e "s/%SERVER_NAME%/$(uname -n)/" -e "s/%DATE%/$(date +"%m-%d-%Y")/");
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "TARFILE_NAME -> ${TARFILE_NAME}");
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Creating backup file..");
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "TARFILE_NAME -> ${TARFILE_NAME}");
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Creating backup file..");
 
     ## we back up everything. we can check if we're on a master/slave but that doesnt take into
     ## account systems that are acting as both a master AND slave, or systems that have dynamic
     ## zones. we exclude any journal files, and tar it up.
     (cd ${NAMED_ROOT}/${NAMED_ZONE_DIR}; tar cf ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar --exclude='*.jnl' *);
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Archive created. gzipping..");
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Archive created. gzipping..");
 
     ## then gzip it.
     gzip ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar;
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Backup complete. Verifying..");
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Backup complete. Verifying..");
 
     if [ -s ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz ]
     then
         ## our backup is complete. set permissions accordingly...
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Backup successfully verified. Modifying permissions..");
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Backup successfully verified. Modifying permissions..");
 
         ## chmod 644 and chown named:named.
         chmod 644 ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz;
         chown ${NAMED_USER}:${NAMED_GROUP} ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz;
 
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete - exiting.";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete - exiting.";
 
         RETURN_CODE=0;
     else
@@ -219,7 +219,7 @@ function perform_master_backup
         RETURN_CODE=57;
     fi
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     return ${RETURN_CODE};
 }
@@ -238,29 +238,29 @@ function perform_master_backup
 #==============================================================================
 function perform_conf_backup
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IS_BACKUP_ENABLED -> ${IS_BACKUP_ENABLED}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IS_BACKUP_ENABLED -> ${IS_BACKUP_ENABLED}";
 
     ## check if backups are enabled. in a production environment, this should always be true
     if [ ! -z "${IS_BACKUP_ENABLED}" && "${IS_BACKUP_ENABLED}" = "${_TRUE}" ]
     then
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Global backups enabled - processing..");
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Search and remove backups older than ${BACKUP_RETENTION_TIME} days...");
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Global backups enabled - processing..");
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Search and remove backups older than ${BACKUP_RETENTION_TIME} days...");
 
         ## clean up the old backup files per the configured retention period...
         for BACKUP_FILE in $(find ${APP_ROOT}/${BACKUP_DIRECTORY} -name "*${ZONE_BACKUP_PREFIX}*" -mtime +${BACKUP_RETENTION_TIME} -print)
         do
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} AUDIT ${METHOD_NAME}} ${CNAME} ${LINENO} "Removing backup file ${BACKUP_FILE}..");
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} AUDIT ${METHOD_NAME}} ${CNAME} ${LINENO} "Removing backup file ${BACKUP_FILE}..");
 
             ## and remove it
             rm -rf ${BACKUP_FILE};
         done
 
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Cleanup complete. Continuing..");
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Gathering directories required for backup..");
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Cleanup complete. Continuing..");
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Gathering directories required for backup..");
 
         set -A TARFILE_DIRECTORY_LIST;
 
@@ -268,13 +268,13 @@ function perform_conf_backup
         ## THIS applications config files are here as well. so we ignore "properties", as no named config files have that suffix
         for CONF_FILE in $(ls -ltr ${NAMED_ROOT}/${NAMED_CONF_DIR} | grep -v properties | awk '{print $9}')
         do
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Found file ${CONF_FILE}");
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Found file ${CONF_FILE}");
 
             set -A TARFILE_DIRECTORY_LIST ${TARFILE_DIRECTORY_LIST[@]} ${CONF_FILE};
         done
 
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Completed build of directory tree. TARFILE_DIRECTORY_LIST -> ${TARFILE_DIRECTORY_LIST[@]}");
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Creating tarfile..");
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Completed build of directory tree. TARFILE_DIRECTORY_LIST -> ${TARFILE_DIRECTORY_LIST[@]}");
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Creating tarfile..");
 
         ## generate the tarfile name
         TARFILE_NAME=$(echo ${BACKUP_FILE_NAME} | sed -e "s/%TYPE%/${CONF_BACKUP_PREFIX}/" -e "s/%SERVER_NAME%/$(uname -n)/" -e "s/%DATE%/$(date +"%m-%d-%Y_%H:%M:%S")/");
@@ -282,25 +282,25 @@ function perform_conf_backup
         if [ ! -z "${TARFILE_DIRECTORY_LIST[@]}" && ! -z "${TARFILE_NAME}" ]
         then
             ## we've successfully generated our backup list as well as our tarfile name. move forward
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "TARFILE_NAME -> ${TARFILE_NAME}");
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Creating backup file..");
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "TARFILE_NAME -> ${TARFILE_NAME}");
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Creating backup file..");
 
             (cd ${NAMED_ROOT}/${NAMED_CONF_DIR}; tar cf - ${TARFILE_DIRECTORY_LIST[@]}) | gzip -c > ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz;
 
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "All known files backed up. Verifying..");
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "All known files backed up. Verifying..");
 
             ## verify the backup exists
             if [ -s ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz ]
             then
                 ## our backup is complete. set permissions accordingly...
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Backup successfully verified. Modifying permissions..");
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME}} ${CNAME} ${LINENO} "Backup successfully verified. Modifying permissions..");
 
                 ## chmod 644 and chown named:named.
                 chmod 644 ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz;
                 chown ${NAMED_USER}:${NAMED_GROUP} ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz;
 
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete - exiting.";
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete - exiting.";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                 RETURN_CODE=0;
             else
@@ -322,7 +322,7 @@ function perform_conf_backup
         RETURN_CODE=88;
     fi
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     return ${RETURN_CODE};
 }
@@ -335,10 +335,10 @@ function perform_conf_backup
 #==============================================================================
 function usage
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
     print "${CNAME} - Perform a full or specified backup operation";
     print "Usage: ${CNAME} <no arguments> | zone | conf";
@@ -348,7 +348,7 @@ function usage
     print "  zone - performs a backup of all zone files housed in this installation";
     print "  conf - performs a backup of all configuration files necessary to operate a DNS installation";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     return 3;
 }

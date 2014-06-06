@@ -17,7 +17,7 @@
 #
 #==============================================================================
 
-[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 [ ! -d ${LOG_ROOT} ] && mkdir -p ${LOG_ROOT};
 [ ! -d ${ARCHIVE_LOG_ROOT} ] && mkdir -p ${ARCHIVE_LOG_ROOT};
@@ -32,7 +32,7 @@ function cleanLogArchive
 {
     [ ! -d ${ARCHIVE_LOG_ROOT} ] && return 0;
 
-    for ARCHIVED_FILE in $(find ${ARCHIVE_LOG_ROOT} -type f -name \*.log\* -ctime +${RETENTION_TIME})
+    for ARCHIVED_FILE in $(find ${ARCHIVE_LOG_ROOT} -type f -name \*.log\* -ctime +${LOG_RETENTION_PERIOD})
     do
         [ -f ${ARCHIVED_FILE} ] && rm -f ${ARCHIVED_FILE} >/dev/null 2>&1;
     done
@@ -48,11 +48,11 @@ function cleanLogArchive
 #==============================================================================
 function rotateLogs
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
     [ ! -f ${LOG_ROOT}/${1} ] && return 0;
 
-    if [ $(( $(date +"%s") - $(stat -L --format %Y ${LOG_ROOT}/${1}) > $(echo "${ROLLOVER_PERIOD} * 60 * 60" | bc) )) == 1 ]
+    if [ $(( $(date +"%s") - $(stat -L --format %Y ${LOG_ROOT}/${1}) > $(echo "${ROLLOVER_PERIOD} * 60 * 60" | bc) )) -eq 1 ]
     then
         if [ -f ${LOG_ROOT}/${1}.${LOG_RETENTION_PERIOD} ]
         then
@@ -62,7 +62,7 @@ function rotateLogs
         ## rotate logs
         A=${LOG_RETENTION_PERIOD};
 
-        while (( ${A} != 0 ))
+        while (( ${A} -ne 0 ))
         do
             [ -f ${LOG_ROOT}/${1}.${A} ] && mv ${LOG_ROOT}/${1}.${A} ${LOG_ROOT}/${1}.$(expr ${A} + 1);
 
@@ -83,7 +83,7 @@ function rotateLogs
         ## rotate logs
         A=${LOG_RETENTION_PERIOD};
 
-        while (( ${A} != 0 ))
+        while (( ${A} -ne 0 ))
         do
             [ -f ${LOG_ROOT}/${1}.${A} ] && mv ${LOG_ROOT}/${1}.${A} ${LOG_ROOT}/${1}.$(expr ${A} + 1);
 
@@ -105,7 +105,7 @@ function rotateLogs
 #==============================================================================
 function writeLogEntry
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
     ## always do the timestamp first
     TIMESTAMP_OPTS=$(echo ${RECORDER_CONV} | cut -d "[" -f 2 | cut -d "]" -f 1 | cut -d ":" -f 2- | sed -e '/^ *#/d;s/#.*//')
@@ -151,6 +151,7 @@ function writeLogEntry
     return 0;
 }
 
+echo "writing log" >> ~/logger-output
 [ ${#} -ne 0 ] && writeLogEntry "${@}" > /dev/null 2>&1;
 
 return 0;

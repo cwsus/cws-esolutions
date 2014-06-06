@@ -18,7 +18,7 @@
 #      REVISION:  ---
 #==============================================================================
 
-[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 ## Application constants
 [ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
@@ -29,14 +29,14 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 [[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && echo "Failed to locate configuration data. Cannot continue." && exit 1;
 
-[[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-[[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
 unset METHOD_NAME;
 unset CNAME;
@@ -45,7 +45,7 @@ unset CNAME;
 ${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
 RET_CODE=${?};
 
-[ ${RET_CODE} != 0 ] && echo "Security configuration does not allow the requested action." && echo ${RET_CODE} && exit ${RET_CODE};
+[ ${RET_CODE} -ne 0 ] && echo "Security configuration does not allow the requested action." && echo ${RET_CODE} && exit ${RET_CODE};
 
 ## unset the return code
 unset RET_CODE;
@@ -54,7 +54,7 @@ unset RET_CODE;
 ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/lock.sh lock ${$};
 RET_CODE=${?};
 
-[ ${RET_CODE} != 0 ] && echo "Application currently in use." && echo ${RET_CODE} && exit ${RET_CODE};
+[ ${RET_CODE} -ne 0 ] && echo "Application currently in use." && echo ${RET_CODE} && exit ${RET_CODE};
 
 unset RET_CODE;
 
@@ -71,11 +71,11 @@ trap "${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/lock.sh unlock ${$}; exit" INT TERM EX
 #==============================================================================
 function generateRNDCKeys
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
     if [ ! -z "${IS_RNDC_MGMT_ENABLED}" ] && [ "${IS_RNDC_MGMT_ENABLED}" = "${_FALSE}" ]
     then
@@ -84,8 +84,8 @@ function generateRNDCKeys
         return 97;
     fi
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Generating RNDC keyfiles..";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command rndc-confgen -b ${RNDC_KEY_BITSIZE} -r ${RANDOM_GENERATOR} > ${NAMED_ROOT}/${TMP_DIRECTORY}..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Generating RNDC keyfiles..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command rndc-confgen -b ${RNDC_KEY_BITSIZE} -r ${RANDOM_GENERATOR} > ${NAMED_ROOT}/${TMP_DIRECTORY}..";
 
     RETURN_KEY=$(rndc-confgen -b ${RNDC_KEY_BITSIZE} -r ${RANDOM_GENERATOR} | grep secret | head -1 | cut -d "\"" -f 2);
     KEY_GENERATION_DATE=$(date +"%m-%d-%y");
@@ -121,7 +121,7 @@ function generateRNDCKeys
             if [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(echo ${RNDC_CONF_FILE} | cut -d "/" -f 3) ] \
                 && [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(echo ${RNDC_KEY_FILE} | cut -d "/" -f 3) ]
             then
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${RNDC_LOCAL_KEY} generation complete. Now generating ${RNDC_REMOTE_KEY}..";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${RNDC_LOCAL_KEY} generation complete. Now generating ${RNDC_REMOTE_KEY}..";
 
                 ## generate the remote key
                 RETURN_KEY=$(rndc-confgen -b ${RNDC_KEY_BITSIZE} -r ${RANDOM_GENERATOR} | grep secret | head -1 | cut -d "\"" -f 2);
@@ -155,19 +155,19 @@ function generateRNDCKeys
                         TARFILE_DATE=$(date +"%m-%d-%Y");
                         BACKUP_FILE=$(echo ${RNDC_KEY_FILE} | cut -d "/" -f 3).${CHANGE_NUM}.${TARFILE_DATE}.${IUSER_AUDIT};
 
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "BACKUP_FILE->${BACKUP_FILE}");
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "BACKUP_FILE->${BACKUP_FILE}");
 
                         ## tar+gzip
                         tar cf ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar -C ${NAMED_ROOT}/etc/dnssec-keys $(echo ${RNDC_KEY_FILE} | cut -d "/" -f 3) \
                             $(echo ${RNDC_CONF_FILE} | cut -d "/" -f 3) > /dev/null 2>&1;
                         gzip ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar > /dev/null 2>&1;
 
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Backup complete. Validating..");
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Backup complete. Validating..");
 
                         ## make sure our backup file got created
                         if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar.gz ]
                         then
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Backup successful. Copying files..");
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Backup successful. Copying files..");
 
                             ## unset BACKUP_FILE var
                             unset BACKUP_FILE;
@@ -180,18 +180,18 @@ function generateRNDCKeys
                             for OPERATIONAL_FILE in ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(echo ${RNDC_KEY_FILE} | cut -d "/" -f 3) \
                                 ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(echo ${RNDC_CONF_FILE} | cut -d "/" -f 3)
                             do
-                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Validating ${OPERATIONAL_FILE}..");
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Validating ${OPERATIONAL_FILE}..");
 
                                 OP_FILE_CKSUM=$(cksum ${OPERATIONAL_FILE} | awk '{print $1}');
                                 MOD_FILE_CKSUM=$(cksum ${NAMED_ROOT}/etc/dnssec-keys/$(echo ${OPERATIONAL_FILE} | cut -d "/" -f 5) | awk '{print $1}' );
 
-                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "OP_FILE_CKSUM -> ${OP_FILE_CKSUM}");
-                                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "MOD_FILE_CKSUM -> ${MOD_FILE_CKSUM}");
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "OP_FILE_CKSUM -> ${OP_FILE_CKSUM}");
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "MOD_FILE_CKSUM -> ${MOD_FILE_CKSUM}");
 
-                                if [ ${OP_FILE_CKSUM} == ${MOD_FILE_CKSUM} ]
+                                if [ ${OP_FILE_CKSUM} -eq ${MOD_FILE_CKSUM} ]
                                 then
                                     ## matched. continue
-                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Checksum match. Continuing..");
+                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Checksum match. Continuing..");
 
                                     continue;
                                 else
@@ -262,7 +262,7 @@ function generateRNDCKeys
     unset KEY_GENERATION_DATE;
     unset RETURN_KEY;
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
 
     return ${RETURN_CODE};
@@ -275,11 +275,11 @@ function generateRNDCKeys
 #==============================================================================
 function generateDNSSECKeys
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
     if [ ! -z "${IS_DNSSEC_MGMT_ENABLED}" ] && [ "${IS_DNSSEC_MGMT_ENABLED}" = "${_FALSE}" ]
     then
@@ -297,7 +297,7 @@ function generateDNSSECKeys
         return 10;
     fi
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting SITE_ROOT to ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${GROUP_ID}${BUSINESS_UNIT}..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting SITE_ROOT to ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${GROUP_ID}${BUSINESS_UNIT}..";
 
     SITE_ROOT=${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${GROUP_ID}${BUSINESS_UNIT};
     TARFILE_DATE=$(date +"%m-%d-%Y");
@@ -309,16 +309,16 @@ function generateDNSSECKeys
     KSK_KEY_DST_FILE_NAME=${KSKSIGN_FILE_PREFIX}.${ZONE_NAME}.${PROJECT_CODE}.key;
     KSK_PRV_DST_FILE_NAME=${KSKSIGN_FILE_PREFIX}.${ZONE_NAME}.${PROJECT_CODE}.private;
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_ROOT->${SITE_ROOT}";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TARFILE_DATE->${TARFILE_DATE}";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BACKUP_FILE->${BACKUP_FILE}";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DC_FILE->${DC_FILE}";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "KEY_DIRECTORY->${KEY_DIRECTORY}";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZSK_KEY_DST_FILE_NAME->${ZSK_KEY_DST_FILE_NAME}";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZSK_PRV_DST_FILE_NAME->${ZSK_PRV_DST_FILE_NAME}";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "KSK_KEY_DST_FILE_NAME->${KSK_KEY_DST_FILE_NAME}";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "KSK_PRV_DST_FILE_NAME->${KSK_PRV_DST_FILE_NAME}";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checking for file ${FILENAME}...";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_ROOT->${SITE_ROOT}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TARFILE_DATE->${TARFILE_DATE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BACKUP_FILE->${BACKUP_FILE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DC_FILE->${DC_FILE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "KEY_DIRECTORY->${KEY_DIRECTORY}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZSK_KEY_DST_FILE_NAME->${ZSK_KEY_DST_FILE_NAME}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZSK_PRV_DST_FILE_NAME->${ZSK_PRV_DST_FILE_NAME}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "KSK_KEY_DST_FILE_NAME->${KSK_KEY_DST_FILE_NAME}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "KSK_PRV_DST_FILE_NAME->${KSK_PRV_DST_FILE_NAME}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checking for file ${FILENAME}...";
 
     ## Then, lets check and make sure that the zonefile
     ## actually exists
@@ -329,15 +329,15 @@ function generateDNSSECKeys
         return 9;
     fi
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File exists - backup in progress...";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting backup file to ${NAMED_ROOT}/${BACKUP_DIRECTORY}/${FILENAME}.\`date +"%m-%d-%Y"\`.${CHANGE_NUM}.${IUSER_AUDIT}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File exists - backup in progress...";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting backup file to ${NAMED_ROOT}/${BACKUP_DIRECTORY}/${FILENAME}.\`date +"%m-%d-%Y"\`.${CHANGE_NUM}.${IUSER_AUDIT}";
 
     ## Everything exists. Lets backup the zone before
     ## making any modifications
     ## why tar+gzip ? to carry the process over. we
     ## want consistency, even when it doesnt make a
     ## difference
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "BACKUP_FILE->${BACKUP_FILE}");
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "BACKUP_FILE->${BACKUP_FILE}");
 
     ## tar+gzip
     tar cf ${NAMED_ROOT}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar -C ${SITE_ROOT} ${FILENAME} ${PRIMARY_DATACENTER}/${DC_FILE} \
@@ -354,8 +354,8 @@ function generateDNSSECKeys
     fi
 
     ## unset BACKUP_FILE var
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete - continuing...";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${FILENAME} to ${NAMED_ROOT}/${TMP_DIRECTORY}..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete - continuing...";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${FILENAME} to ${NAMED_ROOT}/${TMP_DIRECTORY}..";
 
     ## make a copy of the zone for operation
     cp ${SITE_ROOT}/${FILENAME} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME};
@@ -367,18 +367,18 @@ function generateDNSSECKeys
         return 57;
     fi
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Calling addServiceIndicators.sh to add audit flags..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Calling addServiceIndicators.sh to add audit flags..";
 
     ## lets get to work
     ## first lets make sure that the project has a dnssec directory,
     ## if not make it
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating business unit key signing directory..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating business unit key signing directory..";
 
     [ ! -d ${KEY_DIRECTORY} ] || mkdir -p ${KEY_DIRECTORY};
 
     GENERATED_ZSK_FILE=$(dnssec-keygen -K ${KEY_DIRECTORY} -a ${DNSSEC_ALGORITHM} -b ${DNSSEC_ZONESIGN_BITSIZE} -r ${RANDOM_GENERATOR} -n ZONE ${ZONE_NAME});
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Key generation complete. GENERATED_ZSK_FILE -> ${GENERATED_ZSK_FILE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Key generation complete. GENERATED_ZSK_FILE -> ${GENERATED_ZSK_FILE}";
 
     ## ok, we've generated our zsk's
     ## make sure they exist
@@ -395,16 +395,16 @@ function generateDNSSECKeys
     ## keys successfully created, lets move forward
     ## rename the files that were created to what we
     ## want them to be
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Key generation verified. Renaming..";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${KEY_DIRECTORY}/${GENERATED_ZSK_FILE}.key to ${KEY_DIRECTORY}/${ZSK_KEY_DST_FILE_NAME}..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Key generation verified. Renaming..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${KEY_DIRECTORY}/${GENERATED_ZSK_FILE}.key to ${KEY_DIRECTORY}/${ZSK_KEY_DST_FILE_NAME}..";
 
     cp ${KEY_DIRECTORY}/${GENERATED_ZSK_FILE}.key ${KEY_DIRECTORY}/${ZSK_KEY_DST_FILE_NAME};
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${KEY_DIRECTORY}/${GENERATED_ZSK_FILE}.private to ${KEY_DIRECTORY}/${ZSK_PRV_DST_FILE_NAME}..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${KEY_DIRECTORY}/${GENERATED_ZSK_FILE}.private to ${KEY_DIRECTORY}/${ZSK_PRV_DST_FILE_NAME}..";
 
     cp ${KEY_DIRECTORY}/${GENERATED_ZSK_FILE}.private ${KEY_DIRECTORY}/${ZSK_PRV_DST_FILE_NAME};
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copies complete. Validating..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copies complete. Validating..";
 
     if [ ! -s ${KEY_DIRECTORY}/${ZSK_PRV_DST_FILE_NAME} ] && [ ! -s ${KEY_DIRECTORY}/${ZSK_KEY_DST_FILE_NAME} ]
     then
@@ -417,16 +417,16 @@ function generateDNSSECKeys
     ## keys successfully moved.
     ## now we generate our ksk's
     ## remove the generated files..
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copy validated. Removing source files..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copy validated. Removing source files..";
 
     rm -rf ${KEY_DIRECTORY}/${GENERATED_ZSK_FILE}.key;
     rm -rf ${KEY_DIRECTORY}/${GENERATED_ZSK_FILE}.private;
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal complete. Generating KSK keys..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal complete. Generating KSK keys..";
 
     GENERATED_KSK_FILE=$(dnssec-keygen -K ${KEY_DIRECTORY} -a ${DNSSEC_ALGORITHM} -b ${DNSSEC_KEYSIGN_BITSIZE} -r ${RANDOM_GENERATOR} -n ZONE -f KSK ${ZONE_NAME});
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Key generation complete. GENERATED_KSK_FILE -> ${GENERATED_KSK_FILE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Key generation complete. GENERATED_KSK_FILE -> ${GENERATED_KSK_FILE}";
 
     ## ok, we've generated our zsk's
     ## make sure they exist
@@ -441,16 +441,16 @@ function generateDNSSECKeys
     ## keys successfully created, lets move forward
     ## rename the files that were created to what we
     ## want them to be
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Key generation verified. Renaming..";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${KEY_DIRECTORY}/${GENERATED_KSK_FILE}.key to ${KEY_DIRECTORY}/${KSK_KEY_DST_FILE_NAME}..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Key generation verified. Renaming..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${KEY_DIRECTORY}/${GENERATED_KSK_FILE}.key to ${KEY_DIRECTORY}/${KSK_KEY_DST_FILE_NAME}..";
 
     cp ${KEY_DIRECTORY}/${GENERATED_KSK_FILE}.key ${KEY_DIRECTORY}/${KSK_KEY_DST_FILE_NAME};
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${KEY_DIRECTORY}/${GENERATED_KSK_FILE}.private to ${KEY_DIRECTORY}/${KSK_PRV_DST_FILE_NAME}..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${KEY_DIRECTORY}/${GENERATED_KSK_FILE}.private to ${KEY_DIRECTORY}/${KSK_PRV_DST_FILE_NAME}..";
 
     cp ${KEY_DIRECTORY}/${GENERATED_ZSK_FILE}.private ${KEY_DIRECTORY}/${ZSK_PRV_DST_FILE_NAME};
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copies complete. Validating..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copies complete. Validating..";
 
     if [[ ! -s ${KEY_DIRECTORY}/${KSK_PRV_DST_FILE_NAME} && ! -s ${KEY_DIRECTORY}/${KSK_KEY_DST_FILE_NAME} ]]
     then
@@ -465,8 +465,8 @@ function generateDNSSECKeys
     ## them in the zonefile and then sign it. once that's done,
     ## we can move the dsset files to the proper directory and
     ## finalize.
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Key generation complete. Updating zonefile..";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Stripping header...";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Key generation complete. Updating zonefile..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Stripping header...";
 
     ## pull out the header from the existing file to place into the new
     ## NOTE: This depends on the header being the same number of lines in
@@ -484,11 +484,11 @@ function generateDNSSECKeys
         SERIAL_NUM=${DEFAULT_SERIAL_NUMBER};
     fi
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "START_LINE_NUMBER -> ${START_LINE_NUMBER}";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "LAST_SERIAL -> ${LAST_SERIAL}";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERIAL_NUM -> ${SERIAL_NUM}";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printing \$INCLUDE ${KEY_DIRECTORY}/${ZSK_KEY_DST_FILE_NAME} ..";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printing \$INCLUDE ${KEY_DIRECTORY}/${KSK_KEY_DST_FILE_NAME} ..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "START_LINE_NUMBER -> ${START_LINE_NUMBER}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "LAST_SERIAL -> ${LAST_SERIAL}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERIAL_NUM -> ${SERIAL_NUM}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printing \$INCLUDE ${KEY_DIRECTORY}/${ZSK_KEY_DST_FILE_NAME} ..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printing \$INCLUDE ${KEY_DIRECTORY}/${KSK_KEY_DST_FILE_NAME} ..";
 
     ## then strip the header..
     ## then add the info..
@@ -512,7 +512,7 @@ function generateDNSSECKeys
 
     ## process complete, lets rock on
     ## now we sign the zone
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Keyfile inclusion complete. Signing zone..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Keyfile inclusion complete. Signing zone..";
 
     ## here we actually sign the working copy of the zone we've created.
     RET_CODE=$(dnssec-signzone -K ${KEY_DIRECTORY} -d ${KEY_DIRECTORY} \
@@ -520,7 +520,7 @@ function generateDNSSECKeys
             -f ${NAMED_ROOT}/${TMP_DIRECTORY}/${FILENAME}.signed ${NAMED_ROOT}/${TMP_DIRECTORY}/${FILENAME} \
                 ${ZSKSIGN_FILE_PREFIX}-${ZONE_NAME}.${PROJECT_CODE});
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE->${RET_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE->${RET_CODE}";
 
     if [[ -z "${RET_CODE}" || ${RET_CODE} -ne 0 ]]
     then
@@ -559,30 +559,30 @@ function generateDNSSECKeys
     ## and make sure..
     if [ -s ${KEY_DIRECTORY}/dsset-${ZONE_NAME}.${PROJECT_CODE}. ]
     then
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding header..";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding header..";
 
         head -4 ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_DIR}/${GROUP_ID}${PROJECT_CODE}/${FILENAME} \
             > ${NAMED_ROOT}/${TMP_DIRECTORY}/${FILENAME};
 
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding signed content..";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding signed content..";
         ## header in, now add the signed content
         cat ${NAMED_ROOT}/${TMP_DIRECTORY}/${FILENAME}.signed >> ${NAMED_ROOT}/${TMP_DIRECTORY}/${FILENAME};
 
         ## k, this gives our proper header and a signed zone.
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Signed zone now available. Creating datacenter-specifics...";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Signed zone now available. Creating datacenter-specifics...";
 
         ## now we need to create our dc-specific files.
         ## to do this, we need to know the current ip
         CURRENT_DC=$(grep "Current" ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_DIR}/${GROUP_ID}${PROJECT_CODE}/${FILENAME} | cut -d ":" -f 2| sed -e 's/^ *//');
 
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CURRENT_DC->${CURRENT_DC}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CURRENT_DC->${CURRENT_DC}";
 
         ## set the IP flag                                        
         [ "${CURRENT_DC}" = "${PRIMARY_DC}" ] && CURRENT_IP=${PRIMARY_DATACENTER_IP} || CURRENT_IP=${SECONDARY_DATACENTER_IP};
 
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CURRENT_IP->${CURRENT_IP}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CURRENT_IP->${CURRENT_IP}";
 
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating datacenter specific files..";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating datacenter specific files..";
 
         ## ok, lets rock out dc-specifics
         ## start with the DC its live in
@@ -591,17 +591,17 @@ function generateDNSSECKeys
         head -4 ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_DIR}/${GROUP_ID}${PROJECT_CODE}/${FILENAME}/${CURRENT_DC}/${DC_FILE} \
              > ${NAMED_ROOT}/${TMP_DIRECTORY}/${FILENAME}.${SECONDARY_DC};
 
-        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Headers added. Adding signed content..";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Headers added. Adding signed content..";
 
         ## we have headers, add in the signature
         if [ "${CURRENT_DC}" = "${PRIMARY_DC}" ]
         then
             ## add in the signed content, leaving everything unchanged
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding signatures for ${PRIMARY_DC}..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding signatures for ${PRIMARY_DC}..";
 
             cat ${NAMED_ROOT}/${TMP_DIRECTORY}/${FILENAME} >> ${NAMED_ROOT}/${TMP_DIRECTORY}/${FILENAME}.${PRIMARY_DC};
 
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding signatures for ${SECONDARY_DC} and flipping IP to ${SECONDARY_DATACENTER_IP}..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding signatures for ${SECONDARY_DC} and flipping IP to ${SECONDARY_DATACENTER_IP}..";
 
             ## and then again for the secondary
             sed -e "s/${PRIMARY_DATACENTER_IP}/${SECONDARY_DATACENTER_IP}/" ${NAMED_ROOT}/${TMP_DIRECTORY}/${FILENAME} \
@@ -609,11 +609,11 @@ function generateDNSSECKeys
         elif [ "${CURRENT_DC}" = "${SECONDARY_DC}" ]
         then
             ## add in the signed content, leaving everything unchanged
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding signatures for ${SECONDARY_DC}..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding signatures for ${SECONDARY_DC}..";
 
             cat ${NAMED_ROOT}/${TMP_DIRECTORY}/${FILENAME} >> ${NAMED_ROOT}/${TMP_DIRECTORY}/${FILENAME}.${SECONDARY_DC};
 
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding signatures for ${PRIMARY_DC} and flipping IP to ${PRIMARY_DATACENTER_IP}..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding signatures for ${PRIMARY_DC} and flipping IP to ${PRIMARY_DATACENTER_IP}..";
 
             ## and then again for the secondary
             sed -e "s/${SECONDARY_DATACENTER_IP}/${PRIMARY_DATACENTER_IP}/" ${NAMED_ROOT}/${TMP_DIRECTORY}/${FILENAME} \
@@ -636,15 +636,15 @@ function generateDNSSECKeys
             ## a signed secondary datacenter zone with header
             ## we can copy in the files
             ## pull checksums
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Placing files..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Placing files..";
 
             SIGNED_TMP_CKSUM=$(cksum ${NAMED_ROOT}/${TMP_DIRECTORY}/${FILENAME} | awk '{print $1}');
             SIGNED_PRI_CKSUM=$(cksum ${NAMED_ROOT}/${TMP_DIRECTORY}/${FILENAME}.${PRIMARY_DATACENTER} | awk '{print $1}');
             SIGNED_SEC_CKSUM=$(cksum ${NAMED_ROOT}/${TMP_DIRECTORY}/${FILENAME}.${SECONDARY_DATACENTER} | awk '{print $1}');
 
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SIGNED_TMP_CKSUM -> ${SIGNED_TMP_CKSUM}";
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SIGNED_PRI_CKSUM -> ${SIGNED_PRI_CKSUM}";
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SIGNED_SEC_CKSUM -> ${SIGNED_SEC_CKSUM}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SIGNED_TMP_CKSUM -> ${SIGNED_TMP_CKSUM}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SIGNED_PRI_CKSUM -> ${SIGNED_PRI_CKSUM}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SIGNED_SEC_CKSUM -> ${SIGNED_SEC_CKSUM}";
             
             cp ${NAMED_ROOT}/${TMP_DIRECTORY}/${FILENAME} \
                 ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_DIR}/${GROUP_ID}${PROJECT_CODE}/${FILENAME};
@@ -652,20 +652,20 @@ function generateDNSSECKeys
             ## validate it, if this didnt work then theres no point in continuing
             OP_TMP_CKSUM=$(cksum ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_DIR}/${GROUP_ID}${PROJECT_CODE}/${FILENAME} | awk '{print $1}');
 
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OP_TMP_CKSUM -> ${OP_TMP_CKSUM}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OP_TMP_CKSUM -> ${OP_TMP_CKSUM}";
 
-            if [ ${SIGNED_TMP_CKSUM} == ${OP_TMP_CKSUM} ]
+            if [ ${SIGNED_TMP_CKSUM} -eq ${OP_TMP_CKSUM} ]
             then
                 ## checksum match. continue.
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Operational zonefile checksum match. Continuing..";
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying primary datacenter files..";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Operational zonefile checksum match. Continuing..";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying primary datacenter files..";
 
                 cp ${NAMED_ROOT}/${TMP_DIRECTORY}/${FILENAME}.${PRIMARY_DC} \
                     ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_DIR}/${GROUP_ID}${PROJECT_CODE}/${PRIMARY_DC}/${DC_FILE};
 
                 OP_PRI_CKSUM=$(cksum ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_DIR}/${GROUP_ID}${PROJECT_CODE}/${PRIMARY_DC}/${DC_FILE} | awk '{print $1}');
 
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OP_PRI_CKSUM -> ${OP_PRI_CKSUM}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OP_PRI_CKSUM -> ${OP_PRI_CKSUM}";
 
                 ## and again, check it
                 ## why case ? dunno just seems to be better than
@@ -681,17 +681,17 @@ function generateDNSSECKeys
 
                             RETURN_WARNING=${_TRUE};
                         else
-                            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Primary datacenter zonefile checksum match. Continuing..";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Primary datacenter zonefile checksum match. Continuing..";
                         fi
 
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying secondary datacenter files..";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying secondary datacenter files..";
 
                         cp ${NAMED_ROOT}/${TMP_DIRECTORY}/${FILENAME}.${SECONDARY_DC} \
                             ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_DIR}/${GROUP_ID}${PROJECT_CODE}/${SECONDARY_DC}/${DC_FILE};
 
                         OP_SEC_CKSUM=$(cksum ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_DIR}/${GROUP_ID}${PROJECT_CODE}/${SECONDARY_DC}/${DC_FILE} | awk '{print $1}');
 
-                        [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OP_SEC_CKSUM -> ${OP_SEC_CKSUM}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OP_SEC_CKSUM -> ${OP_SEC_CKSUM}";
 
                         case ${OP_SEC_CKSUM} in
                             *)
@@ -702,7 +702,7 @@ function generateDNSSECKeys
 
                                     RETURN_WARNING=${_TRUE};
                                 else
-                                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Secondary datacenter zonefile checksum match. Continuing..";
+                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Secondary datacenter zonefile checksum match. Continuing..";
                                 fi
 
                                 ## ok, we have our shtuff. now we reload the zone for the changes to take
@@ -750,7 +750,7 @@ function generateDNSSECKeys
     unset KSK_KEY_DST_FILE_NAME;
     unset KSK_PRV_DST_FILE_NAME;
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
 
     return ${RETURN_CODE};
@@ -764,11 +764,11 @@ function generateDNSSECKeys
 #==============================================================================
 function generateTSIGKeys
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
     if [ ! -z "${IS_TSIG_MGMT_ENABLED}" ] && [ "${IS_TSIG_MGMT_ENABLED}" = "${_FALSE}" ]
     then
@@ -780,7 +780,7 @@ function generateTSIGKeys
     ## remove the file if it exists
     [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(echo ${TRANSFER_KEY_FILE} | cut -d "/" -f 3) ] && rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(echo ${TRANSFER_KEY_FILE} | cut -d "/" -f 3);
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Generating TSIG keyfiles..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Generating TSIG keyfiles..";
 
     ## generate the key
     RETURN_KEY=$(rndc-confgen -b ${RNDC_KEY_BITSIZE} -r ${RANDOM_GENERATOR} | grep secret | head -1 | cut -d "\"" -f 2);
@@ -802,7 +802,7 @@ function generateTSIGKeys
         ## add each slave server into the file
         while [ ${A} -ne ${#DNS_SLAVE_IPS[@]} ]
         do
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS_SLAVE_IPS -> ${DNS_SLAVE_IPS[${A}]}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS_SLAVE_IPS -> ${DNS_SLAVE_IPS[${A}]}";
 
             printf "server ${DNS_SLAVE_IPS[${A}]} {\n" >> ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(echo ${TRANSFER_KEY_FILE} | cut -d "/" -f 3);
             printf "    keys { ${TSIG_TRANSFER_KEY}; };\n" >> ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(echo ${TRANSFER_KEY_FILE} | cut -d "/" -f 3);
@@ -816,7 +816,7 @@ function generateTSIGKeys
 
         if [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(echo ${TRANSFER_KEY_FILE} | cut -d "/" -f 3) ]
         then
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${TSIG_TRANSFER_KEY} generation complete.";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${TSIG_TRANSFER_KEY} generation complete.";
 
             ## echo back the key to the requestor for build against slaves
             if [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(echo ${TRANSFER_KEY_FILE} | cut -d "/" -f 3) ]
@@ -826,18 +826,18 @@ function generateTSIGKeys
                 TARFILE_DATE=$(date +"%m-%d-%Y");
                 BACKUP_FILE=$(echo ${TRANSFER_KEY_FILE} | cut -d "/" -f 3).${CHANGE_NUM}.${TARFILE_DATE}.${IUSER_AUDIT};
 
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "BACKUP_FILE->${BACKUP_FILE}");
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "BACKUP_FILE->${BACKUP_FILE}");
 
                 ## tar+gzip
                 tar cf ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar -C ${NAMED_ROOT}/etc/dnssec-keys $(echo ${TRANSFER_KEY_FILE} | cut -d "/" -f 3) > /dev/null 2>&1;
                 gzip ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar > /dev/null 2>&1;
 
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Backup complete. Validating..");
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Backup complete. Validating..");
 
                 ## make sure our backup file got created
                 if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar.gz ]
                 then
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Backup successful. Copying files..");
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Backup successful. Copying files..");
 
                     ## unset BACKUP_FILE var
                     unset BACKUP_FILE;
@@ -845,15 +845,15 @@ function generateTSIGKeys
                     ## now we can move the files in
                     cp -p ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(echo ${TRANSFER_KEY_FILE} | cut -d "/" -f 3) ${NAMED_ROOT}/${TRANSFER_KEY_FILE};
 
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Validating checksums..");
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Validating checksums..");
 
                     OP_FILE_CKSUM=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(echo ${TRANSFER_KEY_FILE} | cut -d "/" -f 3) | awk '{print $1}');
                     MOD_FILE_CKSUM=$(cksum ${NAMED_ROOT}/${TRANSFER_KEY_FILE} | awk '{print $1}');
 
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "OP_FILE_CKSUM -> ${OP_FILE_CKSUM}");
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "MOD_FILE_CKSUM -> ${MOD_FILE_CKSUM}");
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "OP_FILE_CKSUM -> ${OP_FILE_CKSUM}");
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "MOD_FILE_CKSUM -> ${MOD_FILE_CKSUM}");
 
-                    if [ ${OP_FILE_CKSUM} == ${MOD_FILE_CKSUM} ]
+                    if [ ${OP_FILE_CKSUM} -eq ${MOD_FILE_CKSUM} ]
                     then
                         ## we're all set here. return the key back to the requestor.
                         ## remove tmp files
@@ -891,7 +891,7 @@ function generateTSIGKeys
         RETURN_CODE=94;
     fi
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
 
     return ${RETURN_CODE};
@@ -904,16 +904,16 @@ function generateTSIGKeys
 #==============================================================================
 function generateDHCPDKeys
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
     ## remove the file if it exists
     [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(echo ${DHCPD_KEY_FILE} | cut -d "/" -f 3) ] && rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(echo ${DHCPD_KEY_FILE} | cut -d "/" -f 3);
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Generating DHCP keyfiles..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Generating DHCP keyfiles..";
 
     ## generate the key
     RETURN_KEY=$(rndc-confgen -b ${RNDC_KEY_BITSIZE} -r ${RANDOM_GENERATOR} | grep secret | head -1 | cut -d "\"" -f 2);
@@ -932,7 +932,7 @@ function generateDHCPDKeys
 
         if [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(echo ${DHCPD_KEY_FILE} | cut -d "/" -f 3) ]
         then
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${DHCPD_UPDATE_KEY} generation complete.";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${DHCPD_UPDATE_KEY} generation complete.";
 
             ## echo back the key to the requestor for build against slaves
             if [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(echo ${DHCPD_KEY_FILE} | cut -d "/" -f 3) ]
@@ -942,18 +942,18 @@ function generateDHCPDKeys
                 TARFILE_DATE=$(date +"%m-%d-%Y");
                 BACKUP_FILE=$(echo ${DHCPD_UPDATE_KEY} | cut -d "/" -f 3).${CHANGE_NUM}.${TARFILE_DATE}.${IUSER_AUDIT};
 
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "BACKUP_FILE->${BACKUP_FILE}");
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "BACKUP_FILE->${BACKUP_FILE}");
 
                 ## tar+gzip
                 tar cf ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar -C ${NAMED_ROOT}/etc/dnssec-keys $(echo ${DHCPD_KEY_FILE} | cut -d "/" -f 3) > /dev/null 2>&1;
                 gzip ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar > /dev/null 2>&1;
 
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Backup complete. Validating..");
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Backup complete. Validating..");
 
                 ## make sure our backup file got created
                 if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar.gz ]
                 then
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Backup successful. Copying files..");
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Backup successful. Copying files..");
 
                     ## unset BACKUP_FILE var
                     unset BACKUP_FILE;
@@ -961,15 +961,15 @@ function generateDHCPDKeys
                     ## now we can move the files in
                     cp -p ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(echo ${DHCPD_KEY_FILE} | cut -d "/" -f 3) ${NAMED_ROOT}/${DHCPD_KEY_FILE};
 
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Validating checksums..");
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "Validating checksums..");
 
                     OP_FILE_CKSUM=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(echo ${DHCPD_KEY_FILE} | cut -d "/" -f 3) | awk '{print $1}');
                     MOD_FILE_CKSUM=$(cksum ${NAMED_ROOT}/${DHCPD_KEY_FILE} | awk '{print $1}');
 
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "OP_FILE_CKSUM -> ${OP_FILE_CKSUM}");
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "MOD_FILE_CKSUM -> ${MOD_FILE_CKSUM}");
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "OP_FILE_CKSUM -> ${OP_FILE_CKSUM}");
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" ${METHOD_NAME} ${CNAME} ${LINENO} "MOD_FILE_CKSUM -> ${MOD_FILE_CKSUM}");
 
-                    if [ ${OP_FILE_CKSUM} == ${MOD_FILE_CKSUM} ]
+                    if [ ${OP_FILE_CKSUM} -eq ${MOD_FILE_CKSUM} ]
                     then
                         ## we're all set here. return the key back to the requestor.
                         ## remove tmp files
@@ -1006,7 +1006,7 @@ function generateDHCPDKeys
         RETURN_CODE=94;
     fi
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
 
     return ${RETURN_CODE};
@@ -1019,10 +1019,10 @@ function generateDHCPDKeys
 #==============================================================================
 function usage
 {
-    [[ ! -z "${TRACE}" && "${TRACE}" = "${_TRUE}" ]] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
     print "${CNAME} - Execute key generation requests";
     print "Usage: ${CNAME} [ -r request information ] [ -k request information ] [-e] [-h|?]";
@@ -1031,7 +1031,7 @@ function usage
     print " -e    -> Execute the request";
     print " -h|-? -> Show this help";
 
-    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     return 3;
 }
@@ -1042,8 +1042,8 @@ while getopts ":r:k:eh:" OPTIONS
 do
     case "${OPTIONS}" in
         r)
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting generateRNDCKeys..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting generateRNDCKeys..";
 
             generateRNDCKeys=${_TRUE};
 
@@ -1051,14 +1051,14 @@ do
             typeset -u CHANGE_NUM=$(echo "${OPTARG}" | cut -d "," -f 2);
             IUSER_AUDIT="${OPTARG}";
 
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "generateRNDCKeys -> ${generateRNDCKeys}";
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "KEYTYPE -> ${KEYTYPE}";
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_NUM -> ${CHANGE_NUM}";
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IUSER_AUDIT -> ${IUSER_AUDIT}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "generateRNDCKeys -> ${generateRNDCKeys}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "KEYTYPE -> ${KEYTYPE}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_NUM -> ${CHANGE_NUM}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IUSER_AUDIT -> ${IUSER_AUDIT}";
             ;;
         k)
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting generateDNSSECKeys..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting generateDNSSECKeys..";
 
             generateDNSSECKeys=${_TRUE};
 
@@ -1066,65 +1066,65 @@ do
             typeset -u CHANGE_NUM=$(echo "${OPTARG}" | cut -d "," -f 2);
             IUSER_AUDIT="${OPTARG}";
 
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "generateDNSSECKeys -> ${generateDNSSECKeys}";
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "KEYTYPE -> ${KEYTYPE}";
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_NUM -> ${CHANGE_NUM}";
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IUSER_AUDIT -> ${IUSER_AUDIT}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "generateDNSSECKeys -> ${generateDNSSECKeys}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "KEYTYPE -> ${KEYTYPE}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_NUM -> ${CHANGE_NUM}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IUSER_AUDIT -> ${IUSER_AUDIT}";
             ;;
         e)
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating request..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating request..";
 
             if [ -z "${KEYTYPE}" ]
             then
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No key type was provided. Unable to continue processing.";
 
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                 RETURN_CODE=95;
             elif [ -z "${CHANGE_NUM}" ]
             then
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No change number was provided. Unable to continue processing.";
 
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                 RETURN_CODE=19;
             elif [ -z "${IUSER_AUDIT}" ]
             then
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No auditable user account was provided. Unable to continue processing.";
 
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                 RETURN_CODE=20;
             else
                 ## We have enough information to process the request, continue
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
-                [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                 if [ ! -z "${generateDNSSECKeys}" ] && [ "${generateDNSSECKeys}" = "${_TRUE}" ]
                 then
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                     echo "not yet implemented";
                     return -1;
                 elif [ ! -z "${generateRNDCKeys}" ] && [ "${generateRNDCKeys}" = "${_TRUE}" ]
                 then
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                     generateRNDCKeys;
                 else
                     ## no valid command
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No valid command was provided. Cannot continue.";
 
-                    [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                     usage;
                 fi
             fi
             ;;
         *)
-            [[ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
             usage;
             ;;

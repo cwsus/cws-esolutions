@@ -16,7 +16,7 @@
 #      REVISION:  ---
 #==============================================================================
 
-[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 ###############################################################################
 #       check if is running on a eSupport DR Node, exit if it is not.
@@ -318,7 +318,7 @@ typeset -i AUTHORIZATION_COUNT=0;
 ## set path, incorporating approot
 typeset -x PATH=${PATH}:${PLUGIN_PATH}:${IPLANET_PATH}:${IHS_PATH};
 typeset -x LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${PLUGIN_LIBRARY_PATH};
-typeset -x CLASSPATH==${CLASSPATH}:${PLUGIN_CLASS_PATH};
+typeset -x CLASSPATH=${CLASSPATH}:${PLUGIN_CLASS_PATH};
 
 [ -s ${PLUGIN_ROOT_DIR}/lib/aliases ] && . ${PLUGIN_ROOT_DIR}/lib/aliases;
 [ -s ${PLUGIN_ROOT_DIR}/lib/functions ] && . ${PLUGIN_ROOT_DIR}/lib/functions;

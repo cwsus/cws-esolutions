@@ -18,7 +18,7 @@
 #
 #==============================================================================
 
-[[ ! -z "${TRACE}" && "${TRACE}" = "TRUE" ]] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 #===  FUNCTION  ===============================================================
 #          NAME:  usage
@@ -49,9 +49,9 @@ OPTIND=0;
 
 while getopts ":t:i:d:" OPTIONS; do
     case ${OPTIONS} in
-        t) [[ ! -z "${OPTARG}" && $(isNaN ${OPTARG}) == 0 ]] && TIMEOUT=${OPTARG} || TIMEOUT=${THREAD_TIMEOUT} ;;
-        n) [[ ! -z "${OPTARG}" && $(isNaN ${OPTARG}) == 0 ]] && INTERVAL=${OPTARG} || INTERVAL=${THREAD_INTERVAL} ;;
-        d) [[ ! -z "${OPTARG}" && $(isNaN ${OPTARG}) == 0 ]] && DELAY=${OPTARG} || DELAY=${THREAD_DELAY} ;;
+        t) [[ ! -z "${OPTARG}" && $(isNaN ${OPTARG}) -eq 0 ]] && TIMEOUT=${OPTARG} || TIMEOUT=${THREAD_TIMEOUT} ;;
+        n) [[ ! -z "${OPTARG}" && $(isNaN ${OPTARG}) -eq 0 ]] && INTERVAL=${OPTARG} || INTERVAL=${THREAD_INTERVAL} ;;
+        d) [[ ! -z "${OPTARG}" && $(isNaN ${OPTARG}) -eq 0 ]] && DELAY=${OPTARG} || DELAY=${THREAD_DELAY} ;;
         *) usage; exit 1 ;;
     esac
 done
