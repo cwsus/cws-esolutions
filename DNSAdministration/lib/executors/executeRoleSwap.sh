@@ -84,7 +84,7 @@ unset RET_CODE;
 CNAME="$(basename "${0}")";
 METHOD_NAME="${CNAME}#startup";
 
-trap "${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/lock.sh unlock ${$}; exit" INT TERM EXIT;
+trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; exit" INT TERM EXIT;
 
 #===  FUNCTION  ===============================================================
 #          NAME:  switch_to_slave

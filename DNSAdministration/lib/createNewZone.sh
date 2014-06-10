@@ -83,17 +83,17 @@ unset RET_CODE;
 CNAME="$(basename "${0}")";
 METHOD_NAME="${CNAME}#startup";
 
-trap "${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/lock.sh unlock ${$}; exit" INT TERM EXIT;
+trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; exit" INT TERM EXIT;
 
 #===  FUNCTION  ===============================================================
-#          NAME:  create_skeleton_zone
+#          NAME:  createSkeletonZone
 #   DESCRIPTION:  Creates the necessary group folder, domain folders and creates
 #                 skeleton zone files. Skeletons are then updated with the
 #                 provided zone name.
 #    PARAMETERS:  Parameters obtained via command-line flags
 #          NAME:  usage for positive result, >1 for non-positive
 #==============================================================================
-function create_skeleton_zone
+function createSkeletonZone
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
@@ -113,6 +113,8 @@ function create_skeleton_zone
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ADMIN_CONTACT -> ${ADMIN_CONTACT}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating directories..";
 
+    [ -d ${BASE_DIRECTORY} ] && rm -rf ${BASE_DIRECTORY};
+
     ## create our directory structure
     mkdir -p ${BASE_DIRECTORY};
     mkdir -p ${BASE_DIRECTORY}/${PRIMARY_DATACENTER};
@@ -129,36 +131,32 @@ function create_skeleton_zone
         printf "; Currently live in: %%DATACENTER%%\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
         printf "; updated on %%DATE%% by %%USER_NAME%% per change order %%REQUEST_NUMBER%%\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
         printf "\$ORIGIN .\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
-        printf "\$TTL ${NAMED_TTL_TIME}\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
-        printf "%%ZONE_NAME%% IN SOA ${NAMED_PRIMARY_SOA}.${NAMED_INTERNET_SUFFIX}. ${ADMIN_CONTACT}. (\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
+        printf "\$TTL ${NAMESERVER_TTL_TIME}\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
+        printf "%%ZONE_NAME%% IN SOA ${NAMESERVER_PRIMARY_SOA}.${NAMESERVER_INTERNET_SUFFIX}. ${NAMESERVER_PRIMARY_SOA_CONTACT}.${NAMESERVER_INTERNET_SUFFIX} (\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
         printf "            %%SERIAL_NUM%%      ; serial number of this zone file\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
-        printf "            ${NAMED_REFRESH_INTERVAL}              ; slave refresh\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
-        printf "            ${NAMED_RETRY_INTERVAL}             ; slave retry time in case of a problem\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
-        printf "            ${NAMED_EXPIRATION_INTERVAL}           ; slave expiration time\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
-        printf "            ${NAMED_CACHE_INTERVAL}             ; minimum caching time in case of failed lookups\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
+        printf "            ${NAMESERVER_REFRESH_INTERVAL}              ; slave refresh\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
+        printf "            ${NAMESERVER_RETRY_INTERVAL}             ; slave retry time in case of a problem\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
+        printf "            ${NAMESERVER_EXPIRATION_INTERVAL}           ; slave expiration time\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
+        printf "            ${NAMESERVER_CACHE_INTERVAL}             ; minimum caching time in case of failed lookups\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
         printf "            )\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
-        printf "            IN    RP          ${ADMIN_CONTACT}\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
+        printf "            IN    RP          ${NAMESERVER_PRIMARY_SOA_CONTACT}.${NAMESERVER_INTERNET_SUFFIX}\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
 
         if [ ! -z "${ENABLE_LOC_RECORD}" ] && [ "${ENABLE_LOC_RECORD}" = "${_TRUE}" ]
         then
-            local SITE_COORDINATES=$(sed -e '/^ *#/d;s/#.*//' ${INTERNET_DNS_CONFIG} | awk -F "=" "/\<${DATACENTER}_site_coords\>/{print $2}" | sed -e 's/^ *//g;s/ *$//g');
+            local SITE_COORDINATES=$(sed -e '/^ *#/d;s/#.*//' ${INTERNET_DNS_CONFIG} | awk -F "=" "/\<\${DATACENTER}_site_coords\>/{print \$2}" | sed -e 's/^ *//g;s/ *$//g');
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_COORDINATES -> ${SITE_COORDINATES}";
 
             printf "            IN    LOC         ${SITE_COORDINATES}\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
         fi
 
-        while [ ${D} -ne ${#NAMED_INTERNET_ADDR[@]} ]
+        for ADDRESS in ${NAMED_INTERNET_ADDR[@]}
         do
-            printf "            IN    NS          ${NAMED_INTERNET_ADDR[${D}]}.${NAMED_INTERNET_SUFFIX}.\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ADDRESS -> ${ADDRESS}";
 
-            (( D += 1 ));
+            printf "            IN    NS          ${ADDRESS}.${NAMED_INTERNET_SUFFIX}.\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
         done
-
-        D=0;
     done
-
-    unset DC;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Directory creation and zonefile creation complete. Adding data..";
 
@@ -187,59 +185,37 @@ function create_skeleton_zone
             ## audit log it
             ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONEFILE_NAME} created on $(date +"%m-%d-%Y") by ${IUSER_AUDIT} per change ${CHANGE_NUM}";
 
-            ## reset
-            A=0;
-            unset ZONE_NAME;
-            unset ZONEFILE_NAME;
-            unset DC_ZONEFILE_NAME;
-            unset ZONE_NAME;
-            unset CHANGE_NUM;
-            unset RECORD_TYPE;
-            unset IP_ADDR;
-            unset DATACENTER;
-            unset BUSINESS_UNIT;
-
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+            RETURN_CODE=0;
         else
-            ## directories were created, but the zone file was not
-            ## send back an error
-            unset ZONE_NAME;
-            unset ZONEFILE_NAME;
-            unset DC_ZONEFILE_NAME;
-            unset ZONE_NAME;
-            unset CHANGE_NUM;
-            unset RECORD_TYPE;
-            unset IP_ADDR;
-            unset DATACENTER;
-            unset BUSINESS_UNIT;
-
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to create datacenter zone files. Please try again.";
-
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
             RETURN_CODE=41;
         fi
     else
         ## directories were not created, send back an error
-        unset ZONE_NAME;
-        unset ZONEFILE_NAME;
-        unset DC_ZONEFILE_NAME;
-        unset ZONE_NAME;
-        unset CHANGE_NUM;
-        unset RECORD_TYPE;
-        unset IP_ADDR;
-        unset DATACENTER;
-        unset BUSINESS_UNIT;
-
         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to create zone directory structure. Please try again.";
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
         RETURN_CODE=40;
     fi
 
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+    unset ADDRESS;
+    unset SITE_COORDINATES;
+    unset DATACENTER;
+    unset BASE_DIRECTORY;
+    unset ZONEFILE_NAME;
+    unset DC_ZONEFILE_NAME;
+    unset ADMIN_CONTACT;
+    unset METHOD_NAME;
+    unset BUSINESS_UNIT;
+    unset PROJECT_CODE;
+    unset ZONE_NAME;
+    unset CHANGE_NUM;
 
     return ${RETURN_CODE};
 }
@@ -357,7 +333,7 @@ do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                create_skeleton_zone;
+                createSkeletonZone;
             fi
             ;;
         *)

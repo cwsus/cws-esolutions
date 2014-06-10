@@ -592,7 +592,7 @@ function provideChangeControl
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
         ## validate the input
-        ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/createNewZone.sh -b ${BIZ_UNIT} -z ${SITE_HOSTNAME} -i ${IUSER_AUDIT} -c ${CHG_CTRL} -e;
+        ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/createNewZone.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z ${SITE_HOSTNAME} -c ${CHG_CTRL} -e;
         typeset -i RET_CODE=${?};
 
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
