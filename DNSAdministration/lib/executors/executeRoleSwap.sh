@@ -29,29 +29,53 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 [ -z "${PLUGIN_ROOT_DIR}" ] && echo "Failed to locate configuration data. Cannot continue." && exit 1;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
-OPTIND=0;
+typeset -i OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
+THIS_CNAME="${CNAME}";
 unset METHOD_NAME;
 unset CNAME;
 
-## check security
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+## validate the input
 ${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
-RET_CODE=${?};
+typeset -i RET_CODE=${?};
 
-[ ${RET_CODE} -ne 0 ] && echo "Security configuration does not allow the requested action." && echo ${RET_CODE} && exit ${RET_CODE};
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
-## unset the return code
-unset RET_CODE;
+CNAME="${THIS_CNAME}";
+METHOD_NAME="${THIS_CNAME}#startup";
+
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+[ ${RET_CODE} -ne 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE} || unset RET_CODE;
 
 ## lock it
-${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/lock.sh lock ${$};
-RET_CODE=${?};
+unset METHOD_NAME;
+unset CNAME;
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+${APP_ROOT}/${LIB_DIRECTORY}/lock.sh lock ${$};
+typeset -i RET_CODE=${?};
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+CNAME="${THIS_CNAME}";
+METHOD_NAME="${THIS_CNAME}#startup";
+
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
 [ ${RET_CODE} -ne 0 ] && echo "Application currently in use." && echo ${RET_CODE} && exit ${RET_CODE};
 
@@ -71,12 +95,13 @@ trap "${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/lock.sh unlock ${$}; exit" INT TERM EX
 function switch_to_slave
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing role-swap from master to slave..";
 
-    TARFILE_NAME=SWAP_SLAVE.${CHANGE_NUM}.$(date +"%m-%d-%Y").${IUSER_AUDIT}.tar.gz;
+    TARFILE_NAME=SWAP_SLAVE.${CHANGE_NUM}.$(date +"%m-%d-%Y").${REQUESTING_USER}.tar.gz;
 
     ## make sure the right directories exist
     if [ -d ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT} ]
@@ -135,7 +160,7 @@ function switch_to_slave
                         if [ ${ZONE_PRE_COUNT} -eq ${ZONE_POST_COUNT} ]
                         then
                             ## they do. we're good here, keep going
-                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Re-location of ${ZONE_DIRECTORY} completed by ${IUSER_AUDIT}";
+                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Re-location of ${ZONE_DIRECTORY} completed by ${REQUESTING_USER}";
                         else
                             ## copy failed or something else is going on.
                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Re-location of ${ZONE_DIRECTORY} failed. Please process manually.";
@@ -265,7 +290,7 @@ function switch_to_slave
                                                 if [ $(grep -c ${DHCPD_UPDATE_KEY} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp) -eq 0 ]
                                                 then
                                                     ## successfully modified the allow-update clause. this is done.
-                                                    ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Dynamic zone ${ZONE_NAME} successfully updated by ${IUSER_AUDIT}.";
+                                                    ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Dynamic zone ${ZONE_NAME} successfully updated by ${REQUESTING_USER}.";
 
                                                     mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG};
                                                 else
@@ -276,7 +301,7 @@ function switch_to_slave
                                                 fi
                                             else
                                                 ## not a dynamic zone, so this switch is complete
-                                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} successfully updated by ${IUSER_AUDIT}.";
+                                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} successfully updated by ${REQUESTING_USER}.";
                                             fi
                                         fi
 
@@ -314,7 +339,7 @@ function switch_to_slave
                                             (( ERROR_COUNT += 1 ));
                                         else
                                             ## success!
-                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_CONFIG} successfully re-configured by ${IUSER_AUDIT}";
+                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_CONFIG} successfully re-configured by ${REQUESTING_USER}";
                                         fi
                                     else
                                         ## an error occurred re-configuring the zone
@@ -422,7 +447,7 @@ function switch_to_slave
                                         if [ ${TMP_CONF_CKSUM} -eq ${OP_CONF_CKSUM} ]
                                         then
                                             ## xlnt. we're done.
-                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Server successfully re-configured as a slave nameserver by ${IUSER_AUDIT}";
+                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Server successfully re-configured as a slave nameserver by ${REQUESTING_USER}";
 
                                             ## now we need to update our application config
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Modifying system configuration..";
@@ -484,7 +509,7 @@ function switch_to_slave
                                                             if [ ${TMP_CONF_CKSUM} -eq ${OP_CONF_CKSUM} ]
                                                             then
                                                                 ## they do. respond with success
-                                                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local config switch -> master_nameserver modification - performed by ${IUSER_AUDIT}.";
+                                                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local config switch -> master_nameserver modification - performed by ${REQUESTING_USER}.";
                                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                                                                 RETURN_CODE=0;
@@ -594,6 +619,13 @@ function switch_to_slave
 
         RETURN_CODE=23;
     fi
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+    return ${RETURN_CODE};
 }
 
 #===  FUNCTION  ===============================================================
@@ -605,6 +637,7 @@ function switch_to_slave
 function switch_to_master
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -725,7 +758,7 @@ function switch_to_master
                                                 if [ $(grep -c ${DHCPD_UPDATE_KEY} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp) -ne 0 ]
                                                 then
                                                     ## successfully modified the allow-update clause. this is done.
-                                                    ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Dynamic zone ${ZONE_NAME} successfully updated by ${IUSER_AUDIT}.";
+                                                    ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Dynamic zone ${ZONE_NAME} successfully updated by ${REQUESTING_USER}.";
 
                                                     mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG};
                                                 else
@@ -736,7 +769,7 @@ function switch_to_master
                                                 fi
                                             else
                                                 ## not a dynamic zone, so this switch is complete
-                                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} successfully updated by ${IUSER_AUDIT}.";
+                                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} successfully updated by ${REQUESTING_USER}.";
                                             fi
                                         fi
 
@@ -774,7 +807,7 @@ function switch_to_master
                                             (( ERROR_COUNT += 1 ));
                                         else
                                             ## success!
-                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_CONFIG} successfully re-configured by ${IUSER_AUDIT}";
+                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_CONFIG} successfully re-configured by ${REQUESTING_USER}";
                                         fi
                                     else
                                         ## an error occurred re-configuring the zone
@@ -882,7 +915,7 @@ function switch_to_master
                                         if [ ${TMP_CONF_CKSUM} -eq ${OP_CONF_CKSUM} ]
                                         then
                                             ## xlnt. we're done.
-                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Server successfully re-configured as a master nameserver by ${IUSER_AUDIT}";
+                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Server successfully re-configured as a master nameserver by ${REQUESTING_USER}";
 
                                             ## clean up the tmp tarfile
                                             rm -rf ${MASTER_TAR};
@@ -947,7 +980,7 @@ function switch_to_master
                                                             if [ ${TMP_CONF_CKSUM} -eq ${OP_CONF_CKSUM} ]
                                                             then
                                                                 ## they do. respond with success
-                                                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local config switch -> master_nameserver modification - performed by ${IUSER_AUDIT}.";
+                                                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local config switch -> master_nameserver modification - performed by ${REQUESTING_USER}.";
                                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                                                                 RETURN_CODE=0;
@@ -1057,6 +1090,13 @@ function switch_to_master
 
         RETURN_CODE=23;
     fi
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+    return ${RETURN_CODE};
 }
 
 #===  FUNCTION  ===============================================================
@@ -1068,6 +1108,7 @@ function switch_to_master
 function usage
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -1084,6 +1125,9 @@ function usage
     print "  -?|-h   Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
     return 3;
 }
@@ -1133,12 +1177,12 @@ do
             ;;
         i)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting IUSER_AUDIT..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting REQUESTING_USER..";
 
             ## Capture the change control
-            typeset -u IUSER_AUDIT=${OPTARG};
+            typeset -u REQUESTING_USER=${OPTARG};
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IUSER_AUDIT -> ${IUSER_AUDIT}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REQUESTING_USER -> ${REQUESTING_USER}";
             ;;
         c)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
@@ -1160,7 +1204,7 @@ do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                 RETURN_CODE=17;
-            elif [ -z "${IUSER_AUDIT}" ]
+            elif [ -z "${REQUESTING_USER}" ]
             then
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "The requestors username was not provided. Unable to continue processing.";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -1215,5 +1259,12 @@ done
 shift ${OPTIND}-1;
 
 echo ${RETURN_CODE};
+
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
 exit ${RETURN_CODE};
 

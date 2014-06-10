@@ -26,7 +26,8 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 [[ -z "${APP_ROOT}" && ! -s ${SCRIPT_ROOT}/../lib/constants.sh ]] && echo "Failed to locate configuration data. Cannot continue." && exit 1;
 [ -z "${APP_ROOT}" ] && . ${SCRIPT_ROOT}/../lib/constants.sh;
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 METHOD_NAME="${CNAME}#startup";
 
@@ -43,6 +44,7 @@ METHOD_NAME="${CNAME}#startup";
 function buildPlugin
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [[ ! -z ${VERBOSE} && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -83,7 +85,7 @@ function buildPlugin
         [[ ! -z ${VERBOSE} && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Distributing to ${TARGET_HOSTNAME}..";
 
         distributePackage ${SSH_USER_ACCOUNT} ${PLUGIN_CONFIG_DIR}/${PLUGIN} ${TARGET_HOSTNAME} ${TARGET_HOSTNAME} ${APP_ROOT}/${PLUGIN_CONFIG_DIR}/${PLUGIN};
-        local RET_CODE=${?};
+        local typeset -i RET_CODE=${?};
 
         if [[ -z "${RET_CODE}" || ${RET_CODE} -ne 0 ]]
         then
@@ -95,7 +97,7 @@ function buildPlugin
         fi
 
         distributePackage ${SSH_USER_ACCOUNT} ${PLUGIN_LIB_DIR}/${PLUGIN} ${TARGET_HOSTNAME} ${TARGET_HOSTNAME} ${APP_ROOT}/${PLUGIN_LIB_DIR}/${PLUGIN};
-        local RET_CODE=${?};
+        local typeset -i RET_CODE=${?};
 
         if [[ -z "${RET_CODE}" || ${RET_CODE} -ne 0 ]]
         then
@@ -125,6 +127,7 @@ function buildPlugin
 function usage
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [[ ! -z ${VERBOSE} && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";

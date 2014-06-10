@@ -33,6 +33,7 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 function executeMonitoringScript
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -70,7 +71,7 @@ function executeMonitoringScript
                     unset RET_CODE;
     
                     $(${APP_ROOT}/lib/tcl/runSSHConnection.exp ${MONITORED_HOST} "${REMOTE_APP_ROOT}/lib/monitors/${MONITORING_SCRIPT}.sh ${EXPIRY_EPOCH}" ${IPLANET_OWNING_USER} ${MONITOR_THREAD_TIMEOUT});
-                    RET_CODE=${?};
+                    typeset -i RET_CODE=${?};
         
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
         
@@ -146,7 +147,7 @@ function executeMonitoringScript
                 unset RET_CODE;
     
                 $(${APP_ROOT}/lib/tcl/runSSHConnection.exp ${MONITORED_HOST} "${REMOTE_APP_ROOT}/lib/monitors/${MONITORING_SCRIPT}.sh ${EXPIRY_EPOCH}" ${IPLANET_OWNING_USER} ${MONITOR_THREAD_TIMEOUT});
-                RET_CODE=${?};
+                typeset -i RET_CODE=${?};
         
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
         
@@ -237,8 +238,7 @@ function executeMonitoringScript
         NOTIFY_CODE=${?};
 
         CNAME=$(basename ${0});
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+        local METHOD_NAME="${CNAME}#${0}";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NOTIFY_CODE -> ${NOTIFY_CODE}";
 
@@ -296,6 +296,7 @@ function executeMonitoringScript
 function usage
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -317,7 +318,7 @@ function usage
 
 [ ${#} -eq 0 ] && usage;
 
-OPTIND=0;
+typeset -i OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";

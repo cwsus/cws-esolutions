@@ -25,8 +25,9 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 0;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
-OPTIND=0;
+typeset -i OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
@@ -43,6 +44,7 @@ trap "print '$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<syst
 function add_root_ui_helper
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -103,7 +105,7 @@ function add_root_ui_helper
                     unset CNAME;
 
                     . ${PLUGIN_ROOT_DIR}/lib/validators/validate_record_target.sh a ${PRIMARY_INFO};
-                    RET_CODE=${?};
+                    typeset -i RET_CODE=${?};
 
                     ## reset methodname/cname
                     CNAME="$(basename "${0}")";
@@ -129,7 +131,7 @@ function add_root_ui_helper
                         unset RETURN_CODE;
 
                         . ${PLUGIN_ROOT_DIR}/lib/helpers/data/add_a_record.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -t A -a ${PRIMARY_INFO} -d ${PRIMARY_DC} -r;
-                        RET_CODE=${?};
+                        typeset -i RET_CODE=${?};
 
                         ## re-set methodname and cname
                         local METHOD_NAME="${CNAME}#${0}";
@@ -197,7 +199,7 @@ function add_root_ui_helper
                                             unset CNAME;
 
                                             . ${PLUGIN_ROOT_DIR}/lib/validators/validate_record_target.sh a ${SECONDARY_INFO};
-                                            RET_CODE=${?};
+                                            typeset -i RET_CODE=${?};
 
                                             ## reset methodname/cname
                                             CNAME="$(basename "${0}")";
@@ -222,7 +224,7 @@ function add_root_ui_helper
                                                 unset RETURN_CODE;
 
                                                 . ${PLUGIN_ROOT_DIR}/lib/helpers/data/add_a_record.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -t A -a ${SECONDARY_INFO} -d ${SECONDARY_DC} -r;
-                                                RET_CODE=${?};
+                                                typeset -i RET_CODE=${?};
 
                                                 ## re-set methodname and cname
                                                 local METHOD_NAME="${CNAME}#${0}";
@@ -305,6 +307,7 @@ function add_root_ui_helper
 function add_zone_ui_helper
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -368,7 +371,7 @@ function add_zone_ui_helper
                     unset CNAME;
 
                     . ${PLUGIN_ROOT_DIR}/lib/validators/validate_record_target.sh a ${RECORD_DETAIL};
-                    RET_CODE=${?};
+                    typeset -i RET_CODE=${?};
 
                     ## reset methodname/cname
                     CNAME="$(basename "${0}")";
@@ -440,7 +443,7 @@ function add_zone_ui_helper
                                     ## we know what to add and where to add it.
                                     ## so lets do it
                                     . ${PLUGIN_ROOT_DIR}/lib/helpers/data/add_${RECORD_TYPE}_record.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -t ${RECORD_TYPE} -a ${RECORD_DETAIL} -d ${DATACENTER} -r;
-                                    RET_CODE=${?};
+                                    typeset -i RET_CODE=${?};
 
                                     ## reset vars
                                     local METHOD_NAME="${CNAME}#${0}";
@@ -524,6 +527,7 @@ function add_zone_ui_helper
 function add_subdomain_ui_helper
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -638,7 +642,7 @@ function add_subdomain_ui_helper
                                 else
                                     ## run the ip addr through the validator
                                     . ${PLUGIN_ROOT_DIR}/lib/validators/validate_record_target.sh a ${RECORD_DETAIL};
-                                    RET_CODE=${?};
+                                    typeset -i RET_CODE=${?};
 
                                     if [ ${RET_CODE} -eq 0 ] || [ ${RET_CODE} -eq 63 ] || [ ${RET_CODE} -eq 64 ]
                                     then
@@ -669,7 +673,7 @@ function add_subdomain_ui_helper
                                         unset CNAME;
 
                                         . ${PLUGIN_ROOT_DIR}/lib/helpers/data/add_${RECORD_TYPE}_record.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -t ${RECORD_TYPE} -a ${A_ALIAS},${A_TARGET} -s;
-                                        RET_CODE=${?};
+                                        typeset -i RET_CODE=${?};
 
                                         ## reset vars
                                         local METHOD_NAME="${CNAME}#${0}";
@@ -733,6 +737,7 @@ function add_subdomain_ui_helper
 function usage
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -753,3 +758,13 @@ function usage
 [ "${1}" = "root" ] && add_root_ui_helper;
 [ "${1}" = "zone" ] && add_zone_ui_helper;
 [ "${1}" = "subdomain" ] && add_subdomain_ui_helper;
+
+[ "${1}" = "zone" ] && add_zone_ui_helper || add_subdomain_ui_helper;
+
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+return 0;

@@ -151,7 +151,6 @@ function writeLogEntry
     return 0;
 }
 
-echo "writing log" >> ~/logger-output
 [ ${#} -ne 0 ] && writeLogEntry "${@}" > /dev/null 2>&1;
 
 return 0;

@@ -33,6 +33,7 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 function implementCertificate
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -98,8 +99,7 @@ function implementCertificate
                         RET_CODE=${?}
 
                         CNAME=$(basename ${0});
-                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+                        local METHOD_NAME="${CNAME}#${0}";
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ACTIVE_DATACENTER -> ${ACTIVE_DATACENTER}";
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
@@ -211,11 +211,10 @@ function implementCertificate
 
                             . ${APP_ROOT}/lib/runCertRenewal.sh -d ${CERTDB} -s ${SITE_HOSTNAME} \
                                 -w ${WEBSERVER_PLATFORM} -p ${PLATFORM} -c ${CHANGE_NUM} -a -e;
-                            RET_CODE=${?};
+                            typeset -i RET_CODE=${?};
 
                             CNAME=$(basename ${0});
-                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+                            local METHOD_NAME="${CNAME}#${0}";
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -273,11 +272,10 @@ function implementCertificate
                         unset CNAME;
 
                         . ${APP_ROOT}/lib/runCertRenewal.sh -d ${CERTDB} -s ${SITE_HOSTNAME} -w ${WEBSERVER_PLATFORM} -p ${PLATFORM_CODE} -c ${CHANGE_NUM} -a -e;
-                        RET_CODE=${?};
+                        typeset -i RET_CODE=${?};
 
                         CNAME=$(basename ${0});
-                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+                        local METHOD_NAME="${CNAME}#${0}";
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 

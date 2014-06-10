@@ -26,6 +26,7 @@ CNAME="$(basename "${0}")";
 function validate_ip_addr
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     if [ ! -z "${1}" ] && [ $(echo ${1} | tr -dc "." | wc -c) -eq 3 ]
@@ -61,6 +62,12 @@ function validate_ip_addr
         ## throw an error
         RETURN_CODE=45;
     fi
+
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+    return ${RETURN_CODE};
 }
 
 #===  FUNCTION  ===============================================================
@@ -72,6 +79,7 @@ function validate_ip_addr
 function usage
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     print "${CNAME} - Validate that a change request has been successfully performed.";
@@ -79,6 +87,9 @@ function usage
     print "          target-datacenter is an optional argument that is only required when change-type is failover";
     print "          record-name is an optional argument that is only required when change-type is add/remove";
     print "          record-type is an optional argument that is only required when record-name is specified";
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
     return 3;
 }
@@ -93,5 +104,12 @@ METHOD_NAME="${CNAME}#startup";
 [ ${#} -eq 0 ] && usage || validate_ip_addr ${@};
 
 echo ${RETURN_CODE};
+
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
 return ${RETURN_CODE};
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env ksh
+#!/usr/bin/ksh -x
 #==============================================================================
 #
 #          FILE:  addRecordUI.sh
@@ -29,19 +29,32 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 [ -z "${PLUGIN_ROOT_DIR}" ] && echo "Failed to locate configuration data. Cannot continue." && exit 1;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
-OPTIND=0;
+typeset -i OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
+THIS_CNAME="${CNAME}";
 unset METHOD_NAME;
 unset CNAME;
 
-## check security
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+## validate the input
 ${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
-RET_CODE=${?};
+typeset -i RET_CODE=${?};
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+CNAME="${THIS_CNAME}";
+METHOD_NAME="${CNAME}#startup";
+
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
 [ ${RET_CODE} -ne 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE} || unset RET_CODE;
 
@@ -58,6 +71,7 @@ trap "print '$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<syst
 function main
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -108,8 +122,13 @@ function main
 
                 print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled \>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
-                ## close out this app and reload the main
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                unset METHOD_NAME;
+                unset CNAME;
+
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
                 exec ${MAIN_CLASS};
 
@@ -139,6 +158,9 @@ function main
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
     return 0;
 }
 
@@ -153,6 +175,7 @@ function main
 function provideProjectCode
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -160,6 +183,13 @@ function provideProjectCode
 
     while true
     do
+        if [ ! -z "${ADD_RECORDS}" ] || [ ! -z "${ADD_SUBDOMAINS}" ] || [ ! -z "${CANCEL_REQ}" ] || [ ! -z "${ADD_COMPLETE}" ]
+        then
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ADD_RECORDS-> ${ADD_RECORDS}, ADD_SUBDOMAINS-> ${ADD_SUBDOMAINS}, breaking..";
+
+            reset; clear; main;
+        fi
+
         reset; clear;
 
         print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.enter.prjcode\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
@@ -207,12 +237,22 @@ function provideProjectCode
 
                     ## keep going
                     provideSiteHostname;
+
+                    if [ ! -z "${ADD_RECORDS}" ] || [ ! -z "${ADD_SUBDOMAINS}" ] || [ ! -z "${CANCEL_REQ}" ] || [ ! -z "${ADD_COMPLETE}" ]
+                    then
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ADD_RECORDS-> ${ADD_RECORDS}, ADD_SUBDOMAINS-> ${ADD_SUBDOMAINS}, breaking..";
+
+                        reset; clear; main;
+                    fi
                 fi
                 ;;
         esac
     done
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
     return 0;
 }
@@ -228,6 +268,7 @@ function provideProjectCode
 function provideSiteHostname
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -235,6 +276,13 @@ function provideSiteHostname
 
     while true
     do
+        if [ ! -z "${ADD_RECORDS}" ] || [ ! -z "${ADD_SUBDOMAINS}" ] || [ ! -z "${CANCEL_REQ}" ] || [ ! -z "${ADD_COMPLETE}" ]
+        then
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ADD_RECORDS-> ${ADD_RECORDS}, ADD_SUBDOMAINS-> ${ADD_SUBDOMAINS}, breaking..";
+
+            reset; clear; main;
+        fi
+    
         print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.enter.hostname\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
         print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.enter.format.hostname\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
         print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.enter.format.allowed.tlds\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
@@ -264,10 +312,10 @@ function provideSiteHostname
             [Hh])
                 ## we want to print out the available record type list
                 print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<allowed.gtld.list\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
-                awk 'NR>17' ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_GTLD_LIST};
+                awk 'NR>17' ${ALLOWED_GTLD_LIST};
 
                 print "\nsed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES}  | awk -F "=" '/\<allowed.cctld.list\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
-                awk 'NR>16' ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_GTLD_LIST};
+                awk 'NR>16' ${ALLOWED_GTLD_LIST};
 
                 print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.continue.enter\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
@@ -309,10 +357,19 @@ function provideSiteHostname
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_HOSTNAME -> ${SITE_HOSTNAME}";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating TLD..";
 
+                REQUESTED_TLD=$(echo ${SITE_HOSTNAME} | cut -d "." -f 2);
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REQUESTED_TLD -> ${REQUESTED_TLD}";
+
                 ## make sure we got a valid tld. we're only checking the gTLD's,
                 ## for a list, see http://en.wikipedia.org/wiki/List_of_Internet_top-level_domains
-                if [ $(grep -c $(echo ${SITE_HOSTNAME} | cut -d "." -f 2) ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_GTLD_LIST}) -ne 1 ] || \
-                    [ $(grep -c $(echo ${SITE_HOSTNAME} | cut -d "." -f 2) ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_CCTLD_LIST}) -ne 1 ]
+                typeset -i GTLD_VALID=$(sed -e '/^ *#/d;s/#.*//' ${ALLOWED_GTLD_LIST} | awk "/\<${REQUESTED_TLD}\>/{print \$1}" | sed -e 's/^ *//g;s/ *$//g');
+                typeset -i CCTLD_VALID=$(sed -e '/^ *#/d;s/#.*//' ${ALLOWED_CCTLD_LIST}| awk "/\<${REQUESTED_TLD}\>/{print \$1}" | sed -e 's/^ *//g;s/ *$//g');
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "GTLD_VALID -> ${GTLD_VALID}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CCTLD_VALID -> ${CCTLD_VALID}";
+
+                if [ -z "${GTLD_VALID}" ] || [ "${GTLD_VALID}" = "" ] && [ -z "${CCTLD_VALID}" ] || [ "${CCTLD_VALID}" = "" ]
                 then
                     $(${LOGGER} ERROR ${METHOD_NAME} ${CNAME} ${LINENO} "${SITE_HOSTNAME} is not properly formatted.");
 
@@ -326,18 +383,24 @@ function provideSiteHostname
                 ## make sure there isnt already a zone with this hostname
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Calling retrieve_service to ensure that no records exist with ${SITE_HOSTNAME}..";
 
+                THIS_CNAME="${CNAME}";
                 unset METHOD_NAME;
                 unset CNAME;
 
-                . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/retrieveServiceInfo.sh ${INTERNET_TYPE_IDENTIFIER} u,${SITE_HOSTNAME} chk-info;
-                RET_CODE=${?};
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-                ## re-set our info
+                ## validate the input
+                ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/retrieveServiceInfo.sh ${INTERNET_TYPE_IDENTIFIER} u,${SITE_HOSTNAME} chk-info;
+                typeset -i RET_CODE=${?};
+
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-                local METHOD_NAME="${CNAME}#${0}";
-                CNAME="$(basename "${0}")";
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Execution of retrieve_service complete. RET_CODE -> ${RET_CODE}";
+                CNAME="${THIS_CNAME}";
+                local METHOD_NAME="${THIS_CNAME}#${0}";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
                 if [ ${RET_CODE} -eq 12 ] || [ ${RET_CODE} -eq 13 ]
                 then
@@ -353,6 +416,13 @@ function provideSiteHostname
                     reset; clear;
                     ## continue
                     provideChangeControl;
+
+                    if [ ! -z "${ADD_RECORDS}" ] || [ ! -z "${ADD_SUBDOMAINS}" ] || [ ! -z "${CANCEL_REQ}" ] || [ ! -z "${ADD_COMPLETE}" ]
+                    then
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ADD_RECORDS-> ${ADD_RECORDS}, ADD_SUBDOMAINS-> ${ADD_SUBDOMAINS}, breaking..";
+
+                        reset; clear; main;
+                    fi
                 else
                     ## we already have a zone file with this hostname in it. we can't create a duplicate zone
                     ## it wont load, but we can add additional records to an existing zone
@@ -391,6 +461,13 @@ function provideSiteHostname
 
                                 ## continue
                                 provideChangeControl;
+
+                                if [ ! -z "${ADD_RECORDS}" ] || [ ! -z "${ADD_SUBDOMAINS}" ] || [ ! -z "${CANCEL_REQ}" ] || [ ! -z "${ADD_COMPLETE}" ]
+                                then
+                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ADD_RECORDS-> ${ADD_RECORDS}, ADD_SUBDOMAINS-> ${ADD_SUBDOMAINS}, breaking..";
+
+                                    reset; clear; main;
+                                fi
                                 ;;
                             [Nn][Oo]|[Nn])
                                 $(${LOGGER} ERROR ${METHOD_NAME} ${CNAME} ${LINENO} "${SITE_HOSTNAME} already exists in the DNS infrastructure.");
@@ -435,6 +512,9 @@ function provideSiteHostname
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
     return 0;
 }
 
@@ -449,6 +529,7 @@ function provideSiteHostname
 function provideChangeControl
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -456,9 +537,30 @@ function provideChangeControl
 
     while true
     do
+        if [ ! -z "${ADD_RECORDS}" ] || [ ! -z "${ADD_SUBDOMAINS}" ] || [ ! -z "${CANCEL_REQ}" ] || [ ! -z "${ADD_COMPLETE}" ]
+        then
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ADD_RECORDS-> ${ADD_RECORDS}, ADD_SUBDOMAINS-> ${ADD_SUBDOMAINS}, breaking..";
+
+            reset; clear; main;
+        fi
+
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requesting change information..";
 
-        ${PLUGIN_ROOT_DIR}/${BIN_DIRECTORY}/obtainChangeControl.sh;
+        THIS_CNAME="${CNAME}";
+        unset METHOD_NAME;
+        unset CNAME;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        ## validate the input
+        ${APP_ROOT}/${BIN_DIRECTORY}/obtainChangeControl.sh;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+        CNAME="${THIS_CNAME}";
+        local METHOD_NAME="${THIS_CNAME}#${0}";
 
         if [[ ! -z "${CANCEL_REQ}" && "${CANCEL_REQ}" = "${_TRUE}" ]]
         then
@@ -479,10 +581,60 @@ function provideChangeControl
             sleep ${MESSAGE_DELAY}; reset; clear; main;
         fi
 
+        [[ ! -z ${VERBOSE} && "${VERBOSE}" == "${_TRUE}" ]] && $(${LOGGER} DEBUG ${METHOD_NAME} ${CNAME} ${LINENO} "Creating zone files..");
+
+        ## unset methodname and cname
+        THIS_CNAME="${CNAME}";
+        unset METHOD_NAME;
+        unset CNAME;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        ## validate the input
+        ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/createNewZone.sh -b ${BIZ_UNIT} -z ${SITE_HOSTNAME} -i ${IUSER_AUDIT} -c ${CHG_CTRL} -e;
+        typeset -i RET_CODE=${?};
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+        CNAME="${THIS_CNAME}";
+        local METHOD_NAME="${THIS_CNAME}#${0}";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+        [[ ! -z ${VERBOSE} && "${VERBOSE}" == "${_TRUE}" ]] && $(${LOGGER} DEBUG ${METHOD_NAME} ${CNAME} ${LINENO} "Execution complete. Validating...");
+
+        if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+        then
+            unset CHG_CTRL;
+            unset SITE_PRJCODE;
+            unset SITE_HOSTNAME;
+
+            $(${LOGGER} ERROR  ${METHOD_NAME} ${CNAME} ${LINENO} "Zone creation FAILED. RET_CODE->${RET_CODE}");
+
+            [ -z "${RET_CODE}" ] && print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" '/\<99\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+            [ ! -z "${RET_CODE}" ] && print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/\<${RET_CODE}\>/{print \$2" | sed -e 's/^ *//g;s/ *$//g')\n";
+
+            unset RETURN_CODE;
+            unset RET_CODE;
+
+            sleep ${MESSAGE_DELAY}; reset; clear; continue;
+        fi
+
+        [[ ! -z ${VERBOSE} && "${VERBOSE}" == "${_TRUE}" ]] && $(${LOGGER} DEBUG ${METHOD_NAME} ${CNAME} ${LINENO} "Zone creation complete. Proceeding to record addition");
+
+        reset; clear;
+
         break;
     done
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    add_domain_ip;
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
     return 0;
 }
@@ -496,6 +648,7 @@ function provideChangeControl
 function addDomainAddress
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -503,6 +656,13 @@ function addDomainAddress
 
     while true
     do
+        if [ ! -z "${ADD_RECORDS}" ] || [ ! -z "${ADD_SUBDOMAINS}" ] || [ ! -z "${CANCEL_REQ}" ] || [ ! -z "${ADD_COMPLETE}" ]
+        then
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ADD_RECORDS-> ${ADD_RECORDS}, ADD_SUBDOMAINS-> ${ADD_SUBDOMAINS}, breaking..";
+
+            reset; clear; main;
+        fi
+
         unset ADD_RECORDS;
         unset ADD_SUBDOMAINS;
         unset ADD_COMPLETE;
@@ -521,9 +681,8 @@ function addDomainAddress
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Received request to break. CANCEL_REQ->${CANCEL_REQ}, ADD_RECORDS->${ADD_RECORDS}, ADD_SUBDOMAINS->${ADD_SUBDOMAINS}. Breaking..";
 
                 ## put methodname and cname back
-                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-                local METHOD_NAME="${CNAME}#${0}";
-                CNAME="$(basename "${0}")";
+                CNAME="$(basename ${0})";
+                METHOD_NAME="${CNAME}#${0}";
 
                 reset; clear; main;
             elif [[ ! -z "${ADD_COMPLETE}" && "${ADD_COMPLETE}" = "${_TRUE}" ]]
@@ -531,9 +690,8 @@ function addDomainAddress
                 ## record has been added successfully through the helper
                 ## ask if we want to add additional records to the zone
                 ## put methodname and cname back
-                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-                local METHOD_NAME="${CNAME}#${0}";
-                CNAME="$(basename "${0}")";
+                CNAME="$(basename ${0})";
+                METHOD_NAME="${CNAME}#${0}";
 
                 while true
                 do
@@ -628,10 +786,27 @@ function addDomainAddress
                 ## nameserver this zone gets applied to really doesnt need it there,
                 ## because another nameserver already has it and can do it on its own.
                 ## for this reason, we dont ask.
-                . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/helpers/ui/add_a_ui_helper.sh root;
+                THIS_CNAME="${CNAME}";
+                unset METHOD_NAME;
+                unset CNAME;
+
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+                ## validate the input
+                ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/helpers/ui/add_a_ui_helper.sh root;
+
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+                CNAME="${THIS_CNAME}";
+                local METHOD_NAME="${THIS_CNAME}#${0}";
             fi
         done
     done
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
     return ${RETURN_CODE};
 }
@@ -645,6 +820,7 @@ function addDomainAddress
 function addZoneData
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -653,6 +829,13 @@ function addZoneData
 
     while true
     do
+        if [ ! -z "${ADD_RECORDS}" ] || [ ! -z "${ADD_SUBDOMAINS}" ] || [ ! -z "${CANCEL_REQ}" ] || [ ! -z "${ADD_COMPLETE}" ]
+        then
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ADD_RECORDS-> ${ADD_RECORDS}, ADD_SUBDOMAINS-> ${ADD_SUBDOMAINS}, breaking..";
+
+            reset; clear; main;
+        fi
+
         unset ADD_RECORDS;
         unset ADD_SUBDOMAINS;
         unset ADD_COMPLETE;
@@ -687,7 +870,7 @@ function addZoneData
                 ;;
             [Hh])
                 ## we want to print out the available record type list
-                awk 'NR>16' ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_RECORD_LIST};
+                awk 'NR>16' ${ALLOWED_RECORD_LIST};
 
                 print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.continue.enter\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
                 read COMPLETE;
@@ -703,7 +886,7 @@ function addZoneData
                 ;;
             *)
                 ## validate the request
-                if [ $(${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validate_record_type.sh ${RECORD_TYPE} ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_RECORD_LIST}) -eq 0 ]
+                if [ $(${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validate_record_type.sh ${RECORD_TYPE} ${ALLOWED_RECORD_LIST}) -eq 0 ]
                 then
                     ## record type successfully validated. continue with request
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Obtained request for ${RECORD_TYPE}. Validating..";
@@ -716,8 +899,8 @@ function addZoneData
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Received request to break. CANCEL_REQ->${CANCEL_REQ}, ADD_RECORDS->${ADD_RECORDS}, ADD_SUBDOMAINS->${ADD_SUBDOMAINS}. Breaking..";
 
                             ## put methodname and cname back
-                            local METHOD_NAME="${CNAME}#${0}";
-                            CNAME="$(basename "${0}")";
+                            CNAME="$(basename ${0})";
+                            METHOD_NAME="${CNAME}#${0}";
 
                             unset CANCEL_REQ;
 
@@ -727,9 +910,8 @@ function addZoneData
                             ## record has been added successfully through the helper
                             ## ask if we want to add additional records to the zone
                             ## put methodname and cname back
-                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-                            local METHOD_NAME="${CNAME}#${0}";
                             CNAME="$(basename "${0}")";
+                            local METHOD_NAME="${CNAME}#${0}";
 
                             while true
                             do
@@ -820,10 +1002,21 @@ function addZoneData
                             ## unset methodname and cname
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing subshell lib/helpers/ui/add_${RECORD_TYPE}_ui_helper";
 
+                            THIS_CNAME="${CNAME}";
                             unset METHOD_NAME;
                             unset CNAME;
 
-                            . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/helpers/ui/add_${RECORD_TYPE}_ui_helper.sh zone;
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+                            ## validate the input
+                            ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/helpers/ui/add_${RECORD_TYPE}_ui_helper.sh zone;
+
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+                            CNAME="${THIS_CNAME}";
+                            local METHOD_NAME="${THIS_CNAME}#${0}";
                         fi
                     done
                 else
@@ -841,6 +1034,9 @@ function addZoneData
         esac
     done
 
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
     return ${RETURN_CODE};
 }
 
@@ -853,6 +1049,7 @@ function addZoneData
 function addSubdomainAddresses
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -860,6 +1057,13 @@ function addSubdomainAddresses
 
     while true
     do
+        if [ ! -z "${ADD_RECORDS}" ] || [ ! -z "${ADD_SUBDOMAINS}" ] || [ ! -z "${CANCEL_REQ}" ] || [ ! -z "${ADD_COMPLETE}" ]
+        then
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ADD_RECORDS-> ${ADD_RECORDS}, ADD_SUBDOMAINS-> ${ADD_SUBDOMAINS}, breaking..";
+
+            reset; clear; main;
+        fi
+
         unset ADD_RECORDS;
         unset ADD_COMPLETE;
         unset ADD_SUBDOMAINS;
@@ -894,7 +1098,7 @@ function addSubdomainAddresses
                 ;;
             [Hh])
                 ## we want to print out the available record type list
-                awk 'NR>16' ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_RECORD_LIST};
+                awk 'NR>16' ${ALLOWED_RECORD_LIST};
 
                 print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.continue.enter\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
                 read COMPLETE;
@@ -909,9 +1113,9 @@ function addSubdomainAddresses
                 esac
                 ;;
             *)
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Calling validate_record_type.sh ${RECORD_TYPE} ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_RECORD_LIST}..";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Calling validate_record_type.sh ${RECORD_TYPE} ${ALLOWED_RECORD_LIST}..";
 
-                if [ $(${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validate_record_type.sh ${RECORD_TYPE} ${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}/${ALLOWED_RECORD_LIST}) -eq 0 ]
+                if [ $(${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validate_record_type.sh ${RECORD_TYPE} ${ALLOWED_RECORD_LIST}) -eq 0 ]
                 then
                     ## unset return code
                     unset RETURN_CODE;
@@ -928,7 +1132,7 @@ function addSubdomainAddresses
                             unset CANCEL_REQ;
 
                             ## put methodname and cname back
-                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                            CNAME="$(basename "${0}")";
                             local METHOD_NAME="${CNAME}#${0}";
 
                             [ ${#0} -ne 8 ] && addSubdomainAddresses=$(echo ${0} | tr -dc '/' | wc -c); SPLIT=$((${SPLIT}+1)); CNAME=$(echo ${0} | cut -d "/" -f ${SPLIT}-) || CNAME=$(echo ${0} | sed -e 's|\.\/||g');
@@ -938,9 +1142,8 @@ function addSubdomainAddresses
                         then
                             ## record was successfully added. ask if we should add more
                             ## put methodname and cname back
-                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-                            local METHOD_NAME="${CNAME}#${0}";
                             CNAME="$(basename "${0}")";
+                            local METHOD_NAME="${CNAME}#${0}";
 
                             while true
                             do
@@ -1005,10 +1208,24 @@ function addSubdomainAddresses
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing subshell lib/helpers/ui/add_${RECORD_TYPE}_ui_helper";
 
                             ## unset methodname and cname
+                            THIS_CNAME="${CNAME}";
                             unset METHOD_NAME;
                             unset CNAME;
 
-                            . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/helpers/ui/add_${RECORD_TYPE}_ui_helper.sh subdomain;
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+                            ## validate the input
+                            ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/helpers/ui/add_${RECORD_TYPE}_ui_helper.sh subdomain;
+                            typeset -i RET_CODE=${?};
+
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+                            CNAME="${THIS_CNAME}";
+                            local METHOD_NAME="${THIS_CNAME}#${0}";
+
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
                         fi
                     done
                 else
@@ -1027,6 +1244,9 @@ function addSubdomainAddresses
         esac
     done
 
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
     return ${RETURN_CODE};
 }
 
@@ -1039,6 +1259,7 @@ function addSubdomainAddresses
 function reviewZone
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -1047,16 +1268,24 @@ function reviewZone
     print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES}system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%ZONE%/${SITE_HOSTNAME}/")";
 
     ## temp unset
-    unset CNAME;
+    THIS_CNAME="${CNAME}";
     unset METHOD_NAME;
+    unset CNAME;
 
-    . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/run_addition.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -e;
-    RET_CODE=${?};
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-    ## re-set vars
+    ## validate the input
+    ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/run_addition.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -e;
+    typeset -i RET_CODE=${?};
+
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    CNAME="$(basename "${0}")";
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+    CNAME="${THIS_CNAME}";
+    local METHOD_NAME="${THIS_CNAME}#${0}";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
     if [ ${RET_CODE} -eq 0 ]
     then
@@ -1145,7 +1374,7 @@ function reviewZone
 
                                                 ## modify the primary datacenter
                                                 vi ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}.mod/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1);
-                                                RET_CODE=${?};
+                                                typeset -i RET_CODE=${?};
 
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Manual edits complete. Return code -> ${RET_CODE}";
 
@@ -1323,6 +1552,9 @@ function reviewZone
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
     return ${RETURN_CODE};
 }
 
@@ -1336,22 +1568,28 @@ function reviewZone
 function sendZone
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command run_addition.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -x -e..";
 
-    ## temp unset
+    THIS_CNAME="${CNAME}";
     unset METHOD_NAME;
     unset CNAME;
 
-    . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/run_addition.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -x -e;
-    RET_CODE=${?};
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-    ## reset vars
+    ## validate the input
+    ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/run_addition.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -x -e;
+    typeset -i RET_CODE=${?};
+
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    CNAME="$(basename "${0}")";
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+    CNAME="${THIS_CNAME}";
+    local METHOD_NAME="${THIS_CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -1403,16 +1641,24 @@ function sendZone
             ## send out to slave servers
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Sending zone to slave server ${DNS_SLAVES[${C}]}";
 
-            ## temp unset
+            THIS_CNAME="${CNAME}";
             unset METHOD_NAME;
             unset CNAME;
 
-            . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/run_addition.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -s ${DNS_SLAVES[${C}]} -e;
-            RET_CODE=${?};
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-            ## reset vars
-            local METHOD_NAME="${CNAME}#${0}";
-            CNAME="$(basename "${0}")";
+            ## validate the input
+            ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/run_addition.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -s ${DNS_SLAVES[${C}]} -e;
+            typeset -i RET_CODE=${?};
+
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+            CNAME="${THIS_CNAME}";
+            local METHOD_NAME="${THIS_CNAME}#${0}";
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
             if [[ -z "${RET_CODE}" || ${RET_CODE} -ne 0 ]]
             then
@@ -1488,9 +1734,14 @@ function sendZone
 
                 reset; clear;
 
+                unset METHOD_NAME;
+                unset CNAME;
+
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
                 exec ${MAIN_CLASS};
+
                 exit 0;
                 ;;
             *)
@@ -1509,6 +1760,9 @@ function sendZone
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
     return ${RETURN_CODE};
 }
 
@@ -1516,5 +1770,10 @@ function sendZone
 
 main;
 
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
 return 0;

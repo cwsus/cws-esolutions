@@ -33,6 +33,7 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 function updateCertificate
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -114,15 +115,14 @@ function updateCertificate
         unset CNAME;
         unset METHOD_NAME;
         CURR_OPTIND=${OPTIND};
-        OPTIND=0;
+        typeset -i OPTIND=0;
 
         . ${APP_ROOT}/lib/runCertRenewal.sh -d ${CERTDB} -s ${SITE_HOSTNAME} -w ${WEBSERVER_PLATFORM} -e;
         RET_CODE=${?}
 
         OPTIND=${CURR_OPTIND};
         CNAME=$(basename ${0});
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+        local METHOD_NAME="${CNAME}#${0}";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -224,7 +224,7 @@ function updateCertificate
                             then
                                 ## validate it
                                 returnEpochTime ${PROCESS_DATE} > /dev/null 2>&1;
-                                RET_CODE=${?};
+                                typeset -i RET_CODE=${?};
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -245,11 +245,10 @@ function updateCertificate
                                     unset CNAME;
 
                                     . ${MAILER_CLASS} -m ${NOTIFY_OWNER_EMAIL} -p ${WEB_PROJECT_CODE} -a "${OWNER_DIST}" -t ${NOTIFY_TYPE_NOTIFY} -e;
-                                    RET_CODE=${?};
+                                    typeset -i RET_CODE=${?};
 
                                     CNAME=$(basename ${0});
-                                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+                                    local METHOD_NAME="${CNAME}#${0}";
 
                                     PREIMP_COMPLETE=${_TRUE};
 

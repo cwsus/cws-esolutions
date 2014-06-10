@@ -29,28 +29,35 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 [ -z "${PLUGIN_ROOT_DIR}" ] && echo "Failed to locate configuration data. Cannot continue." && exit 1;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
-OPTIND=0;
+typeset -i OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
+THIS_CNAME="${CNAME}";
 unset METHOD_NAME;
 unset CNAME;
 
-## check security
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+## validate the input
 ${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
-RET_CODE=${?};
+typeset -i RET_CODE=${?};
 
-[ ${RET_CODE} -ne 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE};
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
-## unset the return code
-unset RET_CODE;
+CNAME="${THIS_CNAME}";
+METHOD_NAME="${THIS_CNAME}#startup";
 
-CNAME="$(basename "${0}")";
-METHOD_NAME="${CNAME}#startup";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+[ ${RET_CODE} -ne 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE} || unset RET_CODE;
 
 #===  FUNCTION  ===============================================================
 #          NAME:  runInternetSiteFailover
@@ -61,6 +68,7 @@ METHOD_NAME="${CNAME}#startup";
 function runInternetSiteFailover
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -80,273 +88,260 @@ function runInternetSiteFailover
     then
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command executeSiteFailover.sh -d x -b ${UNIT} -f ${FILENAME} -t ${TARGET} -p ${PRJCODE} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e";
 
+        THIS_CNAME="${CNAME}";
         unset METHOD_NAME;
         unset CNAME;
 
-        ## capture the current optind
-        RFR_OPTIND=${OPTIND};
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-        FAILOVER_CODE=$(${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/executeSiteFailover.sh -d x -b ${UNIT} -f ${FILENAME} -t ${TARGET} -p ${PRJCODE} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e);
+        ## validate the input
+        [ -z "${FAILOVER_TYPE}" ] && [ "${FAILOVER_TYPE}" = "unit" ] && ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e;
+        [ -z "${FAILOVER_TYPE}" ] && [ "${FAILOVER_TYPE}" = "project" ] && ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -p ${PRJCODE} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e;
+        [ -z "${FAILOVER_TYPE}" ] && [ "${FAILOVER_TYPE}" = "datacenter" ] && ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -a -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e;
+        [ -z "${FAILOVER_TYPE}" ] && [ "${FAILOVER_TYPE}" = "site" ] && ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -a -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e;
+        typeset -i RET_CODE=${?};
 
-        CNAME="$(basename "${0}")";
-        local METHOD_NAME="${CNAME}#${0}";
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
-        ## and put it back
-        OPTIND=${RFR_OPTIND};
+        CNAME="${THIS_CNAME}";
+        local METHOD_NAME="${THIS_CNAME}#${0}";
 
-        unset RFR_OPTIND;
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
     else
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${NAMED_MASTER} \"executeSiteFailover.sh -d x -b ${UNIT} -f ${FILENAME} -t ${TARGET} -p ${PRJCODE} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e\"";
 
-        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeSiteFailover.sh -d x -b ${UNIT} -f ${FILENAME} -t ${TARGET} -p ${PRJCODE} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e";
+        THIS_CNAME="${CNAME}";
+        unset METHOD_NAME;
+        unset CNAME;
 
-        FAILOVER_CODE=${?};
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e;";
+        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -p ${PRJCODE} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e";
+        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -a -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e";
+        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -a -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e";
+        typeset -i RET_CODE=${?};
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+        CNAME="${THIS_CNAME}";
+        local METHOD_NAME="${THIS_CNAME}#${0}";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
     fi
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FAILOVER_CODE -> ${FAILOVER_CODE}";
-
-    if [ ${FAILOVER_CODE} -eq 0 ]
+    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
     then
-        ## failover was successful. lets do some more work...
-        unset FAILOVER_CODE;
-        unset RETURN_CODE;
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover completed. Reloading server configuration..";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runRNDCCommands.sh -s ${NAMED_MASTER} -c reload -e..";
-
-        unset CNAME;
-        unset METHOD_NAME;
-
-        ## capture the current optind
-        RFR_OPTIND=${OPTIND};
-
-        ## send an rndc reload to the server to make it active
-        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${NAMED_MASTER} -c reload -e;
-        RNDC_CODE=${?};
-
-        CNAME="$(basename "${0}")";
-        local METHOD_NAME="${CNAME}#${0}";
-
-        ## and put it back
-        OPTIND=${RFR_OPTIND};
-
-        unset RFR_OPTIND;
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RNDC_CODE -> ${RNDC_CODE}";
-
-        if [ ${RNDC_CODE} -eq 0 ]
-        then
-            ## we've successfully reloaded our configuration. verify that the change was indeed made
-            unset RNDC_CODE;
-            unset RETURN_CODE;
-
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Server configuration successfully reloaded. Validating change..";
-
-            ## sleep for configured thread delay to allow changes to propagate
-            sleep "${MESSAGE_DELAY}";
-
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing query against ${NAMED_MASTER}..";
-
-            unset METHOD_NAME;
-            unset CNAME;
-
-            ## capture the current optind
-            RFR_OPTIND=${OPTIND};
-
-            ## ok, we know where it was failed over. we can use this information
-            ## to determine if the change was applied.
-            . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runQuery.sh -s ${NAMED_MASTER} -t A -u ${SITE_HOSTNAME} -o -e;
-
-            CNAME="$(basename "${0}")";
-            local METHOD_NAME="${CNAME}#${0}";
-
-            ## and put it back
-            OPTIND=${RFR_OPTIND};
-
-            unset RFR_OPTIND;
-
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Query complete. Validating..";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing validate_change_request.sh failover ${TARGET}..";
-
-            unset METHOD_NAME;
-            unset CNAME;
-
-            ## validate the change
-            . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validate_change_request.sh failover ${TARGET};
-            VALIDATE_CODE=${?};
-
-            CNAME="$(basename "${0}")";
-            local METHOD_NAME="${CNAME}#${0}";
-
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_CODE -> ${VALIDATE_CODE}";
-
-            if [ ${VALIDATE_CODE} -eq 0 ]
-            then
-                ## we've applied and activated our change. reload changes into the configured
-                ## slave servers
-                unset VALIDATE_CODE;
-                unset RETURN_CODE;
-                unset RET_CODE;
-                unset RETURN_TEXT;
-
-                unset CNAME;
-                unset METHOD_NAME;
-
-                ## capture the current optind
-                RFR_OPTIND=${OPTIND};
-
-                ## send out a notification email advising of the failover.
-                . ${MAILER_CLASS} -m notifySiteFailover -p ${PROJECT_CODE} -a "${DNS_SERVER_ADMIN_EMAIL}" -e;
-
-                CNAME="$(basename "${0}")";
-                local METHOD_NAME="${CNAME}#${0}";
-
-                ## and put it back
-                OPTIND=${RFR_OPTIND};
-
-                unset RFR_OPTIND;
-
-                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "$(${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS Failover: Requestor: ${IUSER_AUDIT} - Date: $(date +"%d-%m-%Y") - Site: ${UNIT}/${PRJCODE}/${FILENAME} - Change Request: ${CHG_CTRL} - Switched To: ${TARGET}")";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change successfully validated on ${NAMED_MASTER}. Processing against slaves..";
-
-                ## make sure that we have slaves to operate against
-                if [ ${#DNS_SLAVES[@]} -ne 0 ]
-                then
-                    ## we have slaves to process against. do so.
-                    ## make sure D is 0, ERROR_COUNT is 0
-                    D=0;
-                    ERROR_COUNT=0;
-                    unset RETURN_CODE;
-
-                    while [ ${D} -ne ${#DNS_SLAVES[@]} ]
-                    do
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating against ${DNS_SLAVES[${D}]}..";
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runRNDCCommands.sh -s ${DNS_SLAVES[${D}]} -c reload -e..";
-
-                        ## temp unset
-                        unset METHOD_NAME;
-                        unset CNAME;
-
-                        ## capture the current optind
-                        RFR_OPTIND=${OPTIND};
-
-                        ## send an rndc reload to the server to make it active
-                        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${DNS_SLAVES[${D}]} -c reload -e;
-                        RNDC_CODE=${?};
-
-                        CNAME="$(basename "${0}")";
-                        local METHOD_NAME="${CNAME}#${0}";
-
-                        ## and put it back
-                        OPTIND=${RFR_OPTIND};
-
-                        unset RFR_OPTIND;
-
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${DNS_SLAVES[${D}]} RNDC_CODE -> ${RNDC_CODE}";
-
-                        if [ ${RNDC_CODE} -eq 0 ]
-                        then
-                            unset RNDC_CODE;
-                            unset RETURN_CODE;
-                            unset RET_CODE;
-                            unset RETURN_TEXT;
-
-                            ## reload successful. validate change.
-                            ## sleep for the configured thread delay
-                            ## to allow changes to process
-                            sleep "${MESSAGE_DELAY}";
-
-                            unset METHOD_NAME;
-                            unset CNAME;
-
-                            ## capture the current optind
-                            RFR_OPTIND=${OPTIND};
-
-                            ## ok, we know where it was failed over. we can use this information
-                            ## to determine if the change was applied.
-                            . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runQuery.sh -s ${DNS_SLAVES[${D}]} -t A -u ${SITE_HOSTNAME} -o -e;
-
-                            CNAME="$(basename "${0}")";
-                            local METHOD_NAME="${CNAME}#${0}";
-
-                            ## and put it back
-                            OPTIND=${RFR_OPTIND};
-
-                            unset RFR_OPTIND;
-
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Query complete against ${DNS_SLAVES[${D}]}. Validating..";
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing validate_change_request.sh failover ${TARGET}..";
-
-                            unset METHOD_NAME;
-                            unset CNAME;
-
-                            ## validate the change
-                            . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validate_change_request.sh failover ${TARGET};
-                            VALIDATE_CODE=${?};
-
-                            CNAME="$(basename "${0}")";
-                            local METHOD_NAME="${CNAME}#${0}";
-
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${DNS_SLAVES[${D}]} VALIDATE_CODE -> ${VALIDATE_CODE}";
-
-                            if [ ${VALIDATE_CODE} -eq 0 ]
-                            then
-                                ## all set. validated successfully.
-                                unset VALIDATE_CODE;
-                                unset RETURN_CODE;
-
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change successfully validated on ${DNS_SLAVES[${D}]}.";
-                            else
-                                ## an error occurred during validation. either we
-                                ## we dont have enough info to validate or the info
-                                ## is wrong or it just hasnt taken effect yet.
-                                unset VALIDATE_CODE;
-                                unset RETURN_CODE;
-
-                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to validate new configuration on ${DNS_SLAVES[${D}]}.";
-
-                                (( ERROR_COUNT += 1 ));
-                                set -A FAILED_SERVERS ${FAILED_SERVERS[@]} ${DNS_SLAVES[${D}]};
-                            fi
-                        else
-                            ## rndc request failed.
-                            unset RNDC_CODE;
-                            unset RETURN_CODE;
-                            unset RET_CODE;
-                            unset RETURN_TEXT;
-                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to reload new configuration on ${DNS_SLAVES[${D}]}.";
-
-                            (( ERROR_COUNT += 1 ));
-                            set -A FAILED_SERVERS ${FAILED_SERVERS[@]} ${DNS_SLAVES[${D}]};
-                        fi
-
-                        ## increment d and unset the return code
-                        (( D += 1 ));
-                    done
-                else
-                    ## we have no slaves to operate against. return success since the servers we have
-                    ## are done
-                    RETURN_CODE=0;
-                fi
-            else
-                ## failed to validate that the change was successfully implemented. either the
-                ## reload failed or we didnt have the right/enough information to perform
-                ## the validation
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validation failed. Unable to confirm that site was failed over properly.";
-
-                RETURN_CODE=61;
-            fi
-        else
-            ## our server reload failed. throw an error, we can't recover from this here.
-            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Server reload on ${NAMED_MASTER} has failed. Unable to proceed.";
-            RETURN_CODE=52;
-        fi
-    else
         ## failover process has failed. inform.
         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover processing on ${NAMED_MASTER} has failed. Unable to proceed.";
 
-        RETURN_CODE=${FAILOVER_CODE};
+        RETURN_CODE=${RET_CODE};
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        unset UNIT;
+        unset FILENAME;
+        unset TARGET;
+        unset PRJCODE;
+        unset CHG_CTRL;
+        unset FAILOVER_CODE;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
     fi
+
+    ## failover was successful. lets do some more work...
+    unset RET_CODE;
+    unset RETURN_CODE;
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover completed. Reloading server configuration..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runRNDCCommands.sh -s ${NAMED_MASTER} -c reload -e..";
+
+    unset CNAME;
+    unset METHOD_NAME;
+
+    THIS_CNAME="${CNAME}";
+    unset METHOD_NAME;
+    unset CNAME;
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+    ## validate the input
+    ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${NAMED_MASTER} -c reload -e;
+    typeset -i RET_CODE=${?};
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+    CNAME="${THIS_CNAME}";
+    local METHOD_NAME="${THIS_CNAME}#${0}";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+    then
+        ## failover process has failed. inform.
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover processing on ${NAMED_MASTER} has failed. Unable to proceed.";
+
+        RETURN_CODE=${RET_CODE};
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        unset UNIT;
+        unset FILENAME;
+        unset TARGET;
+        unset PRJCODE;
+        unset CHG_CTRL;
+        unset FAILOVER_CODE;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
+    ## we've successfully reloaded our configuration. verify that the change was indeed made
+    unset RET_CODE;
+    unset RETURN_CODE;
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Server configuration successfully reloaded. Validating change..";
+
+    ## sleep for configured thread delay to allow changes to propagate
+    sleep "${MESSAGE_DELAY}";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing query against ${NAMED_MASTER}..";
+
+    THIS_CNAME="${CNAME}";
+    unset METHOD_NAME;
+    unset CNAME;
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+    ## validate the input
+    ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runQuery.sh -s ${NAMED_MASTER} -t A -u ${SITE_HOSTNAME} -o -e;
+    typeset -i RET_CODE=${?};
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+    CNAME="${THIS_CNAME}";
+    local METHOD_NAME="${THIS_CNAME}#${0}";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+    then
+        ## failover process has failed. inform.
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover processing on ${NAMED_MASTER} has failed. Unable to proceed.";
+
+        RETURN_CODE=${RET_CODE};
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        unset UNIT;
+        unset FILENAME;
+        unset TARGET;
+        unset PRJCODE;
+        unset CHG_CTRL;
+        unset FAILOVER_CODE;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
+    ## we've applied and activated our change. reload changes into the configured
+    ## slave servers
+    unset RET_CODE;
+    unset RETURN_CODE;
+    unset RET_CODE;
+    unset RETURN_TEXT;
+
+    for SERVER in ${SLAVE_SERVERS[@]}
+    do
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVER -> ${SERVER}";
+
+        ## make sure its alive
+        ping ${SERVER} > /dev/null 2>&1;
+        PING_RCODE=${?};
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
+
+        if [ -z "${PING_RCODE}" ] || [ ${PING_RCODE} -ne 0 ]
+        then
+            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to reload service configuration on host ${SERVER} - host appears to be unavailable. Please reload manually.";
+
+            (( ERROR_COUNT += 1 ));
+
+            continue;
+        fi
+
+        ## stop if its available and run the command
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Proxy access confirmed. Proxy: ${PROXY}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} \"dig @${NAMESERVER} -t ${RECORD_TYPE} ${SITE_URL}\" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE}";
+
+        THIS_CNAME="${CNAME}";
+        unset METHOD_NAME;
+        unset CNAME;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        ## validate the input
+        ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${SERVER} -c reload -e;
+        typeset -i RET_CODE=${?};
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+        CNAME="${THIS_CNAME}";
+        local METHOD_NAME="${THIS_CNAME}#${0}";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+        if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+        then
+            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to reload service configuration on host ${SERVER}. Please reload manually.";
+
+            (( ERROR_COUNT += 1 ));
+        fi
+    done
+
+    THIS_CNAME="${CNAME}";
+    unset METHOD_NAME;
+    unset CNAME;
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+    ## validate the input
+    ${MAILER_CLASS} -m notifySiteFailover -p ${PROJECT_CODE} -a "${DNS_SERVER_ADMIN_EMAIL}" -e;
+    typeset -i RET_CODE=${?};
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+    CNAME="${THIS_CNAME}";
+    local METHOD_NAME="${THIS_CNAME}#${0}";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+    ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS Failover: Requestor: ${IUSER_AUDIT} - Date: $(date +"%d-%m-%Y") - Site: ${UNIT}/${PRJCODE}/${FILENAME} - Change Request: ${CHG_CTRL} - Switched To: ${TARGET}")";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     unset UNIT;
     unset FILENAME;
@@ -355,7 +350,8 @@ function runInternetSiteFailover
     unset CHG_CTRL;
     unset FAILOVER_CODE;
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
     return ${RETURN_CODE};
 }
@@ -369,6 +365,7 @@ function runInternetSiteFailover
 function runIntranetSiteFailover
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -416,16 +413,30 @@ function runIntranetSiteFailover
             then
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${GD_SERVER} \"executeSiteFailover.sh -d i -f ${DISABLE_POP} -t ${ENABLE_POP} -c ${CHANGE_NUM} -i ${IUSER_AUDIT} -e\"";
 
-                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${GD_SERVER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeSiteFailover.sh -d i -f ${DISABLE_POP} -t ${ENABLE_POP} -c ${CHANGE_NUM} -i ${IUSER_AUDIT} -e";
-                FAILOVER_CODE=${?};
+                THIS_CNAME="${CNAME}";
+                unset METHOD_NAME;
+                unset CNAME;
 
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FAILOVER_CODE -> ${FAILOVER_CODE}";
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+                ## validate the input
+                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${GD_SERVER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeSiteFailover.sh -d i -f ${DISABLE_POP} -t ${ENABLE_POP} -c ${CHANGE_NUM} -i ${IUSER_AUDIT} -e";
+                typeset -i RET_CODE=${?};
+
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+                CNAME="${THIS_CNAME}";
+                local METHOD_NAME="${THIS_CNAME}#${0}";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
                 ## rock out our validation here
-                if [ ${FAILOVER_CODE} -eq 0 ]
+                if [ ${RET_CODE} -eq 0 ]
                 then
                     ## failover was successful. lets do some more work...
-                    unset FAILOVER_CODE;
+                    unset RET_CODE;
                     unset RETURN_CODE;
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover completed. Reloading server configuration..";
@@ -459,6 +470,9 @@ function runIntranetSiteFailover
         done
     fi
 
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
     unset UNIT;
     unset FILENAME;
     unset TARGET;
@@ -466,489 +480,8 @@ function runIntranetSiteFailover
     unset CHG_CTRL;
     unset FAILOVER_CODE;
 
-    return ${RETURN_CODE};
-}
-
-#===  FUNCTION  ===============================================================
-#          NAME:  failover_bu
-#   DESCRIPTION:  Processes and implements a DNS site failover
-#    PARAMETERS:  Parameters obtained via command-line flags
-#          NAME:  usage for positive result, >1 for non-positive
-#==============================================================================
-function failover_bu
-{
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "UNIT->${UNIT}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TARGET->${TARGET}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHG_CTRL->${CHG_CTRL}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IUSER_AUDIT -> ${IUSER_AUDIT}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing failover for business unit..";
-
-    ## we need to run a business unit failover
-    ## call out to execute_bu_failover.sh
-    if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
-    then
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e";
-
-        unset METHOD_NAME;
-        unset CNAME;
-
-        ## capture the current optind
-        RFR_OPTIND=${OPTIND};
-
-        ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e;
-        FAILOVER_CODE=${?};
-
-        CNAME="$(basename "${0}")";
-        local METHOD_NAME="${CNAME}#${0}";
-    else
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${NAMED_MASTER} \"executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e\"";
-
-        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e";
-        FAILOVER_CODE=${?};
-    fi
-
-    if [ ${FAILOVER_CODE} -eq 0 ]
-    then
-        ## failover was successful. lets do some more work...
-        unset RETURN_CODE;
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover completed. Reloading server configuration..";
-
-        unset METHOD_NAME;
-        unset CNAME;
-
-        ## send an rndc reload to the server to make it active
-        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${NAMED_MASTER} -c reload -e;
-        RETURN_CODE=${?};
-
-        CNAME="$(basename "${0}")";
-        local METHOD_NAME="${CNAME}#${0}";
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-
-        if [ ${RETURN_CODE} -eq 0 ]
-        then
-            ## we've successfully reloaded our configuration. move forward
-            ## with a reload against our configured slaves.
-            unset RETURN_CODE;
-
-            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "$(${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS Failover: Requestor: ${IUSER_AUDIT} - Date: $(date +"%d-%m-%Y") - Site: ${UNIT}/${PRJCODE}/${FILENAME} - Change Request: ${CHG_CTRL} - Switched To: ${TARGET}")";
-
-            ## sleep for the configured thread delay to allow processing changes in the master
-            sleep "${MESSAGE_DELAY}";
-
-            ## make sure that we have slaves to operate against
-            if [ ${#DNS_SLAVES[@]} -ne 0 ]
-            then
-                ## we have slaves to process against. do so.
-                ## make sure D is 0, ERROR_COUNT is 0
-                D=0;
-                ERROR_COUNT=0;
-
-                while [ ${D} -ne ${#DNS_SLAVES[@]} ]
-                do
-                    ## temp unset
-                    unset METHOD_NAME;
-                    unset CNAME;
-
-                    ## send an rndc reload to the server to make it active
-                    . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${DNS_SLAVE[${D}]} -c reload -e;
-                    RETURN_CODE=${?};
-
-                    CNAME="$(basename "${0}")";
-                    local METHOD_NAME="${CNAME}#${0}";
-
-                    if [ ${RETURN_CODE} -eq 0 ]
-                    then
-                        ## reloaded config on slave.
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Successfully reloaded configuration on ${DNS_SLAVE[${D}]}";
-                    else
-                        ## rndc request failed.
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Reload request on ${DNS_SLAVE[${D}]} has failed.";
-                        set -A FAILED_SERVER ${FAILED_SERVER[@]} ${DNS_SLAVE[${D}]};
-
-                        (( ERROR_COUNT += 1 ));
-                    fi
-
-                    ## increment d and unset the return code
-                    (( D += 1 ));
-                    unset RETURN_CODE;
-                done
-
-                if [ ${ERROR_COUNT} -eq 0 ]
-                then
-                    ## all servers were successfully reloaded. return 0
-                    unset RETURN_CODE;
-                    ERROR_COUNT=0;
-                    D=0;
-
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Successfully reloaded configuration on ${DNS_SLAVE[${D}]}";
-
-                    RETURN_CODE=0;
-                else
-                    ## one or more of our slave servers failed to reload. this is fatal to that server, but not the entire process.
-                    ## notify as such
-                    FAILED_SERVERS=${FAILED_SERVER[@]};
-                    RETURN_CODE=62;
-                fi
-            else
-                ## we have no slaves to operate against. return success since the servers we have
-                ## are done
-                RETURN_CODE=0;
-            fi
-        else
-            ## our server reload failed. throw an error, we can't recover from this here.
-            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Server reload on ${NAMED_MASTER} has failed. Unable to proceed.";
-            RETURN_CODE=52;
-        fi
-    else
-        ## failover process has failed. inform.
-        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover processing on ${NAMED_MASTER} has failed. Unable to proceed.";
-
-        RETURN_CODE=${FAILOVER_CODE};
-    fi
-
-    unset UNIT;
-    unset TARGET;
-    unset CHG_CTRL;
-
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Execution complete. Return code->${RETURN_CODE}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-    return ${RETURN_CODE};
-}
-
-#===  FUNCTION  ===============================================================
-#          NAME:  failover_project
-#   DESCRIPTION:  Processes and implements a DNS site failover
-#    PARAMETERS:  Parameters obtained via command-line flags
-#          NAME:  usage for positive result, >1 for non-positive
-#==============================================================================
-function failover_project
-{
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRJCODE->${PRJCODE}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "UNIT->${UNIT}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TARGET->${TARGET}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHG_CTRL->${CHG_CTRL}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IUSER_AUDIT -> ${IUSER_AUDIT}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing failover for project code..";
-
-    ## we need to run a business unit failover
-    ## call out to execute_bu_failover.sh
-    if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
-    then
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -p ${PRJCODE} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e";
-
-        unset METHOD_NAME;
-        unset CNAME;
-
-        ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -p ${PRJCODE} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e;
-        FAILOVER_CODE=${?};
-
-        CNAME="$(basename "${0}")";
-        local METHOD_NAME="${CNAME}#${0}";
-    else
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${NAMED_MASTER} \"executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -p ${PRJCODE} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e\"";
-
-        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -p ${PRJCODE} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e";
-    fi
-
-    if [ ${FAILOVER_CODE} -eq 0 ]
-    then
-        ## failover was successful. lets do some more work...
-        unset RETURN_CODE;
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover completed. Reloading server configuration..";
-
-        unset METHOD_NAME;
-        unset CNAME;
-
-        ## capture the current optind
-        RFR_OPTIND=${OPTIND};
-
-        ## send an rndc reload to the server to make it active
-        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${NAMED_MASTER} -c reload -e;
-        RETURN_CODE=${?};
-
-        CNAME="$(basename "${0}")";
-        local METHOD_NAME="${CNAME}#${0}";
-
-        ## and put it back
-        OPTIND=${RFR_OPTIND};
-
-        unset RFR_OPTIND;
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-
-        if [ ${RETURN_CODE} -eq 0 ]
-        then
-            ## we've successfully reloaded our configuration. move forward
-            ## with a reload against our configured slaves.
-            unset RETURN_CODE;
-
-            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "$(${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS Failover: Requestor: ${IUSER_AUDIT} - Date: $(date +"%d-%m-%Y") - Site: ${UNIT}/${PRJCODE}/${FILENAME} - Change Request: ${CHG_CTRL} - Switched To: ${TARGET}")";
-
-            ## sleep for the configured thread delay to allow processing changes in the master
-            sleep "${MESSAGE_DELAY}";
-
-            ## make sure that we have slaves to operate against
-            if [ ${#DNS_SLAVES[@]} -ne 0 ]
-            then
-                ## we have slaves to process against. do so.
-                ## make sure D is 0, ERROR_COUNT is 0
-                D=0;
-                ERROR_COUNT=0;
-
-                while [ ${D} -ne ${#DNS_SLAVES[@]} ]
-                do
-                    ## temp unset
-                    unset METHOD_NAME;
-                    unset CNAME;
-
-                    ## capture the current optind
-                    RFR_OPTIND=${OPTIND};
-
-                    ## send an rndc reload to the server to make it active
-                    . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${DNS_SLAVE[${D}]} -c reload -e;
-                    RETURN_CODE=${?};
-
-                    CNAME="$(basename "${0}")";
-                    local METHOD_NAME="${CNAME}#${0}";
-
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
-
-                    ## and put it back
-                    OPTIND=${RFR_OPTIND};
-
-                    if [ ${RETURN_CODE} -eq 0 ]
-                    then
-                        ## reloaded config on slave.
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Successfully reloaded configuration on ${DNS_SLAVE[${D}]}";
-                    else
-                        ## rndc request failed.
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Reload request on ${DNS_SLAVE[${D}]} has failed.";
-                        set -A FAILED_SERVER ${FAILED_SERVER[@]} ${DNS_SLAVE[${D}]};
-
-                        (( ERROR_COUNT += 1 ));
-                    fi
-
-                    ## increment d and unset the return code
-                    (( D += 1 ));
-                    unset RETURN_CODE;
-                done
-
-                if [ ${ERROR_COUNT} -eq 0 ]
-                then
-                    ## all servers were successfully reloaded. return 0
-                    unset RETURN_CODE;
-                    ERROR_COUNT=0;
-                    D=0;
-
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Successfully reloaded configuration on ${DNS_SLAVE[${D}]}";
-
-                    RETURN_CODE=0;
-                else
-                    ## one or more of our slave servers failed to reload. this is fatal to that server, but not the entire process.
-                    ## notify as such
-                    FAILED_SERVERS=${FAILED_SERVER[@]};
-                    RETURN_CODE=62;
-                fi
-            else
-                ## we have no slaves to operate against. return success since the servers we have
-                ## are done
-                RETURN_CODE=0;
-            fi
-        else
-            ## our server reload failed. throw an error, we can't recover from this here.
-            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Server reload on ${NAMED_MASTER} has failed. Unable to proceed.";
-            RETURN_CODE=52;
-        fi
-    else
-        ## failover process has failed. inform.
-        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover processing on ${NAMED_MASTER} has failed. Unable to proceed.";
-
-        RETURN_CODE=${FAILOVER_CODE};
-    fi
-
-    unset UNIT;
-    unset TARGET;
-    unset CHG_CTRL;
-
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Execution complete. Return code->${RETURN_CODE}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-    return ${RETURN_CODE};
-}
-
-#===  FUNCTION  ===============================================================
-#          NAME:  failover_datacenter
-#   DESCRIPTION:  Processes and implements a DNS site failover
-#    PARAMETERS:  Parameters obtained via command-line flags
-#          NAME:  usage for positive result, >1 for non-positive
-#==============================================================================
-function failover_datacenter
-{
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TARGET -> ${TARGET}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHG_CTRL -> ${CHG_CTRL}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IUSER_AUDIT -> ${IUSER_AUDIT}";
-
-    ## spawn an ssh connection to the DNS master
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing datacenter failover on ${NAMED_MASTER}..";
-
-    if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
-    then
-        unset METHOD_NAME;
-        unset CNAME;
-
-        ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -a -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e;
-        FAILOVER_CODE=${?};
-
-        CNAME="$(basename "${0}")";
-        local METHOD_NAME="${CNAME}#${0}";
-    else
-        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -a -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e";
-    fi
-
-    ## capture the return code
-    FAILOVER_CODE=${?};
-
-    if [ ${FAILOVER_CODE} -eq 0 ]
-    then
-        ## failover was successful. lets do some more work...
-        unset RETURN_CODE;
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover completed. Reloading server configuration..";
-
-        unset METHOD_NAME;
-        unset CNAME;
-
-        ## capture the current optind
-        RFR_OPTIND=${OPTIND};
-
-        ## send an rndc reload to the server to make it active
-        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${NAMED_MASTER} -c reload -e;
-        RETURN_CODE=${?};
-
-        CNAME="$(basename "${0}")";
-        local METHOD_NAME="${CNAME}#${0}";
-
-        ## and put it back
-        OPTIND=${RFR_OPTIND};
-
-        unset RFR_OPTIND;
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-
-        if [ ${RETURN_CODE} -eq 0 ]
-        then
-            ## we've successfully reloaded our configuration. move forward
-            ## with a reload against our configured slaves.
-            ## NOTE: we could run verification here. but we're failing over
-            ## an entire datacenter, and that may take a LONG time depending
-            ## on the number of zones.
-            unset RETURN_CODE;
-
-            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "$(${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS Failover: Requestor: ${IUSER_AUDIT} - Date: $(date +"%d-%m-%Y") - Site: ${UNIT}/${PRJCODE}/${FILENAME} - Change Request: ${CHG_CTRL} - Switched To: ${TARGET}")";
-
-            ## sleep for the configured thread delay to allow processing changes in the master
-            sleep "${MESSAGE_DELAY}";
-
-            ## make sure that we have slaves to operate against
-            if [ ${#DNS_SLAVES[@]} -ne 0 ]
-            then
-                ## we have slaves to process against. do so.
-                ## make sure D is 0, ERROR_COUNT is 0
-                D=0;
-                ERROR_COUNT=0;
-
-                while [ ${D} -ne ${#DNS_SLAVES[@]} ]
-                do
-                    ## temp unset
-                    unset METHOD_NAME;
-                    unset CNAME;
-
-                    ## capture the current optind
-                    RFR_OPTIND=${OPTIND};
-
-                    ## send an rndc reload to the server to make it active
-                    . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${DNS_SLAVE[${D}]} -c reload -e;
-                    RETURN_CODE=${?};
-
-                    CNAME="$(basename "${0}")";
-                    local METHOD_NAME="${CNAME}#${0}";
-
-                    ## and put it back
-                    OPTIND=${RFR_OPTIND};
-
-                    unset RFR_OPTIND;
-
-                    if [ ${RETURN_CODE} -eq 0 ]
-                    then
-                        ## reloaded config on slave.
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Successfully reloaded configuration on ${DNS_SLAVE[${D}]}";
-                    else
-                        ## rndc request failed.
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Reload request on ${DNS_SLAVE[${D}]} has failed.";
-                        set -A FAILED_SERVER ${FAILED_SERVER[@]} ${DNS_SLAVE[${D}]};
-
-                        (( ERROR_COUNT += 1 ));
-                    fi
-
-                    ## increment d and unset the return code
-                    (( D += 1 ));
-                    unset RETURN_CODE;
-                done
-
-                if [ ${ERROR_COUNT} -eq 0 ]
-                then
-                    ## all servers were successfully reloaded. return 0
-                    unset RETURN_CODE;
-                    ERROR_COUNT=0;
-                    D=0;
-
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Successfully reloaded configuration on ${DNS_SLAVE[${D}]}";
-
-                    RETURN_CODE=0;
-                else
-                    ## one or more of our slave servers failed to reload. this is fatal to that server, but not the entire process.
-                    ## notify as such
-                    FAILED_SERVERS=${FAILED_SERVER[@]};
-                    RETURN_CODE=62;
-                fi
-            else
-                ## we have no slaves to operate against. return success since the servers we have
-                ## are done
-                RETURN_CODE=0;
-            fi
-        else
-            ## our server reload failed. throw an error, we can't recover from this here.
-            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Server reload on ${NAMED_MASTER} has failed. Unable to proceed.";
-            RETURN_CODE=52;
-        fi
-    else
-        ## failover process has failed. inform.
-        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover processing on ${NAMED_MASTER} has failed. Unable to proceed.";
-
-        RETURN_CODE=${FAILOVER_CODE};
-    fi
-
-    unset TARGET;
-    unset CHG_CTRL;
-
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Execution complete. Return code->${RETURN_CODE}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
     return ${RETURN_CODE};
 }
@@ -962,6 +495,7 @@ function failover_datacenter
 function usage
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -975,7 +509,11 @@ function usage
     print "  -e      Execute processing";
     print "  -h|-?   Show this help";
 
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
     return 3;
 }
@@ -992,7 +530,7 @@ do
 
             typeset -l PARTITION="${OPTARG}";
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PARTITION->${PARTITION}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PARTITION -> ${PARTITION}";
             ;;
         s)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
@@ -1281,5 +819,11 @@ do
 done
 
 shift ${OPTIND}-1;
+
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
 return ${RETURN_CODE};

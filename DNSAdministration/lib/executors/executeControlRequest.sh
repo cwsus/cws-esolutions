@@ -30,29 +30,53 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 [ -z "${PLUGIN_ROOT_DIR}" ] && echo "Failed to locate configuration data. Cannot continue." && exit 1;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
-OPTIND=0;
+typeset -i OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
+THIS_CNAME="${CNAME}";
 unset METHOD_NAME;
 unset CNAME;
 
-## check security
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+## validate the input
 ${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
-RET_CODE=${?};
+typeset -i RET_CODE=${?};
 
-[ ${RET_CODE} -ne 0 ] && echo "Security configuration does not allow the requested action." && echo ${RET_CODE} && exit ${RET_CODE};
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
-## unset the return code
-unset RET_CODE;
+CNAME="${THIS_CNAME}";
+METHOD_NAME="${THIS_CNAME}#startup";
+
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+[ ${RET_CODE} -ne 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE} || unset RET_CODE;
 
 ## lock it
-${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/lock.sh lock ${$};
-RET_CODE=${?};
+unset METHOD_NAME;
+unset CNAME;
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+${APP_ROOT}/${LIB_DIRECTORY}/lock.sh lock ${$};
+typeset -i RET_CODE=${?};
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+CNAME="${THIS_CNAME}";
+METHOD_NAME="${THIS_CNAME}#startup";
+
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
 [ ${RET_CODE} -ne 0 ] && echo "Application currently in use." && echo ${RET_CODE} && exit ${RET_CODE};
 
@@ -72,6 +96,7 @@ trap "${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/lock.sh unlock ${$}; exit" INT TERM EX
 function execute_service_command
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -85,7 +110,7 @@ function execute_service_command
 
             ## sudo is not required to stop the server
             ${NAMED_INIT_SCRIPT} ${COMMAND_NAME};
-            RET_CODE=${?};
+            typeset -i RET_CODE=${?};
 
             if [ $(echo ${RET_CODE} | grep "${NAMED_SERVICE_STOP_TXT}" | grep -c ${_OK}) -eq 1 ]
             then
@@ -114,7 +139,7 @@ function execute_service_command
                         if [ ${PROC_COUNT} -eq 0 ]
                         then
                             ## service was indeed shut down
-                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "named services shut down by ${IUSER_AUDIT}";
+                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "named services shut down by ${REQUESTING_USER}";
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                             RETURN_CODE=0;
@@ -125,13 +150,13 @@ function execute_service_command
                             RETURN_CODE=91;
                         fi
                     else
-                        ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "named services shut down by ${IUSER_AUDIT}";
+                        ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "named services shut down by ${REQUESTING_USER}";
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                         RETURN_CODE=0;
                     fi
                 else
-                    ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "named services shut down by ${IUSER_AUDIT}";
+                    ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "named services shut down by ${REQUESTING_USER}";
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                     RETURN_CODE=0;
@@ -156,7 +181,7 @@ function execute_service_command
                 else
                     sudo ${NAMED_INIT_SCRIPT} ${COMMAND_NAME};
                 fi
-                RET_CODE=${?};
+                typeset -i RET_CODE=${?};
 
                 if [ $(echo ${RET_CODE} | grep "${NAMED_SERVICE_START_TXT}" | grep -c ${_OK}) -eq 1 ]
                 then
@@ -182,7 +207,7 @@ function execute_service_command
                             if [ ${PROC_COUNT} -eq 1 ]
                             then
                                 ## service was indeed shut down
-                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "named services started by ${IUSER_AUDIT}";
+                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "named services started by ${REQUESTING_USER}";
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                                 RETURN_CODE=0;
@@ -245,7 +270,7 @@ function execute_service_command
                             else
                                 sudo ${NAMED_INIT_SCRIPT} start;
                             fi
-                            RET_CODE=${?};
+                            typeset -i RET_CODE=${?};
 
                             if [ $(echo ${RET_CODE} | grep "${NAMED_SERVICE_START_TXT}" | grep -c ${_OK}) -eq 1 ]
                             then
@@ -271,7 +296,7 @@ function execute_service_command
                                         if [ ${PROC_COUNT} -eq 1 ]
                                         then
                                             ## service was indeed shut down
-                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "named services started by ${IUSER_AUDIT}";
+                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "named services started by ${REQUESTING_USER}";
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                                             RETURN_CODE=0;
@@ -312,7 +337,7 @@ function execute_service_command
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing request to stop services..";
 
                     ${NAMED_INIT_SCRIPT} stop;
-                    RET_CODE=${?};
+                    typeset -i RET_CODE=${?};
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Stop request issued. RET_CODE -> ${RET_CODE}";
 
@@ -330,14 +355,14 @@ function execute_service_command
                         else
                             sudo ${NAMED_INIT_SCRIPT} start;
                         fi
-                        RET_CODE=${?};
+                        typeset -i RET_CODE=${?};
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Start request issued. RET_CODE -> ${RET_CODE}";
 
                         if [ ${RET_CODE} -eq 0 ]
                         then
                             ## done. return 0
-                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "named services restarted on $(hostname) by ${IUSER_AUDIT}";
+                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "named services restarted on $(hostname) by ${REQUESTING_USER}";
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                             RETURN_CODE=0;
@@ -369,7 +394,7 @@ function execute_service_command
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Reloading services on $(hostname)..";
 
             sudo ${NAMED_INIT_SCRIPT} ${COMMAND_NAME};
-            RET_CODE=${?};
+            typeset -i RET_CODE=${?};
 
             if [ $(echo ${RET_CODE} | grep -c "${NAMED_SERVICE_RELOAD_TXT}") -eq 1 ]
             then
@@ -378,7 +403,7 @@ function execute_service_command
                 ## the pid
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Service shutdown complete. Verifying..";
 
-                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "named services shut down by ${IUSER_AUDIT}";
+                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "named services shut down by ${REQUESTING_USER}";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                 RETURN_CODE=0;
@@ -391,6 +416,13 @@ function execute_service_command
             fi
             ;;
     esac
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+    return ${RETURN_CODE};
 }
 
 #===  FUNCTION  ===============================================================
@@ -402,6 +434,7 @@ function execute_service_command
 function usage
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -414,6 +447,11 @@ function usage
     print " -h|-? -> Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
     return 3;
 }
@@ -482,4 +520,11 @@ done
 shift ${OPTIND}-1;
 
 echo ${RETURN_CODE};
+
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
 exit ${RETURN_CODE};

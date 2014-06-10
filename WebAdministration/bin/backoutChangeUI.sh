@@ -28,6 +28,7 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 function main
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -43,10 +44,9 @@ function main
 
     ## make sure someone isnt already working on stuff
     . ${APP_ROOT}/lib/check_usage.sh;
-    RET_CODE=${?};
+    typeset -i RET_CODE=${?};
 
     ## reset METHOD_NAME back to THIS method
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
     CNAME=$(basename ${0});
 
@@ -113,8 +113,7 @@ function main
                         RET_CODE=${?}
 
                         ## reset METHOD_NAME back to THIS method
-                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+                        local METHOD_NAME="${CNAME}#${0}";
                         CNAME=$(basename ${0});
 
                         reset; clear;
@@ -304,7 +303,7 @@ function main
                             ## we need to make sure we were given real options.
                             ## run the validator to check
                             . ${APP_ROOT}/lib/validators/validate_service_request.sh -b ${SVC_LIST} -e;
-                            RET_CODE=${?};
+                            typeset -i RET_CODE=${?};
 
                             if [ ${RET_CODE} -eq 0 ]
                             then
@@ -349,6 +348,7 @@ function main
 function process_backout_file
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     if [ ${#FILE_LIST[@]} -eq 0 ]
@@ -402,11 +402,10 @@ function process_backout_file
 
                     . ${APP_ROOT}/lib/run_backout.sh -f $(echo ${FILE_LIST[${SELECTION}]} | cut -d "/" -f 7 | sed -e "s/^M//g");
                 fi
-                RET_CODE=${?};
+                typeset -i RET_CODE=${?};
 
                 ## set method_name and cname back to this
-                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+                local METHOD_NAME="${CNAME}#${0}";
                 CNAME=$(basename ${0});
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing complete. Return code -> ${RET_CODE}";
@@ -509,11 +508,10 @@ function process_backout_file
 
                                         ## call run_backout with the filename
                                         . ${APP_ROOT}/lib/run_backout.sh ${FILE_LIST[${SELECTION}]};
-                                        RET_CODE=${?};
+                                        typeset -i RET_CODE=${?};
 
                                         ## set method_name and cname back to this
-                                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+                                        local METHOD_NAME="${CNAME}#${0}";
                                         CNAME=$(basename ${0});
 
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Return code from run_backout.sh->${RET_CODE}";

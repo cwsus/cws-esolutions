@@ -22,11 +22,11 @@ global _CNAME
 global _LINE_TERMINATOR
 
 set _CNAME "runSCPConnection.exp"
-set _LINE_TERMINATOR $env(TRACE)
+set _LINE_TERMINATOR $env(LINE_TERMINATOR)
 set timeout $env(THREAD_TIMEOUT)
 
 # turn off screen echo
-if { [string compare -nocase $env(TRACE) "true"] != 0 } {
+if { [string compare -nocase $env(ENABLE_TRACE) "true"] != 0 } {
     log_user 1
 } else {
     log_user 0

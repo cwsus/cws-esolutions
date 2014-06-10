@@ -36,6 +36,7 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 function renewiPlanetCert
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     ## get some preliminary information
@@ -72,7 +73,7 @@ function renewiPlanetCert
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command certutil -D -n ${CERTIFICATE_NICKNAME} -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE}..";
 
             certutil -D -n ${CERTIFICATE_NICKNAME} -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} >> ${APP_ROOT}/${LOG_ROOT}/certutil.${SITE_DOMAIN_NAME}.${IUSER_AUDIT} 2>&1;
-            RET_CODE=${?};
+            typeset -i RET_CODE=${?};
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -90,7 +91,7 @@ function renewiPlanetCert
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command certutil -L -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} -n ${CERTIFICATE_NICKNAME}..";
 
             certutil -L -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} -n ${CERTIFICATE_NICKNAME} >> ${APP_ROOT}/${LOG_ROOT}/certutil.${SITE_DOMAIN_NAME}.${IUSER_AUDIT} 2>&1;
-            RET_CODE=${?};
+            typeset -i RET_CODE=${?};
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -109,7 +110,7 @@ function renewiPlanetCert
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command certutil -d ${APP_ROOT}/${CERTDB_STORE} -A -i ${APP_ROOT}/${CERTSTORE}/${CERTIFICATE_NICKNAME}.cer -n ${CERTIFICATE_NICKNAME} -t \"u,u,u\"  -P ${CERTIFICATE_DATABASE}..";
 
             certutil -d ${APP_ROOT}/${CERTDB_STORE} -A -i ${APP_ROOT}/${CERTSTORE}/${CERTIFICATE_NICKNAME}.cer -n ${CERTIFICATE_NICKNAME} -t "u,u,u"  -P ${CERTIFICATE_DATABASE} >> ${APP_ROOT}/${LOG_ROOT}/certutil.${SITE_DOMAIN_NAME}.${IUSER_AUDIT} 2>&1;
-            RET_CODE=${?};
+            typeset -i RET_CODE=${?};
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -159,7 +160,7 @@ function renewiPlanetCert
                                     -P ${CERTIFICATE_DATABASE} -k ${APP_ROOT}/${IPLANET_CERT_DB_PASSFILE} -w ${APP_ROOT}/${IPLANET_CERT_DB_PASSFILE} >> ${APP_ROOT}/${LOG_ROOT}/pk12util.${SITE_DOMAIN_NAME}.${IUSER_AUDIT} 2>&1;
                             fi
 
-                            RET_CODE=${?};
+                            typeset -i RET_CODE=${?};
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE->${RET_CODE}";
 
@@ -199,7 +200,7 @@ function renewiPlanetCert
                                                 -password file:${APP_ROOT}/${IPLANET_CERT_DB_PASSFILE} >> ${APP_ROOT}/${LOG_ROOT}/openssl.${SITE_DOMAIN_NAME}.${IUSER_AUDIT} 2>&1;
                                         fi
 
-                                        RET_CODE=${?};
+                                        typeset -i RET_CODE=${?};
 
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE->${RET_CODE}";
 
@@ -212,15 +213,14 @@ function renewiPlanetCert
                                                 unset CNAME;
                                                 unset METHOD_NAME;
                                                 RR_OPTIND=${OPTIND};
-                                                OPTIND=0;
+                                                typeset -i OPTIND=0;
 
                                                 . ${MAILER_CLASS} -m ${NOTIFY_PEM_EMAIL} -p ${WEB_PROJECT_CODE} -a "${NOTIFY_PEM_ADDRESS}" -t ${NOTIFY_TYPE_NOTIFY} -e;
                                                 MAILER_CODE=${?};
 
                                                 OPTIND=${RR_OPTIND};
                                                 CNAME=$(basename ${0});
-                                                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+                                                local METHOD_NAME="${CNAME}#${0}";
 
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MAILER_CODE->${MAILER_CODE}";
 
@@ -320,6 +320,7 @@ function renewiPlanetCert
 function renewIHSCert
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     ## get some preliminary information
@@ -359,7 +360,7 @@ function renewIHSCert
                 -file ${APP_ROOT}/${CERTSTORE}/${CERTIFICATE_NICKNAME}.cer -pw $(cat ${APP_ROOT}/${IHS_CERT_DB_PASSFILE}) \
                 -type ${IHS_KEY_DB_TYPE} -format ascii;
 
-            RET_CODE=${?};
+            typeset -i RET_CODE=${?};
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -393,7 +394,7 @@ function renewIHSCert
                             -label ${CERTIFICATE_NICKNAME} -target ${APP_ROOT}/${PKCS12STORE}/${CERTIFICATE_NICKNAME}.pkcs \
                             -pw $(cat ${APP_ROOT}/${IHS_CERT_DB_PASSFILE}) -target_pw $(cat ${APP_ROOT}/${IHS_CERT_DB_PASSFILE}) -target_type pkcs12 -encryption strong;
 
-                        RET_CODE=${?};
+                        typeset -i RET_CODE=${?};
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE->${RET_CODE}";
 
@@ -425,7 +426,7 @@ function renewIHSCert
                                         -password file:${APP_ROOT}/${IHS_CERT_DB_PASSFILE} >> ${APP_ROOT}/${LOG_ROOT}/openssl.${SITE_DOMAIN_NAME}.${IUSER_AUDIT} 2>&1;
                                 fi
 
-                                RET_CODE=${?};
+                                typeset -i RET_CODE=${?};
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE->${RET_CODE}";
 
@@ -442,8 +443,7 @@ function renewIHSCert
                                         MAILER_CODE=${?};
 
                                         CNAME=$(basename ${0});
-                                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+                                        local METHOD_NAME="${CNAME}#${0}";
 
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MAILER_CODE->${MAILER_CODE}";
 
@@ -530,6 +530,7 @@ function renewIHSCert
 function applyiPlanetCert
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -699,6 +700,7 @@ function applyiPlanetCert
 function generateAndApplySelfSignedCert
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -709,7 +711,7 @@ function generateAndApplySelfSignedCert
         openssl ca -batch -config ${OPENSSL_CONFIG_FILE} -policy policy_anything \
             -out ${APP_ROOT}/${CERTSTORE}/SS-${CERT_NICKNAME}.cer -infiles ${APP_ROOT}/${CSRSTORE}/SS-${CERT_NICKNAME}.csr \
             1>${LOG_ROOT}/openssl-out.log 2>${LOG_ROOT}/openssl-error.log;
-        RET_CODE=${?};
+        typeset -i RET_CODE=${?};
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -757,7 +759,7 @@ function generateAndApplySelfSignedCert
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command certutil -d ${APP_ROOT}/${CERTDB_STORE} -A -i ${APP_ROOT}/${CERTSTORE}/SS-${CERT_NICKNAME}.cer -n ${CERT_NICKNAME} -t \"u,u,u\"  -P ${CERTIFICATE_DATABASE}..";
 
                                     certutil -d ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_CERT_DIR} -A -i ${APP_ROOT}/${CERTSTORE}/SS-${CERT_NICKNAME}.cer -n ${CERT_NICKNAME} -t "u,u,u"  -P ${CERTIFICATE_DATABASE} >> ${APP_ROOT}/${LOG_ROOT}/certutil.${SITE_DOMAIN_NAME}.${IUSER_AUDIT} 2>&1;
-                                    RET_CODE=${?};
+                                    typeset -i RET_CODE=${?};
 
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -829,6 +831,7 @@ function generateAndApplySelfSignedCert
 function usage
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -855,7 +858,7 @@ function usage
 
 [ ${#} -eq 0 ] && usage;
 
-OPTIND=0;
+typeset -i OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";

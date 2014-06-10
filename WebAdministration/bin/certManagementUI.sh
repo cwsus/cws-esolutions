@@ -28,6 +28,7 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 function main
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     if [ ! -z "${IS_WEB_BUILD_ENABLED}" ] && [ "${IS_WEB_BUILD_ENABLED}" = "${_TRUE}" ]
@@ -243,8 +244,7 @@ function main
                                                 MGMT_OP=$(${APP_ROOT}/lib/validators/validate_change_request.sh ${WEBSERVER_PLATFORM} ${CERTDB});
 
                                                 CNAME=$(basename ${0});
-                                                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+                                                local METHOD_NAME="${CNAME}#${0}";
 
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MGMT_OP -> ${MGMT_OP}";
 
@@ -368,7 +368,7 @@ function main
                                         ## we have a site hostname, lets get to work
                                         ## send to updateExceptions
                                         . ${APP_ROOT}/lib/updateExceptions.sh ${SSL_EXCEPTION_LIST};
-                                        RET_CODE=${?};
+                                        typeset -i RET_CODE=${?};
 
                                         unset SITE_HOSTNAME;
 
@@ -634,6 +634,7 @@ function main
 function createCSR
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -671,8 +672,7 @@ function createCSR
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Received request to break. CANCEL_REQ->${CANCEL_REQ}, ADD_RECORDS->${ADD_RECORDS}, ADD_SUBDOMAINS->${ADD_SUBDOMAINS}. Breaking..";
 
             ## put methodname and cname back
-            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+            local METHOD_NAME="${CNAME}#${0}";
             CNAME=$(basename ${0});
 
             reset; clear; main;
@@ -681,8 +681,7 @@ function createCSR
             ## record has been added successfully through the helper
             ## ask if we want to add additional records to the zone
             ## put methodname and cname back
-            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+            local METHOD_NAME="${CNAME}#${0}";
             CNAME=$(basename ${0});
 
             unset REQUEST_OPTION;
@@ -777,6 +776,7 @@ function createCSR
 function applyLocalCertificate
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -814,8 +814,7 @@ function applyLocalCertificate
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Received request to break. CANCEL_REQ->${CANCEL_REQ}, ADD_RECORDS->${ADD_RECORDS}, ADD_SUBDOMAINS->${ADD_SUBDOMAINS}. Breaking..";
 
             ## put methodname and cname back
-            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+            local METHOD_NAME="${CNAME}#${0}";
             CNAME=$(basename ${0});
 
             reset; clear; main;
@@ -824,8 +823,7 @@ function applyLocalCertificate
             ## record has been added successfully through the helper
             ## ask if we want to add additional records to the zone
             ## put methodname and cname back
-            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+            local METHOD_NAME="${CNAME}#${0}";
             CNAME=$(basename ${0});
 
             unset REQUEST_OPTION;
@@ -920,6 +918,7 @@ function applyLocalCertificate
 function implementCertificateChange
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -957,8 +956,7 @@ function implementCertificateChange
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Received request to break. CANCEL_REQ->${CANCEL_REQ}, ADD_RECORDS->${ADD_RECORDS}, ADD_SUBDOMAINS->${ADD_SUBDOMAINS}. Breaking..";
 
             ## put methodname and cname back
-            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+            local METHOD_NAME="${CNAME}#${0}";
             CNAME=$(basename ${0});
 
             reset; clear; main;
@@ -967,8 +965,7 @@ function implementCertificateChange
             ## record has been added successfully through the helper
             ## ask if we want to add additional records to the zone
             ## put methodname and cname back
-            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+            local METHOD_NAME="${CNAME}#${0}";
             CNAME=$(basename ${0});
 
             unset REQUEST_OPTION;

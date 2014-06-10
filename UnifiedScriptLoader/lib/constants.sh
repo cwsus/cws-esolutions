@@ -70,6 +70,8 @@ typeset -x -i ERROR_COUNT=0;
 typeset -x -i RETRY_COUNT=0;
 typeset -x -i STATUS=0;
 
+[ ! -d ${TEMP_DIRECTORY} ] && mkdir -p ${TEMP_DIRECTORY};
+
 ## source aliases/functions ..
 [ -f ${APP_ROOT}/${LIB_DIRECTORY}/aliases ] && . ${APP_ROOT}/${LIB_DIRECTORY}/aliases;
 [ -f ${APP_ROOT}/${LIB_DIRECTORY}/functions ] && . ${APP_ROOT}/${LIB_DIRECTORY}/functions;

@@ -28,7 +28,8 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 [[ -z "${APP_ROOT}" && ! -s ${SCRIPT_ROOT}/../lib/constants.sh ]] && echo "Failed to locate configuration data. Cannot continue." && exit 1;
 [ -z "${APP_ROOT}" ] && . ${SCRIPT_ROOT}/../lib/constants.sh;
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 METHOD_NAME="${CNAME}#startup";
 
@@ -45,6 +46,7 @@ METHOD_NAME="${CNAME}#startup";
 function sendNotificationEmail
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -141,12 +143,12 @@ function sendNotificationEmail
                     if [ ${PRE_FILE_SIZE} != ${POST_FILE_SIZE} ]
                     then
                         ## ok, good - csr should be in there - mail it out
-                        local RETURN_CODE=0;
+                        RETURN_CODE=0;
                     else
                         ## failed to generate the email
                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File content insertion FAILED. Please process manually.";
 
-                        local RETURN_CODE=1;
+                        RETURN_CODE=1;
                     fi
                 fi
 
@@ -175,7 +177,7 @@ function sendNotificationEmail
                                 "${TARGET_AUDIENCE}" < ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT});
                         fi
                     fi
-                    local RET_CODE=${?};
+                    local typeset -i RET_CODE=${?};
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -184,7 +186,7 @@ function sendNotificationEmail
                         ## failed to send the email
                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to send the requested notification. Please process manually.";
 
-                        local RETURN_CODE=1;
+                        RETURN_CODE=1;
                     else
                         ## we're done. we no longer need the email file so lets get rid of it
                         rm -rf ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT};
@@ -192,13 +194,13 @@ function sendNotificationEmail
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                         ## and return
-                        local RETURN_CODE=0;
+                        RETURN_CODE=0;
                     fi
                 else
                     ## email didnt get generated
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Email generation insertion FAILED. Please process manually.";
 
-                    local RETURN_CODE=1;
+                    RETURN_CODE=1;
                 fi
             fi
         fi
@@ -206,7 +208,7 @@ function sendNotificationEmail
         ## the selected notification file does not exist
         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "The selected notification, ${MESSAGE_TEMPLATE}, does not exist. Cannot continue.";
 
-        local RETURN_CODE=1;
+        RETURN_CODE=1;
     fi
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -235,6 +237,7 @@ function sendNotificationEmail
 function usage
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";

@@ -1,8 +1,8 @@
-#!/usr/bin/env ksh
+#!/usr/bin/ksh -x
 #==============================================================================
 #
-#          FILE:  generateEntropy.sh
-#         USAGE:  ./generateEntropy.sh (create|renew)
+#          FILE:  lock.sh
+#         USAGE:  ./lock.sh
 #   DESCRIPTION:  Generates a random character file for use with certutil and
 #                 other utilities requiring pseudo-entropy. This is meant to run
 #                 as a cron job, rotating out the existing entropy file every so
@@ -33,14 +33,19 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 #==============================================================================
 function lockProcess
 {
+set -x
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    [ -e "${LOCKFILE}" ] && [ kill -0 $(cat "${LOCKFILE}") ] && RETURN_CODE=1 || echo "${1}" > "${LOCKFILE}" && RETURN_CODE=0;
+    [ -e "${LOCK_FILE}" ] && [ kill -0 $(cat "${LOCK_FILE}") ] && RETURN_CODE=1 || echo "${1}" > "${LOCK_FILE}" && RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
     return ${RETURN_CODE};
 }
@@ -52,14 +57,19 @@ function lockProcess
 #==============================================================================
 function unlockProcess
 {
+    set -x
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    [ -e "${LOCKFILE}" ] && rm -f "${LOCKFILE}";
+    [ -e "${LOCK_FILE}" ] && rm -f "${LOCK_FILE}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
     return 0;
 }
@@ -73,6 +83,7 @@ function unlockProcess
 function usage
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -83,6 +94,9 @@ function usage
     print " -> The PID to create the lockfile for.";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
     return 3;
 }
@@ -96,9 +110,12 @@ METHOD_NAME="${CNAME}#startup";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
 ## clean up the lockfile if it exists
-[ -s ${LOCKFILE} ] && kill -0 $(cat ${LOCKFILE}) 2>/dev/null && return 1 || rm -rf /var/tmp/lockfile.lock;
+[ -s ${LOCK_FILE} ] && kill -0 $(cat ${LOCK_FILE}) 2>/dev/null && return 1 || rm -rf ${LOCK_FILE};
 
 [[ ${1} = @([Ll]|[Ll][Oo][Cc][Kk]) ]] && lockProcess "${2}";
 [[ ${1} = @([Uu]|[Uu][Nn][Ll][Oo][Cc][Kk]) ]] && unlockProcess "${2}";
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
 exit ${RETURN_CODE};

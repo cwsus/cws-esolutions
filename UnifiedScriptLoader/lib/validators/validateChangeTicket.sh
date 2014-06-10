@@ -27,23 +27,46 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 function validateChangeNumber
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    RETURN_CODE=0;
 
-    [[ -z "${ENABLE_CHANGE_RECORDS}" || "${ENABLE_CHANGE_RECORDS}" != "${_TRUE}" ]] && return 0;
-    [ -z "${1}" ] && return 45;
+    [ ! -z "${ENABLE_CHANGE_RECORDS}" ] && [ "${ENABLE_CHANGE_RECORDS}" != "${_TRUE}" ] && return 0;
 
+    if [ -z "${1}" ]
+    then
+        RETURN_CODE=45;
+
+        return;
+    elif [ ${#1} -lt 8 ]
+    then
+        RETURN_CODE=1;
+
+        return;
+    fi
+
+    # [Cc][Rr][0-9]{6,}|[Tt][0-9]{6,}|[Ee]|[0-9]{20}
     case ${1} in
-        [Cc][Rr][0-9]*|[Cc][0-9]*|[Tt][0-9]*|[Ee]*)
-            ## change request # is valid
+        @([Cc][Rr][0-9]*)) ## normal change request
+            RETURN_CODE=0;
+            ;;
+        +([Tt][0-9]*|[Ii][Nn][0-9]*)) ## incident ticket
+            RETURN_CODE=0;
+            ;;
+        @([0-9]*)) ## ecc
+            RETURN_CODE=0;
+            ;;
+        @([Ee]*)) ## emergency change order
             RETURN_CODE=0;
             ;;
         *)
             ## change request # isnt valid
-            ## log it and throw it back
             RETURN_CODE=1;
             ;;
     esac
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
     return ${RETURN_CODE};
 }
@@ -55,5 +78,8 @@ METHOD_NAME="${CNAME}#startup";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
 validateChangeNumber ${1};
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
 return ${RETURN_CODE};

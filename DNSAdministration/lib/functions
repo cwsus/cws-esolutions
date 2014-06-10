@@ -16,3 +16,108 @@
 #
 #==============================================================================
 
+#===  FUNCTION  ===============================================================
+#          NAME:  addServiceIndicators
+#   DESCRIPTION:  Searches for and replaces audit indicators for the provided
+#                 filename.
+#    PARAMETERS:  Parameters obtained via command-line flags
+#          NAME:  usage for positive result, >1 for non-positive
+#==============================================================================
+function addServiceIndicators
+{
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+    local METHOD_NAME="${CNAME}#${0}";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing service indicators..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONE_ROOT->${ZONE_ROOT}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FILENAME->${FILENAME}";
+
+    ZONE_FILE=${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${ZONEFILE_NAME};
+    LAST_SERIAL=$(grep "; serial" ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${ZONE_ROOT}/${FILENAME} | awk '{print $1}' | sed -e '/^$/d');
+    TARGET_DC=$(grep "Currently live in" ${ZONE_FILE} | awk '{print $5}')
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONE_FILE -> ${ZONE_FILE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "LAST_SERIAL -> ${LAST_SERIAL}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TARGET_DC -> ${TARGET_DC}";
+
+    if [ $(echo ${LAST_SERIAL} | cut -c 1-8) -eq $(date +"%Y%m%d") ]
+    then
+        SERIAL_NUM=$(( ${LAST_SERIAL} + 1 ));
+    else
+        SERIAL_NUM=${DEFAULT_SERIAL_NUMBER};
+    fi
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERIAL_NUM -> ${SERIAL_NUM}";
+
+    ## set up the change array
+    set -A CHG_ARRAY ${LAST_SERIAL} ${TARGET_DC} $(date +"%m-%d-%Y") ${IUSER_AUDIT} ${CHANGE_CTRL} ${SERIAL_NUM};
+
+    while [ ${A} -ne ${#CHG_ARRAY[@]} ]
+    do
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHG_ARRAY -> ${CHG_ARRAY[${A}]}";
+
+        (( A += 1 ));
+    done
+
+    ## reset the counter
+    A=0;
+
+    ## process the request, iterating through the fields that require
+    ## modification for audit/track/trace etc
+    if [ "${FAILOVER}" = "${_FALSE}" ]
+    then
+        ## we've been advised that the request is NOT for a failover. so we
+        ## take a copy of the target dc file, otherwise none of this works.
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FAILOVER is ${FAILOVER}. Copying file..";
+
+        cp ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${ZONE_ROOT}/${TARGET_DC}/$(echo ${FILENAME} | cut -d "." -f 1-2) ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME};
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copy complete.";
+    fi
+
+    if [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME} ]
+    then
+        for INDICATOR in LAST_SERIAL DATACENTER DATE USER_NAME REQUEST_NUMBER SERIAL_NUM
+        do
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${INDICATOR} -> ${CHG_ARRAY[${A}]}";
+
+            if [ "${FAILOVER}" = "${_FALSE}" ]
+            then
+                sed -e "s/%${INDICATOR}%/${CHG_ARRAY[${A}]}/" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME} > ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME}.tmp;
+                mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME}.tmp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME};
+            else
+                sed -e "s/%${INDICATOR}%/${CHG_ARRAY[${A}]}/" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME} > ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME}.tmp;
+                mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME}.tmp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME};
+            fi
+
+            (( A += 1 ));
+        done
+
+        RETURN_CODE=0;
+    else
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No working copy was located. Cannot add indicators.";
+
+        RETURN_CODE=47;
+    fi
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    # reset counter
+    A=0;
+
+    ## unset variables
+    unset INDICATOR;
+    set -A CHG_ARRAY;
+    unset SERIAL_NUM;
+    unset LAST_SERIAL;
+    unset CHANGE_CTRL;
+    unset ZONE_ROOT;
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+    return ${RETURN_CODE};
+}

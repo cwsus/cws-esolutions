@@ -26,6 +26,7 @@ CNAME="$(basename "${0}")";
 function validate_change_request
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     ## make sure our output file exists
@@ -94,7 +95,7 @@ function validate_change_request
             then
                 ## all our vars have data. we can continue.
                 ${PLUGIN_ROOT_DIR}/lib/runQuery.sh -s ${3} -t ${4} -u ${5} -o -e;
-                RET_CODE=${?};
+                typeset -i RET_CODE=${?};
 
                 ## check our retcode
                 if [ ${RET_CODE} -eq 0 ]
@@ -127,7 +128,7 @@ function validate_change_request
             then
                 ## all our vars have data. we can continue.
                 ${PLUGIN_ROOT_DIR}/lib/runQuery.sh -s ${3} -t ${4} -u ${5} -o -e;
-                RET_CODE=${?};
+                typeset -i RET_CODE=${?};
 
                 ## check our retcode
                 if [ ${RET_CODE} -eq 0 ]
@@ -171,6 +172,7 @@ function validate_change_request
 function usage
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
     print "${CNAME} - Validate that a change request has been successfully performed.";
@@ -190,5 +192,11 @@ METHOD_NAME="${CNAME}#startup";
 
 ## make sure we have args
 [ ${#} -eq 0 ] && usage || validate_change_request ${@};
+
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
 return ${RETURN_CODE};
