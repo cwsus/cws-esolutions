@@ -16,7 +16,6 @@
 #      REVISION:  ---
 #==============================================================================
 # Application contants
-[ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="WebAdministration";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
@@ -164,7 +163,7 @@ function backout_change
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing ${FILE_LIST[${A}]} complete.";
 
-                    ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backout processed by ${IUSER_AUDIT}: filename: ${FILE_LIST[${A}]}";
+                    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backout processed by ${IUSER_AUDIT}: filename: ${FILE_LIST[${A}]}";
 
                     ## unset variables
                     unset TAR_FILE;
@@ -240,9 +239,9 @@ function backout_change
 
                                 if [ ${BACKUP_FILE_CKSUM} -ne ${OP_FILE_CKSUM} ]
                                 then
-                                    ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${BACKUP_FILE} successfully restored by ${IUSER_AUDIT} on ${TARFILE_DATE} at $(date +"%H:%M:%S").";
+                                    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${BACKUP_FILE} successfully restored by ${IUSER_AUDIT} on ${TARFILE_DATE} at $(date +"%H:%M:%S").";
                                 else
-                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred restoring backup file ${BACKUP_FILE}.";
+                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred restoring backup file ${BACKUP_FILE}.";
                                     (( ERROR_COUNT += 1 ));
                                 fi
                             done
@@ -252,7 +251,7 @@ function backout_change
                             ## our files should be copied. lets make sure.
                             if [ ${ERROR_COUNT} -eq 0 ]
                             then
-                                ## success! we've audit logged the file restorations as they happened, so we have nothing further to do here.
+                                ## success! we've "AUDIT" logged the file restorations as they happened, so we have nothing further to do here.
                                 RETURN_CODE=0;
                             else
                                 ## one or more files failed to restore. we are going to fail the entire process and undo what we've done.
@@ -290,9 +289,9 @@ function backout_change
 
                                         if [ ${BACKOUT_FILE_CKSUM} -ne ${OP_FILE_CKSUM} ]
                                         then
-                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${BACKOUT_FILE} successfully restored by ${IUSER_AUDIT} on ${TARFILE_DATE} at $(date +"%H:%M:%S").";
+                                            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${BACKOUT_FILE} successfully restored by ${IUSER_AUDIT} on ${TARFILE_DATE} at $(date +"%H:%M:%S").";
                                         else
-                                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred restoring backup file ${BACKOUT_FILE}.";
+                                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred restoring backup file ${BACKOUT_FILE}.";
                                             (( ERROR_COUNT += 1 ));
                                         fi
                                     done
@@ -363,9 +362,9 @@ function backout_change
 
                                 if [ ${BACKUP_FILE_CKSUM} -ne ${OP_FILE_CKSUM} ]
                                 then
-                                    ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${BACKUP_FILE} successfully restored by ${IUSER_AUDIT} on ${TARFILE_DATE} at $(date +"%H:%M:%S").";
+                                    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${BACKUP_FILE} successfully restored by ${IUSER_AUDIT} on ${TARFILE_DATE} at $(date +"%H:%M:%S").";
                                 else
-                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred restoring backup file ${BACKUP_FILE}.";
+                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred restoring backup file ${BACKUP_FILE}.";
                                     (( ERROR_COUNT += 1 ));
                                 fi
                             done
@@ -375,7 +374,7 @@ function backout_change
                             ## our files should be copied. lets make sure.
                             if [ ${ERROR_COUNT} -eq 0 ]
                             then
-                                ## success! we've audit logged the file restorations as they happened, so all we need to do is build the zone conf file
+                                ## success! we've "AUDIT" logged the file restorations as they happened, so all we need to do is build the zone conf file
                                 ## find out if we have a conf file
                                 if [ -s $(echo ${BIZ_UNIT} "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHG_NUM} ]
                                 then
@@ -400,21 +399,21 @@ function backout_change
                                         then
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printed include statement to ${NAMED_CONF_FILE}";
 
-                                            ## audit log
-                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} restored by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                                            ## "AUDIT" log
+                                            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} restored by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                             ## and finally return zero
                                             RETURN_CODE=0;
                                         else
                                             ## the new zone wasnt added to named.conf
-                                            ## we send back an error code informing
+                                            ## we send back an "ERROR" code informing
                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to add new zone to named core configuration. Please process manually.";
 
                                             RETURN_CODE=34;
                                         fi
                                     else
                                         ## failed to copy the backup zone config file.
-                                        ## we can re-build from scratch, or error out
+                                        ## we can re-build from scratch, or "ERROR" out
                                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to create a backup of the zone configuration. Cannot continue.";
 
                                         RETURN_CODE=14;
@@ -460,7 +459,7 @@ function backout_change
                                             ## and finally return zero
                                             RETURN_CODE=0;
                                         else
-                                            ## include entry didnt print. this is all that remains. we error out and inform
+                                            ## include entry didnt print. this is all that remains. we "ERROR" out and inform
                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to include the new zone information into the core configuration. Cannot continue.";
 
                                             RETURN_CODE=76;
@@ -477,7 +476,7 @@ function backout_change
                             else
                                 ## theres nothing to recover from here because theres nothing to back out TO. the site root
                                 ## didnt exist to begin with. i guess we'll just rm the files and call it a day.
-                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred restoring backup file ${BACKUP_FILE}.";
+                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred restoring backup file ${BACKUP_FILE}.";
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backing out changes..";
 
                                 rm -rf ${SITE_ROOT};
@@ -551,7 +550,7 @@ function usage
     return 3;
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 [ ${#} -eq 0 ] && usage;
@@ -613,7 +612,7 @@ do
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting CHANGE_DATE..";
 
-            ## Capture the audit userid
+            ## Capture the "AUDIT" userid
             CHANGE_DATE="${OPTARG}"; # This will be the target datacenter to move to
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_DATE -> ${CHANGE_DATE}";

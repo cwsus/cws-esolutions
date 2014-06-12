@@ -20,7 +20,6 @@
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 ## Application constants
-[ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
@@ -57,7 +56,7 @@ function validateIPAddress
             [ ! ${THIRD_OCTET} -le 255 ] && [ ! ${FOURTH_OCTET} -le 255 ]
         then
             ## provided IP address is invalid
-            ## print an error
+            ## print an "ERROR"
             unset RECORD_DETAIL;
             unset FIRST_OCTET;
             unset SECOND_OCTET;
@@ -76,7 +75,7 @@ function validateIPAddress
         fi
     else
         ## the ip address is not a 4 octet string or is blank
-        ## throw an error
+        ## throw an "ERROR"
         RETURN_CODE=45;
     fi
 }
@@ -201,7 +200,7 @@ function validateRecordTarget
                             ## IP is up and responsive. all set.
                             RETURN_CODE=0;
                         else
-                            ## we didnt get a good response from ping. warn, but not fail
+                            ## we didnt get a good response from ping. "WARN", but not fail
                             RETURN_CODE=63;
                         fi
                         ;;
@@ -220,7 +219,7 @@ function validateRecordTarget
                                 ## all set
                                 RETURN_CODE=0;
                             else
-                                ## warn, but not fail
+                                ## "WARN", but not fail
                                 RETURN_CODE=63;
                             fi
                         else
@@ -260,7 +259,7 @@ function validateRecordTarget
                                 ## all set.
                                 RETURN_CODE=0;
                             else
-                                ## ping validation failed. warn, but dont fail.
+                                ## ping validation failed. "WARN", but dont fail.
                                 RETURN_CODE=63;
                             fi
                         fi
@@ -286,7 +285,7 @@ function validateRecordTarget
                                 ## all set.
                                 RETURN_CODE=0;
                             else
-                                ## ping validation failed. warn, but dont fail.
+                                ## ping validation failed. "WARN", but dont fail.
                                 RETURN_CODE=63;
                             fi
                         else
@@ -325,7 +324,7 @@ function validateRecordTarget
                             ## we found a record, so we'll allow it
                             RETURN_CODE=0;
                         else
-                            ## nothing. warn, but not fail
+                            ## nothing. "WARN", but not fail
                             RETURN_CODE=63;
                         fi
                     fi
@@ -440,6 +439,14 @@ METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
+
+unset SCRIPT_ABSOLUTE_PATH;
+unset SCRIPT_ROOT;
+unset OPTIND;
+unset THIS_CNAME;
+unset RET_CODE;
+unset CNAME;
+unset METHOD_NAME;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;

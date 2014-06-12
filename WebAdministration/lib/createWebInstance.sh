@@ -106,7 +106,7 @@ function createSecuredInstance
 
             if [ ! -s ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_CERT_DIR}/${SERVER_ID}-${IUSER_AUDIT}-${SUFFIX} ]
             then
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred copying ${APP_ROOT}/${IPLANET_CERTDB_TEMPLATE} to ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_CERT_DIR}/${SERVER_ID}-${IUSER_AUDIT}-${SUFFIX}";
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred copying ${APP_ROOT}/${IPLANET_CERTDB_TEMPLATE} to ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_CERT_DIR}/${SERVER_ID}-${IUSER_AUDIT}-${SUFFIX}";
 
                 (( ERROR_COUNT += 1 ));
             fi
@@ -127,7 +127,7 @@ function createSecuredInstance
 
             if [ ! -s ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_ACL_DIR}/$(echo ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^") ]
             then
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred copying ${APP_ROOT}/${IPLANET_ACL_TEMPLATE} to ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_ACL_DIR}/$(echo ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^")";
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred copying ${APP_ROOT}/${IPLANET_ACL_TEMPLATE} to ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_ACL_DIR}/$(echo ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^")";
 
                 (( ERROR_COUNT += 1 ));
             fi
@@ -173,14 +173,14 @@ function createSecuredInstance
                             continue;
                         else
                             ## ok, its not there. break out - doesnt make sense to continue
-                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred generating the server configuration. Please try again.";
+                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
 
                             (( ERROR_COUNT += 1 ));
 
                             break;
                         fi
                     else
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred generating the server configuration. Please try again.";
+                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
 
                         (( ERROR_COUNT += 1 ));
 
@@ -229,14 +229,14 @@ function createSecuredInstance
                                     continue;
                                 else
                                     ## ok, its not there. break out - doesnt make sense to continue
-                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred generating the server configuration. Please try again.";
+                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
 
                                     (( ERROR_COUNT += 1 ));
 
                                     break;
                                 fi
                             else
-                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred generating the server configuration. Please try again.";
+                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
 
                                 (( ERROR_COUNT += 1 ));
 
@@ -279,14 +279,14 @@ function createSecuredInstance
                                 continue;
                             else
                                 ## ok, its not there. break out - doesnt make sense to continue
-                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred generating the server configuration. Please try again.";
+                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
 
                                 (( ERROR_COUNT += 1 ));
 
                                 break;
                             fi
                         else
-                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred generating the server configuration. Please try again.";
+                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
 
                             (( ERROR_COUNT += 1 ));
 
@@ -331,14 +331,14 @@ function createSecuredInstance
                                         continue;
                                     else
                                         ## ok, its not there. break out - doesnt make sense to continue
-                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred generating the server configuration. Please try again.";
+                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
 
                                         (( ERROR_COUNT += 1 ));
 
                                         break;
                                     fi
                                 else
-                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred generating the server configuration. Please try again.";
+                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
 
                                     (( ERROR_COUNT += 1 ));
 
@@ -389,8 +389,8 @@ function createSecuredInstance
                                         if [ $(grep -c "${TOKEN}" \
                                             ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_PASSWORD_FILE}) -eq 0 ]
                                         then
-                                            ## error occurred adding
-                                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred adding $(echo ${TOKEN} | cut -d ":" -f 1) to ${IPLANET_PASSWORD_FILE}";
+                                            ## "ERROR" occurred adding
+                                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred adding $(echo ${TOKEN} | cut -d ":" -f 1) to ${IPLANET_PASSWORD_FILE}";
 
                                             (( ERROR_COUNT += 1 ));
                                         fi
@@ -401,7 +401,7 @@ function createSecuredInstance
                                     if [ ${ERROR_COUNT} -eq 0 ]
                                     then
                                         ## build complete
-                                        ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Instance build for ${SITE_HOSTNAME} completed by ${IUSER_AUDIT}.";
+                                        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Instance build for ${SITE_HOSTNAME} completed by ${IUSER_AUDIT}.";
 
                                         RETURN_CODE=0;
                                     else
@@ -536,7 +536,7 @@ function createUnsecuredInstance
 
             if [ ! -s ${APP_ROOT}/${BUILD_TMP_DIR}/${IPLANET_ACL_DIR}$(echo ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^") ]
             then
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred copying ${APP_ROOT}/${IPLANET_ACL_TEMPLATE} to ${APP_ROOT}/${BUILD_TMP_DIR}/${IPLANET_ACL_DIR}$(echo ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^")";
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred copying ${APP_ROOT}/${IPLANET_ACL_TEMPLATE} to ${APP_ROOT}/${BUILD_TMP_DIR}/${IPLANET_ACL_DIR}$(echo ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^")";
 
                 (( ERROR_COUNT += 1 ));
             fi
@@ -582,14 +582,14 @@ function createUnsecuredInstance
                             continue;
                         else
                             ## ok, its not there. break out - doesnt make sense to continue
-                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred generating the server configuration. Please try again.";
+                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
 
                             (( ERROR_COUNT += 1 ));
 
                             break;
                         fi
                     else
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred generating the server configuration. Please try again.";
+                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
 
                         (( ERROR_COUNT += 1 ));
 
@@ -638,14 +638,14 @@ function createUnsecuredInstance
                                     continue;
                                 else
                                     ## ok, its not there. break out - doesnt make sense to continue
-                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred generating the server configuration. Please try again.";
+                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
 
                                     (( ERROR_COUNT += 1 ));
 
                                     break;
                                 fi
                             else
-                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred generating the server configuration. Please try again.";
+                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
 
                                 (( ERROR_COUNT += 1 ));
 
@@ -688,14 +688,14 @@ function createUnsecuredInstance
                                 continue;
                             else
                                 ## ok, its not there. break out - doesnt make sense to continue
-                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred generating the server configuration. Please try again.";
+                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
 
                                 (( ERROR_COUNT += 1 ));
 
                                 break;
                             fi
                         else
-                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred generating the server configuration. Please try again.";
+                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
 
                             (( ERROR_COUNT += 1 ));
 
@@ -743,14 +743,14 @@ function createUnsecuredInstance
                                         continue;
                                     else
                                         ## ok, its not there. break out - doesnt make sense to continue
-                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred generating the server configuration. Please try again.";
+                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
 
                                         (( ERROR_COUNT += 1 ));
 
                                         break;
                                     fi
                                 else
-                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred generating the server configuration. Please try again.";
+                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
 
                                     (( ERROR_COUNT += 1 ));
 
@@ -763,7 +763,7 @@ function createUnsecuredInstance
 
                         if [ ${ERROR_COUNT} -eq 0 ]
                         then
-                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Instance build for ${SITE_HOSTNAME} completed by ${IUSER_AUDIT}.";
+                            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Instance build for ${SITE_HOSTNAME} completed by ${IUSER_AUDIT}.";
 
                             RETURN_CODE=0;
                         else
@@ -829,7 +829,7 @@ function usage
     return 3;
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 [ ${#} -eq 0 ] && usage;

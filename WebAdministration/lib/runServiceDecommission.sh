@@ -98,7 +98,7 @@ function usage
     return 3;
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 [ ${#} -eq 0 ] && usage;
@@ -119,7 +119,7 @@ do
 
             DECOM_TYPE="site";
 
-            ## comma-delimited information set, lets strip the info
+            ## comma-delimited information set, lets strip the "INFO"
             SITE_HOSTNAME=$(echo "${OPTARG}" | cut -d "," -f 1);
             UNIT=$(echo "${OPTARG}" | cut -d "," -f 2);
             FILENAME=$(echo "${OPTARG}" | cut -d "," -f 3);
@@ -140,7 +140,7 @@ do
 
             DECOM_TYPE="unit";
 
-            ## comma-delimited information set, lets strip the info
+            ## comma-delimited information set, lets strip the "INFO"
             UNIT=$(echo "${OPTARG}" | cut -d "," -f 2);
             CHG_CTRL=$(echo "${OPTARG}" | cut -d "," -f 4);
             IUSER_AUDIT=$(echo "${OPTARG}" | cut -d "," -f 5);
@@ -229,7 +229,7 @@ do
                         RETURN_CODE=19;
                     elif [ -z "${IUSER_AUDIT}" ]
                     then
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to audit user account. Unable to continue processing.";
+                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to "AUDIT" user account. Unable to continue processing.";
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -294,7 +294,7 @@ do
                         RETURN_CODE=19;
                     elif [ -z "${IUSER_AUDIT}" ]
                     then
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to audit user account. Unable to continue processing.";
+                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to "AUDIT" user account. Unable to continue processing.";
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                         unset FAILOVER_TYPE;
@@ -339,7 +339,7 @@ do
                         RETURN_CODE=19;
                     elif [ -z "${IUSER_AUDIT}" ]
                     then
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to audit user account. Unable to continue processing.";
+                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to "AUDIT" user account. Unable to continue processing.";
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                         unset FAILOVER_TYPE;

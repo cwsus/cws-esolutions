@@ -118,7 +118,7 @@ function add_subdomains
                     ## record was successfully written
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printed ${RECORD_TYPE} record to ${DC_ZONEFILE_NAME}";
 
-                    ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONEFILE_NAME} updated on $(date +"%m-%d-%Y") by ${IUSER_AUDIT} per change ${CHANGE_NUM}";
+                    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONEFILE_NAME} updated on $(date +"%m-%d-%Y") by ${IUSER_AUDIT} per change ${CHANGE_NUM}";
                     RETURN_CODE=0;
                 else
                     ## record wasnt written properly to one or more zone files
@@ -129,7 +129,7 @@ function add_subdomains
                 fi
             fi
         else
-            ## this particular cname already exists. return an error
+            ## this particular cname already exists. return an "ERROR"
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CNAME alias ${ALIAS} already exists in ${ZONEFILE_NAME}. Cannot add another.";
 
             RETURN_CODE=65;
@@ -143,7 +143,7 @@ function add_subdomains
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
     else
-        ## zone files dont exist, return an error back
+        ## zone files dont exist, return an "ERROR" back
         unset ZONEFILE_NAME;
         unset DC_ZONEFILE_NAME;
         unset ALIAS;
@@ -169,7 +169,7 @@ function usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    print "${CNAME} - Add audit indicators and other flags to the failover zone file";
+    print "${CNAME} - Add "AUDIT" indicators and other flags to the failover zone file";
     print "Usage: ${CNAME} [-b business unit] [-p project code] [-z zone name] [-i requestor] [-c change request] [-t address type] [-a record information] [-d datacenter] [-r|s] [-?|-h show this help]";
     print "  -b      The associated business unit.";
     print "  -p      The associated project code";
@@ -390,6 +390,14 @@ shift ${OPTIND}-1;
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
+
+unset SCRIPT_ABSOLUTE_PATH;
+unset SCRIPT_ROOT;
+unset OPTIND;
+unset THIS_CNAME;
+unset RET_CODE;
+unset CNAME;
+unset METHOD_NAME;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;

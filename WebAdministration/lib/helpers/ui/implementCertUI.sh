@@ -73,7 +73,7 @@ function implementCertificate
                 if [ $(${APP_ROOT}/lib/validators/validate_change_ticket.sh ${CHANGE_NUM}) -ne 0 ]
                 then
                     ## change control provided was invalid
-                    ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A change was attempted with an invalid change order by ${IUSER_AUDIT}. Change request was ${CHANGE_NUM}.";
+                    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A change was attempted with an invalid change order by ${IUSER_AUDIT}. Change request was ${CHANGE_NUM}.";
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An invalid change control was provided. A valid change control number is required to process the request.";
 
                     unset CHANGE_NUM;
@@ -238,7 +238,7 @@ function implementCertificate
                                         case ${RESPONSE} in
                                             [Yy][Ee][Ss]|[Yy])
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Received positive resonse. Continuing ..";
-                                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (implementation) by ${IUSER_AUDIT}: Site: ${SITE_HOSTNAME}; Certificate Database: ${CERTIFICATE_DATABASE_STORE}; Successfully implemented in $(echo ${PLATFORM} | cut -d "_" -f 1)";
+                                                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (implementation) by ${IUSER_AUDIT}: Site: ${SITE_HOSTNAME}; Certificate Database: ${CERTIFICATE_DATABASE_STORE}; Successfully implemented in $(echo ${PLATFORM} | cut -d "_" -f 1)";
 
                                                 continue;
                                                 ;;
@@ -261,7 +261,7 @@ function implementCertificate
                                     fi
                                 done
                             else
-                                ## backup datacenter failed. error out
+                                ## backup datacenter failed. "ERROR" out
                                 echo "failed";
                                 exit 1;
                             fi
@@ -393,7 +393,7 @@ function implementCertificate
                                     fi
                                 done
                             else
-                                ## an error occurred, we can start over
+                                ## an "ERROR" occurred, we can start over
                                 while true
                                 do
                                     reset; clear;
@@ -526,7 +526,7 @@ function implementCertificate
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 METHOD_NAME="${CNAME}#startup";

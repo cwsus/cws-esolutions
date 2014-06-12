@@ -20,7 +20,6 @@
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 ## Application constants
-[ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="WebAdministration";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
@@ -114,7 +113,7 @@ function main
                 1)
                     ## request to create a new certificate for an existing site
                     ## this would be for a new cert, most commonly a new site too
-                    echo "not yet implemented";
+                    print "not yet implemented";
                     reset; clear; continue;
                     ;;
                 2)
@@ -228,7 +227,7 @@ function main
                                             if [ ! -z "${WEB_PROJECT_CODE}" ] && [ ! -z "${PLATFORM_CODE}" ] && [ ! -z "${CERTDB}" ] \
                                                 && [ ! -z "${MASTER_WEBSERVER}" ] && [ ! -z "${MASTER_WEBSERVER}" ] && [ ! -z "${SERVER_ROOT}" ]
                                             then
-                                                ## ok we have enough info to process the request
+                                                ## ok we have enough "INFO" to process the request
                                                 ## determine what type of request to run -
                                                 ## we could be:
                                                 ## generating a csr
@@ -274,7 +273,7 @@ function main
                                                         ;;
                                                 esac
                                             else
-                                                ## couldnt get enough info to operate properly
+                                                ## couldnt get enough "INFO" to operate properly
                                                 unset REQUEST_OPTION;
                                                 unset SITE_HOSTNAME;
                                                 unset WEB_PROJECT_CODE;
@@ -387,7 +386,7 @@ function main
 
                                             reset; clear; main;
                                         else
-                                            ## some error occurred adding the entry
+                                            ## some "ERROR" occurred adding the entry
                                             reset; clear;
 
                                             print "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
@@ -615,7 +614,7 @@ function main
             esac
         done
     else
-        $(${LOGGER} "ERROR" ${METHOD_NAME} ${CNAME} ${LINENO} "Certificate management has not been enabled. Cannot continue.");
+        $(${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate management has not been enabled. Cannot continue.");
 
         print "$(grep -w request.not.authorized "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
@@ -1054,7 +1053,7 @@ function implementCertificateChange
     done
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 METHOD_NAME="${CNAME}#startup";

@@ -18,21 +18,20 @@
 #==============================================================================
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 ## Application constants
-[ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+typeset -i OPTIND=0;
+METHOD_NAME="${CNAME}#startup";
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && echo "Failed to locate configuration data. Cannot continue." && exit 1;
+[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-
-typeset -i OPTIND=0;
-METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -46,20 +45,25 @@ unset CNAME;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
 ## validate the input
-${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
+[ ! -z "${ENABLE_SECURITY}" ] && [ "${ENABLE_SECURITY}" = "${_TRUE}" ] && ${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
 typeset -i RET_CODE=${?};
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 CNAME="${THIS_CNAME}";
-METHOD_NAME="${THIS_CNAME}#startup";
+METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-[ ${RET_CODE} -ne 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE} || unset RET_CODE;
+if [ ! -z "${ENABLE_SECURITY}" ] && [ "${ENABLE_SECURITY}" = "${_TRUE}" ] && [ ${RET_CODE} -ne 0 ]
+then
+    print "Security configuration does not allow the requested action.";
 
-## lock it
+    return ${RET_CODE};
+fi
+
+unset RET_CODE;
 unset METHOD_NAME;
 unset CNAME;
 
@@ -77,7 +81,7 @@ METHOD_NAME="${THIS_CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-[ ${RET_CODE} -ne 0 ] && echo "Application currently in use." && echo ${RET_CODE} && exit ${RET_CODE};
+[ ${RET_CODE} -ne 0 ] && print "Application currently in use." && print ${RET_CODE} && exit ${RET_CODE};
 
 unset RET_CODE;
 
@@ -88,7 +92,7 @@ trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; exit" INT TERM EXIT;
 
 #===  FUNCTION  ===============================================================
 #          NAME:  install_zone
-#   DESCRIPTION:  Searches for and replaces audit indicators for the provided
+#   DESCRIPTION:  Searches for and replaces "AUDIT" indicators for the provided
 #                 filename.
 #    PARAMETERS:  Parameters obtained via command-line flags
 #          NAME:  usage for positive result, >1 for non-positive
@@ -194,7 +198,7 @@ function remove_master_zone
                             then
                                 ## we're done here.
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE} complete.";
-                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} removed by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} removed by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                 RETURN_CODE=0;
                             else
@@ -204,7 +208,7 @@ function remove_master_zone
                                 RETURN_CODE=71;
                             fi
                         else
-                            ## removal of the zone from the biz conf file didn't work for some reason. return an error
+                            ## removal of the zone from the biz conf file didn't work for some reason. return an "ERROR"
                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to validate that zone has been removed from the business unit configuration.";
 
                             RETURN_CODE=71;
@@ -261,7 +265,7 @@ function remove_master_zone
 
 #===  FUNCTION  ===============================================================
 #          NAME:  decom_slave_zone
-#   DESCRIPTION:  Searches for and replaces audit indicators for the provided
+#   DESCRIPTION:  Searches for and replaces "AUDIT" indicators for the provided
 #                 filename.
 #    PARAMETERS:  Parameters obtained via command-line flags
 #          NAME:  usage for positive result, >1 for non-positive
@@ -367,7 +371,7 @@ function remove_slave_zone
                             then
                                 ## we're done here.
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}) complete.";
-                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} removed by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} removed by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                 RETURN_CODE=0;
                             else
@@ -377,7 +381,7 @@ function remove_slave_zone
                                 RETURN_CODE=71;
                             fi
                         else
-                            ## removal of the zone from the biz conf file didn't work for some reason. return an error
+                            ## removal of the zone from the biz conf file didn't work for some reason. return an "ERROR"
                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to validate that zone has been removed from the business unit configuration.";
 
                             RETURN_CODE=71;
@@ -474,7 +478,7 @@ function remove_zone_entry
             ## we need to update the serial number, so lets do it here 
             cp ${SITE_ROOT}/${ZONEFILE_NAME} ${NAMED_ROOT}/${TMP_DIRECTORY}/${ZONEFILE_NAME} > /dev/null 2>&1;
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding audit indicators..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding "AUDIT" indicators..";
 
             THIS_CNAME="${CNAME}";
             unset METHOD_NAME;
@@ -517,7 +521,7 @@ function remove_zone_entry
                 && [ -s ${NAMED_ROOT}/${TMP_DIRECTORY}/${ZONEFILE_NAME}.${PRIMARY_DC} ] \
                 && [ -s ${NAMED_ROOT}/${TMP_DIRECTORY}/${ZONEFILE_NAME}.${SECONDARY_DC} ]
             then
-                ## we have a working file. we're going to get some info
+                ## we have a working file. we're going to get some "INFO"
                 ## and then move forward.
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Working copy validated. Gathering data..";
 
@@ -619,21 +623,21 @@ function remove_zone_entry
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal validation completed. Continuing..";
                                         else
                                             ## entry did not get removed. die.
-                                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while removing ${ZONE_ENTRY} from ${ZONEFILE_NAME}.${DATACENTER}. Please perform manually.";
+                                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while removing ${ZONE_ENTRY} from ${ZONEFILE_NAME}.${DATACENTER}. Please perform manually.";
 
                                             (( ERROR_COUNT += 1 ));
                                         fi
                                     else
                                         ## didnt move the file back or the moved file was empty.
                                         ## die.
-                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while removing ${ZONE_ENTRY} from ${ZONEFILE_NAME}.${DATACENTER}. Please perform manually.";
+                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while removing ${ZONE_ENTRY} from ${ZONEFILE_NAME}.${DATACENTER}. Please perform manually.";
 
                                         (( ERROR_COUNT += 1 ));
                                     fi
                                 else
                                     ## tmp file wasnt created or was empty. would seem nothing got removed
                                     ## or everything got removed. either way this is bad.
-                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while removing ${ZONE_ENTRY} from ${ZONEFILE_NAME}.${DATACENTER}. Please perform manually.";
+                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while removing ${ZONE_ENTRY} from ${ZONEFILE_NAME}.${DATACENTER}. Please perform manually.";
 
                                     (( ERROR_COUNT += 1 ));
                                 fi
@@ -641,7 +645,7 @@ function remove_zone_entry
 
                             if [ ${ERROR_COUNT} -ne 0 ]
                             then
-                                ## warn - something happened with the dc zones.
+                                ## "WARN" - something happened with the dc zones.
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WARNING: Failed to update datacenter-specific zonefiles. Please update manually.";
 
                                 WARNING_CODE=86;
@@ -696,7 +700,7 @@ function remove_zone_entry
                                         ## successful.
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${ZONEFILE_NAME} for ${DATACENTER} has been updated.";
                                     else
-                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while moving ${ZONEFILE_NAME} to ${DATACENTER}. Please perform manually.";
+                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while moving ${ZONEFILE_NAME} to ${DATACENTER}. Please perform manually.";
 
                                         (( ERROR_COUNT += 1 ));
                                     fi
@@ -708,8 +712,8 @@ function remove_zone_entry
 
                                 if [ ${ERROR_COUNT} -ne 0 ]
                                 then
-                                    ## an error occurred copying one or more dc zones.
-                                    ## this isnt good but isnt fatal either. warn.
+                                    ## an "ERROR" occurred copying one or more dc zones.
+                                    ## this isnt good but isnt fatal either. "WARN".
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WARNING: Failed to update datacenter-specific zonefiles. Please update manually.";
 
                                     WARNING_CODE=86;
@@ -868,7 +872,7 @@ function remove_zone_entry
                                             fi
                                         fi
                                     else
-                                        ## reload failed on the master. error out
+                                        ## reload failed on the master. "ERROR" out
                                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entry remains on ${NAMED_MASTER}. Please confirm removal and continue manually. Cannot continue.";
 
                                         RETURN_CODE=92;
@@ -1150,8 +1154,15 @@ echo ${RETURN_CODE};
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
 
+unset SCRIPT_ABSOLUTE_PATH;
+unset SCRIPT_ROOT;
+unset OPTIND;
+unset THIS_CNAME;
+unset RET_CODE;
+unset CNAME;
+unset METHOD_NAME;
+
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-exit ${RETURN_CODE};
-
+return ${RETURN_CODE};

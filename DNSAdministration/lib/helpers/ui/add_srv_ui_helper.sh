@@ -102,7 +102,7 @@ function addServiceRecord
                 if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
                 then
                     ## data didnt pass validation
-                    ## show the error code and re-try
+                    ## show the "ERROR" code and re-try
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Service type provided is invalid.";
 
                     print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<record.type.disallowed\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%RECORD_TYPE%/${SERVICE_TYPE}/")";
@@ -192,7 +192,7 @@ function requestRecordProtocol
                 if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
                 then
                     ## data didnt pass validation
-                    ## show the error code and re-try
+                    ## show the "ERROR" code and re-try
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Service type provided is invalid.";
 
                     print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<record.type.disallowed\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%RECORD_TYPE%/${SERVICE_TYPE}/")";
@@ -364,7 +364,7 @@ function requestRecordTTL
                 if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
                 then
                     ## data didnt pass validation
-                    ## show the error code and re-try
+                    ## show the "ERROR" code and re-try
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Service TTL provided is invalid.";
 
                     print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<record.type.disallowed\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%RECORD_TYPE%/${SERVICE_TYPE}/")";
@@ -454,7 +454,7 @@ function requestRecordPriority
                 if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
                 then
                     ## data didnt pass validation
-                    ## show the error code and re-try
+                    ## show the "ERROR" code and re-try
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Service priority provided is invalid.";
 
                     print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<record.type.disallowed\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%RECORD_TYPE%/${SERVICE_TYPE}/")";
@@ -545,7 +545,7 @@ function requestRecordWeight
                 if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
                 then
                     ## data didnt pass validation
-                    ## show the error code and re-try
+                    ## show the "ERROR" code and re-try
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Service priority provided is invalid.";
 
                     print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<record.type.disallowed\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%RECORD_TYPE%/${SERVICE_TYPE}/")";
@@ -630,7 +630,7 @@ function requestRecordPort
                 if [ -z "${SERVICE_WEIGHT}" ]
                 then
                     ## data didnt pass validation
-                    ## show the error code and re-try
+                    ## show the "ERROR" code and re-try
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Service priority provided is invalid.";
 
                     print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<record.type.disallowed\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%RECORD_TYPE%/${SERVICE_TYPE}/")";
@@ -647,7 +647,7 @@ function requestRecordPort
                     if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
                     then
                         ## data didnt pass validation
-                        ## show the error code and re-try
+                        ## show the "ERROR" code and re-try
                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Service priority provided is invalid.";
 
                         print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<record.type.disallowed\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%RECORD_TYPE%/${SERVICE_TYPE}/")";
@@ -665,7 +665,7 @@ function requestRecordPort
                 then
                     ## service port provided was valid, continue
                     ## now we need to ask for the target
-                    ## this is the last peice of info we need
+                    ## this is the last peice of "INFO" we need
                     break;
                 else
                     ## service port failed validation, cannot continue
@@ -765,7 +765,7 @@ function requestRecordTarget
                     if [ ${RET_CODE} -eq 63 ]
                     then
                         ## we got a warning on validation - we arent failing, but we do want to inform
-                        ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while updating the requested zone. Please try again.";
+                        ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while updating the requested zone. Please try again.";
 
                         [ -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" '/\<99\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
                         [ ! -z ${RET_CODE} && ${RET_CODE} -ne 0 ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/\<${RET_CODE}\>/{print \$2}" | sed -e 's/^ *//g;s/ *$//g')";
@@ -845,7 +845,7 @@ function createRecord
 
         reset; clear; break;
     else
-        ## an error occurred during processing.
+        ## an "ERROR" occurred during processing.
         ## unset our variables, we dont need
         ## them anymore
         unset SERVICE_TYPE;
@@ -857,7 +857,7 @@ function createRecord
         unset SERVICE_PORT;
         unset SERVICE_TARGET;
 
-        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while updating the requested zone. Please try again.";
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while updating the requested zone. Please try again.";
 
         [ -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" '/\<99\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
         [ ! -z ${RET_CODE} && ${RET_CODE} -ne 0 ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/\<${RET_CODE}\>/{print \$2}" | sed -e 's/^ *//g;s/ *$//g')";
@@ -887,7 +887,7 @@ function usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    print "${CNAME} - Add audit indicators and other flags to the failover zone file";
+    print "${CNAME} - Add "AUDIT" indicators and other flags to the failover zone file";
     print "Usage: ${CNAME} [ zone | subdomain ]";
     print "  -h|-?   Show this help";
 
@@ -905,7 +905,15 @@ addServiceRecord;
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
 
+unset SCRIPT_ABSOLUTE_PATH;
+unset SCRIPT_ROOT;
+unset OPTIND;
+unset THIS_CNAME;
+unset RET_CODE;
+unset CNAME;
+unset METHOD_NAME;
+
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-return 0;
+return ${RETURN_CODE};

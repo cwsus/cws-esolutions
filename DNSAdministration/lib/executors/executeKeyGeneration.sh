@@ -19,21 +19,20 @@
 #==============================================================================
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 ## Application constants
-[ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+typeset -i OPTIND=0;
+METHOD_NAME="${CNAME}#startup";
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && echo "Failed to locate configuration data. Cannot continue." && exit 1;
+[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-
-typeset -i OPTIND=0;
-METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -47,20 +46,25 @@ unset CNAME;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
 ## validate the input
-${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
+[ ! -z "${ENABLE_SECURITY}" ] && [ "${ENABLE_SECURITY}" = "${_TRUE}" ] && ${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
 typeset -i RET_CODE=${?};
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 CNAME="${THIS_CNAME}";
-METHOD_NAME="${THIS_CNAME}#startup";
+METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-[ ${RET_CODE} -ne 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE} || unset RET_CODE;
+if [ ! -z "${ENABLE_SECURITY}" ] && [ "${ENABLE_SECURITY}" = "${_TRUE}" ] && [ ${RET_CODE} -ne 0 ]
+then
+    print "Security configuration does not allow the requested action.";
 
-## lock it
+    return ${RET_CODE};
+fi
+
+unset RET_CODE;
 unset METHOD_NAME;
 unset CNAME;
 
@@ -78,7 +82,7 @@ METHOD_NAME="${THIS_CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-[ ${RET_CODE} -ne 0 ] && echo "Application currently in use." && echo ${RET_CODE} && exit ${RET_CODE};
+[ ${RET_CODE} -ne 0 ] && print "Application currently in use." && print ${RET_CODE} && exit ${RET_CODE};
 
 unset RET_CODE;
 
@@ -241,7 +245,7 @@ function generateRNDCKeys
                                 echo ${RETURN_KEY};
                                 RETURN_CODE=0;
                             else
-                                ## an error occurred validating cksums.
+                                ## an "ERROR" occurred validating cksums.
                                 RETURN_CODE=90;
                             fi
                         else
@@ -276,7 +280,7 @@ function generateRNDCKeys
         fi
     else
         ## no key generated
-        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while generating the new keys.";
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while generating the new keys.";
 
         RETURN_CODE=6;
     fi
@@ -443,7 +447,7 @@ function generateDNSSECKeys
         return ${RETURN_CODE};
     fi
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Calling addServiceIndicators.sh to add audit flags..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Calling addServiceIndicators.sh to add "AUDIT" flags..";
 
     ## lets get to work
     ## first lets make sure that the project has a dnssec directory,
@@ -460,7 +464,7 @@ function generateDNSSECKeys
     ## make sure they exist
     if [[ ! -s ${KEY_DIRECTORY}/${GENERATED_ZSK_FILE}.key && ! -s ${KEY_DIRECTORY}/${GENERATED_ZSK_FILE}.private ]]
     then
-        ## keygeneration has failed. error out and go no further
+        ## keygeneration has failed. "ERROR" out and go no further
         ## clean up temp files and the backup file we created, since
         ## we didnt change anything
         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZSK key generation FAILURE. Cleanup...";
@@ -492,7 +496,7 @@ function generateDNSSECKeys
 
     if [ ! -s ${KEY_DIRECTORY}/${ZSK_PRV_DST_FILE_NAME} ] && [ ! -s ${KEY_DIRECTORY}/${ZSK_KEY_DST_FILE_NAME} ]
     then
-        ## ksk generation failed. error out
+        ## ksk generation failed. "ERROR" out
         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to generate ZSK keys. Cannot continue.";
 
         RETURN_CODE=99;
@@ -524,7 +528,7 @@ function generateDNSSECKeys
     ## make sure they exist
     if [[ ! -s ${KEY_DIRECTORY}/${GENERATED_KSK_FILE}.key && ! -s ${KEY_DIRECTORY}/${GENERATED_KSK_FILE}.private ]]
     then
-        ## ksk generation failed. error out
+        ## ksk generation failed. "ERROR" out
         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to generate KSK keys. Cannot continue.";
 
         RETURN_CODE=99;
@@ -554,7 +558,7 @@ function generateDNSSECKeys
 
     if [[ ! -s ${KEY_DIRECTORY}/${KSK_PRV_DST_FILE_NAME} && ! -s ${KEY_DIRECTORY}/${KSK_KEY_DST_FILE_NAME} ]]
     then
-        ## rename failed. error out
+        ## rename failed. "ERROR" out
         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to properly rename keys. Cannot continue.";
 
         RETURN_CODE=99;
@@ -599,7 +603,7 @@ function generateDNSSECKeys
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printing \$INCLUDE ${KEY_DIRECTORY}/${KSK_KEY_DST_FILE_NAME} ..";
 
     ## then strip the header..
-    ## then add the info..
+    ## then add the "INFO"..
     head -${START_LINE_NUMBER} ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_DIR}/${GROUP_ID}${PROJECT_CODE}/${FILENAME} | \
         sed -e "${START_LINE_NUMBER}a \$INCLUDE ${KEY_DIRECTORY}/${GENERATED_KSK_FILE}.key" \
             -e "${START_LINE_NUMBER}a \$INCLUDE ${KEY_DIRECTORY}/${GENERATED_ZSK_FILE}.key" >> ${NAMED_ROOT}/${TMP_DIRECTORY}/${FILENAME};
@@ -752,7 +756,7 @@ function generateDNSSECKeys
                 >> ${NAMED_ROOT}/${TMP_DIRECTORY}/${FILENAME}.${PRIMARY_DC};
         else
             ## couldnt accurately determine what datacenter this exists in currently
-            ## error out
+            ## "ERROR" out
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unknown datacenter ${CURRENT_DC}. Cannot continue.";
 
             RETURN_CODE=xx;
@@ -920,7 +924,7 @@ function generateTSIGKeys
     ## generate the key
     RETURN_KEY=$(rndc-confgen -b ${RNDC_KEY_BITSIZE} -r ${RANDOM_GENERATOR} | grep secret | head -1 | cut -d "\"" -f 2);
 
-    ## normally we debug the ret code. but since these are keys, we dont.
+    ## normally we "DEBUG" the ret code. but since these are keys, we dont.
 
     if [ ! -z "${RETURN_KEY}" ]
     then
@@ -998,7 +1002,7 @@ function generateTSIGKeys
                         echo ${RETURN_KEY};
                         RETURN_CODE=0;
                     else
-                        ## an error occurred validating cksums.
+                        ## an "ERROR" occurred validating cksums.
                         RETURN_CODE=90;
                     fi
                 else
@@ -1014,7 +1018,7 @@ function generateTSIGKeys
                 RETURN_CODE=94;
             fi
         else
-            ## failed to create working file. throw error
+            ## failed to create working file. throw "ERROR"
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to write out temporary key configuration. Cannot continue.";
 
             RETURN_CODE=47;
@@ -1056,7 +1060,7 @@ function generateDHCPDKeys
     ## generate the key
     RETURN_KEY=$(rndc-confgen -b ${RNDC_KEY_BITSIZE} -r ${RANDOM_GENERATOR} | grep secret | head -1 | cut -d "\"" -f 2);
 
-    ## normally we debug the ret code. but since these are keys, we dont.
+    ## normally we "DEBUG" the ret code. but since these are keys, we dont.
 
     if [ ! -z "${RETURN_KEY}" ]
     then
@@ -1116,7 +1120,7 @@ function generateDHCPDKeys
                         echo ${RETURN_KEY};
                         RETURN_CODE=0;
                     else
-                        ## an error occurred validating cksums.
+                        ## an "ERROR" occurred validating cksums.
                         RETURN_CODE=90;
                     fi
                 else
@@ -1132,7 +1136,7 @@ function generateDHCPDKeys
                 RETURN_CODE=94;
             fi
         else
-            ## failed to create working file. throw error
+            ## failed to create working file. throw "ERROR"
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to write out temporary key configuration. Cannot continue.";
 
             RETURN_CODE=47;
@@ -1249,7 +1253,7 @@ do
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                    echo "not yet implemented";
+                    print "not yet implemented";
                     RETURN_CODE=97;
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
@@ -1285,13 +1289,18 @@ done
 
 shift ${OPTIND}-1;
 
-echo ${RETURN_CODE};
-
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
+
+unset SCRIPT_ABSOLUTE_PATH;
+unset SCRIPT_ROOT;
+unset OPTIND;
+unset THIS_CNAME;
+unset RET_CODE;
+unset CNAME;
+unset METHOD_NAME;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-exit ${RETURN_CODE};
-
+return ${RETURN_CODE};

@@ -20,14 +20,13 @@
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 ## Application constants
-[ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="WebAdministration";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  decom_master_bu
-#   DESCRIPTION:  Searches for and replaces audit indicators for the provided
+#   DESCRIPTION:  Searches for and replaces "AUDIT" indicators for the provided
 #                 filename.
 #    PARAMETERS:  Parameters obtained via command-line flags
 #       RETURNS:  0 for positive result, >1 for non-positive
@@ -75,7 +74,7 @@ function decom_master_bu
                     ## verify it...
                     if [ ! -s ${APP_ROOT}/${BACKUP_DIRECTORY}/${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}.${CHANGE_NUM} ]
                     then
-                        ## it didnt back up. send an error.
+                        ## it didnt back up. send an "ERROR".
                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to back up decom config file. Cannot continue.";
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -121,7 +120,7 @@ function decom_master_bu
                             then
                                 ## we have a mismatch. there should be an equal number of files to zones, this indicates a problem.
                                 ## we should fail out here, and this should be done before any other processing gets done
-                                ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Data mismatch detected. Throwing error.";
+                                ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Data mismatch detected. Throwing "ERROR".";
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                                 RETURN_CODE=70;
@@ -176,7 +175,7 @@ function decom_master_bu
 
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Completed zone processing. Verifying..";
 
-                                    ## ok, processing is complete. check the error counter and make sure its zero.
+                                    ## ok, processing is complete. check the "ERROR" counter and make sure its zero.
                                     if [ ${ERROR_COUNTER} -eq 0 ]
                                     then
                                         ## successfully modified our decom conf file, and it contains all the data it should have.
@@ -287,21 +286,21 @@ function decom_master_bu
                                                                     then
                                                                         ## ok, checksums match, we're super.
                                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
-                                                                        ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                                                                        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                                         RETURN_CODE=0;
                                                                     else
                                                                         ## ok, so our checksums dont match. this probably means that the named conf in tmp/ didnt
-                                                                        ## copy to where its supposed to go. this *should* be ok, but does warrant some review. warn.
+                                                                        ## copy to where its supposed to go. this *should* be ok, but does warrant some review. "WARN".
                                                                         ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHECKSUM MISMATCH: Failed to validate that named configuration file was updated.";
 
                                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
-                                                                        ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                                                                        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                                         RETURN_CODE=72;
                                                                     fi
                                                                 else
-                                                                    ## failed to pipe in the decom include. error
+                                                                    ## failed to pipe in the decom include. "ERROR"
                                                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to include the decom configuration information in the master configuration file. Unable to proceed.";
                                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -329,14 +328,14 @@ function decom_master_bu
                                                         RETURN_CODE=57;
                                                     fi
                                                 else
-                                                    ## failed to remove bu conf file. WARN, but dont fail.
+                                                    ## failed to remove bu conf file. "WARN", but dont fail.
                                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to remove the business unit configuration file.";
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                                                     RETURN_CODE=70;
                                                 fi
                                             else
-                                                ## failed to relocate zone files. throw an error
+                                                ## failed to relocate zone files. throw an "ERROR"
                                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to relocate zone files for business unit.";
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -344,7 +343,7 @@ function decom_master_bu
                                             fi
                                         fi
                                     else
-                                        ## our error counter is not zero. this means something didnt get added.
+                                        ## our "ERROR" counter is not zero. this means something didnt get added.
                                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more zone entries did not add properly. Unable to continue.";
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -408,7 +407,7 @@ function decom_master_bu
                         then
                             ## we have a mismatch. there should be an equal number of files to zones, this indicates a problem.
                             ## we should fail out here, and this should be done before any other processing gets done
-                            ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Data mismatch detected. Throwing error.";
+                            ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Data mismatch detected. Throwing "ERROR".";
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                             RETURN_CODE=70;
@@ -464,7 +463,7 @@ function decom_master_bu
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Completed zone processing. Verifying..";
 
-                                ## ok, processing is complete. check the error counter and make sure its zero.
+                                ## ok, processing is complete. check the "ERROR" counter and make sure its zero.
                                 if [ ${ERROR_COUNTER} -eq 0 ]
                                 then
                                     ## successfully modified our decom conf file, and it contains all the data it should have.
@@ -575,21 +574,21 @@ function decom_master_bu
                                                                 then
                                                                     ## ok, checksums match, we're super.
                                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
-                                                                    ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                                                                    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                                     RETURN_CODE=0;
                                                                 else
                                                                     ## ok, so our checksums dont match. this probably means that the named conf in tmp/ didnt
-                                                                    ## copy to where its supposed to go. this *should* be ok, but does warrant some review. warn.
+                                                                    ## copy to where its supposed to go. this *should* be ok, but does warrant some review. "WARN".
                                                                     ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHECKSUM MISMATCH: Failed to validate that named configuration file was updated.";
 
                                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
-                                                                    ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                                                                    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                                     RETURN_CODE=72;
                                                                 fi
                                                             else
-                                                                ## failed to pipe in the decom include. error
+                                                                ## failed to pipe in the decom include. "ERROR"
                                                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to include the decom configuration information in the master configuration file. Unable to proceed.";
                                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -617,14 +616,14 @@ function decom_master_bu
                                                     RETURN_CODE=57;
                                                 fi
                                             else
-                                                ## failed to remove bu conf file. WARN, but dont fail.
+                                                ## failed to remove bu conf file. "WARN", but dont fail.
                                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to remove the business unit configuration file.";
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                                                 RETURN_CODE=70;
                                             fi
                                         else
-                                            ## failed to relocate zone files. throw an error
+                                            ## failed to relocate zone files. throw an "ERROR"
                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to relocate zone files for business unit.";
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -632,7 +631,7 @@ function decom_master_bu
                                         fi
                                     fi
                                 else
-                                    ## our error counter is not zero. this means something didnt get added.
+                                    ## our "ERROR" counter is not zero. this means something didnt get added.
                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more zone entries did not add properly. Unable to continue.";
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -655,14 +654,14 @@ function decom_master_bu
                     fi
                 fi
             else
-                ## failed to take a bu conf backup. error.
+                ## failed to take a bu conf backup. "ERROR".
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to create business unit configuration backup. Cannot continue.";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                 RETURN_CODE-57;
             fi
         else
-            ## failed to take a bu zone backup. error.
+            ## failed to take a bu zone backup. "ERROR".
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to create zone configuration backup. Cannot continue.";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -694,7 +693,7 @@ function decom_master_bu
 
 #===  FUNCTION  ===============================================================
 #          NAME:  decom_slave_bu
-#   DESCRIPTION:  Searches for and replaces audit indicators for the provided
+#   DESCRIPTION:  Searches for and replaces "AUDIT" indicators for the provided
 #                 filename.
 #    PARAMETERS:  Parameters obtained via command-line flags
 #       RETURNS:  0 for positive result, >1 for non-positive
@@ -742,7 +741,7 @@ function decom_slave_bu
                     ## verify it...
                     if [ ! -s ${APP_ROOT}/${BACKUP_DIRECTORY}/${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}.${CHANGE_NUM} ]
                     then
-                        ## it didnt back up. send an error.
+                        ## it didnt back up. send an "ERROR".
                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to back up decom config file. Cannot continue.";
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -788,7 +787,7 @@ function decom_slave_bu
                             then
                                 ## we have a mismatch. there should be an equal number of files to zones, this indicates a problem.
                                 ## we should fail out here, and this should be done before any other processing gets done
-                                ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Data mismatch detected. Throwing error.";
+                                ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Data mismatch detected. Throwing "ERROR".";
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                                 RETURN_CODE=70;
@@ -843,7 +842,7 @@ function decom_slave_bu
 
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Completed zone processing. Verifying..";
 
-                                    ## ok, processing is complete. check the error counter and make sure its zero.
+                                    ## ok, processing is complete. check the "ERROR" counter and make sure its zero.
                                     if [ ${ERROR_COUNTER} -eq 0 ]
                                     then
                                         ## successfully modified our decom conf file, and it contains all the data it should have.
@@ -954,21 +953,21 @@ function decom_slave_bu
                                                                     then
                                                                         ## ok, checksums match, we're super.
                                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
-                                                                        ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                                                                        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                                         RETURN_CODE=0;
                                                                     else
                                                                         ## ok, so our checksums dont match. this probably means that the named conf in tmp/ didnt
-                                                                        ## copy to where its supposed to go. this *should* be ok, but does warrant some review. warn.
+                                                                        ## copy to where its supposed to go. this *should* be ok, but does warrant some review. "WARN".
                                                                         ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHECKSUM MISMATCH: Failed to validate that named configuration file was updated.";
 
                                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
-                                                                        ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                                                                        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                                         RETURN_CODE=72;
                                                                     fi
                                                                 else
-                                                                    ## failed to pipe in the decom include. error
+                                                                    ## failed to pipe in the decom include. "ERROR"
                                                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to include the decom configuration information in the master configuration file. Unable to proceed.";
                                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -996,14 +995,14 @@ function decom_slave_bu
                                                         RETURN_CODE=57;
                                                     fi
                                                 else
-                                                    ## failed to remove bu conf file. WARN, but dont fail.
+                                                    ## failed to remove bu conf file. "WARN", but dont fail.
                                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to remove the business unit configuration file.";
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                                                     RETURN_CODE=70;
                                                 fi
                                             else
-                                                ## failed to relocate zone files. throw an error
+                                                ## failed to relocate zone files. throw an "ERROR"
                                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to relocate zone files for business unit.";
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -1011,7 +1010,7 @@ function decom_slave_bu
                                             fi
                                         fi
                                     else
-                                        ## our error counter is not zero. this means something didnt get added.
+                                        ## our "ERROR" counter is not zero. this means something didnt get added.
                                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more zone entries did not add properly. Unable to continue.";
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -1075,7 +1074,7 @@ function decom_slave_bu
                         then
                             ## we have a mismatch. there should be an equal number of files to zones, this indicates a problem.
                             ## we should fail out here, and this should be done before any other processing gets done
-                            ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Data mismatch detected. Throwing error.";
+                            ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Data mismatch detected. Throwing "ERROR".";
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                             RETURN_CODE=70;
@@ -1131,7 +1130,7 @@ function decom_slave_bu
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Completed zone processing. Verifying..";
 
-                                ## ok, processing is complete. check the error counter and make sure its zero.
+                                ## ok, processing is complete. check the "ERROR" counter and make sure its zero.
                                 if [ ${ERROR_COUNTER} -eq 0 ]
                                 then
                                     ## successfully modified our decom conf file, and it contains all the data it should have.
@@ -1242,21 +1241,21 @@ function decom_slave_bu
                                                                 then
                                                                     ## ok, checksums match, we're super.
                                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
-                                                                    ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                                                                    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                                     RETURN_CODE=0;
                                                                 else
                                                                     ## ok, so our checksums dont match. this probably means that the named conf in tmp/ didnt
-                                                                    ## copy to where its supposed to go. this *should* be ok, but does warrant some review. warn.
+                                                                    ## copy to where its supposed to go. this *should* be ok, but does warrant some review. "WARN".
                                                                     ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHECKSUM MISMATCH: Failed to validate that named configuration file was updated.";
 
                                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
-                                                                    ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                                                                    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                                     RETURN_CODE=72;
                                                                 fi
                                                             else
-                                                                ## failed to pipe in the decom include. error
+                                                                ## failed to pipe in the decom include. "ERROR"
                                                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to include the decom configuration information in the master configuration file. Unable to proceed.";
                                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -1284,14 +1283,14 @@ function decom_slave_bu
                                                     RETURN_CODE=57;
                                                 fi
                                             else
-                                                ## failed to remove bu conf file. WARN, but dont fail.
+                                                ## failed to remove bu conf file. "WARN", but dont fail.
                                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to remove the business unit configuration file.";
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                                                 RETURN_CODE=70;
                                             fi
                                         else
-                                            ## failed to relocate zone files. throw an error
+                                            ## failed to relocate zone files. throw an "ERROR"
                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to relocate zone files for business unit.";
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -1299,7 +1298,7 @@ function decom_slave_bu
                                         fi
                                     fi
                                 else
-                                    ## our error counter is not zero. this means something didnt get added.
+                                    ## our "ERROR" counter is not zero. this means something didnt get added.
                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more zone entries did not add properly. Unable to continue.";
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -1322,14 +1321,14 @@ function decom_slave_bu
                     fi
                 fi
             else
-                ## failed to take a bu conf backup. error.
+                ## failed to take a bu conf backup. "ERROR".
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to create business unit configuration backup. Cannot continue.";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                 RETURN_CODE-57;
             fi
         else
-            ## failed to take a bu zone backup. error.
+            ## failed to take a bu zone backup. "ERROR".
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to create zone configuration backup. Cannot continue.";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -1361,7 +1360,7 @@ function decom_slave_bu
 
 #===  FUNCTION  ===============================================================
 #          NAME:  decom_master_zone
-#   DESCRIPTION:  Searches for and replaces audit indicators for the provided
+#   DESCRIPTION:  Searches for and replaces "AUDIT" indicators for the provided
 #                 filename.
 #    PARAMETERS:  Parameters obtained via command-line flags
 #       RETURNS:  0 for positive result, >1 for non-positive
@@ -1511,7 +1510,7 @@ function decom_master_zone
 
                                     if [ ${DECOM_OP_CKSUM} != ${DECOM_TMP_CKSUM} ]
                                     then
-                                        ## the file copy appears to have failed. throw an error
+                                        ## the file copy appears to have failed. throw an "ERROR"
                                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to match checksums of decom config files. Unable to continue.";
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -1594,12 +1593,12 @@ function decom_master_zone
 
                                                                 ## ok, checksums match, we're super.
                                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
-                                                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                                                                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                                 RETURN_CODE=0;
                                                             else
                                                                 ## ok, so our checksums dont match. this probably means that the named conf in tmp/ didnt
-                                                                ## copy to where its supposed to go. this *should* be ok, but does warrant some review. warn.
+                                                                ## copy to where its supposed to go. this *should* be ok, but does warrant some review. "WARN".
                                                                 ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHECKSUM MISMATCH: Failed to validate that named configuration file was updated.";
 
                                                                 if [ $(grep -c ${DECOM_CONF_FILE} ${NAMED_CONF_FILE}) -eq 0 ]
@@ -1609,13 +1608,13 @@ function decom_master_zone
                                                                 fi
 
                                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
-                                                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                                                                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                                 RETURN_CODE=72;
                                                             fi
                                                         else
                                                             ## failed to remove entry from the named config file. we care, but not enough to fail the entire
-                                                            ## process, as named will continue chugging along with an empty file. warn.
+                                                            ## process, as named will continue chugging along with an empty file. "WARN".
                                                             ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to remove zone include statement from named configuration file.";
 
                                                             ## check for an entry in named.conf for the decom config file. if its not
@@ -1627,7 +1626,7 @@ function decom_master_zone
                                                             fi
 
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
-                                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                                                            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                             RETURN_CODE=72;
                                                         fi
@@ -1660,7 +1659,7 @@ function decom_master_zone
 
                                                             ## we're done here.
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
-                                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                                                            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                             RETURN_CODE=0;
                                                         else
@@ -1671,7 +1670,7 @@ function decom_master_zone
                                                         fi
                                                     fi
                                                 else
-                                                    ## removal of the zone from the biz conf file didn't work for some reason. return an error
+                                                    ## removal of the zone from the biz conf file didn't work for some reason. return an "ERROR"
                                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to validate that zone has been removed from the business unit configuration.";
 
                                                     RETURN_CODE=70;
@@ -1741,7 +1740,7 @@ function decom_master_zone
 
                                 if [ ${DECOM_OP_CKSUM} != ${DECOM_TMP_CKSUM} ]
                                 then
-                                    ## the file copy appears to have failed. throw an error
+                                    ## the file copy appears to have failed. throw an "ERROR"
                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to match checksums of decom config files. Unable to continue.";
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -1824,12 +1823,12 @@ function decom_master_zone
 
                                                             ## ok, checksums match, we're super.
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
-                                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                                                            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                             RETURN_CODE=0;
                                                         else
                                                             ## ok, so our checksums dont match. this probably means that the named conf in tmp/ didnt
-                                                            ## copy to where its supposed to go. this *should* be ok, but does warrant some review. warn.
+                                                            ## copy to where its supposed to go. this *should* be ok, but does warrant some review. "WARN".
                                                             ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHECKSUM MISMATCH: Failed to validate that named configuration file was updated.";
 
                                                             if [ $(grep -c ${DECOM_CONF_FILE} ${NAMED_CONF_FILE}) -eq 0 ]
@@ -1839,13 +1838,13 @@ function decom_master_zone
                                                             fi
 
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
-                                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                                                            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                             RETURN_CODE=72;
                                                         fi
                                                     else
                                                         ## failed to remove entry from the named config file. we care, but not enough to fail the entire
-                                                        ## process, as named will continue chugging along with an empty file. warn.
+                                                        ## process, as named will continue chugging along with an empty file. "WARN".
                                                         ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to remove zone include statement from named configuration file.";
 
                                                         ## check for an entry in named.conf for the decom config file. if its not
@@ -1857,7 +1856,7 @@ function decom_master_zone
                                                         fi
 
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
-                                                        ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                                                        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                         RETURN_CODE=72;
                                                     fi
@@ -1890,7 +1889,7 @@ function decom_master_zone
 
                                                         ## we're done here.
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
-                                                        ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                                                        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                         RETURN_CODE=0;
                                                     else
@@ -1901,7 +1900,7 @@ function decom_master_zone
                                                     fi
                                                 fi
                                             else
-                                                ## removal of the zone from the biz conf file didn't work for some reason. return an error
+                                                ## removal of the zone from the biz conf file didn't work for some reason. return an "ERROR"
                                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to validate that zone has been removed from the business unit configuration.";
 
                                                 RETURN_CODE=70;
@@ -1979,7 +1978,7 @@ function decom_master_zone
 
 #===  FUNCTION  ===============================================================
 #          NAME:  decom_slave_zone
-#   DESCRIPTION:  Searches for and replaces audit indicators for the provided
+#   DESCRIPTION:  Searches for and replaces "AUDIT" indicators for the provided
 #                 filename.
 #    PARAMETERS:  Parameters obtained via command-line flags
 #       RETURNS:  0 for positive result, >1 for non-positive
@@ -2124,7 +2123,7 @@ function decom_slave_zone
 
                                     if [ ${DECOM_OP_CKSUM} != ${DECOM_TMP_CKSUM} ]
                                     then
-                                        ## the file copy appears to have failed. throw an error
+                                        ## the file copy appears to have failed. throw an "ERROR"
                                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to match checksums of decom config files. Unable to continue.";
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -2205,12 +2204,12 @@ function decom_slave_zone
 
                                                                 ## ok, checksums match, we're super.
                                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
-                                                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                                                                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                                 RETURN_CODE=0;
                                                             else
                                                                 ## ok, so our checksums dont match. this probably means that the named conf in tmp/ didnt
-                                                                ## copy to where its supposed to go. this *should* be ok, but does warrant some review. warn.
+                                                                ## copy to where its supposed to go. this *should* be ok, but does warrant some review. "WARN".
                                                                 ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHECKSUM MISMATCH: Failed to validate that named configuration file was updated.";
 
                                                                 if [ $(grep -c ${DECOM_CONF_FILE} ${NAMED_CONF_FILE}) -eq 0 ]
@@ -2220,13 +2219,13 @@ function decom_slave_zone
                                                                 fi
 
                                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
-                                                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                                                                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                                 RETURN_CODE=72;
                                                             fi
                                                         else
                                                             ## failed to remove entry from the named config file. we care, but not enough to fail the entire
-                                                            ## process, as named will continue chugging along with an empty file. warn.
+                                                            ## process, as named will continue chugging along with an empty file. "WARN".
                                                             ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to remove zone include statement from named configuration file.";
 
                                                             ## check for an entry in named.conf for the decom config file. if its not
@@ -2238,7 +2237,7 @@ function decom_slave_zone
                                                             fi
 
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
-                                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                                                            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                             RETURN_CODE=72;
                                                         fi
@@ -2271,7 +2270,7 @@ function decom_slave_zone
 
                                                             ## we're done here.
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
-                                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                                                            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                             RETURN_CODE=0;
                                                         else
@@ -2282,7 +2281,7 @@ function decom_slave_zone
                                                         fi
                                                     fi
                                                 else
-                                                    ## removal of the zone from the biz conf file didn't work for some reason. return an error
+                                                    ## removal of the zone from the biz conf file didn't work for some reason. return an "ERROR"
                                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to validate that zone has been removed from the business unit configuration.";
 
                                                     RETURN_CODE=70;
@@ -2352,7 +2351,7 @@ function decom_slave_zone
 
                                 if [ ${DECOM_OP_CKSUM} != ${DECOM_TMP_CKSUM} ]
                                 then
-                                    ## the file copy appears to have failed. throw an error
+                                    ## the file copy appears to have failed. throw an "ERROR"
                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to match checksums of decom config files. Unable to continue.";
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -2435,12 +2434,12 @@ function decom_slave_zone
 
                                                             ## ok, checksums match, we're super.
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
-                                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                                                            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                             RETURN_CODE=0;
                                                         else
                                                             ## ok, so our checksums dont match. this probably means that the named conf in tmp/ didnt
-                                                            ## copy to where its supposed to go. this *should* be ok, but does warrant some review. warn.
+                                                            ## copy to where its supposed to go. this *should* be ok, but does warrant some review. "WARN".
                                                             ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHECKSUM MISMATCH: Failed to validate that named configuration file was updated.";
 
                                                             if [ $(grep -c ${DECOM_CONF_FILE} ${NAMED_CONF_FILE}) -eq 0 ]
@@ -2450,13 +2449,13 @@ function decom_slave_zone
                                                             fi
 
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
-                                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                                                            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                             RETURN_CODE=72;
                                                         fi
                                                     else
                                                         ## failed to remove entry from the named config file. we care, but not enough to fail the entire
-                                                        ## process, as named will continue chugging along with an empty file. warn.
+                                                        ## process, as named will continue chugging along with an empty file. "WARN".
                                                         ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to remove zone include statement from named configuration file.";
 
                                                         ## check for an entry in named.conf for the decom config file. if its not
@@ -2468,7 +2467,7 @@ function decom_slave_zone
                                                         fi
 
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
-                                                        ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                                                        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                         RETURN_CODE=72;
                                                     fi
@@ -2501,7 +2500,7 @@ function decom_slave_zone
 
                                                         ## we're done here.
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
-                                                        ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                                                        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${IUSER_AUDIT} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                         RETURN_CODE=0;
                                                     else
@@ -2512,7 +2511,7 @@ function decom_slave_zone
                                                     fi
                                                 fi
                                             else
-                                                ## removal of the zone from the biz conf file didn't work for some reason. return an error
+                                                ## removal of the zone from the biz conf file didn't work for some reason. return an "ERROR"
                                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to validate that zone has been removed from the business unit configuration.";
 
                                                 RETURN_CODE=70;
@@ -2618,7 +2617,7 @@ usage
     return 3;
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 [ ${#} -eq 0 ] && usage;

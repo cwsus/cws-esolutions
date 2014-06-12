@@ -17,7 +17,8 @@
 #
 #==============================================================================
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+#[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+#[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 [ ! -d ${LOG_ROOT} ] && mkdir -p ${LOG_ROOT};
 [ ! -d ${ARCHIVE_LOG_ROOT} ] && mkdir -p ${ARCHIVE_LOG_ROOT};
@@ -30,12 +31,18 @@
 #==============================================================================
 function cleanLogArchive
 {
+    # [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+    # [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+
     [ ! -d ${ARCHIVE_LOG_ROOT} ] && return 0;
 
     for ARCHIVED_FILE in $(find ${ARCHIVE_LOG_ROOT} -type f -name \*.log\* -ctime +${LOG_RETENTION_PERIOD})
     do
         [ -f ${ARCHIVED_FILE} ] && rm -f ${ARCHIVED_FILE} >/dev/null 2>&1;
     done
+
+    # [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+    # [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
     return 0;
 }
@@ -48,7 +55,8 @@ function cleanLogArchive
 #==============================================================================
 function rotateLogs
 {
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+    #[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+    #[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
     [ ! -f ${LOG_ROOT}/${1} ] && return 0;
 
@@ -94,6 +102,9 @@ function rotateLogs
         touch ${LOG_ROOT}/${1};
     fi
 
+    #[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+    #[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
     return 0;
 }
 
@@ -105,52 +116,50 @@ function rotateLogs
 #==============================================================================
 function writeLogEntry
 {
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+    #[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+    #[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
     ## always do the timestamp first
-    TIMESTAMP_OPTS=$(echo ${RECORDER_CONV} | cut -d "[" -f 2 | cut -d "]" -f 1 | cut -d ":" -f 2- | sed -e '/^ *#/d;s/#.*//')
-    LOG_TIMESTAMP=$(date +"${TIMESTAMP_OPTS}");
-    RECORDER=$(echo ${RECORDER_CONV} | sed -e "s^${TIMESTAMP_OPTS}^${LOG_TIMESTAMP}^");
-
-    ## then continue forth
-    RECORDER=$(echo ${RECORDER} | sed -e "s^%t^${PPID}^" -e "s^%-5p^${1}^" -e "s^%F^${3}^" -e "s^%L^${4}^" -e "s^%m^${5}^" \
-        -e "s^%M^${2}^" -e "s^%p^${1}^");
+    local TIMESTAMP_OPTS=$(echo ${CONVERSION_PATTERN} | cut -d "[" -f 2 | cut -d "]" -f 1 | cut -d ":" -f 2- | sed -e '/^ *#/d;s/#.*//')
 
     case ${1} in
-        ERROR)
-            RECORDER=$(echo ${RECORDER} | sed -e "s^%c^${ERROR_LOG_FILE}^");
-
-            print "${RECORDER}" >> ${LOG_ROOT}/${ERROR_LOG_FILE};
+        [Ee][Rr][Rr][Oo][Rr]|[Ee])
+            RECORDER=$(echo ${CONVERSION_PATTERN} | sed -e "s^${TIMESTAMP_OPTS}^$(date +"${TIMESTAMP_OPTS}")^;s^%t^${PPID}^;s^%c^${ERROR_LOG_FILE}^;s^%-5p^${1}^;s^%M^${2}^;s^%F^${3}^;s^%L^${4}^;s^%m^${5}^");
+            LOG_FILE=${ERROR_LOG_FILE};
             ;;
-        DEBUG)
-            RECORDER=$(echo ${RECORDER} | sed -e "s^%c^${DEBUG_LOG_FILE}^");
-
-            print "${RECORDER}" >> ${LOG_ROOT}/${DEBUG_LOG_FILE};
+        [Dd][Ee][Bb][Uu][Gg]|[Dd])
+            RECORDER=$(echo ${CONVERSION_PATTERN} | sed -e "s^${TIMESTAMP_OPTS}^$(date +"${TIMESTAMP_OPTS}")^;s^%t^${PPID}^;s^%c^${DEBUG_LOG_FILE}^;s^%-5p^${1}^;s^%M^${2}^;s^%F^${3}^;s^%L^${4}^;s^%m^${5}^");
+            LOG_FILE=${DEBUG_LOG_FILE};
             ;;
-        AUDIT)
-            RECORDER=$(echo ${RECORDER} | sed -e "s^%c^${AUDIT_LOG_FILE}^");
-
-            print "${RECORDER}" >> ${LOG_ROOT}/${AUDIT_LOG_FILE};
+        [Aa][Uu][Dd][Ii][Tt]|[Aa])
+            RECORDER=$(echo ${CONVERSION_PATTERN} | sed -e "s^${TIMESTAMP_OPTS}^$(date +"${TIMESTAMP_OPTS}")^;s^%t^${PPID}^;s^%c^${AUDIT_LOG_FILE}^;s^%-5p^${1}^;s^%M^${2}^;s^%F^${3}^;s^%L^${4}^;s^%m^${5}^");
+            LOG_FILE=${AUDIT_LOG_FILE};
             ;;
-        WARN)
-            RECORDER=$(echo ${RECORDER} | sed -e "s^%c^${WARN_LOG_FILE}^");
-
-            print "${RECORDER}" >> ${LOG_ROOT}/${WARN_LOG_FILE};
+        [Ww][Aa][Rr][Nn]|[Ww])
+            RECORDER=$(echo ${CONVERSION_PATTERN} | sed -e "s^${TIMESTAMP_OPTS}^$(date +"${TIMESTAMP_OPTS}")^;s^%t^${PPID}^;s^%c^${WARN_LOG_FILE}^;s^%-5p^${1}^;s^%M^${2}^;s^%F^${3}^;s^%L^${4}^;s^%m^${5}^");
+            LOG_FILE=${WARN_LOG_FILE};
             ;;
         *)
-            RECORDER=$(echo ${RECORDER} | sed -e "s^%c^${INFO_LOG_FILE}^");
-
-            print "${RECORDER}" >> ${LOG_ROOT}/${INFO_LOG_FILE};
+            RECORDER=$(echo ${CONVERSION_PATTERN} | sed -e "s^${TIMESTAMP_OPTS}^$(date +"${TIMESTAMP_OPTS}")^;s^%t^${PPID}^;s^%c^${INFO_LOG_FILE}^;s^%-5p^${1}^;s^%M^${2}^;s^%F^${3}^;s^%L^${4}^;s^%m^${5}^");
+            LOG_FILE=${INFO_LOG_FILE};
             ;;
     esac
 
+    print "${RECORDER}" >> ${LOG_ROOT}/${LOG_FILE};
+
     unset TIMESTAMP_OPTS;
-    unset LOG_TIMESTAMP;
     unset RECORDER;
+    unset LOG_FILE;
+
+    #[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+    #[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
     return 0;
 }
 
-[ ${#} -ne 0 ] && writeLogEntry "${@}" > /dev/null 2>&1;
+[ ${#} -ne 0 ] && writeLogEntry "${@}";
+
+#[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+#[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
 return 0;

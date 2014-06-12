@@ -18,21 +18,20 @@
 #==============================================================================
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 ## Application constants
-[ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+typeset -i OPTIND=0;
+METHOD_NAME="${CNAME}#startup";
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && echo "Failed to locate configuration data. Cannot continue." && exit 1;
+[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-
-typeset -i OPTIND=0;
-METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -46,18 +45,25 @@ unset CNAME;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
 ## validate the input
-${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
+[ ! -z "${ENABLE_SECURITY}" ] && [ "${ENABLE_SECURITY}" = "${_TRUE}" ] && ${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
 typeset -i RET_CODE=${?};
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 CNAME="${THIS_CNAME}";
-METHOD_NAME="${THIS_CNAME}#startup";
+METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-[ ${RET_CODE} -ne 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE} || unset RET_CODE;
+if [ ! -z "${ENABLE_SECURITY}" ] && [ "${ENABLE_SECURITY}" = "${_TRUE}" ] && [ ${RET_CODE} -ne 0 ]
+then
+    print "Security configuration does not allow the requested action.";
+
+    return ${RET_CODE};
+fi
+
+unset RET_CODE;
 
 #===  FUNCTION  ===============================================================
 #          NAME:  obtainBackoutList
@@ -91,9 +97,9 @@ function obtainBackoutList
 
     if [ ! ${RETURN_CODE} -eq 0 ]
     then
-        ## we got an error back
+        ## we got an "ERROR" back
         ## send it back to the ui
-        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while retrieving data. Return code from execute_backout -> ${RET_CODE}";
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while retrieving data. Return code from execute_backout -> ${RET_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
     else
         ## clear
@@ -103,13 +109,13 @@ function obtainBackoutList
         then
             set -A FILE_LIST $(sed -e "s/^M//g" ${PLUGIN_ROOT_DIR}/${BACKUP_LIST});
         else
-            set -A FILE_LIST $(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "sed \"s/^M//g\" ${PLUGIN_ROOT_DIR}/${BACKUP_LIST}");
+            set -A FILE_LIST $(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "sed \"s/^M//g\" ${PLUGIN_ROOT_DIR}/${BACKUP_LIST}" ${SSH_USER_NAME} ${SSH_USER_AUTH});
         fi
 
         if [ ${#FILE_LIST[@]} -eq 0 ]
         then
-            ## an error occurred, we didn't get a file list back
-            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred retrieving the file list.";
+            ## an "ERROR" occurred, we didn't get a file list back
+            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred retrieving the file list.";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
             RETURN_CODE=28;
@@ -166,7 +172,7 @@ function runBackoutWithOptions
 
     if [ ${RETURN_CODE} -eq 0 ]
     then
-        ## successfully processed backout request. we're going to audit log it and then
+        ## successfully processed backout request. we're going to "AUDIT" log it and then
         ## reload config on the master.
         unset RETURN_CODE;
 
@@ -178,7 +184,7 @@ function runBackoutWithOptions
         then
             ## we've applied and activated our change. reload changes into the configured
             ## slave servers
-            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backout of change order ${CHANGE_NUM}, business unit ${BUSINESS_UNIT}, change date ${CHANGE_DATE} has been processed by ${IUSER_AUDIT} on $(date +"%Y-%m-%dT%H:%M:%S")";
+            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backout of change order ${CHANGE_NUM}, business unit ${BUSINESS_UNIT}, change date ${CHANGE_DATE} has been processed by ${IUSER_AUDIT} on $(date +"%Y-%m-%dT%H:%M:%S")";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change successfully validated on ${NAMED_MASTER}. Processing against slaves..";
 
             ## make sure that we have slaves to operate against
@@ -236,7 +242,7 @@ function runBackoutWithOptions
         then
             set -A BACKUP_FILES $(cat ${PLUGIN_ROOT_DIR}/${BACKUP_LIST});
         else
-            set -A BACKUP_FILES $(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "sed \"s/^M//g\" ${PLUGIN_ROOT_DIR}/${BACKUP_LIST}");
+            set -A BACKUP_FILES $(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "sed \"s/^M//g\" ${PLUGIN_ROOT_DIR}/${BACKUP_LIST}" ${SSH_USER_NAME} ${SSH_USER_AUTH});
         fi
 
         if [ ${VERBOSE} ]
@@ -295,7 +301,7 @@ function runBackoutWithFileName
 
     if [ ${RETURN_CODE} -eq 0 ]
     then
-        ## successfully processed backout request. we're going to audit log it and then
+        ## successfully processed backout request. we're going to "AUDIT" log it and then
         ## reload config on the master.
         unset RETURN_CODE;
 
@@ -316,7 +322,7 @@ function runBackoutWithFileName
         then
             ## we've applied and activated our change. reload changes into the configured
             ## slave servers
-            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backout of change order ${CHANGE_NUM}, business unit ${BUSINESS_UNIT}, change date ${CHANGE_DATE} has been processed by ${IUSER_AUDIT} on $(date +"%Y-%m-%dT%H:%M:%S")";
+            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backout of change order ${CHANGE_NUM}, business unit ${BUSINESS_UNIT}, change date ${CHANGE_DATE} has been processed by ${IUSER_AUDIT} on $(date +"%Y-%m-%dT%H:%M:%S")";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change successfully validated on ${NAMED_MASTER}. Processing against slaves..";
 
             ## make sure that we have slaves to operate against
@@ -516,6 +522,14 @@ shift ${OPTIND}-1;
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
+
+unset SCRIPT_ABSOLUTE_PATH;
+unset SCRIPT_ROOT;
+unset OPTIND;
+unset THIS_CNAME;
+unset RET_CODE;
+unset CNAME;
+unset METHOD_NAME;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;

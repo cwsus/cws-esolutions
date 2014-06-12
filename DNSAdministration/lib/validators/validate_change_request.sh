@@ -20,7 +20,6 @@
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 ## Application constants
-[ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
 CNAME="$(basename "${0}")";
 
 function validate_change_request
@@ -75,7 +74,7 @@ function validate_change_request
                 fi
             else
                 ## we dont know what datacenter the service was failed over to. we can
-                ## guess or we can fail. we should probably fail due to the lack of info.
+                ## guess or we can fail. we should probably fail due to the lack of "INFO".
                 ## NOTE: there are other ways to check, like a TXT record in the zone
                 ## that we can dig. but not everyone does this.
                 RETURN_CODE=1;
@@ -105,7 +104,7 @@ function validate_change_request
                     ## be empty ( or non-existent, either way)
                     RETURN_CODE=0;
                 else
-                    ## an error occurred running the query. we havent
+                    ## an "ERROR" occurred running the query. we havent
                     ## successfully completed our validation, so we fail out.
                     RETURN_CODE=1;
                 fi
@@ -195,6 +194,14 @@ METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
+
+unset SCRIPT_ABSOLUTE_PATH;
+unset SCRIPT_ROOT;
+unset OPTIND;
+unset THIS_CNAME;
+unset RET_CODE;
+unset CNAME;
+unset METHOD_NAME;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;

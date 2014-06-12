@@ -9,7 +9,7 @@
 #  REQUIREMENTS:  ---
 #          BUGS:  ---
 #         NOTES:  ---
-#        AUTHOR:  Kevin Huntly <kmhuntly@gmail.com
+#        AUTHOR:  Kevin Huntly <kmhuntly@gmail.com>
 #       COMPANY:  CaspersBox Web Services
 #       VERSION:  1.0
 #       CREATED:  ---
@@ -17,6 +17,51 @@
 #==============================================================================
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+
+## Application constants
+CNAME="$(basename "${0}")";
+THIS_CNAME="${CNAME}";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+typeset -r PLUGIN_NAME="DNSAdministration";
+
+## load application-wide constants if not already done
+if [ -z "${APP_ROOT}" ]
+then
+    case $(pwd) in
+        *monitors*|*executors*|*sys*|*bin*) . $(pwd)/../../../constants.sh ;;
+        *home*|*lib*) . ${SCRIPT_ROOT}/../../../constants.sh ;;
+        *) . ${SCRIPT_ROOT}/../../constants.sh ;;
+    esac
+fi
+
+unset METHOD_NAME;
+unset CNAME;
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+## validate the input
+[ ! -z "${ENABLE_SECURITY}" ] && [ "${ENABLE_SECURITY}" = "${_TRUE}" ] && ${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
+typeset -i RET_CODE=${?};
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+CNAME="${THIS_CNAME}";
+METHOD_NAME="${CNAME}#startup";
+
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+if [ ! -z "${ENABLE_SECURITY}" ] && [ "${ENABLE_SECURITY}" = "${_TRUE}" ] && [ ${RET_CODE} -ne 0 ]
+then
+    print "Security configuration does not allow the requested action.";
+
+    return ${RET_CODE};
+fi
+
+unset RET_CODE;
 
 ###############################################################################
 #       check if is running on a eSupport DR Node, exit if it is not.
@@ -31,20 +76,8 @@ then
     runsOnEcomServer "ED";
 fi
 
-[ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="WebAdministration";
-
-## load application-wide constants if not already done
-if [ -z "${APP_ROOT}" ]
-then
-    case $(pwd) in
-        *monitors*|*executors*|*sys*) . ${SCRIPT_ROOT}/../../../${PLUGIN_NAME}.sh ;;
-        *home*) . ${SCRIPT_ROOT}/../../../${PLUGIN_NAME}.sh ;;
-        *) . ${SCRIPT_ROOT}/../../${PLUGIN_NAME}.sh ;;
-    esac
-fi
-
-typeset -rx PLUGIN_ROOT_DIR=${APP_ROOT}/${PLUGIN_LIB_DIR}/${PLUGIN_NAME};
-typeset -rx PLUGIN_CONF_BASE=${APP_ROOT}/${PLUGIN_CONFIG_DIR}/${PLUGIN_NAME};
+typeset -rx PLUGIN_ROOT_DIR=${PLUGIN_DIR}/${PLUGIN_NAME};
+typeset -rx PLUGIN_CONF_BASE=${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY};
 
 case ${EXPORT_ENVIRONMENT} in
     [Ss][Tt][Gg]|[Ss][Tt][Aa][Gg][Ee]) PLUGIN_CONF_ROOT=${PLUGIN_CONF_BASE}/stg/ ;;
@@ -57,6 +90,8 @@ esac
 
 typeset -rx PLUGIN_LOADED=true;
 typeset -rx PLUGIN_CONFIG=${PLUGIN_CONF_ROOT}/plugin.properties;
+
+[ -f ${PLUGIN_CONFIG} ] && . ${PLUGIN_CONFIG};
 
 ## application information
 typeset -rx REMOTE_APP_ROOT=$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_CONFIG} | awk -F  "=" '/remote_app_root\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
@@ -271,7 +306,7 @@ typeset -rx ROOT_CERT_STORE=$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_WEB_CONFIG} | aw
 typeset -rx OPENSSL_CONFIG_FILE=$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_WEB_CONFIG} | awk -F  "=" '/openssl_config_file\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
 typeset -rx GENERATE_SELF_SIGNED=$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_WEB_CONFIG} | awk -F  "=" '/generate_self_signed\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
 
-## ssl port info
+## ssl port "INFO"
 typeset -rx STD_SSL_PORT_NUMBER=$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_WEB_CONFIG} | awk -F  "=" '/std_ssl_port\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
 typeset -rx NONSTD_SSL_PORT_NUMBER=$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_WEB_CONFIG} | awk -F  "=" '/nonstd_ssl_port\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
 
@@ -292,7 +327,7 @@ typeset -rx SVCTRACE_MONITOR_STRING=$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_MONITOR_
 typeset -rx MONITOR_OUTPUT_FILE=$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_MONITOR_CONFIG} | awk -F  "=" '/monitor_output_file\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
 typeset -rx MONITOR_OUTPUT_EXPIRES=$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_MONITOR_CONFIG} | awk -F  "=" '/monitor_output_expires\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g');
 
-## solaris interface info
+## solaris interface "INFO"
 
 
 ## month directors

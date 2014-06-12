@@ -17,6 +17,51 @@
 #==============================================================================
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+
+## Application constants
+CNAME="$(basename "${0}")";
+THIS_CNAME="${CNAME}";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+typeset -r PLUGIN_NAME="DNSAdministration";
+
+## load application-wide constants if not already done
+if [ -z "${APP_ROOT}" ]
+then
+    case $(pwd) in
+        *monitors*|*executors*|*sys*|*bin*) . $(pwd)/../../../constants.sh ;;
+        *home*|*lib*) . ${SCRIPT_ROOT}/../../../constants.sh ;;
+        *) . ${SCRIPT_ROOT}/../../constants.sh ;;
+    esac
+fi
+
+unset METHOD_NAME;
+unset CNAME;
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+## validate the input
+[ ! -z "${ENABLE_SECURITY}" ] && [ "${ENABLE_SECURITY}" = "${_TRUE}" ] && ${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
+typeset -i RET_CODE=${?};
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+CNAME="${THIS_CNAME}";
+METHOD_NAME="${CNAME}#startup";
+
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+if [ ! -z "${ENABLE_SECURITY}" ] && [ "${ENABLE_SECURITY}" = "${_TRUE}" ] && [ ${RET_CODE} -ne 0 ]
+then
+    print "Security configuration does not allow the requested action.";
+
+    return ${RET_CODE};
+fi
+
+unset RET_CODE;
 
 ###############################################################################
 #       check if is running on a eSupport DR Node, exit if it is not.
@@ -29,18 +74,6 @@ then
     . ${ECOMSERVER_MODULE};
 
     runsOnEcomServer "ED";
-fi
-
-[ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
-
-## load application-wide constants if not already done
-if [ -z "${APP_ROOT}" ]
-then
-    case $(pwd) in
-        *monitors*|*executors*|*sys*|*bin*) . ${SCRIPT_ROOT}/../../../constants.sh ;;
-        *home*) . ${SCRIPT_ROOT}/../../../constants.sh ;;
-        *) . ${SCRIPT_ROOT}/../../constants.sh ;;
-    esac
 fi
 
 typeset -rx PLUGIN_ROOT_DIR=${PLUGIN_DIR}/${PLUGIN_NAME};

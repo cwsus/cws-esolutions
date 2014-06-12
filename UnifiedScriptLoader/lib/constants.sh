@@ -41,7 +41,7 @@ typeset -r APP_SYS_CONFIG;
 
 if [ ! -s ${APP_SYS_CONFIG} ]
 then
-    echo "Failed to locate configuration data. Cannot continue.";
+    print "Failed to locate configuration data. Cannot continue.";
 
     echo 1; exit 1;
 fi

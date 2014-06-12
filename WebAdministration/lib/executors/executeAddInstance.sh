@@ -20,14 +20,13 @@
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 ## Application constants
-[ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="WebAdministration";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  install_zone
-#   DESCRIPTION:  Searches for and replaces audit indicators for the provided
+#   DESCRIPTION:  Searches for and replaces "AUDIT" indicators for the provided
 #                 filename.
 #    PARAMETERS:  Parameters obtained via command-line flags
 #       RETURNS:  0 for positive result, >1 for non-positive
@@ -211,7 +210,7 @@ function installiPlanetInstance
                                             if [ ${ERROR_COUNT} -eq 0 ]
                                             then
                                                 ## xlnt. this means we're done.
-                                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Server installation successful: Server ID: ${SERVER_ID}, Requestor: ${IUSER_AUDIT}.";
+                                                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Server installation successful: Server ID: ${SERVER_ID}, Requestor: ${IUSER_AUDIT}.";
 
                                                 ## clean up temporary files
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing temporary installation files..";
@@ -246,19 +245,19 @@ function installiPlanetInstance
                                                     RETURN_CODE=40;
                                                 fi
                                             else
-                                                ## error occurred copying acl files
+                                                ## "ERROR" occurred copying acl files
                                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to install ACL files. Please install manually.";
                                                 
                                                 RETURN_CODE=53;
                                             fi
                                         else
-                                            ## an error occurred copying acl files
+                                            ## an "ERROR" occurred copying acl files
                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to install ACL files. Please install manually.";
                                                 
                                             RETURN_CODE=53;
                                         fi
                                     else
-                                        ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more errors occurred while copying certificate databases. Cannot continue.";
+                                        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more errors occurred while copying certificate databases. Cannot continue.";
                                         
                                         RETURN_CODE=8;
                                     fi
@@ -361,7 +360,7 @@ function usage
     return 3;
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 [ ${#} -eq 0 ] && usage;

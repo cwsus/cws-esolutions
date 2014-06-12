@@ -18,25 +18,25 @@
 #==============================================================================
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 ## Application constants
-[ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+typeset -i OPTIND=0;
+METHOD_NAME="${CNAME}#startup";
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && echo "Failed to locate configuration data. Cannot continue." && exit 1;
+[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
-typeset -i OPTIND=0;
-METHOD_NAME="${CNAME}#startup";
-
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+
 THIS_CNAME="${CNAME}";
 unset METHOD_NAME;
 unset CNAME;
@@ -45,20 +45,25 @@ unset CNAME;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
 ## validate the input
-${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
+[ ! -z "${ENABLE_SECURITY}" ] && [ "${ENABLE_SECURITY}" = "${_TRUE}" ] && ${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
 typeset -i RET_CODE=${?};
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 CNAME="${THIS_CNAME}";
-METHOD_NAME="${THIS_CNAME}#startup";
+METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-[ ${RET_CODE} -ne 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE} || unset RET_CODE;
+if [ ! -z "${ENABLE_SECURITY}" ] && [ "${ENABLE_SECURITY}" = "${_TRUE}" ] && [ ${RET_CODE} -ne 0 ]
+then
+    print "Security configuration does not allow the requested action.";
 
-## lock it
+    return ${RET_CODE};
+fi
+
+unset RET_CODE;
 unset METHOD_NAME;
 unset CNAME;
 
@@ -76,7 +81,7 @@ METHOD_NAME="${THIS_CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-[ ${RET_CODE} -ne 0 ] && echo "Application currently in use." && echo ${RET_CODE} && exit ${RET_CODE};
+[ ${RET_CODE} -ne 0 ] && print "Application currently in use." && print ${RET_CODE} && exit ${RET_CODE};
 
 unset RET_CODE;
 
@@ -87,7 +92,7 @@ trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; exit" INT TERM EXIT;
 
 #===  FUNCTION  ===============================================================
 #          NAME:  install_zone
-#   DESCRIPTION:  Searches for and replaces audit indicators for the provided
+#   DESCRIPTION:  Searches for and replaces "AUDIT" indicators for the provided
 #                 filename.
 #    PARAMETERS:  Parameters obtained via command-line flags
 #          NAME:  usage for positive result, >1 for non-positive
@@ -113,7 +118,7 @@ function installMasterZone
         ## make sure the tar extracted properly
         if [ ! -d ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT} ]
         then
-            ## tar did not extract properly. throw out an error
+            ## tar did not extract properly. throw out an "ERROR"
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "tarfile extraction FAILED. Cannot continue.";
 
             RETURN_CODE=54;
@@ -211,8 +216,8 @@ function installMasterZone
                                 ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to remove tarfile.";
                             fi
 
-                            ## audit log
-                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} installed by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                            ## "AUDIT" log
+                            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} installed by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -220,7 +225,7 @@ function installMasterZone
                             RETURN_CODE=0;
                         else
                             ## the new zone wasnt added to named.conf
-                            ## we send back an error code informing
+                            ## we send back an "ERROR" code informing
                             RETURN_CODE=34;
                         fi
                     else
@@ -230,16 +235,16 @@ function installMasterZone
                         RETURN_CODE=57;
                     fi
                 else
-                    ## something happened while we were creating our new conf file. send an error back
-                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred creating the zone configuration file.";
+                    ## something happened while we were creating our new conf file. send an "ERROR" back
+                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred creating the zone configuration file.";
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                     RETURN_CODE=33;
                 fi
             else
-                ## the new zone didnt copy in. send an error back
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred copying the new zone.";
+                ## the new zone didnt copy in. send an "ERROR" back
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred copying the new zone.";
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -247,7 +252,7 @@ function installMasterZone
             fi
         fi
     else
-        ## tarfile provided doesnt exist. send an error back, we cant continue
+        ## tarfile provided doesnt exist. send an "ERROR" back, we cant continue
         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "The provided tarfile does not exist.";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -273,7 +278,7 @@ function installMasterZone
 
 #===  FUNCTION  ===============================================================
 #          NAME:  installSlaveZone
-#   DESCRIPTION:  Searches for and replaces audit indicators for the provided
+#   DESCRIPTION:  Searches for and replaces "AUDIT" indicators for the provided
 #                 filename.
 #    PARAMETERS:  Parameters obtained via command-line flags
 #          NAME:  usage for positive result, >1 for non-positive
@@ -302,7 +307,7 @@ function installSlaveZone
         ## make sure the tar extracted properly
         if [ ! -d ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT} ]
         then
-            ## tar did not extract properly. throw out an error
+            ## tar did not extract properly. throw out an "ERROR"
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "tarfile extraction FAILED. Cannot continue.";
 
             RETURN_CODE=54;
@@ -317,10 +322,10 @@ function installSlaveZone
                 rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC};
                 rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC};
 
-                ## check if they were removed, if not, warn
+                ## check if they were removed, if not, "WARN"
                 if [ -d ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC} ] && [ -d ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC} ]
                 then
-                    ## oops. theyre still there. warn, but do not fail
+                    ## oops. theyre still there. "WARN", but do not fail
                     ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to remove site-specific directories.";
                 fi
             fi
@@ -416,8 +421,8 @@ function installSlaveZone
                             rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${REQUESTING_USER}.tar;
                             rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT};
 
-                            ## audit log
-                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} installed by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
+                            ## "AUDIT" log
+                            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} installed by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -425,7 +430,7 @@ function installSlaveZone
                             RETURN_CODE=0;
                         else
                             ## the new zone wasnt added to named.conf
-                            ## we send back an error code informing
+                            ## we send back an "ERROR" code informing
                             RETURN_CODE=34;
                         fi
                     else
@@ -435,16 +440,16 @@ function installSlaveZone
                         RETURN_CODE=57;
                     fi
                 else
-                    ## something happened while we were creating our new conf file. send an error back
-                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred creating the zone configuration file.";
+                    ## something happened while we were creating our new conf file. send an "ERROR" back
+                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred creating the zone configuration file.";
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                     RETURN_CODE=33;
                 fi
             else
-                ## the new zone didnt copy in. send an error back
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred copying the new zone.";
+                ## the new zone didnt copy in. send an "ERROR" back
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred copying the new zone.";
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -452,7 +457,7 @@ function installSlaveZone
             fi
         fi
     else
-        ## tarfile provided doesnt exist. send an error back, we cant continue
+        ## tarfile provided doesnt exist. send an "ERROR" back, we cant continue
         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "The provided tarfile does not exist.";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -473,7 +478,7 @@ function installSlaveZone
 
 #===  FUNCTION  ===============================================================
 #          NAME:  update_zone_entry
-#   DESCRIPTION:  Searches for and replaces audit indicators for the provided
+#   DESCRIPTION:  Searches for and replaces "AUDIT" indicators for the provided
 #                 filename.
 #    PARAMETERS:  Parameters obtained via command-line flags
 #          NAME:  usage for positive result, >1 for non-positive
@@ -567,7 +572,7 @@ function add_zone_entry
                         ## we need to update the serial number, so lets do it here 
                         cp ${SITE_ROOT}/${ZONEFILE_NAME} ${NAMED_ROOT}/${TMP_DIRECTORY}/${ZONEFILE_NAME};
 
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding audit indicators..";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding "AUDIT" indicators..";
 
                         THIS_CNAME="${CNAME}";
                         unset METHOD_NAME;
@@ -647,13 +652,13 @@ function add_zone_entry
                                     ;;
                                 [Ss][Rr][Vv])
                                     ## set up our record information
-                                    ## service records are special because theres ALOT of info
+                                    ## service records are special because theres ALOT of "INFO"
                                     ## in them
                                     ## service records are constructed as follows:
                                     ##_service._protocol.name TTL Class SRV Priority Weight Port Target
                                     ## sample (email record for smtp):
                                     ## _submission._tcp.email.caspersbox.com 86400 IN SRV 10 10 25 caspersb-r1b13.caspersbox.com
-                                    ## see http://en.wikipedia.org/wiki/SRV_record for more info
+                                    ## see http://en.wikipedia.org/wiki/SRV_record for more "INFO"
                                     ## set up our record information
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding entry ${SRV_TYPE}.${SRV_PROTOCOL}.${SRV_NAME}    ${SRV_TTL}    ${SRV_PRIORITY}    ${SRV_WEIGHT}    ${SRV_PORT}    ${SRV_TARGET}";
 
@@ -896,7 +901,7 @@ function add_zone_entry
                                                             if [ -z "${RETURN_CODE}" ]
                                                             then
                                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Addition of entry ${ENTRY_NAME} to ${ZONE_NAME} completed.";
-                                                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone entry added: Zone Name: ${ZONE_NAME}; Entry Name: ${ENTRY_NAME}; Added by: ${REQUESTING_USER}";
+                                                                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone entry added: Zone Name: ${ZONE_NAME}; Entry Name: ${ENTRY_NAME}; Added by: ${REQUESTING_USER}";
 
                                                                 if [ ! -z "${WARNING_CODE}" ]
                                                                 then
@@ -906,12 +911,12 @@ function add_zone_entry
                                                                 fi
                                                             else
                                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Addition of entry ${ENTRY_NAME} to ${ZONE_NAME} completed.";
-                                                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone entry added: Zone Name: ${ZONE_NAME}; Entry Name: ${ENTRY_NAME}; Added by: ${REQUESTING_USER}";
+                                                                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone entry added: Zone Name: ${ZONE_NAME}; Entry Name: ${ENTRY_NAME}; Added by: ${REQUESTING_USER}";
 
                                                                 RETURN_CODE=${RETURN_CODE};
                                                             fi
                                                         else
-                                                            ## reload failed on the master. error out
+                                                            ## reload failed on the master. "ERROR" out
                                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entry remains on ${NAMED_MASTER}. Please confirm removal and continue manually. Cannot continue.";
 
                                                             RETURN_CODE=92;
@@ -925,13 +930,13 @@ function add_zone_entry
                                                         RETURN_CODE=92;
                                                     fi
                                                 else
-                                                    ## something broke. error out
-                                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while relocating datacenter-specific zones. Cannot continue.";
+                                                    ## something broke. "ERROR" out
+                                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while relocating datacenter-specific zones. Cannot continue.";
 
                                                     RETURN_CODE=28;
                                                 fi
                                             else
-                                                ## checksum mismatch. error out
+                                                ## checksum mismatch. "ERROR" out
                                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksum mismatch for operational zonefile. Cannot continue.";
 
                                                 RETURN_CODE=90;
@@ -949,7 +954,7 @@ function add_zone_entry
                                         RETURN_CODE=42;
                                     fi
                                 else
-                                    ## entry wasnt written to primary. error out
+                                    ## entry wasnt written to primary. "ERROR" out
                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to properly write new data to zonefile. Cannot continue.";
 
                                     RETURN_CODE=28;
@@ -974,7 +979,7 @@ function add_zone_entry
                     fi
                 fi
             else
-                ## zonefile doesnt exist. error out
+                ## zonefile doesnt exist. "ERROR" out
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "The requested project code does not exist. Cannot continue.";
 
                 RETURN_CODE=9;
@@ -1132,13 +1137,13 @@ do
                     ;;
                 [Ss][Rr][Vv])
                     ## set up our record information
-                    ## service records are special because theres ALOT of info
+                    ## service records are special because theres ALOT of "INFO"
                     ## in them
                     ## service records are constructed as follows:
                     ##_service._protocol.name TTL Class SRV Priority Weight Port Target
                     ## sample (email record for smtp):
                     ## _submission._tcp.email.caspersbox.com 86400 IN SRV 10 10 25 caspersb-r1b13.caspersbox.com
-                    ## see http://en.wikipedia.org/wiki/SRV_record for more info
+                    ## see http://en.wikipedia.org/wiki/SRV_record for more "INFO"
                     ## set up our record information
                     ENTRY_TYPE=$(echo ${IP_ADDR} | cut -d "," -f 1);
                     ENTRY_PROTOCOL=$(echo ${IP_ADDR} | cut -d "," -f 2);
@@ -1241,8 +1246,15 @@ echo ${RETURN_CODE};
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
 
+unset SCRIPT_ABSOLUTE_PATH;
+unset SCRIPT_ROOT;
+unset OPTIND;
+unset THIS_CNAME;
+unset RET_CODE;
+unset CNAME;
+unset METHOD_NAME;
+
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-exit ${RETURN_CODE};
-
+return ${RETURN_CODE};

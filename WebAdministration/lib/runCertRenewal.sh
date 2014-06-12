@@ -97,7 +97,7 @@ function renewiPlanetCert
 
             if [ ${RET_CODE} -eq 0 ]
             then
-                ## cert wasnt removed. error out
+                ## cert wasnt removed. "ERROR" out
                 $(${LOGGER} "WARN"ING "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate removal FAILED.");
 
                 NOTIFY_WARNING=${_TRUE};
@@ -116,8 +116,8 @@ function renewiPlanetCert
 
             if [ ${RET_CODE} -ne 0 ]
             then
-                ## an error occurred importing the cert
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred during keystore certificate renewal. Cannot continue.";
+                ## an "ERROR" occurred importing the cert
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred during keystore certificate renewal. Cannot continue.";
 
                 RETURN_CODE=17;
             else
@@ -166,8 +166,8 @@ function renewiPlanetCert
 
                             if [ ${RET_CODE} -ne 0 ]
                             then
-                                ## an error occurred generating the pkcs file
-                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred generating the PKCS12 file for crypto database import. Please try again.";
+                                ## an "ERROR" occurred generating the pkcs file
+                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the PKCS12 file for crypto database import. Please try again.";
 
                                 RETURN_CODE=18;
                             else
@@ -226,31 +226,31 @@ function renewiPlanetCert
 
                                                 if [ ${MAILER_CODE} -ne 0 ]
                                                 then
-                                                    ## error occurred sending the pem, warn
+                                                    ## "ERROR" occurred sending the pem, "WARN"
                                                     ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PEM file send FAILED. Please process manually.";
 
                                                     RETURN_CODE=97;
                                                 else
                                                     ## all done.
-                                                    ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (pre-implementation) by ${IUSER_AUDIT}: Site: ${SITE_DOMAIN_NAME}; Certificate Database: ${CERTIFICATE_DATABASE_STORE}; Certificate Nickname: ${CERTIFICATE_NICKNAME}; New expiration: ${RENEWED_CERT_EXPIRY}";
+                                                    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (pre-implementation) by ${IUSER_AUDIT}: Site: ${SITE_DOMAIN_NAME}; Certificate Database: ${CERTIFICATE_DATABASE_STORE}; Certificate Nickname: ${CERTIFICATE_NICKNAME}; New expiration: ${RENEWED_CERT_EXPIRY}";
 
                                                     RETURN_CODE=0;
                                                 fi
                                             else
                                                 ## no pemfile generated
-                                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PEM file generated FAILED. Please try again.";
+                                                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PEM file generated FAILED. Please try again.";
 
                                                 RETURN_CODE=19;
                                             fi
                                         else
                                             ## non-zero return code from openssl
-                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PEM file generated FAILED. Please try again.";
+                                            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PEM file generated FAILED. Please try again.";
 
                                             RETURN_CODE=19;
                                         fi
                                     else
                                         ## no pem required for this site. exit out.
-                                        ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (pre-implementation) by ${IUSER_AUDIT}: Site: ${SITE_DOMAIN_NAME}; Certificate Database: ${CERTIFICATE_DATABASE_STORE}; Certificate Nickname: ${CERTIFICATE_NICKNAME}; New expiration: ${RENEWED_CERT_EXPIRY}";
+                                        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (pre-implementation) by ${IUSER_AUDIT}: Site: ${SITE_DOMAIN_NAME}; Certificate Database: ${CERTIFICATE_DATABASE_STORE}; Certificate Nickname: ${CERTIFICATE_NICKNAME}; New expiration: ${RENEWED_CERT_EXPIRY}";
 
                                         RETURN_CODE=0;
                                     fi
@@ -264,7 +264,7 @@ function renewiPlanetCert
                                 fi
                             fi
                         else
-                            ## cert imported didnt match what we were expecting. error out
+                            ## cert imported didnt match what we were expecting. "ERROR" out
                             ## TODO: maybe start over ?
                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate renewal against database files has FAILED - New certificate expiration matches old certificate expiration. Please try again.";
 
@@ -284,7 +284,7 @@ function renewiPlanetCert
                 fi
             fi
         else
-            ## we werent given a cert. error
+            ## we werent given a cert. "ERROR"
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No certificate was found for ${SITE_DOMAIN_NAME}. Cannot continue.";
 
             RETURN_CODE=15;
@@ -366,8 +366,8 @@ function renewIHSCert
 
             if [ ${RET_CODE} -ne 0 ]
             then
-                ## an error occurred importing the cert
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred during keystore certificate renewal. Cannot continue.";
+                ## an "ERROR" occurred importing the cert
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred during keystore certificate renewal. Cannot continue.";
 
                 RETURN_CODE=17;
             else
@@ -400,8 +400,8 @@ function renewIHSCert
 
                         if [ ${RET_CODE} -ne 0 ]
                         then
-                            ## an error occurred generating the pkcs file
-                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred generating the PKCS12 file for crypto database import. Please try again.";
+                            ## an "ERROR" occurred generating the pkcs file
+                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the PKCS12 file for crypto database import. Please try again.";
 
                             RETURN_CODE=18;
                         else
@@ -449,25 +449,25 @@ function renewIHSCert
 
                                         if [ ${MAILER_CODE} -ne 0 ]
                                         then
-                                            ## error occurred sending the pem, warn
+                                            ## "ERROR" occurred sending the pem, "WARN"
                                             ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PEM file send FAILED. Please process manually.";
 
                                             RETURN_CODE=97;
                                         else
                                             ## all done.
-                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (pre-implementation) by ${IUSER_AUDIT}: Site: ${SITE_DOMAIN_NAME}; Certificate Database: ${CERTIFICATE_DATABASE_STORE}; Certificate Nickname: ${CERTIFICATE_NICKNAME}; New expiration: ${RENEWED_CERT_EXPIRY}";
+                                            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (pre-implementation) by ${IUSER_AUDIT}: Site: ${SITE_DOMAIN_NAME}; Certificate Database: ${CERTIFICATE_DATABASE_STORE}; Certificate Nickname: ${CERTIFICATE_NICKNAME}; New expiration: ${RENEWED_CERT_EXPIRY}";
 
                                             RETURN_CODE=0;
                                         fi
                                     else
                                         ## no pemfile generated
-                                        ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PEM file generated FAILED. Please try again.";
+                                        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PEM file generated FAILED. Please try again.";
 
                                         RETURN_CODE=19;
                                     fi
                                 else
                                     ## non-zero return code from openssl
-                                    ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PEM file generated FAILED. Please try again.";
+                                    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PEM file generated FAILED. Please try again.";
 
                                     RETURN_CODE=19;
                                 fi
@@ -481,12 +481,12 @@ function renewIHSCert
                             fi
                         fi
                     else
-                        ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (pre-implementation) by ${IUSER_AUDIT}: Site: ${SITE_DOMAIN_NAME}; Certificate Database: ${CERTIFICATE_DATABASE_STORE}; Certificate Nickname: ${CERTIFICATE_NICKNAME}; New expiration: ${RENEWED_CERT_EXPIRY}";
+                        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (pre-implementation) by ${IUSER_AUDIT}: Site: ${SITE_DOMAIN_NAME}; Certificate Database: ${CERTIFICATE_DATABASE_STORE}; Certificate Nickname: ${CERTIFICATE_NICKNAME}; New expiration: ${RENEWED_CERT_EXPIRY}";
 
                         RETURN_CODE=0;
                     fi
                 else
-                    ## cert imported didnt match what we were expecting. error out
+                    ## cert imported didnt match what we were expecting. "ERROR" out
                     ## TODO: maybe start over ?
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate renewal against database files has FAILED. Please try again.";
 
@@ -494,13 +494,13 @@ function renewIHSCert
                 fi
             fi
         else
-            ## we dont have a cert. error out and start over
+            ## we dont have a cert. "ERROR" out and start over
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Generated certificate file is unusable. Please try again.";
 
             RETURN_CODE=16;
         fi
     else
-        ## we werent given a cert. error
+        ## we werent given a cert. "ERROR"
         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No certificate was found for ${SITE_DOMAIN_NAME}. Cannot continue.";
 
         RETURN_CODE=15;
@@ -599,12 +599,12 @@ function applyiPlanetCert
 
                         if [ ${RENEWAL_CODE} -ne 0 ]
                         then
-                            ## error
-                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred performing the renewal against ${WEBSERVER}. Please try again.";
+                            ## "ERROR"
+                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred performing the renewal against ${WEBSERVER}. Please try again.";
 
                             (( ERROR_COUNT += 1 ));
                         else
-                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (implementation) by ${IUSER_AUDIT}: Webserver: ${WEBSERVER}; Site: ${SITE_DOMAIN_NAME}; Certificate Database: ${CERTIFICATE_DATABASE}; Certificate Nickname: ${CERTIFICATE_NICKNAME}";
+                            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (implementation) by ${IUSER_AUDIT}: Webserver: ${WEBSERVER}; Site: ${SITE_DOMAIN_NAME}; Certificate Database: ${CERTIFICATE_DATABASE}; Certificate Nickname: ${CERTIFICATE_NICKNAME}";
                         fi
                     else
                         ## ping test failure
@@ -620,7 +620,7 @@ function applyiPlanetCert
                 then
                     ## successful implementation
                     ## create a backup of the existing files, then clean up
-                    ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (implementation) by ${IUSER_AUDIT}: Site: ${SITE_DOMAIN_NAME}; Certificate Database: ${CERTIFICATE_DATABASE}; Certificate Nickname: ${CERTIFICATE_NICKNAME}";
+                    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (implementation) by ${IUSER_AUDIT}: Site: ${SITE_DOMAIN_NAME}; Certificate Database: ${CERTIFICATE_DATABASE}; Certificate Nickname: ${CERTIFICATE_NICKNAME}";
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Implementation complete. Backing up files..";
 
@@ -650,12 +650,12 @@ function applyiPlanetCert
 
                         RETURN_CODE=0;
                     else
-                        ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred generating the backup file. Please process manually.";
+                        ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the backup file. Please process manually.";
 
                         RETURN_CODE=94;
                     fi
                 else
-                    ## error occured
+                    ## "ERROR" occured
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more errors occurred during the renewal process. Cannot continue.";
 
                     RETURN_CODE=49;
@@ -710,7 +710,7 @@ function generateAndApplySelfSignedCert
         ## great. generate the cert
         openssl ca -batch -config ${OPENSSL_CONFIG_FILE} -policy policy_anything \
             -out ${APP_ROOT}/${CERTSTORE}/SS-${CERT_NICKNAME}.cer -infiles ${APP_ROOT}/${CSRSTORE}/SS-${CERT_NICKNAME}.csr \
-            1>${LOG_ROOT}/openssl-out.log 2>${LOG_ROOT}/openssl-error.log;
+            1>${LOG_ROOT}/openssl-out.log 2>${LOG_ROOT}/openssl-"ERROR".log;
         typeset -i RET_CODE=${?};
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
@@ -765,15 +765,15 @@ function generateAndApplySelfSignedCert
 
                                     if [ ${RET_CODE} -ne 0 ]
                                     then
-                                        ## an error occurred importing the cert
-                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred during keystore certificate renewal. Cannot continue.";
+                                        ## an "ERROR" occurred importing the cert
+                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred during keystore certificate renewal. Cannot continue.";
 
                                         RETURN_CODE=17;
                                     else
                                         ## export it out for import into crypto
                                         ## some boxes might not have crypto. we dont
                                         ## care at this point, but the executor will.
-                                        ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Self-signed certificate successfully applied to ${CERTIFICATE_DATABASE} for ${CERT_NICKNAME}";
+                                        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Self-signed certificate successfully applied to ${CERTIFICATE_DATABASE} for ${CERT_NICKNAME}";
 
                                         RETURN_CODE=0;
                                     fi
@@ -811,7 +811,7 @@ function generateAndApplySelfSignedCert
                 fi
             fi
         else
-            ## cert imported didnt match what we were expecting. error out
+            ## cert imported didnt match what we were expecting. "ERROR" out
             ## TODO: maybe start over ?
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Return code from OpenSSL was null. Please try again.";
 
@@ -853,7 +853,7 @@ function usage
     return 3;
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 [ ${#} -eq 0 ] && usage;

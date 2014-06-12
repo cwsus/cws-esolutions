@@ -173,7 +173,7 @@ function buildSSLSite
                         if [ ! -z "${RET_CODE}" ] && [ ${RET_CODE} -eq 0 ]
                         then
                             ## good, port number is valid
-                            ## get websphere info (if any)
+                            ## get websphere "INFO" (if any)
                             while true
                             do
                                 reset; clear;

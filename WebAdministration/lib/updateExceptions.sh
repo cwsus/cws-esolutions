@@ -69,7 +69,7 @@ function addStartupException
             do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding ${SITE_ENTRY}..";
 
-                ## get the site info
+                ## get the site "INFO"
                 WEB_PROJECT_CODE=$(getWebInfo | grep -w ${SITE_ENTRY} | grep -v "#" | \
                     cut -d "|" -f 1 | cut -d ":" -f 2 | sort | uniq); ## get the webcode
 
@@ -126,7 +126,7 @@ function addStartupException
         else
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding ${SITE_HOSTNAME}..";
 
-            ## get the site info
+            ## get the site "INFO"
             WEB_PROJECT_CODE=$(getWebInfo | grep -w ${SITE_HOSTNAME} | grep -v "#" | \
                 cut -d "|" -f 1 | cut -d ":" -f 2 | sort | uniq); ## get the webcode
 
@@ -278,9 +278,9 @@ function addStartupException
                                             if [ ${REMOTE_CKSUM} -eq ${UPDATE_CKSUM} ]
                                             then
                                                 ## successfully copied.
-                                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${SSL_EXCEPTION_LIST} updated: Site: ${SITE_HOSTNAME}; User: ${IUSER_AUDIT}; Server: ${MONITORED_HOST}";
+                                                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${SSL_EXCEPTION_LIST} updated: Site: ${SITE_HOSTNAME}; User: ${IUSER_AUDIT}; Server: ${MONITORED_HOST}";
                                             else
-                                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to update ${SSL_EXCEPTION_LIST} on host ${MONITORED_HOST}.";
+                                                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to update ${SSL_EXCEPTION_LIST} on host ${MONITORED_HOST}.";
 
                                                 (( ERROR_COUNT += 1 ));
                                             fi
@@ -298,7 +298,7 @@ function addStartupException
 
                                 if [ ${ERROR_COUNT} -eq 0 ]
                                 then
-                                    ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${SSL_EXCEPTION_LIST} updated: Site: ${SITE_HOSTNAME}; User: ${IUSER_AUDIT}; Server: ${MONITORED_HOST}";
+                                    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${SSL_EXCEPTION_LIST} updated: Site: ${SITE_HOSTNAME}; User: ${IUSER_AUDIT}; Server: ${MONITORED_HOST}";
 
                                     RETURN_CODE=0;
                                 else
@@ -333,7 +333,7 @@ function addStartupException
                         RETURN_CODE=44;
                     else
                         ## bad juju
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while executing diff. RET_CODE -> ${RET_CODE}";
+                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while executing diff. RET_CODE -> ${RET_CODE}";
 
                         RETURN_CODE=44;
                     fi
@@ -345,8 +345,8 @@ function addStartupException
                 RETURN_CODE=20;
             fi
         else
-            ## entry wasnt added, error out
-            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while adding the new entry. Cannot continue.";
+            ## entry wasnt added, "ERROR" out
+            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while adding the new entry. Cannot continue.";
 
             RETURN_CODE=44;
         fi
@@ -416,7 +416,7 @@ function addSSLException
             do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding ${SITE_ENTRY}..";
 
-                ## get the site info
+                ## get the site "INFO"
                 WEB_PROJECT_CODE=$(getWebInfo | grep -w ${SITE_ENTRY} | grep -v "#" | \
                     cut -d "|" -f 1 | cut -d ":" -f 2 | sort | uniq); ## get the webcode
 
@@ -473,7 +473,7 @@ function addSSLException
         else
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding ${SITE_HOSTNAME}..";
 
-            ## get the site info
+            ## get the site "INFO"
             WEB_PROJECT_CODE=$(getWebInfo | grep -w ${SITE_HOSTNAME} | grep -v "#" | \
                 cut -d "|" -f 1 | cut -d ":" -f 2 | sort | uniq); ## get the webcode
 
@@ -625,9 +625,9 @@ function addSSLException
                                             if [ ${REMOTE_CKSUM} -eq ${UPDATE_CKSUM} ]
                                             then
                                                 ## successfully copied.
-                                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${SSL_EXCEPTION_LIST} updated: Site: ${SITE_HOSTNAME}; User: ${IUSER_AUDIT}; Server: ${MONITORED_HOST}";
+                                                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${SSL_EXCEPTION_LIST} updated: Site: ${SITE_HOSTNAME}; User: ${IUSER_AUDIT}; Server: ${MONITORED_HOST}";
                                             else
-                                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to update ${SSL_EXCEPTION_LIST} on host ${MONITORED_HOST}.";
+                                                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to update ${SSL_EXCEPTION_LIST} on host ${MONITORED_HOST}.";
 
                                                 (( ERROR_COUNT += 1 ));
                                             fi
@@ -645,7 +645,7 @@ function addSSLException
 
                                 if [ ${ERROR_COUNT} -eq 0 ]
                                 then
-                                    ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${SSL_EXCEPTION_LIST} updated: Site: ${SITE_HOSTNAME}; User: ${IUSER_AUDIT}; Server: ${MONITORED_HOST}";
+                                    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${SSL_EXCEPTION_LIST} updated: Site: ${SITE_HOSTNAME}; User: ${IUSER_AUDIT}; Server: ${MONITORED_HOST}";
 
                                     RETURN_CODE=0;
                                 else
@@ -680,7 +680,7 @@ function addSSLException
                         RETURN_CODE=44;
                     else
                         ## bad juju
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while executing diff. RET_CODE -> ${RET_CODE}";
+                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while executing diff. RET_CODE -> ${RET_CODE}";
 
                         RETURN_CODE=44;
                     fi
@@ -692,8 +692,8 @@ function addSSLException
                 RETURN_CODE=20;
             fi
         else
-            ## entry wasnt added, error out
-            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while adding the new entry. Cannot continue.";
+            ## entry wasnt added, "ERROR" out
+            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while adding the new entry. Cannot continue.";
 
             RETURN_CODE=44;
         fi
@@ -743,7 +743,7 @@ function usage
     return 3;
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 [ ${#} -eq 0 ] && usage;

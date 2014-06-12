@@ -92,10 +92,10 @@ case "${ACTION}" in
             named_err="`${NAMED_CHKCONF} ${NAMED_CHKCONF_OPTS} ${NAMED_CONF} 2>&1`";
 
             echo
-            echo "Error in named configuration:";
+            echo ""ERROR" in named configuration:";
             echo "${named_err}";
 
-            [ -x /usr/bin/logger ] && echo "${named_err}" | /usr/bin/logger -pdaemon.error -tnamed;
+            [ -x /usr/bin/logger ] && echo "${named_err}" | /usr/bin/logger -pdaemon."ERROR" -tnamed;
 
             exit 2;
         fi

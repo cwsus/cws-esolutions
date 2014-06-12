@@ -16,7 +16,6 @@
 #      REVISION:  ---
 #==============================================================================
 ## Application contants
-[ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="WebAdministration";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
@@ -244,7 +243,7 @@ function applyiPlanetCertificate
                     
                                     if [ ${PRE_EPOCH_EXPIRY} -eq ${POST_EPOCH_EXPIRY} ]
                                     then
-                                        ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (implementation) by ${IUSER_AUDIT}: Site: ${SITE_DOMAIN_NAME}; Certificate Database: ${CERTIFICATE_DATABASE_STORE}; Certificate Nickname: ${CERTIFICATE_NICKNAME}";
+                                        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (implementation) by ${IUSER_AUDIT}: Site: ${SITE_DOMAIN_NAME}; Certificate Database: ${CERTIFICATE_DATABASE_STORE}; Certificate Nickname: ${CERTIFICATE_NICKNAME}";
                     
                                         ## ok, we're good to move forward
                                         if [ "${METASLOT_ENABLED}" = "${_TRUE}" ]
@@ -286,7 +285,7 @@ function applyiPlanetCertificate
                                                         then
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Keystore backup executed successfully";
 
-                                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Keystore backup executed by ${IUSER_AUDIT} on $(date +"%Y-%m-%d %H:%M:%S").";
+                                                            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Keystore backup executed by ${IUSER_AUDIT} on $(date +"%Y-%m-%d %H:%M:%S").";
                                                         else
                                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Keystore backup failed.";
                                                         fi
@@ -316,7 +315,7 @@ function applyiPlanetCertificate
                                                             ## key/cert count couldn't be obtained. this could be
                                                             ## because there aren't any in the slot, but not likely
                                                             ## again, non-fatal situation, but should be addressed.
-                                                            ## warn.
+                                                            ## "WARN".
                                                             ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No keys/certificates were found in the crypto card to clean. Cannot continue.";
                         
                                                             WARNING_CODE=98;
@@ -334,20 +333,20 @@ function applyiPlanetCertificate
                                                             if [ ${RET_CODE} -ne 0 ]
                                                             then
                                                                 ## removal of the certificate from the slot failed. this is a non-fatal situation,
-                                                                ## but it should be corrected anyway. warn
+                                                                ## but it should be corrected anyway. "WARN"
                                                                 ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Crypto card cleanup action has FAILED. Please execute manually.";
                         
                                                                 WARNING_CODE=98;
                                                             else
                                                                 ## keys/certs were removed
-                                                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (implementation/metaslot removal) by ${IUSER_AUDIT}: Site: ${SITE_DOMAIN_NAME}; Certificate Database: ${CERTIFICATE_DATABASE_STORE}; Certificate Nickname: ${CERTIFICATE_NICKNAME}";
+                                                                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (implementation/metaslot removal) by ${IUSER_AUDIT}: Site: ${SITE_DOMAIN_NAME}; Certificate Database: ${CERTIFICATE_DATABASE_STORE}; Certificate Nickname: ${CERTIFICATE_NICKNAME}";
                         
                                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removed ${KEY_COUNT} keys and ${CERT_COUNT} certs from ${TOKEN_NAME}. Importing new certificate..";
                                                             fi
                                                         fi
                                                     else
                                                         ## we didnt get back any certificate data from our pktool call.
-                                                        ## warn - this is not fatal
+                                                        ## "WARN" - this is not fatal
                                                         ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No keys/certificates were found in the provided keystore for action.";
                         
                                                         WARNING_CODE=98;
@@ -391,7 +390,7 @@ function applyiPlanetCertificate
                                                         if [ ${PRE_EPOCH_EXPIRY} -eq ${POST_EPOCH_EXPIRY} ]
                                                         then
                                                             ## success!
-                                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (implementation/metaslot import) by ${IUSER_AUDIT}: Site: ${SITE_DOMAIN_NAME}; Certificate Database: ${CERTIFICATE_DATABASE_STORE}; Certificate Nickname: ${CERTIFICATE_NICKNAME}";
+                                                            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (implementation/metaslot import) by ${IUSER_AUDIT}: Site: ${SITE_DOMAIN_NAME}; Certificate Database: ${CERTIFICATE_DATABASE_STORE}; Certificate Nickname: ${CERTIFICATE_NICKNAME}";
                         
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate successfully imported.";
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Starting up ${WEB_INSTANCE}..";
@@ -713,7 +712,7 @@ function applyIHSKeystore
 
                 if [ ${ERROR_COUNT} -eq 0 ]
                 then
-                    ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (implementation) by ${IUSER_AUDIT}: Site: ${SITE_DOMAIN_NAME}; Certificate Database: ${CERTIFICATE_DATABASE_STORE}; Certificate Nickname: ${CERTIFICATE_NICKNAME}";
+                    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (implementation) by ${IUSER_AUDIT}: Site: ${SITE_DOMAIN_NAME}; Certificate Database: ${CERTIFICATE_DATABASE_STORE}; Certificate Nickname: ${CERTIFICATE_NICKNAME}";
 
                     ## thats it folks. bring up the web
                     RET_CODE=$(${IHS_PATH}/bin/${IHS_START_SCRIPT} -d ${IHS_PATH} -d ${CERTIFICATE_DATABASE} -k stop);
@@ -788,7 +787,7 @@ function usage
     return 3;
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 [ ${#} -eq 0 ] && usage;
@@ -904,7 +903,7 @@ do
                 RETURN_CODE=10;
             elif [ -z "${IUSER_AUDIT}" ]
             then
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to audit user account. Unable to continue processing.";
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to "AUDIT" user account. Unable to continue processing.";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                 RETURN_CODE=20;

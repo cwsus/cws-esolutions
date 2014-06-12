@@ -69,7 +69,7 @@ shift $((OPTIND - 1))
         (( t -= ${INTERVAL} ))
     done
 
-    echo "Terminating process - timeout threshold exceeded";
+    print "Terminating process - timeout threshold exceeded";
 
     kill -s SIGTERM ${$} && kill -0 ${$} || exit 1
     sleep ${DELAY} && kill -s SIGKILL ${$} && kill -0 ${$} || exit 1

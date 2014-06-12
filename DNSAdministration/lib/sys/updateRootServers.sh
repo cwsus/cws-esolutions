@@ -21,12 +21,11 @@
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 ## Application constants
-[ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -56,7 +55,7 @@ METHOD_NAME="${THIS_CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-[ ${RET_CODE} -ne 0 ] && echo "Application currently in use." && echo ${RET_CODE} && exit ${RET_CODE};
+[ ${RET_CODE} -ne 0 ] && print "Application currently in use." && print ${RET_CODE} && exit ${RET_CODE};
 
 unset RET_CODE;
 
@@ -99,7 +98,7 @@ function obtainAndInstallRoots
                 if [ $(grep -c "couldn\'t get address" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_ROOT_CACHE}) -ne 0 ] ||
                     [ $(grep -c "connection timed out" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_ROOT_CACHE}) -ne 0 ]
                 then
-                    ## an error occurred and the root server list could not be obtained
+                    ## an "ERROR" occurred and the root server list could not be obtained
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to obtain updated root server list from a.root-servers.net.";
 
                     RETURN_CODE=77;
@@ -149,32 +148,32 @@ function obtainAndInstallRoots
 
                                 RETURN_CODE=0;
                             else
-                                ## some error occurred
-                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred during file installation. Please process manually.";
+                                ## some "ERROR" occurred
+                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred during file installation. Please process manually.";
 
                                 RETURN_CODE=78;
                             fi
                         else
-                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred during file installation. Please process manually.";
+                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred during file installation. Please process manually.";
 
                             RETURN_CODE=78;
                         fi
                     else
                         ## existing file wasnt removed
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred during file installation. Please process manually.";
+                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred during file installation. Please process manually.";
 
                         RETURN_CODE=78;
                     fi
                 fi
             else
                 ## unpopulated update file
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred obtaining root server updates. Please process manually.";
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred obtaining root server updates. Please process manually.";
 
                 RETURN_CODE=77;
             fi
         else
             ## return code from the dig call was non-zero
-            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred obtaining root server updates. Please process manually.";
+            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred obtaining root server updates. Please process manually.";
 
             RETURN_CODE=77;
         fi
@@ -194,7 +193,7 @@ function obtainAndInstallRoots
             then
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${EXTERNAL_SERVER} \"dig +bufsize=1200 +norec NS . @a.root-servers.net\" > ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_ROOT_CACHE}";
 
-                ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${EXTERNAL_SERVER} "dig +bufsize=1200 +norec NS . @a.root-servers.net" > ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_ROOT_CACHE};
+                ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${EXTERNAL_SERVER} "dig +bufsize=1200 +norec NS . @a.root-servers.net" ${SSH_USER_NAME} ${SSH_USER_AUTH} > ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_ROOT_CACHE};
 
                 ## we should have a populated file. lets check
                 if [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_ROOT_CACHE} ]
@@ -203,14 +202,14 @@ function obtainAndInstallRoots
                     if [ $(grep -c "couldn\'t get address" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_ROOT_CACHE}) -ne 0 ] ||
                         [ $(grep -c "connection timed out" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_ROOT_CACHE}) -ne 0 ]
                     then
-                        ## an error occurred and the root server list could not be obtained
+                        ## an "ERROR" occurred and the root server list could not be obtained
                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to obtain updated root server list from a.root-servers.net.";
 
                         GENERATION_FAILURE=${_TRUE};
                         RETURN_CODE=77;
                     else
                         ## we got our file and its valid. break out to continue execution
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File obtained. Clearing error counters..";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File obtained. Clearing "ERROR" counters..";
 
                         ## check if our failure points are set, if they are, unset them
                         if [ ! -z "${RETURN_CODE}" ] || [ ! -z "${GENERATION_FAILURE}" ] || [ ! -z "${PROXY_FAILURE}" ]
@@ -224,7 +223,7 @@ function obtainAndInstallRoots
                     fi
                 else
                     ## root cache file didnt get created
-                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while creating the root cache file. Cannot continue.";
+                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while creating the root cache file. Cannot continue.";
 
                     GENERATION_FAILURE=${_TRUE};
                 fi
@@ -283,19 +282,19 @@ function obtainAndInstallRoots
 
                         RETURN_CODE=0;
                     else
-                        ## some error occurred
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred during file installation. Please process manually.";
+                        ## some "ERROR" occurred
+                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred during file installation. Please process manually.";
 
                         RETURN_CODE=78;
                     fi
                 else
-                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred during file installation. Please process manually.";
+                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred during file installation. Please process manually.";
 
                     RETURN_CODE=78;
                 fi
             else
                 ## existing file wasnt removed
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred during file installation. Please process manually.";
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred during file installation. Please process manually.";
 
                 RETURN_CODE=78;
             fi
@@ -330,7 +329,15 @@ echo ${RETURN_CODE};
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
 
+unset SCRIPT_ABSOLUTE_PATH;
+unset SCRIPT_ROOT;
+unset OPTIND;
+unset THIS_CNAME;
+unset RET_CODE;
+unset CNAME;
+unset METHOD_NAME;
+
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-exit ${RETURN_CODE};
+return ${RETURN_CODE};

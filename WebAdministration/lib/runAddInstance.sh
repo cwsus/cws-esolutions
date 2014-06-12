@@ -94,8 +94,8 @@ function runiPlanetInstallation
 
                             if [ ${INSTALLER_CODE} -ne 0 ]
                             then
-                                ## error
-                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred performing the installation against ${WEBSERVER}. Please try again.";
+                                ## "ERROR"
+                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred performing the installation against ${WEBSERVER}. Please try again.";
 
                                 (( ERROR_COUNT += 1 ));
                             fi
@@ -113,7 +113,7 @@ function runiPlanetInstallation
                     then
                         ## successful implementation
                         ## create a backup of the existing files, then clean up
-                        ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Server installation successful: Server Identifier: ${SERVER_ID}, Build owner: ${IUSER_AUDIT}, Change request: ${CHANGE_NUM}";
+                        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Server installation successful: Server Identifier: ${SERVER_ID}, Build owner: ${IUSER_AUDIT}, Change request: ${CHANGE_NUM}";
                         
                         ## remove temp files
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing working files..";
@@ -195,7 +195,7 @@ function usage
     return 3;
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 [ ${#} -eq 0 ] && usage;

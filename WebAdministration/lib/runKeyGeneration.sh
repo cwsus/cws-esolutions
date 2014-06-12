@@ -205,7 +205,7 @@ function createNewCertificate
 
             if [ ${ERROR_COUNT} -ne 0 ]
             then
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred generating a self-signed certificate for ${SITE_HOSTNAME}.";
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating a self-signed certificate for ${SITE_HOSTNAME}.";
             fi
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Generating CSR for ${SITE_HOSTNAME} ..";
@@ -242,7 +242,7 @@ function createNewCertificate
 
                 if [ ${MAILER_CODE} -ne 0 ]
                 then
-                    ## notification failed to send. warn but dont error
+                    ## notification failed to send. "WARN" but dont "ERROR"
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to send notification.";
 
                     RETURN_CODE=95;
@@ -253,7 +253,7 @@ function createNewCertificate
                     RETURN_CODE=0;
                 fi
             else
-                ## no csr was generated. error out
+                ## no csr was generated. "ERROR" out
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No CSR was generated. Cannot continue.";
 
                 RETURN_CODE=5;
@@ -312,7 +312,7 @@ function createiPlanetCSR
 
         if [ "${CERT_HOSTNAME}" != "${SITE_DOMAIN_NAME}" ]
         then
-            ## hostname mismatch. use the one in the cert db, but warn of it
+            ## hostname mismatch. use the one in the cert db, but "WARN" of it
             ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_DOMAIN_NAME does not match CERT_HOSTNAME. SITE_DOMAIN_NAME -> ${SITE_DOMAIN_NAME}, CERT_HOSTNAME -> ${CERT_HOSTNAME}. Using CERT_HOSTNAME.";
 
             SITE_DOMAIN_NAME=${CERT_HOSTNAME};
@@ -401,7 +401,7 @@ function createiPlanetCSR
 
                 if [ ${MAILER_CODE} -ne 0 ]
                 then
-                    ## notification failed to send. warn but dont error
+                    ## notification failed to send. "WARN" but dont "ERROR"
 
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to send notification.";
 
@@ -412,7 +412,7 @@ function createiPlanetCSR
 
                 RETURN_CODE=0;
             else
-                ## no csr was generated. error out
+                ## no csr was generated. "ERROR" out
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No CSR was generated. Cannot continue.";
 
                 RETURN_CODE=5;
@@ -469,7 +469,7 @@ function createiPlanetCSR
 
                 if [ "${CERT_HOSTNAME}" != "${SITE_DOMAIN_NAME}" ]
                 then
-                    ## hostname mismatch. use the one in the cert db, but warn of it
+                    ## hostname mismatch. use the one in the cert db, but "WARN" of it
                     ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_DOMAIN_NAME does not match CERT_HOSTNAME. SITE_DOMAIN_NAME -> ${SITE_DOMAIN_NAME}, CERT_HOSTNAME -> ${CERT_HOSTNAME}. Using CERT_HOSTNAME.";
 
                     RETURN_CODE=99;
@@ -561,7 +561,7 @@ function createiPlanetCSR
 
                         if [ ${MAILER_CODE} -ne 0 ]
                         then
-                            ## notification failed to send. warn but dont error
+                            ## notification failed to send. "WARN" but dont "ERROR"
                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to send notification.";
 
                             RETURN_CODE=95;
@@ -571,7 +571,7 @@ function createiPlanetCSR
                             RETURN_CODE=0;
                         fi
                     else
-                        ## no csr was generated. error out
+                        ## no csr was generated. "ERROR" out
                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No CSR was generated. Cannot continue.";
 
                         RETURN_CODE=5;
@@ -670,7 +670,7 @@ function createIHSCSR
 
                 if [ "${CERT_HOSTNAME}" != "${SITE_DOMAIN_NAME}" ]
                 then
-                    ## hostname mismatch. use the one in the cert db, but warn of it
+                    ## hostname mismatch. use the one in the cert db, but "WARN" of it
                     ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_DOMAIN_NAME does not match CERT_HOSTNAME. SITE_DOMAIN_NAME -> ${SITE_DOMAIN_NAME}, CERT_HOSTNAME -> ${CERT_HOSTNAME}. Using CERT_HOSTNAME.";
 
                     SITE_DOMAIN_NAME=${CERT_HOSTNAME};
@@ -774,7 +774,7 @@ function createIHSCSR
 
                         if [ ${MAILER_CODE} -ne 0 ]
                         then
-                            ## notification failed to send. warn but dont error
+                            ## notification failed to send. "WARN" but dont "ERROR"
                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to send notification.";
 
                             RETURN_CODE=95;
@@ -784,7 +784,7 @@ function createIHSCSR
 
                         RETURN_CODE=0;
                     else
-                        ## no csr was generated. error out
+                        ## no csr was generated. "ERROR" out
                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No CSR was generated. Cannot continue.";
 
                         RETURN_CODE=5;
@@ -886,7 +886,7 @@ function createIHSCSR
 
                         if [ "${CERT_HOSTNAME}" != "${SITE_DOMAIN_NAME}" ]
                         then
-                            ## hostname mismatch. use the one in the cert db, but warn of it
+                            ## hostname mismatch. use the one in the cert db, but "WARN" of it
                             ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_DOMAIN_NAME does not match CERT_HOSTNAME. SITE_DOMAIN_NAME -> ${SITE_DOMAIN_NAME}, CERT_HOSTNAME -> ${CERT_HOSTNAME}. Using CERT_HOSTNAME.";
 
                             RETURN_CODE=99;
@@ -992,7 +992,7 @@ function createIHSCSR
 
                                 if [ ${MAILER_CODE} -ne 0 ]
                                 then
-                                    ## notification failed to send. warn but dont error
+                                    ## notification failed to send. "WARN" but dont "ERROR"
                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to send notification.";
 
                                     RETURN_CODE=95;
@@ -1002,7 +1002,7 @@ function createIHSCSR
                                     RETURN_CODE=0;
                                 fi
                             else
-                                ## no csr was generated. error out
+                                ## no csr was generated. "ERROR" out
                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No CSR was generated. Cannot continue.";
 
                                 RETURN_CODE=5;
@@ -1077,7 +1077,7 @@ function usage
     return 3;
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 [ ${#} -eq 0 ] && usage;

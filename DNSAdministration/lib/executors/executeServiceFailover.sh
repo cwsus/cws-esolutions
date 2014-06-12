@@ -18,21 +18,20 @@
 #==============================================================================
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 ## Application constants
-[ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+typeset -i OPTIND=0;
+METHOD_NAME="${CNAME}#startup";
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && echo "Failed to locate configuration data. Cannot continue." && exit 1;
+[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-
-typeset -i OPTIND=0;
-METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -46,20 +45,25 @@ unset CNAME;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
 ## validate the input
-${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
+[ ! -z "${ENABLE_SECURITY}" ] && [ "${ENABLE_SECURITY}" = "${_TRUE}" ] && ${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
 typeset -i RET_CODE=${?};
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 CNAME="${THIS_CNAME}";
-METHOD_NAME="${THIS_CNAME}#startup";
+METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-[ ${RET_CODE} -ne 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE} || unset RET_CODE;
+if [ ! -z "${ENABLE_SECURITY}" ] && [ "${ENABLE_SECURITY}" = "${_TRUE}" ] && [ ${RET_CODE} -ne 0 ]
+then
+    print "Security configuration does not allow the requested action.";
 
-## lock it
+    return ${RET_CODE};
+fi
+
+unset RET_CODE;
 unset METHOD_NAME;
 unset CNAME;
 
@@ -77,14 +81,12 @@ METHOD_NAME="${THIS_CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-[ ${RET_CODE} -ne 0 ] && echo "Application currently in use." && echo ${RET_CODE} && exit ${RET_CODE};
+[ ${RET_CODE} -ne 0 ] && print "Application currently in use." && print ${RET_CODE} && exit ${RET_CODE};
 
 unset RET_CODE;
 
 CNAME="$(basename "${0}")";
 METHOD_NAME="${CNAME}#startup";
-
-[ ! -d ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY} ] && mkdir ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY};
 
 trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; exit" INT TERM EXIT;
 
@@ -157,7 +159,7 @@ function failoverInternetSite
                 ## copy the datacenter-specific zone file for operation
                 cp ${SITE_ROOT}/${TARGET_DC}/${DC_FILE} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME};
 
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Calling addServiceIndicators.sh to add audit flags..";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Calling addServiceIndicators.sh to add "AUDIT" flags..";
 
                 THIS_CNAME="${CNAME}";
                 unset METHOD_NAME;
@@ -197,8 +199,8 @@ function failoverInternetSite
 
                     if [ "${MD5_TMP_FILE}" = "${MD5_NEW_FILE}" ]
                     then
-                        ## Log an audit record
-                        ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS Failover: Requestor: ${REQUESTING_USER} - Date: $(date +"%d-%m-%Y") - Site: ${UNIT}/${FILENAME} - Change Request: ${CHANGE_NUM} - Switched To: ${TARGET_DC}";
+                        ## Log an "AUDIT" record
+                        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS Failover: Requestor: ${REQUESTING_USER} - Date: $(date +"%d-%m-%Y") - Site: ${UNIT}/${FILENAME} - Change Request: ${CHANGE_NUM} - Switched To: ${TARGET_DC}";
 
                         ## Remove the temporary file
                         rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME};
@@ -213,9 +215,9 @@ function failoverInternetSite
                         RETURN_CODE=8;
                     fi
                 else
-                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred during indicator processing. Return code->${RET_CODE}";
+                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred during indicator processing. Return code->${RET_CODE}";
 
-                    ## a failure occurred during audit processing. abort
+                    ## a failure occurred during "AUDIT" processing. abort
                     RETURN_CODE=999;
                 fi
             else
@@ -318,18 +320,18 @@ function failoverIntranetSite
             then
                 ## processing complete
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${ENABLE_POP} enabled on host ${HOSTNAME}";
-                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Disabled: ${DISABLE_POP}; Enabled: ${ENABLE_POP} - completed by ${REQUESTING_USER} on $(date +"%Y-%m-%d %H:%M:%S")";
+                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Disabled: ${DISABLE_POP}; Enabled: ${ENABLE_POP} - completed by ${REQUESTING_USER} on $(date +"%Y-%m-%d %H:%M:%S")";
 
                 RETURN_CODE=0;
             else
-                ## an error occurred enabling the service
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while enabling ${ENABLE_POP} on host ${HOSTNAME}";
+                ## an "ERROR" occurred enabling the service
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while enabling ${ENABLE_POP} on host ${HOSTNAME}";
 
                 RETURN_CODE=1;
             fi
         else
-            ## an error occurred disabling service
-            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while enabling ${ENABLE_POP} on host ${HOSTNAME}";
+            ## an "ERROR" occurred disabling service
+            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while enabling ${ENABLE_POP} on host ${HOSTNAME}";
 
             RETURN_CODE=1;
         fi
@@ -488,7 +490,7 @@ function failoverDatacenter
         then
             ## some errors were encountered during temp file processing,
             ## and the number meets or exceeds our failure threshold.
-            ## throw back an error
+            ## throw back an "ERROR"
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup processing FAILED. Cannot continue.";
 
             RETURN_CODE=57;
@@ -539,7 +541,7 @@ function failoverDatacenter
                     if [ ${TMP_CHECKSUM} -eq ${OP_CHECKSUM} ]
                     then
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${UNIT}/${FILENAME} <-> ${NAMED_ROOT}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME} match - continuing..";
-                        ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS Failover: Requestor: ${REQUESTING_USER} - Date: \`date +"%d-%m-%Y"\` - Site: ${UNIT}/${FILENAME} - Change Request: ${CHANGE_NUM} - Switched To: ${TARGET_DC}";
+                        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS Failover: Requestor: ${REQUESTING_USER} - Date: \`date +"%d-%m-%Y"\` - Site: ${UNIT}/${FILENAME} - Change Request: ${CHANGE_NUM} - Switched To: ${TARGET_DC}";
 
                         unset TMP_CHECKSUM;
                         unset OP_CHECKSUM;
@@ -698,11 +700,11 @@ function failoverBusinessUnit
 
                     (( A += 1 ));
                 else
-                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred during indicator processing. Return code->${RET_CODE}";
+                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred during indicator processing. Return code->${RET_CODE}";
 
                     A=0;
                     B=0;
-                    ## a failure occurred during audit processing. abort
+                    ## a failure occurred during "AUDIT" processing. abort
                     RETURN_CODE=999;
                 fi
             done
@@ -742,7 +744,7 @@ function failoverBusinessUnit
             do
                 if [ "${NEW_MD5SUM[${A}]}" != "${TMP_MD5SUM[${A}]}" ]
                 then
-                    ## some kind of error occurred
+                    ## some kind of "ERROR" occurred
                     ## log it out and return the code
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHECKSUM FAILURE: ${NEW_MD5SUM[${A}]} !=  ${TMP_MD5SUM[${A}]}";
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -759,8 +761,8 @@ function failoverBusinessUnit
                     continue;
                 fi
 
-                ## Log an audit record
-                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS Failover: Requestor: ${REQUESTING_USER} - Date: $(date +"%d-%m-%Y") - Site: ${UNIT}/${DC_FILE} - Change Request: ${CHANGE_NUM} - Switched To: ${TARGET_DC}";
+                ## Log an "AUDIT" record
+                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS Failover: Requestor: ${REQUESTING_USER} - Date: $(date +"%d-%m-%Y") - Site: ${UNIT}/${DC_FILE} - Change Request: ${CHANGE_NUM} - Switched To: ${TARGET_DC}";
 
                 (( A += 1 ));
             done
@@ -915,11 +917,11 @@ function failoverProject
 
                     (( A += 1 ));
                 else
-                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred during indicator processing. Return code->${RET_CODE}";
+                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred during indicator processing. Return code->${RET_CODE}";
 
                     A=0;
                     B=0;
-                    ## a failure occurred during audit processing. abort
+                    ## a failure occurred during "AUDIT" processing. abort
                     RETURN_CODE=999;
                 fi
             done
@@ -959,7 +961,7 @@ function failoverProject
             do
                 if [ "${NEW_MD5SUM[${A}]}" != "${TMP_MD5SUM[${A}]}" ]
                 then
-                    ## some kind of error occurred
+                    ## some kind of "ERROR" occurred
                     ## log it out and return the code
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHECKSUM FAILURE: ${NEW_MD5SUM[${A}]} !=  ${TMP_MD5SUM[${A}]}";
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -976,8 +978,8 @@ function failoverProject
                     continue;
                 fi
 
-                ## Log an audit record
-                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS Failover: Requestor: ${REQUESTING_USER} - Date: $(date +"%d-%m-%Y") - Site: ${UNIT}/${DC_FILE} - Change Request: ${CHANGE_NUM} - Switched To: ${TARGET_DC}";
+                ## Log an "AUDIT" record
+                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS Failover: Requestor: ${REQUESTING_USER} - Date: $(date +"%d-%m-%Y") - Site: ${UNIT}/${DC_FILE} - Change Request: ${CHANGE_NUM} - Switched To: ${TARGET_DC}";
 
                 (( A += 1 ));
             done
@@ -1121,7 +1123,7 @@ do
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting REQUESTING_USER..";
 
-            ## Capture the audit userid
+            ## Capture the "AUDIT" userid
             REQUESTING_USER="${OPTARG}"; # This will be the target datacenter to move to
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REQUESTING_USER -> ${REQUESTING_USER}";
@@ -1140,7 +1142,7 @@ do
 
             if [ -z "${REQUESTING_USER}" ]
             then
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to audit user account. Unable to continue processing.";
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to "AUDIT" user account. Unable to continue processing.";
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -1211,7 +1213,15 @@ echo ${RETURN_CODE};
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
 
+unset SCRIPT_ABSOLUTE_PATH;
+unset SCRIPT_ROOT;
+unset OPTIND;
+unset THIS_CNAME;
+unset RET_CODE;
+unset CNAME;
+unset METHOD_NAME;
+
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-exit ${RETURN_CODE};
+return ${RETURN_CODE};

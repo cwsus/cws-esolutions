@@ -18,21 +18,20 @@
 #==============================================================================
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 ## Application constants
-[ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="DNSAdministration";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+typeset -i OPTIND=0;
+METHOD_NAME="${CNAME}#startup";
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && echo "Failed to locate configuration data. Cannot continue." && exit 1;
+[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[ -z "${PLUGIN_ROOT_DIR}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-
-typeset -i OPTIND=0;
-METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -46,20 +45,25 @@ unset CNAME;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
 ## validate the input
-${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
+[ ! -z "${ENABLE_SECURITY}" ] && [ "${ENABLE_SECURITY}" = "${_TRUE}" ] && ${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
 typeset -i RET_CODE=${?};
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 CNAME="${THIS_CNAME}";
-METHOD_NAME="${THIS_CNAME}#startup";
+METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-[ ${RET_CODE} -ne 0 ] && echo "Security configuration does not allow the requested action." && exit ${RET_CODE} || unset RET_CODE;
+if [ ! -z "${ENABLE_SECURITY}" ] && [ "${ENABLE_SECURITY}" = "${_TRUE}" ] && [ ${RET_CODE} -ne 0 ]
+then
+    print "Security configuration does not allow the requested action.";
 
-## lock it
+    return ${RET_CODE};
+fi
+
+unset RET_CODE;
 unset METHOD_NAME;
 unset CNAME;
 
@@ -77,7 +81,7 @@ METHOD_NAME="${THIS_CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-[ ${RET_CODE} -ne 0 ] && echo "Application currently in use." && echo ${RET_CODE} && exit ${RET_CODE};
+[ ${RET_CODE} -ne 0 ] && print "Application currently in use." && print ${RET_CODE} && exit ${RET_CODE};
 
 unset RET_CODE;
 
@@ -123,7 +127,7 @@ function switch_to_slave
             then
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup successfully verified. Performing pre-count of zone directories..";
 
-                ## set error count to zero
+                ## set "ERROR" count to zero
                 ERROR_COUNT=0;
 
                 ## take a count of the directories in the master directory
@@ -160,7 +164,7 @@ function switch_to_slave
                         if [ ${ZONE_PRE_COUNT} -eq ${ZONE_POST_COUNT} ]
                         then
                             ## they do. we're good here, keep going
-                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Re-location of ${ZONE_DIRECTORY} completed by ${REQUESTING_USER}";
+                            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Re-location of ${ZONE_DIRECTORY} completed by ${REQUESTING_USER}";
                         else
                             ## copy failed or something else is going on.
                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Re-location of ${ZONE_DIRECTORY} failed. Please process manually.";
@@ -185,7 +189,7 @@ function switch_to_slave
                     ## all operations were successfully performed. move forward
                     ## next step is to re-configure the zone configuration files to operate as slaves
                     ## update the zone config files
-                    ## make sure error counter is zero
+                    ## make sure "ERROR" counter is zero
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No errors encountered during zone move. Continuing..";
 
                     ERROR_COUNT=0;
@@ -290,7 +294,7 @@ function switch_to_slave
                                                 if [ $(grep -c ${DHCPD_UPDATE_KEY} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp) -eq 0 ]
                                                 then
                                                     ## successfully modified the allow-update clause. this is done.
-                                                    ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Dynamic zone ${ZONE_NAME} successfully updated by ${REQUESTING_USER}.";
+                                                    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Dynamic zone ${ZONE_NAME} successfully updated by ${REQUESTING_USER}.";
 
                                                     mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG};
                                                 else
@@ -301,7 +305,7 @@ function switch_to_slave
                                                 fi
                                             else
                                                 ## not a dynamic zone, so this switch is complete
-                                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} successfully updated by ${REQUESTING_USER}.";
+                                                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} successfully updated by ${REQUESTING_USER}.";
                                             fi
                                         fi
 
@@ -313,14 +317,14 @@ function switch_to_slave
                                     unset ZONE_NAME;
 
                                     ## ok, now its time to move the file into place
-                                    ## make sure our error counter is zero
+                                    ## make sure our "ERROR" counter is zero
                                     if [ ${ERROR_COUNT} -eq 0 ]
                                     then
                                         ## now we move the file into the proper place
                                         ## take a checksum first..
                                         TMP_CONF_CKSUM=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG} | awk '{print $1}');
 
-                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_OP_CKSUM -> ${TMP_OP_CKSUM}";
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_OP_CKSUM -> ${TMP_OP_CKSUM}";
 
                                         ## and move the file..
                                         mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG} ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONFIG};
@@ -333,28 +337,28 @@ function switch_to_slave
                                         ## and now verify the checksums
                                         if [ ${TMP_CONF_CKSUM} != ${OP_CONF_CKSUM} ]
                                         then
-                                            ## checksum mismatch. error.
+                                            ## checksum mismatch. "ERROR".
                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksum mismatch for ${ZONE_CONFIG}";
 
                                             (( ERROR_COUNT += 1 ));
                                         else
                                             ## success!
-                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_CONFIG} successfully re-configured by ${REQUESTING_USER}";
+                                            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_CONFIG} successfully re-configured by ${REQUESTING_USER}";
                                         fi
                                     else
-                                        ## an error occurred re-configuring the zone
-                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred during reconfiguration of dynamic zone ${ZONE_CONFIG}. Please process manually.";
+                                        ## an "ERROR" occurred re-configuring the zone
+                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred during reconfiguration of dynamic zone ${ZONE_CONFIG}. Please process manually.";
 
                                         (( ERROR_COUNT += 1 ));
                                     fi
                                 else
-                                    ## failed to reconfig this zone. error
+                                    ## failed to reconfig this zone. "ERROR"
                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Re-configuration of ${ZONE_CONFIG} failed. Failed to modify zone configuration from slave to master. Please process manually.";
 
                                     (( ERROR_COUNT += 1 ));
                                 fi
                             else
-                                ## failed to make a working copy. error
+                                ## failed to make a working copy. "ERROR"
                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to create a working copy of ${ZONE_CONFIG}. Please process manually.";
 
                                 (( ERROR_COUNT += 1 ));
@@ -447,14 +451,14 @@ function switch_to_slave
                                         if [ ${TMP_CONF_CKSUM} -eq ${OP_CONF_CKSUM} ]
                                         then
                                             ## xlnt. we're done.
-                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Server successfully re-configured as a slave nameserver by ${REQUESTING_USER}";
+                                            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Server successfully re-configured as a slave nameserver by ${REQUESTING_USER}";
 
                                             ## now we need to update our application config
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Modifying system configuration..";
 
                                             ## take a backup and make a working copy
-                                            TMP_NAMED_CONFIG=${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(grep named_config_file ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2- | sed -e 's| ||g' | cut -d "/" -f 2);
-                                            BKUP_NAMED_CONFIG=${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(grep named_config_file ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2- | sed -e 's| ||g' | cut -d "/" -f 2).${CHANGE_NUM};
+                                            TMP_NAMED_CONFIG=${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(grep named_config_file ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2- | sed -e 's/^ *//g;s/ *$//g' | cut -d "/" -f 2);
+                                            BKUP_NAMED_CONFIG=${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(grep named_config_file ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2- | sed -e 's/^ *//g;s/ *$//g' | cut -d "/" -f 2).${CHANGE_NUM};
 
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_NAMED_CONFIG -> ${TMP_NAMED_CONFIG}";
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BKUP_NAMED_CONFIG -> ${BKUP_NAMED_CONFIG}";
@@ -509,7 +513,7 @@ function switch_to_slave
                                                             if [ ${TMP_CONF_CKSUM} -eq ${OP_CONF_CKSUM} ]
                                                             then
                                                                 ## they do. respond with success
-                                                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local config switch -> master_nameserver modification - performed by ${REQUESTING_USER}.";
+                                                                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local config switch -> master_nameserver modification - performed by ${REQUESTING_USER}.";
                                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                                                                 RETURN_CODE=0;
@@ -549,8 +553,8 @@ function switch_to_slave
                                                 RETURN_CODE=57;
                                             fi
                                         else
-                                            ## failed to copy in the new file. error
-                                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while re-configuring server as a slave. Please try again.";
+                                            ## failed to copy in the new file. "ERROR"
+                                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while re-configuring server as a slave. Please try again.";
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                                             RETURN_CODE=83;
@@ -570,14 +574,14 @@ function switch_to_slave
                                     RETURN_CODE=80;
                                 fi
                             else
-                                ## failed to make a working copy. error
+                                ## failed to make a working copy. "ERROR"
                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to create temporary file. Please process manually.";
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                                 RETURN_CODE=47;
                             fi
                         else
-                            ## failed to make a backup of primary config. error
+                            ## failed to make a backup of primary config. "ERROR"
                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to create primary configuration backup. Please process manually.";
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -591,14 +595,14 @@ function switch_to_slave
                         RETURN_CODE=81;
                     fi
                 else
-                    ## an error occurred moving one or more directories. fail.
+                    ## an "ERROR" occurred moving one or more directories. fail.
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to re-locate one or more zone directories. Please process manually.";
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                     RETURN_CODE=84;
                 fi
             else
-                ## zone file backup failed. error.
+                ## zone file backup failed. "ERROR".
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to create a backup of existing zonefiles. Please process manually.";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -671,7 +675,7 @@ function switch_to_master
                 then
                     ## ok. we've got our files where we want them. great news. keep going
                     ## update the zone config files
-                    ## make sure error counter is zero
+                    ## make sure "ERROR" counter is zero
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decompression verified. Continuing..";
 
                     ERROR_COUNT=0;
@@ -758,7 +762,7 @@ function switch_to_master
                                                 if [ $(grep -c ${DHCPD_UPDATE_KEY} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp) -ne 0 ]
                                                 then
                                                     ## successfully modified the allow-update clause. this is done.
-                                                    ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Dynamic zone ${ZONE_NAME} successfully updated by ${REQUESTING_USER}.";
+                                                    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Dynamic zone ${ZONE_NAME} successfully updated by ${REQUESTING_USER}.";
 
                                                     mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG};
                                                 else
@@ -769,7 +773,7 @@ function switch_to_master
                                                 fi
                                             else
                                                 ## not a dynamic zone, so this switch is complete
-                                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} successfully updated by ${REQUESTING_USER}.";
+                                                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} successfully updated by ${REQUESTING_USER}.";
                                             fi
                                         fi
 
@@ -781,14 +785,14 @@ function switch_to_master
                                     unset ZONE_NAME;
 
                                     ## ok, now its time to move the file into place
-                                    ## make sure our error counter is zero
+                                    ## make sure our "ERROR" counter is zero
                                     if [ ${ERROR_COUNT} -eq 0 ]
                                     then
                                         ## now we move the file into the proper place
                                         ## take a checksum first..
                                         TMP_CONF_CKSUM=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG} | awk '{print $1}');
 
-                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_OP_CKSUM -> ${TMP_OP_CKSUM}";
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_OP_CKSUM -> ${TMP_OP_CKSUM}";
 
                                         ## and move the file..
                                         mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG} ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONFIG};
@@ -801,28 +805,28 @@ function switch_to_master
                                         ## and now verify the checksums
                                         if [ ${TMP_CONF_CKSUM} != ${OP_CONF_CKSUM} ]
                                         then
-                                            ## checksum mismatch. error.
+                                            ## checksum mismatch. "ERROR".
                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksum mismatch for ${ZONE_CONFIG}";
 
                                             (( ERROR_COUNT += 1 ));
                                         else
                                             ## success!
-                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_CONFIG} successfully re-configured by ${REQUESTING_USER}";
+                                            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_CONFIG} successfully re-configured by ${REQUESTING_USER}";
                                         fi
                                     else
-                                        ## an error occurred re-configuring the zone
-                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred during reconfiguration of dynamic zone ${ZONE_CONFIG}. Please process manually.";
+                                        ## an "ERROR" occurred re-configuring the zone
+                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred during reconfiguration of dynamic zone ${ZONE_CONFIG}. Please process manually.";
 
                                         (( ERROR_COUNT += 1 ));
                                     fi
                                 else
-                                    ## failed to reconfig this zone. error
+                                    ## failed to reconfig this zone. "ERROR"
                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Re-configuration of ${ZONE_CONFIG} failed. Failed to modify zone configuration from slave to master. Please process manually.";
 
                                     (( ERROR_COUNT += 1 ));
                                 fi
                             else
-                                ## failed to make a working copy. error
+                                ## failed to make a working copy. "ERROR"
                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to create a working copy of ${ZONE_CONFIG}. Please process manually.";
 
                                 (( ERROR_COUNT += 1 ));
@@ -915,7 +919,7 @@ function switch_to_master
                                         if [ ${TMP_CONF_CKSUM} -eq ${OP_CONF_CKSUM} ]
                                         then
                                             ## xlnt. we're done.
-                                            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Server successfully re-configured as a master nameserver by ${REQUESTING_USER}";
+                                            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Server successfully re-configured as a master nameserver by ${REQUESTING_USER}";
 
                                             ## clean up the tmp tarfile
                                             rm -rf ${MASTER_TAR};
@@ -924,8 +928,8 @@ function switch_to_master
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Modifying system configuration..";
 
                                             ## take a backup and make a working copy
-                                            TMP_NAMED_CONFIG=${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(grep named_config_file ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2- | sed -e 's| ||g' | cut -d "/" -f 2);
-                                            BKUP_NAMED_CONFIG=${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(grep named_config_file ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2- | sed -e 's| ||g' | cut -d "/" -f 2).${CHANGE_NUM};
+                                            TMP_NAMED_CONFIG=${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(grep named_config_file ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2- | sed -e 's/^ *//g;s/ *$//g' | cut -d "/" -f 2);
+                                            BKUP_NAMED_CONFIG=${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(grep named_config_file ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2- | sed -e 's/^ *//g;s/ *$//g' | cut -d "/" -f 2).${CHANGE_NUM};
 
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_NAMED_CONFIG -> ${TMP_NAMED_CONFIG}";
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BKUP_NAMED_CONFIG -> ${BKUP_NAMED_CONFIG}";
@@ -980,7 +984,7 @@ function switch_to_master
                                                             if [ ${TMP_CONF_CKSUM} -eq ${OP_CONF_CKSUM} ]
                                                             then
                                                                 ## they do. respond with success
-                                                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local config switch -> master_nameserver modification - performed by ${REQUESTING_USER}.";
+                                                                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local config switch -> master_nameserver modification - performed by ${REQUESTING_USER}.";
                                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                                                                 RETURN_CODE=0;
@@ -1020,8 +1024,8 @@ function switch_to_master
                                                 RETURN_CODE=57;
                                             fi
                                         else
-                                            ## failed to copy in the new file. error
-                                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while re-configuring server as a master. Please try again.";
+                                            ## failed to copy in the new file. "ERROR"
+                                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while re-configuring server as a master. Please try again.";
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                                             RETURN_CODE=83;
@@ -1041,14 +1045,14 @@ function switch_to_master
                                     RETURN_CODE=80;
                                 fi
                             else
-                                ## failed to make a working copy. error
+                                ## failed to make a working copy. "ERROR"
                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to create temporary file. Please process manually.";
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                                 RETURN_CODE=47;
                             fi
                         else
-                            ## failed to make a backup of primary config. error
+                            ## failed to make a backup of primary config. "ERROR"
                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to create primary configuration backup. Please process manually.";
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -1062,14 +1066,14 @@ function switch_to_master
                         RETURN_CODE=81;
                     fi
                 else
-                    ## ok, it didnt untar correctly. something broke. return an error
+                    ## ok, it didnt untar correctly. something broke. return an "ERROR"
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decompression of master tarfile failed. Unable to continue.";
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                     RETURN_CODE=85;
                 fi
             else
-                ## zone file backup failed. error.
+                ## zone file backup failed. "ERROR".
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to create a backup of existing zonefiles. Please process manually.";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -1114,7 +1118,7 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
     print "${CNAME} - Process a service re-configuration from a slave to a master";
-    print "Usage: ${CNAME} [ -p tarfile name ] [ -s ] [ -f ] [ -i audit user ] [ -c change order ] [ -e ] [ -? | -h ]";
+    print "Usage: ${CNAME} [ -p tarfile name ] [ -s ] [ -f ] [ -i "AUDIT" user ] [ -c change order ] [ -e ] [ -? | -h ]";
     print "  -p      Re-configure server as a master server. If provided, a tarfile name must also be provided.";
     print "  -s      Re-configure server as a slave server";
     print "  -f      Force re-configuration if master tarfile does not exist";
@@ -1229,7 +1233,7 @@ do
                     else
                         if [ -z "${MASTER_TAR}" ]
                         then
-                            ## we're missing the tar file argument. error
+                            ## we're missing the tar file argument. "ERROR"
                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REQUEST_TYPE is blank. Cannot continue.";
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -1258,13 +1262,18 @@ done
 
 shift ${OPTIND}-1;
 
-echo ${RETURN_CODE};
-
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
+
+unset SCRIPT_ABSOLUTE_PATH;
+unset SCRIPT_ROOT;
+unset OPTIND;
+unset THIS_CNAME;
+unset RET_CODE;
+unset CNAME;
+unset METHOD_NAME;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-exit ${RETURN_CODE};
-
+return ${RETURN_CODE};

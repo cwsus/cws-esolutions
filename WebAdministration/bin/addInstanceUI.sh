@@ -18,7 +18,6 @@
 #==============================================================================
 
 ## Application constants
-[ -z "${PLUGIN_NAME}" ] && PLUGIN_NAME="WebAdministration";
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
@@ -44,7 +43,7 @@ function main
 
     if [[ ! -z "${IS_WEB_BUILD_ENABLED}" && "${IS_WEB_BUILD_ENABLED}" != "${_TRUE}" ]]
     then
-        $(${LOGGER} "ERROR" ${METHOD_NAME} ${CNAME} ${LINENO} "Web builds has not been enabled. Cannot continue.");
+        $(${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Web builds has not been enabled. Cannot continue.");
 
         print "$(grep -w request.not.authorized "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
@@ -191,7 +190,7 @@ function main
 
                                                 if [[ ${CHANGE_NUM} == [Ee] ]] || [ $(${APP_ROOT}/lib/validators/validate_change_ticket.sh ${CHANGE_NUM}) -ne 0 ]
                                                 then
-                                                    ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A change was attempted with an invalid change order by ${IUSER_AUDIT}. Change request was ${CHANGE_NUM}.";
+                                                    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A change was attempted with an invalid change order by ${IUSER_AUDIT}. Change request was ${CHANGE_NUM}.";
                                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An invalid change control was provided. A valid change control number is required to process the request.";
 
                                                     unset CHANGE_NUM;
@@ -293,7 +292,7 @@ local METHOD_NAME="${CNAME}#${0}";
                                                             esac
                                                         done
                                                     else
-                                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred processing installation for ${SERVER_ID}. RET_CODE -> ${RET_CODE}.";
+                                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred processing installation for ${SERVER_ID}. RET_CODE -> ${RET_CODE}.";
 
                                                         unset VHOST_NAME;
                                                         unset ENABLE_WEBSPHERE;
@@ -461,7 +460,7 @@ local METHOD_NAME="${CNAME}#${0}";
                         ## doesnt, its not supported with this utility
                         if [ $(getWebInfo | grep -w ${SITE_HOSTNAME} | wc -l) != 0 ]
                         then
-                            ## site already exists, error out
+                            ## site already exists, "ERROR" out
                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A site with hostname ${SITE_HOSTNAME} already exists. Cannot continue.";
 
                             unset SITE_HOSTNAME;
@@ -766,7 +765,7 @@ function buildServerInstance
 
                             if [[ ${CHANGE_NUM} == [Ee] ]] || [ $(${APP_ROOT}/lib/validators/validate_change_ticket.sh ${CHANGE_NUM}) -ne 0 ]
                             then
-                                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A change was attempted with an invalid change order by ${IUSER_AUDIT}. Change request was ${CHANGE_NUM}.";
+                                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A change was attempted with an invalid change order by ${IUSER_AUDIT}. Change request was ${CHANGE_NUM}.";
                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An invalid change control was provided. A valid change control number is required to process the request.";
 
                                 unset CHANGE_NUM;
@@ -866,7 +865,7 @@ function buildServerInstance
                                         esac
                                     done
                                 else
-                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred processing installation for ${SERVER_ID}. RET_CODE -> ${RET_CODE}.";
+                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred processing installation for ${SERVER_ID}. RET_CODE -> ${RET_CODE}.";
 
                                     unset VHOST_NAME;
                                     unset ENABLE_WEBSPHERE;
@@ -1096,7 +1095,7 @@ function buildServerInstance
     done
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh ]] && . ${SCRIPT_ROOT}/../lib/${PLUGIN_NAME}.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 METHOD_NAME="${CNAME}#startup";

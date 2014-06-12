@@ -68,13 +68,13 @@ function add_zone_addr
             if [ ! -z "${RECORD_TYPE}" ]
             then
                 ## set up our record information
-                ## service records are special because theres ALOT of info
+                ## service records are special because theres ALOT of "INFO"
                 ## in them
                 ## service records are constructed as follows:
                 ##_service._protocol.name TTL Class SRV Priority Weight Port Target
                 ## sample (email record for smtp):
                 ## _submission._tcp.email.caspersbox.com 86400 IN SRV 10 10 25 caspersb-r1b13.caspersbox.com
-                ## see http://en.wikipedia.org/wiki/SRV_record for more info
+                ## see http://en.wikipedia.org/wiki/SRV_record for more "INFO"
                 ## set up our record information
                 SRV_TYPE=$(echo ${IP_ADDR} | cut -d "," -f 1);
                 SRV_PROTOCOL=$(echo ${IP_ADDR} | cut -d "," -f 2);
@@ -94,11 +94,11 @@ function add_zone_addr
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SRV_PORT->${SRV_PORT}";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SRV_TARGET->${SRV_TARGET}";
 
-                ## check to make sure we have the information, if not, throw an error
+                ## check to make sure we have the information, if not, throw an "ERROR"
                 if [ -z "${SRV_TYPE}" ] || [ -z "${SRV_PROTOCOL}" ] || [ -z "${SRV_NAME}" ] || [ -z "${SRV_TTL}" ] ||
                     [ -z "${SRV_PRIORITY}" ] || [ -z "${SRV_WEIGHT}" ] || [ -z "${SRV_PORT}" ] || [ -z "${SRV_TARGET}" ]
                 then
-                    ## something was blank. return an error
+                    ## something was blank. return an "ERROR"
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A required entry was blank. Cannot continue.";
                     RETURN_CODE=30;
                 else
@@ -115,7 +115,7 @@ function add_zone_addr
                         ## record was successfully written
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printed ${RECORD_TYPE} record to ${DC_ZONEFILE_NAME}";
 
-                        ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONEFILE_NAME} updated on $(date +"%m-%d-%Y") by ${IUSER_AUDIT} per change ${CHANGE_NUM}";
+                        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONEFILE_NAME} updated on $(date +"%m-%d-%Y") by ${IUSER_AUDIT} per change ${CHANGE_NUM}";
                         RETURN_CODE=0;
                     else
                         ## record wasnt written properly to one or more zone files
@@ -126,13 +126,13 @@ function add_zone_addr
                     fi
                 fi
             else
-                ## record type is blank, send an error
+                ## record type is blank, send an "ERROR"
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No RECORD_TYPE was provided.";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
                 RETURN_CODE=30;
             fi
         else
-            ## zone file doesnt exist or is blank, send an error
+            ## zone file doesnt exist or is blank, send an "ERROR"
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "The zone provided either does not exist or is empty.";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
             RETURN_CODE=30;
@@ -146,13 +146,13 @@ function add_zone_addr
             if [ ! -z "${RECORD_TYPE}" ]
             then
                 ## set up our record information
-                ## service records are special because theres ALOT of info
+                ## service records are special because theres ALOT of "INFO"
                 ## in them
                 ## service records are constructed as follows:
                 ##_service._protocol.name TTL Class SRV Priority Weight Port Target
                 ## sample (email record for smtp):
                 ## _submission._tcp.email.caspersbox.com 86400 IN SRV 10 10 25 mail.caspersbox.com
-                ## see http://en.wikipedia.org/wiki/SRV_record for more info
+                ## see http://en.wikipedia.org/wiki/SRV_record for more "INFO"
                 ## set up our record information
                 SRV_TYPE=$(echo ${IP_ADDR} | cut -d "," -f 1);
                 SRV_PROTOCOL=$(echo ${IP_ADDR} | cut -d "," -f 2);
@@ -172,11 +172,11 @@ function add_zone_addr
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SRV_PORT->${SRV_PORT}";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SRV_TARGET->${SRV_TARGET}";
 
-                ## check to make sure we have the information, if not, throw an error
+                ## check to make sure we have the information, if not, throw an "ERROR"
                 if [ -z "${SRV_TYPE}" || -z "${SRV_PROTOCOL}" || -z "${SRV_NAME}" || -z "${SRV_TTL}" ] ||
                     [ -z "${SRV_PRIORITY}" || -z "${SRV_WEIGHT}" || -z "${SRV_PORT}" || -z "${SRV_TARGET}" ]
                 then
-                    ## something was blank. return an error
+                    ## something was blank. return an "ERROR"
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A required entry was blank. Cannot continue.";
                     RETURN_CODE=30;
                 else
@@ -191,7 +191,7 @@ function add_zone_addr
                         ## record was successfully written
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printed ${RECORD_TYPE} record to ${DC_ZONEFILE_NAME}";
 
-                        ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONEFILE_NAME} updated on $(date +"%m-%d-%Y") by ${IUSER_AUDIT} per change ${CHANGE_NUM}";
+                        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONEFILE_NAME} updated on $(date +"%m-%d-%Y") by ${IUSER_AUDIT} per change ${CHANGE_NUM}";
                         RETURN_CODE=0;
                     else
                         ## record wasnt written properly to one or more zone files
@@ -202,13 +202,13 @@ function add_zone_addr
                     fi
                 fi
             else
-                ## record type is blank, send an error
+                ## record type is blank, send an "ERROR"
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No RECORD_TYPE was provided.";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
                 RETURN_CODE=30;
             fi
         else
-            ## zone file doesnt exist or is blank, send an error
+            ## zone file doesnt exist or is blank, send an "ERROR"
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "The zone provided either does not exist or is empty.";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
             RETURN_CODE=30;
@@ -254,13 +254,13 @@ function add_subdomains
             printf "\n\$ORIGIN ${ZONE_NAME}.\n" >> ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/${DC_ZONEFILE_NAME};
         fi
 
-        ## service records are special because theres ALOT of info
+        ## service records are special because theres ALOT of "INFO"
         ## in them
         ## service records are constructed as follows:
         ##_service._protocol.name TTL Class SRV Priority Weight Port Target
         ## sample (email record for smtp):
         ## _submission._tcp.email.caspersbox.com 86400 IN SRV 10 10 25 mail.caspersbox.com
-        ## see http://en.wikipedia.org/wiki/SRV_record for more info
+        ## see http://en.wikipedia.org/wiki/SRV_record for more "INFO"
         ## set up our record information
         SRV_TYPE=$(echo ${IP_ADDR} | cut -d "," -f 1);
         SRV_PROTOCOL=$(echo ${IP_ADDR} | cut -d "," -f 2);
@@ -280,11 +280,11 @@ function add_subdomains
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SRV_PORT->${SRV_PORT}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SRV_TARGET->${SRV_TARGET}";
 
-        ## check to make sure we have the information, if not, throw an error
+        ## check to make sure we have the information, if not, throw an "ERROR"
         if [ -z "${SRV_TYPE}" || -z "${SRV_PROTOCOL}" || -z "${SRV_NAME}" || -z "${SRV_TTL}" ] ||
             [ -z "${SRV_PRIORITY}" || -z "${SRV_WEIGHT}" || -z "${SRV_PORT}" || -z "${SRV_TARGET}" ]
         then
-            ## something was blank. return an error
+            ## something was blank. return an "ERROR"
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A required entry was blank. Cannot continue.";
             RETURN_CODE=30;
         else
@@ -301,7 +301,7 @@ function add_subdomains
                 ## record was successfully written
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printed ${RECORD_TYPE} record to ${DC_ZONEFILE_NAME}";
 
-                ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONEFILE_NAME} updated on $(date +"%m-%d-%Y") by ${IUSER_AUDIT} per change ${CHANGE_NUM}";
+                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONEFILE_NAME} updated on $(date +"%m-%d-%Y") by ${IUSER_AUDIT} per change ${CHANGE_NUM}";
                 RETURN_CODE=0;
             else
                 ## record wasnt written properly to one or more zone files
@@ -335,7 +335,7 @@ function add_subdomains
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
     else
-        ## zone files dont exist, return an error back
+        ## zone files dont exist, return an "ERROR" back
         unset PROJECT_CODE;
         unset ZONE_NAME;
         unset ZONEFILE_NAME;
@@ -376,7 +376,7 @@ function usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    print "${CNAME} - Add audit indicators and other flags to the failover zone file";
+    print "${CNAME} - Add "AUDIT" indicators and other flags to the failover zone file";
     print "Usage: ${CNAME} [-b business unit] [-p project code] [-z zone name] [-i requestor] [-c change request] [-t address type] [-a record information] [-d datacenter] [-r|s] [-?|-h show this help]";
     print "  -b      The associated business unit.";
     print "  -p      The associated project code";
@@ -587,6 +587,14 @@ shift ${OPTIND}-1;
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
+
+unset SCRIPT_ABSOLUTE_PATH;
+unset SCRIPT_ROOT;
+unset OPTIND;
+unset THIS_CNAME;
+unset RET_CODE;
+unset CNAME;
+unset METHOD_NAME;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;

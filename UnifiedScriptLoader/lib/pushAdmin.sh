@@ -26,8 +26,8 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 [[ -z "${APP_ROOT}" && ! -s ${SCRIPT_ROOT}/../lib/constants.sh ]] && echo "Failed to locate configuration data. Cannot continue." && exit 1;
 [ -z "${APP_ROOT}" ] && . ${SCRIPT_ROOT}/../lib/constants.sh;
 
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 METHOD_NAME="${CNAME}#startup";
 
@@ -51,7 +51,7 @@ function buildPlugin
     [[ ! -z ${VERBOSE} && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating plugin bundle..";
 
     ## create a temp file with the release date in it.. this will get cleaned up afterwords
-    echo "${PLUGIN} version ${VERSION} built on $(date +"%Y-%m-%d %H:%M:%S") by ${IUSER_AUDIT}" > ${PLUGIN_CONF_ROOT}/etc/${PLUGIN}.version;
+    print "${PLUGIN} version ${VERSION} built on $(date +"%Y-%m-%d %H:%M:%S") by ${IUSER_AUDIT}" > ${PLUGIN_CONF_ROOT}/etc/${PLUGIN}.version;
 
     for TARGET_HOSTNAME in list-of-servers
     do
@@ -63,8 +63,8 @@ function buildPlugin
         ## make sure backups were created
         if [ "$(ls ${APP_ROOT}/${TMP_DIRECTORY}/${PLUGIN}-${TARGET_HOSTNAME}-config)-${CURRENT_TIMESTAMP}" = "" ]
         then
-            ## error occurred
-            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while obtaining a backup for node ${TARGET_HOSTNAME}. Please process manually.";
+            ## "ERROR" occurred
+            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while obtaining a backup for node ${TARGET_HOSTNAME}. Please process manually.";
 
             (( ERROR_COUNT += 1 ));
 
@@ -75,7 +75,7 @@ function buildPlugin
 
         if [ "$(ls ${APP_ROOT}/${TMP_DIRECTORY}/${PLUGIN}-${TARGET_HOSTNAME}-lib)-${CURRENT_TIMESTAMP}" = "" ]
         then
-            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while obtaining a backup for node ${TARGET_HOSTNAME}. Please process manually.";
+            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while obtaining a backup for node ${TARGET_HOSTNAME}. Please process manually.";
 
             (( ERROR_COUNT += 1 ));
 
@@ -89,7 +89,7 @@ function buildPlugin
 
         if [[ -z "${RET_CODE}" || ${RET_CODE} -ne 0 ]]
         then
-            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while distributing the plugin for node ${TARGET_HOSTNAME}. Please process manually.";
+            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while distributing the plugin for node ${TARGET_HOSTNAME}. Please process manually.";
 
             (( ERROR_COUNT += 1 ));
 
@@ -101,14 +101,14 @@ function buildPlugin
 
         if [[ -z "${RET_CODE}" || ${RET_CODE} -ne 0 ]]
         then
-            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while distributing the plugin for node ${TARGET_HOSTNAME}. Please process manually.";
+            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while distributing the plugin for node ${TARGET_HOSTNAME}. Please process manually.";
 
             (( ERROR_COUNT += 1 ));
 
             continue;
         fi
 
-        ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Distribution to webnode ${WEBNODE} successfully completed by ${IUSER_AUDIT}.";
+        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Distribution to webnode ${WEBNODE} successfully completed by ${IUSER_AUDIT}.";
     done
 
     [ -f ${PLUGIN_CONF_ROOT}/etc/${PLUGIN}.version ] && rm ${PLUGIN_CONF_ROOT}/etc/${PLUGIN}.version;
@@ -225,4 +225,18 @@ done
 
 shift ${OPTIND}-1;
 
-exit ${RETURN_CODE};
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
+
+unset SCRIPT_ABSOLUTE_PATH;
+unset SCRIPT_ROOT;
+unset OPTIND;
+unset THIS_CNAME;
+unset RET_CODE;
+unset CNAME;
+unset METHOD_NAME;
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+return ${RETURN_CODE};

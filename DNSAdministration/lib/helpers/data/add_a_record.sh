@@ -77,7 +77,7 @@ function add_zone_addr
                 if [ $(grep -c "${RECORD_TYPE}       ${IP_ADDR}" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/${DC_ZONEFILE_NAME}) -ge 1 ] ||
                     [ $(grep -c "${RECORD_TYPE}       ${IP_ADDR}" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/${DC_ZONEFILE_NAME}) -ge 1 ]
                 then
-                    ## record already exists, return an error
+                    ## record already exists, return an "ERROR"
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A record for ${RECORD_TYPE}, ${IP_ADDR} already exists. Cannot add duplicate.";
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
                     RETURN_CODE=43;
@@ -105,7 +105,7 @@ function add_zone_addr
                         unset DATACENTER;
                         unset BUSINESS_UNIT;
 
-                        ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONEFILE_NAME} updated on $(date +"%m-%d-%Y") by ${IUSER_AUDIT} per change ${CHANGE_NUM}";
+                        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONEFILE_NAME} updated on $(date +"%m-%d-%Y") by ${IUSER_AUDIT} per change ${CHANGE_NUM}";
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
                         RETURN_CODE=0;
                     else
@@ -128,7 +128,7 @@ function add_zone_addr
                 fi
             fi
         else
-            ## zone file doesnt exist or is blank, send an error
+            ## zone file doesnt exist or is blank, send an "ERROR"
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "The zone provided either does not exist or is empty.";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
             RETURN_CODE=30;
@@ -151,7 +151,7 @@ function add_zone_addr
                 ## duplicates are just messy
                 if [ $(grep -c "${RECORD_TYPE}       ${IP_ADDR}" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${DATACENTER}/${DC_ZONEFILE_NAME}) -ge 1 ]
                 then
-                    ## record already exists, return an error
+                    ## record already exists, return an "ERROR"
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A record for ${RECORD_TYPE}, ${IP_ADDR} already exists. Cannot add duplicate.";
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
                     RETURN_CODE=43;
@@ -177,7 +177,7 @@ function add_zone_addr
                         unset DATACENTER;
                         unset BUSINESS_UNIT;
 
-                        ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONEFILE_NAME} updated on $(date +"%m-%d-%Y") by ${IUSER_AUDIT} per change ${CHANGE_NUM}";
+                        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONEFILE_NAME} updated on $(date +"%m-%d-%Y") by ${IUSER_AUDIT} per change ${CHANGE_NUM}";
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
                         RETURN_CODE=0;
                     else
@@ -200,7 +200,7 @@ function add_zone_addr
                 fi
             fi
         else
-            ## zone file doesnt exist or is blank, send an error
+            ## zone file doesnt exist or is blank, send an "ERROR"
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "The zone provided either does not exist or is empty.";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
             RETURN_CODE=30;
@@ -224,7 +224,7 @@ function add_subdomains
 
     if [ ! -z "${ADD_EXISTING_RECORD}" ] && [ "${ADD_EXISTING_RECORD}" = "${_TRUE}" ]
     then
-        ## we're adding a new entry to an existing zone. we have the info we need, so lets pop
+        ## we're adding a new entry to an existing zone. we have the "INFO" we need, so lets pop
         ## it up and get it done
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding ${ALIAS}      IN      ${RECORD_TYPE}      ${IPADDR} to ${ZONE_NAME}..";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command run_addition -b ${BUSINESS_UNIT} -p ${PROJECT_CODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -a ${RECORD_TYPE},${IP_ADDR} -e";
@@ -246,12 +246,12 @@ function add_subdomains
         if [ ${RET_CODE} -eq 0 ]
         then
             ## successfully added record to service
-            ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone Addition: Zone: ${ZONE_NAME}; Record Type: ${RECORD_TYPE}; Record Detail: ${IP_ADDR} added by ${IUSER_AUDIT} on $(date +"%m-%d-%Y")";
+            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone Addition: Zone: ${ZONE_NAME}; Record Type: ${RECORD_TYPE}; Record Detail: ${IP_ADDR} added by ${IUSER_AUDIT} on $(date +"%m-%d-%Y")";
 
             RETURN_CODE=0;
         else
-            ## some error occurred
-            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while processing the zone addition. Please review logs to determine failure.";
+            ## some "ERROR" occurred
+            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while processing the zone addition. Please review logs to determine failure.";
 
             RETURN_CODE=${RET_CODE};
         fi
@@ -328,7 +328,7 @@ function add_subdomains
                     ## record was successfully written
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printed ${RECORD_TYPE} record to ${DC_ZONEFILE_NAME}";
 
-                    ${LOGGER} AUDIT "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONEFILE_NAME} updated on $(date +"%m-%d-%Y") by ${IUSER_AUDIT} per change ${CHANGE_NUM}";
+                    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONEFILE_NAME} updated on $(date +"%m-%d-%Y") by ${IUSER_AUDIT} per change ${CHANGE_NUM}";
 
                     ## unset variables
                     unset PROJECT_CODE;
@@ -382,7 +382,7 @@ function add_subdomains
                 fi
             fi
         else
-            ## zone files dont exist, return an error back
+            ## zone files dont exist, return an "ERROR" back
             unset PROJECT_CODE;
             unset ZONE_NAME;
             unset ZONEFILE_NAME;
@@ -426,7 +426,7 @@ function usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    print "${CNAME} - Add audit indicators and other flags to the failover zone file";
+    print "${CNAME} - Add "AUDIT" indicators and other flags to the failover zone file";
     print "Usage: ${CNAME} [-b business unit] [-p project code] [-z zone name] [-i requestor] [-c change request] [-t address type] [-a record information] [-d datacenter] [-r|s] [-?|-h show this help]";
     print "  -b      The associated business unit.";
     print "  -p      The associated project code";
@@ -642,6 +642,14 @@ shift ${OPTIND}-1;
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
+
+unset SCRIPT_ABSOLUTE_PATH;
+unset SCRIPT_ROOT;
+unset OPTIND;
+unset THIS_CNAME;
+unset RET_CODE;
+unset CNAME;
+unset METHOD_NAME;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
