@@ -1,4 +1,4 @@
-#!/usr/bin/env ksh
+#!/usr/bin/ksh -x
 #==============================================================================
 #
 #          FILE:  validateChangeTicket.sh
@@ -43,7 +43,7 @@ function validateChangeNumber
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
         return ${RETURN_CODE};
-    elif [ ${#1} -lt 8 ]
+    elif [ ${#1} -lt 8 ] && [[ ${1} != [Ee] ]]
     then
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -66,6 +66,10 @@ function validateChangeNumber
             RETURN_CODE=0;
             ;;
         @([Ee]*)) ## emergency change order
+            CHANGE_CONTROL="E-$(date +"%m-%d-%Y_%H:%M:%S")";
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_CONTROL -> ${CHANGE_CONTROL}";
+
             RETURN_CODE=0;
             ;;
         *)
@@ -74,6 +78,11 @@ function validateChangeNumber
             ;;
     esac
 
+    [ ${RETURN_CODE} -eq 0 ] && [ ! -z "${CHANGE_CONTROL}" ] && CHANGE_CONTROL=${CHANGE_CONTROL};
+    [ ${RETURN_CODE} -eq 0 ] && [ -z "${CHANGE_CONTROL}" ] && CHANGE_CONTROL=${1};
+    [ ! -z "${CHANGE_CONTROL}" ] && export CHANGE_CONTROL;
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_CONTROL -> ${CHANGE_CONTROL}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -91,6 +100,7 @@ METHOD_NAME="${CNAME}#startup";
 
 validateChangeNumber ${1};
 
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_CONTROL -> ${CHANGE_CONTROL}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
 

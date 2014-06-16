@@ -1,4 +1,4 @@
-#!/usr/bin/env ksh
+#!/usr/bin/ksh -x
 #==============================================================================
 #
 #          FILE:  obtainChangeControl.sh
@@ -72,23 +72,14 @@ function main
 
                 reset; clear;
 
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Role swap request canceled.";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request canceled.";
 
                 print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                 sleep "${MESSAGE_DELAY}"; reset; clear; break;
                 ;;
             *)
-                if [[ ${ANSWER} == [Ee] ]]
-                then
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change specified as emergency..";
-
-                    local ANSWER="E-$(date +"%m-%d-%Y_%H:%M:%S")";
-
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ANSWER -> ${ANSWER}";
-                fi
-
-                ${APP_ROOT}/${LIB_DIRECTORY}/validators/validateChangeTicket.sh ${ANSWER};
+                . ${APP_ROOT}/${LIB_DIRECTORY}/validators/validateChangeTicket.sh ${ANSWER};
                 local RET_CODE=${?};
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
@@ -96,7 +87,6 @@ function main
                 if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
                 then
                     ## change request invalid
-                    ## change control provided was invalid
                     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A change was attempted with an invalid change order by ${IUSER_AUDIT}. Change request was ${ANSWER}.";
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An invalid change control was provided. A valid change control number is required to process the request.";
 
@@ -107,15 +97,12 @@ function main
                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 fi
 
-                typeset -rx CHANGE_CONTROL=${ANSWER};
-
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_CONTROL -> ${CHANGE_CONTROL}";
-
                 reset; clear; break;
                 ;;
         esac
     done
 
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_CONTROL -> ${CHANGE_CONTROL}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 

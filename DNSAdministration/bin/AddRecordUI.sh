@@ -1,4 +1,4 @@
-#!/usr/bin/env ksh
+#!/usr/bin/ksh -x
 #==============================================================================
 #
 #          FILE:  addRecordUI.sh
@@ -468,7 +468,6 @@ function provideSiteHostname
                 unset CCTLD_VALID;
                 unset GTLD_VALID;
                 unset REQUESTED_TLD;
-                unset SITE_HOSTNAME;
 
                 ## make sure there isnt already a zone with this hostname
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Calling retrieve_service to ensure that no records exist with ${SITE_HOSTNAME}..";
@@ -663,7 +662,7 @@ function provideChangeControl
         reset; clear;
 
         ## validate the input
-        ${APP_ROOT}/${BIN_DIRECTORY}/obtainChangeControl.sh;
+        . ${APP_ROOT}/${BIN_DIRECTORY}/obtainChangeControl.sh;
 
         reset; clear;
 
