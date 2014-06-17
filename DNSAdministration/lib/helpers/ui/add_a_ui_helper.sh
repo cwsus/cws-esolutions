@@ -1,4 +1,4 @@
-#!/usr/bin/env ksh
+#!/usr/bin/ksh -x
 #==============================================================================
 #
 #          FILE:  add_a_ui_helper.sh
@@ -17,18 +17,18 @@
 #      REVISION:  ---
 #==============================================================================
 
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+
 ## Application constants
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
-
-[ -z "${PLUGIN_ROOT_DIR}" ] && exit 0;
+typeset -i OPTIND=0;
+METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-
-typeset -i OPTIND=0;
-METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -60,14 +60,16 @@ function add_root_ui_helper
 
         reset; clear;
 
-        print "\t\t\t$(grep system.application.title ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2)\n";
-        print "\t$(grep add.enter.ipaddr.primary ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%PRIMARY_DATACENTER%/${PRIMARY_DC}/")";
-        print "\t$(grep system.option.cancel "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+        print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.enter.ipaddr.primary\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%PRIMARY_DATACENTER%/${PRIMARY_DATACENTER}/")\n";
+        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.option.cancel\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
         read PRIMARY_INFO;
 
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRIMARY_INFO -> ${PRIMARY_INFO}";
+
         reset; clear;
-        print "$(grep system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+
+        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
         case ${PRIMARY_INFO} in
             [Xx]|[Qq]|[Cc])
@@ -80,7 +82,7 @@ function add_root_ui_helper
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS query canceled.";
 
-                print "$(grep system.request.canceled ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2)\n";
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                 ## terminate this thread and return control to main
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -89,29 +91,58 @@ function add_root_ui_helper
                 sleep "${MESSAGE_DELAY}"; reset; clear; break;
                 ;;
             *)
-                if [ $(${PLUGIN_ROOT_DIR}/lib/validators/validate_ip_address.sh ${PRIMARY_INFO}) -ne 0 ]
+                THIS_CNAME="${CNAME}";
+                unset METHOD_NAME;
+                unset CNAME;
+
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+                ## validate the input
+                ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validateRecordData.sh address ${PRIMARY_INFO}
+                typeset -i RET_CODE=${?};
+
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+                CNAME="${THIS_CNAME}";
+                local METHOD_NAME="${THIS_CNAME}#${0}";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+                if [ ${RET_CODE} -eq 0 ]
                 then
                     unset PRIMARY_INFO;
                     unset RET_CODE;
 
                     reset; clear;
-                    print "$(grep ip.address.improperly.formatted "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+
+                    print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" '/\<ip.address.improperly.formatted\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+
                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 else
                     ## run the ip addr through the validator
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating record target..";
 
+                    ## unset methodname and cname
+                    local THIS_CNAME="${CNAME}";
                     unset METHOD_NAME;
                     unset CNAME;
 
-                    . ${PLUGIN_ROOT_DIR}/lib/validators/validate_record_target.sh a ${PRIMARY_INFO};
+                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+                    ## validate the input
+                    ${PLUGIN_ROOT_DIR}/lib/validators/validateRecordData.sh target a ${PRIMARY_INFO};
                     typeset -i RET_CODE=${?};
 
-                    ## reset methodname/cname
-                    CNAME="$(basename "${0}")";
-                    local METHOD_NAME="${CNAME}#${0}";
+                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validation complete. RET_CODE -> ${RET_CODE}";
+                    CNAME="${THIS_CNAME}";
+                    local METHOD_NAME="${THIS_CNAME}#${0}";
+
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
                     if [ ${RET_CODE} -eq 0 ] || [ ${RET_CODE} -eq 63 ] || [ ${RET_CODE} -eq 64 ]
                     then
@@ -119,23 +150,32 @@ function add_root_ui_helper
                         then
                             ## we got a warning on validation - we arent failing, but we do want to inform
                             ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A warning occurred during record validation - failed to validate that record is active.";
-                            print "$(grep ${RET_CODE} "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+
+                            [ -z "${RET_CODE} ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" '/\<99\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+                            [ ! -z "${RET_CODE} ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/\<\${RET_CODE}\>/{print \$2}" | sed -e 's/^ *//g;s/ *$//g')\n";
+
                             sleep "${MESSAGE_DELAY}";
                         fi
 
-                        ## IP address is formatted correctly, so we'll update our zone with it
-                        ## temporarily unset methodname and cname
+                        ## unset methodname and cname
+                        local THIS_CNAME="${CNAME}";
                         unset METHOD_NAME;
                         unset CNAME;
-                        unset RET_CODE;
-                        unset RETURN_CODE;
 
-                        . ${PLUGIN_ROOT_DIR}/lib/helpers/data/add_a_record.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -t A -a ${PRIMARY_INFO} -d ${PRIMARY_DC} -r;
+                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+                        ## validate the input
+                        ${PLUGIN_ROOT_DIR}/lib/helpers/data/add_a_record.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHANGE_CONTROL} -t A -a ${PRIMARY_INFO} -d ${PRIMARY_DC} -r;
                         typeset -i RET_CODE=${?};
 
-                        ## re-set methodname and cname
-                        local METHOD_NAME="${CNAME}#${0}";
-                        CNAME="$(basename "${0}")";
+                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+                        CNAME="${THIS_CNAME}";
+                        local METHOD_NAME="${THIS_CNAME}#${0}"
+
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
                         if [ ${RET_CODE} -eq 0 ]
                         then
@@ -157,14 +197,16 @@ function add_root_ui_helper
                                 reset; clear;
 
                                 ## added our primary ip, now lets get our secondary
-                                print "\t\t\t$(grep system.application.title ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2)\n";
-                                print "\t$(grep add.enter.ipaddr.secondary ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%SECONDARY_DATACENTER%/${SECONDARY_DC}/")";
-                                print "\t$(grep system.option.cancel "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.enter.ipaddr.secondary\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%SECONDARY_DATACENTER%/${SECONDARY_DATACENTER}/")\n";
+                                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.option.cancel\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                                 read SECONDARY_INFO;
 
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SECONDARY_INFO -> ${SECONDARY_INFO}";
+
                                 reset; clear;
-                                print "$(grep system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+
+                                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                                 case ${SECONDARY_INFO} in
                                     [Xx]|[Qq]|[Cc])
@@ -178,32 +220,63 @@ function add_root_ui_helper
 
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS query canceled.";
 
-                                        print "$(grep system.request.canceled ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2)\n";
+                                        print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                                         ## terminate this thread and return control to main
                                         CANCEL_REQ=${_TRUE};
+
                                         sleep "${MESSAGE_DELAY}"; reset; clear; break;
                                         ;;
                                     *)
-                                        if [ $(${PLUGIN_ROOT_DIR}/lib/validators/validate_ip_address.sh ${SECONDARY_INFO}) -ne 0 ]
+                                        THIS_CNAME="${CNAME}";
+                                        unset METHOD_NAME;
+                                        unset CNAME;
+
+                                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+                                        ## validate the input
+                                        ${PLUGIN_ROOT_DIR}/lib/validators/validateRecordData.sh address ${SECONDARY_INFO}
+                                        typeset -i RET_CODE=${?};
+
+                                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+                                        CNAME="${THIS_CNAME}";
+                                        local METHOD_NAME="${THIS_CNAME}#${0}";
+
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+                                        if [ ${RET_CODE} -ne 0 ]
                                         then
                                             unset SECONDARY_INFO;
                                             unset RET_CODE;
 
                                             reset; clear;
-                                            print "$(grep ip.address.improperly.formatted "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+
+                                            print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" '/\<ip.address.improperly.formatted\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+
                                             sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                         else
-                                            ## run the ip addr through the validator
+                                            ## unset methodname and cname
+                                            local THIS_CNAME="${CNAME}";
                                             unset METHOD_NAME;
                                             unset CNAME;
 
-                                            . ${PLUGIN_ROOT_DIR}/lib/validators/validate_record_target.sh a ${SECONDARY_INFO};
+                                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+                                            ## validate the input
+                                            ${PLUGIN_ROOT_DIR}/lib/validators/validateRecordData.sh target a ${SECONDARY_INFO};
                                             typeset -i RET_CODE=${?};
 
-                                            ## reset methodname/cname
-                                            CNAME="$(basename "${0}")";
-                                            local METHOD_NAME="${CNAME}#${0}";
+                                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+                                            CNAME="${THIS_CNAME}";
+                                            local METHOD_NAME="${THIS_CNAME}#${0}"
+
+                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
                                             if [ ${RET_CODE} -eq 0 ] || [ ${RET_CODE} -eq 63 ] || [ ${RET_CODE} -eq 64 ]
                                             then
@@ -211,24 +284,31 @@ function add_root_ui_helper
                                                 then
                                                     ## we got a warning on validation - we arent failing, but we do want to inform
                                                     ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A warning occurred during record validation - failed to validate that record is active.";
-                                                    print "$(grep ${RET_CODE} "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+
+                                                    print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/\<\${RET_CODE}\>/{print \$2}" | sed -e 's/^ *//g;s/ *$//g')\n";
+
                                                     sleep "${MESSAGE_DELAY}";
                                                 fi
 
-                                                ## ip addr is properly formatted
-                                                ## continue with request
-                                                ## temporarily unset things
-                                                unset CNAME;
+                                                ## unset methodname and cname
+                                                local THIS_CNAME="${CNAME}";
                                                 unset METHOD_NAME;
-                                                unset RET_CODE;
-                                                unset RETURN_CODE;
+                                                unset CNAME;
 
-                                                . ${PLUGIN_ROOT_DIR}/lib/helpers/data/add_a_record.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -t A -a ${SECONDARY_INFO} -d ${SECONDARY_DC} -r;
+                                                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                                                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+                                                ## validate the input
+                                                ${PLUGIN_ROOT_DIR}/lib/helpers/data/add_a_record.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHANGE_CONTROL} -t A -a ${SECONDARY_INFO} -d ${SECONDARY_DC} -r;
                                                 typeset -i RET_CODE=${?};
 
-                                                ## re-set methodname and cname
-                                                local METHOD_NAME="${CNAME}#${0}";
-                                                CNAME="$(basename "${0}")";
+                                                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                                                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+                                                CNAME="${THIS_CNAME}";
+                                                local METHOD_NAME="${THIS_CNAME}#${0}"
+
+                                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
                                                 if [ ${RET_CODE} -eq 0 ]
                                                 then
@@ -243,25 +323,32 @@ function add_root_ui_helper
                                                     ## ask the user if any additional information should be added,
                                                     ## if not, then we're ready to send
                                                     ADD_COMPLETE=${_TRUE};
+
                                                     reset; clear; break;
                                                 else
                                                     ## zone failed to update with secondary ip addr
                                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone update to add secondary IP FAILED. Return code -> ${RET_CODE}";
-                                                    print "$(grep ${RET_CODE} "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+
+                                                    [ -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/\<99\>/{print \$2}" | sed -e 's/^ *//g;s/ *$//g')\n";
+                                                    [ ! -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/\<\${RET_CODE}\>/{print \$2}" | sed -e 's/^ *//g;s/ *$//g')\n";
 
                                                     unset RET_CODE;
                                                     unset RETURN_CODE;
                                                     unset SECONDARY_INFO;
+
                                                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                                 fi
                                             else
                                                 ## failed to validate record.
                                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Secondary IP address provided failed validation. Cannot continue.";
-                                                print "$(grep ${RET_CODE} "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+
+                                                [ -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/\<99\>/{print \$2}" | sed -e 's/^ *//g;s/ *$//g')\n";
+                                                [ ! -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/\<\${RET_CODE}\>/{print \$2}" | sed -e 's/^ *//g;s/ *$//g')\n";
 
                                                 unset RET_CODE;
                                                 unset RETURN_CODE;
                                                 unset PRIMARY_INFO;
+
                                                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                             fi
                                         fi
@@ -271,21 +358,27 @@ function add_root_ui_helper
                         else
                             ## zone failed to update with primary ip addr
                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone update to add primary IP FAILED. Return code -> ${RET_CODE}";
-                            print "$(grep ${RET_CODE} "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+
+                            [ -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/\<99\>/{print \$2}" | sed -e 's/^ *//g;s/ *$//g')\n";
+                            [ ! -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/\<\${RET_CODE}\>/{print \$2}" | sed -e 's/^ *//g;s/ *$//g')\n";
 
                             unset RET_CODE;
                             unset RETURN_CODE;
                             unset PRIMARY_INFO;
+
                             sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                         fi
                     else
                         ## failed to validate record.
                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Primary IP address provided failed validation. Cannot continue.";
-                        print "$(grep ${RET_CODE} "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+
+                        [ -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/\<99\>/{print \$2}" | sed -e 's/^ *//g;s/ *$//g')\n";
+                        [ ! -z "${RET_CODE}" ] && print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_ERROR_MESSAGES} | awk -F "=" "/\<\${RET_CODE}\>/{print \$2}" | sed -e 's/^ *//g;s/ *$//g')\n";
 
                         unset RET_CODE;
                         unset RETURN_CODE;
                         unset PRIMARY_INFO;
+
                         sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                     fi
                 fi
@@ -349,12 +442,31 @@ function add_zone_ui_helper
 
                 reset; clear;
 
-                print "$(grep system.request.canceled ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2)\n";
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                 sleep "${MESSAGE_DELAY}"; reset; clear; break;
                 ;;
             *)
-                if [ $(${PLUGIN_ROOT_DIR}/lib/validators/validate_ip_address.sh ${RECORD_DETAIL}) -ne 0 ]
+                THIS_CNAME="${CNAME}";
+                unset METHOD_NAME;
+                unset CNAME;
+
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+                ## validate the input
+                ${PLUGIN_ROOT_DIR}/lib/validators/validateRecordData.sh address ${RECORD_DETAIL}
+                typeset -i RET_CODE=${?};
+
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+                CNAME="${THIS_CNAME}";
+                local METHOD_NAME="${THIS_CNAME}#${0}";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+                if [ ${RET_CODE} -ne 0 ]
                 then
                     ## an "ERROR" occurred in the validator
                     ## advise and retry
@@ -364,20 +476,24 @@ function add_zone_ui_helper
                     print "$(grep ip.address.improperly.formatted "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 else
-                    ## run the ip addr through the validator
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating target information..";
-
+                    THIS_CNAME="${CNAME}";
                     unset METHOD_NAME;
                     unset CNAME;
 
-                    . ${PLUGIN_ROOT_DIR}/lib/validators/validate_record_target.sh a ${RECORD_DETAIL};
+                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+                    ## validate the input
+                    ${PLUGIN_ROOT_DIR}/lib/validators/validateRecordData.sh target a ${RECORD_DETAIL}
                     typeset -i RET_CODE=${?};
 
-                    ## reset methodname/cname
-                    CNAME="$(basename "${0}")";
-                    local METHOD_NAME="${CNAME}#${0}";
+                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validation complete. RET_CODE -> ${RET_CODE}";
+                    CNAME="${THIS_CNAME}";
+                    local METHOD_NAME="${THIS_CNAME}#${0}";
+
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
                     if [ ${RET_CODE} -eq 0 ] || [ ${RET_CODE} -eq 63 ] || [ ${RET_CODE} -eq 64 ]
                     then
@@ -385,7 +501,9 @@ function add_zone_ui_helper
                         then
                             ## we got a warning on validation - we arent failing, but we do want to inform
                             ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A warning occurred during record validation - failed to validate that record is active.";
+
                             print "$(grep ${RET_CODE} "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+
                             sleep "${MESSAGE_DELAY}";
                         fi
 
@@ -393,6 +511,7 @@ function add_zone_ui_helper
                         ## continue with request
                         unset RET_CODE;
                         unset RETURN_CODE;
+
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Address record provided is ${RECORD_DETAIL}";
 
                         ## now we need to know where to apply the change
@@ -442,7 +561,7 @@ function add_zone_ui_helper
 
                                     ## we know what to add and where to add it.
                                     ## so lets do it
-                                    . ${PLUGIN_ROOT_DIR}/lib/helpers/data/add_${RECORD_TYPE}_record.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -t ${RECORD_TYPE} -a ${RECORD_DETAIL} -d ${DATACENTER} -r;
+                                    ${PLUGIN_ROOT_DIR}/lib/helpers/data/add_${RECORD_TYPE}_record.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -t ${RECORD_TYPE} -a ${RECORD_DETAIL} -d ${DATACENTER} -r;
                                     typeset -i RET_CODE=${?};
 
                                     ## reset vars
@@ -617,7 +736,7 @@ function add_subdomain_ui_helper
 
                                 reset; clear;
 
-                                print "$(grep system.request.canceled ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2)\n";
+                                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
                                 sleep "${MESSAGE_DELAY}"; reset; clear; break;
                                 ;;
@@ -630,89 +749,127 @@ function add_subdomain_ui_helper
                                     unset A_TARGET;
 
                                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                                elif [ $(${PLUGIN_ROOT_DIR}/lib/validators/validate_ip_address.sh ${A_TARGET}) -ne 0 ]
-                                then
-                                    ## an "ERROR" occurred in the validator
-                                    ## advise and retry
-                                    unset RECORD_DETAIL;
-
-                                    reset; clear;
-                                    print "$(grep ip.address.improperly.formatted "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                    sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                 else
-                                    ## run the ip addr through the validator
-                                    . ${PLUGIN_ROOT_DIR}/lib/validators/validate_record_target.sh a ${RECORD_DETAIL};
+                                    THIS_CNAME="${CNAME}";
+                                    unset METHOD_NAME;
+                                    unset CNAME;
+
+                                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+                                    ## validate the input
+                                    ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validateRecordData.sh address ${A_TARGET}
                                     typeset -i RET_CODE=${?};
 
-                                    if [ ${RET_CODE} -eq 0 ] || [ ${RET_CODE} -eq 63 ] || [ ${RET_CODE} -eq 64 ]
+                                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+                                    CNAME="${THIS_CNAME}";
+                                    local METHOD_NAME="${THIS_CNAME}#${0}";
+
+                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+                                    if [ ${RET_CODE} -eq 0 ]
                                     then
-                                        if [ ${RET_CODE} -eq 63 ] || [ ${RET_CODE} -eq 64 ]
-                                        then
-                                            ## we got a warning on validation - we arent failing, but we do want to inform
-                                            ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A warning occurred during record validation - failed to validate that record is active.";
-                                            print "$(grep ${RET_CODE} "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                            sleep "${MESSAGE_DELAY}";
-                                        fi
+                                        ## an "ERROR" occurred in the validator
+                                        ## advise and retry
+                                        unset RECORD_DETAIL;
 
-                                        unset RET_CODE;
+                                        reset; clear;
 
-                                        ## ip addr is properly formatted
-                                        ## continue with request
+                                        print "$(grep ip.address.improperly.formatted "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
-                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Address record provided is ${A_TARGET}";
-                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing add_${RECORD_TYPE}_record.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -t ${RECORD_TYPE} -a ${A_ALIAS},${A_TARGET} -s";
-
-                                        ## our provided address is valid.
-                                        ## make a call out to add_records
-                                        ## to process the request
-                                        ## couple things we could do here. we're being used to both
-                                        ## add records to brand new zones as well as add new entries
-                                        ## to existing zones. find out which we need to do
-                                        ## this is a new entry to a new zone
+                                        sleep "${MESSAGE_DELAY}"; reset; clear; continue;
+                                    else
+                                        THIS_CNAME="${CNAME}";
                                         unset METHOD_NAME;
                                         unset CNAME;
 
-                                        . ${PLUGIN_ROOT_DIR}/lib/helpers/data/add_${RECORD_TYPE}_record.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -t ${RECORD_TYPE} -a ${A_ALIAS},${A_TARGET} -s;
+                                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+                                        ## validate the input
+                                        ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validateRecordData.sh target a ${RECORD_DETAIL}
                                         typeset -i RET_CODE=${?};
 
-                                        ## reset vars
-                                        local METHOD_NAME="${CNAME}#${0}";
-                                        CNAME="$(basename "${0}")";
+                                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
-                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing complete. Return code -> ${RET_CODE}";
+                                        CNAME="${THIS_CNAME}";
+                                        local METHOD_NAME="${THIS_CNAME}#${0}";
 
-                                        if [ ${RET_CODE} -eq 0 ]
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+                                        if [ ${RET_CODE} -eq 0 ] || [ ${RET_CODE} -eq 63 ] || [ ${RET_CODE} -eq 64 ]
                                         then
-                                            unset RET_CODE;
-                                            unset RETURN_CODE;
-                                            unset A_ALIAS;
-                                            unset A_TARGET;
-                                            unset RECORD_TYPE;
+                                            if [ ${RET_CODE} -eq 63 ] || [ ${RET_CODE} -eq 64 ]
+                                            then
+                                                ## we got a warning on validation - we arent failing, but we do want to inform
+                                                ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A warning occurred during record validation - failed to validate that record is active.";
+                                                print "$(grep ${RET_CODE} "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                sleep "${MESSAGE_DELAY}";
+                                            fi
 
-                                            ## record added successfully
-                                            ## from here, we can break out back to main
-                                            ADD_COMPLETE=${_TRUE};
-                                            reset; clear; break;
+                                            unset RET_CODE;
+
+                                            ## ip addr is properly formatted
+                                            ## continue with request
+
+                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Address record provided is ${A_TARGET}";
+                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing add_${RECORD_TYPE}_record.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -t ${RECORD_TYPE} -a ${A_ALIAS},${A_TARGET} -s";
+
+                                            ## our provided address is valid.
+                                            ## make a call out to add_records
+                                            ## to process the request
+                                            ## couple things we could do here. we're being used to both
+                                            ## add records to brand new zones as well as add new entries
+                                            ## to existing zones. find out which we need to do
+                                            ## this is a new entry to a new zone
+                                            unset METHOD_NAME;
+                                            unset CNAME;
+
+                                            ${PLUGIN_ROOT_DIR}/lib/helpers/data/add_${RECORD_TYPE}_record.sh -b ${BIZ_UNIT} -p ${SITE_PRJCODE} -z "${SITE_HOSTNAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -t ${RECORD_TYPE} -a ${A_ALIAS},${A_TARGET} -s;
+                                            typeset -i RET_CODE=${?};
+
+                                            ## reset vars
+                                            local METHOD_NAME="${CNAME}#${0}";
+                                            CNAME="$(basename "${0}")";
+
+                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing complete. Return code -> ${RET_CODE}";
+
+                                            if [ ${RET_CODE} -eq 0 ]
+                                            then
+                                                unset RET_CODE;
+                                                unset RETURN_CODE;
+                                                unset A_ALIAS;
+                                                unset A_TARGET;
+                                                unset RECORD_TYPE;
+
+                                                ## record added successfully
+                                                ## from here, we can break out back to main
+                                                ADD_COMPLETE=${_TRUE};
+                                                reset; clear; break;
+                                            else
+                                                ## an "ERROR" occurred
+                                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while adding ${RECORD_TYPE} to ${SITE_HOSTNAME}. Return code from add_${RECORD_TYPE}_record.sh -> ${RET_CODE}";
+                                                print "$(grep ${RET_CODE} "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                unset RET_CODE;
+                                                unset RETURN_CODE;
+                                                unset A_TARGET;
+                                                unset A_ALIAS;
+
+                                                sleep "${MESSAGE_DELAY}"; reset; clear; break;
+                                            fi
                                         else
-                                            ## an "ERROR" occurred
-                                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while adding ${RECORD_TYPE} to ${SITE_HOSTNAME}. Return code from add_${RECORD_TYPE}_record.sh -> ${RET_CODE}";
+                                            ## failed to validate record.
+                                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IP address provided failed validation. Cannot continue.";
                                             print "$(grep ${RET_CODE} "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+
                                             unset RET_CODE;
                                             unset RETURN_CODE;
-                                            unset A_TARGET;
-                                            unset A_ALIAS;
-
-                                            sleep "${MESSAGE_DELAY}"; reset; clear; break;
+                                            unset PRIMARY_INFO;
+                                            sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                         fi
-                                    else
-                                        ## failed to validate record.
-                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IP address provided failed validation. Cannot continue.";
-                                        print "$(grep ${RET_CODE} "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-
-                                        unset RET_CODE;
-                                        unset RETURN_CODE;
-                                        unset PRIMARY_INFO;
-                                        sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                     fi
                                 fi
                                 ;;

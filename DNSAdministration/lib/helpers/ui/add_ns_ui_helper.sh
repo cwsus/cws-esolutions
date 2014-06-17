@@ -101,15 +101,24 @@ function add_zone_ui_helper
                 else
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating target information..";
 
+                    THIS_CNAME="${CNAME}";
                     unset METHOD_NAME;
                     unset CNAME;
 
-                    . ${PLUGIN_ROOT_DIR}/lib/validators/validate_record_target.sh ns ${NS_TARGET};
+                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+                    ## validate the input
+                    ${PLUGIN_ROOT_DIR}/lib/validators/validateRecordData.sh target ns ${NS_TARGET};
                     typeset -i RET_CODE=${?};
 
-                    ## reset methodname/cname
-                    CNAME="$(basename "${0}")";
-                    local METHOD_NAME="${CNAME}#${0}";
+                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+                    CNAME="${THIS_CNAME}";
+                    local METHOD_NAME="${THIS_CNAME}#${0}";
+
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
                     if [ ${RET_CODE} -eq 0 ] || [ ${RET_CODE} -eq 63 ] || [ ${RET_CODE} -eq 64 ]
                     then
@@ -303,15 +312,24 @@ function add_subdomain_ui_helper
                                     ## validate target
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating target information..";
 
+                                    THIS_CNAME="${CNAME}";
                                     unset METHOD_NAME;
                                     unset CNAME;
 
-                                    . ${PLUGIN_ROOT_DIR}/lib/validators/validate_record_target.sh ns ${NS_TARGET};
+                                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+                                    ## validate the input
+                                    ${PLUGIN_ROOT_DIR}/lib/validators/validateRecordData.sh target ns ${NS_TARGET};
                                     typeset -i RET_CODE=${?};
 
-                                    ## reset methodname/cname
-                                    CNAME="$(basename "${0}")";
-                                    local METHOD_NAME="${CNAME}#${0}";
+                                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+                                    CNAME="${THIS_CNAME}";
+                                    local METHOD_NAME="${THIS_CNAME}#${0}";
+
+                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
                                     if [ ${RET_CODE} -eq 0 ] || [ ${RET_CODE} -eq 63 ] || [ ${RET_CODE} -eq 64 ]
                                     then
@@ -342,9 +360,9 @@ function add_subdomain_ui_helper
                                             unset METHOD_NAME;
                                             unset CNAME;
                                             execute runner here
-                                            
+
                                             local METHOD_NAME="${CNAME}#${0}";
-                                            CNAME="$(basename "${0}")";                            
+                                            CNAME="$(basename "${0}")";
 
                                             check retcode here
                                         else

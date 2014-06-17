@@ -95,13 +95,15 @@ typeset -rx PLUGIN_CONFIG=${PLUGIN_CONF_ROOT}/plugin.properties;
 
 typeset -i AUTHORIZATION_COUNT; AUTHORIZATION_COUNT=0;
 
-[[ ! -z "${TMP_DIRECTORY}" && ! -d ${TMP_DIRECTORY} ]] && mkdir ${TMP_DIRECTORY};
-[[ ! -z "${DATA_DIRECTORY}" && ! -d ${DATA_DIRECTORY} ]] && mkdir ${DATA_DIRECTORY};
-[[ ! -z "${WORK_DIRECTORY}" && ! -d ${WORK_DIRECTORY} ]] && mkdir ${WORK_DIRECTORY};
-[[ ! -z "${MAILSTORE}" && ! -d ${MAILSTORE} ]] && mkdir ${MAILSTORE};
-[[ ! -z "${BACKUP_DIRECTORY}" && ! -d ${BACKUP_DIRECTORY} ]] && mkdir ${BACKUP_DIRECTORY};
-[[ ! -z "${BACKUP_DIRECTORY}" && ! -d ${BACKUP_DIRECTORY} ]] && mkdir ${BACKUP_DIRECTORY};
+[[ ! -z "${TMP_DIRECTORY}" && ! -d ${TMP_DIRECTORY} ]] && mkdir ${TMP_DIRECTORY} > /dev/null 2>&1;
+[[ ! -z "${DATA_DIRECTORY}" && ! -d ${DATA_DIRECTORY} ]] && mkdir ${DATA_DIRECTORY} > /dev/null 2>&1;
+[[ ! -z "${WORK_DIRECTORY}" && ! -d ${WORK_DIRECTORY} ]] && mkdir ${WORK_DIRECTORY} > /dev/null 2>&1;
+[[ ! -z "${MAILSTORE}" && ! -d ${MAILSTORE} ]] && mkdir ${MAILSTORE} > /dev/null 2>&1;
+[[ ! -z "${BACKUP_DIRECTORY}" && ! -d ${BACKUP_DIRECTORY} ]] && mkdir ${BACKUP_DIRECTORY} > /dev/null 2>&1;
 
 ## common aliases
 [ -s ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/aliases ] && . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/aliases;
 [ -s ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/functions ] && . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/functions;
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;

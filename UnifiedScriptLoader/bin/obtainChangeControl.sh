@@ -1,9 +1,9 @@
-#!/usr/bin/ksh -x
+#!/usr/bin/env ksh
 #==============================================================================
 #
 #          FILE:  obtainChangeControl.sh
 #         USAGE:  ./obtainChangeControl.sh
-#   DESCRIPTION:  
+#   DESCRIPTION:
 #
 #       OPTIONS:  ---
 #  REQUIREMENTS:  ---
