@@ -65,7 +65,6 @@ echo ${RET_CODE};
 
 unset SCRIPT_ABSOLUTE_PATH;
 unset SCRIPT_ROOT;
-unset OPTIND;
 unset THIS_CNAME;
 unset RET_CODE;
 unset CNAME;

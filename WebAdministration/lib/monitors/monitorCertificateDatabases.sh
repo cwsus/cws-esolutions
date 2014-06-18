@@ -79,10 +79,10 @@ function monitorCertDatabases
                         CERT_DATABASE="${VALIDATE_SITE}-${HOSTNAME}-";
                         EXP_CERT_NICKNAME=$(grep ${IPLANET_NICKNAME_IDENTIFIER} ${IPLANET_ROOT}/${VALIDATE_SITE}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG} | \
                             sed -e "s/${IPLANET_NICKNAME_IDENTIFIER}=\"/%/" | cut -d "%" -f 2 | cut -d "\"" -f 1 | cut -d ":" -f 2| sort | uniq);
-    
+
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_DATABASE -> ${CERT_DATABASE}";
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXP_CERT_NICKNAME -> ${EXP_CERT_NICKNAME}";
-    
+
                         if [ -O ${IPLANET_ROOT}/${IPLANET_CERT_DIR}/${CERT_DATABASE}${IPLANET_CERT_STORE_KEY_SUFFIX} ] &&
                             [ -O ${IPLANET_ROOT}/${IPLANET_CERT_DIR}/${CERT_DATABASE}${IPLANET_CERT_STORE_CERT_SUFFIX} ] ||
                             [ -r ${IPLANET_ROOT}/${IPLANET_CERT_DIR}/${CERT_DATABASE}${IPLANET_CERT_STORE_KEY_SUFFIX} ] &&
@@ -90,7 +90,7 @@ function monitorCertDatabases
                         then
                             ## pull the data
                             CERT_NICKNAME=$(certutil -L -d ${IPLANET_ROOT}/${IPLANET_CERT_DIR} -P ${CERT_DATABASE} | grep "u,u,u" | grep "${EXP_CERT_NICKNAME}" | awk '{print $1}' 2>${APP_ROOT}/${LOG_ROOT}/certutil.$(date +"%Y-%m-%d").log);
-    
+
                             if [ ! -z "${CERT_NICKNAME}" ]
                             then
                                 CERT_DETAIL=$(certutil -L -d ${IPLANET_ROOT}/${IPLANET_CERT_DIR} -P ${CERT_DATABASE} -n ${CERT_NICKNAME} | \
@@ -98,19 +98,19 @@ function monitorCertDatabases
                                 CERT_HOSTNAME=$(echo ${CERT_DETAIL} | cut -d "%" -f 4| cut -d "," -f 1);
                                 CERT_EXPIRY=$(echo ${CERT_DETAIL} | cut -d "%" -f 3 | awk '{print $5, $2, $3}');
                                 EXPIRY_MONTH=$(echo ${CERT_EXPIRY} | awk '{print $2}');
-    
+
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_NICKNAME -> ${CERT_NICKNAME}";
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_HOSTNAME -> ${CERT_HOSTNAME}";
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_EXPIRY -> ${CERT_EXPIRY}";
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXPIRY_MONTH -> ${EXPIRY_MONTH}";
-    
+
                                 if [ ! -z "${CERT_EXPIRY}" ]
                                 then
                                     ## ok, we have a nickname and an expiration date. convert it
                                     EPOCH_EXPIRY=$(returnEpochTime $(echo ${CERT_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval echo \${${EXPIRY_MONTH}})/"));
-    
+
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EPOCH_EXPIRY -> ${EPOCH_EXPIRY}";
-    
+
                                     if [ ${EPOCH_EXPIRY} -le ${EXPIRY_EPOCH} ]
                                     then
                                         ## this certificate expires within the epoch, notify
@@ -281,7 +281,6 @@ function monitorCertDatabases
 
 [ ${#} -eq 0 ] && usage;
 
-typeset -i OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";

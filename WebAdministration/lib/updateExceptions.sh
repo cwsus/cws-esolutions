@@ -52,7 +52,7 @@ function addStartupException
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXCEPTION_FILE_NAME -> ${EXCEPTION_FILE_NAME}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_EXCEPTION_FILE -> ${TMP_EXCEPTION_FILE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NEW_EXCEPTION_FILE -> ${NEW_EXCEPTION_FILE}";
-        
+
     ## populate our tmp file with the current contents
     cat ${APP_ROOT}/${CORE_EXCEPTION_LIST} > ${TMP_EXCEPTION_FILE};
 
@@ -267,7 +267,7 @@ function addStartupException
 
                                             ## unset ret code from prior execution
                                             unset RET_CODE;
-                                
+
                                             $(${APP_ROOT}/lib/tcl/runSCPConnection.exp local-copy ${MONITORED_HOST} ${APP_ROOT}/${CORE_EXCEPTION_LIST} ${REMOTE_APP_ROOT}/${CORE_EXCEPTION_LIST} websrv);
 
                                             ## make sure it was copied..
@@ -399,7 +399,7 @@ function addSSLException
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXCEPTION_FILE_NAME -> ${EXCEPTION_FILE_NAME}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_EXCEPTION_FILE -> ${TMP_EXCEPTION_FILE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NEW_EXCEPTION_FILE -> ${NEW_EXCEPTION_FILE}";
-        
+
     ## populate our tmp file with the current contents
     cat ${APP_ROOT}/${SSL_EXCEPTION_LIST} > ${TMP_EXCEPTION_FILE};
 
@@ -614,7 +614,7 @@ function addSSLException
 
                                             ## unset ret code from prior execution
                                             unset RET_CODE;
-                                
+
                                             $(${APP_ROOT}/lib/tcl/runSCPConnection.exp local-copy ${MONITORED_HOST} ${APP_ROOT}/${SSL_EXCEPTION_LIST} ${REMOTE_APP_ROOT}/${SSL_EXCEPTION_LIST} websrv);
 
                                             ## make sure it was copied..
@@ -748,7 +748,6 @@ function usage
 
 [ ${#} -eq 0 ] && usage;
 
-typeset -i OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";

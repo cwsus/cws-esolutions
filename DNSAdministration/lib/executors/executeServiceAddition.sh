@@ -24,7 +24,6 @@
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
-typeset -i OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -573,7 +572,7 @@ function add_zone_entry
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup validation complete. Creating working copies..";
 
                         ## take copies of the files to operate against
-                        ## we need to update the serial number, so lets do it here 
+                        ## we need to update the serial number, so lets do it here
                         cp ${SITE_ROOT}/${ZONEFILE_NAME} ${NAMED_ROOT}/${TMP_DIRECTORY}/${ZONEFILE_NAME};
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding "AUDIT" indicators..";
@@ -633,7 +632,7 @@ function add_zone_entry
 
                                     print "${ENTRY_NAME}             IN      ${ENTRY_TYPE}           ${ENTRY_RECORD}" \
                                         >> ${NAMED_ROOT}/${TMP_DIRECTORY}/$(echo ${ZONEFILE_NAME} | cut -d "." -f 1-2).${PRIMARY_DC};
-                                        
+
                                     print "${ENTRY_NAME}             IN      ${ENTRY_TYPE}           ${ENTRY_RECORD}" \
                                         >> ${NAMED_ROOT}/${TMP_DIRECTORY}/$(echo ${ZONEFILE_NAME} | cut -d "." -f 1-2).${SECONDARY_DC};
 
@@ -1243,7 +1242,6 @@ do
     esac
 done
 
-shift ${OPTIND}-1;
 
 echo ${RETURN_CODE};
 
@@ -1252,7 +1250,6 @@ echo ${RETURN_CODE};
 
 unset SCRIPT_ABSOLUTE_PATH;
 unset SCRIPT_ROOT;
-unset OPTIND;
 unset THIS_CNAME;
 unset RET_CODE;
 unset CNAME;

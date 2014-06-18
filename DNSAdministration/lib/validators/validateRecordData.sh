@@ -24,7 +24,6 @@
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
-typeset -i OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -47,6 +46,32 @@ function validateIPAddress
 
     if [ -z "${2}" ] || [ $(echo ${2} | tr -dc "." | wc -c) -ne 3 ]
     then
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "The provided address is invalid. Cannot continue.";
+
+        unset FIRST_OCTET;
+        unset SECOND_OCTET;
+        unset THIRD_OCTET;
+        unset FOURTH_OCTET;
+
+        RETURN_CODE=45;
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
+    local IS_VALID_IP=$(echo "${2}" | perl -ne '/(\b\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}\b)/ && print');
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IS_VALID_IP -> ${IS_VALID_IP}";
+
+    if [ -z "${IS_VALID_IP}" ]
+    then
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "The provided address is improperly formatted. Cannot continue.";
+
         unset FIRST_OCTET;
         unset SECOND_OCTET;
         unset THIRD_OCTET;
@@ -167,7 +192,6 @@ function validateRecordType
 #==============================================================================
 function validateRecordTarget
 {
-set -x
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
@@ -605,7 +629,6 @@ METHOD_NAME="${CNAME}#startup";
 
 unset SCRIPT_ABSOLUTE_PATH;
 unset SCRIPT_ROOT;
-unset OPTIND;
 unset THIS_CNAME;
 unset RET_CODE;
 unset CNAME;

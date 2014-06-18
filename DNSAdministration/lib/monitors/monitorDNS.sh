@@ -28,7 +28,6 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 [[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
-typeset -i OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
@@ -52,7 +51,7 @@ function monitorProcessPresence
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "LISTENING_PORT -> ${LISTENING_PORT}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "KEYFILE -> ${KEYFILE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "COMMAND_NAME -> ${COMMAND_NAME}";
-    
+
     ## generate the stuff we need
     SVC_VERIFICATION_DOMAIN=$(echo ${MONITOR_DOMAIN_NAME} | cut -d ":" -f 1);
     SVC_VERIFICATION_ADDRESS=$(echo ${MONITOR_DOMAIN_NAME} | cut -d ":" -f 2);
@@ -389,7 +388,7 @@ do
                     KEYFILE=${RNDC_REMOTE_KEY};
                 fi
             fi
-            
+
             if [ -z "${LISTENING_PORT}" ]
             then
                 if [ "${SERVER_NAME}" = "${NAMED_MASTER}" ]
@@ -433,7 +432,6 @@ do
     esac
 done
 
-shift ${OPTIND}-1;
 
 echo ${RETURN_CODE};
 

@@ -46,7 +46,7 @@ function runiPlanetInstallation
             ${IPLANET_ACL_DIR}/*${SERVER_ID}*) | gzip -c > ${APP_ROOT}/${BACKUP_DIRECTORY}/${IUSER_AUDIT}-${SERVER_ID}.tar.gz;
         (cd ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}; tar cf - ${SERVER_ID} ${IPLANET_CERT_DIR}/${SERVER_ID}* \
             ${IPLANET_ACL_DIR}/*${SERVER_ID}*) | gzip -c > ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}-${SERVER_ID}.tar.gz;
-        
+
         ## make sure that the backup got made
         if [ -s ${APP_ROOT}/${BACKUP_DIRECTORY}/${IUSER_AUDIT}-${SERVER_ID}.tar.gz ]
         then
@@ -114,7 +114,7 @@ function runiPlanetInstallation
                         ## successful implementation
                         ## create a backup of the existing files, then clean up
                         ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Server installation successful: Server Identifier: ${SERVER_ID}, Build owner: ${IUSER_AUDIT}, Change request: ${CHANGE_NUM}";
-                        
+
                         ## remove temp files
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing working files..";
 
@@ -155,7 +155,7 @@ function runiPlanetInstallation
     unset SERVER_LIST;
     unset PING_RCODE;
     unset WEBSERVER;
-    
+
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -200,7 +200,6 @@ function usage
 
 [ ${#} -eq 0 ] && usage;
 
-typeset -i OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
@@ -300,7 +299,7 @@ do
                     fi
                 fi
             fi
-            
+
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
             ;;
         *)
@@ -311,7 +310,6 @@ do
     esac
 done
 
-shift ${OPTIND}-1;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;

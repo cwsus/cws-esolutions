@@ -3,7 +3,7 @@
 #
 #          FILE:  serviceAdministrationUI.sh
 #         USAGE:  ./serviceAdministrationUI.sh
-#   DESCRIPTION:  
+#   DESCRIPTION:
 #
 #       OPTIONS:  ---
 #  REQUIREMENTS:  ---
@@ -185,7 +185,6 @@ main;
 
 unset SCRIPT_ABSOLUTE_PATH;
 unset SCRIPT_ROOT;
-unset OPTIND;
 unset THIS_CNAME;
 unset RET_CODE;
 unset CNAME;

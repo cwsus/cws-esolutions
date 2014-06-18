@@ -69,35 +69,35 @@ function executeMonitoringScript
 
                     ## unset ret code from prior execution
                     unset RET_CODE;
-    
+
                     $(${APP_ROOT}/lib/tcl/runSSHConnection.exp ${MONITORED_HOST} "${REMOTE_APP_ROOT}/lib/monitors/${MONITORING_SCRIPT}.sh ${EXPIRY_EPOCH}" ${IPLANET_OWNING_USER} ${MONITOR_THREAD_TIMEOUT});
                     typeset -i RET_CODE=${?};
-        
+
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
-        
+
                     if [ ${RET_CODE} -eq 0 ]
                     then
                         ## command execution was successful. lets see if the monitor log is empty,
                         ## if not, pull it back
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Command execution successful. Checking for anomolies..";
-        
+
                         IS_LOGFILE_PRESENT=$(${APP_ROOT}/lib/tcl/runSSHConnection.exp ${MONITORED_HOST} "[ -s ${REMOTE_APP_ROOT}/${LOG_ROOT}/${BASE_LOG_NAME}-${MONITOR_RECORDER} ] && echo true || echo false" ${IPLANET_OWNING_USER});
-        
+
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IS_LOGFILE_PRESENT -> ${IS_LOGFILE_PRESENT}";
-        
+
                         if [ ! -z "${IS_LOGFILE_PRESENT}" ] && [ "${IS_LOGFILE_PRESENT}" = "${_TRUE}" ]
                         then
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Obtaining logfiles..";
-        
+
                             $(${APP_ROOT}/lib/tcl/runSCPConnection.exp remote-copy ${MONITORED_HOST} ${REMOTE_APP_ROOT}/${LOG_ROOT}/${BASE_LOG_NAME}-${MONITOR_RECORDER} ${APP_ROOT}/${TMP_DIRECTORY}/${MONITORED_HOST}.${BASE_LOG_NAME}-${MONITOR_RECORDER} ${IPLANET_OWNING_USER});
-        
+
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Logfiles obtained. Scanning..";
-    
+
                             print "${MONITORED_HOST}:\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
-    
+
                             sed -n "/${MONITORING_SCRIPT}/p" ${APP_ROOT}/${TMP_DIRECTORY}/${MONITORED_HOST}.${BASE_LOG_NAME}-${MONITOR_RECORDER} | \
                                 grep "${EXECUTION_DATE}" | cut -d "-" -f 3- | uniq >> ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
-    
+
                             print "\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
                         else
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No logfile present - no anomalies found.";
@@ -145,35 +145,35 @@ function executeMonitoringScript
 
                 ## unset ret code from prior execution
                 unset RET_CODE;
-    
+
                 $(${APP_ROOT}/lib/tcl/runSSHConnection.exp ${MONITORED_HOST} "${REMOTE_APP_ROOT}/lib/monitors/${MONITORING_SCRIPT}.sh ${EXPIRY_EPOCH}" ${IPLANET_OWNING_USER} ${MONITOR_THREAD_TIMEOUT});
                 typeset -i RET_CODE=${?};
-        
+
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
-        
+
                 if [ ${RET_CODE} -eq 0 ]
                 then
                     ## command execution was successful. lets see if the monitor log is empty,
                     ## if not, pull it back
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Command execution successful. Checking for anomolies..";
-        
+
                     IS_LOGFILE_PRESENT=$(${APP_ROOT}/lib/tcl/runSSHConnection.exp ${MONITORED_HOST} "[ -s ${REMOTE_APP_ROOT}/${LOG_ROOT}/${BASE_LOG_NAME}-${MONITOR_RECORDER} ] && echo true || echo false" ${IPLANET_OWNING_USER});
-        
+
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IS_LOGFILE_PRESENT -> ${IS_LOGFILE_PRESENT}";
-        
+
                     if [ ! -z "${IS_LOGFILE_PRESENT}" ] && [ "${IS_LOGFILE_PRESENT}" = "${_TRUE}" ]
                     then
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Obtaining logfiles..";
-        
+
                         $(${APP_ROOT}/lib/tcl/runSCPConnection.exp remote-copy ${MONITORED_HOST} ${REMOTE_APP_ROOT}/${LOG_ROOT}/${BASE_LOG_NAME}-${MONITOR_RECORDER} ${APP_ROOT}/${TMP_DIRECTORY}/${MONITORED_HOST}.${BASE_LOG_NAME}-${MONITOR_RECORDER} ${IPLANET_OWNING_USER});
-        
+
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Logfiles obtained. Scanning..";
-    
+
                         print "${MONITORED_HOST}:\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
-    
+
                         sed -n "/${MONITORING_SCRIPT}/p" ${APP_ROOT}/${TMP_DIRECTORY}/${MONITORED_HOST}.${BASE_LOG_NAME}-${MONITOR_RECORDER} | \
                             grep "${EXECUTION_DATE}" | cut -d "-" -f 3- | uniq >> ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
-    
+
                         print "\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
                     else
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No logfile present - no anomalies found.";
@@ -243,11 +243,11 @@ function executeMonitoringScript
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NOTIFY_CODE -> ${NOTIFY_CODE}";
 
         unset MONITOR;
-    
+
         if [ ${NOTIFY_CODE} -ne 0 ]
         then
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred sending the notification. Please process manually.";
-    
+
             (( ERROR_COUNT += 1 ));
         fi
     fi
@@ -318,7 +318,6 @@ function usage
 
 [ ${#} -eq 0 ] && usage;
 
-typeset -i OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
@@ -408,5 +407,4 @@ do
     esac
 done
 
-shift ${OPTIND}-1;
 return ${RETURN_CODE};

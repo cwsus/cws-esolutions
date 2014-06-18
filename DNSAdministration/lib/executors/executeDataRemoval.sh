@@ -24,7 +24,6 @@
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
-typeset -i OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -479,7 +478,7 @@ function remove_zone_entry
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup validated. Creating working copies..";
 
             ## cut all our copies at once
-            ## we need to update the serial number, so lets do it here 
+            ## we need to update the serial number, so lets do it here
             cp ${SITE_ROOT}/${ZONEFILE_NAME} ${NAMED_ROOT}/${TMP_DIRECTORY}/${ZONEFILE_NAME} > /dev/null 2>&1;
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding "AUDIT" indicators..";
@@ -1151,7 +1150,6 @@ do
     esac
 done
 
-shift ${OPTIND}-1;
 
 echo ${RETURN_CODE};
 
@@ -1160,7 +1158,6 @@ echo ${RETURN_CODE};
 
 unset SCRIPT_ABSOLUTE_PATH;
 unset SCRIPT_ROOT;
-unset OPTIND;
 unset THIS_CNAME;
 unset RET_CODE;
 unset CNAME;

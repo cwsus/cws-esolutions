@@ -44,12 +44,12 @@ function renewiPlanetCert
     NOTIFY_CERT_EXPIRY=$(certutil -L -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} -n ${CERTIFICATE_NICKNAME} | grep "Not After" | cut -d ":" -f 2- | awk '{print $1, $2, $3, $5}');
     PRE_CERT_EXPIRY=$(certutil -L -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} -n ${CERTIFICATE_NICKNAME} | grep "Not After" | awk '{print $8, $5, $6}');
     PRE_EXPIRY_MONTH=$(echo ${PRE_CERT_EXPIRY} | awk '{print $2}');
-    
+
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERTIFICATE_NICKNAME -> ${CERTIFICATE_NICKNAME}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NOTIFY_CERT_EXPIRY -> ${NOTIFY_CERT_EXPIRY}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRE_CERT_EXPIRY -> ${PRE_CERT_EXPIRY}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRE_EXPIRY_MONTH -> ${PRE_EXPIRY_MONTH}";
-    
+
     if [ ! -z "${PRE_CERT_EXPIRY}" ]
     then
         ## ok, we have a nickname and an expiration date. convert it
@@ -213,7 +213,6 @@ function renewiPlanetCert
                                                 unset CNAME;
                                                 unset METHOD_NAME;
                                                 RR_OPTIND=${OPTIND};
-                                                typeset -i OPTIND=0;
 
                                                 . ${MAILER_CLASS} -m ${NOTIFY_PEM_EMAIL} -p ${WEB_PROJECT_CODE} -a "${NOTIFY_PEM_ADDRESS}" -t ${NOTIFY_TYPE_NOTIFY} -e;
                                                 MAILER_CODE=${?};
@@ -858,7 +857,6 @@ function usage
 
 [ ${#} -eq 0 ] && usage;
 
-typeset -i OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
@@ -1035,5 +1033,4 @@ do
     esac
 done
 
-shift ${OPTIND}-1;
 return ${RETURN_CODE};

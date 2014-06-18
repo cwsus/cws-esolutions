@@ -106,7 +106,7 @@ function validateFreePort
                 unset RET_CODE;
 
                 IS_PORT_ACTIVE=$(${APP_ROOT}/lib/tcl/runSSHConnection.exp ${WEBSERVER} "[ $(netstat -an | grep -c ${1}) -eq 0 ] && echo false || echo true" ${IPLANET_OWNING_USER});
-                
+
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IS_PORT_ACTIVE -> ${IS_PORT_ACTIVE}";
 
                 if [ ! -z "${IS_PORT_ACTIVE}" ]
@@ -143,7 +143,6 @@ function validateFreePort
 
 unset SCRIPT_ABSOLUTE_PATH;
 unset SCRIPT_ROOT;
-unset OPTIND;
 unset THIS_CNAME;
 unset RET_CODE;
 unset CNAME;

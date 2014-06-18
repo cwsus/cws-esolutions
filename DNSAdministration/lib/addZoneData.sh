@@ -1,4 +1,4 @@
-#!/usr/bin/ksh -x
+#!/usr/bin/env ksh
 #==============================================================================
 #
 #          FILE:  addRecordEntries.sh
@@ -24,7 +24,6 @@
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
-typeset -i OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -132,8 +131,8 @@ function addApexRecordEntry
     ## set up our zonefile names so we can operate on them
     ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1).${PROJECT_CODE};
     DC_ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1);
-    PRIMARY_ZONEFILE=${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/${DC_ZONEFILE_NAME};
-    SECONDARY_ZONEFILE=${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/${DC_ZONEFILE_NAME};
+    PRIMARY_ZONEFILE=${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DATACENTER}/${DC_ZONEFILE_NAME};
+    SECONDARY_ZONEFILE=${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DATACENTER}/${DC_ZONEFILE_NAME};
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONEFILE_NAME -> ${ZONEFILE_NAME}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DC_ZONEFILE_NAME -> ${DC_ZONEFILE_NAME}";
@@ -257,7 +256,7 @@ function addApexRecordEntry
                 do
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONEFILE -> ${ZONEFILE}";
 
-                    printf "                IN      ${RECORD_TYPE}                ${RECORD_DATA}\n" >> ${ZONEFILE};
+                    printf "            IN      ${RECORD_TYPE}                ${RECORD_DATA}\n" >> ${ZONEFILE};
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printed ${RECORD_TYPE} record to ${ZONEFILE}";
 
@@ -330,29 +329,7 @@ function addApexRecordEntry
 
             if [ -z ${RET_CODE} ] || [ ${RET_CODE} -ne 0 ]
             then
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "The provided record data is invalid. Cannot continue.";
-
-                RETURN_CODE=45;
-
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
-
-                unset RECORD_TARGET;
-                unset RECORD_WEIGHT;
-                unset RECORD_TYPE;
-                unset DATACENTER;
-                unset WRITE_FILES;
-                unset SECONDARY_ZONEFILE;
-                unset PRIMARY_ZONEFILE;
-                unset DC_ZONEFILE_NAME;
-                unset ZONEFILE_NAME;
-                unset METHOD_NAME;
-                unset RET_CODE;
-
-                return ${RETURN_CODE};
+                ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WARN: The provided address is not an IP. If this is intentional, this warning can be ignored.";
             fi
 
             THIS_CNAME="${CNAME}";
@@ -391,11 +368,11 @@ function addApexRecordEntry
                 do
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONEFILE -> ${ZONEFILE}";
 
-                    printf "                IN      ${RECORD_TYPE}      ${RECORD_WEIGHT}      ${RECORD_TARGET}\n" >> ${ZONEFILE};
+                    printf "            IN      ${RECORD_TYPE}      ${RECORD_WEIGHT}      ${RECORD_TARGET}\n" >> ${ZONEFILE};
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printed ${RECORD_TYPE} record to ${ZONEFILE}";
 
-                    if [ $(grep "${RECORD_DATA}" ${ZONEFILE} | grep -c "${RECORD_TYPE}") -eq 0 ]
+                    if [ $(grep "${RECORD_TARGET}" ${ZONEFILE} | grep -c "${RECORD_TYPE}") -eq 0 ]
                     then
                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to write record data to file ${ZONEFILE}.";
 
@@ -499,8 +476,8 @@ function addSubRecordEntry
     ## set up our zonefile names so we can operate on them
     ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1).${PROJECT_CODE};
     DC_ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1);
-    PRIMARY_ZONEFILE=${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/${DC_ZONEFILE_NAME};
-    SECONDARY_ZONEFILE=${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/${DC_ZONEFILE_NAME};
+    PRIMARY_ZONEFILE=${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DATACENTER}/${DC_ZONEFILE_NAME};
+    SECONDARY_ZONEFILE=${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DATACENTER}/${DC_ZONEFILE_NAME};
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONEFILE_NAME -> ${ZONEFILE_NAME}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DC_ZONEFILE_NAME -> ${DC_ZONEFILE_NAME}";
@@ -594,7 +571,7 @@ function addSubRecordEntry
                     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
                     ERROR_COUNT=0;
-    
+
                     unset METHOD_NAME;
                     unset ZONEFILE_NAME;
                     unset DC_ZONEFILE_NAME;
@@ -652,8 +629,8 @@ function addSubRecordEntry
                 do
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONEFILE -> ${ZONEFILE}";
 
-                    [ "${RECORD_TYPE}" = "TXT" ] && printf "${RECORD_ALIAS}      IN      ${RECORD_TYPE}      \"${RECORD_TARGET}\"\n\n" >> ${ZONEFILE};
-                    [ "${RECORD_TYPE}" != "TXT" ] && printf "${RECORD_ALIAS}      IN      ${RECORD_TYPE}      ${RECORD_TARGET}\n\n" >> ${ZONEFILE};
+                    [ "${RECORD_TYPE}" = "TXT" ] && printf "${RECORD_ALIAS}      IN      ${RECORD_TYPE}      \"${RECORD_TARGET}\"\n" >> ${ZONEFILE};
+                    [ "${RECORD_TYPE}" != "TXT" ] && printf "${RECORD_ALIAS}      IN      ${RECORD_TYPE}      ${RECORD_TARGET}\n" >> ${ZONEFILE};
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printed ${RECORD_TYPE} record to ${ZONEFILE}";
 
@@ -702,38 +679,7 @@ function addSubRecordEntry
 
             if [ -z ${RET_CODE} ] || [ ${RET_CODE} -ne 0 ]
             then
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "The provided record data is invalid. Cannot continue.";
-
-                RETURN_CODE=45;
-
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
-
-                ERROR_COUNT=0;
-
-                unset METHOD_NAME;
-                unset ZONEFILE_NAME;
-                unset DC_ZONEFILE_NAME;
-                unset PRIMARY_ZONEFILE;
-                unset SECONDARY_ZONEFILE;
-                unset WRITE_FILES;
-                unset RECORD_TYPE;
-                unset RECORD_WEIGHT;
-                unset RECORD_TARGET;
-                unset ZONEFILE;
-                unset SRV_TYPE;
-                unset SRV_PROTOCOL;
-                unset SRV_NAME;
-                unset SRV_TTL;
-                unset SRV_PRIORITY;
-                unset SRV_WEIGHT;
-                unset SRV_PORT;
-                unset SRV_TARGET;
-
-                return ${RETURN_CODE};
+                ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WARNING: The provided target is not an IP address. If this is intentional, this warning can be ignored.";
             fi
 
             THIS_CNAME="${CNAME}";
@@ -857,52 +803,52 @@ function addSubRecordEntry
                 THIS_CNAME="${CNAME}";
                 unset METHOD_NAME;
                 unset CNAME;
-                
+
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
-                
+
                 ## validate the input
                 ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validateRecordData.sh srvtype ${SRV_TYPE};
                 typeset -i SRV_TYPE_CODE=${?};
-                
+
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SRV_TYPE_CODE -> ${SRV_TYPE_CODE}";
-                
+
                 ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validateRecordData.sh srvproto ${SRV_PROTOCOL};
                 typeset -i SRV_PROTO_CODE=${?};
-                
+
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SRV_PROTO_CODE -> ${SRV_PROTO_CODE}";
-                
+
                 ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validateRecordData.sh target SRV ${SRV_TARGET};
                 typeset -i SRV_TARGET_CODE=${?};
-                
+
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SRV_TARGET_CODE -> ${SRV_TARGET_CODE}";
-                
+
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-                
+
                 CNAME="${THIS_CNAME}";
                 METHOD_NAME="${CNAME}#startup";
-                
+
                 [ -z "${SRV_TYPE_CODE}" ] || [ ${SRV_TYPE_CODE} -ne 0 ] && RET_CODE=1;
                 [ -z "${SRV_PROTO_CODE}" ] || [ ${SRV_PROTO_CODE} -ne 0 ] && RET_CODE=1;
                 [ -z "${SRV_TARGET_CODE}" ] || [ ${SRV_TARGET_CODE} -ne 0 ] && RET_CODE=1;
-                
+
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
-                
+
                 if [ ! -z "${RET_CODE}" ]
                 then
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "The provided record data is invalid. Cannot continue.";
-                
+
                     RETURN_CODE=45;
-                
+
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-                
+
                     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
                     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
-                
+
                     ERROR_COUNT=0;
-                
+
                     unset METHOD_NAME;
                     unset ZONEFILE_NAME;
                     unset DC_ZONEFILE_NAME;
@@ -925,29 +871,29 @@ function addSubRecordEntry
                     unset SRV_PROTO_CODE;
                     unset SRV_TARGET_CODE;
                     unset RET_CODE;
-                
+
                     return ${RETURN_CODE};
                 fi
-                
+
                 THIS_CNAME="${CNAME}";
                 unset METHOD_NAME;
                 unset CNAME;
-                
+
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
-                
+
                 ## validate the input
                 [ "${RECORD_TYPE}" != "TXT" ] && ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validateRecordData target ${RECORD_TYPE} ${RECORD_TARGET};
                 typeset -i RET_CODE=${?};
-                
+
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-                
+
                 CNAME="${THIS_CNAME}";
                 METHOD_NAME="${CNAME}#startup";
-                
+
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
-                
+
                 [ -z ${RET_CODE} ] || [ ${RET_CODE} -ne 0 ] && ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WARNING: The provided record data could not be located.";
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Information valid. Continuing..";
@@ -1053,9 +999,10 @@ function usage
 
 [ ${#} -eq 0 ] && usage;
 
-while getopts ":b:p:z:c:t:a:d:rseh:" OPTIONS
+while getopts "b:p:z:c:t:a:d:rseh" OPTIONS
 do
-    case "${OPTIONS}" in
+    echo "${OPTARG}";
+    case ${OPTIONS} in
         b)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting BUSINESS_UNIT..";
@@ -1100,6 +1047,7 @@ do
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting RECORD_DATA..";
 
+            echo "${OPTARG}";
             RECORD_DATA="${OPTARG}";
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RECORD_DATA -> ${RECORD_DATA}";
@@ -1178,8 +1126,6 @@ do
     esac
 done
 
-shift ${OPTIND}-1;
-
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
 
@@ -1194,7 +1140,6 @@ unset ADD_APEX;
 unset ADD_SUB;
 unset SCRIPT_ABSOLUTE_PATH;
 unset SCRIPT_ROOT;
-unset OPTIND;
 unset THIS_CNAME;
 unset RET_CODE;
 unset CNAME;

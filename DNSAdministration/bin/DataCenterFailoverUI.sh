@@ -23,7 +23,6 @@
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
-typeset -i OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -301,7 +300,7 @@ function executeFailoverProcess
 
                         print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<failover.request.success\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
                         print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<failover.success.perform.another\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
-                
+
                         read RESPONSE;
                         print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
@@ -341,7 +340,7 @@ function executeFailoverProcess
 
                             print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<failover.request.positive.failure\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
                             print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<failover.request.servers.success.failure\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%SERVERS%/${FAILED_SERVERS[@]}/")";
-                    
+
                             read RESPONSE;
 
                             print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
@@ -377,7 +376,7 @@ function executeFailoverProcess
 
                             print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<failover.request.failure\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
                             print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<failover.failure.retry\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
-                    
+
                             read RESPONSE;
                             print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
@@ -448,7 +447,6 @@ main;
 
 unset SCRIPT_ABSOLUTE_PATH;
 unset SCRIPT_ROOT;
-unset OPTIND;
 unset THIS_CNAME;
 unset RET_CODE;
 unset CNAME;

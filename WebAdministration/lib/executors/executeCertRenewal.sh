@@ -110,10 +110,10 @@ function applyiPlanetCertificate
                 PRE_CERT_EXPIRY=$(certutil -L -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} -n ${CERTIFICATE_NICKNAME} \
                     | grep "Not After" | cut -d ":" -f 2- | awk '{print $5, $2, $3}');
                 PRE_EXPIRY_MONTH=$(echo ${PRE_CERT_EXPIRY} | awk '{print $2}');
-    
+
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRE_PRE_CERT_EXPIRY -> ${PRE_CERT_EXPIRY}";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRE_EXPIRY_MONTH -> ${PRE_EXPIRY_MONTH}";
-    
+
                 if [ ! -z "${PRE_CERT_EXPIRY}" ]
                 then
                     ## ok, we have a nickname and an expiration date. convert it
@@ -123,7 +123,7 @@ function applyiPlanetCertificate
 
                     ## ok, we have a web instance. shut it down.
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Shutting down ${WEB_INSTANCE}..";
-        
+
                     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
                     if [ ! -z "${IS_PRIVILEGED}" ] && [ "${IS_PRIVILEGED}" = "${_FALSE}" ]
@@ -169,17 +169,17 @@ function applyiPlanetCertificate
                         ## ok, site is down. copy in the new cert db and apply to crypto if necessary
                         ## take a backup..
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Shutdown complete. Backing up keystores..";
-            
+
                         TARFILE_DATE=$(date +"%m-%d-%Y");
                         BACKUP_FILE=${CERTIFICATE_DATABASE}.${CHANGE_NUM}.${TARFILE_DATE}.${IUSER_AUDIT};
-            
+
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backing up files..";
-            
+
                         ## backup the existing zone files. if we need to back out a change,
                         ## we can do it with these. why tar+gzip ? to carry the process over. we
                         ## want consistency, even when it doesnt make a difference
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BACKUP_FILE -> ${BACKUP_FILE}";
-            
+
                         ## tar+gzip
                         [ -s ${APP_ROOT}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar.gz ] && rm -rf ${APP_ROOT}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar.gz;
                         [ -s ${IPLANET_ROOT}/${IPLANET_CERT_DIR}/${CERT_STORE_ARCHIVE}/${CERTIFICATE_NICKNAME}.tar.gz ] && rm -rf ${IPLANET_ROOT}/${IPLANET_CERT_DIR}/${CERT_STORE_ARCHIVE}/${CERTIFICATE_NICKNAME}.tar.gz;
@@ -187,14 +187,14 @@ function applyiPlanetCertificate
                         ## we do it twice, once for us and once for iplanet
                         (cd ${IPLANET_ROOT}/${IPLANET_CERT_DIR}; tar cf - ${CERTIFICATE_DATABASE}*) | gzip -c > ${APP_ROOT}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar.gz;
                         (cd ${IPLANET_ROOT}/${IPLANET_CERT_DIR}; tar cf - ${CERTIFICATE_DATABASE}*) | gzip -c > ${IPLANET_ROOT}/${IPLANET_CERT_DIR}/${CERT_STORE_ARCHIVE}/${CERTIFICATE_NICKNAME}.tar.gz;
-            
+
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete. Validating..";
-            
+
                         ## make sure backup file got created
                         if [ -s ${APP_ROOT}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar.gz ]
                         then
                             unset BACKUP_FILE;
-            
+
                             ## ok, we have a backup, copy in the new
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup validated. Continuing..";
 
@@ -203,48 +203,48 @@ function applyiPlanetCertificate
                                 TMP_FILE_CKSUM=$(cksum ${APP_ROOT}/${CERTDB_STORE}/${CERTIFICATE_DATABASE}${KEYSTORE} | awk '{print $1}');
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_FILE_CKSUM -> ${TMP_FILE_CKSUM}";
-                
+
                                 cp ${APP_ROOT}/${CERTDB_STORE}/${CERTIFICATE_DATABASE}${KEYSTORE} \
                                     ${IPLANET_ROOT}/${IPLANET_CERT_DIR}/${CERTIFICATE_DATABASE}${KEYSTORE};
-                
+
                                 OP_FILE_CKSUM=$(cksum ${IPLANET_ROOT}/${IPLANET_CERT_DIR}/${CERTIFICATE_DATABASE}${KEYSTORE} | awk '{print $1}');
-                
+
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OP_FILE_CKSUM -> ${OP_FILE_CKSUM}";
-                
+
                                 if [ ${OP_FILE_CKSUM} != ${TMP_FILE_CKSUM} ]
                                 then
                                     ## checksum mismatch. copy failed.
                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copy keystore FAILURE: Checksum mismatch for ${CERTIFICATE_DATABASE}-${KEYSTORE}";
-                
+
                                     (( ERROR_COUNT += 1 ));
                                 fi
                             done
-            
+
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ERROR_COUNT -> ${ERROR_COUNT}";
-            
+
                             if [ ${ERROR_COUNT} -eq 0 ]
                             then
                                 ## validate the renewal
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing complete. Validating..";
-                
+
                                 POST_CERT_EXPIRY=$(certutil -L -d ${IPLANET_ROOT}/${IPLANET_CERT_DIR} -P ${CERTIFICATE_DATABASE} -n ${CERTIFICATE_NICKNAME} \
                                     | grep "Not After" | cut -d ":" -f 2- | awk '{print $5, $2, $3}');
                                 POST_EXPIRY_MONTH=$(echo ${POST_CERT_EXPIRY} | awk '{print $2}');
-                        
+
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRE_PRE_CERT_EXPIRY -> ${PRE_CERT_EXPIRY}";
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXPIRY_MONTH -> ${PRE_EXPIRY_MONTH}";
-                        
+
                                 if [ ! -z "${POST_CERT_EXPIRY}" ]
                                 then
                                     ## ok, we have a nickname and an expiration date. convert it
                                     POST_EPOCH_EXPIRY=$(returnEpochTime $(echo ${POST_CERT_EXPIRY} | sed -e "s/${POST_EXPIRY_MONTH}/$(eval echo \${${POST_EXPIRY_MONTH}})/"));
 
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "POST_EPOCH_EXPIRY -> ${POST_EPOCH_EXPIRY}";
-                    
+
                                     if [ ${PRE_EPOCH_EXPIRY} -eq ${POST_EPOCH_EXPIRY} ]
                                     then
                                         ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (implementation) by ${IUSER_AUDIT}: Site: ${SITE_DOMAIN_NAME}; Certificate Database: ${CERTIFICATE_DATABASE_STORE}; Certificate Nickname: ${CERTIFICATE_NICKNAME}";
-                    
+
                                         ## ok, we're good to move forward
                                         if [ "${METASLOT_ENABLED}" = "${_TRUE}" ]
                                         then
@@ -254,7 +254,7 @@ function applyiPlanetCertificate
                                             TOKEN_NAME=$(getTokenName);
                                             KEYSTOREDIR=$(getKeyStoreDir | awk '{print $3}');
                                             PRE_CERT_EXPIRY=$(certutil -L -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} -n ${CERTIFICATE_NICKNAME} -h "${METASLOT_NAME}" | grep "Not After" | awk '{print $8}');
-                    
+
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TOKEN_NAME -> ${TOKEN_NAME}";
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "KEYSTOREDIR -> ${KEYSTOREDIR}";
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRE_CERT_EXPIRY -> ${PRE_CERT_EXPIRY}";
@@ -272,12 +272,12 @@ function applyiPlanetCertificate
                                                 if [ ! -z "${KEYSTORE_BACKUP_ENABLED}" ] && [ "${KEYSTORE_BACKUP_ENABLED}" = "${_TRUE}" ]
                                                 then
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing crypto database backup..";
-                        
+
                                                     BACKUP_FILENAME=${APP_ROOT}/${BACKUP_DIR}/${TOKEN_NAME}.${IUSER_AUDIT}.$(date +"%m-%d-%Y:%HH:%MM:%SS");
-                
+
                                                     . ${APP_ROOT}/lib/tcl/run_cert_mgmt.exp backup ${TOKEN_NAME} ${BACKUP_FILENAME};
                                                     RET_CODE=${?}
-                        
+
                                                     if [ ${RET_CODE} -eq 0 ]
                                                     then
                                                         ## verify the file
@@ -291,25 +291,25 @@ function applyiPlanetCertificate
                                                         fi
                                                     fi
                                                 fi
-                
+
                                                 ## see if crypto cleanup is enabled, if its not, none of this matters
                                                 if [ ${KEYSTORE_CLEANUP_ENABLED} ]
                                                 then
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Retrieving certificate information from Metaslot..";
-                        
+
                                                     CERT_DATA=$(${APP_ROOT}/lib/tcl/run_cert_renewal.exp ${TOKEN_NAME} ${CERTIFICATE_DATABASE} ${CERTIFICATE_NICKNAME});
-                        
+
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_DATA -> ${CERT_DATA}";
-                        
+
                                                     if [ ! -z "${CERT_DATA}" ]
                                                     then
                                                         ## we have some data back
                                                         KEY_COUNT=$(echo ${CERT_DATA} | grep "Found" | grep "key" | awk '{print $2}');
                                                         CERT_COUNT=$(echo ${CERT_DATA} | grep "Found" | grep "cert" | awk '{print $2}');
-                        
+
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "KEY_COUNT -> ${KEY_COUNT}";
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_COUNT -> ${CERT_COUNT}";
-                        
+
                                                         if [ ! -z "${KEY_COUNT}" ] && [ ! -z "${CERT_COUNT}" ]
                                                         then
                                                             ## key/cert count couldn't be obtained. this could be
@@ -317,30 +317,30 @@ function applyiPlanetCertificate
                                                             ## again, non-fatal situation, but should be addressed.
                                                             ## "WARN".
                                                             ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No keys/certificates were found in the crypto card to clean. Cannot continue.";
-                        
+
                                                             WARNING_CODE=98;
                                                         else
                                                             ## we have an expected number of certs. xlnt.
                                                             ## remove them.
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing ${KEY_COUNT} keys and ${CERT_COUNT} certs from ${TOKEN_NAME}..";
-                        
+
                                                             ## this is a sensitive task. should probably take a backup here before we start deleting things,
                                                             ## in case we delete too much.
                                                             RET_CODE=$(${APP_ROOT}/lib/tcl/run_cert_renewal.exp delete ${KEY_COUNT} ${CERT_COUNT} ${TOKEN_NAME} ${CERTIFICATE_NICKNAME});
-                                                                        
+
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
-                
+
                                                             if [ ${RET_CODE} -ne 0 ]
                                                             then
                                                                 ## removal of the certificate from the slot failed. this is a non-fatal situation,
                                                                 ## but it should be corrected anyway. "WARN"
                                                                 ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Crypto card cleanup action has FAILED. Please execute manually.";
-                        
+
                                                                 WARNING_CODE=98;
                                                             else
                                                                 ## keys/certs were removed
                                                                 ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (implementation/metaslot removal) by ${IUSER_AUDIT}: Site: ${SITE_DOMAIN_NAME}; Certificate Database: ${CERTIFICATE_DATABASE_STORE}; Certificate Nickname: ${CERTIFICATE_NICKNAME}";
-                        
+
                                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removed ${KEY_COUNT} keys and ${CERT_COUNT} certs from ${TOKEN_NAME}. Importing new certificate..";
                                                             fi
                                                         fi
@@ -348,7 +348,7 @@ function applyiPlanetCertificate
                                                         ## we didnt get back any certificate data from our pktool call.
                                                         ## "WARN" - this is not fatal
                                                         ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No keys/certificates were found in the provided keystore for action.";
-                        
+
                                                         WARNING_CODE=98;
                                                     fi
                                                 fi
@@ -362,9 +362,9 @@ function applyiPlanetCertificate
                                                 pk12util -i ${APP_ROOT}/${TMP_DIRECTORY}/${CERTIFICATE_NICKNAME}.pkcs -h "${METASLOT_NAME}" -d ${CERTSTORE} \
                                                     -P ${CERTIFICATE_DATABASE} -k ${APP_ROOT}/${METASLOT_CERT_DB_PASSFILE} -w ${APP_ROOT}/${IPLANET_CERT_DB_PASSFILE} >> ${APP_ROOT}/${LOG_DIRECTORY}/pk12util-import.${IUSER_AUDIT}.log 2>&1;
                                                 typeset -i RET_CODE=${?};
-                    
+
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
-                    
+
                                                 if [ ${RET_CODE} -eq 0 ]
                                                 then
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate successfully imported. Validating..";
@@ -376,25 +376,25 @@ function applyiPlanetCertificate
                                                     POST_CERT_EXPIRY=$(certutil -L -d ${IPLANET_ROOT}/${IPLANET_CERT_DIR} -P ${CERTIFICATE_DATABASE} -n ${CERTIFICATE_NICKNAME} \
                                                         | grep "Not After" | cut -d ":" -f 2- | awk '{print $5, $2, $3}');
                                                     POST_EXPIRY_MONTH=$(echo ${POST_CERT_EXPIRY} | awk '{print $2}');
-                                            
+
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRE_PRE_CERT_EXPIRY -> ${PRE_CERT_EXPIRY}";
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXPIRY_MONTH -> ${PRE_EXPIRY_MONTH}";
-                                            
+
                                                     if [ ! -z "${POST_CERT_EXPIRY}" ]
                                                     then
                                                         ## ok, we have a nickname and an expiration date. convert it
                                                         POST_EPOCH_EXPIRY=$(returnEpochTime $(echo ${POST_CERT_EXPIRY} | sed -e "s/${POST_EXPIRY_MONTH}/$(eval echo \${${POST_EXPIRY_MONTH}})/"));
 
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "POST_EPOCH_EXPIRY -> ${POST_EPOCH_EXPIRY}";
-                                        
+
                                                         if [ ${PRE_EPOCH_EXPIRY} -eq ${POST_EPOCH_EXPIRY} ]
                                                         then
                                                             ## success!
                                                             ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (implementation/metaslot import) by ${IUSER_AUDIT}: Site: ${SITE_DOMAIN_NAME}; Certificate Database: ${CERTIFICATE_DATABASE_STORE}; Certificate Nickname: ${CERTIFICATE_NICKNAME}";
-                        
+
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate successfully imported.";
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Starting up ${WEB_INSTANCE}..";
-                                                    
+
                                                             [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
                                                             if [ ! -z "${IS_PRIVILEGED}" ] && [ "${IS_PRIVILEGED}" = "${_FALSE}" ]
@@ -441,7 +441,7 @@ function applyiPlanetCertificate
                                                                 fi
                                                             else
                                                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Web instance failed to start. Please start manually.";
-                       
+
                                                                 RETURN_CODE=40;
                                                             fi
                                                         else
@@ -453,7 +453,7 @@ function applyiPlanetCertificate
                                                     else
                                                         ## failed to import certificate into metaslot
                                                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate import into metaslot FAILED - Certificate expiration date is equal to or less than previous. Please try again.";
-                    
+
                                                         RETURN_CODE=7;
                                                     fi
                                                 else
@@ -465,14 +465,14 @@ function applyiPlanetCertificate
                                             else
                                                 ## no backup file. dont continue
                                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Keystore backup FAILED. Cannot continue.";
-                    
+
                                                 RETURN_CODE=20;
                                             fi
                                         else
                                             ## no metaslot, we're done here
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Metaslot not enabled. Renewal complete.";
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Starting up ${WEB_INSTANCE}..";
-                                                
+
                                             [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
                                             if [ ! -z "${IS_PRIVILEGED}" ] && [ "${IS_PRIVILEGED}" = "${_FALSE}" ]
@@ -528,7 +528,7 @@ function applyiPlanetCertificate
                                     else
                                         ## certificate renewal appears to have failed
                                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate renewal failed. New expiration date matches or is not greater than the existing. Please try again.";
-                    
+
                                         RETURN_CODE=8;
                                     fi
                                 else
@@ -540,13 +540,13 @@ function applyiPlanetCertificate
                             else
                                 ## cert copy failed
                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate keystore copy failed. Please try again.";
-                
+
                                 RETURN_CODE=8;
                             fi
                         else
                             ## backup failed
                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to create a certificate database backup. Unable to continue.";
-            
+
                             RETURN_CODE=9;
                         fi
                     fi
@@ -792,7 +792,6 @@ function usage
 
 [ ${#} -eq 0 ] && usage;
 
-typeset -i OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
@@ -949,7 +948,6 @@ do
     esac
 done
 
-shift ${OPTIND}-1;
 
 echo ${RETURN_CODE};
 exit ${RETURN_CODE};

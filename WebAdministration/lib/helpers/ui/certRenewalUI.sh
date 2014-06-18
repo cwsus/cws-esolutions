@@ -51,7 +51,7 @@ function updateCertificate
         fi
 
         reset; clear;
-        
+
         unset MGMT_OP;
         unset RET_CODE;
         unset RETURN_CODE;
@@ -115,7 +115,6 @@ function updateCertificate
         unset CNAME;
         unset METHOD_NAME;
         CURR_OPTIND=${OPTIND};
-        typeset -i OPTIND=0;
 
         . ${APP_ROOT}/lib/runCertRenewal.sh -d ${CERTDB} -s ${SITE_HOSTNAME} -w ${WEBSERVER_PLATFORM} -e;
         RET_CODE=${?}

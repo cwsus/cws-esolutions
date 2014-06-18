@@ -23,7 +23,6 @@
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
-typeset -i OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
 [[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
@@ -119,8 +118,7 @@ function main
                 unset RET_CODE;
                 unset CNAME;
                 unset THIS_CNAME;
-                unset OPTIND;
-                unset SCRIPT_ROOT;
+                                unset SCRIPT_ROOT;
                 unset SCRIPT_ABSOLUTE_PATH;
                 unset CNAME;
 
@@ -144,8 +142,7 @@ function main
     unset RET_CODE;
     unset CNAME;
     unset THIS_CNAME;
-    unset OPTIND;
-    unset SCRIPT_ROOT;
+        unset SCRIPT_ROOT;
     unset SCRIPT_ABSOLUTE_PATH;
     unset CNAME;
 
@@ -164,7 +161,6 @@ main;
 
 unset SCRIPT_ABSOLUTE_PATH;
 unset SCRIPT_ROOT;
-unset OPTIND;
 unset THIS_CNAME;
 unset RET_CODE;
 unset CNAME;

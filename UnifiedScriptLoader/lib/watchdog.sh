@@ -38,7 +38,6 @@ function usage
     return 3;
 }
 
-typeset -i OPTIND=0;
 
 ## make sure we have arguments, if we do
 ## then load our constants and continue

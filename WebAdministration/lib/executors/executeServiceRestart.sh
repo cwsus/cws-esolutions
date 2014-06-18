@@ -121,9 +121,9 @@ function serviceControl
                                 else
                                     ## service isnt running, start it up
                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${INSTANCE_NAME} does not appear to be running. Restarting..";
-    
+
                                     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-    
+
                                     if [ ${SITE_PORT_NUMBER} -lt ${HIGH_PRIVILEGED_PORT} ]
                                     then
                                         ## need to use sudo here to start the web
@@ -131,23 +131,23 @@ function serviceControl
                                     else
                                         STARTUP_OUTPUT=$( { ${IPLANET_ROOT}/${INSTANCE_NAME}/${IPLANET_START_SCRIPT}; } 2>&1 )
                                     fi
-    
-                                    
+
+
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "STARTUP_OUTPUT -> ${STARTUP_OUTPUT}";
-    
+
                                     PID_LOG_FILE=$(grep -w ${IPLANET_PID_IDENTIFIER} ${IPLANET_ROOT}/${INSTANCE_NAME}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG} | awk '{print $2}');
-    
+
                                     if [ -s ${PID_LOG_FILE} ]
                                     then
                                         SERVICE_PID=$(cat ${PID_LOG_FILE});
-    
+
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LOG_FILE -> ${PID_LOG_FILE}";
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_PID -> ${SERVICE_PID}";
-    
+
                                         PROCESS_OUTPUT=$(ps -auxwww | grep -w ${SERVICE_PID} | grep -v grep);
-    
+
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
-    
+
                                         if [ -z "${PROCESS_OUTPUT}" ]
                                         then
                                             ## server failed to properly start
@@ -179,7 +179,7 @@ function serviceControl
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Stopping ${INSTANCE_NAME} ..";
 
                                     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-    
+
                                     if [ ${SITE_PORT_NUMBER} -lt ${HIGH_PRIVILEGED_PORT} ]
                                     then
                                         ## need to use sudo here to stop the web
@@ -187,23 +187,23 @@ function serviceControl
                                     else
                                         SHUTDOWN_OUTPUT=$( { ${IPLANET_ROOT}/${INSTANCE_NAME}/${IPLANET_STOP_SCRIPT}; } 2>&1 )
                                     fi
-    
-                                    
+
+
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SHUTDOWN_OUTPUT -> ${SHUTDOWN_OUTPUT}";
-    
+
                                     PID_LOG_FILE=$(grep -w ${IPLANET_PID_IDENTIFIER} ${IPLANET_ROOT}/${INSTANCE_NAME}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG} | awk '{print $2}');
-    
+
                                     if [ -s ${PID_LOG_FILE} ]
                                     then
                                         SERVICE_PID=$(cat ${PID_LOG_FILE});
-    
+
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LOG_FILE -> ${PID_LOG_FILE}";
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_PID -> ${SERVICE_PID}";
-    
+
                                         PROCESS_OUTPUT=$(ps -auxww | grep -w ${SERVICE_PID} | grep -v grep);
-    
+
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
-    
+
                                         if [ -z "${PROCESS_OUTPUT}" ]
                                         then
                                             ${LOGGER} "INFO" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${INSTANCE_NAME} successfully stopped.";
@@ -438,7 +438,6 @@ function usage
 
 [ ${#} -eq 0 ] && usage;
 
-typeset -i OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";

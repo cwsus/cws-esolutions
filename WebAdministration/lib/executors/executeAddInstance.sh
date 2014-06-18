@@ -115,7 +115,7 @@ function installiPlanetInstance
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating ${DIRECTORY} ..";
 
                                     mkdir -p ${DIRECTORY};
-				    
+
                                     if [ ! -d ${DIRECTORY} ]
                                     then
                                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to make directory ${DIRECTORY}.";
@@ -145,11 +145,11 @@ function installiPlanetInstance
                                         mv ${IPLANET_ROOT}/${IPLANET_CERT_DIR}/${SERVER_ID}-${IUSER_AUDIT}-${SUFFIX} ${IPLANET_ROOT}/${IPLANET_CERT_DIR}/${SERVER_ID}-${HOSTNAME}-${SUFFIX} > /dev/null 2>&1;
 
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Rename complete. Validating..";
-                                        
+
                                         if [ -s ${IPLANET_ROOT}/${IPLANET_CERT_DIR}/${SERVER_ID}-${HOSTNAME}-${SUFFIX} ]
                                         then
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Rename validated.";
-                                            
+
                                             (( FILE_COUNT += 1 ));
                                         else
                                             ## rename failed
@@ -160,7 +160,7 @@ function installiPlanetInstance
                                     else
                                         ## unable to locate certificate database
                                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to locate certificate database ${SERVER_ID}-${IUSER_AUDIT}-${SUFFIX} in ${IPLANET_ROOT}/${IPLANET_CERT_DIR}.";
-                                        
+
                                         (( ERROR_COUNT += 1 ));
                                     fi
                                 done
@@ -189,7 +189,7 @@ function installiPlanetInstance
                                             if [ -s ${IPLANET_ROOT}/${IPLANET_ACL_DIR}/${ACL_FILE} ]
                                             then
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${ACL_FILE} validated.";
-                                            
+
                                                 (( FILE_COUNT += 1 ));
                                             else
                                                 ## unable to locate certificate database
@@ -214,11 +214,11 @@ function installiPlanetInstance
 
                                                 ## clean up temporary files
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing temporary installation files..";
-                                                
+
                                                 rm -rf ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}-${SERVER_ID}.tar ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}-${SERVER_ID}.tar.gz > /dev/null 2>&1;
 
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Cleanup complete. Setting permissions on scripts ..";
-                                                
+
                                                 ## ensure permissions on scripts
                                                 for SCRIPT in ${IPLANET_START_SCRIPT} ${IPLANET_STOP_SCRIPT} ${IPLANET_RECONFIG_SCRIPT} ${IPLANET_RESTART_SCRIPT} ${IPLANET_ROTATE_SCRIPT}
                                                 do
@@ -226,7 +226,7 @@ function installiPlanetInstance
 
                                                     chmod 754 ${IPLANET_ROOT}/${SERVER_ID}/${SCRIPT} > /dev/null 2>&1;
                                                 done
-                                                
+
                                                 ## start the server
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Permission changes complete. Starting server..";
 
@@ -247,66 +247,66 @@ function installiPlanetInstance
                                             else
                                                 ## "ERROR" occurred copying acl files
                                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to install ACL files. Please install manually.";
-                                                
+
                                                 RETURN_CODE=53;
                                             fi
                                         else
                                             ## an "ERROR" occurred copying acl files
                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to install ACL files. Please install manually.";
-                                                
+
                                             RETURN_CODE=53;
                                         fi
                                     else
                                         ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more errors occurred while copying certificate databases. Cannot continue.";
-                                        
+
                                         RETURN_CODE=8;
                                     fi
                                 else
                                     ## one or more cert databases aren't here
                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate database copy failed. Cannot continue.";
-                                    
+
                                     RETURN_CODE=8;
                                 fi
                             else
                                 ## one or more web directories failed to create
                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more web directories failed to create. Cannot continue.";
-                                
+
                                 RETURN_CODE=50;
                             fi
                         else
                             ## failed to validate bind address
                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to insert binding interface address. Cannot continue.";
-                            
+
                             RETURN_CODE=51;
                         fi
                     else
                         ## failed to copy temporary file
                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to insert binding interface address. Cannot continue.";
-                        
+
                         RETURN_CODE=47;
                     fi
                 else
                     ## failed to insert bind address
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to insert binding interface address. Cannot continue.";
-                    
+
                     RETURN_CODE=51;
                 fi
             else
                 ## failed to create temporary file
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to insert binding interface address. Cannot continue.";
-                
+
                 RETURN_CODE=47;
             fi
         else
             ## installation failure
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to install new web instance. Cannot continue.";
-            
+
             RETURN_CODE=32;
         fi
     else
         ## tarfile doesnt exist
         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to locate web instance package. Cannot continue.";
-        
+
         RETURN_CODE=52;
     fi
 
@@ -365,7 +365,6 @@ function usage
 
 [ ${#} -eq 0 ] && usage;
 
-typeset -i OPTIND=0;
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
@@ -478,7 +477,6 @@ do
     esac
 done
 
-shift ${OPTIND}-1;
 
 echo ${RETURN_CODE};
 
