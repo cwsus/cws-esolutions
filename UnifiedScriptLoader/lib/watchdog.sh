@@ -46,7 +46,7 @@ function usage
 [ -f ${APP_ROOT}/lib/functions ] && . ${APP_ROOT}/lib/functions;
 [ -f ${APP_ROOT}/lib/aliases ] && . ${APP_ROOT}/lib/aliases;
 
-while getopts ":t:i:d:" OPTIONS; do
+while getopts ":t:i:d:" OPTIONS 2>/dev/null; do
     case ${OPTIONS} in
         t) [[ ! -z "${OPTARG}" && $(isNaN ${OPTARG}) -eq 0 ]] && TIMEOUT=${OPTARG} || TIMEOUT=${THREAD_TIMEOUT} ;;
         n) [[ ! -z "${OPTARG}" && $(isNaN ${OPTARG}) -eq 0 ]] && INTERVAL=${OPTARG} || INTERVAL=${THREAD_INTERVAL} ;;

@@ -279,7 +279,7 @@ function usage
 
 [ ${#} -eq 0 ] && usage;
 
-while getopts ":m:s:u:p:a:eh:" OPTIONS
+while getopts ":m:s:u:p:a:eh:" OPTIONS 2>/dev/null
 do
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 

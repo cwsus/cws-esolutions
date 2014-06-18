@@ -841,7 +841,7 @@ METHOD_NAME="${CNAME}#startup";
 
 if [ -z "${RETURN_CODE}" ]
 then
-    while getopts ":b:p:z:i:c:r:xseh:" OPTIONS
+    while getopts ":b:p:z:i:c:r:xseh:" OPTIONS 2>/dev/null
     do
         case "${OPTIONS}" in
             b)

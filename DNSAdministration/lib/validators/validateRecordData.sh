@@ -1,4 +1,4 @@
-#!/usr/bin/ksh -x
+#!/usr/bin/env ksh
 #==============================================================================
 #
 #          FILE:  validateServiceRecordData.sh

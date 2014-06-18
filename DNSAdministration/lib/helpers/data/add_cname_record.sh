@@ -189,7 +189,7 @@ function usage
 
 [ ${#} -eq 0 ] && usage;
 
-while getopts ":b:p:z:i:c:t:a:d:rsh:" OPTIONS
+while getopts ":b:p:z:i:c:t:a:d:rsh:" OPTIONS 2>/dev/null
 do
     case "${OPTIONS}" in
         b)

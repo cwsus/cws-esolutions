@@ -185,13 +185,14 @@ function usage
     return 3;
 }
 
-while getopts ":as:" OPTIONS
+[ ${#} -eq 0 ] && usage;
+
+while getopts ":as:" OPTIONS 2>/dev/null
 do
     case "${OPTIONS}" in
         a)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            ## Capture the site root
             validateAccountAccess;
             ;;
         s)

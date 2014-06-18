@@ -262,7 +262,7 @@ function usage
 
 [ ${#} -eq 0 ] && usage;
 
-while getopts ":m:f:t:a:eh" OPTIONS
+while getopts ":m:f:t:a:eh" OPTIONS 2>/dev/null
 do
     METHOD_NAME="${CNAME}#init()";
 
