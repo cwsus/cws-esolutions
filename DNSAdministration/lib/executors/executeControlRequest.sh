@@ -92,7 +92,7 @@ unset RET_CODE;
 CNAME="$(basename "${0}")";
 METHOD_NAME="${CNAME}#startup";
 
-trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; exit" INT TERM EXIT;
+trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; return" INT TERM EXIT;
 
 #===  FUNCTION  ===============================================================
 #          NAME:  usage

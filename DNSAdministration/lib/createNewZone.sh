@@ -1,4 +1,4 @@
-#!/usr/bin/env ksh
+#!/usr/bin/ksh -x
 #==============================================================================
 #
 #          FILE:  create_zone.sh
@@ -90,7 +90,7 @@ unset RET_CODE;
 CNAME="$(basename "${0}")";
 METHOD_NAME="${CNAME}#startup";
 
-trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; exit" INT TERM EXIT;
+trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; return" INT TERM EXIT;
 
 #===  FUNCTION  ===============================================================
 #          NAME:  createSkeletonZone
@@ -146,23 +146,24 @@ function createSkeletonZone
         printf "            ${NAMESERVER_EXPIRATION_INTERVAL}           ; slave expiration time\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
         printf "            ${NAMESERVER_CACHE_INTERVAL}             ; minimum caching time in case of failed lookups\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
         printf "            )\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
+
+        for SLAVE in ${NAMESERVER_RECORDS[@]}
+        do
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SLAVE -> ${SLAVE}";
+
+            printf "            IN    NS          ${SLAVE}.${NAMESERVER_INTERNET_SUFFIX}\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
+        done
+
         printf "            IN    RP          ${NAMESERVER_PRIMARY_SOA_CONTACT}.${NAMESERVER_INTERNET_SUFFIX}\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
 
         if [ ! -z "${ENABLE_LOC_RECORD}" ] && [ "${ENABLE_LOC_RECORD}" = "${_TRUE}" ]
         then
-            local SITE_COORDINATES=$(sed -e '/^ *#/d;s/#.*//' ${INTERNET_DNS_CONFIG} | awk -F "=" "/\<\${DATACENTER}_SITE_COORDS\>/{print \$2}" | sed -e 's/^ *//g;s/ *$//g');
+            local SITE_COORDINATES=$(sed -e '/^ *#/d;s/#.*//' ${INTERNET_DNS_CONFIG} | awk -F "=" "/\<${DATACENTER}_SITE_COORDS\>/{print \$2}" | sed -e 's/^ *//g;s/ *$//g');
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_COORDINATES -> ${SITE_COORDINATES}";
 
             printf "            IN    LOC         ${SITE_COORDINATES}\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
         fi
-
-        for ADDRESS in ${NAMED_INTERNET_ADDR[@]}
-        do
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ADDRESS -> ${ADDRESS}";
-
-            printf "            IN    NS          ${ADDRESS}.${NAMED_INTERNET_SUFFIX}.\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
-        done
     done
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Directory creation and zonefile creation complete. Adding data..";

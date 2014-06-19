@@ -36,6 +36,8 @@ function validateChangeNumber
 
     if [ -z "${1}" ]
     then
+        RETURN_CODE=1;
+
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -45,6 +47,8 @@ function validateChangeNumber
         return ${RETURN_CODE};
     elif [ ${#1} -lt 8 ] && [[ ${1} != [Ee] ]]
     then
+        RETURN_CODE=1;
+
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -54,29 +58,24 @@ function validateChangeNumber
         return ${RETURN_CODE};
     fi
 
-    # [Cc][Rr][0-9]{6,}|[Tt][0-9]{6,}|[Ee]|[0-9]{20}
-    case ${1} in
-        @([Cc][Rr][0-9]*)) ## normal change request
-            RETURN_CODE=0;
-            ;;
-        +([Tt][0-9]*|[Ii][Nn][0-9]*)) ## incident ticket
-            RETURN_CODE=0;
-            ;;
-        @([0-9]*)) ## ecc
-            RETURN_CODE=0;
-            ;;
-        @([Ee]*)) ## emergency change order
-            CHANGE_CONTROL="E-$(date +"%m-%d-%Y_%H:%M:%S")";
+    local IS_VALID_TICKET=$(echo "${1}" | perl -ne '/\b([Cc][Rr]\d{6,})|([Tt]\d{6,})|(\d{20})|([Ee])\b/ && print');
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_CONTROL -> ${CHANGE_CONTROL}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IS_VALID_TICKET -> ${IS_VALID_TICKET}";
 
-            RETURN_CODE=0;
-            ;;
-        *)
-            ## change request # isnt valid
-            RETURN_CODE=1;
-            ;;
-    esac
+    if [ -z "${IS_VALID_TICKET}" ]
+    then
+        RETURN_CODE=1;
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
+    [[ "${1}" = [Ee] ]] && CHANGE_CONTROL="E-$(date +"%m-%d-%Y_%H:%M:%S")";
 
     [ ${RETURN_CODE} -eq 0 ] && [ ! -z "${CHANGE_CONTROL}" ] && CHANGE_CONTROL=${CHANGE_CONTROL};
     [ ${RETURN_CODE} -eq 0 ] && [ -z "${CHANGE_CONTROL}" ] && CHANGE_CONTROL=${1};

@@ -1,4 +1,4 @@
-#!/usr/bin/env ksh
+#!/usr/bin/ksh -x
 #==============================================================================
 #
 #          FILE:  addRecordEntries.sh
@@ -276,8 +276,8 @@ function addApexRecordEntry
             fi
             ;;
         [Mm][Xx])
-            RECORD_WEIGHT=$(echo ${RECORD_DATA} | cut -d "," -f 1);
-            RECORD_TARGET=$(echo ${RECORD_DATA} | cut -d "," -f 2);
+            RECORD_TARGET=$(echo ${RECORD_DATA} | cut -d "," -f 1);
+            RECORD_WEIGHT=$(echo ${RECORD_DATA} | cut -d "," -f 2);
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RECORD_WEIGHT -> ${RECORD_WEIGHT}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RECORD_TARGET -> ${RECORD_TARGET}";
