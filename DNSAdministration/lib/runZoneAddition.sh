@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 METHOD_NAME="${CNAME}#startup";
 
@@ -88,8 +88,8 @@ function buildWorkingZone
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting change array..";
 
-        ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1).${PROJECT_CODE};
-        DC_ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1);
+        ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(printf ${ZONE_NAME} | cut -d "." -f 1).${PROJECT_CODE};
+        DC_ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(printf ${ZONE_NAME} | cut -d "." -f 1);
 
         ## set up the change array
         set -A CHG_ARRAY;
@@ -1131,13 +1131,13 @@ do
 
             ## Capture the change control
             ADD_ENTRY=${_TRUE};
-            typeset -u ENTRY_TYPE=$(echo "${OPTARG}" | cut -d "," -f 1);
+            typeset -u ENTRY_TYPE=$(printf "${OPTARG}" | cut -d "," -f 1);
 
             case ${ENTRY_TYPE} in
                 [Aa]|[Nn][Ss]|[Cc][Nn][Aa][Mm][Ee]|[Tt][Xx][Tt])
                     ## these only have a target, no other data associated with them
-                    typeset -l ENTRY_NAME=$(echo "${OPTARG}" | cut -d "," -f 2);
-                    typeset -l ENTRY_RECORD=$(echo "${OPTARG}" | cut -d "," -f 3);
+                    typeset -l ENTRY_NAME=$(printf "${OPTARG}" | cut -d "," -f 2);
+                    typeset -l ENTRY_RECORD=$(printf "${OPTARG}" | cut -d "," -f 3);
                     ;;
                 [Mm][Xx])
                     ## mx records will have a weight associated
@@ -1155,14 +1155,14 @@ do
                     ## _submission._tcp.email.caspersbox.com 86400 IN SRV 10 10 25 caspersb-r1b13.caspersbox.com
                     ## see http://en.wikipedia.org/wiki/SRV_record for more "INFO"
                     ## set up our record information
-                    ENTRY_TYPE=$(echo ${IP_ADDR} | cut -d "," -f 1);
-                    ENTRY_PROTOCOL=$(echo ${IP_ADDR} | cut -d "," -f 2);
-                    ENTRY_NAME=$(echo ${IP_ADDR} | cut -d "," -f 3);
-                    ENTRY_TTL=$(echo ${IP_ADDR} | cut -d "," -f 4);
-                    ENTRY_PRIORITY=$(echo ${IP_ADDR} | cut -d "," -f 5);
-                    ENTRY_WEIGHT=$(echo ${IP_ADDR} | cut -d "," -f 6);
-                    ENTRY_PORT=$(echo ${IP_ADDR} | cut -d "," -f 7);
-                    ENTRY_RECORD=$(echo ${IP_ADDR} | cut -d "," -f 8);
+                    ENTRY_TYPE=$(printf ${IP_ADDR} | cut -d "," -f 1);
+                    ENTRY_PROTOCOL=$(printf ${IP_ADDR} | cut -d "," -f 2);
+                    ENTRY_NAME=$(printf ${IP_ADDR} | cut -d "," -f 3);
+                    ENTRY_TTL=$(printf ${IP_ADDR} | cut -d "," -f 4);
+                    ENTRY_PRIORITY=$(printf ${IP_ADDR} | cut -d "," -f 5);
+                    ENTRY_WEIGHT=$(printf ${IP_ADDR} | cut -d "," -f 6);
+                    ENTRY_PORT=$(printf ${IP_ADDR} | cut -d "," -f 7);
+                    ENTRY_RECORD=$(printf ${IP_ADDR} | cut -d "," -f 8);
                     ;;
                 *)
                     ## as-yet unsupported record type - this list should follow the list

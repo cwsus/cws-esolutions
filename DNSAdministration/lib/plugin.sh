@@ -22,7 +22,7 @@
 ## Application constants
 CNAME="$(basename "${0}")";
 THIS_CNAME="${CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 typeset -r PLUGIN_NAME="DNSAdministration";
 

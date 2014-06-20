@@ -17,7 +17,7 @@
 #==============================================================================
 ## Application contants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -109,7 +109,7 @@ function applyiPlanetCertificate
 
                 PRE_CERT_EXPIRY=$(certutil -L -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} -n ${CERTIFICATE_NICKNAME} \
                     | grep "Not After" | cut -d ":" -f 2- | awk '{print $5, $2, $3}');
-                PRE_EXPIRY_MONTH=$(echo ${PRE_CERT_EXPIRY} | awk '{print $2}');
+                PRE_EXPIRY_MONTH=$(printf ${PRE_CERT_EXPIRY} | awk '{print $2}');
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRE_PRE_CERT_EXPIRY -> ${PRE_CERT_EXPIRY}";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRE_EXPIRY_MONTH -> ${PRE_EXPIRY_MONTH}";
@@ -117,7 +117,7 @@ function applyiPlanetCertificate
                 if [ ! -z "${PRE_CERT_EXPIRY}" ]
                 then
                     ## ok, we have a nickname and an expiration date. convert it
-                    PRE_EPOCH_EXPIRY=$(returnEpochTime $(echo ${PRE_CERT_EXPIRY} | sed -e "s/${PRE_EXPIRY_MONTH}/$(eval echo \${${PRE_EXPIRY_MONTH}})/"));
+                    PRE_EPOCH_EXPIRY=$(returnEpochTime $(printf ${PRE_CERT_EXPIRY} | sed -e "s/${PRE_EXPIRY_MONTH}/$(eval printf \${${PRE_EXPIRY_MONTH}})/"));
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRE_EPOCH_EXPIRY -> ${PRE_EPOCH_EXPIRY}";
 
@@ -229,7 +229,7 @@ function applyiPlanetCertificate
 
                                 POST_CERT_EXPIRY=$(certutil -L -d ${IPLANET_ROOT}/${IPLANET_CERT_DIR} -P ${CERTIFICATE_DATABASE} -n ${CERTIFICATE_NICKNAME} \
                                     | grep "Not After" | cut -d ":" -f 2- | awk '{print $5, $2, $3}');
-                                POST_EXPIRY_MONTH=$(echo ${POST_CERT_EXPIRY} | awk '{print $2}');
+                                POST_EXPIRY_MONTH=$(printf ${POST_CERT_EXPIRY} | awk '{print $2}');
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRE_PRE_CERT_EXPIRY -> ${PRE_CERT_EXPIRY}";
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXPIRY_MONTH -> ${PRE_EXPIRY_MONTH}";
@@ -237,7 +237,7 @@ function applyiPlanetCertificate
                                 if [ ! -z "${POST_CERT_EXPIRY}" ]
                                 then
                                     ## ok, we have a nickname and an expiration date. convert it
-                                    POST_EPOCH_EXPIRY=$(returnEpochTime $(echo ${POST_CERT_EXPIRY} | sed -e "s/${POST_EXPIRY_MONTH}/$(eval echo \${${POST_EXPIRY_MONTH}})/"));
+                                    POST_EPOCH_EXPIRY=$(returnEpochTime $(printf ${POST_CERT_EXPIRY} | sed -e "s/${POST_EXPIRY_MONTH}/$(eval printf \${${POST_EXPIRY_MONTH}})/"));
 
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "POST_EPOCH_EXPIRY -> ${POST_EPOCH_EXPIRY}";
 
@@ -304,8 +304,8 @@ function applyiPlanetCertificate
                                                     if [ ! -z "${CERT_DATA}" ]
                                                     then
                                                         ## we have some data back
-                                                        KEY_COUNT=$(echo ${CERT_DATA} | grep "Found" | grep "key" | awk '{print $2}');
-                                                        CERT_COUNT=$(echo ${CERT_DATA} | grep "Found" | grep "cert" | awk '{print $2}');
+                                                        KEY_COUNT=$(printf ${CERT_DATA} | grep "Found" | grep "key" | awk '{print $2}');
+                                                        CERT_COUNT=$(printf ${CERT_DATA} | grep "Found" | grep "cert" | awk '{print $2}');
 
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "KEY_COUNT -> ${KEY_COUNT}";
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_COUNT -> ${CERT_COUNT}";
@@ -375,7 +375,7 @@ function applyiPlanetCertificate
 
                                                     POST_CERT_EXPIRY=$(certutil -L -d ${IPLANET_ROOT}/${IPLANET_CERT_DIR} -P ${CERTIFICATE_DATABASE} -n ${CERTIFICATE_NICKNAME} \
                                                         | grep "Not After" | cut -d ":" -f 2- | awk '{print $5, $2, $3}');
-                                                    POST_EXPIRY_MONTH=$(echo ${POST_CERT_EXPIRY} | awk '{print $2}');
+                                                    POST_EXPIRY_MONTH=$(printf ${POST_CERT_EXPIRY} | awk '{print $2}');
 
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRE_PRE_CERT_EXPIRY -> ${PRE_CERT_EXPIRY}";
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXPIRY_MONTH -> ${PRE_EXPIRY_MONTH}";
@@ -383,7 +383,7 @@ function applyiPlanetCertificate
                                                     if [ ! -z "${POST_CERT_EXPIRY}" ]
                                                     then
                                                         ## ok, we have a nickname and an expiration date. convert it
-                                                        POST_EPOCH_EXPIRY=$(returnEpochTime $(echo ${POST_CERT_EXPIRY} | sed -e "s/${POST_EXPIRY_MONTH}/$(eval echo \${${POST_EXPIRY_MONTH}})/"));
+                                                        POST_EPOCH_EXPIRY=$(returnEpochTime $(printf ${POST_CERT_EXPIRY} | sed -e "s/${POST_EXPIRY_MONTH}/$(eval printf \${${POST_EXPIRY_MONTH}})/"));
 
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "POST_EPOCH_EXPIRY -> ${POST_EPOCH_EXPIRY}";
 
@@ -949,6 +949,6 @@ do
 done
 
 
-echo ${RETURN_CODE};
+printf ${RETURN_CODE};
 exit ${RETURN_CODE};
 

@@ -21,7 +21,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 function main
@@ -161,7 +161,7 @@ function main
                                             cut -d "|" -f 1 | cut -d ":" -f 2 | sort | uniq); ## get the webcode
                                         PLATFORM_CODE=$(getWebInfo | grep -w ${SITE_HOSTNAME} | grep -v "#" | \
                                             cut -d "|" -f 2 | sort | uniq | tr "[\n]" "[ ]"); ## get the platform code, if multiples spit with space
-                                        MASTER_WEBSERVER=$(getPlatformInfo | grep -w $(echo ${PLATFORM_CODE} | awk '{print $1}') | \
+                                        MASTER_WEBSERVER=$(getPlatformInfo | grep -w $(printf ${PLATFORM_CODE} | awk '{print $1}') | \
                                             grep -v "#" | cut -d "|" -f 5 | sort | uniq | sed -e "s/,/ /g" | awk '{print $1}');
                                         [ -z "$(getWebInfo | grep -w ${WEB_PROJECT_CODE} | grep -v "#" | grep -w ${SITE_HOSTNAME} | \
                                             cut -d "|" -f 10 | sort | uniq | grep enterprise)" ] \
@@ -545,9 +545,9 @@ function main
 
                                             print "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
-                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command nohup ${APP_ROOT}/${LIB_DIRECTORY}/runMonitor.sh -m monitorCertificateDatabases -s \"$(echo ${WEBSERVER_NAMES[@]})\" -d $(returnEpochTime \"$(date +"%Y %m %d")\" ${REPORT_DAYS}) -a \"${TARGET_EMAIL}\" -e > /dev/null 2>&1 &";
+                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command nohup ${APP_ROOT}/${LIB_DIRECTORY}/runMonitor.sh -m monitorCertificateDatabases -s \"$(printf ${WEBSERVER_NAMES[@]})\" -d $(returnEpochTime \"$(date +"%Y %m %d")\" ${REPORT_DAYS}) -a \"${TARGET_EMAIL}\" -e > /dev/null 2>&1 &";
 
-                                            nohup ${APP_ROOT}/${LIB_DIRECTORY}/runMonitor.sh -m monitorCertificateDatabases -s "$(echo ${WEBSERVER_NAMES[@]})" -d $(returnEpochTime "$(date +"%Y %m %d")" ${REPORT_DAYS}) -a "${TARGET_EMAIL}" -e > /dev/null 2>&1 &
+                                            nohup ${APP_ROOT}/${LIB_DIRECTORY}/runMonitor.sh -m monitorCertificateDatabases -s "$(printf ${WEBSERVER_NAMES[@]})" -d $(returnEpochTime "$(date +"%Y %m %d")" ${REPORT_DAYS}) -a "${TARGET_EMAIL}" -e > /dev/null 2>&1 &
 
                                             reset; clear;
 

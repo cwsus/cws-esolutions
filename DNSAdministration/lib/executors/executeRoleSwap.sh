@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 METHOD_NAME="${CNAME}#startup";
 
@@ -384,7 +384,7 @@ function switch_to_slave
                         ## we now need to re-configure named to operate as a slave
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone configuration processing was successful. Now re-configuring named..";
 
-                        NAMED_CONF_CHANGENAME=$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                        NAMED_CONF_CHANGENAME=$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NAMED_CONF_CHANGENAME -> ${NAMED_CONF_CHANGENAME}";
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating backup copy of primary configuration..";
@@ -852,7 +852,7 @@ function switch_to_master
                         ## we now need to re-configure named to operate as a slave
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone configuration processing was successful. Now re-configuring named..";
 
-                        NAMED_CONF_CHANGENAME=$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                        NAMED_CONF_CHANGENAME=$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NAMED_CONF_CHANGENAME -> ${NAMED_CONF_CHANGENAME}";
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating backup copy of primary configuration..";

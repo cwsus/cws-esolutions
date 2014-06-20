@@ -24,7 +24,7 @@
 
 ## Constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -40,7 +40,7 @@ function lockProcess
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    [ -e "${LOCK_FILE}" ] && [ kill -0 $(cat "${LOCK_FILE}") ] && RETURN_CODE=1 || echo "${1}" > "${LOCK_FILE}" && RETURN_CODE=0;
+    [ -e "${LOCK_FILE}" ] && [ kill -0 $(cat "${LOCK_FILE}") ] && RETURN_CODE=1 || printf "${1}" > "${LOCK_FILE}" && RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 

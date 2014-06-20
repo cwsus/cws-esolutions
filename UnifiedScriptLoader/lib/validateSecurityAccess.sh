@@ -23,7 +23,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -60,7 +60,7 @@ function validateAccountAccess
         do
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "USER -> ${USER}";
 
-            if [ $(echo ${AUTHORIZED_USERS[@]} | grep -c ${USER}) -eq 1 ]
+            if [ $(printf ${AUTHORIZED_USERS[@]} | grep -c ${USER}) -eq 1 ]
             then
                 ## we only need to match one, its unlikely that all users will be in all groups
 
@@ -83,7 +83,7 @@ function validateAccountAccess
         do
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "GROUP -> ${GROUP}";
 
-            if [ $(echo ${AUTHORIZED_GROUPS[@]} | grep -c ${GROUP}) -eq 1 ]
+            if [ $(printf ${AUTHORIZED_GROUPS[@]} | grep -c ${GROUP}) -eq 1 ]
             then
                 ## we only need to match one, its unlikely that all users will be in all groups
 
@@ -138,7 +138,7 @@ function validateSystemAccess
             RETURN_CODE=0;
 
             break;
-        elif [ $(echo ${REAL_ALIAS_NAMES} | grep -c ${SYSTEM_HOSTNAME}) -eq 1 ]
+        elif [ $(printf ${REAL_ALIAS_NAMES} | grep -c ${SYSTEM_HOSTNAME}) -eq 1 ]
         then
             RETURN_CODE=0;
 

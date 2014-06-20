@@ -23,7 +23,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 METHOD_NAME="${CNAME}#startup";
 
@@ -317,8 +317,8 @@ function retrieveSiteInfo
 
                         sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                     else
-                        SVC_REQUEST_TYPE=$(echo ${SVC_LIST} | cut -d "," -f 1);
-                        SVC_REQUEST_OPTION=$(echo ${SVC_LIST} | cut -d "," -f 2);
+                        SVC_REQUEST_TYPE=$(printf ${SVC_LIST} | cut -d "," -f 1);
+                        SVC_REQUEST_OPTION=$(printf ${SVC_LIST} | cut -d "," -f 2);
 
                         ## unset this RET_CODE
                         unset RET_CODE;
@@ -373,7 +373,7 @@ function retrieveSiteInfo
                                             ## prints the following:
                                             ## 0 - db.example.XMPL - Live in: PH - Site URL: example.com
                                             ## 7-8 for prd
-                                            print "${B} - $(echo "${SERVICE_DETAIL[${B}]}" | cut -d "|" -f 1 | cut -d "/" -f 7-8) - Live in: $(echo "${SERVICE_DETAIL[${B}]}" | cut -d "|" -f 2) - Site URL: $(echo "${SERVICE_DETAIL[${B}]}" | cut -d "|" -f 3)";
+                                            print "${B} - $(printf "${SERVICE_DETAIL[${B}]}" | cut -d "|" -f 1 | cut -d "/" -f 7-8) - Live in: $(printf "${SERVICE_DETAIL[${B}]}" | cut -d "|" -f 2) - Site URL: $(printf "${SERVICE_DETAIL[${B}]}" | cut -d "|" -f 3)";
                                             (( A += 1 ));
                                             (( B += 1 ));
                                         else
@@ -491,7 +491,7 @@ function retrieveSiteInfo
                                         ## prints the following:
                                         ## 0 - db.example.XMPL - Live in: PH - Site URL: example.com
                                         ## 7-8 for prd
-                                        print "${A} - $(echo "${SERVICE_DETAIL[${A}]}" | cut -d "|" -f 1 | cut -d "/" -f 7-8) - Live in: $(echo "${SERVICE_DETAIL[${A}]}" | cut -d "|" -f 2) - Site URL: $(echo "${SERVICE_DETAIL[${A}]}" | cut -d "|" -f 3)";
+                                        print "${A} - $(printf "${SERVICE_DETAIL[${A}]}" | cut -d "|" -f 1 | cut -d "/" -f 7-8) - Live in: $(printf "${SERVICE_DETAIL[${A}]}" | cut -d "|" -f 2) - Site URL: $(printf "${SERVICE_DETAIL[${A}]}" | cut -d "|" -f 3)";
                                         (( A += 1 ));
                                     done
 
@@ -712,7 +712,7 @@ function processDecomRequest
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TDC -> ${TDC}";
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_CONTROL -> ${CHANGE_CONTROL}";
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IUSER_AUDIT -> ${IUSER_AUDIT}";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command run_decom.sh -b $(echo "${SERVICE_DETAIL[${B}]}" | cut -d "|" -f 3),${BU},${CHANGE_CONTROL},${IUSER_AUDIT} -e";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command run_decom.sh -b $(printf "${SERVICE_DETAIL[${B}]}" | cut -d "|" -f 3),${BU},${CHANGE_CONTROL},${IUSER_AUDIT} -e";
 
                     local THIS_CNAME=${CNAME};
                     unset METHOD_NAME;
@@ -732,9 +732,9 @@ function processDecomRequest
                     local METHOD_NAME="${THIS_CNAME}#${0}";
                 else
                     ## user has selected a single zone. call out to the right runner to perform the work
-                    BU=$(echo ${SERVICE_DETAIL[${SELECTION}]} | cut -d "/" -f 6 | cut -d "_" -f 3);
-                    PCODE=$(echo ${SERVICE_DETAIL[${SELECTION}]} | cut -d "/" -f 7 | cut -d "|" -f 1 | cut -d "." -f 3);
-                    ZNAME=$(echo ${SERVICE_DETAIL[${SELECTION}]} | cut -d "|" -f 3)
+                    BU=$(printf ${SERVICE_DETAIL[${SELECTION}]} | cut -d "/" -f 6 | cut -d "_" -f 3);
+                    PCODE=$(printf ${SERVICE_DETAIL[${SELECTION}]} | cut -d "/" -f 7 | cut -d "|" -f 1 | cut -d "." -f 3);
+                    ZNAME=$(printf ${SERVICE_DETAIL[${SELECTION}]} | cut -d "|" -f 3)
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BU -> ${BU}";
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FNAME -> ${FNAME}";
@@ -797,7 +797,7 @@ function processDecomRequest
                     then
                         ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS Failover: Requestor: ${IUSER_AUDIT} - Date: $(date +"%d-%m-%Y") - Site: All sites in ${SVC_REQUEST_OPTION} - Change Request: ${CHANGE_CONTROL} - Switched To: ${TDC}";
                     else
-                        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS Failover: Requestor: ${IUSER_AUDIT} - Date: $(date +"%d-%m-%Y") - Site: $(echo ${SERVICE_DETAIL[${SELECTION}]} | cut -d "/" -f 9) - Change Request: ${CHANGE_CONTROL} - Switched To: ${TDC}";
+                        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS Failover: Requestor: ${IUSER_AUDIT} - Date: $(date +"%d-%m-%Y") - Site: $(printf ${SERVICE_DETAIL[${SELECTION}]} | cut -d "/" -f 9) - Change Request: ${CHANGE_CONTROL} - Switched To: ${TDC}";
                     fi
 
                     ## unset variables

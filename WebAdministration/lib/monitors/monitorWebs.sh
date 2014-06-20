@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -58,7 +58,7 @@ function monitorWebInstances
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST -> ${VALIDATE_SERVER_LIST}";
 
-            if [ -z "${VALIDATE_SERVER_LIST}" ] || [ "$(echo ${VALIDATE_SERVER_LIST[@]})" = "${_FALSE}" ]
+            if [ -z "${VALIDATE_SERVER_LIST}" ] || [ "$(printf ${VALIDATE_SERVER_LIST[@]})" = "${_FALSE}" ]
             then
                 ## no websites were found to monitor
                 ${LOGGER} MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No websites were found to monitor. Please ensure that the IPLANET_ROOT variable exists in the executing users profile and that it points to a valid location.";
@@ -70,7 +70,7 @@ function monitorWebInstances
 
                     if [ $(grep -c ${WEBSERVER} ${APP_ROOT}/${CORE_EXCEPTION_LIST}) -eq 0 ] \
                         && [ $(grep -c ${WEBSERVER} ${APP_ROOT}/${TMP_EXCEPTION_LIST}) -eq 0 ] \
-                        && [ $(echo ${IPLANET_STARTUP_IGNORE_LIST} | grep -c ${WEBSERVER}) -eq 0 ]
+                        && [ $(printf ${IPLANET_STARTUP_IGNORE_LIST} | grep -c ${WEBSERVER}) -eq 0 ]
                     then
                         ## pull out the port number. it drives what we alert
                         set -A SITE_PORT_NUMBER $(grep -w "${IPLANET_PORT_IDENTIFIER}" \
@@ -123,7 +123,7 @@ function monitorWebInstances
                             if [ ! -z "${PROCESS_OUTPUT}" ]
                             then
                                 ## server is running, check to see who its running as
-                                PROCESS_OWNER=$(echo ${PROCESS_OUTPUT} | awk '{print $1}');
+                                PROCESS_OWNER=$(printf ${PROCESS_OUTPUT} | awk '{print $1}');
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OWNER -> ${PROCESS_OWNER}";
 
@@ -245,7 +245,7 @@ function monitorWebInstances
 
                     if [ $(grep -c ${WEBSERVER} ${APP_ROOT}/${CORE_EXCEPTION_LIST}) -eq 0 ] \
                         && [ $(grep -c ${WEBSERVER} ${APP_ROOT}/${TMP_EXCEPTION_LIST}) -eq 0 ] \
-                        && [ $(echo ${IPLANET_STARTUP_IGNORE_LIST} | grep -c ${WEBSERVER}) -eq 0 ]
+                        && [ $(printf ${IPLANET_STARTUP_IGNORE_LIST} | grep -c ${WEBSERVER}) -eq 0 ]
                     then
                         ## ok, we can run it. its not in an exception list
                         PID_LOG_FILE=$(grep -w ${IHS_PID_IDENTIFIER} ${IHS_ROOT}/${IHS_CONFIG_PATH}/${WEBSERVER}/${IHS_SERVER_CONFIG} | awk '{print $2}');
@@ -265,7 +265,7 @@ function monitorWebInstances
                             if [ ! -z "${PROCESS_OUTPUT}" ]
                             then
                                 ## server is running, check to see who its running as
-                                PROCESS_OWNER=$(echo ${PROCESS_OUTPUT} | awk '{print $1}');
+                                PROCESS_OWNER=$(printf ${PROCESS_OUTPUT} | awk '{print $1}');
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OWNER -> ${PROCESS_OWNER}";
 
@@ -396,5 +396,5 @@ METHOD_NAME="${CNAME}#startup";
 
 monitorWebInstances;
 
-echo ${RETURN_CODE};
+printf ${RETURN_CODE};
 exit ${RETURN_CODE};

@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 METHOD_NAME="${CNAME}#startup";
 
@@ -44,7 +44,7 @@ function validateIPAddress
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
 
-    if [ -z "${2}" ] || [ $(echo ${2} | tr -dc "." | wc -c) -ne 3 ]
+    if [ -z "${2}" ] || [ $(printf ${2} | tr -dc "." | wc -c) -ne 3 ]
     then
         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "The provided address is invalid. Cannot continue.";
 
@@ -64,7 +64,7 @@ function validateIPAddress
         return ${RETURN_CODE};
     fi
 
-    local IS_VALID_IP=$(echo "${2}" | perl -ne '/(\b\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}\b)/ && print');
+    local IS_VALID_IP=$(printf "${2}" | perl -ne '/(\b\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}\b)/ && print');
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IS_VALID_IP -> ${IS_VALID_IP}";
 
@@ -88,10 +88,51 @@ function validateIPAddress
         return ${RETURN_CODE};
     fi
 
-    FIRST_OCTET=$(echo ${2} | cut -d "." -f 1);
-    SECOND_OCTET=$(echo ${2} | cut -d "." -f 2);
-    THIRD_OCTET=$(echo ${2} | cut -d "." -f 3);
-    FOURTH_OCTET=$(echo ${2} | cut -d "." -f 4);
+    if [ "${1}" = "datacenter" ]
+    then
+        ## make sure theres a match here
+        for ADDRESS in ${DATACENTER_ADDRESSES[@]}
+        do
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ADDRESS -> ${ADDRESS}";
+
+            OCTET_MATCH=$(printf "${1}" | cut -d "." -f 1-$(printf ${ADDRESS} | tr -dc "." | wc -c));
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OCTET_MATCH -> ${OCTET_MATCH}";
+
+            [ "${OCTET_MATCH}" = "${ADDRESS}" ] && ERROR_COUNT=0 && break;
+
+            (( ERROR_COUNT += 1 ));
+
+            continue;
+        done
+
+        if [ ${ERROR_COUNT} -ne 0 ]
+        then
+            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "The provided address is improperly formatted. Cannot continue.";
+
+            unset ADDRESS;
+            unset FIRST_OCTET;
+            unset SECOND_OCTET;
+            unset THIRD_OCTET;
+            unset FOURTH_OCTET;
+
+            RETURN_CODE=45;
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+            return ${RETURN_CODE};
+        fi
+    fi
+
+
+    FIRST_OCTET=$(printf ${2} | cut -d "." -f 1);
+    SECOND_OCTET=$(printf ${2} | cut -d "." -f 2);
+    THIRD_OCTET=$(printf ${2} | cut -d "." -f 3);
+    FOURTH_OCTET=$(printf ${2} | cut -d "." -f 4);
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FIRST_OCTET -> ${FIRST_OCTET}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SECOND_OCTET -> ${SECOND_OCTET}";
@@ -112,6 +153,7 @@ function validateIPAddress
 
     [ -z "${RETURN_CODE}" ] && RETURN_CODE=0;
 
+    unset ADDRESS;
     unset FIRST_OCTET;
     unset SECOND_OCTET;
     unset THIRD_OCTET;
@@ -136,7 +178,7 @@ function validateRecordType
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
-    local RECORD_TYPE=$(echo ${2} | tr "[a-z]" "[A-Z]");
+    local RECORD_TYPE=$(printf ${2} | tr "[a-z]" "[A-Z]");
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -158,7 +200,7 @@ function validateRecordType
     do
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ALLOWED_RECORD -> ${ALLOWED_RECORD}";
 
-        [ -z "$(echo ${ALLOWED_RECORD} | sed -e '/^ *#/d;s/#.*//;s/^ *//g;s/ *$//g')" ] && continue;
+        [ -z "$(printf ${ALLOWED_RECORD} | sed -e '/^ *#/d;s/#.*//;s/^ *//g;s/ *$//g')" ] && continue;
 
         if [ "${RECORD_TYPE}" = "${ALLOWED_RECORD}" ]
         then
@@ -251,7 +293,7 @@ function validateRecordTarget
                         do
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXTERNAL_SERVER -> ${EXTERNAL_SERVER}";
 
-                            PING_RCODE=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${EXTERNAL_SERVER} "ping ${3} > /dev/null 2>&1 && echo ${?}" ${SSH_USER_NAME} ${SSH_USER_AUTH});
+                            PING_RCODE=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${EXTERNAL_SERVER} "ping ${3} > /dev/null 2>&1 && printf ${?}" ${SSH_USER_NAME} ${SSH_USER_AUTH});
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
 
                             if [ -z "${PING_RCODE}" ] || [ ${PING_RCODE} -ne 0 ]
@@ -287,7 +329,7 @@ function validateRecordTarget
                             do
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXTERNAL_SERVER -> ${EXTERNAL_SERVER}";
 
-                                PING_RCODE=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${EXTERNAL_SERVER} "ping ${3} > /dev/null 2>&1 && echo ${?}" ${SSH_USER_NAME} ${SSH_USER_AUTH});
+                                PING_RCODE=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${EXTERNAL_SERVER} "ping ${3} > /dev/null 2>&1 && printf ${?}" ${SSH_USER_NAME} ${SSH_USER_AUTH});
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
 
                                 if [ -z "${PING_RCODE}" ] || [ ${PING_RCODE} -ne 0 ]
@@ -422,7 +464,7 @@ function validateRecordTarget
             ## or it might point to a wholly different resources
             ## (eg search.example.com points to www.google.com)
             ## need to know what file to look at
-            SOURCE_FILE=${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1);
+            SOURCE_FILE=${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(printf ${SITE_HOSTNAME} | cut -d "." -f 1);
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SOURCE_FILE -> ${SOURCE_FILE}";
 
@@ -619,6 +661,7 @@ METHOD_NAME="${CNAME}#startup";
 
 ## make sure we have args
 [ "${1}" = "address" ] && validateIPAddress ${@};
+[ "${1}" = "datacenter" ] && validateIPAddress ${@};
 [ "${1}" = "type" ] && validateRecordType ${@};
 [ "${1}" = "target" ] && validateRecordTarget ${@};
 [ "${1}" = "srvtype" ] && validateServiceType ${@};

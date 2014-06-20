@@ -43,7 +43,7 @@ if [ ! -s ${APP_SYS_CONFIG} ]
 then
     print "Failed to locate configuration data. Cannot continue.";
 
-    echo 1; exit 1;
+    printf 1; exit 1;
 fi
 
 . ${APP_SYS_CONFIG};

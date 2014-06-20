@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 METHOD_NAME="${CNAME}#startup";
 
@@ -127,10 +127,10 @@ function decom_master_bu
             ## take a backup of the business unit conf file.
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backing up configuration files..";
 
-            cp ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
-                ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHANGE_NUM};
+            cp ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
+                ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHANGE_NUM};
 
-            if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHANGE_NUM} ]
+            if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHANGE_NUM} ]
             then
                 ## ok, now we should have a backup of the bu conf. lets take a backup of the decom conf file if it exists.
                 ## if it doesnt exist, no backup is taken because there isnt anything to back up..
@@ -157,7 +157,7 @@ function decom_master_bu
                         set -A ZONE_LISTING;
 
                         ## loop through all the zones in the conf file and pull them out. we'll need them later.
-                        for ZONE_ENTRY in $(grep zone ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | cut -d "\"" -f 2)
+                        for ZONE_ENTRY in $(grep zone ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | cut -d "\"" -f 2)
                         do
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONE_ENTRY -> ${ZONE_ENTRY}";
 
@@ -171,11 +171,11 @@ function decom_master_bu
                         set -A FILE_LISTING;
 
                         ## loop through all the filenames in the conf file and pull them out
-                        for ZONE_ENTRY in $(grep file ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | cut -d "\"" -f 2)
+                        for ZONE_ENTRY in $(grep file ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | cut -d "\"" -f 2)
                         do
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONE_ENTRY -> ${ZONE_ENTRY}";
 
-                            set -A FILE_LISTING ${FILE_LISTING[@]} $(echo ${ZONE_ENTRY} | sed -e "s^${GROUP_ID}${BUSINESS_UNIT}^${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}^g");
+                            set -A FILE_LISTING ${FILE_LISTING[@]} $(printf ${ZONE_ENTRY} | sed -e "s^${GROUP_ID}${BUSINESS_UNIT}^${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}^g");
                         done
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FILE_LISTING -> ${FILE_LISTING[@]}";
@@ -284,63 +284,63 @@ function decom_master_bu
                                                 ## we can now remove the bu conf file, and copy our temporary decom conf file into place
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing business unit config file..";
 
-                                                rm -rf ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
+                                                rm -rf ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
 
                                                 ## and make sure its gone...
-                                                if [ ! -s ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ] &&
-                                                    [ ! -f ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ]
+                                                if [ ! -s ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ] &&
+                                                    [ ! -f ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ]
                                                 then
                                                     ## it is. lets remove it from the named.conf file and add in (if necessary)
                                                     ## the decom conf file.
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal complete. Backing up primary configuration..";
 
                                                     ## back it up..
-                                                    cp ${NAMED_CONF_FILE} ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                                                    cp ${NAMED_CONF_FILE} ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
 
                                                     ## and confirm..
-                                                    if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ]
+                                                    if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ]
                                                     then
                                                         ## backup complete. operate.
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete. Creating working copy of named configuration..";
 
                                                         ## create copy of named conf file..
-                                                        cp ${NAMED_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                                                        cp ${NAMED_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
 
                                                         ## and make sure it happened..
-                                                        if [ -s ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ]
+                                                        if [ -s ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ]
                                                         then
                                                             ## good. lets keep going
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Working copy created. Operating..";
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing entry from ${NAMED_CONF_FILE}..";
 
-                                                            if [ $(grep -c ${DECOM_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -eq 0 ]
+                                                            if [ $(grep -c ${DECOM_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -eq 0 ]
                                                             then
                                                                 ## its not there, so lets replace the existing business unit filename
                                                                 ## with the decom filename
-                                                                sed -e "s^/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}^/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}^" \
-                                                                    ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp
+                                                                sed -e "s^/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}^/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}^" \
+                                                                    ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp
                                                             else
                                                                 ## its already there, so just remove the entry
-                                                                sed -e "/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}/d" \
-                                                                    ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp
+                                                                sed -e "/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}/d" \
+                                                                    ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp
                                                             fi
 
                                                             ## move the file back to where it was before..
-                                                            mv ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                                                            mv ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
 
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entry removed. Validating..";
 
                                                             ## and make sure it was removed..
-                                                            if [ $(grep -c $(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -eq 0 ]
+                                                            if [ $(grep -c $(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -eq 0 ]
                                                             then
                                                                 ## we should be done here. make sure our decom include is in, and if so, copy the file
-                                                                if [ $(grep -c ${DECOM_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -ne 0 ]
+                                                                if [ $(grep -c ${DECOM_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -ne 0 ]
                                                                 then
                                                                     ## its there. lets move.
-                                                                    cp ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ${NAMED_CONF_FILE};
+                                                                    cp ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ${NAMED_CONF_FILE};
 
                                                                     ## and checksum...
-                                                                    TMP_CONF_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} | awk '{print $1}');
+                                                                    TMP_CONF_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} | awk '{print $1}');
                                                                     OP_CONF_CKSUM=$(cksum ${NAMED_CONF_FILE} | awk '{print $1}');
 
                                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_CONF_CKSUM -> ${TMP_CONF_CKSUM}";
@@ -350,7 +350,7 @@ function decom_master_bu
                                                                     if [ ${TMP_CONF_CKSUM} -eq ${OP_CONF_CKSUM} ]
                                                                     then
                                                                         ## ok, checksums match, we're super.
-                                                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
+                                                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
                                                                         ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                                         RETURN_CODE=0;
@@ -359,7 +359,7 @@ function decom_master_bu
                                                                         ## copy to where its supposed to go. this *should* be ok, but does warrant some review. "WARN".
                                                                         ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHECKSUM MISMATCH: Failed to validate that named configuration file was updated.";
 
-                                                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
+                                                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
                                                                         ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                                         RETURN_CODE=72;
@@ -440,7 +440,7 @@ function decom_master_bu
                     set -A ZONE_LISTING;
 
                     ## loop through all the zones in the conf file and pull them out. we'll need them later.
-                    for ZONE_ENTRY in $(grep zone ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | cut -d "\"" -f 2)
+                    for ZONE_ENTRY in $(grep zone ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | cut -d "\"" -f 2)
                     do
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONE_ENTRY -> ${ZONE_ENTRY}";
 
@@ -454,11 +454,11 @@ function decom_master_bu
                     set -A FILE_LISTING;
 
                     ## loop through all the filenames in the conf file and pull them out
-                    for ZONE_ENTRY in $(grep file ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | cut -d "\"" -f 2)
+                    for ZONE_ENTRY in $(grep file ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | cut -d "\"" -f 2)
                     do
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONE_ENTRY -> ${ZONE_ENTRY}";
 
-                        set -A FILE_LISTING ${FILE_LISTING[@]} $(echo ${ZONE_ENTRY} | sed -e "s^${GROUP_ID}${BUSINESS_UNIT}^${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}^g");
+                        set -A FILE_LISTING ${FILE_LISTING[@]} $(printf ${ZONE_ENTRY} | sed -e "s^${GROUP_ID}${BUSINESS_UNIT}^${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}^g");
                     done
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FILE_LISTING -> ${FILE_LISTING[@]}";
@@ -567,30 +567,30 @@ function decom_master_bu
                                             ## we can now remove the bu conf file, and copy our temporary decom conf file into place
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing business unit config file..";
 
-                                            rm -rf ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
+                                            rm -rf ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
 
                                             ## and make sure its gone...
-                                            if [ ! -s ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ] &&
-                                                [ ! -f ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ]
+                                            if [ ! -s ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ] &&
+                                                [ ! -f ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ]
                                             then
                                                 ## it is. lets remove it from the named.conf file and add in (if necessary)
                                                 ## the decom conf file.
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal complete. Backing up primary configuration..";
 
                                                 ## back it up..
-                                                cp ${NAMED_CONF_FILE} ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                                                cp ${NAMED_CONF_FILE} ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
 
                                                 ## and confirm..
-                                                if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ]
+                                                if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ]
                                                 then
                                                     ## backup complete. operate.
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete. Creating working copy of named configuration..";
 
                                                     ## create copy of named conf file..
-                                                    cp ${NAMED_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                                                    cp ${NAMED_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
 
                                                     ## and make sure it happened..
-                                                    if [ -s ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ]
+                                                    if [ -s ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ]
                                                     then
                                                         ## good. lets keep going
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Working copy created. Operating..";
@@ -598,34 +598,34 @@ function decom_master_bu
 
                                                         ## check for an entry in named.conf for the decom config file. if its not
                                                         ## there then add it
-                                                        if [ $(grep -c ${DECOM_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -eq 0 ]
+                                                        if [ $(grep -c ${DECOM_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -eq 0 ]
                                                         then
                                                             ## its not there, so lets replace the existing business unit filename
                                                             ## with the decom filename
-                                                            sed -e "s^/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}^/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}^" \
-                                                                ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp
+                                                            sed -e "s^/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}^/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}^" \
+                                                                ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp
                                                         else
                                                             ## its already there, so just remove the entry
-                                                            sed -e "/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}/d" \
-                                                                ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp
+                                                            sed -e "/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}/d" \
+                                                                ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp
                                                         fi
 
                                                         ## move the file back to where it was before..
-                                                        mv ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                                                        mv ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
 
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entry removed. Validating..";
 
                                                         ## and make sure it was removed..
-                                                        if [ $(grep -c $(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -eq 0 ]
+                                                        if [ $(grep -c $(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -eq 0 ]
                                                         then
                                                             ## we should be done here. make sure our decom include is in, and if so, copy the file
-                                                            if [ $(grep -c ${DECOM_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -ne 0 ]
+                                                            if [ $(grep -c ${DECOM_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -ne 0 ]
                                                             then
                                                                 ## its there. lets move.
-                                                                cp ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ${NAMED_CONF_FILE};
+                                                                cp ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ${NAMED_CONF_FILE};
 
                                                                 ## and checksum...
-                                                                TMP_CONF_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} | awk '{print $1}');
+                                                                TMP_CONF_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} | awk '{print $1}');
                                                                 OP_CONF_CKSUM=$(cksum ${NAMED_CONF_FILE} | awk '{print $1}');
 
                                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_CONF_CKSUM -> ${TMP_CONF_CKSUM}";
@@ -635,7 +635,7 @@ function decom_master_bu
                                                                 if [ ${TMP_CONF_CKSUM} -eq ${OP_CONF_CKSUM} ]
                                                                 then
                                                                     ## ok, checksums match, we're super.
-                                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
+                                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
                                                                     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                                     RETURN_CODE=0;
@@ -644,7 +644,7 @@ function decom_master_bu
                                                                     ## copy to where its supposed to go. this *should* be ok, but does warrant some review. "WARN".
                                                                     ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHECKSUM MISMATCH: Failed to validate that named configuration file was updated.";
 
-                                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
+                                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
                                                                     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                                     RETURN_CODE=72;
@@ -742,7 +742,7 @@ function decom_master_bu
 
     ## remove any tmp files
     rm -rf ${PLUGIN_TMP_DIRECTORY}/${DECOM_CONF_FILE};
-    rm -rf ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+    rm -rf ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
 
     unset END_LINE_NUMBER;
     unset START_LINE_NUMBER;
@@ -794,10 +794,10 @@ function decom_slave_bu
             ## take a backup of the business unit conf file.
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backing up configuration files..";
 
-            cp ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
-                ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHANGE_NUM};
+            cp ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
+                ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHANGE_NUM};
 
-            if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHANGE_NUM} ]
+            if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHANGE_NUM} ]
             then
                 ## ok, now we should have a backup of the bu conf. lets take a backup of the decom conf file if it exists.
                 ## if it doesnt exist, no backup is taken because there isnt anything to back up..
@@ -824,7 +824,7 @@ function decom_slave_bu
                         set -A ZONE_LISTING;
 
                         ## loop through all the zones in the conf file and pull them out. we'll need them later.
-                        for ZONE_ENTRY in $(grep zone ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | cut -d "\"" -f 2)
+                        for ZONE_ENTRY in $(grep zone ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | cut -d "\"" -f 2)
                         do
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONE_ENTRY -> ${ZONE_ENTRY}";
 
@@ -838,11 +838,11 @@ function decom_slave_bu
                         set -A FILE_LISTING;
 
                         ## loop through all the filenames in the conf file and pull them out
-                        for ZONE_ENTRY in $(grep file ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | cut -d "\"" -f 2)
+                        for ZONE_ENTRY in $(grep file ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | cut -d "\"" -f 2)
                         do
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONE_ENTRY -> ${ZONE_ENTRY}";
 
-                            set -A FILE_LISTING ${FILE_LISTING[@]} $(echo ${ZONE_ENTRY} | sed -e "s^${GROUP_ID}${BUSINESS_UNIT}^${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}^g");
+                            set -A FILE_LISTING ${FILE_LISTING[@]} $(printf ${ZONE_ENTRY} | sed -e "s^${GROUP_ID}${BUSINESS_UNIT}^${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}^g");
                         done
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FILE_LISTING -> ${FILE_LISTING[@]}";
@@ -950,63 +950,63 @@ function decom_slave_bu
                                                 ## we can now remove the bu conf file, and copy our temporary decom conf file into place
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing business unit config file..";
 
-                                                rm -rf ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
+                                                rm -rf ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
 
                                                 ## and make sure its gone...
-                                                if [ ! -s ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ] &&
-                                                    [ ! -f ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ]
+                                                if [ ! -s ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ] &&
+                                                    [ ! -f ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ]
                                                 then
                                                     ## it is. lets remove it from the named.conf file and add in (if necessary)
                                                     ## the decom conf file.
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal complete. Backing up primary configuration..";
 
                                                     ## back it up..
-                                                    cp ${NAMED_CONF_FILE} ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                                                    cp ${NAMED_CONF_FILE} ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
 
                                                     ## and confirm..
-                                                    if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ]
+                                                    if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ]
                                                     then
                                                         ## backup complete. operate.
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete. Creating working copy of named configuration..";
 
                                                         ## create copy of named conf file..
-                                                        cp ${NAMED_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                                                        cp ${NAMED_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
 
                                                         ## and make sure it happened..
-                                                        if [ -s ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ]
+                                                        if [ -s ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ]
                                                         then
                                                             ## good. lets keep going
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Working copy created. Operating..";
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing entry from ${NAMED_CONF_FILE}..";
 
-                                                            if [ $(grep -c ${DECOM_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -eq 0 ]
+                                                            if [ $(grep -c ${DECOM_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -eq 0 ]
                                                             then
                                                                 ## its not there, so lets replace the existing business unit filename
                                                                 ## with the decom filename
-                                                                sed -e "s^/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}^/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}^" \
-                                                                    ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp
+                                                                sed -e "s^/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}^/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}^" \
+                                                                    ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp
                                                             else
                                                                 ## its already there, so just remove the entry
-                                                                sed -e "/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}/d" \
-                                                                    ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp
+                                                                sed -e "/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}/d" \
+                                                                    ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp
                                                             fi
 
                                                             ## move the file back to where it was before..
-                                                            mv ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                                                            mv ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
 
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entry removed. Validating..";
 
                                                             ## and make sure it was removed..
-                                                            if [ $(grep -c $(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp) -eq 0 ]
+                                                            if [ $(grep -c $(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp) -eq 0 ]
                                                             then
                                                                 ## we should be done here. make sure our decom include is in, and if so, copy the file
-                                                                if [ $(grep -c ${DECOM_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -ne 0 ]
+                                                                if [ $(grep -c ${DECOM_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -ne 0 ]
                                                                 then
                                                                     ## its there. lets move.
-                                                                    cp ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ${NAMED_CONF_FILE};
+                                                                    cp ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ${NAMED_CONF_FILE};
 
                                                                     ## and checksum...
-                                                                    TMP_CONF_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} | awk '{print $1}');
+                                                                    TMP_CONF_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} | awk '{print $1}');
                                                                     OP_CONF_CKSUM=$(cksum ${NAMED_CONF_FILE} | awk '{print $1}');
 
                                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_CONF_CKSUM -> ${TMP_CONF_CKSUM}";
@@ -1016,7 +1016,7 @@ function decom_slave_bu
                                                                     if [ ${TMP_CONF_CKSUM} -eq ${OP_CONF_CKSUM} ]
                                                                     then
                                                                         ## ok, checksums match, we're super.
-                                                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
+                                                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
                                                                         ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                                         RETURN_CODE=0;
@@ -1025,7 +1025,7 @@ function decom_slave_bu
                                                                         ## copy to where its supposed to go. this *should* be ok, but does warrant some review. "WARN".
                                                                         ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHECKSUM MISMATCH: Failed to validate that named configuration file was updated.";
 
-                                                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
+                                                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
                                                                         ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                                         RETURN_CODE=72;
@@ -1106,7 +1106,7 @@ function decom_slave_bu
                     set -A ZONE_LISTING;
 
                     ## loop through all the zones in the conf file and pull them out. we'll need them later.
-                    for ZONE_ENTRY in $(grep zone ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | cut -d "\"" -f 2)
+                    for ZONE_ENTRY in $(grep zone ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | cut -d "\"" -f 2)
                     do
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONE_ENTRY -> ${ZONE_ENTRY}";
 
@@ -1120,11 +1120,11 @@ function decom_slave_bu
                     set -A FILE_LISTING;
 
                     ## loop through all the filenames in the conf file and pull them out
-                    for ZONE_ENTRY in $(grep file ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | cut -d "\"" -f 2)
+                    for ZONE_ENTRY in $(grep file ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | cut -d "\"" -f 2)
                     do
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONE_ENTRY -> ${ZONE_ENTRY}";
 
-                        set -A FILE_LISTING ${FILE_LISTING[@]} $(echo ${ZONE_ENTRY} | sed -e "s^${GROUP_ID}${BUSINESS_UNIT}^${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}^g");
+                        set -A FILE_LISTING ${FILE_LISTING[@]} $(printf ${ZONE_ENTRY} | sed -e "s^${GROUP_ID}${BUSINESS_UNIT}^${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}^g");
                     done
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FILE_LISTING -> ${FILE_LISTING[@]}";
@@ -1233,63 +1233,63 @@ function decom_slave_bu
                                             ## we can now remove the bu conf file, and copy our temporary decom conf file into place
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing business unit config file..";
 
-                                            rm -rf ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
+                                            rm -rf ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
 
                                             ## and make sure its gone...
-                                            if [ ! -s ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ] &&
-                                                [ ! -f ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ]
+                                            if [ ! -s ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ] &&
+                                                [ ! -f ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ]
                                             then
                                                 ## it is. lets remove it from the named.conf file and add in (if necessary)
                                                 ## the decom conf file.
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal complete. Backing up primary configuration..";
 
                                                 ## back it up..
-                                                cp ${NAMED_CONF_FILE} ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                                                cp ${NAMED_CONF_FILE} ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
 
                                                 ## and confirm..
-                                                if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ]
+                                                if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ]
                                                 then
                                                     ## backup complete. operate.
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete. Creating working copy of named configuration..";
 
                                                     ## create copy of named conf file..
-                                                    cp ${NAMED_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                                                    cp ${NAMED_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
 
                                                     ## and make sure it happened..
-                                                    if [ -s ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ]
+                                                    if [ -s ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ]
                                                     then
                                                         ## good. lets keep going
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Working copy created. Operating..";
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing entry from ${NAMED_CONF_FILE}..";
 
-                                                        if [ $(grep -c ${DECOM_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -eq 0 ]
+                                                        if [ $(grep -c ${DECOM_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -eq 0 ]
                                                         then
                                                             ## its not there, so lets replace the existing business unit filename
                                                             ## with the decom filename
-                                                            sed -e "s^/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}^/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}^" \
-                                                                ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp
+                                                            sed -e "s^/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}^/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}^" \
+                                                                ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp
                                                         else
                                                             ## its already there, so just remove the entry
-                                                            sed -e "/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}/d" \
-                                                                ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp
+                                                            sed -e "/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}/d" \
+                                                                ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp
                                                         fi
 
                                                         ## move the file back to where it was before..
-                                                        mv ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                                                        mv ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
 
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entry removed. Validating..";
 
                                                         ## and make sure it was removed..
-                                                        if [ $(grep -c $(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp) -eq 0 ]
+                                                        if [ $(grep -c $(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp) -eq 0 ]
                                                         then
                                                             ## we should be done here. make sure our decom include is in, and if so, copy the file
-                                                            if [ $(grep -c ${DECOM_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -ne 0 ]
+                                                            if [ $(grep -c ${DECOM_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -ne 0 ]
                                                             then
                                                                 ## its there. lets move.
-                                                                cp ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ${NAMED_CONF_FILE};
+                                                                cp ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ${NAMED_CONF_FILE};
 
                                                                 ## and checksum...
-                                                                TMP_CONF_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} | awk '{print $1}');
+                                                                TMP_CONF_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} | awk '{print $1}');
                                                                 OP_CONF_CKSUM=$(cksum ${NAMED_CONF_FILE} | awk '{print $1}');
 
                                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_CONF_CKSUM -> ${TMP_CONF_CKSUM}";
@@ -1299,7 +1299,7 @@ function decom_slave_bu
                                                                 if [ ${TMP_CONF_CKSUM} -eq ${OP_CONF_CKSUM} ]
                                                                 then
                                                                     ## ok, checksums match, we're super.
-                                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
+                                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
                                                                     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                                     RETURN_CODE=0;
@@ -1308,7 +1308,7 @@ function decom_slave_bu
                                                                     ## copy to where its supposed to go. this *should* be ok, but does warrant some review. "WARN".
                                                                     ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHECKSUM MISMATCH: Failed to validate that named configuration file was updated.";
 
-                                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
+                                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
                                                                     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                                     RETURN_CODE=72;
@@ -1406,7 +1406,7 @@ function decom_slave_bu
 
     ## remove any tmp files
     rm -rf ${PLUGIN_TMP_DIRECTORY}/${DECOM_CONF_FILE};
-    rm -rf ${PLUGIN_TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+    rm -rf ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
 
     unset END_LINE_NUMBER;
     unset START_LINE_NUMBER;
@@ -1442,8 +1442,8 @@ function decom_master_zone
 
     ## set up our zonefile name
     CHANGE_DATE=$(date +"%m-%d-%Y");
-    ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1).${PROJECT_CODE};
-    SHORT_ZONEFILE_NAME=$(echo ${ZONEFILE_NAME} | cut -d "." -f 1-2);
+    ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(printf ${ZONE_NAME} | cut -d "." -f 1).${PROJECT_CODE};
+    SHORT_ZONEFILE_NAME=$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2);
     TARFILE_NAME=${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${REQUESTING_USER};
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONEFILE_NAME -> ${ZONEFILE_NAME}";
@@ -1462,9 +1462,9 @@ function decom_master_zone
 
         ## take backups
         tar cf ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar -C ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT} \
-            ${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1).${PROJECT_CODE} \
-            ${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1) \
-            ${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1) >> /dev/null 2>&1;
+            ${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.$(printf ${ZONE_NAME} | cut -d "." -f 1).${PROJECT_CODE} \
+            ${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(printf ${ZONE_NAME} | cut -d "." -f 1) \
+            ${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/${NAMED_ZONE_PREFIX}.$(printf ${ZONE_NAME} | cut -d "." -f 1) >> /dev/null 2>&1;
         gzip ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar >> /dev/null 2>&1;
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete. Verifying..";
@@ -1494,25 +1494,25 @@ function decom_master_zone
             ## ok, so we've done the necessary pre-work. now we move the files into the decom dir
             mv ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${ZONEFILE_NAME} \
                 ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${ZONEFILE_NAME};
-            mv ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/$(echo ${ZONEFILE_NAME} | cut -d "." -f 1-2) \
-                ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/$(echo ${ZONEFILE_NAME} | cut -d "." -f 1-2);
-            mv ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/$(echo ${ZONEFILE_NAME} | cut -d "." -f 1-2) \
-                ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/$(echo ${ZONEFILE_NAME} | cut -d "." -f 1-2);
+            mv ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2) \
+                ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2);
+            mv ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2) \
+                ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2);
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Move complete. Verifying..";
 
             ## ok, so now the files should no longer exist in their usual locations and should exist in the decom dir.
             ## lets check
             if [ -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${ZONEFILE_NAME} ] &&
-                [ -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/$(echo ${ZONEFILE_NAME} | cut -d "." -f 1-2) ] &&
-                [ -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/$(echo ${ZONEFILE_NAME} | cut -d "." -f 1-2) ]
+                [ -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2) ] &&
+                [ -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2) ]
             then
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Move verified. Verifying file removal..";
 
                 ## ok, we know theyre in the decom dir. make sure they arent in their usual location
                 if [ ! -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${ZONEFILE_NAME} ] &&
-                    [ ! -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/$(echo ${ZONEFILE_NAME} | cut -d "." -f 1-2) ] &&
-                    [ ! -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/$(echo ${ZONEFILE_NAME} | cut -d "." -f 1-2) ]
+                    [ ! -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2) ] &&
+                    [ ! -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2) ]
                 then
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checking if any remaining files exist..";
 
@@ -1583,43 +1583,43 @@ function decom_master_zone
                                     else
                                         ## file exists and entry has been added. now we can remove it from the file it originally belonged to
                                         ## make sure said file exists...
-                                        if [ -s ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ]
+                                        if [ -s ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ]
                                         then
                                             ## it does. take a backup..
-                                            cp ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
-                                                ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHANGE_NUM};
+                                            cp ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
+                                                ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHANGE_NUM};
 
-                                            if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHANGE_NUM} ]
+                                            if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHANGE_NUM} ]
                                             then
                                                 ## backup complete.
                                                 ## remove entry. get the line numbers we need
-                                                START_LINE_NUMBER=$(sed -n "/zone \"${ZONE_NAME}\" IN {/=" ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME});
+                                                START_LINE_NUMBER=$(sed -n "/zone \"${ZONE_NAME}\" IN {/=" ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME});
                                                 END_LINE_NUMBER=$(expr ${START_LINE_NUMBER} + 6);
 
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "START_LINE_NUMBER -> ${START_LINE_NUMBER}";
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "END_LINE_NUMBER -> ${END_LINE_NUMBER}";
 
-                                                sed -e "${START_LINE_NUMBER},${END_LINE_NUMBER} d" ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
-                                                    >> ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
+                                                sed -e "${START_LINE_NUMBER},${END_LINE_NUMBER} d" ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
+                                                    >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
 
                                                 ## ok, should now be removed from the tmp file we've created. validate.
-                                                if [ $(grep -c "zone \"${ZONE_NAME}\" IN {" ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}) -eq 0 ]
+                                                if [ $(grep -c "zone \"${ZONE_NAME}\" IN {" ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}) -eq 0 ]
                                                 then
                                                     ## lets see if the file is now empty. if it is, just delete it. we dont need it anymore.
-                                                    if [ ! -s ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ]
+                                                    if [ ! -s ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ]
                                                     then
                                                         ## it is. remove it and its associated entry in named.conf
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validated entry removal. File has been cleared of content. Removing..";
-                                                        rm -rf ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
-                                                        rm -rf ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
+                                                        rm -rf ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
+                                                        rm -rf ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
 
                                                         unset START_LINE_NUMBER;
                                                         unset END_LINE_NUMBER;
 
                                                         ## back it up
-                                                        cp ${NAMED_CONF_FILE} ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                                                        cp ${NAMED_CONF_FILE} ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
 
-                                                        START_LINE_NUMBER=$(sed -n "/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}/=" ${NAMED_CONF_FILE});
+                                                        START_LINE_NUMBER=$(sed -n "/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}/=" ${NAMED_CONF_FILE});
 
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing entry from ${NAMED_CONF_FILE}..";
 
@@ -1629,7 +1629,7 @@ function decom_master_zone
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entry removed. Validating..";
 
                                                         ## ok should be gone. lets make sure.
-                                                        if [ $(grep -c "$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}" ${PLUGIN_TMP_DIRECTORY}/named.conf.tmp) -eq 0 ]
+                                                        if [ $(grep -c "$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}" ${PLUGIN_TMP_DIRECTORY}/named.conf.tmp) -eq 0 ]
                                                         then
                                                             ## entry successfully removed. make it the normal copy.
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Confirmed removal. Copying..";
@@ -1657,7 +1657,7 @@ function decom_master_zone
                                                                 fi
 
                                                                 ## ok, checksums match, we're super.
-                                                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
+                                                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
                                                                 ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                                 RETURN_CODE=0;
@@ -1672,7 +1672,7 @@ function decom_master_zone
                                                                     print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
                                                                 fi
 
-                                                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
+                                                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
                                                                 ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                                 RETURN_CODE=72;
@@ -1690,25 +1690,25 @@ function decom_master_zone
                                                                 print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
                                                             fi
 
-                                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
+                                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
                                                             ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                             RETURN_CODE=72;
                                                         fi
                                                     else
                                                         ## verified removal. lets make this file the active file and call it a day.
-                                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Moving ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} to ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}..";
+                                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Moving ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} to ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}..";
 
                                                         ## checksum tmp file
-                                                        CONF_TMP_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | awk '{print $1}');
+                                                        CONF_TMP_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | awk '{print $1}');
 
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONF_TMP_CKSUM -> ${CONF_TMP_CKSUM}";
 
-                                                        mv ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
-                                                            ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
+                                                        mv ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
+                                                            ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
 
                                                         ## checksum operational
-                                                        CONF_OP_CKSUM=$(cksum ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | awk '{print $1}');
+                                                        CONF_OP_CKSUM=$(cksum ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | awk '{print $1}');
 
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONF_OP_CKSUM -> ${CONF_OP_CKSUM}";
 
@@ -1723,7 +1723,7 @@ function decom_master_zone
                                                             fi
 
                                                             ## we're done here.
-                                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
+                                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
                                                             ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                             RETURN_CODE=0;
@@ -1811,47 +1811,47 @@ function decom_master_zone
 
                                     RETURN_CODE=70;
                                 else
-                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Confirmation complete. Removing entry from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME})..";
+                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Confirmation complete. Removing entry from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME})..";
 
                                     ## file exists and entry has been added. now we can remove it from the file it originally belonged to
                                     ## make sure said file exists...
-                                    if [ -s ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ]
+                                    if [ -s ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ]
                                     then
                                         ## it does. take a backup..
-                                        cp ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
-                                            ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHANGE_NUM};
+                                        cp ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
+                                            ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHANGE_NUM};
 
-                                        if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHANGE_NUM} ]
+                                        if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHANGE_NUM} ]
                                         then
                                             ## backup complete.
                                             ## remove entry. get the line numbers we need
-                                            START_LINE_NUMBER=$(sed -n "/zone \"${ZONE_NAME}\" IN {/=" ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME});
+                                            START_LINE_NUMBER=$(sed -n "/zone \"${ZONE_NAME}\" IN {/=" ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME});
                                             END_LINE_NUMBER=$(expr ${START_LINE_NUMBER} + 6);
 
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "START_LINE_NUMBER -> ${START_LINE_NUMBER}";
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "END_LINE_NUMBER -> ${END_LINE_NUMBER}";
 
-                                            sed -e "${START_LINE_NUMBER},${END_LINE_NUMBER} d" ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
-                                                >> ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
+                                            sed -e "${START_LINE_NUMBER},${END_LINE_NUMBER} d" ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
+                                                >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
 
                                             ## ok, should now be removed from the tmp file we've created. validate.
-                                            if [ $(grep -c "zone \"${ZONE_NAME}\" IN {" ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}) -eq 0 ]
+                                            if [ $(grep -c "zone \"${ZONE_NAME}\" IN {" ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}) -eq 0 ]
                                             then
                                                 ## lets see if the file is now empty. if it is, just delete it. we dont need it anymore.
-                                                if [ ! -s ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ]
+                                                if [ ! -s ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ]
                                                 then
                                                     ## it is. remove it and its associated entry in named.conf
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validated entry removal. File has been cleared of content. Removing..";
-                                                    rm -rf ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
-                                                    rm -rf ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
+                                                    rm -rf ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
+                                                    rm -rf ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
 
                                                     unset START_LINE_NUMBER;
                                                     unset END_LINE_NUMBER;
 
                                                     ## back it up
-                                                    cp ${NAMED_CONF_FILE} ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                                                    cp ${NAMED_CONF_FILE} ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
 
-                                                    START_LINE_NUMBER=$(sed -n "/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}/=" ${NAMED_CONF_FILE});
+                                                    START_LINE_NUMBER=$(sed -n "/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}/=" ${NAMED_CONF_FILE});
 
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing entry from ${NAMED_CONF_FILE}..";
 
@@ -1861,7 +1861,7 @@ function decom_master_zone
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entry removed. Validating..";
 
                                                     ## ok should be gone. lets make sure.
-                                                    if [ $(grep -c "$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}" ${PLUGIN_TMP_DIRECTORY}/named.conf.tmp) -eq 0 ]
+                                                    if [ $(grep -c "$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}" ${PLUGIN_TMP_DIRECTORY}/named.conf.tmp) -eq 0 ]
                                                     then
                                                         ## entry successfully removed. make it the normal copy.
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Confirmed removal. Copying..";
@@ -1887,7 +1887,7 @@ function decom_master_zone
                                                             fi
 
                                                             ## ok, checksums match, we're super.
-                                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
+                                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
                                                             ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                             RETURN_CODE=0;
@@ -1902,7 +1902,7 @@ function decom_master_zone
                                                                 print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
                                                             fi
 
-                                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
+                                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
                                                             ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                             RETURN_CODE=72;
@@ -1920,25 +1920,25 @@ function decom_master_zone
                                                             print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
                                                         fi
 
-                                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
+                                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
                                                         ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                         RETURN_CODE=72;
                                                     fi
                                                 else
                                                     ## verified removal. lets make this file the active file and call it a day.
-                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Moving ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} to ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}..";
+                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Moving ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} to ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}..";
 
                                                     ## checksum tmp file
-                                                    CONF_TMP_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | awk '{print $1}');
+                                                    CONF_TMP_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | awk '{print $1}');
 
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONF_TMP_CKSUM -> ${CONF_TMP_CKSUM}";
 
-                                                    mv ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
-                                                        ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
+                                                    mv ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
+                                                        ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
 
                                                     ## checksum operational
-                                                    CONF_OP_CKSUM=$(cksum ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | awk '{print $1}');
+                                                    CONF_OP_CKSUM=$(cksum ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | awk '{print $1}');
 
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONF_OP_CKSUM -> ${CONF_OP_CKSUM}";
 
@@ -1953,7 +1953,7 @@ function decom_master_zone
                                                         fi
 
                                                         ## we're done here.
-                                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
+                                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
                                                         ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                         RETURN_CODE=0;
@@ -2066,7 +2066,7 @@ function decom_slave_zone
 
     ## set up our zonefile name
     CHANGE_DATE=$(date +"%m-%d-%Y");
-    ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1).${PROJECT_CODE};
+    ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(printf ${ZONE_NAME} | cut -d "." -f 1).${PROJECT_CODE};
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONEFILE_NAME -> ${ZONEFILE_NAME}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating that requested directories/files exist..";
@@ -2074,8 +2074,8 @@ function decom_slave_zone
     ## need to make sure the provided information actually exists in the install
     if [ -d ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT} ] &&
         [ -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${ZONEFILE_NAME} ] &&
-        [ -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/$(echo ${ZONEFILE_NAME} | cut -d "." -f 1-2) ] &&
-        [ -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/$(echo ${ZONEFILE_NAME} | cut -d "." -f 1-2) ]
+        [ -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2) ] &&
+        [ -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2) ]
     then
         ## take our backups
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backing up files..";
@@ -2083,9 +2083,9 @@ function decom_slave_zone
         ## take backups
         tar cf ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${REQUESTING_USER}.tar \
             -C ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT} \
-            ${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1).${PROJECT_CODE} \
-            ${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1) \
-            ${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1) >> /dev/null 2>&1;
+            ${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.$(printf ${ZONE_NAME} | cut -d "." -f 1).${PROJECT_CODE} \
+            ${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(printf ${ZONE_NAME} | cut -d "." -f 1) \
+            ${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/${NAMED_ZONE_PREFIX}.$(printf ${ZONE_NAME} | cut -d "." -f 1) >> /dev/null 2>&1;
         gzip ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${REQUESTING_USER}.tar >> /dev/null 2>&1;
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete. Verifying..";
@@ -2115,25 +2115,25 @@ function decom_slave_zone
             ## ok, so we've done the necessary pre-work. now we move the files into the decom dir
             mv ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${ZONEFILE_NAME} \
                 ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${ZONEFILE_NAME};
-            mv ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/$(echo ${ZONEFILE_NAME} | cut -d "." -f 1-2) \
-                ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/$(echo ${ZONEFILE_NAME} | cut -d "." -f 1-2);
-            mv ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/$(echo ${ZONEFILE_NAME} | cut -d "." -f 1-2) \
-                ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/$(echo ${ZONEFILE_NAME} | cut -d "." -f 1-2);
+            mv ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2) \
+                ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2);
+            mv ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2) \
+                ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2);
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Move complete. Verifying..";
 
             ## ok, so now the files should no longer exist in their usual locations and should exist in the decom dir.
             ## lets check
             if [ -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${ZONEFILE_NAME} ] &&
-                [ -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/$(echo ${ZONEFILE_NAME} | cut -d "." -f 1-2) ] &&
-                [ -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/$(echo ${ZONEFILE_NAME} | cut -d "." -f 1-2) ]
+                [ -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2) ] &&
+                [ -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2) ]
             then
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Move verified. Verifying file removal..";
 
                 ## ok, we know theyre in the decom dir. make sure they arent in their usual location
                 if [ ! -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${ZONEFILE_NAME} ] &&
-                    [ ! -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/$(echo ${ZONEFILE_NAME} | cut -d "." -f 1-2) ] &&
-                    [ ! -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/$(echo ${ZONEFILE_NAME} | cut -d "." -f 1-2) ]
+                    [ ! -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2) ] &&
+                    [ ! -s ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2) ]
                 then
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checking if any remaining files exist..";
 
@@ -2203,43 +2203,43 @@ function decom_slave_zone
                                     else
                                         ## file exists and entry has been added. now we can remove it from the file it originally belonged to
                                         ## make sure said file exists...
-                                        if [ -s ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ]
+                                        if [ -s ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ]
                                         then
                                             ## it does. take a backup..
-                                            cp ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
-                                                ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHANGE_NUM};
+                                            cp ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
+                                                ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHANGE_NUM};
 
-                                            if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHANGE_NUM} ]
+                                            if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHANGE_NUM} ]
                                             then
                                                 ## backup complete.
                                                 ## remove entry. get the line numbers we need
-                                                START_LINE_NUMBER=$(sed -n "/zone \"${ZONE_NAME}\" IN {/=" ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME});
+                                                START_LINE_NUMBER=$(sed -n "/zone \"${ZONE_NAME}\" IN {/=" ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME});
                                                 END_LINE_NUMBER=$(expr ${START_LINE_NUMBER} + 6);
 
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "START_LINE_NUMBER -> ${START_LINE_NUMBER}";
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "END_LINE_NUMBER -> ${END_LINE_NUMBER}";
 
-                                                sed -e "${START_LINE_NUMBER},${END_LINE_NUMBER} d" ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
-                                                    >> ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
+                                                sed -e "${START_LINE_NUMBER},${END_LINE_NUMBER} d" ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
+                                                    >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
 
                                                 ## ok, should now be removed from the tmp file we've created. validate.
-                                                if [ $(grep -c "zone \"${ZONE_NAME}\" IN {" ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}) -eq 0 ]
+                                                if [ $(grep -c "zone \"${ZONE_NAME}\" IN {" ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}) -eq 0 ]
                                                 then
                                                     ## lets see if the file is now empty. if it is, just delete it. we dont need it anymore.
-                                                    if [ ! -s ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ]
+                                                    if [ ! -s ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ]
                                                     then
                                                         ## it is. remove it and its associated entry in named.conf
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validated entry removal. File has been cleared of content. Removing..";
-                                                        rm -rf ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
-                                                        rm -rf ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
+                                                        rm -rf ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
+                                                        rm -rf ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
 
                                                         unset START_LINE_NUMBER;
                                                         unset END_LINE_NUMBER;
 
                                                         ## back it up
-                                                        cp ${NAMED_CONF_FILE} ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                                                        cp ${NAMED_CONF_FILE} ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
 
-                                                        START_LINE_NUMBER=$(sed -n "/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}/=" ${NAMED_CONF_FILE});
+                                                        START_LINE_NUMBER=$(sed -n "/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}/=" ${NAMED_CONF_FILE});
 
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing entry from ${NAMED_CONF_FILE}..";
 
@@ -2249,7 +2249,7 @@ function decom_slave_zone
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entry removed. Validating..";
 
                                                         ## ok should be gone. lets make sure.
-                                                        if [ $(grep -c "$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}" ${PLUGIN_TMP_DIRECTORY}/named.conf.tmp) -eq 0 ]
+                                                        if [ $(grep -c "$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}" ${PLUGIN_TMP_DIRECTORY}/named.conf.tmp) -eq 0 ]
                                                         then
                                                             ## entry successfully removed. make it the normal copy.
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Confirmed removal. Copying..";
@@ -2275,7 +2275,7 @@ function decom_slave_zone
                                                                 fi
 
                                                                 ## ok, checksums match, we're super.
-                                                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
+                                                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
                                                                 ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                                 RETURN_CODE=0;
@@ -2290,7 +2290,7 @@ function decom_slave_zone
                                                                     print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
                                                                 fi
 
-                                                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
+                                                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
                                                                 ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                                 RETURN_CODE=72;
@@ -2308,25 +2308,25 @@ function decom_slave_zone
                                                                 print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
                                                             fi
 
-                                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
+                                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
                                                             ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                             RETURN_CODE=72;
                                                         fi
                                                     else
                                                         ## verified removal. lets make this file the active file and call it a day.
-                                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Moving ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} to ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}..";
+                                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Moving ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} to ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}..";
 
                                                         ## checksum tmp file
-                                                        CONF_TMP_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | awk '{print $1}');
+                                                        CONF_TMP_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | awk '{print $1}');
 
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONF_TMP_CKSUM -> ${CONF_TMP_CKSUM}";
 
-                                                        mv ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
-                                                            ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
+                                                        mv ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
+                                                            ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
 
                                                         ## checksum operational
-                                                        CONF_OP_CKSUM=$(cksum ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | awk '{print $1}');
+                                                        CONF_OP_CKSUM=$(cksum ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | awk '{print $1}');
 
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONF_OP_CKSUM -> ${CONF_OP_CKSUM}";
 
@@ -2341,7 +2341,7 @@ function decom_slave_zone
                                                             fi
 
                                                             ## we're done here.
-                                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
+                                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
                                                             ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                             RETURN_CODE=0;
@@ -2429,47 +2429,47 @@ function decom_slave_zone
 
                                     RETURN_CODE=70;
                                 else
-                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Confirmation complete. Removing entry from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME})..";
+                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Confirmation complete. Removing entry from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME})..";
 
                                     ## file exists and entry has been added. now we can remove it from the file it originally belonged to
                                     ## make sure said file exists...
-                                    if [ -s ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ]
+                                    if [ -s ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ]
                                     then
                                         ## it does. take a backup..
-                                        cp ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
-                                            ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHANGE_NUM};
+                                        cp ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
+                                            ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHANGE_NUM};
 
-                                        if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHANGE_NUM} ]
+                                        if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHANGE_NUM} ]
                                         then
                                             ## backup complete.
                                             ## remove entry. get the line numbers we need
-                                            START_LINE_NUMBER=$(sed -n "/zone \"${ZONE_NAME}\" IN {/=" ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME});
+                                            START_LINE_NUMBER=$(sed -n "/zone \"${ZONE_NAME}\" IN {/=" ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME});
                                             END_LINE_NUMBER=$(expr ${START_LINE_NUMBER} + 6);
 
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "START_LINE_NUMBER -> ${START_LINE_NUMBER}";
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "END_LINE_NUMBER -> ${END_LINE_NUMBER}";
 
-                                            sed -e "${START_LINE_NUMBER},${END_LINE_NUMBER} d" ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
-                                                >> ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
+                                            sed -e "${START_LINE_NUMBER},${END_LINE_NUMBER} d" ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
+                                                >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
 
                                             ## ok, should now be removed from the tmp file we've created. validate.
-                                            if [ $(grep -c "zone \"${ZONE_NAME}\" IN {" ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}) -eq 0 ]
+                                            if [ $(grep -c "zone \"${ZONE_NAME}\" IN {" ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}) -eq 0 ]
                                             then
                                                 ## lets see if the file is now empty. if it is, just delete it. we dont need it anymore.
-                                                if [ ! -s ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ]
+                                                if [ ! -s ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ]
                                                 then
                                                     ## it is. remove it and its associated entry in named.conf
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validated entry removal. File has been cleared of content. Removing..";
-                                                    rm -rf ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
-                                                    rm -rf ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
+                                                    rm -rf ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
+                                                    rm -rf ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
 
                                                     unset START_LINE_NUMBER;
                                                     unset END_LINE_NUMBER;
 
                                                     ## back it up
-                                                    cp ${NAMED_CONF_FILE} ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                                                    cp ${NAMED_CONF_FILE} ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
 
-                                                    START_LINE_NUMBER=$(sed -n "/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}/=" ${NAMED_CONF_FILE});
+                                                    START_LINE_NUMBER=$(sed -n "/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}/=" ${NAMED_CONF_FILE});
 
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing entry from ${NAMED_CONF_FILE}..";
 
@@ -2479,7 +2479,7 @@ function decom_slave_zone
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entry removed. Validating..";
 
                                                     ## ok should be gone. lets make sure.
-                                                    if [ $(grep -c "$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}" ${PLUGIN_TMP_DIRECTORY}/named.conf.tmp) -eq 0 ]
+                                                    if [ $(grep -c "$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}" ${PLUGIN_TMP_DIRECTORY}/named.conf.tmp) -eq 0 ]
                                                     then
                                                         ## entry successfully removed. make it the normal copy.
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Confirmed removal. Copying..";
@@ -2505,7 +2505,7 @@ function decom_slave_zone
                                                             fi
 
                                                             ## ok, checksums match, we're super.
-                                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
+                                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
                                                             ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                             RETURN_CODE=0;
@@ -2520,7 +2520,7 @@ function decom_slave_zone
                                                                 print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
                                                             fi
 
-                                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
+                                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
                                                             ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                             RETURN_CODE=72;
@@ -2538,25 +2538,25 @@ function decom_slave_zone
                                                             print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
                                                         fi
 
-                                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
+                                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
                                                         ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                         RETURN_CODE=72;
                                                     fi
                                                 else
                                                     ## verified removal. lets make this file the active file and call it a day.
-                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Moving ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} to ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}..";
+                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Moving ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} to ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}..";
 
                                                     ## checksum tmp file
-                                                    CONF_TMP_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | awk '{print $1}');
+                                                    CONF_TMP_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | awk '{print $1}');
 
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONF_TMP_CKSUM -> ${CONF_TMP_CKSUM}";
 
-                                                    mv ${PLUGIN_TMP_DIRECTORY}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
-                                                        ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
+                                                    mv ${PLUGIN_TMP_DIRECTORY}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} \
+                                                        ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
 
                                                     ## checksum operational
-                                                    CONF_OP_CKSUM=$(cksum ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | awk '{print $1}');
+                                                    CONF_OP_CKSUM=$(cksum ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} | awk '{print $1}');
 
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONF_OP_CKSUM -> ${CONF_OP_CKSUM}";
 
@@ -2571,7 +2571,7 @@ function decom_slave_zone
                                                         fi
 
                                                         ## we're done here.
-                                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
+                                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
                                                         ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} decommissioned by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
 
                                                         RETURN_CODE=0;
@@ -2803,7 +2803,7 @@ do
 done
 
 
-echo ${RETURN_CODE};
+printf ${RETURN_CODE};
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";

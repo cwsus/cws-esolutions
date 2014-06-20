@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 METHOD_NAME="${CNAME}#startup";
 
@@ -202,6 +202,24 @@ function main
                 unset METHOD_NAME;
                 unset THIS_CNAME;
                 unset RET_CODE;
+                unset PRIMARY_INFO;
+                unset SECONDARY_INFO;
+                unset CANCEL_REQ;
+                unset RECORD_TYPE;
+                unset COMPLETE;
+                unset CONTINUE;
+                unset DATACENTER;
+                unset SELECTED_DATACENTER;
+                unset ALIAS;
+                unset RECORD_TARGET;
+                unset ANSWER;
+                unset RECORD_PRIORITY;
+                unset SERVICE_PRIORITY;
+                unset SERVICE_WEIGHT;
+                unset SERVICE_PORT;
+                unset SERVICE_TTL;
+                unset SERVICE_PROTO;
+                unset SERVICE_TYPE;
 
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -214,19 +232,7 @@ function main
                 if [ -z "${BIZ_UNIT}" ]
                 then
                     ## business unit provided was blank
-                    unset CHANGE_CONTROL;
-                    unset RESPONSE;
-                    unset ADD_EXISTING;
-                    unset RETURN_CODE;
-                    unset RET_CODE;
-                    unset ADD_EXISTING_RECORD;
-                    unset CCTLD_VALID;
-                    unset GTLD_VALID;
-                    unset REQUESTED_TLD;
-                    unset SITE_HOSTNAME;
-                    unset COMPLETE;
                     unset BIZ_UNIT;
-                    unset SITE_PRJCODE;
 
                     print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
 
@@ -267,46 +273,6 @@ function provideProjectCode
 
     while true
     do
-        if [ ! -z "${CANCEL_REQ}" ]
-        then
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request canceled.";
-
-            unset CHANGE_CONTROL;
-            unset METHOD_NAME;
-            unset RESPONSE;
-            unset ADD_EXISTING;
-            unset RETURN_CODE;
-            unset RET_CODE;
-            unset ADD_EXISTING_RECORD;
-            unset CCTLD_VALID;
-            unset GTLD_VALID;
-            unset REQUESTED_TLD;
-            unset SITE_HOSTNAME;
-            unset COMPLETE;
-            unset BIZ_UNIT;
-            unset SITE_PRJCODE;
-            unset PRIMARY_INFO;
-            unset SECONDARY_INFO;
-            unset CANCEL_REQ;
-            unset RECORD_TYPE;
-            unset COMPLETE;
-            unset CONTINUE;
-            unset DATACENTER;
-            unset SELECTED_DATACENTER;
-            unset ALIAS;
-            unset RECORD_TARGET;
-            unset ANSWER;
-            unset RECORD_PRIORITY;
-            unset SERVICE_PRIORITY;
-            unset SERVICE_WEIGHT;
-            unset SERVICE_PORT;
-            unset SERVICE_TTL;
-            unset SERVICE_PROTO;
-            unset SERVICE_TYPE;
-
-            reset; clear; main;
-        fi
-
         reset; clear;
 
         print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.enter.prjcode\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
@@ -324,16 +290,46 @@ function provideProjectCode
             [Xx]|[Qq]|[Cc])
                 reset; clear;
 
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requested canceled";
+                ## unset variables
+                unset CHANGE_CONTROL;
+                unset METHOD_NAME;
+                unset RESPONSE;
+                unset ADD_EXISTING;
+                unset RETURN_CODE;
+                unset RET_CODE;
+                unset ADD_EXISTING_RECORD;
+                unset CCTLD_VALID;
+                unset GTLD_VALID;
+                unset REQUESTED_TLD;
+                unset SITE_HOSTNAME;
+                unset COMPLETE;
+                unset BIZ_UNIT;
+                unset SITE_PRJCODE;
+                unset PRIMARY_INFO;
+                unset SECONDARY_INFO;
+                unset CANCEL_REQ;
+                unset RECORD_TYPE;
+                unset COMPLETE;
+                unset CONTINUE;
+                unset DATACENTER;
+                unset SELECTED_DATACENTER;
+                unset ALIAS;
+                unset RECORD_TARGET;
+                unset ANSWER;
+                unset RECORD_PRIORITY;
+                unset SERVICE_PRIORITY;
+                unset SERVICE_WEIGHT;
+                unset SERVICE_PORT;
+                unset SERVICE_TTL;
+                unset SERVICE_PROTO;
+                unset SERVICE_TYPE;
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CANCEL_REQ -> ${CANCEL_REQ}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS query canceled.";
 
                 print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
-                ## terminate this thread and return control to main
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-                unset SITE_PRJCODE;
-
-                sleep ${MESSAGE_DELAY}; reset; clear; main;
+                sleep "${MESSAGE_DELAY}"; reset; clear; main;
                 ;;
             *)
                 ## we cant really validate a project code. as long as it isnt blank
@@ -390,46 +386,6 @@ function provideSiteHostname
 
     while true
     do
-        if [ ! -z "${CANCEL_REQ}" ]
-        then
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request canceled.";
-
-            unset CHANGE_CONTROL;
-            unset METHOD_NAME;
-            unset RESPONSE;
-            unset ADD_EXISTING;
-            unset RETURN_CODE;
-            unset RET_CODE;
-            unset ADD_EXISTING_RECORD;
-            unset CCTLD_VALID;
-            unset GTLD_VALID;
-            unset REQUESTED_TLD;
-            unset SITE_HOSTNAME;
-            unset COMPLETE;
-            unset BIZ_UNIT;
-            unset SITE_PRJCODE;
-            unset PRIMARY_INFO;
-            unset SECONDARY_INFO;
-            unset CANCEL_REQ;
-            unset RECORD_TYPE;
-            unset COMPLETE;
-            unset CONTINUE;
-            unset DATACENTER;
-            unset SELECTED_DATACENTER;
-            unset ALIAS;
-            unset RECORD_TARGET;
-            unset ANSWER;
-            unset RECORD_PRIORITY;
-            unset SERVICE_PRIORITY;
-            unset SERVICE_WEIGHT;
-            unset SERVICE_PORT;
-            unset SERVICE_TTL;
-            unset SERVICE_PROTO;
-            unset SERVICE_TYPE;
-
-            reset; clear; main;
-        fi
-
         reset; clear;
 
         print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.enter.hostname\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
@@ -451,6 +407,7 @@ function provideSiteHostname
 
                 ## unset variables
                 unset CHANGE_CONTROL;
+                unset METHOD_NAME;
                 unset RESPONSE;
                 unset ADD_EXISTING;
                 unset RETURN_CODE;
@@ -463,12 +420,31 @@ function provideSiteHostname
                 unset COMPLETE;
                 unset BIZ_UNIT;
                 unset SITE_PRJCODE;
+                unset PRIMARY_INFO;
+                unset SECONDARY_INFO;
+                unset CANCEL_REQ;
+                unset RECORD_TYPE;
+                unset COMPLETE;
+                unset CONTINUE;
+                unset DATACENTER;
+                unset SELECTED_DATACENTER;
+                unset ALIAS;
+                unset RECORD_TARGET;
+                unset ANSWER;
+                unset RECORD_PRIORITY;
+                unset SERVICE_PRIORITY;
+                unset SERVICE_WEIGHT;
+                unset SERVICE_PORT;
+                unset SERVICE_TTL;
+                unset SERVICE_PROTO;
+                unset SERVICE_TYPE;
 
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CANCEL_REQ -> ${CANCEL_REQ}";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS query canceled.";
 
                 print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
-                sleep "${MESSAGE_DELAY}"; reset; clear; break;
+                sleep "${MESSAGE_DELAY}"; reset; clear; main;
                 ;;
             [Hh])
                 ## we want to print out the available record type list
@@ -499,7 +475,7 @@ function provideSiteHostname
                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 fi
 
-                if [ $(echo ${SITE_HOSTNAME} | tr -dc "." | wc -c) -ne 1 ]
+                if [ $(printf ${SITE_HOSTNAME} | tr -dc "." | wc -c) -ne 1 ]
                 then
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${SITE_HOSTNAME} is not properly formatted.";
 
@@ -513,7 +489,7 @@ function provideSiteHostname
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_HOSTNAME -> ${SITE_HOSTNAME}";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating TLD..";
 
-                local REQUESTED_TLD=$(echo ${SITE_HOSTNAME} | cut -d "." -f 2);
+                local REQUESTED_TLD=$(printf ${SITE_HOSTNAME} | cut -d "." -f 2);
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REQUESTED_TLD -> ${REQUESTED_TLD}";
 
@@ -641,16 +617,9 @@ function provideSiteHostname
                                 sleep ${MESSAGE_DELAY}; reset; clear; break;
                                 ;;
                             [Xx]|[Qq]|[Cc])
-                                ## cancel request
                                 reset; clear;
 
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requested canceled";
-
-                                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
-
-                                ## terminate this thread and return control to main
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
+                                ## unset variables
                                 unset CHANGE_CONTROL;
                                 unset METHOD_NAME;
                                 unset RESPONSE;
@@ -665,8 +634,31 @@ function provideSiteHostname
                                 unset COMPLETE;
                                 unset BIZ_UNIT;
                                 unset SITE_PRJCODE;
+                                unset PRIMARY_INFO;
+                                unset SECONDARY_INFO;
+                                unset CANCEL_REQ;
+                                unset RECORD_TYPE;
+                                unset COMPLETE;
+                                unset CONTINUE;
+                                unset DATACENTER;
+                                unset SELECTED_DATACENTER;
+                                unset ALIAS;
+                                unset RECORD_TARGET;
+                                unset ANSWER;
+                                unset RECORD_PRIORITY;
+                                unset SERVICE_PRIORITY;
+                                unset SERVICE_WEIGHT;
+                                unset SERVICE_PORT;
+                                unset SERVICE_TTL;
+                                unset SERVICE_PROTO;
+                                unset SERVICE_TYPE;
 
-                                sleep ${MESSAGE_DELAY}; reset; clear; main;
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CANCEL_REQ -> ${CANCEL_REQ}";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS query canceled.";
+
+                                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+
+                                sleep "${MESSAGE_DELAY}"; reset; clear; main;
                                 ;;
                             *)
                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${RESPONSE} is not valid.";
@@ -711,47 +703,7 @@ function provideChangeControl
 
     while true
     do
-        if [ ! -z "${CANCEL_REQ}" ]
-        then
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request canceled.";
-
-            unset CHANGE_CONTROL;
-            unset METHOD_NAME;
-            unset RESPONSE;
-            unset ADD_EXISTING;
-            unset RETURN_CODE;
-            unset RET_CODE;
-            unset ADD_EXISTING_RECORD;
-            unset CCTLD_VALID;
-            unset GTLD_VALID;
-            unset REQUESTED_TLD;
-            unset SITE_HOSTNAME;
-            unset COMPLETE;
-            unset BIZ_UNIT;
-            unset SITE_PRJCODE;
-            unset PRIMARY_INFO;
-            unset SECONDARY_INFO;
-            unset CANCEL_REQ;
-            unset RECORD_TYPE;
-            unset COMPLETE;
-            unset CONTINUE;
-            unset DATACENTER;
-            unset SELECTED_DATACENTER;
-            unset ALIAS;
-            unset RECORD_TARGET;
-            unset ANSWER;
-            unset RECORD_PRIORITY;
-            unset SERVICE_PRIORITY;
-            unset SERVICE_WEIGHT;
-            unset SERVICE_PORT;
-            unset SERVICE_TTL;
-            unset SERVICE_PROTO;
-            unset SERVICE_TYPE;
-
-            reset; clear; main;
-        fi
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requesting change information..";
+        reset; clear;
 
         local THIS_CNAME="${CNAME}";
         unset METHOD_NAME;
@@ -817,7 +769,7 @@ function provideChangeControl
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
         ## validate the input
-        ${PLUGIN_LIB_DIRECTORY}/createNewZone.sh -b $(echo ${BIZ_UNIT} | tr "[a-z]" "[A-Z]") -p $(echo ${SITE_PRJCODE} | tr "[a-z]" "[A-Z]") -z ${SITE_HOSTNAME} -c ${CHANGE_CONTROL} -e;
+        ${PLUGIN_LIB_DIRECTORY}/createNewZone.sh -b $(printf ${BIZ_UNIT} | tr "[a-z]" "[A-Z]") -p $(printf ${SITE_PRJCODE} | tr "[a-z]" "[A-Z]") -z ${SITE_HOSTNAME} -c ${CHANGE_CONTROL} -e;
         typeset -i RET_CODE=${?};
 
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -873,46 +825,6 @@ function providePrimaryAddress
 
     while true
     do
-        if [ ! - z "${CANCEL_REQ}" ]
-        then
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request canceled.";
-
-            unset CHANGE_CONTROL;
-            unset METHOD_NAME;
-            unset RESPONSE;
-            unset ADD_EXISTING;
-            unset RETURN_CODE;
-            unset RET_CODE;
-            unset ADD_EXISTING_RECORD;
-            unset CCTLD_VALID;
-            unset GTLD_VALID;
-            unset REQUESTED_TLD;
-            unset SITE_HOSTNAME;
-            unset COMPLETE;
-            unset BIZ_UNIT;
-            unset SITE_PRJCODE;
-            unset PRIMARY_INFO;
-            unset SECONDARY_INFO;
-            unset CANCEL_REQ;
-            unset RECORD_TYPE;
-            unset COMPLETE;
-            unset CONTINUE;
-            unset DATACENTER;
-            unset SELECTED_DATACENTER;
-            unset ALIAS;
-            unset RECORD_TARGET;
-            unset ANSWER;
-            unset RECORD_PRIORITY;
-            unset SERVICE_PRIORITY;
-            unset SERVICE_WEIGHT;
-            unset SERVICE_PORT;
-            unset SERVICE_TTL;
-            unset SERVICE_PROTO;
-            unset SERVICE_TYPE;
-
-            reset; clear; main;
-        fi
-
         reset; clear;
 
         print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.enter.ipaddr.primary\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%PRIMARY_DATACENTER%/${PRIMARY_DATACENTER}/")\n";
@@ -930,19 +842,46 @@ function providePrimaryAddress
             [Xx]|[Qq]|[Cc])
                 reset; clear;
 
+                ## unset variables
+                unset CHANGE_CONTROL;
+                unset METHOD_NAME;
+                unset RESPONSE;
+                unset ADD_EXISTING;
+                unset RETURN_CODE;
+                unset RET_CODE;
+                unset ADD_EXISTING_RECORD;
+                unset CCTLD_VALID;
+                unset GTLD_VALID;
+                unset REQUESTED_TLD;
+                unset SITE_HOSTNAME;
+                unset COMPLETE;
+                unset BIZ_UNIT;
+                unset SITE_PRJCODE;
                 unset PRIMARY_INFO;
                 unset SECONDARY_INFO;
+                unset CANCEL_REQ;
+                unset RECORD_TYPE;
+                unset COMPLETE;
+                unset CONTINUE;
+                unset DATACENTER;
+                unset SELECTED_DATACENTER;
+                unset ALIAS;
+                unset RECORD_TARGET;
+                unset ANSWER;
+                unset RECORD_PRIORITY;
+                unset SERVICE_PRIORITY;
+                unset SERVICE_WEIGHT;
+                unset SERVICE_PORT;
+                unset SERVICE_TTL;
+                unset SERVICE_PROTO;
+                unset SERVICE_TYPE;
 
-                ## clean up our tmp directories
-                rm -rf ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT};
-
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request canceled.";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CANCEL_REQ -> ${CANCEL_REQ}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS query canceled.";
 
                 print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
-                CANCEL_REQ=${_TRUE};
-
-                sleep "${MESSAGE_DELAY}"; reset; clear; break;
+                sleep "${MESSAGE_DELAY}"; reset; clear; main;
                 ;;
             *)
                 THIS_CNAME="${CNAME}";
@@ -953,7 +892,7 @@ function providePrimaryAddress
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
                 ## validate the input
-                ${PLUGIN_LIB_DIRECTORY}/validators/validateRecordData.sh address ${PRIMARY_INFO}
+                ${PLUGIN_LIB_DIRECTORY}/validators/validateRecordData.sh datacenter ${PRIMARY_INFO}
                 typeset -i RET_CODE=${?};
 
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -1101,46 +1040,6 @@ function provideSecondaryAddress
 
     while true
     do
-        if [ ! - z "${CANCEL_REQ}" ]
-        then
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request canceled.";
-
-            unset CHANGE_CONTROL;
-            unset METHOD_NAME;
-            unset RESPONSE;
-            unset ADD_EXISTING;
-            unset RETURN_CODE;
-            unset RET_CODE;
-            unset ADD_EXISTING_RECORD;
-            unset CCTLD_VALID;
-            unset GTLD_VALID;
-            unset REQUESTED_TLD;
-            unset SITE_HOSTNAME;
-            unset COMPLETE;
-            unset BIZ_UNIT;
-            unset SITE_PRJCODE;
-            unset PRIMARY_INFO;
-            unset SECONDARY_INFO;
-            unset CANCEL_REQ;
-            unset RECORD_TYPE;
-            unset COMPLETE;
-            unset CONTINUE;
-            unset DATACENTER;
-            unset SELECTED_DATACENTER;
-            unset ALIAS;
-            unset RECORD_TARGET;
-            unset ANSWER;
-            unset RECORD_PRIORITY;
-            unset SERVICE_PRIORITY;
-            unset SERVICE_WEIGHT;
-            unset SERVICE_PORT;
-            unset SERVICE_TTL;
-            unset SERVICE_PROTO;
-            unset SERVICE_TYPE;
-
-            reset; clear; main;
-        fi
-
         reset; clear;
 
         print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.enter.ipaddr.secondary\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%SECONDARY_DATACENTER%/${SECONDARY_DATACENTER}/")\n";
@@ -1158,19 +1057,46 @@ function provideSecondaryAddress
             [Xx]|[Qq]|[Cc])
                 reset; clear;
 
+                ## unset variables
+                unset CHANGE_CONTROL;
+                unset METHOD_NAME;
+                unset RESPONSE;
+                unset ADD_EXISTING;
+                unset RETURN_CODE;
+                unset RET_CODE;
+                unset ADD_EXISTING_RECORD;
+                unset CCTLD_VALID;
+                unset GTLD_VALID;
+                unset REQUESTED_TLD;
+                unset SITE_HOSTNAME;
+                unset COMPLETE;
+                unset BIZ_UNIT;
+                unset SITE_PRJCODE;
+                unset PRIMARY_INFO;
                 unset SECONDARY_INFO;
-                unset SECONDARY_INFO;
+                unset CANCEL_REQ;
+                unset RECORD_TYPE;
+                unset COMPLETE;
+                unset CONTINUE;
+                unset DATACENTER;
+                unset SELECTED_DATACENTER;
+                unset ALIAS;
+                unset RECORD_TARGET;
+                unset ANSWER;
+                unset RECORD_PRIORITY;
+                unset SERVICE_PRIORITY;
+                unset SERVICE_WEIGHT;
+                unset SERVICE_PORT;
+                unset SERVICE_TTL;
+                unset SERVICE_PROTO;
+                unset SERVICE_TYPE;
 
-                ## clean up our tmp directories
-                rm -rf ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT};
-
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request canceled.";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CANCEL_REQ -> ${CANCEL_REQ}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS query canceled.";
 
                 print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
-                CANCEL_REQ=${_TRUE};
-
-                sleep "${MESSAGE_DELAY}"; reset; clear; break;
+                sleep "${MESSAGE_DELAY}"; reset; clear; main;
                 ;;
             *)
                 THIS_CNAME="${CNAME}";
@@ -1181,7 +1107,7 @@ function provideSecondaryAddress
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
                 ## validate the input
-                ${PLUGIN_LIB_DIRECTORY}/validators/validateRecordData.sh address ${SECONDARY_INFO}
+                ${PLUGIN_LIB_DIRECTORY}/validators/validateRecordData.sh datacenter ${SECONDARY_INFO}
                 typeset -i RET_CODE=${?};
 
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -1423,46 +1349,6 @@ function provideRecordType
 
     while true
     do
-        if [ ! - z "${CANCEL_REQ}" ]
-        then
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request canceled.";
-
-            unset CHANGE_CONTROL;
-            unset METHOD_NAME;
-            unset RESPONSE;
-            unset ADD_EXISTING;
-            unset RETURN_CODE;
-            unset RET_CODE;
-            unset ADD_EXISTING_RECORD;
-            unset CCTLD_VALID;
-            unset GTLD_VALID;
-            unset REQUESTED_TLD;
-            unset SITE_HOSTNAME;
-            unset COMPLETE;
-            unset BIZ_UNIT;
-            unset SITE_PRJCODE;
-            unset PRIMARY_INFO;
-            unset SECONDARY_INFO;
-            unset CANCEL_REQ;
-            unset RECORD_TYPE;
-            unset COMPLETE;
-            unset CONTINUE;
-            unset DATACENTER;
-            unset SELECTED_DATACENTER;
-            unset ALIAS;
-            unset RECORD_TARGET;
-            unset ANSWER;
-            unset RECORD_PRIORITY;
-            unset SERVICE_PRIORITY;
-            unset SERVICE_WEIGHT;
-            unset SERVICE_PORT;
-            unset SERVICE_TTL;
-            unset SERVICE_PROTO;
-            unset SERVICE_TYPE;
-
-            reset; clear; main;
-        fi
-
         reset; clear;
 
         print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.enter.record.type\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%SECONDARY_DATACENTER%/${SECONDARY_DATACENTER}/")\n";
@@ -1480,18 +1366,46 @@ function provideRecordType
             [Xx]|[Qq]|[Cc])
                 reset; clear;
 
+                ## unset variables
+                unset CHANGE_CONTROL;
+                unset METHOD_NAME;
+                unset RESPONSE;
+                unset ADD_EXISTING;
+                unset RETURN_CODE;
+                unset RET_CODE;
+                unset ADD_EXISTING_RECORD;
+                unset CCTLD_VALID;
+                unset GTLD_VALID;
+                unset REQUESTED_TLD;
+                unset SITE_HOSTNAME;
+                unset COMPLETE;
+                unset BIZ_UNIT;
+                unset SITE_PRJCODE;
+                unset PRIMARY_INFO;
+                unset SECONDARY_INFO;
+                unset CANCEL_REQ;
                 unset RECORD_TYPE;
+                unset COMPLETE;
+                unset CONTINUE;
+                unset DATACENTER;
+                unset SELECTED_DATACENTER;
+                unset ALIAS;
+                unset RECORD_TARGET;
+                unset ANSWER;
+                unset RECORD_PRIORITY;
+                unset SERVICE_PRIORITY;
+                unset SERVICE_WEIGHT;
+                unset SERVICE_PORT;
+                unset SERVICE_TTL;
+                unset SERVICE_PROTO;
+                unset SERVICE_TYPE;
 
-                ## clean up our tmp directories
-                rm -rf ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT};
-
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request canceled.";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CANCEL_REQ -> ${CANCEL_REQ}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS query canceled.";
 
                 print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
-                CANCEL_REQ=${_TRUE};
-
-                sleep "${MESSAGE_DELAY}"; reset; clear; break;
+                sleep "${MESSAGE_DELAY}"; reset; clear; main;
                 ;;
             [Hh])
                 ## we want to print out the available record type list
@@ -1575,46 +1489,6 @@ function provideDataCenter
 
     while true
     do
-        if [ ! - z "${CANCEL_REQ}" ]
-        then
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request canceled.";
-
-            unset CHANGE_CONTROL;
-            unset METHOD_NAME;
-            unset RESPONSE;
-            unset ADD_EXISTING;
-            unset RETURN_CODE;
-            unset RET_CODE;
-            unset ADD_EXISTING_RECORD;
-            unset CCTLD_VALID;
-            unset GTLD_VALID;
-            unset REQUESTED_TLD;
-            unset SITE_HOSTNAME;
-            unset COMPLETE;
-            unset BIZ_UNIT;
-            unset SITE_PRJCODE;
-            unset PRIMARY_INFO;
-            unset SECONDARY_INFO;
-            unset CANCEL_REQ;
-            unset RECORD_TYPE;
-            unset COMPLETE;
-            unset CONTINUE;
-            unset DATACENTER;
-            unset SELECTED_DATACENTER;
-            unset ALIAS;
-            unset RECORD_TARGET;
-            unset ANSWER;
-            unset RECORD_PRIORITY;
-            unset SERVICE_PRIORITY;
-            unset SERVICE_WEIGHT;
-            unset SERVICE_PORT;
-            unset SERVICE_TTL;
-            unset SERVICE_PROTO;
-            unset SERVICE_TYPE;
-
-            reset; clear; main;
-        fi
-
         reset; clear;
 
         print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.record.provide.datacenter\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
@@ -1641,18 +1515,46 @@ function provideDataCenter
             [Xx]|[Qq]|[Cc])
                 reset; clear;
 
+                ## unset variables
+                unset CHANGE_CONTROL;
+                unset METHOD_NAME;
+                unset RESPONSE;
+                unset ADD_EXISTING;
+                unset RETURN_CODE;
+                unset RET_CODE;
+                unset ADD_EXISTING_RECORD;
+                unset CCTLD_VALID;
+                unset GTLD_VALID;
+                unset REQUESTED_TLD;
+                unset SITE_HOSTNAME;
+                unset COMPLETE;
+                unset BIZ_UNIT;
+                unset SITE_PRJCODE;
+                unset PRIMARY_INFO;
+                unset SECONDARY_INFO;
+                unset CANCEL_REQ;
                 unset RECORD_TYPE;
+                unset COMPLETE;
+                unset CONTINUE;
+                unset DATACENTER;
+                unset SELECTED_DATACENTER;
+                unset ALIAS;
+                unset RECORD_TARGET;
+                unset ANSWER;
+                unset RECORD_PRIORITY;
+                unset SERVICE_PRIORITY;
+                unset SERVICE_WEIGHT;
+                unset SERVICE_PORT;
+                unset SERVICE_TTL;
+                unset SERVICE_PROTO;
+                unset SERVICE_TYPE;
 
-                ## clean up our tmp directories
-                rm -rf ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT};
-
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request canceled.";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CANCEL_REQ -> ${CANCEL_REQ}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS query canceled.";
 
                 print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
-                CANCEL_REQ=${_TRUE};
-
-                sleep "${MESSAGE_DELAY}"; reset; clear; break;
+                sleep "${MESSAGE_DELAY}"; reset; clear; main;
                 ;;
             [Bb][Oo][Tt][Hh])
                 ## get record target
@@ -1707,7 +1609,7 @@ function provideDataCenter
                 ## get record target
                 reset; clear;
 
-                [ -z "${ADD_SUBDOMAINS}" ] || [ "${ADD_SUBDOMAINS}" = "${_FALSE}" ] && provideRecordTarget;
+                [ -z "${ADD_SUBDOMAINS}" ] && provideRecordTarget;
                 [ ! -z "${ADD_SUBDOMAINS}" ] && [ "${ADD_SUBDOMAINS}" = "${_TRUE}" ] && provideRecordAlias;
                 ;;
         esac
@@ -1743,48 +1645,6 @@ function provideRecordAlias
 
     while true
     do
-        if [ ! -z "${CANCEL_REQ}" ]
-        then
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request canceled.";
-
-            unset CHANGE_CONTROL;
-            unset METHOD_NAME;
-            unset RESPONSE;
-            unset ADD_EXISTING;
-            unset RETURN_CODE;
-            unset RET_CODE;
-            unset ADD_EXISTING_RECORD;
-            unset CCTLD_VALID;
-            unset GTLD_VALID;
-            unset REQUESTED_TLD;
-            unset SITE_HOSTNAME;
-            unset COMPLETE;
-            unset BIZ_UNIT;
-            unset SITE_PRJCODE;
-            unset PRIMARY_INFO;
-            unset SECONDARY_INFO;
-            unset CANCEL_REQ;
-            unset RECORD_TYPE;
-            unset COMPLETE;
-            unset CONTINUE;
-            unset DATACENTER;
-            unset SELECTED_DATACENTER;
-            unset ALIAS;
-            unset RECORD_TARGET;
-            unset ANSWER;
-            unset RECORD_PRIORITY;
-            unset SERVICE_PRIORITY;
-            unset SERVICE_WEIGHT;
-            unset SERVICE_PORT;
-            unset SERVICE_TTL;
-            unset SERVICE_PROTO;
-            unset SERVICE_TYPE;
-
-            reset; clear; main;
-        fi
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requesting service name..";
-
         reset; clear;
 
         print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.record.alias\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
@@ -1800,21 +1660,48 @@ function provideRecordAlias
 
         case ${ALIAS} in
             [Xx]|[Qq]|[Cc])
-                ## user chose to cancel
-                unset SERVICE_TYPE;
-                unset SERVICE_PROTO;
-                unset SERVICE_NAME;
-                unset RECORD_TYPE;
-
-                CANCEL_REQ=${_TRUE};
-
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Configuration for ${ZONE_NAME}, record type ${RECORD_TYPE} canceled.";
-
                 reset; clear;
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+                ## unset variables
+                unset CHANGE_CONTROL;
+                unset METHOD_NAME;
+                unset RESPONSE;
+                unset ADD_EXISTING;
+                unset RETURN_CODE;
+                unset RET_CODE;
+                unset ADD_EXISTING_RECORD;
+                unset CCTLD_VALID;
+                unset GTLD_VALID;
+                unset REQUESTED_TLD;
+                unset SITE_HOSTNAME;
+                unset COMPLETE;
+                unset BIZ_UNIT;
+                unset SITE_PRJCODE;
+                unset PRIMARY_INFO;
+                unset SECONDARY_INFO;
+                unset CANCEL_REQ;
+                unset RECORD_TYPE;
+                unset COMPLETE;
+                unset CONTINUE;
+                unset DATACENTER;
+                unset SELECTED_DATACENTER;
+                unset ALIAS;
+                unset RECORD_TARGET;
+                unset ANSWER;
+                unset RECORD_PRIORITY;
+                unset SERVICE_PRIORITY;
+                unset SERVICE_WEIGHT;
+                unset SERVICE_PORT;
+                unset SERVICE_TTL;
+                unset SERVICE_PROTO;
+                unset SERVICE_TYPE;
 
-                sleep "${MESSAGE_DELAY}"; reset; clear; break;
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CANCEL_REQ -> ${CANCEL_REQ}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS query canceled.";
+
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+
+                sleep "${MESSAGE_DELAY}"; reset; clear; main;
                 ;;
             *)
                 if [ -z "${ALIAS}" ]
@@ -1863,46 +1750,6 @@ function provideRecordTarget
 
     while true
     do
-        if [ ! - z "${CANCEL_REQ}" ]
-        then
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request canceled.";
-
-            unset CHANGE_CONTROL;
-            unset METHOD_NAME;
-            unset RESPONSE;
-            unset ADD_EXISTING;
-            unset RETURN_CODE;
-            unset RET_CODE;
-            unset ADD_EXISTING_RECORD;
-            unset CCTLD_VALID;
-            unset GTLD_VALID;
-            unset REQUESTED_TLD;
-            unset SITE_HOSTNAME;
-            unset COMPLETE;
-            unset BIZ_UNIT;
-            unset SITE_PRJCODE;
-            unset PRIMARY_INFO;
-            unset SECONDARY_INFO;
-            unset CANCEL_REQ;
-            unset RECORD_TYPE;
-            unset COMPLETE;
-            unset CONTINUE;
-            unset DATACENTER;
-            unset SELECTED_DATACENTER;
-            unset ALIAS;
-            unset RECORD_TARGET;
-            unset ANSWER;
-            unset RECORD_PRIORITY;
-            unset SERVICE_PRIORITY;
-            unset SERVICE_WEIGHT;
-            unset SERVICE_PORT;
-            unset SERVICE_TTL;
-            unset SERVICE_PROTO;
-            unset SERVICE_TYPE;
-
-            reset; clear; main;
-        fi
-
         reset; clear;
 
         print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.record.target\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%RECORD_TYPE%/${RECORD_TYPE}/")\n";
@@ -1920,20 +1767,48 @@ function provideRecordTarget
             [Xx]|[Qq]|[Cc])
                 reset; clear;
 
+                ## unset variables
+                unset CHANGE_CONTROL;
+                unset METHOD_NAME;
+                unset RESPONSE;
+                unset ADD_EXISTING;
+                unset RETURN_CODE;
+                unset RET_CODE;
+                unset ADD_EXISTING_RECORD;
+                unset CCTLD_VALID;
+                unset GTLD_VALID;
+                unset REQUESTED_TLD;
+                unset SITE_HOSTNAME;
+                unset COMPLETE;
+                unset BIZ_UNIT;
+                unset SITE_PRJCODE;
+                unset PRIMARY_INFO;
+                unset SECONDARY_INFO;
+                unset CANCEL_REQ;
                 unset RECORD_TYPE;
+                unset COMPLETE;
+                unset CONTINUE;
+                unset DATACENTER;
+                unset SELECTED_DATACENTER;
+                unset ALIAS;
+                unset RECORD_TARGET;
+                unset ANSWER;
+                unset RECORD_PRIORITY;
+                unset SERVICE_PRIORITY;
+                unset SERVICE_WEIGHT;
+                unset SERVICE_PORT;
+                unset SERVICE_TTL;
+                unset SERVICE_PROTO;
+                unset SERVICE_TYPE;
 
-                ## clean up our tmp directories
-                rm -rf ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT};
-
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request canceled.";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CANCEL_REQ -> ${CANCEL_REQ}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS query canceled.";
 
                 print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
-                CANCEL_REQ=${_TRUE};
-
-                sleep "${MESSAGE_DELAY}"; reset; clear; break;
+                sleep "${MESSAGE_DELAY}"; reset; clear; main;
                 ;;
-            [a-zA-Z0-9.-])
+            [a-zA-Z0-9.-]*)
                 THIS_CNAME="${CNAME}";
                 unset METHOD_NAME;
                 unset CNAME;
@@ -2086,7 +1961,7 @@ function provideRecordTarget
 
                         if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
                         then
-                            echo "moo";
+                            printf "moo";
                         fi
 
                         ## add more ?
@@ -2198,7 +2073,7 @@ function provideRecordTarget
 
                         if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
                         then
-                            echo "moo";
+                            printf "moo";
                         fi
 
                         ## add more ?
@@ -2253,46 +2128,6 @@ function provideRecordPriority
 
     while true
     do
-        if [ ! - z "${CANCEL_REQ}" ]
-        then
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request canceled.";
-
-            unset CHANGE_CONTROL;
-            unset METHOD_NAME;
-            unset RESPONSE;
-            unset ADD_EXISTING;
-            unset RETURN_CODE;
-            unset RET_CODE;
-            unset ADD_EXISTING_RECORD;
-            unset CCTLD_VALID;
-            unset GTLD_VALID;
-            unset REQUESTED_TLD;
-            unset SITE_HOSTNAME;
-            unset COMPLETE;
-            unset BIZ_UNIT;
-            unset SITE_PRJCODE;
-            unset PRIMARY_INFO;
-            unset SECONDARY_INFO;
-            unset CANCEL_REQ;
-            unset RECORD_TYPE;
-            unset COMPLETE;
-            unset CONTINUE;
-            unset DATACENTER;
-            unset SELECTED_DATACENTER;
-            unset ALIAS;
-            unset RECORD_TARGET;
-            unset ANSWER;
-            unset RECORD_PRIORITY;
-            unset SERVICE_PRIORITY;
-            unset SERVICE_WEIGHT;
-            unset SERVICE_PORT;
-            unset SERVICE_TTL;
-            unset SERVICE_PROTO;
-            unset SERVICE_TYPE;
-
-            reset; clear; main;
-        fi
-
         reset; clear;
 
         print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.record.priority\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%RECORD_TYPE%/${RECORD_TYPE}/")\n";
@@ -2310,18 +2145,46 @@ function provideRecordPriority
             [Xx]|[Qq]|[Cc])
                 reset; clear;
 
+                ## unset variables
+                unset CHANGE_CONTROL;
+                unset METHOD_NAME;
+                unset RESPONSE;
+                unset ADD_EXISTING;
+                unset RETURN_CODE;
+                unset RET_CODE;
+                unset ADD_EXISTING_RECORD;
+                unset CCTLD_VALID;
+                unset GTLD_VALID;
+                unset REQUESTED_TLD;
+                unset SITE_HOSTNAME;
+                unset COMPLETE;
+                unset BIZ_UNIT;
+                unset SITE_PRJCODE;
+                unset PRIMARY_INFO;
+                unset SECONDARY_INFO;
+                unset CANCEL_REQ;
                 unset RECORD_TYPE;
+                unset COMPLETE;
+                unset CONTINUE;
+                unset DATACENTER;
+                unset SELECTED_DATACENTER;
+                unset ALIAS;
+                unset RECORD_TARGET;
+                unset ANSWER;
+                unset RECORD_PRIORITY;
+                unset SERVICE_PRIORITY;
+                unset SERVICE_WEIGHT;
+                unset SERVICE_PORT;
+                unset SERVICE_TTL;
+                unset SERVICE_PROTO;
+                unset SERVICE_TYPE;
 
-                ## clean up our tmp directories
-                rm -rf ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT};
-
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request canceled.";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CANCEL_REQ -> ${CANCEL_REQ}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS query canceled.";
 
                 print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
 
-                CANCEL_REQ=${_TRUE};
-
-                sleep "${MESSAGE_DELAY}"; reset; clear; break;
+                sleep "${MESSAGE_DELAY}"; reset; clear; main;
                 ;;
             [\d])
                 ## numeric weight. we dont really care what the value is because it could be anything
@@ -2373,48 +2236,6 @@ function provideServicePort
 
     while true
     do
-        if [ ! -z "${CANCEL_REQ}" ]
-        then
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request canceled.";
-
-            unset CHANGE_CONTROL;
-            unset METHOD_NAME;
-            unset RESPONSE;
-            unset ADD_EXISTING;
-            unset RETURN_CODE;
-            unset RET_CODE;
-            unset ADD_EXISTING_RECORD;
-            unset CCTLD_VALID;
-            unset GTLD_VALID;
-            unset REQUESTED_TLD;
-            unset SITE_HOSTNAME;
-            unset COMPLETE;
-            unset BIZ_UNIT;
-            unset SITE_PRJCODE;
-            unset PRIMARY_INFO;
-            unset SECONDARY_INFO;
-            unset CANCEL_REQ;
-            unset RECORD_TYPE;
-            unset COMPLETE;
-            unset CONTINUE;
-            unset DATACENTER;
-            unset SELECTED_DATACENTER;
-            unset ALIAS;
-            unset RECORD_TARGET;
-            unset ANSWER;
-            unset RECORD_PRIORITY;
-            unset SERVICE_PRIORITY;
-            unset SERVICE_WEIGHT;
-            unset SERVICE_PORT;
-            unset SERVICE_TTL;
-            unset SERVICE_PROTO;
-            unset SERVICE_TYPE;
-
-            reset; clear; main;
-        fi
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requesting service port..";
-
         reset; clear;
 
         print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.record.srv.port\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
@@ -2429,18 +2250,48 @@ function provideServicePort
 
         case ${SERVICE_PORT} in
             [Xx]|[Qq]|[Cc])
-                ## user chose to cancel
-                unset SERVICE_PORT;
-
-                CANCEL_REQ=${_TRUE};
-
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Configuration for ${ZONE_NAME}, record type ${RECORD_TYPE} canceled.";
-
                 reset; clear;
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+                ## unset variables
+                unset CHANGE_CONTROL;
+                unset METHOD_NAME;
+                unset RESPONSE;
+                unset ADD_EXISTING;
+                unset RETURN_CODE;
+                unset RET_CODE;
+                unset ADD_EXISTING_RECORD;
+                unset CCTLD_VALID;
+                unset GTLD_VALID;
+                unset REQUESTED_TLD;
+                unset SITE_HOSTNAME;
+                unset COMPLETE;
+                unset BIZ_UNIT;
+                unset SITE_PRJCODE;
+                unset PRIMARY_INFO;
+                unset SECONDARY_INFO;
+                unset CANCEL_REQ;
+                unset RECORD_TYPE;
+                unset COMPLETE;
+                unset CONTINUE;
+                unset DATACENTER;
+                unset SELECTED_DATACENTER;
+                unset ALIAS;
+                unset RECORD_TARGET;
+                unset ANSWER;
+                unset RECORD_PRIORITY;
+                unset SERVICE_PRIORITY;
+                unset SERVICE_WEIGHT;
+                unset SERVICE_PORT;
+                unset SERVICE_TTL;
+                unset SERVICE_PROTO;
+                unset SERVICE_TYPE;
 
-                sleep "${MESSAGE_DELAY}"; reset; clear; break;
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CANCEL_REQ -> ${CANCEL_REQ}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS query canceled.";
+
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+
+                sleep "${MESSAGE_DELAY}"; reset; clear; main;
                 ;;
             ?([+-])+([0-9]))
                 ## make sure its not 0 and its not > 65535
@@ -2498,48 +2349,6 @@ function provideRecordTTL
 
     while true
     do
-        if [ ! -z "${CANCEL_REQ}" ]
-        then
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request canceled.";
-
-            unset CHANGE_CONTROL;
-            unset METHOD_NAME;
-            unset RESPONSE;
-            unset ADD_EXISTING;
-            unset RETURN_CODE;
-            unset RET_CODE;
-            unset ADD_EXISTING_RECORD;
-            unset CCTLD_VALID;
-            unset GTLD_VALID;
-            unset REQUESTED_TLD;
-            unset SITE_HOSTNAME;
-            unset COMPLETE;
-            unset BIZ_UNIT;
-            unset SITE_PRJCODE;
-            unset PRIMARY_INFO;
-            unset SECONDARY_INFO;
-            unset CANCEL_REQ;
-            unset RECORD_TYPE;
-            unset COMPLETE;
-            unset CONTINUE;
-            unset DATACENTER;
-            unset SELECTED_DATACENTER;
-            unset ALIAS;
-            unset RECORD_TARGET;
-            unset ANSWER;
-            unset RECORD_PRIORITY;
-            unset SERVICE_PRIORITY;
-            unset SERVICE_WEIGHT;
-            unset SERVICE_PORT;
-            unset SERVICE_TTL;
-            unset SERVICE_PROTO;
-            unset SERVICE_TYPE;
-
-            reset; clear; main;
-        fi
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requesting service TTL..";
-
         reset; clear;
 
         print "$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.record.srv.ttl\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
@@ -2555,17 +2364,48 @@ function provideRecordTTL
         case ${SERVICE_TTL} in
             [Xx]|[Qq]|[Cc])
                 ## user chose to cancel
-                unset SERVICE_TTL;
-
-                CANCEL_REQ=${_TRUE};
-
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Configuration for ${ZONE_NAME}, record type ${RECORD_TYPE} canceled.";
-
                 reset; clear;
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+                ## unset variables
+                unset CHANGE_CONTROL;
+                unset METHOD_NAME;
+                unset RESPONSE;
+                unset ADD_EXISTING;
+                unset RETURN_CODE;
+                unset RET_CODE;
+                unset ADD_EXISTING_RECORD;
+                unset CCTLD_VALID;
+                unset GTLD_VALID;
+                unset REQUESTED_TLD;
+                unset SITE_HOSTNAME;
+                unset COMPLETE;
+                unset BIZ_UNIT;
+                unset SITE_PRJCODE;
+                unset PRIMARY_INFO;
+                unset SECONDARY_INFO;
+                unset CANCEL_REQ;
+                unset RECORD_TYPE;
+                unset COMPLETE;
+                unset CONTINUE;
+                unset DATACENTER;
+                unset SELECTED_DATACENTER;
+                unset ALIAS;
+                unset RECORD_TARGET;
+                unset ANSWER;
+                unset RECORD_PRIORITY;
+                unset SERVICE_PRIORITY;
+                unset SERVICE_WEIGHT;
+                unset SERVICE_PORT;
+                unset SERVICE_TTL;
+                unset SERVICE_PROTO;
+                unset SERVICE_TYPE;
 
-                sleep "${MESSAGE_DELAY}"; reset; clear; break;
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CANCEL_REQ -> ${CANCEL_REQ}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS query canceled.";
+
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+
+                sleep "${MESSAGE_DELAY}"; reset; clear; main;
                 ;;
             *)
                 [ -z "${SERVICE_TTL}" ] && SERVICE_TTL=86400;
@@ -2638,48 +2478,6 @@ function provideServiceProtocol
 
     while true
     do
-        if [ ! -z "${CANCEL_REQ}" ]
-        then
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request canceled.";
-
-            unset CHANGE_CONTROL;
-            unset METHOD_NAME;
-            unset RESPONSE;
-            unset ADD_EXISTING;
-            unset RETURN_CODE;
-            unset RET_CODE;
-            unset ADD_EXISTING_RECORD;
-            unset CCTLD_VALID;
-            unset GTLD_VALID;
-            unset REQUESTED_TLD;
-            unset SITE_HOSTNAME;
-            unset COMPLETE;
-            unset BIZ_UNIT;
-            unset SITE_PRJCODE;
-            unset PRIMARY_INFO;
-            unset SECONDARY_INFO;
-            unset CANCEL_REQ;
-            unset RECORD_TYPE;
-            unset COMPLETE;
-            unset CONTINUE;
-            unset DATACENTER;
-            unset SELECTED_DATACENTER;
-            unset ALIAS;
-            unset RECORD_TARGET;
-            unset ANSWER;
-            unset RECORD_PRIORITY;
-            unset SERVICE_PRIORITY;
-            unset SERVICE_WEIGHT;
-            unset SERVICE_PORT;
-            unset SERVICE_TTL;
-            unset SERVICE_PROTO;
-            unset SERVICE_TYPE;
-
-            reset; clear; main;
-        fi
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requesting service protocol..";
-
         reset; clear;
 
         ## ask for the service protocol
@@ -2699,20 +2497,48 @@ function provideServiceProtocol
         ## validate the provided protocol
         case ${ANSWER} in
             [Xx]|[Qq]|[Cc])
-                ## user chose to cancel
-                unset SERVICE_TYPE;
-                unset SERVICE_PROTO;
-                unset RECORD_TYPE;
-
-                CANCEL_REQ=${_TRUE};
-
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Configuration for ${ZONE_NAME}, record type ${RECORD_TYPE} canceled.";
-
                 reset; clear;
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+                ## unset variables
+                unset CHANGE_CONTROL;
+                unset METHOD_NAME;
+                unset RESPONSE;
+                unset ADD_EXISTING;
+                unset RETURN_CODE;
+                unset RET_CODE;
+                unset ADD_EXISTING_RECORD;
+                unset CCTLD_VALID;
+                unset GTLD_VALID;
+                unset REQUESTED_TLD;
+                unset SITE_HOSTNAME;
+                unset COMPLETE;
+                unset BIZ_UNIT;
+                unset SITE_PRJCODE;
+                unset PRIMARY_INFO;
+                unset SECONDARY_INFO;
+                unset CANCEL_REQ;
+                unset RECORD_TYPE;
+                unset COMPLETE;
+                unset CONTINUE;
+                unset DATACENTER;
+                unset SELECTED_DATACENTER;
+                unset ALIAS;
+                unset RECORD_TARGET;
+                unset ANSWER;
+                unset RECORD_PRIORITY;
+                unset SERVICE_PRIORITY;
+                unset SERVICE_WEIGHT;
+                unset SERVICE_PORT;
+                unset SERVICE_TTL;
+                unset SERVICE_PROTO;
+                unset SERVICE_TYPE;
 
-                sleep "${MESSAGE_DELAY}"; reset; clear; break;
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CANCEL_REQ -> ${CANCEL_REQ}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS query canceled.";
+
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+
+                sleep "${MESSAGE_DELAY}"; reset; clear; main;
                 ;;
             *)
                 THIS_CNAME="${CNAME}";
@@ -2783,48 +2609,6 @@ function provideServiceType
 
     while true
     do
-        if [ ! -z "${CANCEL_REQ}" ]
-        then
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request canceled.";
-
-            unset CHANGE_CONTROL;
-            unset METHOD_NAME;
-            unset RESPONSE;
-            unset ADD_EXISTING;
-            unset RETURN_CODE;
-            unset RET_CODE;
-            unset ADD_EXISTING_RECORD;
-            unset CCTLD_VALID;
-            unset GTLD_VALID;
-            unset REQUESTED_TLD;
-            unset SITE_HOSTNAME;
-            unset COMPLETE;
-            unset BIZ_UNIT;
-            unset SITE_PRJCODE;
-            unset PRIMARY_INFO;
-            unset SECONDARY_INFO;
-            unset CANCEL_REQ;
-            unset RECORD_TYPE;
-            unset COMPLETE;
-            unset CONTINUE;
-            unset DATACENTER;
-            unset SELECTED_DATACENTER;
-            unset ALIAS;
-            unset RECORD_TARGET;
-            unset ANSWER;
-            unset RECORD_PRIORITY;
-            unset SERVICE_PRIORITY;
-            unset SERVICE_WEIGHT;
-            unset SERVICE_PORT;
-            unset SERVICE_TTL;
-            unset SERVICE_PROTO;
-            unset SERVICE_TYPE;
-
-            reset; clear; main;
-        fi
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requesting service protocol..";
-
         reset; clear;
 
         ## ask for the service protocol
@@ -2843,20 +2627,48 @@ function provideServiceType
         ## validate the provided protocol
         case ${ANSWER} in
             [Xx]|[Qq]|[Cc])
-                ## user chose to cancel
-                unset SERVICE_TYPE;
-                unset SERVICE_PROTO;
-                unset RECORD_TYPE;
-
-                CANCEL_REQ=${_TRUE};
-
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Configuration for ${ZONE_NAME}, record type ${RECORD_TYPE} canceled.";
-
                 reset; clear;
 
-                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+                ## unset variables
+                unset CHANGE_CONTROL;
+                unset METHOD_NAME;
+                unset RESPONSE;
+                unset ADD_EXISTING;
+                unset RETURN_CODE;
+                unset RET_CODE;
+                unset ADD_EXISTING_RECORD;
+                unset CCTLD_VALID;
+                unset GTLD_VALID;
+                unset REQUESTED_TLD;
+                unset SITE_HOSTNAME;
+                unset COMPLETE;
+                unset BIZ_UNIT;
+                unset SITE_PRJCODE;
+                unset PRIMARY_INFO;
+                unset SECONDARY_INFO;
+                unset CANCEL_REQ;
+                unset RECORD_TYPE;
+                unset COMPLETE;
+                unset CONTINUE;
+                unset DATACENTER;
+                unset SELECTED_DATACENTER;
+                unset ALIAS;
+                unset RECORD_TARGET;
+                unset ANSWER;
+                unset RECORD_PRIORITY;
+                unset SERVICE_PRIORITY;
+                unset SERVICE_WEIGHT;
+                unset SERVICE_PORT;
+                unset SERVICE_TTL;
+                unset SERVICE_PROTO;
+                unset SERVICE_TYPE;
 
-                sleep "${MESSAGE_DELAY}"; reset; clear; break;
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CANCEL_REQ -> ${CANCEL_REQ}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS query canceled.";
+
+                print "$(sed -e '/^ *#/d;s/#.*//' ${SYSTEM_MESSAGES} | awk -F "=" '/\<system.request.canceled\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')\n";
+
+                sleep "${MESSAGE_DELAY}"; reset; clear; main;
                 ;;
             [a-zA-Z0-9_])
                 SERVICE_TYPE="_${ANSWER}";
@@ -3002,7 +2814,7 @@ function reviewZone
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printing zonefile content..";
 
-                cat ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1).${SITE_PRJCODE};
+                cat ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}/${NAMED_ZONE_PREFIX}.$(printf ${SITE_HOSTNAME} | cut -d "." -f 1).${SITE_PRJCODE};
 
                 print "\n$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<add.review.accurate.zone.pending.message\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%ZONE%/${SITE_HOSTNAME}/")";
 

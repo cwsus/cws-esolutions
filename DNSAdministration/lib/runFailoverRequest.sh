@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 METHOD_NAME="${CNAME}#startup";
 
@@ -549,20 +549,20 @@ do
 
             case ${PARTITION} in
                 ${INTRANET_TYPE_IDENTIFIER})
-                    SITE_HOSTNAME=$(echo "${OPTARG}" | cut -d "," -f 1);
-                    ENABLE_POP=$(echo "${OPTARG}" | cut -d "," -f 2);
-                    DISABLE_POP=$(echo "${OPTARG}" | cut -d "," -f 3);
-                    CHG_CTRL=$(echo "${OPTARG}" | cut -d "," -f 6);
+                    SITE_HOSTNAME=$(printf "${OPTARG}" | cut -d "," -f 1);
+                    ENABLE_POP=$(printf "${OPTARG}" | cut -d "," -f 2);
+                    DISABLE_POP=$(printf "${OPTARG}" | cut -d "," -f 3);
+                    CHG_CTRL=$(printf "${OPTARG}" | cut -d "," -f 6);
                     ;;
                 ${INTERNET_TYPE_IDENTIFIER})
                     ## comma-delimited information set, lets strip the "INFO"
-                    SITE_HOSTNAME=$(echo "${OPTARG}" | cut -d "," -f 1);
-                    UNIT=$(echo "${OPTARG}" | cut -d "," -f 2);
-                    FILENAME=$(echo "${OPTARG}" | cut -d "," -f 3);
-                    TARGET=$(echo "${OPTARG}" | cut -d "," -f 4);
-                    PRJCODE=$(echo "${OPTARG}" | cut -d "," -f 5);
-                    CHG_CTRL=$(echo "${OPTARG}" | cut -d "," -f 6);
-                    IUSER_AUDIT=$(echo "${OPTARG}" | cut -d "," -f 7);
+                    SITE_HOSTNAME=$(printf "${OPTARG}" | cut -d "," -f 1);
+                    UNIT=$(printf "${OPTARG}" | cut -d "," -f 2);
+                    FILENAME=$(printf "${OPTARG}" | cut -d "," -f 3);
+                    TARGET=$(printf "${OPTARG}" | cut -d "," -f 4);
+                    PRJCODE=$(printf "${OPTARG}" | cut -d "," -f 5);
+                    CHG_CTRL=$(printf "${OPTARG}" | cut -d "," -f 6);
+                    IUSER_AUDIT=$(printf "${OPTARG}" | cut -d "," -f 7);
                     ;;
             esac
 
@@ -581,10 +581,10 @@ do
             FAILOVER_TYPE="unit";
 
             ## comma-delimited information set, lets strip the "INFO"
-            UNIT=$(echo "${OPTARG}" | cut -d "," -f 2);
-            TARGET=$(echo "${OPTARG}" | cut -d "," -f 3);
-            CHG_CTRL=$(echo "${OPTARG}" | cut -d "," -f 4);
-            IUSER_AUDIT=$(echo "${OPTARG}" | cut -d "," -f 5);
+            UNIT=$(printf "${OPTARG}" | cut -d "," -f 2);
+            TARGET=$(printf "${OPTARG}" | cut -d "," -f 3);
+            CHG_CTRL=$(printf "${OPTARG}" | cut -d "," -f 4);
+            IUSER_AUDIT=$(printf "${OPTARG}" | cut -d "," -f 5);
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FAILOVER_TYPE->${FAILOVER_TYPE}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "UNIT->${UNIT}";
@@ -599,11 +599,11 @@ do
             FAILOVER_TYPE="project";
 
             ## comma-delimited information set, lets strip the "INFO"
-            PRJCODE=$(echo "${OPTARG}" | cut -d "," -f 2);
-            UNIT=$(echo "${OPTARG}" | cut -d "," -f 3);
-            TARGET=$(echo "${OPTARG}" | cut -d "," -f 4);
-            CHG_CTRL=$(echo "${OPTARG}" | cut -d "," -f 5);
-            IUSER_AUDIT=$(echo "${OPTARG}" | cut -d "," -f 6);
+            PRJCODE=$(printf "${OPTARG}" | cut -d "," -f 2);
+            UNIT=$(printf "${OPTARG}" | cut -d "," -f 3);
+            TARGET=$(printf "${OPTARG}" | cut -d "," -f 4);
+            CHG_CTRL=$(printf "${OPTARG}" | cut -d "," -f 5);
+            IUSER_AUDIT=$(printf "${OPTARG}" | cut -d "," -f 6);
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FAILOVER_TYPE->${FAILOVER_TYPE}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRJCODE->${PRJCODE}";
@@ -619,9 +619,9 @@ do
             FAILOVER_TYPE="datacenter";
 
             ## comma-delimited information set, lets strip the "INFO"
-            TARGET=$(echo "${OPTARG}" | cut -d "," -f 1);
-            CHG_CTRL=$(echo "${OPTARG}" | cut -d "," -f 2);
-            IUSER_AUDIT=$(echo "${OPTARG}" | cut -d "," -f 3);
+            TARGET=$(printf "${OPTARG}" | cut -d "," -f 1);
+            CHG_CTRL=$(printf "${OPTARG}" | cut -d "," -f 2);
+            IUSER_AUDIT=$(printf "${OPTARG}" | cut -d "," -f 3);
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FAILOVER_TYPE->${FAILOVER_TYPE}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TARGET->${TARGET}";

@@ -18,7 +18,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -39,30 +39,30 @@ function createSecuredInstance
 
     [ -z "${1}" ] && HYBRID="${_TRUE}";
 
-    SERVER_ID=${IPLANET_CERT_STORE_PREFIX}$(echo ${SITE_HOSTNAME} | cut -d "." -f -2)_${PROJECT_CODE};
+    SERVER_ID=${IPLANET_CERT_STORE_PREFIX}$(printf ${SITE_HOSTNAME} | cut -d "." -f -2)_${PROJECT_CODE};
     SERVER_ROOT=$(
-        PLATFORM_TYPE_IDENTIFIER=$(echo ${PLATFORM_CODE} | cut -d "_" -f 3 | tr '[A-Z]' '[a-z]');
+        PLATFORM_TYPE_IDENTIFIER=$(printf ${PLATFORM_CODE} | cut -d "_" -f 3 | tr '[A-Z]' '[a-z]');
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PLATFORM_TYPE_IDENTIFIER -> ${PLATFORM_TYPE_IDENTIFIER}";
 
         case ${PLATFORM_TYPE_IDENTIFIER} in
             ${ENV_TYPE_IST})
-                echo "${IPLANET_IST_ROOT}";
+                printf "${IPLANET_IST_ROOT}";
                 ;;
             ${ENV_TYPE_QA})
-                echo "${IPLANET_QA_ROOT}";
+                printf "${IPLANET_QA_ROOT}";
                 ;;
             ${ENV_TYPE_STG}|${ENV_TYPE_TRN}|${ENV_TYPE_PRD})
-                echo "${IPLANET_SERVER_ROOT}";
+                printf "${IPLANET_SERVER_ROOT}";
                 ;;
             *)
-                echo "${_FALSE}";
+                printf "${_FALSE}";
                 ;;
         esac
     );
     WEB_LOG_ROOT=${IPLANET_BASE_LOG_ROOT}/${SERVER_ID};
-    WEB_DOC_ROOT=$(echo ${IPLANET_BASE_DOC_ROOT} | sed -e "s/%PROJECT_CODE%/${PROJECT_CODE}/");
-    CERT_NICKNAME=$(echo ${SERVER_ID} | cut -d "-" -f 2);
+    WEB_DOC_ROOT=$(printf ${IPLANET_BASE_DOC_ROOT} | sed -e "s/%PROJECT_CODE%/${PROJECT_CODE}/");
+    CERT_NICKNAME=$(printf ${SERVER_ID} | cut -d "-" -f 2);
     WEB_TMP_DIR=${IPLANET_WEB_TMPDIR}/${SERVER_ID}-$(returnRandomCharacters 6);
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVER_ROOT -> ${SERVER_ROOT}";
@@ -123,11 +123,11 @@ function createSecuredInstance
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${ACL} ..";
 
             sed -e "s^%SERVER_ROOT%^${SERVER_ROOT}^g" ${APP_ROOT}/${IPLANET_ACL_TEMPLATE} \
-                > ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_ACL_DIR}/$(echo ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^");
+                > ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_ACL_DIR}/$(printf ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^");
 
-            if [ ! -s ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_ACL_DIR}/$(echo ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^") ]
+            if [ ! -s ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_ACL_DIR}/$(printf ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^") ]
             then
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred copying ${APP_ROOT}/${IPLANET_ACL_TEMPLATE} to ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_ACL_DIR}/$(echo ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^")";
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred copying ${APP_ROOT}/${IPLANET_ACL_TEMPLATE} to ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_ACL_DIR}/$(printf ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^")";
 
                 (( ERROR_COUNT += 1 ));
             fi
@@ -148,15 +148,15 @@ function createSecuredInstance
 
                 for REPLACEMENT_ITEM in $(grep "&" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG} | cut -d "&" -f 2)
                 do
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REPLACEMENT_ITEM - ${REPLACEMENT_ITEM} -> $(eval echo \${${REPLACEMENT_ITEM}})";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REPLACEMENT_ITEM - ${REPLACEMENT_ITEM} -> $(eval printf \${${REPLACEMENT_ITEM}})";
 
-                    sed -e "s^&${REPLACEMENT_ITEM}&^$(eval echo \${${REPLACEMENT_ITEM}})^g" \
+                    sed -e "s^&${REPLACEMENT_ITEM}&^$(eval printf \${${REPLACEMENT_ITEM}})^g" \
                         ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG} \
                         > ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG}.tmp;
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating...";
 
-                    if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG}.tmp)" !]
+                    if [ ! -z "$(grep "$(eval printf \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG}.tmp)" !]
                     then
                         ## ok, move it over now..
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -165,7 +165,7 @@ function createSecuredInstance
                             ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG} > /dev/null 2>&1;
 
                         ## and ensure..
-                        if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG})" !]
+                        if [ ! -z "$(grep "$(eval printf \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG})" !]
                         then
                             ## good, keep going
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -199,7 +199,7 @@ function createSecuredInstance
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding WebSphere configuration to ${IPLANET_CORE_CONFIG} ..";
 
                         print "${IPLANET_WAS_FUNCTION}" >> ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG};
-                        print "$(echo ${IPLANET_WAS_BOOTSTRAP} | sed -e "s^%SERVER_ROOT%^${SERVER_ROOT}^" \
+                        print "$(printf ${IPLANET_WAS_BOOTSTRAP} | sed -e "s^%SERVER_ROOT%^${SERVER_ROOT}^" \
                             -e "s^%SERVER_ID%^${SERVER_ID}^g" -e "s/%PROJECT_CODE%/${PROJECT_CODE}/")" >> ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG};
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding WebSphere configuration to ${IPLANET_WEB_CONFIG} ..";
@@ -254,15 +254,15 @@ function createSecuredInstance
 
                     for REPLACEMENT_ITEM in $(grep "&" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG} | cut -d "&" -f 2)
                     do
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REPLACEMENT_ITEM - ${REPLACEMENT_ITEM} -> $(eval echo \${${REPLACEMENT_ITEM}})";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REPLACEMENT_ITEM - ${REPLACEMENT_ITEM} -> $(eval printf \${${REPLACEMENT_ITEM}})";
 
-                        sed -e "s^&${REPLACEMENT_ITEM}&^$(eval echo \${${REPLACEMENT_ITEM}})^g" \
+                        sed -e "s^&${REPLACEMENT_ITEM}&^$(eval printf \${${REPLACEMENT_ITEM}})^g" \
                             ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG} \
                             > ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG}.tmp;
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating...";
 
-                        if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG}.tmp)" !]
+                        if [ ! -z "$(grep "$(eval printf \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG}.tmp)" !]
                         then
                             ## ok, move it over now..
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -271,7 +271,7 @@ function createSecuredInstance
                                 ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG} > /dev/null 2>&1;
 
                             ## and ensure..
-                            if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG})" !]
+                            if [ ! -z "$(grep "$(eval printf \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG})" !]
                             then
                                 ## good, keep going
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -306,15 +306,15 @@ function createSecuredInstance
                         do
                             for REPLACEMENT_ITEM in $(grep "&" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT} | cut -d "&" -f 2)
                             do
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REPLACEMENT_ITEM - ${REPLACEMENT_ITEM} -> $(eval echo \${${REPLACEMENT_ITEM}})";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REPLACEMENT_ITEM - ${REPLACEMENT_ITEM} -> $(eval printf \${${REPLACEMENT_ITEM}})";
 
-                                sed -e "s^&${REPLACEMENT_ITEM}&^$(eval echo \${${REPLACEMENT_ITEM}})^g" \
+                                sed -e "s^&${REPLACEMENT_ITEM}&^$(eval printf \${${REPLACEMENT_ITEM}})^g" \
                                     ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT} \
                                     > ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT}.tmp;
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating...";
 
-                                if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT}.tmp)" !]
+                                if [ ! -z "$(grep "$(eval printf \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT}.tmp)" !]
                                 then
                                     ## ok, move it over now..
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -323,7 +323,7 @@ function createSecuredInstance
                                         ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT} > /dev/null 2>&1;
 
                                     ## and ensure..
-                                    if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT})" !]
+                                    if [ ! -z "$(grep "$(eval printf \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT})" !]
                                     then
                                         ## good, keep going
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -380,7 +380,7 @@ function createSecuredInstance
 
                                     for TOKEN in ${SECURITY_TOKENS}
                                     do
-                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding security token $(echo ${TOKEN} | cut -d ":" -f 1) ..";
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding security token $(printf ${TOKEN} | cut -d ":" -f 1) ..";
 
                                         print "${TOKEN}" >> ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_PASSWORD_FILE};
 
@@ -390,7 +390,7 @@ function createSecuredInstance
                                             ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_PASSWORD_FILE}) -eq 0 ]
                                         then
                                             ## "ERROR" occurred adding
-                                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred adding $(echo ${TOKEN} | cut -d ":" -f 1) to ${IPLANET_PASSWORD_FILE}";
+                                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred adding $(printf ${TOKEN} | cut -d ":" -f 1) to ${IPLANET_PASSWORD_FILE}";
 
                                             (( ERROR_COUNT += 1 ));
                                         fi
@@ -475,30 +475,30 @@ function createUnsecuredInstance
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    SERVER_ID=${IPLANET_CERT_STORE_PREFIX}$(echo ${SITE_HOSTNAME} | cut -d "." -f -2)_${PROJECT_CODE};
+    SERVER_ID=${IPLANET_CERT_STORE_PREFIX}$(printf ${SITE_HOSTNAME} | cut -d "." -f -2)_${PROJECT_CODE};
     SERVER_ROOT=$(
-        PLATFORM_TYPE_IDENTIFIER=$(echo ${PLATFORM_CODE} | cut -d "_" -f 3 | tr '[A-Z]' '[a-z]');
+        PLATFORM_TYPE_IDENTIFIER=$(printf ${PLATFORM_CODE} | cut -d "_" -f 3 | tr '[A-Z]' '[a-z]');
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PLATFORM_TYPE_IDENTIFIER -> ${PLATFORM_TYPE_IDENTIFIER}";
 
         case ${PLATFORM_TYPE_IDENTIFIER} in
             ${ENV_TYPE_IST})
-                echo "${IPLANET_IST_ROOT}";
+                printf "${IPLANET_IST_ROOT}";
                 ;;
             ${ENV_TYPE_QA})
-                echo "${IPLANET_QA_ROOT}";
+                printf "${IPLANET_QA_ROOT}";
                 ;;
             ${ENV_TYPE_STG}|${ENV_TYPE_TRN}|${ENV_TYPE_PRD})
-                echo "${IPLANET_SERVER_ROOT}";
+                printf "${IPLANET_SERVER_ROOT}";
                 ;;
             *)
-                echo "${_FALSE}";
+                printf "${_FALSE}";
                 ;;
         esac
     );
     WEB_LOG_ROOT=${IPLANET_BASE_LOG_ROOT}/${SERVER_ID};
-    WEB_DOC_ROOT=$(echo ${IPLANET_BASE_DOC_ROOT} | sed -e "s^%SERVER_ID%^${SERVER_ID}^");
-    CERT_NICKNAME=$(echo ${SERVER_ID} | cut -d "-" -f 2);
+    WEB_DOC_ROOT=$(printf ${IPLANET_BASE_DOC_ROOT} | sed -e "s^%SERVER_ID%^${SERVER_ID}^");
+    CERT_NICKNAME=$(printf ${SERVER_ID} | cut -d "-" -f 2);
     WEB_TMP_DIR=${IPLANET_WEB_TMPDIR}/${SERVER_ID}-$(returnRandomCharacters 6);
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVER_ROOT -> ${SERVER_ROOT}";
@@ -532,11 +532,11 @@ function createUnsecuredInstance
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${ACL} ..";
 
             sed -e "s^%SERVER_ROOT%^${SERVER_ROOT}^g" ${APP_ROOT}/${IPLANET_ACL_TEMPLATE} \
-                > ${APP_ROOT}/${BUILD_TMP_DIR}/${IPLANET_ACL_DIR}$(echo ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^");
+                > ${APP_ROOT}/${BUILD_TMP_DIR}/${IPLANET_ACL_DIR}$(printf ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^");
 
-            if [ ! -s ${APP_ROOT}/${BUILD_TMP_DIR}/${IPLANET_ACL_DIR}$(echo ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^") ]
+            if [ ! -s ${APP_ROOT}/${BUILD_TMP_DIR}/${IPLANET_ACL_DIR}$(printf ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^") ]
             then
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred copying ${APP_ROOT}/${IPLANET_ACL_TEMPLATE} to ${APP_ROOT}/${BUILD_TMP_DIR}/${IPLANET_ACL_DIR}$(echo ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^")";
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred copying ${APP_ROOT}/${IPLANET_ACL_TEMPLATE} to ${APP_ROOT}/${BUILD_TMP_DIR}/${IPLANET_ACL_DIR}$(printf ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^")";
 
                 (( ERROR_COUNT += 1 ));
             fi
@@ -557,15 +557,15 @@ function createUnsecuredInstance
 
                 for REPLACEMENT_ITEM in $(grep "&" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG} | cut -d "&" -f 2)
                 do
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REPLACEMENT_ITEM - ${REPLACEMENT_ITEM} -> $(eval echo \${${REPLACEMENT_ITEM}})";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REPLACEMENT_ITEM - ${REPLACEMENT_ITEM} -> $(eval printf \${${REPLACEMENT_ITEM}})";
 
-                    sed -e "s^&${REPLACEMENT_ITEM}&^$(eval echo \${${REPLACEMENT_ITEM}})^g" \
+                    sed -e "s^&${REPLACEMENT_ITEM}&^$(eval printf \${${REPLACEMENT_ITEM}})^g" \
                         ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG} \
                         > ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG}.tmp;
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating...";
 
-                    if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG}.tmp)" !]
+                    if [ ! -z "$(grep "$(eval printf \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG}.tmp)" !]
                     then
                         ## ok, move it over now..
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -574,7 +574,7 @@ function createUnsecuredInstance
                             ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG} > /dev/null 2>&1;
 
                         ## and ensure..
-                        if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG})" !]
+                        if [ ! -z "$(grep "$(eval printf \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG})" !]
                         then
                             ## good, keep going
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -608,7 +608,7 @@ function createUnsecuredInstance
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding WebSphere configuration to ${IPLANET_CORE_CONFIG} ..";
 
                         print "${IPLANET_WAS_FUNCTION}" >> ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG};
-                        print "$(echo ${IPLANET_WAS_BOOTSTRAP} | sed -e "s^%SERVER_ROOT%^${SERVER_ROOT}^" \
+                        print "$(printf ${IPLANET_WAS_BOOTSTRAP} | sed -e "s^%SERVER_ROOT%^${SERVER_ROOT}^" \
                             -e "s^%SERVER_ID%^${SERVER_ID}^g" -e "s/%PROJECT_CODE%/${PROJECT_CODE}/")" >> ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG};
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding WebSphere configuration to ${IPLANET_WEB_CONFIG} ..";
@@ -663,15 +663,15 @@ function createUnsecuredInstance
 
                     for REPLACEMENT_ITEM in $(grep "&" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG} | cut -d "&" -f 2)
                     do
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REPLACEMENT_ITEM - ${REPLACEMENT_ITEM} -> $(eval echo \${${REPLACEMENT_ITEM}})";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REPLACEMENT_ITEM - ${REPLACEMENT_ITEM} -> $(eval printf \${${REPLACEMENT_ITEM}})";
 
-                        sed -e "s^&${REPLACEMENT_ITEM}&^$(eval echo \${${REPLACEMENT_ITEM}})^g" \
+                        sed -e "s^&${REPLACEMENT_ITEM}&^$(eval printf \${${REPLACEMENT_ITEM}})^g" \
                             ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG} \
                             > ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG}.tmp;
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating...";
 
-                        if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG}.tmp)" !]
+                        if [ ! -z "$(grep "$(eval printf \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG}.tmp)" !]
                         then
                             ## ok, move it over now..
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -680,7 +680,7 @@ function createUnsecuredInstance
                                 ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG} > /dev/null 2>&1;
 
                             ## and ensure..
-                            if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG})" !]
+                            if [ ! -z "$(grep "$(eval printf \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG})" !]
                             then
                                 ## good, keep going
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -715,15 +715,15 @@ function createUnsecuredInstance
                         do
                             for REPLACEMENT_ITEM in $(grep "&" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT} | cut -d "&" -f 2)
                             do
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REPLACEMENT_ITEM - ${REPLACEMENT_ITEM} -> $(eval echo \${${REPLACEMENT_ITEM}})";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REPLACEMENT_ITEM - ${REPLACEMENT_ITEM} -> $(eval printf \${${REPLACEMENT_ITEM}})";
 
-                                sed -e "s^&${REPLACEMENT_ITEM}&^$(eval echo \${${REPLACEMENT_ITEM}})^g" \
+                                sed -e "s^&${REPLACEMENT_ITEM}&^$(eval printf \${${REPLACEMENT_ITEM}})^g" \
                                     ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT} \
                                     > ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT}.tmp;
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating...";
 
-                                if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT}.tmp)" !]
+                                if [ ! -z "$(grep "$(eval printf \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT}.tmp)" !]
                                 then
                                     ## ok, move it over now..
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -732,7 +732,7 @@ function createUnsecuredInstance
                                         ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT} > /dev/null 2>&1;
 
                                     ## and ensure..
-                                    if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT})" !]
+                                    if [ ! -z "$(grep "$(eval printf \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT})" !]
                                     then
                                         ## good, keep going
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";

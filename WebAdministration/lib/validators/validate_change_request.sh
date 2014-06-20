@@ -24,7 +24,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 function validate_change_request
@@ -83,7 +83,7 @@ function validate_change_request
         fi
     elif [ "${WEB_PLATFORM_TYPE}" = "${IHS_TYPE_IDENTIFIER}" ]
     then
-        REAL_CERTDB_NAME=$(echo ${VALIDATE_CERT_DB} | cut -d "-" -f 1);
+        REAL_CERTDB_NAME=$(printf ${VALIDATE_CERT_DB} | cut -d "-" -f 1);
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_CERT_DB -> ${VALIDATE_CERT_DB}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REAL_CERTDB_NAME -> ${REAL_CERTDB_NAME}";
@@ -172,7 +172,7 @@ METHOD_NAME="${CNAME}#startup";
 
 validate_change_request ${@};
 
-echo ${OPERATION_TYPE};
+printf ${OPERATION_TYPE};
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;

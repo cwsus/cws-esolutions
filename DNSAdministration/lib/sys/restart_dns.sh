@@ -70,7 +70,7 @@ case "${ACTION}" in
     start)
         if [ -n "`pidof -s -n -m ${NAMED_BIN}`" ]
         then
-            echo -n $"named: already running:"
+            printf -n $"named: already running:"
             ${RNDC_BIN} ${RNDC_OPTS} status;
 
             exit 0;
@@ -92,10 +92,10 @@ case "${ACTION}" in
             named_err="`${NAMED_CHKCONF} ${NAMED_CHKCONF_OPTS} ${NAMED_CONF} 2>&1`";
 
             echo
-            echo ""ERROR" in named configuration:";
-            echo "${named_err}";
+            printf ""ERROR" in named configuration:";
+            printf "${named_err}";
 
-            [ -x /usr/${BIN_DIRECTORY}/logger ] && echo "${named_err}" | /usr/${BIN_DIRECTORY}/logger -pdaemon."ERROR" -tnamed;
+            [ -x /usr/${BIN_DIRECTORY}/logger ] && printf "${named_err}" | /usr/${BIN_DIRECTORY}/logger -pdaemon."ERROR" -tnamed;
 
             exit 2;
         fi
@@ -110,11 +110,11 @@ case "${ACTION}" in
     stop)
         if [ ! -s ${NAMED_PID} ]
         then
-            echo "Service named not running";
+            printf "Service named not running";
 
             exit 1;
         else
-            echo "Shutting down named: ";
+            printf "Shutting down named: ";
             ${RNDC_BIN} ${RNDC_OPTS} stop;
 
             sleep 5;
@@ -125,7 +125,7 @@ case "${ACTION}" in
                 rm -rf ${NAMED_PID};
             fi
 
-            echo "[ OK ]";
+            printf "[ OK ]";
 
             exit 0;
         fi
@@ -155,10 +155,10 @@ case "${ACTION}" in
     probe)
         # named knows how to reload intelligently; we don't want linuxconf
         # to offer to restart every time
-        ${RNDC_BIN} ${RNDC_OPTS} reload > ${NAMED_LOG_DIR}/rndc-reload.log 2>&1 || echo start;
+        ${RNDC_BIN} ${RNDC_OPTS} reload > ${NAMED_LOG_DIR}/rndc-reload.log 2>&1 || printf start;
         exit 0;
         ;;
     *)
-        echo "Usage: named {start|stop|status|restart|reload}";
+        printf "Usage: named {start|stop|status|restart|reload}";
         exit 1;
 esac

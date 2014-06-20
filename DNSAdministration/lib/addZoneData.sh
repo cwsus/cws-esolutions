@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="$(basename ${0})";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
 METHOD_NAME="${CNAME}#startup";
 
@@ -129,8 +129,8 @@ function addApexRecordEntry
     fi
 
     ## set up our zonefile names so we can operate on them
-    ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1).${PROJECT_CODE};
-    DC_ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1);
+    ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(printf ${ZONE_NAME} | cut -d "." -f 1).${PROJECT_CODE};
+    DC_ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(printf ${ZONE_NAME} | cut -d "." -f 1);
     PRIMARY_ZONEFILE=${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DATACENTER}/${DC_ZONEFILE_NAME};
     SECONDARY_ZONEFILE=${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DATACENTER}/${DC_ZONEFILE_NAME};
 
@@ -276,8 +276,8 @@ function addApexRecordEntry
             fi
             ;;
         [Mm][Xx])
-            RECORD_TARGET=$(echo ${RECORD_DATA} | cut -d "," -f 1);
-            RECORD_WEIGHT=$(echo ${RECORD_DATA} | cut -d "," -f 2);
+            RECORD_TARGET=$(printf ${RECORD_DATA} | cut -d "," -f 1);
+            RECORD_WEIGHT=$(printf ${RECORD_DATA} | cut -d "," -f 2);
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RECORD_WEIGHT -> ${RECORD_WEIGHT}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RECORD_TARGET -> ${RECORD_TARGET}";
@@ -474,8 +474,8 @@ function addSubRecordEntry
     fi
 
     ## set up our zonefile names so we can operate on them
-    ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1).${PROJECT_CODE};
-    DC_ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1);
+    ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(printf ${ZONE_NAME} | cut -d "." -f 1).${PROJECT_CODE};
+    DC_ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(printf ${ZONE_NAME} | cut -d "." -f 1);
     PRIMARY_ZONEFILE=${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DATACENTER}/${DC_ZONEFILE_NAME};
     SECONDARY_ZONEFILE=${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DATACENTER}/${DC_ZONEFILE_NAME};
 
@@ -531,8 +531,8 @@ function addSubRecordEntry
 
     case ${RECORD_TYPE} in
         [Aa]|[Cc][Nn][Aa][Mm][Ee]|[Tt][Xx][Tt])
-            RECORD_ALIAS=$(echo ${RECORD_DATA} | cut -d "," -f 1);
-            RECORD_TARGET=$(echo ${RECORD_DATA} | cut -d "," -f 2);
+            RECORD_ALIAS=$(printf ${RECORD_DATA} | cut -d "," -f 1);
+            RECORD_TARGET=$(printf ${RECORD_DATA} | cut -d "," -f 2);
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RECORD_ALIAS -> ${RECORD_ALIAS}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RECORD_TARGET -> ${RECORD_TARGET}";
@@ -650,9 +650,9 @@ function addSubRecordEntry
             fi
             ;;
         [Mm][Xx])
-            RECORD_ALIAS=$(echo ${RECORD_DATA} | cut -d "," -f 1);
-            RECORD_WEIGHT=$(echo ${RECORD_DATA} | cut -d "," -f 2);
-            RECORD_TARGET=$(echo ${RECORD_DATA} | cut -d "," -f 3);
+            RECORD_ALIAS=$(printf ${RECORD_DATA} | cut -d "," -f 1);
+            RECORD_WEIGHT=$(printf ${RECORD_DATA} | cut -d "," -f 2);
+            RECORD_TARGET=$(printf ${RECORD_DATA} | cut -d "," -f 3);
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RECORD_ALIAS -> ${RECORD_ALIAS}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RECORD_WEIGHT -> ${RECORD_WEIGHT}";
@@ -744,14 +744,14 @@ function addSubRecordEntry
             ## _submission._tcp.email.caspersbox.com 86400 IN SRV 10 10 25 caspersb-r1b13.caspersbox.com
             ## see http://en.wikipedia.org/wiki/SRV_record for more "INFO"
             ## set up our record information
-            SRV_TYPE=$(echo ${IP_ADDR} | cut -d "," -f 1);
-            SRV_PROTOCOL=$(echo ${IP_ADDR} | cut -d "," -f 2);
-            SRV_NAME=$(echo ${IP_ADDR} | cut -d "," -f 3);
-            SRV_TTL=$(echo ${IP_ADDR} | cut -d "," -f 4);
-            SRV_PRIORITY=$(echo ${IP_ADDR} | cut -d "," -f 5);
-            SRV_WEIGHT=$(echo ${IP_ADDR} | cut -d "," -f 6);
-            SRV_PORT=$(echo ${IP_ADDR} | cut -d "," -f 7);
-            SRV_TARGET=$(echo ${IP_ADDR} | cut -d "," -f 8);
+            SRV_TYPE=$(printf ${IP_ADDR} | cut -d "," -f 1);
+            SRV_PROTOCOL=$(printf ${IP_ADDR} | cut -d "," -f 2);
+            SRV_NAME=$(printf ${IP_ADDR} | cut -d "," -f 3);
+            SRV_TTL=$(printf ${IP_ADDR} | cut -d "," -f 4);
+            SRV_PRIORITY=$(printf ${IP_ADDR} | cut -d "," -f 5);
+            SRV_WEIGHT=$(printf ${IP_ADDR} | cut -d "," -f 6);
+            SRV_PORT=$(printf ${IP_ADDR} | cut -d "," -f 7);
+            SRV_TARGET=$(printf ${IP_ADDR} | cut -d "," -f 8);
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SRV_TYPE->${SRV_TYPE}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SRV_PROTOCOL->${SRV_PROTOCOL}";

@@ -21,7 +21,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -51,10 +51,10 @@ function returnARecord
         then
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local execution is ON. Processing..";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && $(${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command wget -q -O - \"\${@}\" " \
-                "$(echo ${DNS_SERVICE_URL} | sed -e "s/{SITE_HOSTNAME}/${SITE_URL}/") | awk 'NR>10' | awk 'NR<5' | grep -v \";;\" | " \
+                "$(printf ${DNS_SERVICE_URL} | sed -e "s/{SITE_HOSTNAME}/${SITE_URL}/") | awk 'NR>10' | awk 'NR<5' | grep -v \";;\" | " \
                 "awk '{print $5}' | sed -e "s^<br^ ^g" | tail -2");
 
-            RETURNED_IP=$(wget -q -O - "\${@}" $(echo ${DNS_SERVICE_URL} | sed -e "s/{SITE_HOSTNAME}/${SITE_URL}/") | \
+            RETURNED_IP=$(wget -q -O - "\${@}" $(printf ${DNS_SERVICE_URL} | sed -e "s/{SITE_HOSTNAME}/${SITE_URL}/") | \
                 awk 'NR>10' | awk 'NR<5' | grep -v ";;" | awk '{print $5}' | sed -e "s^<br^ ^g" | tail -2);
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURNED_IP -> ${RETURNED_IP}";
@@ -77,10 +77,10 @@ function returnARecord
                 then
                     ## stop if its available and run the command
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Proxy access confirmed. Proxy: ${PROXY}";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} \"wget -q -O - \"\${@}\" $(echo ${DNS_SERVICE_URL} | sed -e "s/{SITE_HOSTNAME}/${SITE_URL}/") > ${APP_ROOT}/${DIG_DATA_FILE}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} \"wget -q -O - \"\${@}\" $(printf ${DNS_SERVICE_URL} | sed -e "s/{SITE_HOSTNAME}/${SITE_URL}/") > ${APP_ROOT}/${DIG_DATA_FILE}";
 
                     RETURNED_IP=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "wget -q -O - \"\${@}\" \
-                        $(echo ${DNS_SERVICE_URL} | sed -e "s/{SITE_HOSTNAME}/${SITE_URL}/")" | awk 'NR>10' | awk 'NR<5' | \
+                        $(printf ${DNS_SERVICE_URL} | sed -e "s/{SITE_HOSTNAME}/${SITE_URL}/")" | awk 'NR>10' | awk 'NR<5' | \
                         grep -v ";;" | awk '{print $5}' | sed -e "s^<br^ ^g" | tail -2);
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURNED_IP -> ${RETURNED_IP}";

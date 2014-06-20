@@ -17,7 +17,7 @@
 #==============================================================================
 ## Constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 function check_main
@@ -31,7 +31,7 @@ function check_main
 
     if [ ! -z "${ENFORCE_SECURITY}" ] && [ "${ENFORCE_SECURITY}" = "${_TRUE}" ]
     then
-        if [ ! $(echo ${AUTHORIZED_USERS[@]} | grep -c $(whoami)) -eq 1 ]
+        if [ ! $(printf ${AUTHORIZED_USERS[@]} | grep -c $(whoami)) -eq 1 ]
         then
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "$(whoami) is not authorized to execute ${CNAME}.";
             print "$(whoami) is not authorized to execute ${CNAME}.";
@@ -42,7 +42,7 @@ function check_main
 
         for GROUP in $(groups)
         do
-            if [ $(echo ${AUTHORIZED_GROUPS[@]} | grep -c ${GROUP}) -eq 1 ]
+            if [ $(printf ${AUTHORIZED_GROUPS[@]} | grep -c ${GROUP}) -eq 1 ]
             then
                 (( AUTHORIZATION_COUNT += 1 ));
             fi
@@ -50,7 +50,7 @@ function check_main
 
         unset GROUP;
 
-        if [ ! $(echo ${ALLOWED_SERVERS[@]} | grep -c $(uname -n)) -eq 1 ]
+        if [ ! $(printf ${ALLOWED_SERVERS[@]} | grep -c $(uname -n)) -eq 1 ]
         then
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} cannot be executed on $(hostname).";
             print "${CNAME} cannot be executed on $(hostname).";

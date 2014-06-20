@@ -21,7 +21,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 function validatePhoneNumber
@@ -37,7 +37,7 @@ function validatePhoneNumber
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TEL_NUMBER -> ${TEL_NUMBER}";
 
-    [ "$(echo '${TEL_NUMBER}' | perl -nle 'print "1" if /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/')" = "1" ] || RETURN_CODE=22;
+    [ "$(printf '${TEL_NUMBER}' | perl -nle 'print "1" if /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/')" = "1" ] || RETURN_CODE=22;
 
     unset TEL_NUMBER;
 
@@ -58,7 +58,7 @@ METHOD_NAME="${CNAME}#startup";
 
 validatePhoneNumber ${1};
 
-echo ${RET_CODE};
+printf ${RET_CODE};
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";

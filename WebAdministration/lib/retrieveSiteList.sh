@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -61,7 +61,7 @@ function obtainVerifiableDomains
 
                     if [ $(grep -c ${WEBSERVER} ${APP_ROOT}/${CORE_EXCEPTION_LIST}) -eq 0 ] \
                         && [ $(grep -c ${WEBSERVER} ${APP_ROOT}/${TMP_EXCEPTION_LIST}) -eq 0 ] \
-                        && [ $(echo ${IPLANET_STARTUP_IGNORE_LIST} | grep -c ${WEBSERVER}) -eq 0 ]
+                        && [ $(printf ${IPLANET_STARTUP_IGNORE_LIST} | grep -c ${WEBSERVER}) -eq 0 ]
                     then
                         ## only pull out the web instances that have ssl enabled, via security="on"
                         set -A RETRIEVED_WEB_INSTANCES ${VALIDATE_WEB_INSTANCES[@]} \
@@ -77,14 +77,14 @@ function obtainVerifiableDomains
                     ## at least one website was found and returned for validation
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Web instances listed and returned.";
 
-                    echo ${RETRIEVED_WEB_INSTANCES[@]};
+                    printf ${RETRIEVED_WEB_INSTANCES[@]};
 
                     RETURN_CODE=0;
                 else
                     ## no web instances were found or no urlhosts were identified
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_WEB_INSTANCES was found to be empty. Cannot continue.";
 
-                    echo ${_FALSE};
+                    printf ${_FALSE};
 
                     RETURN_CODE=0;
                 fi
@@ -92,12 +92,12 @@ function obtainVerifiableDomains
                 ## no web instances
                 ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST was found to be empty. No security-enabled sites were found for validation.";
 
-                echo ${_FALSE};
+                printf ${_FALSE};
                 RETURN_CODE=0;
             fi
         else
             ## ihs platform
-            echo "IHS";
+            printf "IHS";
         fi
     else
         ## unknown platform
@@ -155,7 +155,7 @@ function obtainVerifiableSSLInstances
                     if [ $(grep -c ${WEBSERVER} ${APP_ROOT}/${CORE_EXCEPTION_LIST}) -eq 0 ] \
                         && [ $(grep -c ${WEBSERVER} ${APP_ROOT}/${TMP_EXCEPTION_LIST}) -eq 0 ] \
                         && [ $(grep -c ${WEBSERVER} ${APP_ROOT}/${SSL_EXCEPTION_LIST}) -eq 0 ] \
-                        && [ $(echo ${IPLANET_STARTUP_IGNORE_LIST} | grep -c ${WEBSERVER}) -eq 0 ]
+                        && [ $(printf ${IPLANET_STARTUP_IGNORE_LIST} | grep -c ${WEBSERVER}) -eq 0 ]
                     then
                         ## only pull out the web instances that have ssl enabled, via security="on"
                         IS_SECURITY_ENABLED=$(grep ${IPLANET_SECURITY_IDENTIFIER} ${IPLANET_ROOT}/${WEBSERVER}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG} | \
@@ -177,14 +177,14 @@ function obtainVerifiableSSLInstances
                     ## at least one website was found and returned for validation
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Web instances listed and returned.";
 
-                    echo ${VALIDATE_INSTANCE_LIST[@]};
+                    printf ${VALIDATE_INSTANCE_LIST[@]};
 
                     RETURN_CODE=0;
                 else
                     ## no web instances were found or no urlhosts were identified
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_INSTANCE_LIST was found to be empty. Cannot continue.";
 
-                    echo ${_FALSE};
+                    printf ${_FALSE};
 
                     RETURN_CODE=0;
                 fi
@@ -192,13 +192,13 @@ function obtainVerifiableSSLInstances
                 ## no web instances
                 ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST was found to be empty. No security-enabled sites were found for validation.";
 
-                echo ${_FALSE};
+                printf ${_FALSE};
 
                 RETURN_CODE=0;
             fi
         else
             ## ihs platform
-            echo "IHS";
+            printf "IHS";
         fi
     else
         ## unknown platform
@@ -250,7 +250,7 @@ function obtainVerifiableInstances
 
             if [ ! -z "${VALIDATE_SERVER_LIST}" ]
             then
-                echo ${VALIDATE_SERVER_LIST[@]};
+                printf ${VALIDATE_SERVER_LIST[@]};
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Web instances listed and returned.";
 
@@ -259,13 +259,13 @@ function obtainVerifiableInstances
                 ## no web instances were found or no urlhosts were identified
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST was found to be empty. Cannot continue.";
 
-                echo ${_FALSE};
+                printf ${_FALSE};
 
                 RETURN_CODE=0;
             fi
         else
             ## ihs platform
-            echo "IHS";
+            printf "IHS";
         fi
     else
         ## unknown platform

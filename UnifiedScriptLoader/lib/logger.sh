@@ -60,7 +60,7 @@ function rotateLogs
 
     [ ! -f ${LOG_ROOT}/${1} ] && return 0;
 
-    if [ $(( $(date +"%s") - $(stat -L --format %Y ${LOG_ROOT}/${1}) > $(echo "${ROLLOVER_PERIOD} * 60 * 60" | bc) )) -eq 1 ]
+    if [ $(( $(date +"%s") - $(stat -L --format %Y ${LOG_ROOT}/${1}) > $(printf "${ROLLOVER_PERIOD} * 60 * 60" | bc) )) -eq 1 ]
     then
         if [ -f ${LOG_ROOT}/${1}.${LOG_RETENTION_PERIOD} ]
         then
@@ -81,7 +81,7 @@ function rotateLogs
         touch ${LOG_ROOT}/${1};
     fi
 
-    if [ $(/usr/${BIN_DIRECTORY}/env stat -c %s "${LOG_ROOT}/${1}") -gt $(echo "${ROTATE_ON_SIZE} * 1024" | bc) ]
+    if [ $(/usr/${BIN_DIRECTORY}/env stat -c %s "${LOG_ROOT}/${1}") -gt $(printf "${ROTATE_ON_SIZE} * 1024" | bc) ]
     then
         if [ -f ${LOG_ROOT}/${1}.${LOG_RETENTION_PERIOD} ]
         then

@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 METHOD_NAME="${CNAME}#startup";
 
@@ -114,7 +114,7 @@ function failoverInternetSite
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_NUM -> ${CHANGE_NUM}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting change array and DC_FILE..";
 
-    DC_FILE=$(echo ${FILENAME} | cut -d "." -f 1-2);
+    DC_FILE=$(printf ${FILENAME} | cut -d "." -f 1-2);
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHG_ARRAY and DC_FILE configured..";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DC_FILE->${DC_FILE}";
@@ -293,7 +293,7 @@ function failoverIntranetSite
     ## first, take a backup
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backing up existing configuration..";
 
-    BACKUP_FILE_NAME=$(echo ${BACKUP_FILE_NAME} | sed -e "s/%TYPE%.%SERVER_NAME%.%DATE%/GLD.${HOSTNAME}.$(date +"%Y-%m-%d")/");
+    BACKUP_FILE_NAME=$(printf ${BACKUP_FILE_NAME} | sed -e "s/%TYPE%.%SERVER_NAME%.%DATE%/GLD.${HOSTNAME}.$(date +"%Y-%m-%d")/");
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BACKUP_FILE_NAME -> ${BACKUP_FILE_NAME}";
 
@@ -382,7 +382,7 @@ function failoverDatacenter
     ## in the db directory.
     for UNIT in $(ls -ltr ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT} | awk '{print $9}' | grep -v '^$')
     do
-        if [ $(echo ${IGNORE_LIST} | grep -c ${UNIT}) -eq 1 ]
+        if [ $(printf ${IGNORE_LIST} | grep -c ${UNIT}) -eq 1 ]
         then
             ${LOGGER} "INFO" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Dropping ${UNIT} per configured ignore list";
 
@@ -418,11 +418,11 @@ function failoverDatacenter
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating on ${UNIT}/${FILENAME}..";
 
                 ## copy the target datacenter file
-                cp ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${UNIT}/${TARGET_DC}/$(echo ${FILENAME} | cut -d "." -f 1-2) ${PLUGIN_TMP_DIRECTORY}/${UNIT}/${FILENAME};
+                cp ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${UNIT}/${TARGET_DC}/$(printf ${FILENAME} | cut -d "." -f 1-2) ${PLUGIN_TMP_DIRECTORY}/${UNIT}/${FILENAME};
 
                 ## setup serial numbers
                 LAST_SERIAL=$(grep "; serial" ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME} | awk '{print $1}' | sed -e '/^$/d');
-                [ $(echo ${LAST_SERIAL} | cut -c 1-8) -eq $(date +"%Y%m%d") ] && SERIAL_NUM=$(( ${LAST_SERIAL} + 1 )) || SERIAL_NUM=${DEFAULT_SERIAL_NUMBER};
+                [ $(printf ${LAST_SERIAL} | cut -c 1-8) -eq $(date +"%Y%m%d") ] && SERIAL_NUM=$(( ${LAST_SERIAL} + 1 )) || SERIAL_NUM=${DEFAULT_SERIAL_NUMBER};
 
                 ## fill it
                 set -A CHG_ARRAY ${LAST_SERIAL} ${TARGET_DC} $(date +"%m-%d-%Y") ${REQUESTING_USER} ${CHANGE_NUM} ${SERIAL_NUM};
@@ -658,8 +658,8 @@ function failoverBusinessUnit
             ## NOTE: this looks good, leave it alone
             for FILENAME in $(ls -ltr ${SITE_ROOT} | awk '{print $9}' | cut -d ":" -f 1 | grep -v "[PV]H" | uniq | sed -e '/ *#/d' -e '/^ *$/d')
             do
-                SPLIT=$(echo ${FILENAME} | tr -dc '.' | wc -c);
-                DC_FILE=$(echo ${FILENAME} | cut -d "." -f 0-$(echo ${SPLIT}));
+                SPLIT=$(printf ${FILENAME} | tr -dc '.' | wc -c);
+                DC_FILE=$(printf ${FILENAME} | cut -d "." -f 0-$(printf ${SPLIT}));
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SPLIT -> ${SPLIT}";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DC_FILE -> ${DC_FILE}";
@@ -697,7 +697,7 @@ function failoverBusinessUnit
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Indicators set - checksumming..";
 
                     ## set the checksum
-                    set -A TMP_MD5SUM $(echo "${TMP_MD5SUM[@]}" "$(cksum ${PLUGIN_TMP_DIRECTORY}/${FILENAME} | awk '{print $1}')");
+                    set -A TMP_MD5SUM $(printf "${TMP_MD5SUM[@]}" "$(cksum ${PLUGIN_TMP_DIRECTORY}/${FILENAME} | awk '{print $1}')");
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksum complete -> ${TMP_MD5SUM[${A}]}";
 
@@ -731,7 +731,7 @@ function failoverBusinessUnit
                 cp ${PLUGIN_TMP_DIRECTORY}/${FILENAME} ${SITE_ROOT}/${FILENAME};
 
                 ## configure the checksum array
-                set -A NEW_MD5SUM $(echo "${NEW_MD5SUM[@]}" "$(cksum ${SITE_ROOT}/${FILENAME} | awk '{print $1}')");
+                set -A NEW_MD5SUM $(printf "${NEW_MD5SUM[@]}" "$(cksum ${SITE_ROOT}/${FILENAME} | awk '{print $1}')");
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksum complete -> ${TMP_MD5SUM[${A}]}";
 
@@ -875,8 +875,8 @@ function failoverProject
             ## NOTE: this looks good, leave it alone
             for FILENAME in $(ls -ltr ${SITE_ROOT} | grep ${PROJECT_CODE} | awk '{print $9}' | cut -d ":" -f 1 | grep -v "[PV]H" | uniq | sed -e '/ *#/d' -e '/^ *$/d')
             do
-                SPLIT=$(echo ${FILENAME} | tr -dc '.' | wc -c);
-                DC_FILE=$(echo ${FILENAME} | cut -d "." -f 0-$(echo ${SPLIT}));
+                SPLIT=$(printf ${FILENAME} | tr -dc '.' | wc -c);
+                DC_FILE=$(printf ${FILENAME} | cut -d "." -f 0-$(printf ${SPLIT}));
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SPLIT->${SPLIT}";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DC_FILE->${DC_FILE}";
@@ -914,7 +914,7 @@ function failoverProject
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Indicators set - checksumming..";
 
                     ## set the checksum
-                    set -A TMP_MD5SUM $(echo "${TMP_MD5SUM[@]}" "$(cksum ${PLUGIN_TMP_DIRECTORY}/${FILENAME} | awk '{print $1}')");
+                    set -A TMP_MD5SUM $(printf "${TMP_MD5SUM[@]}" "$(cksum ${PLUGIN_TMP_DIRECTORY}/${FILENAME} | awk '{print $1}')");
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksum complete -> ${TMP_MD5SUM[${A}]}";
 
@@ -948,7 +948,7 @@ function failoverProject
                 cp ${PLUGIN_TMP_DIRECTORY}/${FILENAME} ${SITE_ROOT}/${FILENAME};
 
                 ## configure the checksum array
-                set -A NEW_MD5SUM $(echo "${NEW_MD5SUM[@]}" "$(cksum ${SITE_ROOT}/${FILENAME} | awk '{print $1}')");
+                set -A NEW_MD5SUM $(printf "${NEW_MD5SUM[@]}" "$(cksum ${SITE_ROOT}/${FILENAME} | awk '{print $1}')");
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksum complete -> ${TMP_MD5SUM[${A}]}";
 
@@ -1210,7 +1210,7 @@ do
 done
 
 
-echo ${RETURN_CODE};
+printf ${RETURN_CODE};
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";

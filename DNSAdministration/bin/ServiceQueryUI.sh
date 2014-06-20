@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 METHOD_NAME="${CNAME}#startup";
 
@@ -518,8 +518,8 @@ function performLookup
         sleep "${MESSAGE_DELAY}"; reset; clear; main;
     fi
 
-    local REQUEST_ENTRY=$(echo ${RESPONSE_DATA} | awk '{print $1}');
-    local RESPONSE_ENTRY=$(echo ${RESPONSE_DATA} | awk '{print $NF}');
+    local REQUEST_ENTRY=$(printf ${RESPONSE_DATA} | awk '{print $1}');
+    local RESPONSE_ENTRY=$(printf ${RESPONSE_DATA} | awk '{print $NF}');
     local RESPONSE_NAMESERVER=$(awk -F ":" '/;; SERVER:/{print $2}' ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} | cut -d "(" -f 1 | sed -e 's/^ *//g;s/ *$//g');
 
     [ -z "${RESPONSE_NAMESERVER}" ] && RESPONSE_NAMESERVER="default";

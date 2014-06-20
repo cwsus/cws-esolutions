@@ -21,7 +21,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 METHOD_NAME="${CNAME}#startup";
@@ -105,7 +105,7 @@ function validateFreePort
                 ## unset ret code from prior execution
                 unset RET_CODE;
 
-                IS_PORT_ACTIVE=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${WEBSERVER} "[ $(netstat -an | grep -c ${1}) -eq 0 ] && echo false || echo true" ${IPLANET_OWNING_USER});
+                IS_PORT_ACTIVE=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${WEBSERVER} "[ $(netstat -an | grep -c ${1}) -eq 0 ] && printf false || printf true" ${IPLANET_OWNING_USER});
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IS_PORT_ACTIVE -> ${IS_PORT_ACTIVE}";
 

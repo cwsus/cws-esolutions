@@ -23,7 +23,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 METHOD_NAME="${CNAME}#startup";
 
@@ -126,7 +126,7 @@ function createEntropyFile
     do
         while true
         do
-            echo ${RANDOM_DATA} >> ${ENTROPY_FILE};
+            printf ${RANDOM_DATA} >> ${ENTROPY_FILE};
 
             local FILE_SIZE=$(wc -c ${ENTROPY_FILE} | awk '{print $1}');
 

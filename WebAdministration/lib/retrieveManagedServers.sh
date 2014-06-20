@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -45,7 +45,7 @@ function obtainManagedServerList
         getMachineInfo | grep -v "^#" | grep WEB | grep sol9 | cut -d "|" -f 1 | sort | uniq; \
         getMachineInfo | grep -v "^#" | grep WEB | grep sol10 | cut -d "|" -f 1 | sort | uniq;)
     do
-        if [ $(echo ${SERVER_IGNORE_LIST} | grep -c ${SERVER}) -eq 0 ]
+        if [ $(printf ${SERVER_IGNORE_LIST} | grep -c ${SERVER}) -eq 0 ]
         then
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding ${SERVER} to MANAGED_SERVERS..";
 
@@ -63,7 +63,7 @@ function obtainManagedServerList
         ## at least one website was found and returned for validation
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Managed servers listed and returned.";
 
-        echo ${MANAGED_SERVERS[@]};
+        printf ${MANAGED_SERVERS[@]};
 
         RETURN_CODE=0;
     else

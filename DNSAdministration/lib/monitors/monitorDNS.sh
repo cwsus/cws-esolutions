@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 [[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${PLUGIN_LIB_DIRECTORY}/plugin.sh ]] && . ${SCRIPT_ROOT}/../${PLUGIN_LIB_DIRECTORY}/plugin.sh;
@@ -53,8 +53,8 @@ function monitorProcessPresence
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "COMMAND_NAME -> ${COMMAND_NAME}";
 
     ## generate the stuff we need
-    SVC_VERIFICATION_DOMAIN=$(echo ${MONITOR_DOMAIN_NAME} | cut -d ":" -f 1);
-    SVC_VERIFICATION_ADDRESS=$(echo ${MONITOR_DOMAIN_NAME} | cut -d ":" -f 2);
+    SVC_VERIFICATION_DOMAIN=$(printf ${MONITOR_DOMAIN_NAME} | cut -d ":" -f 1);
+    SVC_VERIFICATION_ADDRESS=$(printf ${MONITOR_DOMAIN_NAME} | cut -d ":" -f 2);
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SVC_VERIFICATION_DOMAIN -> ${SVC_VERIFICATION_DOMAIN}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SVC_VERIFICATION_ADDRESS -> ${SVC_VERIFICATION_ADDRESS}";
@@ -75,7 +75,7 @@ function monitorProcessPresence
 
         if [ ! -z "${PROCESS_OUTPUT}" ]
         then
-            PROCESS_PID=$(echo ${PROCESS_OUTPUT} | awk '{print $2}');
+            PROCESS_PID=$(printf ${PROCESS_OUTPUT} | awk '{print $2}');
 
             if [ ${PROCESS_PID} != ${NAMED_PID} ]
             then
@@ -433,7 +433,7 @@ do
 done
 
 
-echo ${RETURN_CODE};
+printf ${RETURN_CODE};
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";

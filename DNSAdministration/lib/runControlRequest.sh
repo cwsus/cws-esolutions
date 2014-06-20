@@ -23,7 +23,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 METHOD_NAME="${CNAME}#startup";
 
@@ -89,7 +89,7 @@ function controlService
 
     ## make sure we got a valid target and
     ## that we're configured to operate against it
-    if [ ! -z "${SERVER_NAME}" ] && [ $(echo ${DNS_SERVERS[@]} | grep -c ${SERVER_NAME}) -eq 1 ]
+    if [ ! -z "${SERVER_NAME}" ] && [ $(printf ${DNS_SERVERS[@]} | grep -c ${SERVER_NAME}) -eq 1 ]
     then
         ## a server was passed in and it is configured
         ## for use
@@ -152,7 +152,7 @@ function controlService
                 ## give it a little love first...
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE non-numeric. Interrogating..";
 
-                RET_CODE=$(echo ${RET_CODE} | tr '\n' ' ' | sed -e 's/[ \t]*$//');
+                RET_CODE=$(printf ${RET_CODE} | tr '\n' ' ' | sed -e 's/[ \t]*$//');
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NAMED_SERVICE_START_TXT -> ${NAMED_SERVICE_START_TXT}";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";

@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 METHOD_NAME="${CNAME}#startup";
 
@@ -178,10 +178,10 @@ function main
                             do
                                 if [ ! ${B} -eq ${#FILE_LIST[@]} ]
                                 then
-                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${B} - $(echo ${FILE_LIST[${B}]} | cut -d "/" -f 7)";
+                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${B} - $(printf ${FILE_LIST[${B}]} | cut -d "/" -f 7)";
 
                                     # NOTE: this will need to change depending on where backups should go
-                                    print "${B} - $(echo ${FILE_LIST[${B}]} | cut -d "/" -f 7)";
+                                    print "${B} - $(printf ${FILE_LIST[${B}]} | cut -d "/" -f 7)";
                                     (( A += 1 ));
                                     (( B += 1 ));
                                 else
@@ -291,10 +291,10 @@ function main
 
                             while [ ${A} -ne ${#FILE_LIST[@]} ]
                             do
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${A} - $(echo ${FILE_LIST[${A}]} | cut -d "/" -f 7)";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${A} - $(printf ${FILE_LIST[${A}]} | cut -d "/" -f 7)";
 
                                 # NOTE: this will need to change depending on where backups should go
-                                print "${A} - $(echo ${FILE_LIST[${A}]} | cut -d "/" -f 7)";
+                                print "${A} - $(printf ${FILE_LIST[${A}]} | cut -d "/" -f 7)";
                                 (( A += 1 ));
                             done
 
@@ -370,17 +370,17 @@ function process_backout_file
     if [ ${#FILE_LIST[@]} -eq 0 ]
     then
         ## set up our messaging replacementes
-        BU=$(echo ${SVC_LIST} | cut -d "," -f 1);
-        CHANGE_REQ=$(echo ${SVC_LIST} | cut -d "," -f 2);
-        CHANGE_DT=$(echo ${SVC_LIST} | cut -d "," -f 3);
+        BU=$(printf ${SVC_LIST} | cut -d "," -f 1);
+        CHANGE_REQ=$(printf ${SVC_LIST} | cut -d "," -f 2);
+        CHANGE_DT=$(printf ${SVC_LIST} | cut -d "," -f 3);
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BU -> ${BU}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_REQ -> ${CHANGE_REQ}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_DT -> ${CHANGE_DT}";
     else
         ## set up our messaging replacementes
-        CHANGE_REQ=$(echo ${FILE_LIST[${SELECTION}]} | cut -d "." -f 4);
-        BU=$(echo ${FILE_LIST[${SELECTION}]} | cut -d "_" -f 4 | cut -d "." -f 1);
+        CHANGE_REQ=$(printf ${FILE_LIST[${SELECTION}]} | cut -d "." -f 4);
+        BU=$(printf ${FILE_LIST[${SELECTION}]} | cut -d "_" -f 4 | cut -d "." -f 1);
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BU -> ${BU}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_REQ -> ${CHANGE_REQ}";
@@ -414,7 +414,7 @@ function process_backout_file
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
                 ## validate the input
-                [ ${#FILE_LIST[@]} -eq 0 ] && ${PLUGIN_LIB_DIRECTORY}/run_backout.sh -b ${BU} -d ${CHANGE_DT} -c ${CHANGE_REQ} -e || ${PLUGIN_LIB_DIRECTORY}/run_backout.sh -f $(echo ${FILE_LIST[${SELECTION}]} | cut -d "/" -f 7 | sed -e "s/^M//g");
+                [ ${#FILE_LIST[@]} -eq 0 ] && ${PLUGIN_LIB_DIRECTORY}/run_backout.sh -b ${BU} -d ${CHANGE_DT} -c ${CHANGE_REQ} -e || ${PLUGIN_LIB_DIRECTORY}/run_backout.sh -f $(printf ${FILE_LIST[${SELECTION}]} | cut -d "/" -f 7 | sed -e "s/^M//g");
                 typeset -i RET_CODE=${?};
 
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -510,8 +510,8 @@ function process_backout_file
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SELECTION->${SELECTION}";
 
                                 ## get the change request number/business unit from the backout file
-                                CHANGE_REQ=$(echo ${FILE_LIST[${SELECTION}]} | cut -d "." -f 4);
-                                BU=$(echo ${FILE_LIST[${SELECTION}]} | cut -d "_" -f 3 | cut -d "." -f 1);
+                                CHANGE_REQ=$(printf ${FILE_LIST[${SELECTION}]} | cut -d "." -f 4);
+                                BU=$(printf ${FILE_LIST[${SELECTION}]} | cut -d "_" -f 3 | cut -d "." -f 1);
 
                                 print "\t$(sed -e '/^ *#/d;s/#.*//' ${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<backout.request.confirmation\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g' -e "s/%CHANGE_REQ%/${CHANGE_REQ}/" -e "s/%BUSINESS_UNIT%/${BU}/")\n";
 

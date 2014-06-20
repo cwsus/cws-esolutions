@@ -24,7 +24,7 @@ env -i;
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -89,7 +89,7 @@ function main
             do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ENTRY -> ${ENTRY}";
 
-                print "\t${LOADABLE_PLUGIN}/${A} - $(echo ${ENTRY} | cut -d "=" -f 1 | sed -e '/^ *#/d;s/#.*//' | cut -d "|" -f 2)";
+                print "\t${LOADABLE_PLUGIN}/${A} - $(printf ${ENTRY} | cut -d "=" -f 1 | sed -e '/^ *#/d;s/#.*//' | cut -d "|" -f 2)";
 
                 (( A += 1 ));
             done
@@ -117,7 +117,7 @@ function main
                 reset; clear; break;
                 ;;
             *)
-                if [ $(echo ${PLUGIN_LIST[@]} | grep -c ${PLUGIN_RESPONSE}) -eq 0 ]
+                if [ $(printf ${PLUGIN_LIST[@]} | grep -c ${PLUGIN_RESPONSE}) -eq 0 ]
                 then
                     unset PLUGIN_RESPONSE;
                     unset ENTRY_RESPONSE;

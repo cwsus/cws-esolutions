@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 function validateChangeNumber
@@ -58,7 +58,7 @@ function validateChangeNumber
         return ${RETURN_CODE};
     fi
 
-    local IS_VALID_TICKET=$(echo "${1}" | perl -ne '/\b([Cc][Rr]\d{6,})|([Tt]\d{6,})|(\d{20})|([Ee])\b/ && print');
+    local IS_VALID_TICKET=$(printf "${1}" | perl -ne '/\b([Cc][Rr]\d{6,})|([Tt]\d{6,})|(\d{20})|([Ee])\b/ && print');
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IS_VALID_TICKET -> ${IS_VALID_TICKET}";
 

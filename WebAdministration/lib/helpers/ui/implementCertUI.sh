@@ -21,7 +21,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -169,7 +169,7 @@ function implementCertificate
                                             sleep "${MESSAGE_DELAY}"; reset; clear; break;
                                             ;;
                                         *)
-                                            if [ -z "$(echo ${AVAILABLE_DATACENTERS} | grep -i ${REQ_DATACENTER})" ]
+                                            if [ -z "$(printf ${AVAILABLE_DATACENTERS} | grep -i ${REQ_DATACENTER})" ]
                                             then
                                                 ## selected datacenter is NOT valid
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Selected datacenter is not valid. Please utilize a different datacenter.";
@@ -182,9 +182,9 @@ function implementCertificate
                                                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                             else
                                                 ## get the platform code, if multiples split with space
-                                                typeset -u PRI_PLATFORM_CODE=$(getWebInfo | grep "${SITE_HOSTNAME}" | grep -v "#" | grep -v $(echo ${REQ_DATACENTER} | cut -d "|" -f 2 | sort | uniq));
+                                                typeset -u PRI_PLATFORM_CODE=$(getWebInfo | grep "${SITE_HOSTNAME}" | grep -v "#" | grep -v $(printf ${REQ_DATACENTER} | cut -d "|" -f 2 | sort | uniq));
                                                 ## get the platform code, if multiples split with space
-                                                typeset -u SEC_PLATFORM_CODE=$(getWebInfo | grep "${SITE_HOSTNAME}" | grep -v "#" | grep $(echo ${REQ_DATACENTER} | cut -d "|" -f 2 | sort | uniq));
+                                                typeset -u SEC_PLATFORM_CODE=$(getWebInfo | grep "${SITE_HOSTNAME}" | grep -v "#" | grep $(printf ${REQ_DATACENTER} | cut -d "|" -f 2 | sort | uniq));
 
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRI_PLATFORM_CODE -> ${PRI_PLATFORM_CODE}";
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SEC_PLATFORM_CODE -> ${SEC_PLATFORM_CODE}";
@@ -228,7 +228,7 @@ function implementCertificate
                                     then
                                         print "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
                                         print "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                        print "\t$(grep -w cert.mgmt.cert.implemented "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%SITE_HOSTNAME%/${SITE_HOSTNAME}/" -e "s/%REQ_DATACENTER%/$(echo ${PLATFORM} | cut -d "_" -f 1)/")";
+                                        print "\t$(grep -w cert.mgmt.cert.implemented "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%SITE_HOSTNAME%/${SITE_HOSTNAME}/" -e "s/%REQ_DATACENTER%/$(printf ${PLATFORM} | cut -d "_" -f 1)/")";
                                         print "\t$(grep -w cert.mgmt.cert.verify "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                         read RESPONSE;
@@ -238,14 +238,14 @@ function implementCertificate
                                         case ${RESPONSE} in
                                             [Yy][Ee][Ss]|[Yy])
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Received positive resonse. Continuing ..";
-                                                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (implementation) by ${IUSER_AUDIT}: Site: ${SITE_HOSTNAME}; Certificate Database: ${CERTIFICATE_DATABASE_STORE}; Successfully implemented in $(echo ${PLATFORM} | cut -d "_" -f 1)";
+                                                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (implementation) by ${IUSER_AUDIT}: Site: ${SITE_HOSTNAME}; Certificate Database: ${CERTIFICATE_DATABASE_STORE}; Successfully implemented in $(printf ${PLATFORM} | cut -d "_" -f 1)";
 
                                                 continue;
                                                 ;;
                                             [Nn][Oo]|[Nn])
                                                 ## either it didnt work right or we just dont want to do it right now
                                                 ## TODO: if it didnt work right, lets start the backout process
-                                                echo "failed";
+                                                printf "failed";
                                                 exit 1;
                                                 ;;
                                             *)
@@ -262,7 +262,7 @@ function implementCertificate
                                 done
                             else
                                 ## backup datacenter failed. "ERROR" out
-                                echo "failed";
+                                printf "failed";
                                 exit 1;
                             fi
                         done

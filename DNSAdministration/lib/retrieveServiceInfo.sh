@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 METHOD_NAME="${CNAME}#startup";
 
@@ -85,8 +85,8 @@ function obtainInternetService
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting request detail..";
 
     ## configure the request indicators
-    local REQUEST_TYPE=$(echo ${1} | cut -d "," -f 1);
-    local REQUEST_OPTION=$(echo ${1} | cut -d "," -f 2);
+    local REQUEST_TYPE=$(printf ${1} | cut -d "," -f 1);
+    local REQUEST_OPTION=$(printf ${1} | cut -d "," -f 2);
 
     [ ! -z "${SERVICE_DETAIL}" ] && unset SERVICE_DETAIL;
 
@@ -334,7 +334,7 @@ function obtainIntranetService
 
         local POPS_LINE_NUMBER=$(grep -n "label = ${POP_NAME}" ${PLUGIN_ROOT_DIR}/${GD_CONFIG_FILE} | cut -d ":" -f 1);
         local POPE_LINE_NUMBER=$((${POPS_LINE_NUMBER}+1))
-        set -A POP_STATUS ${POP_STATUS[@]} $(echo "${POP_NAME}|$(sed -n -e "${POPE_LINE_NUMBER}p" \
+        set -A POP_STATUS ${POP_STATUS[@]} $(printf "${POP_NAME}|$(sed -n -e "${POPE_LINE_NUMBER}p" \
             ${PLUGIN_ROOT_DIR}/${GD_CONFIG_FILE} | cut -d "=" -f 2 | sed -e "s/^ *//g" -e "s/;//g")")
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "POPS_LINE_NUMBER -> ${POPS_LINE_NUMBER}";
@@ -364,14 +364,14 @@ function obtainIntranetService
 
     for STATUS in ${POP_STATUS[@]}
     do
-        if [ "$(echo ${STATUS} | cut -d "|" -f 2)" = "no" ]
+        if [ "$(printf ${STATUS} | cut -d "|" -f 2)" = "no" ]
         then
-            local ENABLE_POP=$(echo ${STATUS} | cut -d "|" -f 1);
+            local ENABLE_POP=$(printf ${STATUS} | cut -d "|" -f 1);
         fi
 
-        if [ "$(echo ${STATUS} | cut -d "|" -f 2)" = "yes" ]
+        if [ "$(printf ${STATUS} | cut -d "|" -f 2)" = "yes" ]
         then
-            local DISABLE_POP=$(echo ${STATUS} | cut -d "|" -f 1);
+            local DISABLE_POP=$(printf ${STATUS} | cut -d "|" -f 1);
         fi
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ENABLE_POP -> ${ENABLE_POP}";

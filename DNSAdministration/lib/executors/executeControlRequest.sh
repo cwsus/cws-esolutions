@@ -23,7 +23,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 METHOD_NAME="${CNAME}#startup";
 
@@ -119,7 +119,7 @@ function execute_service_command
             ${NAMED_INIT_SCRIPT} ${COMMAND_NAME};
             typeset -i RET_CODE=${?};
 
-            if [ $(echo ${RET_CODE} | grep "${NAMED_SERVICE_STOP_TXT}" | grep -c ${_OK}) -eq 1 ]
+            if [ $(printf ${RET_CODE} | grep "${NAMED_SERVICE_STOP_TXT}" | grep -c ${_OK}) -eq 1 ]
             then
                 ## service was successfully stopped. we can confirm by checking a few things...
                 ## the pid file
@@ -190,7 +190,7 @@ function execute_service_command
                 fi
                 typeset -i RET_CODE=${?};
 
-                if [ $(echo ${RET_CODE} | grep "${NAMED_SERVICE_START_TXT}" | grep -c ${_OK}) -eq 1 ]
+                if [ $(printf ${RET_CODE} | grep "${NAMED_SERVICE_START_TXT}" | grep -c ${_OK}) -eq 1 ]
                 then
                     ## service was successfully started. we can confirm by checking a few things...
                     ## the pid file
@@ -279,7 +279,7 @@ function execute_service_command
                             fi
                             typeset -i RET_CODE=${?};
 
-                            if [ $(echo ${RET_CODE} | grep "${NAMED_SERVICE_START_TXT}" | grep -c ${_OK}) -eq 1 ]
+                            if [ $(printf ${RET_CODE} | grep "${NAMED_SERVICE_START_TXT}" | grep -c ${_OK}) -eq 1 ]
                             then
                                 ## service was successfully started. we can confirm by checking a few things...
                                 ## the pid file
@@ -403,7 +403,7 @@ function execute_service_command
             sudo ${NAMED_INIT_SCRIPT} ${COMMAND_NAME};
             typeset -i RET_CODE=${?};
 
-            if [ $(echo ${RET_CODE} | grep -c "${NAMED_SERVICE_RELOAD_TXT}") -eq 1 ]
+            if [ $(printf ${RET_CODE} | grep -c "${NAMED_SERVICE_RELOAD_TXT}") -eq 1 ]
             then
                 ## service was successfully reloaded. we can confirm by checking a few things...
                 ## the pid file
@@ -525,7 +525,7 @@ do
 done
 
 
-echo ${RETURN_CODE};
+printf ${RETURN_CODE};
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
