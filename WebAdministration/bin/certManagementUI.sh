@@ -235,12 +235,12 @@ function main
                                                 ## applying a cert (implementation)
                                                 ## find out
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Determining operations..";
-                                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/lib/validators/validate_change_request.sh ${CERTDB}";
+                                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/validators/validate_change_request.sh ${CERTDB}";
 
                                                 unset METHOD_NAME;
                                                 unset CNAME;
 
-                                                MGMT_OP=$(${APP_ROOT}/lib/validators/validate_change_request.sh ${WEBSERVER_PLATFORM} ${CERTDB});
+                                                MGMT_OP=$(${APP_ROOT}/${LIB_DIRECTORY}/validators/validate_change_request.sh ${WEBSERVER_PLATFORM} ${CERTDB});
 
                                                 CNAME=$(basename ${0});
                                                 local METHOD_NAME="${CNAME}#${0}";
@@ -366,7 +366,7 @@ function main
                                     then
                                         ## we have a site hostname, lets get to work
                                         ## send to updateExceptions
-                                        . ${APP_ROOT}/lib/updateExceptions.sh ${SSL_EXCEPTION_LIST};
+                                        . ${APP_ROOT}/${LIB_DIRECTORY}/updateExceptions.sh ${SSL_EXCEPTION_LIST};
                                         typeset -i RET_CODE=${?};
 
                                         unset SITE_HOSTNAME;
@@ -516,7 +516,7 @@ function main
                                                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided response is not numeric. Cannot continue.";
 
                                                         print "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                                        
+
                                                         sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                                     fi
                                                 else
@@ -545,9 +545,9 @@ function main
 
                                             print "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
-                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command nohup ${APP_ROOT}/lib/runMonitor.sh -m monitorCertificateDatabases -s \"$(echo ${WEBSERVER_NAMES[@]})\" -d $(returnEpochTime \"$(date +"%Y %m %d")\" ${REPORT_DAYS}) -a \"${TARGET_EMAIL}\" -e > /dev/null 2>&1 &";
+                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command nohup ${APP_ROOT}/${LIB_DIRECTORY}/runMonitor.sh -m monitorCertificateDatabases -s \"$(echo ${WEBSERVER_NAMES[@]})\" -d $(returnEpochTime \"$(date +"%Y %m %d")\" ${REPORT_DAYS}) -a \"${TARGET_EMAIL}\" -e > /dev/null 2>&1 &";
 
-                                            nohup ${APP_ROOT}/lib/runMonitor.sh -m monitorCertificateDatabases -s "$(echo ${WEBSERVER_NAMES[@]})" -d $(returnEpochTime "$(date +"%Y %m %d")" ${REPORT_DAYS}) -a "${TARGET_EMAIL}" -e > /dev/null 2>&1 &
+                                            nohup ${APP_ROOT}/${LIB_DIRECTORY}/runMonitor.sh -m monitorCertificateDatabases -s "$(echo ${WEBSERVER_NAMES[@]})" -d $(returnEpochTime "$(date +"%Y %m %d")" ${REPORT_DAYS}) -a "${TARGET_EMAIL}" -e > /dev/null 2>&1 &
 
                                             reset; clear;
 
@@ -586,7 +586,7 @@ function main
                                         unset PLATFORM_CODE;
 
                                         print "$(grep -w configuration.not.found.for.host "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                    
+
                                         sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                     fi
                                 else
@@ -596,7 +596,7 @@ function main
                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
 
                                     print "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                    
+
                                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                 fi
                                 ;;
@@ -761,7 +761,7 @@ function createCSR
             ## nameserver this zone gets applied to really doesnt need it there,
             ## because another nameserver already has it and can do it on its own.
             ## for this reason, we dont ask.
-            . ${APP_ROOT}/lib/helpers/ui/csrGenerationUI.sh;
+            . ${APP_ROOT}/${LIB_DIRECTORY}/helpers/ui/csrGenerationUI.sh;
         fi
     done
 }
@@ -903,7 +903,7 @@ function applyLocalCertificate
             ## nameserver this zone gets applied to really doesnt need it there,
             ## because another nameserver already has it and can do it on its own.
             ## for this reason, we dont ask.
-            . ${APP_ROOT}/lib/helpers/ui/certRenewalUI.sh;
+            . ${APP_ROOT}/${LIB_DIRECTORY}/helpers/ui/certRenewalUI.sh;
         fi
     done
 }
@@ -1048,12 +1048,12 @@ function implementCertificateChange
             ## nameserver this zone gets applied to really doesnt need it there,
             ## because another nameserver already has it and can do it on its own.
             ## for this reason, we dont ask.
-            . ${APP_ROOT}/lib/helpers/ui/implementCertUI.sh;
+            . ${APP_ROOT}/${LIB_DIRECTORY}/helpers/ui/implementCertUI.sh;
         fi
     done
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 METHOD_NAME="${CNAME}#startup";

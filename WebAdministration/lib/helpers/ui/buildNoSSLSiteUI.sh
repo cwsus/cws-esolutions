@@ -165,7 +165,7 @@ function buildNoSSLSite
                     if [ ! -z "${IS_PORT_VALID}" ] && [ "${IS_PORT_VALID}" = "${_TRUE}" ]
                     then
                         ## great, lets make sure its not already in use
-                        . ${APP_ROOT}/lib/validators/validatePortNumber.sh ${NONSSL_PORTNUM};
+                        . ${APP_ROOT}/${LIB_DIRECTORY}/validators/validatePortNumber.sh ${NONSSL_PORTNUM};
                         typeset -i RET_CODE=${?};
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
@@ -259,7 +259,7 @@ function buildNoSSLSite
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command createWebInstance.sh ${BUILD_TYPE_SSL} ..";
 
-                                . ${APP_ROOT}/lib/createWebInstance.sh ${BUILD_TYPE_SSL};
+                                . ${APP_ROOT}/${LIB_DIRECTORY}/createWebInstance.sh ${BUILD_TYPE_SSL};
                                 typeset -i RET_CODE=${?};
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";

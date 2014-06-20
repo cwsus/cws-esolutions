@@ -94,9 +94,9 @@ function run_role_swap
     ## first things first. we need to get a tarfile from the existing master and pull it down.
     if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
     then
-        . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/sys/systemBackup.sh zone master;
+        . ${PLUGIN_LIB_DIRECTORY}/sys/systemBackup.sh zone master;
     else
-        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/sys/systemBackup.sh zone master" ${SSH_USER_NAME} ${SSH_USER_AUTH};
+        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/sys/systemBackup.sh zone master" ${SSH_USER_NAME} ${SSH_USER_AUTH};
     fi
 
     ## capture the return code
@@ -113,14 +113,14 @@ function run_role_swap
         ## got our file. bring it over.
         if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
         then
-            cp ${NAMED_ROOT}/${TMP_DIRECTORY}/${TARFILE_NAME} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${TARFILE_NAME};
+            cp ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${TARFILE_NAME} ${PLUGIN_TMP_DIRECTORY}/${TARFILE_NAME};
         else
-            ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp remote-copy ${NAMED_MASTER} ${NAMED_ROOT}/${TMP_DIRECTORY}/${TARFILE_NAME} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${TARFILE_NAME} ${SSH_USER_NAME} ${SSH_USER_AUTH};
+            ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp remote-copy ${NAMED_MASTER} ${NAMED_ROOT}/${NAMED_TMP_DIRECTORY}/${TARFILE_NAME} ${PLUGIN_TMP_DIRECTORY}/${TARFILE_NAME} ${SSH_USER_NAME} ${SSH_USER_AUTH};
         fi
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File transfer complete. Verifying..";
 
-        if [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${TARFILE_NAME} ]
+        if [ -s ${PLUGIN_TMP_DIRECTORY}/${TARFILE_NAME} ]
         then
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File transfer successfully verified. Continuing..";
 
@@ -138,16 +138,16 @@ function run_role_swap
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "We are in local execution mode. Working..";
 
                     ## run the switch
-                    ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/execute_role_swap.sh -p ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${TARFILE_NAME} -t ${MASTER_TARGET} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e;
+                    ${PLUGIN_LIB_DIRECTORY}/executors/execute_role_swap.sh -p ${PLUGIN_TMP_DIRECTORY}/${TARFILE_NAME} -t ${MASTER_TARGET} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e;
                 else
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Transferring ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${TARFILE_NAME} to ${REMOTE_APP_ROOT}/${TMP_DIRECTORY}/${TARFILE_NAME}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Transferring ${PLUGIN_TMP_DIRECTORY}/${TARFILE_NAME} to ${REMOTE_APP_ROOT}/${PLUGIN_TMP_DIRECTORY}/${TARFILE_NAME}";
 
-                    ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp local-copy ${MASTER_TARGET} ${NAMED_ROOT}/${TMP_DIRECTORY}/${TARFILE_NAME} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${TARFILE_NAME} ${SSH_USER_NAME} ${SSH_USER_AUTH};
+                    ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp local-copy ${MASTER_TARGET} ${NAMED_ROOT}/${NAMED_TMP_DIRECTORY}/${TARFILE_NAME} ${PLUGIN_TMP_DIRECTORY}/${TARFILE_NAME} ${SSH_USER_NAME} ${SSH_USER_AUTH};
 
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Transfer complete. Executing execute_role_swap.sh -p ${REMOTE_APP_ROOT}/${TMP_DIRECTORY}/${TARFILE_NAME} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e ..";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Transfer complete. Executing execute_role_swap.sh -p ${REMOTE_APP_ROOT}/${PLUGIN_TMP_DIRECTORY}/${TARFILE_NAME} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e ..";
 
                     ## once the copy is complete we run the switch.
-                    ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${MASTER_TARGET} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/execute_role_swap.sh -p ${REMOTE_APP_ROOT}/${TMP_DIRECTORY}/${TARFILE_NAME} -t ${MASTER_TARGET} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e";
+                    ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${MASTER_TARGET} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/execute_role_swap.sh -p ${REMOTE_APP_ROOT}/${PLUGIN_TMP_DIRECTORY}/${TARFILE_NAME} -t ${MASTER_TARGET} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e";
                     typeset -i RET_CODE=${?};
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Execution complete. RET_CODE -> ${RET_CODE}";
@@ -162,7 +162,7 @@ function run_role_swap
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command execute_role_swap.sh -s -t ${MASTER_TARGET} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e ..";
 
                         ## good, we're done with that. now we move forward and re-config the existing master as a slave
-                        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/execute_role_swap.sh -s -t ${MASTER_TARGET} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e" ${SSH_USER_NAME} ${SSH_USER_AUTH};
+                        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/execute_role_swap.sh -s -t ${MASTER_TARGET} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e" ${SSH_USER_NAME} ${SSH_USER_AUTH};
                         typeset -i RET_CODE=${?};
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Execution complete. RET_CODE -> ${RET_CODE}";
@@ -247,7 +247,7 @@ function switch_local_config
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating backup and operational copies..";
 
         ## take a backup and make a working copy
-        TMP_NAMED_CONFIG=${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(grep named_config_file ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2- | sed -e 's| ||g' | cut -d "/" -f 2);
+        TMP_NAMED_CONFIG=${PLUGIN_TMP_DIRECTORY}/$(grep named_config_file ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2- | sed -e 's| ||g' | cut -d "/" -f 2);
         BKUP_NAMED_CONFIG=${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(grep named_config_file ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2- | sed -e 's| ||g' | cut -d "/" -f 2).${CHANGE_NUM};
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_NAMED_CONFIG -> ${TMP_NAMED_CONFIG}";

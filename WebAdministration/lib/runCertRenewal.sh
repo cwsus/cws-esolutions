@@ -575,7 +575,7 @@ function applyiPlanetCert
                         do
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSCPConnection.exp local-copy ${WEBSERVER} ${APP_ROOT}/${CERTDB_STORE}/${CERTIFICATE_DATABASE}${SUFFIX} ${APP_ROOT}/${CERTDB_STORE}/${REMOTE_CERT_DB}${SUFFIX} ${IPLANET_OWNING_USER}";
 
-                            ${APP_ROOT}/lib/tcl/runSCPConnection.exp local-copy ${WEBSERVER} \
+                            ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp local-copy ${WEBSERVER} \
                                 ${APP_ROOT}/${CERTDB_STORE}/${CERTIFICATE_DATABASE}${SUFFIX} \
                                 ${APP_ROOT}/${CERTDB_STORE}/${REMOTE_CERT_DB}${SUFFIX} ${IPLANET_OWNING_USER};
                         done
@@ -583,15 +583,15 @@ function applyiPlanetCert
                         ## copy up the pkcs file
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSCPConnection.exp local-copy ${WEBSERVER} ${APP_ROOT}/${PKCS12STORE}/${CERTIFICATE_NICKNAME}.pkcs ${APP_ROOT}/${PKCS12STORE}/${CERTIFICATE_NICKNAME}.pkcs ${IPLANET_OWNING_USER}";
 
-                        ${APP_ROOT}/lib/tcl/runSCPConnection.exp local-copy ${WEBSERVER} \
+                        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp local-copy ${WEBSERVER} \
                             ${APP_ROOT}/${PKCS12STORE}/${CERTIFICATE_NICKNAME}.pkcs \
                             ${APP_ROOT}/${PKCS12STORE}/${CERTIFICATE_NICKNAME}.pkcs ${IPLANET_OWNING_USER};
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File copies complete. Continuing..";
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${WEBSERVER} ${REMOTE_APP_ROOT}/lib/executors/executeCertRenewal.sh -w ${WEB_INSTANCE_NAME} -p ${WEBSERVER_PLATFORM} -r ${ENVIRONMENT_TYPE} -d ${REMOTE_CERT_DB} -n ${CERTIFICATE_NICKNAME} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e ${IPLANET_OWNING_USER}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${WEBSERVER} ${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeCertRenewal.sh -w ${WEB_INSTANCE_NAME} -p ${WEBSERVER_PLATFORM} -r ${ENVIRONMENT_TYPE} -d ${REMOTE_CERT_DB} -n ${CERTIFICATE_NICKNAME} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e ${IPLANET_OWNING_USER}";
 
                         ## ok, files copied, run the executor
-                        ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${WEBSERVER} "${APP_ROOT}/lib/executors/executeCertRenewal.sh -w ${WEB_INSTANCE_NAME} -p ${WEBSERVER_PLATFORM} -r ${ENVIRONMENT_TYPE} -d ${REMOTE_CERT_DB} -n ${CERTIFICATE_NICKNAME} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e" ${IPLANET_OWNING_USER};
+                        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${WEBSERVER} "${APP_ROOT}/${LIB_DIRECTORY}/executors/executeCertRenewal.sh -w ${WEB_INSTANCE_NAME} -p ${WEBSERVER_PLATFORM} -r ${ENVIRONMENT_TYPE} -d ${REMOTE_CERT_DB} -n ${CERTIFICATE_NICKNAME} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e" ${IPLANET_OWNING_USER};
                         RENEWAL_CODE=${?};
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RENEWAL_CODE -> ${RENEWAL_CODE}";
@@ -852,7 +852,7 @@ function usage
     return 3;
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 [ ${#} -eq 0 ] && usage;

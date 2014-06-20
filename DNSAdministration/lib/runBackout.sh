@@ -89,7 +89,7 @@ function obtainBackoutList
     unset CNAME;
 
     ## TODO
-    ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/execute_backout.sh -a;
+    ${PLUGIN_LIB_DIRECTORY}/executors/execute_backout.sh -a;
     RETURN_CODE=${?};
 
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -162,7 +162,7 @@ function runBackoutWithOptions
     unset METHOD_NAME;
     unset CNAME;
 
-    ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/execute_backout.sh -b ${BUSINESS_UNIT} -c ${CHANGE_NUM} -d ${CHANGE_DATE} -e;
+    ${PLUGIN_LIB_DIRECTORY}/executors/execute_backout.sh -b ${BUSINESS_UNIT} -c ${CHANGE_NUM} -d ${CHANGE_DATE} -e;
     RETURN_CODE=${?};
 
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -180,7 +180,7 @@ function runBackoutWithOptions
         unset RETURN_CODE;
 
         ## ok our logging is done. reload config.
-        ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -c reload -e;
+        ${PLUGIN_LIB_DIRECTORY}/runRNDCCommands.sh -c reload -e;
         RETURN_CODE=${?};
 
         if [ ${RETURN_CODE} -eq 0 ]
@@ -205,7 +205,7 @@ function runBackoutWithOptions
                     unset CNAME;
 
                     ## send an rndc reload to the server to make it active
-                    ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${DNS_SLAVE[${D}]} -c reload -e;
+                    ${PLUGIN_LIB_DIRECTORY}/runRNDCCommands.sh -s ${DNS_SLAVE[${D}]} -c reload -e;
                     RETURN_CODE=${?};
 
                     if [ ${RETURN_CODE} -eq 0 ]
@@ -291,7 +291,7 @@ function runBackoutWithFileName
     unset METHOD_NAME;
     unset CNAME;
 
-    ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/execute_backout.sh -f ${FILE_NAME};
+    ${PLUGIN_LIB_DIRECTORY}/executors/execute_backout.sh -f ${FILE_NAME};
     RETURN_CODE=${?};
 
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -312,7 +312,7 @@ function runBackoutWithFileName
         unset METHOD_NAME;
         unset CNAME;
 
-        ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -c reload -e;
+        ${PLUGIN_LIB_DIRECTORY}/runRNDCCommands.sh -c reload -e;
         RETURN_CODE=${?};
 
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -343,7 +343,7 @@ function runBackoutWithFileName
                     unset CNAME;
 
                     ## send an rndc reload to the server to make it active
-                    ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${DNS_SLAVE[${D}]} -c reload -e;
+                    ${PLUGIN_LIB_DIRECTORY}/runRNDCCommands.sh -s ${DNS_SLAVE[${D}]} -c reload -e;
                     RETURN_CODE=${?};
 
                     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;

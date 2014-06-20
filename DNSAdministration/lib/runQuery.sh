@@ -83,10 +83,10 @@ function returnResponse
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing DiG query against ${NAMESERVER} for ${SITE_URL}..";
 
-    [[ -z "${NAMESERVER}" && -z "${SHORT_RESPONSE}" ]] && DIG_CMD="/usr/bin/env dig +noedns";
-    [[ ! -z "${NAMESERVER}" && -z "${SHORT_RESPONSE}" ]] && DIG_CMD="/usr/bin/env dig @${NAMESERVER} +noedns";
-    [[ -z "${NAMESERVER}" && "${SHORT_RESPONSE}" = "${_TRUE}" ]] && DIG_CMD="/usr/bin/env dig +noedns +short";
-    [[ ! -z "${NAMESERVER}" && "${SHORT_RESPONSE}" = "${_TRUE}" ]] && DIG_CMD="/usr/bin/env dig @${NAMESERVER} +noedns +short";
+    [[ -z "${NAMESERVER}" && -z "${SHORT_RESPONSE}" ]] && DIG_CMD="/usr/${BIN_DIRECTORY}/env dig +noedns";
+    [[ ! -z "${NAMESERVER}" && -z "${SHORT_RESPONSE}" ]] && DIG_CMD="/usr/${BIN_DIRECTORY}/env dig @${NAMESERVER} +noedns";
+    [[ -z "${NAMESERVER}" && "${SHORT_RESPONSE}" = "${_TRUE}" ]] && DIG_CMD="/usr/${BIN_DIRECTORY}/env dig +noedns +short";
+    [[ ! -z "${NAMESERVER}" && "${SHORT_RESPONSE}" = "${_TRUE}" ]] && DIG_CMD="/usr/${BIN_DIRECTORY}/env dig @${NAMESERVER} +noedns +short";
 
     ## kill the file if it exists
     [ -f ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} ] && rm -rf ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};

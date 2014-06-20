@@ -157,10 +157,10 @@ function failoverInternetSite
                 unset BACKUP_FILE;
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete - continuing...";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${DC_FILE} to ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}..";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${DC_FILE} to ${PLUGIN_TMP_DIRECTORY}..";
 
                 ## copy the datacenter-specific zone file for operation
-                cp ${SITE_ROOT}/${TARGET_DC}/${DC_FILE} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME};
+                cp ${SITE_ROOT}/${TARGET_DC}/${DC_FILE} ${PLUGIN_TMP_DIRECTORY}/${FILENAME};
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Calling addServiceIndicators.sh to add "AUDIT" flags..";
 
@@ -190,14 +190,14 @@ function failoverInternetSite
                 then
                     ## All our preliminary processing has been completed,
                     ## so lets move the updated zone file into place
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME} to ${SITE_ROOT}/${FILENAME}..";
-                    cp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME} ${SITE_ROOT}/${FILENAME};
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${PLUGIN_TMP_DIRECTORY}/${FILENAME} to ${SITE_ROOT}/${FILENAME}..";
+                    cp ${PLUGIN_TMP_DIRECTORY}/${FILENAME} ${SITE_ROOT}/${FILENAME};
 
                     ## Lets make sure that the copied file and the new file match
-                    MD5_TMP_FILE=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME} | awk '{print $1}');
+                    MD5_TMP_FILE=$(cksum ${PLUGIN_TMP_DIRECTORY}/${FILENAME} | awk '{print $1}');
                     MD5_NEW_FILE=$(cksum ${SITE_ROOT}/${FILENAME} | awk '{print $1}');
 
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "cksum of ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME} -> ${MD5_TMP_FILE}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "cksum of ${PLUGIN_TMP_DIRECTORY}/${FILENAME} -> ${MD5_TMP_FILE}";
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "cksum of ${SITE_ROOT}/${FILENAME} -> ${MD5_NEW_FILE}";
 
                     if [ "${MD5_TMP_FILE}" = "${MD5_NEW_FILE}" ]
@@ -206,7 +206,7 @@ function failoverInternetSite
                         ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS Failover: Requestor: ${REQUESTING_USER} - Date: $(date +"%d-%m-%Y") - Site: ${UNIT}/${FILENAME} - Change Request: ${CHANGE_NUM} - Switched To: ${TARGET_DC}";
 
                         ## Remove the temporary file
-                        rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME};
+                        rm -rf ${PLUGIN_TMP_DIRECTORY}/${FILENAME};
 
                         ## Return 0 and exit
                         RETURN_CODE=0;
@@ -410,7 +410,7 @@ function failoverDatacenter
         then
             ## we did. keep going.
             ## create the business unit directories
-            mkdir ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${UNIT};
+            mkdir ${PLUGIN_TMP_DIRECTORY}/${UNIT};
 
             ## loop through the zone files
             for FILENAME in $(ls -ltr ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${UNIT} | awk '{print $9}' | cut -d ":" -f 1-1 | grep -v "[PV]H" | uniq | sed -e '/ *#/d; /^ *$/d');
@@ -418,7 +418,7 @@ function failoverDatacenter
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating on ${UNIT}/${FILENAME}..";
 
                 ## copy the target datacenter file
-                cp ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${UNIT}/${TARGET_DC}/$(echo ${FILENAME} | cut -d "." -f 1-2) ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${UNIT}/${FILENAME};
+                cp ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${UNIT}/${TARGET_DC}/$(echo ${FILENAME} | cut -d "." -f 1-2) ${PLUGIN_TMP_DIRECTORY}/${UNIT}/${FILENAME};
 
                 ## setup serial numbers
                 LAST_SERIAL=$(grep "; serial" ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME} | awk '{print $1}' | sed -e '/^$/d');
@@ -505,19 +505,19 @@ function failoverDatacenter
             ## shouldn't need to do more than that
             ERROR_COUNT=0;
 
-            for UNIT in $(ls -ltr ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY} | awk '{print $9}' | grep -v '^$')
+            for UNIT in $(ls -ltr ${PLUGIN_TMP_DIRECTORY} | awk '{print $9}' | grep -v '^$')
             do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating on ${UNIT}..";
 
                 ## loop through the zone files
-                for FILENAME in $(ls -ltr ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${UNIT} | awk '{print $9}' | cut -d ":" -f 1-1 | uniq | sed -e '/ *#/d; /^ *$/d');
+                for FILENAME in $(ls -ltr ${PLUGIN_TMP_DIRECTORY}/${UNIT} | awk '{print $9}' | cut -d ":" -f 1-1 | uniq | sed -e '/ *#/d; /^ *$/d');
                 do
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${UNIT}/${FILENAME} to ${NAMED_ROOT}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${PLUGIN_TMP_DIRECTORY}/${UNIT}/${FILENAME} to ${NAMED_ROOT}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME}";
 
                     ## copy the target datacenter file
-                    cp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${UNIT}/${FILENAME} ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME};
+                    cp ${PLUGIN_TMP_DIRECTORY}/${UNIT}/${FILENAME} ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME};
 
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copied ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${UNIT}/${FILENAME} to ${NAMED_ROOT}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copied ${PLUGIN_TMP_DIRECTORY}/${UNIT}/${FILENAME} to ${NAMED_ROOT}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME}";
                 done
             done
 
@@ -526,15 +526,15 @@ function failoverDatacenter
 
             ## files should be in place, change should be complete
             ## perform a checksum to make sure
-            for UNIT in $(ls -ltr ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY} | awk '{print $9}' | grep -v '^$')
+            for UNIT in $(ls -ltr ${PLUGIN_TMP_DIRECTORY} | awk '{print $9}' | grep -v '^$')
             do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating on ${UNIT}..";
 
                 ## loop through the zone files
-                for FILENAME in $(ls -ltr ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${UNIT} | awk '{print $9}' | cut -d ":" -f 1-1 | uniq | sed -e '/ *#/d; /^ *$/d');
+                for FILENAME in $(ls -ltr ${PLUGIN_TMP_DIRECTORY}/${UNIT} | awk '{print $9}' | cut -d ":" -f 1-1 | uniq | sed -e '/ *#/d; /^ *$/d');
                 do
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${UNIT}/${FILENAME} <-> ${NAMED_ROOT}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME}";
-                    TMP_CHECKSUM=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${UNIT}/${FILENAME} | awk '{print $1}');
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksum ${PLUGIN_TMP_DIRECTORY}/${UNIT}/${FILENAME} <-> ${NAMED_ROOT}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME}";
+                    TMP_CHECKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/${UNIT}/${FILENAME} | awk '{print $1}');
                     OP_CHECKSUM=$(cksum ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME} | awk '{print $1}');
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${FILENAME} -> TMP_CHECKSUM -> ${TMP_CHECKSUM}";
@@ -543,7 +543,7 @@ function failoverDatacenter
                     ## copy the target datacenter file
                     if [ ${TMP_CHECKSUM} -eq ${OP_CHECKSUM} ]
                     then
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${UNIT}/${FILENAME} <-> ${NAMED_ROOT}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME} match - continuing..";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksum ${PLUGIN_TMP_DIRECTORY}/${UNIT}/${FILENAME} <-> ${NAMED_ROOT}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME} match - continuing..";
                         ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS Failover: Requestor: ${REQUESTING_USER} - Date: \`date +"%d-%m-%Y"\` - Site: ${UNIT}/${FILENAME} - Change Request: ${CHANGE_NUM} - Switched To: ${TARGET_DC}";
 
                         unset TMP_CHECKSUM;
@@ -552,7 +552,7 @@ function failoverDatacenter
                         unset TMP_CHECKSUM;
                         unset OP_CHECKSUM;
 
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${UNIT}/${FILENAME} <-> ${NAMED_ROOT}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME} mismatch - continuing..";
+                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksum ${PLUGIN_TMP_DIRECTORY}/${UNIT}/${FILENAME} <-> ${NAMED_ROOT}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME} mismatch - continuing..";
 
                         (( ERROR_COUNT += 1 ));
 
@@ -584,7 +584,7 @@ function failoverDatacenter
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/*;
+    rm -rf ${PLUGIN_TMP_DIRECTORY}/*;
 
     unset CHANGE_NUM;
     unset TARGET_DC;
@@ -663,10 +663,10 @@ function failoverBusinessUnit
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SPLIT -> ${SPLIT}";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DC_FILE -> ${DC_FILE}";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating operational copy in ${TMP_DIRECTORY}..";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating operational copy in ${PLUGIN_TMP_DIRECTORY}..";
 
                 ## take operational copy
-                cp ${SITE_ROOT}/${TARGET_DC}/${DC_FILE} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME};
+                cp ${SITE_ROOT}/${TARGET_DC}/${DC_FILE} ${PLUGIN_TMP_DIRECTORY}/${FILENAME};
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Calling addServiceIndicators.sh..";
 
@@ -697,7 +697,7 @@ function failoverBusinessUnit
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Indicators set - checksumming..";
 
                     ## set the checksum
-                    set -A TMP_MD5SUM $(echo "${TMP_MD5SUM[@]}" "$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME} | awk '{print $1}')");
+                    set -A TMP_MD5SUM $(echo "${TMP_MD5SUM[@]}" "$(cksum ${PLUGIN_TMP_DIRECTORY}/${FILENAME} | awk '{print $1}')");
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksum complete -> ${TMP_MD5SUM[${A}]}";
 
@@ -724,11 +724,11 @@ function failoverBusinessUnit
 
             ## All our preliminary processing has been completed,
             ## so lets move the updated zone file into place
-            for FILENAME in $(ls -ltr ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY} | awk '{print $9}' | cut -d ":" -f 1-1 | grep -v "[PV]H" | uniq | sed -e '/ *#/d; /^ *$/d')
+            for FILENAME in $(ls -ltr ${PLUGIN_TMP_DIRECTORY} | awk '{print $9}' | cut -d ":" -f 1-1 | grep -v "[PV]H" | uniq | sed -e '/ *#/d; /^ *$/d')
             do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${FILENAME} to ${SITE_ROOT}..";
 
-                cp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME} ${SITE_ROOT}/${FILENAME};
+                cp ${PLUGIN_TMP_DIRECTORY}/${FILENAME} ${SITE_ROOT}/${FILENAME};
 
                 ## configure the checksum array
                 set -A NEW_MD5SUM $(echo "${NEW_MD5SUM[@]}" "$(cksum ${SITE_ROOT}/${FILENAME} | awk '{print $1}')");
@@ -797,7 +797,7 @@ function failoverBusinessUnit
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    rm ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/*;
+    rm ${PLUGIN_TMP_DIRECTORY}/*;
 
     ## unset variables
     unset SITE_ROOT;
@@ -880,10 +880,10 @@ function failoverProject
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SPLIT->${SPLIT}";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DC_FILE->${DC_FILE}";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating operational copy in ${TMP_DIRECTORY}..";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating operational copy in ${PLUGIN_TMP_DIRECTORY}..";
 
                 ## take operational copy
-                cp ${SITE_ROOT}/${TARGET_DC}/${DC_FILE} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME};
+                cp ${SITE_ROOT}/${TARGET_DC}/${DC_FILE} ${PLUGIN_TMP_DIRECTORY}/${FILENAME};
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Calling addServiceIndicators.sh..";
 
@@ -914,7 +914,7 @@ function failoverProject
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Indicators set - checksumming..";
 
                     ## set the checksum
-                    set -A TMP_MD5SUM $(echo "${TMP_MD5SUM[@]}" "$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME} | awk '{print $1}')");
+                    set -A TMP_MD5SUM $(echo "${TMP_MD5SUM[@]}" "$(cksum ${PLUGIN_TMP_DIRECTORY}/${FILENAME} | awk '{print $1}')");
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksum complete -> ${TMP_MD5SUM[${A}]}";
 
@@ -941,11 +941,11 @@ function failoverProject
 
             ## All our preliminary processing has been completed,
             ## so lets move the updated zone file into place
-            for FILENAME in $(ls -ltr ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY} | awk '{print $9}' | cut -d ":" -f 1-1 | grep -v "[PV]H" | uniq | sed -e '/ *#/d; /^ *$/d')
+            for FILENAME in $(ls -ltr ${PLUGIN_TMP_DIRECTORY} | awk '{print $9}' | cut -d ":" -f 1-1 | grep -v "[PV]H" | uniq | sed -e '/ *#/d; /^ *$/d')
             do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${FILENAME} to ${SITE_ROOT}..";
 
-                cp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME} ${SITE_ROOT}/${FILENAME};
+                cp ${PLUGIN_TMP_DIRECTORY}/${FILENAME} ${SITE_ROOT}/${FILENAME};
 
                 ## configure the checksum array
                 set -A NEW_MD5SUM $(echo "${NEW_MD5SUM[@]}" "$(cksum ${SITE_ROOT}/${FILENAME} | awk '{print $1}')");
@@ -1012,7 +1012,7 @@ function failoverProject
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    rm ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/*;
+    rm ${PLUGIN_TMP_DIRECTORY}/*;
 
     ## unset variables
     unset SITE_ROOT;

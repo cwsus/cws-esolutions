@@ -92,7 +92,7 @@ function generateCSR
                     sleep "${MESSAGE_DELAY}"; reset; clear; break;
                     ;;
                 *)
-                    if [ $(${APP_ROOT}/lib/validators/validate_tel_num.sh ${CONTACT_NUMBER}) -ne 0 ]
+                    if [ $(${APP_ROOT}/${LIB_DIRECTORY}/validators/validate_tel_num.sh ${CONTACT_NUMBER}) -ne 0 ]
                     then
                         reset; clear;
                         ## number provided was invalid
@@ -117,7 +117,7 @@ function generateCSR
                         unset CNAME;
                         unset METHOD_NAME;
 
-                        . ${APP_ROOT}/lib/runKeyGeneration.sh -s ${SITE_HOSTNAME} -v ${MASTER_WEBSERVER} \
+                        . ${APP_ROOT}/${LIB_DIRECTORY}/runKeyGeneration.sh -s ${SITE_HOSTNAME} -v ${MASTER_WEBSERVER} \
                             -w ${WEBSERVER_PLATFORM} -p ${SERVER_ROOT} -d ${CERTDB} -c $(echo ${PLATFORM_CODE} | awk '{print $1}') \
                             -t ${CONTACT_NUMBER} -e;
                         RET_CODE=${?}
@@ -180,14 +180,14 @@ function generateCSR
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    
+
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
     return 0;
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 METHOD_NAME="${CNAME}#startup";

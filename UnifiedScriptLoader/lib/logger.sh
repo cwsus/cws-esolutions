@@ -81,7 +81,7 @@ function rotateLogs
         touch ${LOG_ROOT}/${1};
     fi
 
-    if [ $(/usr/bin/env stat -c %s "${LOG_ROOT}/${1}") -gt $(echo "${ROTATE_ON_SIZE} * 1024" | bc) ]
+    if [ $(/usr/${BIN_DIRECTORY}/env stat -c %s "${LOG_ROOT}/${1}") -gt $(echo "${ROTATE_ON_SIZE} * 1024" | bc) ]
     then
         if [ -f ${LOG_ROOT}/${1}.${LOG_RETENTION_PERIOD} ]
         then

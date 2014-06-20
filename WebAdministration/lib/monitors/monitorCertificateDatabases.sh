@@ -60,7 +60,7 @@ function monitorCertDatabases
             unset METHOD_NAME;
             unset CNAME;
 
-            set -A VALIDATE_SERVER_LIST $(${APP_ROOT}/lib/retrieveSiteList.sh certdb);
+            set -A VALIDATE_SERVER_LIST $(${APP_ROOT}/${LIB_DIRECTORY}/retrieveSiteList.sh certdb);
 
             CNAME=$(basename ${0});
             local METHOD_NAME="${CNAME}#${0}";
@@ -276,7 +276,7 @@ function monitorCertDatabases
     return ${RETURN_CODE};
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 [ ${#} -eq 0 ] && usage;

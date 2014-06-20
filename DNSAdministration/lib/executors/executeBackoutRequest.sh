@@ -263,16 +263,16 @@ function backout_change
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BIZ_UNIT -> ${BIZ_UNIT}";
 
             ## copy the backup tarfile to the tmp directory to work on
-            cp ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${FILE_NAME} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILE_NAME};
+            cp ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${FILE_NAME} ${PLUGIN_TMP_DIRECTORY}/${FILE_NAME};
 
             ## make sure the file copied
-            if [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILE_NAME} ]
+            if [ -s ${PLUGIN_TMP_DIRECTORY}/${FILE_NAME} ]
             then
                 ## ok, we have it. decompress it -
-                gzip -dc ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILE_NAME} | (cd ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}; tar xf -)
+                gzip -dc ${PLUGIN_TMP_DIRECTORY}/${FILE_NAME} | (cd ${PLUGIN_TMP_DIRECTORY}; tar xf -)
 
                 ## and make sure it was indeed decompressed...
-                if [ -d ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${BIZ_UNIT} ]
+                if [ -d ${PLUGIN_TMP_DIRECTORY}/${BIZ_UNIT} ]
                 then
                     ## we can be pretty confident that it was indeed extracted. move forward.
                     ## make a backup of the existing files just in case we need them for some reason
@@ -300,7 +300,7 @@ function backout_change
                             ## make sure error_count is zero
                             ERROR_COUNT=0;
 
-                            for BACKUP_FILE in $(find ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${BIZ_UNIT} -type f -name "db.*" -print)
+                            for BACKUP_FILE in $(find ${PLUGIN_TMP_DIRECTORY}/${BIZ_UNIT} -type f -name "db.*" -print)
                             do
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating on ${BACKUP_FILE}";
 
@@ -335,22 +335,22 @@ function backout_change
                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more files failed to restore. Reverting to pristine state..";
 
                                 ## first, kill off everything in our tmp directory so as not to cloud issues.
-                                rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${BIZ_UNIT};
-                                rm -rf ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILE_NAME};
+                                rm -rf ${PLUGIN_TMP_DIRECTORY}/${BIZ_UNIT};
+                                rm -rf ${PLUGIN_TMP_DIRECTORY}/${FILE_NAME};
 
                                 ## ok. we should be clean now. start the process of reversion
-                                cp ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar.gz ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${BACKUP_FILE}.tar.gz
+                                cp ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar.gz ${PLUGIN_TMP_DIRECTORY}/${BACKUP_FILE}.tar.gz
 
                                 ## copy complete, now untar and move the stuff back where it belongs
-                                gzip -dc ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${BACKUP_FILE}.tar.gz | (cd ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}; tar xf -);
+                                gzip -dc ${PLUGIN_TMP_DIRECTORY}/${BACKUP_FILE}.tar.gz | (cd ${PLUGIN_TMP_DIRECTORY}; tar xf -);
 
                                 ## we're unzipped and untarred. make sure
-                                if [ -d ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${BIZ_UNIT} ]
+                                if [ -d ${PLUGIN_TMP_DIRECTORY}/${BIZ_UNIT} ]
                                 then
                                     ## we're good here. run the copies.
                                     ERROR_COUNT=0;
 
-                                    for BACKOUT_FILE in $(find ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${BIZ_UNIT} -type f -name "db.*" -print)
+                                    for BACKOUT_FILE in $(find ${PLUGIN_TMP_DIRECTORY}/${BIZ_UNIT} -type f -name "db.*" -print)
                                     do
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating on ${BACKOUT_FILE}";
 
@@ -423,7 +423,7 @@ function backout_change
                             ## make sure error_count is zero
                             ERROR_COUNT=0;
 
-                            for BACKUP_FILE in $(find ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${BIZ_UNIT} -type f -name "db.*" -print)
+                            for BACKUP_FILE in $(find ${PLUGIN_TMP_DIRECTORY}/${BIZ_UNIT} -type f -name "db.*" -print)
                             do
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating on ${BACKUP_FILE}";
 

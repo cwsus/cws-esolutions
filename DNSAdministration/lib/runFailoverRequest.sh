@@ -105,10 +105,10 @@ function runInternetSiteFailover
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
         ## validate the input
-        [ -z "${FAILOVER_TYPE}" ] && [ "${FAILOVER_TYPE}" = "unit" ] && ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e;
-        [ -z "${FAILOVER_TYPE}" ] && [ "${FAILOVER_TYPE}" = "project" ] && ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -p ${PRJCODE} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e;
-        [ -z "${FAILOVER_TYPE}" ] && [ "${FAILOVER_TYPE}" = "datacenter" ] && ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -a -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e;
-        [ -z "${FAILOVER_TYPE}" ] && [ "${FAILOVER_TYPE}" = "site" ] && ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -a -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e;
+        [ -z "${FAILOVER_TYPE}" ] && [ "${FAILOVER_TYPE}" = "unit" ] && ${PLUGIN_LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e;
+        [ -z "${FAILOVER_TYPE}" ] && [ "${FAILOVER_TYPE}" = "project" ] && ${PLUGIN_LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -p ${PRJCODE} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e;
+        [ -z "${FAILOVER_TYPE}" ] && [ "${FAILOVER_TYPE}" = "datacenter" ] && ${PLUGIN_LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -a -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e;
+        [ -z "${FAILOVER_TYPE}" ] && [ "${FAILOVER_TYPE}" = "site" ] && ${PLUGIN_LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -a -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e;
         typeset -i RET_CODE=${?};
 
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -128,10 +128,10 @@ function runInternetSiteFailover
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e" ${SSH_USER_NAME} ${SSH_USER_AUTH};
-        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -p ${PRJCODE} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e" ${SSH_USER_NAME} ${SSH_USER_AUTH};
-        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -a -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e" ${SSH_USER_NAME} ${SSH_USER_AUTH};
-        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -a -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e" ${SSH_USER_NAME} ${SSH_USER_AUTH};
+        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e" ${SSH_USER_NAME} ${SSH_USER_AUTH};
+        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -p ${PRJCODE} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e" ${SSH_USER_NAME} ${SSH_USER_AUTH};
+        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -a -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e" ${SSH_USER_NAME} ${SSH_USER_AUTH};
+        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -a -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e" ${SSH_USER_NAME} ${SSH_USER_AUTH};
         typeset -i RET_CODE=${?};
 
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -184,7 +184,7 @@ function runInternetSiteFailover
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
     ## validate the input
-    ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${NAMED_MASTER} -c reload -e;
+    ${PLUGIN_LIB_DIRECTORY}/runRNDCCommands.sh -s ${NAMED_MASTER} -c reload -e;
     typeset -i RET_CODE=${?};
 
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -237,7 +237,7 @@ function runInternetSiteFailover
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
     ## validate the input
-    ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runQuery.sh -s ${NAMED_MASTER} -t A -u ${SITE_HOSTNAME} -o -e;
+    ${PLUGIN_LIB_DIRECTORY}/runQuery.sh -s ${NAMED_MASTER} -t A -u ${SITE_HOSTNAME} -o -e;
     typeset -i RET_CODE=${?};
 
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -309,7 +309,7 @@ function runInternetSiteFailover
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
         ## validate the input
-        ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runRNDCCommands.sh -s ${SERVER} -c reload -e;
+        ${PLUGIN_LIB_DIRECTORY}/runRNDCCommands.sh -s ${SERVER} -c reload -e;
         typeset -i RET_CODE=${?};
 
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -398,7 +398,7 @@ function runIntranetSiteFailover
         ## capture the current optind
         RFR_OPTIND=${OPTIND};
 
-        FAILOVER_CODE=$(${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/executors/executeSiteFailover.sh -d i -f ${DISABLE_POP} -t ${ENABLE_POP} -c ${CHANGE_NUM} -i ${IUSER_AUDIT} -e);
+        FAILOVER_CODE=$(${PLUGIN_LIB_DIRECTORY}/executors/executeSiteFailover.sh -d i -f ${DISABLE_POP} -t ${ENABLE_POP} -c ${CHANGE_NUM} -i ${IUSER_AUDIT} -e);
 
         CNAME="$(basename "${0}")";
         local METHOD_NAME="${CNAME}#${0}";
@@ -430,7 +430,7 @@ function runIntranetSiteFailover
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
                 ## validate the input
-                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${GD_SERVER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeSiteFailover.sh -d i -f ${DISABLE_POP} -t ${ENABLE_POP} -c ${CHANGE_NUM} -i ${IUSER_AUDIT} -e" ${SSH_USER_NAME} ${SSH_USER_AUTH};
+                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${GD_SERVER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeSiteFailover.sh -d i -f ${DISABLE_POP} -t ${ENABLE_POP} -c ${CHANGE_NUM} -i ${IUSER_AUDIT} -e" ${SSH_USER_NAME} ${SSH_USER_AUTH};
                 typeset -i RET_CODE=${?};
 
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;

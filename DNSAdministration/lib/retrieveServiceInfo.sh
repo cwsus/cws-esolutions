@@ -109,7 +109,7 @@ function obtainInternetService
 
         if [ ${PING_RCODE} -eq 0 ]
         then
-            set -A SERVICE_DETAIL $(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/executeDataRetrieval.sh -${REQUEST_TYPE} ${REQUEST_OPTION} -e" ${SSH_USER_NAME} ${SSH_USER_AUTH});
+            set -A SERVICE_DETAIL $(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeDataRetrieval.sh -${REQUEST_TYPE} ${REQUEST_OPTION} -e" ${SSH_USER_NAME} ${SSH_USER_AUTH});
         fi
     fi
 

@@ -59,11 +59,11 @@ function restart_service
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local execution is set to TRUE.";
 
                 ## no trace here, this is a bourne shell script
-                . ${APP_ROOT}/lib/executors/execute_service_restart.sh -c restart -r -e;
+                . ${APP_ROOT}/${LIB_DIRECTORY}/executors/execute_service_restart.sh -c restart -r -e;
             else
                 ## MUST execute as root - sudo is best possible option.
                 ## this is NOT required if you are configured to ssh as root.
-                ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${SERVER_NAME} "${REMOTE_APP_ROOT}/lib/executors/execute_service_restart.sh -c restart -r -e" ${IPLANET_OWNING_USER};
+                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${SERVER_NAME} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/execute_service_restart.sh -c restart -r -e" ${IPLANET_OWNING_USER};
             fi
         else
             if [ "${LOCAL_EXECUTION}" = "${_TRUE}" ]
@@ -71,11 +71,11 @@ function restart_service
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local execution is set to TRUE.";
 
                 ## no trace here, this is a bourne shell script
-                . ${APP_ROOT}/lib/executors/execute_service_restart.sh -c restart -e;
+                . ${APP_ROOT}/${LIB_DIRECTORY}/executors/execute_service_restart.sh -c restart -e;
             else
                 ## MUST execute as root - sudo is best possible option.
                 ## this is NOT required if you are configured to ssh as root.
-                ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${SERVER_NAME} "${REMOTE_APP_ROOT}/lib/executors/execute_service_restart.sh -c restart -e" ${IPLANET_OWNING_USER};
+                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${SERVER_NAME} "${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/executors/execute_service_restart.sh -c restart -e" ${IPLANET_OWNING_USER};
             fi
         fi
 
@@ -170,7 +170,7 @@ function usage
     return 3;
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 [ ${#} -eq 0 ] && usage;

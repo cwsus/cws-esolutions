@@ -79,15 +79,15 @@ function runiPlanetInstallation
                         then
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Submitting files to ${WEBSERVER}..";
 
-                            ${APP_ROOT}/lib/tcl/runSCPConnection.exp local-copy ${WEBSERVER} \
+                            ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp local-copy ${WEBSERVER} \
                                 ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}-${SERVER_ID}.tar.gz \
                                 ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}-${SERVER_ID}.tar.gz ${IPLANET_OWNING_USER};
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File copies complete. Continuing..";
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${WEBSERVER} \"${APP_ROOT}/lib/executors/executeAddInstance.sh -s ${SERVER_ID} -p ${PROJECT_CODE} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e\" ${IPLANET_OWNING_USER}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${WEBSERVER} \"${APP_ROOT}/${LIB_DIRECTORY}/executors/executeAddInstance.sh -s ${SERVER_ID} -p ${PROJECT_CODE} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e\" ${IPLANET_OWNING_USER}";
 
                             ## ok, files copied, run the executor
-                            ${APP_ROOT}/lib/tcl/runSSHConnection.exp ${WEBSERVER} "${APP_ROOT}/lib/executors/executeAddInstance.sh -s ${SERVER_ID} -p ${PROJECT_CODE} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e" ${IPLANET_OWNING_USER};
+                            ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${WEBSERVER} "${APP_ROOT}/${LIB_DIRECTORY}/executors/executeAddInstance.sh -s ${SERVER_ID} -p ${PROJECT_CODE} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e" ${IPLANET_OWNING_USER};
                             INSTALLER_CODE=${?};
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INSTALLER_CODE -> ${INSTALLER_CODE}";
@@ -195,7 +195,7 @@ function usage
     return 3;
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 [ ${#} -eq 0 ] && usage;

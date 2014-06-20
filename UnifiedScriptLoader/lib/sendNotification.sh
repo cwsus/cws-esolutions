@@ -28,7 +28,7 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
-[[ -z "${APP_ROOT}" && -f ${SCRIPT_ROOT}/../lib/constants.sh ]] && . ${SCRIPT_ROOT}/../lib/constants.sh;
+[[ -z "${APP_ROOT}" && -f ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/constants.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/constants.sh;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -165,10 +165,10 @@ function sendNotificationEmail
                     then
                         if [ "${VERBOSE}" = "${_TRUE}" ]
                         then
-                            $(/usr/bin/env uuencode ${ATTACH_FILE} $(basename ${ATTACH_FILE}) | mailx -v -s "${MESSAGE_SUBJECT}" -r "${NOTIFY_FROM_ADDRESS}" \
+                            $(/usr/${BIN_DIRECTORY}/env uuencode ${ATTACH_FILE} $(basename ${ATTACH_FILE}) | mailx -v -s "${MESSAGE_SUBJECT}" -r "${NOTIFY_FROM_ADDRESS}" \
                                 "${TARGET_AUDIENCE}" < ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT} > ${LOG_ROOT}/${MESSAGE_TEMPLATE}.log 2>&1;);
                         else
-                            $(/usr/bin/env uuencode ${ATTACH_FILE} $(basename ${ATTACH_FILE}) | mailx -s "${MESSAGE_SUBJECT}" -r "${NOTIFY_FROM_ADDRESS}" \
+                            $(/usr/${BIN_DIRECTORY}/env uuencode ${ATTACH_FILE} $(basename ${ATTACH_FILE}) | mailx -s "${MESSAGE_SUBJECT}" -r "${NOTIFY_FROM_ADDRESS}" \
                                 "${TARGET_AUDIENCE}" < ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT});
                         fi
                     else

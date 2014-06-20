@@ -70,7 +70,7 @@ function implementCertificate
                 fi
 
                 ## validate the CR number
-                if [ $(${APP_ROOT}/lib/validators/validate_change_ticket.sh ${CHANGE_NUM}) -ne 0 ]
+                if [ $(${APP_ROOT}/${LIB_DIRECTORY}/validators/validate_change_ticket.sh ${CHANGE_NUM}) -ne 0 ]
                 then
                     ## change control provided was invalid
                     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A change was attempted with an invalid change order by ${IUSER_AUDIT}. Change request was ${CHANGE_NUM}.";
@@ -95,7 +95,7 @@ function implementCertificate
                         unset METHOD_NAME;
                         unset CNAME;
 
-                        . ${APP_ROOT}/lib/runQuery.sh -u ${SITE_HOSTNAME} -e;
+                        . ${APP_ROOT}/${LIB_DIRECTORY}/runQuery.sh -u ${SITE_HOSTNAME} -e;
                         RET_CODE=${?}
 
                         CNAME=$(basename ${0});
@@ -198,7 +198,7 @@ function implementCertificate
                                     reset; clear; break;
                                 fi
                             done
-                        fi                        
+                        fi
 
                         ## production environment. we start in the secondary and move to the primary
                         for PLATFORM in ${PRI_PLATFORM_CODE} ${SEC_PLATFORM_CODE}
@@ -209,7 +209,7 @@ function implementCertificate
                             unset METHOD_NAME;
                             unset CNAME;
 
-                            . ${APP_ROOT}/lib/runCertRenewal.sh -d ${CERTDB} -s ${SITE_HOSTNAME} \
+                            . ${APP_ROOT}/${LIB_DIRECTORY}/runCertRenewal.sh -d ${CERTDB} -s ${SITE_HOSTNAME} \
                                 -w ${WEBSERVER_PLATFORM} -p ${PLATFORM} -c ${CHANGE_NUM} -a -e;
                             typeset -i RET_CODE=${?};
 
@@ -271,7 +271,7 @@ function implementCertificate
                         unset METHOD_NAME;
                         unset CNAME;
 
-                        . ${APP_ROOT}/lib/runCertRenewal.sh -d ${CERTDB} -s ${SITE_HOSTNAME} -w ${WEBSERVER_PLATFORM} -p ${PLATFORM_CODE} -c ${CHANGE_NUM} -a -e;
+                        . ${APP_ROOT}/${LIB_DIRECTORY}/runCertRenewal.sh -d ${CERTDB} -s ${SITE_HOSTNAME} -w ${WEBSERVER_PLATFORM} -p ${PLATFORM_CODE} -c ${CHANGE_NUM} -a -e;
                         typeset -i RET_CODE=${?};
 
                         CNAME=$(basename ${0});
@@ -526,7 +526,7 @@ function implementCertificate
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 METHOD_NAME="${CNAME}#startup";

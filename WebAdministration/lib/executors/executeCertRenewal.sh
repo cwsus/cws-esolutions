@@ -275,7 +275,7 @@ function applyiPlanetCertificate
 
                                                     BACKUP_FILENAME=${APP_ROOT}/${BACKUP_DIR}/${TOKEN_NAME}.${IUSER_AUDIT}.$(date +"%m-%d-%Y:%HH:%MM:%SS");
 
-                                                    . ${APP_ROOT}/lib/tcl/run_cert_mgmt.exp backup ${TOKEN_NAME} ${BACKUP_FILENAME};
+                                                    . ${APP_ROOT}/${LIB_DIRECTORY}/tcl/run_cert_mgmt.exp backup ${TOKEN_NAME} ${BACKUP_FILENAME};
                                                     RET_CODE=${?}
 
                                                     if [ ${RET_CODE} -eq 0 ]
@@ -297,7 +297,7 @@ function applyiPlanetCertificate
                                                 then
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Retrieving certificate information from Metaslot..";
 
-                                                    CERT_DATA=$(${APP_ROOT}/lib/tcl/run_cert_renewal.exp ${TOKEN_NAME} ${CERTIFICATE_DATABASE} ${CERTIFICATE_NICKNAME});
+                                                    CERT_DATA=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/run_cert_renewal.exp ${TOKEN_NAME} ${CERTIFICATE_DATABASE} ${CERTIFICATE_NICKNAME});
 
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_DATA -> ${CERT_DATA}";
 
@@ -326,7 +326,7 @@ function applyiPlanetCertificate
 
                                                             ## this is a sensitive task. should probably take a backup here before we start deleting things,
                                                             ## in case we delete too much.
-                                                            RET_CODE=$(${APP_ROOT}/lib/tcl/run_cert_renewal.exp delete ${KEY_COUNT} ${CERT_COUNT} ${TOKEN_NAME} ${CERTIFICATE_NICKNAME});
+                                                            RET_CODE=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/run_cert_renewal.exp delete ${KEY_COUNT} ${CERT_COUNT} ${TOKEN_NAME} ${CERTIFICATE_NICKNAME});
 
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -651,7 +651,7 @@ function applyIHSKeystore
         ## ok, we have a web instance. shut it down.
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Shutting down ${CERTIFICATE_DATABASE}..";
 
-        RET_CODE=$(${IHS_PATH}/bin/${IHS_START_SCRIPT} -d ${IHS_PATH} -d ${CERTIFICATE_DATABASE} -k stop);
+        RET_CODE=$(${IHS_PATH}/${BIN_DIRECTORY}/${IHS_START_SCRIPT} -d ${IHS_PATH} -d ${CERTIFICATE_DATABASE} -k stop);
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -715,7 +715,7 @@ function applyIHSKeystore
                     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate Renewal (implementation) by ${IUSER_AUDIT}: Site: ${SITE_DOMAIN_NAME}; Certificate Database: ${CERTIFICATE_DATABASE_STORE}; Certificate Nickname: ${CERTIFICATE_NICKNAME}";
 
                     ## thats it folks. bring up the web
-                    RET_CODE=$(${IHS_PATH}/bin/${IHS_START_SCRIPT} -d ${IHS_PATH} -d ${CERTIFICATE_DATABASE} -k stop);
+                    RET_CODE=$(${IHS_PATH}/${BIN_DIRECTORY}/${IHS_START_SCRIPT} -d ${IHS_PATH} -d ${CERTIFICATE_DATABASE} -k stop);
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -787,7 +787,7 @@ function usage
     return 3;
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 [ ${#} -eq 0 ] && usage;

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/${BIN_DIRECTORY}/sh
 #==============================================================================
 #
 #          FILE:  restart_dns.sh
@@ -46,18 +46,18 @@ KRB5_KTNAME=${KEYTAB_FILE:-/etc/named.keytab};
 ## linux, hooray
 if [ "${PLATFORM_TYPE}" = "SunOS" ]
 then
-    ## alias grep to /usr/xpg4/bin/grep because /usr/bin/grep doesnt have a -x option
-    alias grep='/usr/xpg4/bin/grep';
+    ## alias grep to /usr/xpg4/${BIN_DIRECTORY}/grep because /usr/${BIN_DIRECTORY}/grep doesnt have a -x option
+    alias grep='/usr/xpg4/${BIN_DIRECTORY}/grep';
 
     ## alias ps to /usr/ucb/ps -auxwww
     alias ps='/usr/ucb/ps -auxww';
 elif [ "${PLATFORM_TYPE}" = "Linux" ]
 then
     ## alias ps to ps -ef
-    alias ps='/bin/ps -ef';
+    alias ps='/${BIN_DIRECTORY}/ps -ef';
 
     ## alias grep to grep without the colors
-    alias grep='/bin/grep';
+    alias grep='/${BIN_DIRECTORY}/grep';
 fi
 
 ACTION=${1};
@@ -95,7 +95,7 @@ case "${ACTION}" in
             echo ""ERROR" in named configuration:";
             echo "${named_err}";
 
-            [ -x /usr/bin/logger ] && echo "${named_err}" | /usr/bin/logger -pdaemon."ERROR" -tnamed;
+            [ -x /usr/${BIN_DIRECTORY}/logger ] && echo "${named_err}" | /usr/${BIN_DIRECTORY}/logger -pdaemon."ERROR" -tnamed;
 
             exit 2;
         fi

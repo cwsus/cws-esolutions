@@ -91,7 +91,7 @@ function addApexRecordEntry
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
     ## validate the input
-    ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validateRecordData.sh type ${RECORD_TYPE};
+    ${PLUGIN_LIB_DIRECTORY}/validators/validateRecordData.sh type ${RECORD_TYPE};
     typeset -i RET_CODE=${?};
 
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -131,8 +131,8 @@ function addApexRecordEntry
     ## set up our zonefile names so we can operate on them
     ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1).${PROJECT_CODE};
     DC_ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1);
-    PRIMARY_ZONEFILE=${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DATACENTER}/${DC_ZONEFILE_NAME};
-    SECONDARY_ZONEFILE=${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DATACENTER}/${DC_ZONEFILE_NAME};
+    PRIMARY_ZONEFILE=${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DATACENTER}/${DC_ZONEFILE_NAME};
+    SECONDARY_ZONEFILE=${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DATACENTER}/${DC_ZONEFILE_NAME};
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONEFILE_NAME -> ${ZONEFILE_NAME}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DC_ZONEFILE_NAME -> ${DC_ZONEFILE_NAME}";
@@ -183,7 +183,7 @@ function addApexRecordEntry
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
                 ## validate the input
-                ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validateRecordData.sh address ${RECORD_DATA};
+                ${PLUGIN_LIB_DIRECTORY}/validators/validateRecordData.sh address ${RECORD_DATA};
                 typeset -i RET_CODE=${?};
 
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -230,7 +230,7 @@ function addApexRecordEntry
             [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
             ## validate the input
-            ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validateRecordData.sh target ${RECORD_TYPE} ${RECORD_DATA};
+            ${PLUGIN_LIB_DIRECTORY}/validators/validateRecordData.sh target ${RECORD_TYPE} ${RECORD_DATA};
             typeset -i RET_CODE=${?};
 
             [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -316,7 +316,7 @@ function addApexRecordEntry
             [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
             ## validate the input
-            ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validateRecordData.sh address ${RECORD_TARGET};
+            ${PLUGIN_LIB_DIRECTORY}/validators/validateRecordData.sh address ${RECORD_TARGET};
             typeset -i RET_CODE=${?};
 
             [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -340,7 +340,7 @@ function addApexRecordEntry
             [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
             ## validate the input
-            ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validateRecordData.sh target ${RECORD_TYPE} ${RECORD_TARGET};
+            ${PLUGIN_LIB_DIRECTORY}/validators/validateRecordData.sh target ${RECORD_TYPE} ${RECORD_TARGET};
             typeset -i RET_CODE=${?};
 
             [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -436,7 +436,7 @@ function addSubRecordEntry
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
     ## validate the input
-    ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validateRecordData.sh type ${RECORD_TYPE};
+    ${PLUGIN_LIB_DIRECTORY}/validators/validateRecordData.sh type ${RECORD_TYPE};
     typeset -i RET_CODE=${?};
 
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -476,8 +476,8 @@ function addSubRecordEntry
     ## set up our zonefile names so we can operate on them
     ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1).${PROJECT_CODE};
     DC_ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1);
-    PRIMARY_ZONEFILE=${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DATACENTER}/${DC_ZONEFILE_NAME};
-    SECONDARY_ZONEFILE=${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DATACENTER}/${DC_ZONEFILE_NAME};
+    PRIMARY_ZONEFILE=${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DATACENTER}/${DC_ZONEFILE_NAME};
+    SECONDARY_ZONEFILE=${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DATACENTER}/${DC_ZONEFILE_NAME};
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONEFILE_NAME -> ${ZONEFILE_NAME}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DC_ZONEFILE_NAME -> ${DC_ZONEFILE_NAME}";
@@ -547,7 +547,7 @@ function addSubRecordEntry
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
                 ## validate the input
-                ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validateRecordData.sh address ${RECORD_TARGET};
+                ${PLUGIN_LIB_DIRECTORY}/validators/validateRecordData.sh address ${RECORD_TARGET};
                 typeset -i RET_CODE=${?};
 
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -603,7 +603,7 @@ function addSubRecordEntry
             [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
             ## validate the input
-            [ "${RECORD_TYPE}" != "TXT" ] && ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validateRecordData.sh target ${RECORD_TYPE} ${RECORD_TARGET};
+            [ "${RECORD_TYPE}" != "TXT" ] && ${PLUGIN_LIB_DIRECTORY}/validators/validateRecordData.sh target ${RECORD_TYPE} ${RECORD_TARGET};
             typeset -i RET_CODE=${?};
 
             [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -666,7 +666,7 @@ function addSubRecordEntry
             [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
             ## validate the input
-            ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validateRecordData.sh address ${RECORD_TARGET};
+            ${PLUGIN_LIB_DIRECTORY}/validators/validateRecordData.sh address ${RECORD_TARGET};
             typeset -i RET_CODE=${?};
 
             [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -690,7 +690,7 @@ function addSubRecordEntry
             [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
             ## validate the input
-            [ "${RECORD_TYPE}" != "TXT" ] && ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validateRecordData.sh target ${RECORD_TYPE} ${RECORD_TARGET};
+            [ "${RECORD_TYPE}" != "TXT" ] && ${PLUGIN_LIB_DIRECTORY}/validators/validateRecordData.sh target ${RECORD_TYPE} ${RECORD_TARGET};
             typeset -i RET_CODE=${?};
 
             [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -808,17 +808,17 @@ function addSubRecordEntry
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
                 ## validate the input
-                ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validateRecordData.sh srvtype ${SRV_TYPE};
+                ${PLUGIN_LIB_DIRECTORY}/validators/validateRecordData.sh srvtype ${SRV_TYPE};
                 typeset -i SRV_TYPE_CODE=${?};
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SRV_TYPE_CODE -> ${SRV_TYPE_CODE}";
 
-                ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validateRecordData.sh srvproto ${SRV_PROTOCOL};
+                ${PLUGIN_LIB_DIRECTORY}/validators/validateRecordData.sh srvproto ${SRV_PROTOCOL};
                 typeset -i SRV_PROTO_CODE=${?};
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SRV_PROTO_CODE -> ${SRV_PROTO_CODE}";
 
-                ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validateRecordData.sh target SRV ${SRV_TARGET};
+                ${PLUGIN_LIB_DIRECTORY}/validators/validateRecordData.sh target SRV ${SRV_TARGET};
                 typeset -i SRV_TARGET_CODE=${?};
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SRV_TARGET_CODE -> ${SRV_TARGET_CODE}";
@@ -883,7 +883,7 @@ function addSubRecordEntry
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
                 ## validate the input
-                [ "${RECORD_TYPE}" != "TXT" ] && ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validateRecordData target ${RECORD_TYPE} ${RECORD_TARGET};
+                [ "${RECORD_TYPE}" != "TXT" ] && ${PLUGIN_LIB_DIRECTORY}/validators/validateRecordData target ${RECORD_TYPE} ${RECORD_TARGET};
                 typeset -i RET_CODE=${?};
 
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;

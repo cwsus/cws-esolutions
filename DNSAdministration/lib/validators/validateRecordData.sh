@@ -317,7 +317,7 @@ function validateRecordTarget
                 ?([+-])+([0-9]|['.']))
                     ## got an IP. for these types of records we should really use a name if available.
                     ## do a reverse lookup to get the name
-                    ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runQuery.sh -t ${RR_TYPE} -u ${2} -o -e;
+                    ${PLUGIN_LIB_DIRECTORY}/runQuery.sh -t ${RR_TYPE} -u ${2} -o -e;
                     typeset -i RET_CODE=${?};
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
@@ -375,7 +375,7 @@ function validateRecordTarget
                         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
                         ## validate the input
-                        ${PLUGIN_ROOT_DIR}/lib/runQuery.sh -s ${EXTERNAL_SERVER} -t a -u ${2} -o -e;
+                        ${PLUGIN_LIB_DIRECTORY}/runQuery.sh -s ${EXTERNAL_SERVER} -t a -u ${2} -o -e;
                         typeset -i RET_CODE=${?};
 
                         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -422,7 +422,7 @@ function validateRecordTarget
             ## or it might point to a wholly different resources
             ## (eg search.example.com points to www.google.com)
             ## need to know what file to look at
-            SOURCE_FILE=${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1);
+            SOURCE_FILE=${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1);
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SOURCE_FILE -> ${SOURCE_FILE}";
 
@@ -463,7 +463,7 @@ function validateRecordTarget
                         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
                         ## validate the input
-                        ${PLUGIN_ROOT_DIR}/lib/runQuery.sh -s ${EXTERNAL_SERVER} -t a -u ${2} -o -e;
+                        ${PLUGIN_LIB_DIRECTORY}/runQuery.sh -s ${EXTERNAL_SERVER} -t a -u ${2} -o -e;
                         typeset -i RET_CODE=${?};
 
                         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;

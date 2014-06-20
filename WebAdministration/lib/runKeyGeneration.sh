@@ -165,13 +165,13 @@ function createNewCertificate
                     if [ -s ${APP_ROOT}/${CSRSTORE}/SS-${CERT_NICKNAME}.csr ]
                     then
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CSR confirmed. Generating certificate..";
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/lib/runCertRenewal.sh -d ${CERTIFICATE_DATABASE} -s ${SITE_HOSTNAME} -w ${IPLANET_TYPE_IDENTIFIER} -p ${PLATFORM_CODE} -S -e..";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/runCertRenewal.sh -d ${CERTIFICATE_DATABASE} -s ${SITE_HOSTNAME} -w ${IPLANET_TYPE_IDENTIFIER} -p ${PLATFORM_CODE} -S -e..";
 
                         ## move forward
                         unset METHOD_NAME;
                         unset CNAME;
 
-                        . ${APP_ROOT}/lib/runCertRenewal.sh -d ${CERTIFICATE_DATABASE} -s ${SITE_HOSTNAME} \
+                        . ${APP_ROOT}/${LIB_DIRECTORY}/runCertRenewal.sh -d ${CERTIFICATE_DATABASE} -s ${SITE_HOSTNAME} \
                             -w ${IPLANET_TYPE_IDENTIFIER} -p ${PLATFORM_CODE} -S -e;
                         typeset -i RET_CODE=${?};
 
@@ -438,9 +438,9 @@ function createiPlanetCSR
             ## run_scp_connection...
             for SUFFIX in ${IPLANET_CERT_STORE_KEY_SUFFIX} ${IPLANET_CERT_STORE_CERT_SUFFIX}
             do
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/lib/tcl/runSCPConnection.exp remote-copy ${SOURCE_WEB_SERVER} ${SOURCE_PATH}/${IPLANET_CERT_DIR}/${SOURCE_CERT_DATABASE}${SUFFIX} ${APP_ROOT}/${CERTDB_STORE}/${CERTIFICATE_DATABASE}${SUFFIX} ${IPLANET_OWNING_USER}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp remote-copy ${SOURCE_WEB_SERVER} ${SOURCE_PATH}/${IPLANET_CERT_DIR}/${SOURCE_CERT_DATABASE}${SUFFIX} ${APP_ROOT}/${CERTDB_STORE}/${CERTIFICATE_DATABASE}${SUFFIX} ${IPLANET_OWNING_USER}";
 
-                ${APP_ROOT}/lib/tcl/runSCPConnection.exp remote-copy ${SOURCE_WEB_SERVER} \
+                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp remote-copy ${SOURCE_WEB_SERVER} \
                     ${SOURCE_PATH}/${IPLANET_CERT_DIR}/${SOURCE_CERT_DATABASE}${SUFFIX} \
                     ${APP_ROOT}/${CERTDB_STORE}/${CERTIFICATE_DATABASE}${SUFFIX} ${IPLANET_OWNING_USER};
 
@@ -822,9 +822,9 @@ function createIHSCSR
             ## run_scp_connection...
             for SUFFIX in ${IHS_DB_STASH_SUFFIX} ${IHS_DB_REQ_SUFFIX} ${IHS_DB_CRT_SUFFIX}
             do
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/lib/tcl/runSCPConnection.exp remote-copy ${SOURCE_WEB_SERVER} ${IHS_CERT_DIR}/${SOURCE_CERT_DATABASE}${SUFFIX} ${APP_ROOT}/${CERTDB_STORE}/${CERTIFICATE_DATABASE}${SUFFIX} ${IHS_OWNING_USER}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp remote-copy ${SOURCE_WEB_SERVER} ${IHS_CERT_DIR}/${SOURCE_CERT_DATABASE}${SUFFIX} ${APP_ROOT}/${CERTDB_STORE}/${CERTIFICATE_DATABASE}${SUFFIX} ${IHS_OWNING_USER}";
 
-                ${APP_ROOT}/lib/tcl/runSCPConnection.exp remote-copy ${SOURCE_WEB_SERVER} \
+                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp remote-copy ${SOURCE_WEB_SERVER} \
                     ${IHS_CERT_DIR}/${SOURCE_CERT_DATABASE}${SUFFIX} \
                     ${APP_ROOT}/${CERTDB_STORE}/${CERTIFICATE_DATABASE}${SUFFIX} ${IHS_OWNING_USER};
 
@@ -1077,7 +1077,7 @@ function usage
     return 3;
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 [ ${#} -eq 0 ] && usage;

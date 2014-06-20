@@ -149,7 +149,7 @@ function main
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
                 ## validate the input
-                ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/run_backout.sh -a;
+                ${PLUGIN_LIB_DIRECTORY}/run_backout.sh -a;
                 typeset -i RET_CODE=${?};
 
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -349,48 +349,13 @@ function main
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
 
                     print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
+
                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                else
-                    ## we need to make sure we were given real options.
-                    ## run the validator to check
-                    local THIS_CNAME=${CNAME};
-                    unset METHOD_NAME;
-                    unset CNAME;
-
-                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
-
-                    ## validate the input
-                    ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validate_service_request.sh -b ${SVC_LIST} -e;
-                    typeset -i RET_CODE=${?};
-
-                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-
-                    CNAME="${THIS_CNAME}";
-                    local METHOD_NAME="${THIS_CNAME}#${0}";
-
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
-
-                    if [ ${RET_CODE} -eq 0 ]
-                    then
-                        unset RET_CODE;
-
-                        ## request was validated successfully,
-                        ## lets process it
-                        process_backout_file;
-                    else
-                        unset RET_CODE;
-
-                        ## request was invalid
-                        unset SVC_LIST;
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${SVC_LIST} invalid";
-
-                        print "$(sed -e '/^ *#/d;s/#.*//' ${ERROR_MESSAGES} | awk -F "=" '/\<selection.invalid\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g')";
-
-                        sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                    fi
                 fi
+
+                reset; clear; process_backout_file;
+
+                reset; clear; break;
                 ;;
         esac
     done
@@ -449,7 +414,7 @@ function process_backout_file
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
                 ## validate the input
-                [ ${#FILE_LIST[@]} -eq 0 ] && ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/run_backout.sh -b ${BU} -d ${CHANGE_DT} -c ${CHANGE_REQ} -e || ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/run_backout.sh -f $(echo ${FILE_LIST[${SELECTION}]} | cut -d "/" -f 7 | sed -e "s/^M//g");
+                [ ${#FILE_LIST[@]} -eq 0 ] && ${PLUGIN_LIB_DIRECTORY}/run_backout.sh -b ${BU} -d ${CHANGE_DT} -c ${CHANGE_REQ} -e || ${PLUGIN_LIB_DIRECTORY}/run_backout.sh -f $(echo ${FILE_LIST[${SELECTION}]} | cut -d "/" -f 7 | sed -e "s/^M//g");
                 typeset -i RET_CODE=${?};
 
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -567,7 +532,7 @@ function process_backout_file
                                         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
                                         ## validate the input
-                                        ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/run_backout.sh ${FILE_LIST[${SELECTION}]};
+                                        ${PLUGIN_LIB_DIRECTORY}/run_backout.sh ${FILE_LIST[${SELECTION}]};
                                         typeset -i RET_CODE=${?};
 
                                         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;

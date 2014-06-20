@@ -42,7 +42,7 @@ function main
     unset CNAME;
 
     ## make sure someone isnt already working on stuff
-    . ${APP_ROOT}/lib/check_usage.sh;
+    . ${APP_ROOT}/${LIB_DIRECTORY}/check_usage.sh;
     typeset -i RET_CODE=${?};
 
     ## reset METHOD_NAME back to THIS method
@@ -108,7 +108,7 @@ function main
                         unset METHOD_NAME;
                         unset CNAME;
 
-                        . ${APP_ROOT}/lib/run_backout.sh -a;
+                        . ${APP_ROOT}/${LIB_DIRECTORY}/run_backout.sh -a;
                         RET_CODE=${?}
 
                         ## reset METHOD_NAME back to THIS method
@@ -301,7 +301,7 @@ function main
                         else
                             ## we need to make sure we were given real options.
                             ## run the validator to check
-                            . ${APP_ROOT}/lib/validators/validate_service_request.sh -b ${SVC_LIST} -e;
+                            . ${APP_ROOT}/${LIB_DIRECTORY}/validators/validate_service_request.sh -b ${SVC_LIST} -e;
                             typeset -i RET_CODE=${?};
 
                             if [ ${RET_CODE} -eq 0 ]
@@ -395,11 +395,11 @@ function process_backout_file
                 then
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing run_backout.sh -b ${BU} -d ${CHANGE_DT} -c ${CHANGE_REQ} -e..";
 
-                    . ${APP_ROOT}/lib/run_backout.sh -b ${BU} -d ${CHANGE_DT} -c ${CHANGE_REQ} -e;
+                    . ${APP_ROOT}/${LIB_DIRECTORY}/run_backout.sh -b ${BU} -d ${CHANGE_DT} -c ${CHANGE_REQ} -e;
                 else
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing run_backout.sh -f $(echo ${FILE_LIST[${SELECTION}]} | cut -d "/" -f 7 | sed -e "s/^M//g")";
 
-                    . ${APP_ROOT}/lib/run_backout.sh -f $(echo ${FILE_LIST[${SELECTION}]} | cut -d "/" -f 7 | sed -e "s/^M//g");
+                    . ${APP_ROOT}/${LIB_DIRECTORY}/run_backout.sh -f $(echo ${FILE_LIST[${SELECTION}]} | cut -d "/" -f 7 | sed -e "s/^M//g");
                 fi
                 typeset -i RET_CODE=${?};
 
@@ -506,7 +506,7 @@ function process_backout_file
                                         unset CNAME;
 
                                         ## call run_backout with the filename
-                                        . ${APP_ROOT}/lib/run_backout.sh ${FILE_LIST[${SELECTION}]};
+                                        . ${APP_ROOT}/${LIB_DIRECTORY}/run_backout.sh ${FILE_LIST[${SELECTION}]};
                                         typeset -i RET_CODE=${?};
 
                                         ## set method_name and cname back to this
@@ -611,7 +611,7 @@ function process_backout_file
     done
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 METHOD_NAME="${CNAME}#startup";

@@ -203,7 +203,7 @@ function switch_to_slave
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating working copy..";
 
                         ## take a copy...
-                        cp ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONFIG} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG};
+                        cp ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONFIG} ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG};
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Working copy created. Creating backup..";
 
@@ -218,31 +218,31 @@ function switch_to_slave
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup verified. Verifying working copy..";
 
                             ## xlnt, make sure we have a working copy..
-                            if [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG} ]
+                            if [ -s ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG} ]
                             then
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Working copy verified. Switching from master to slave..";
 
                                 ## get a count of zones in the file..
-                                ZONE_COUNT=$(grep -c "zone" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG});
+                                ZONE_COUNT=$(grep -c "zone" ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG});
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONE_COUNT -> ${ZONE_COUNT}";
 
                                 ## lets start operating. first, change slave to master
-                                sed -e "s/master/slave/g" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG} >> ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp;
+                                sed -e "s/master/slave/g" ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG} >> ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG}.tmp;
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Switch complete. Verifying..";
 
                                 ## and make sure it was changed..
-                                if [ $(grep -c ${NAMED_MASTER_ROOT} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp) -eq 0 ]
+                                if [ $(grep -c ${NAMED_MASTER_ROOT} ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG}.tmp) -eq 0 ]
                                 then
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Switch verified. Adding masters clause..";
 
                                     ## great. keep going - replace the masters line with the allow-update line
-                                    mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG};
+                                    mv ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG}.tmp ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG};
 
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting ZONE_NAMES..";
 
-                                    ZONE_NAMES=$(grep "zone \"" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG} | awk '{print $2}' | cut -d "\"" -f 2);
+                                    ZONE_NAMES=$(grep "zone \"" ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG} | awk '{print $2}' | cut -d "\"" -f 2);
 
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONE_NAMES set. Continuing..";
 
@@ -250,7 +250,7 @@ function switch_to_slave
                                     do
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating on ${ZONE_NAME}";
 
-                                        START_LINE_NUMBER=$(sed -n "/zone \"${ZONE_NAME}\" IN {/=" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG});
+                                        START_LINE_NUMBER=$(sed -n "/zone \"${ZONE_NAME}\" IN {/=" ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG});
                                         END_LINE_NUMBER=$(expr ${START_LINE_NUMBER} + 3);
 
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "START_LINE_NUMBER -> ${START_LINE_NUMBER}";
@@ -258,21 +258,21 @@ function switch_to_slave
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Placing masters clause..";
 
                                         ## solaris is all kinds of messed up i guess. what linux will do with
-                                        ## <code>sed -e "${END_LINE_NUMBER}a\    masters         { \"${NAMED_MASTER_ACL}\"; };" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG} > ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp;</code>
+                                        ## <code>sed -e "${END_LINE_NUMBER}a\    masters         { \"${NAMED_MASTER_ACL}\"; };" ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG} > ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG}.tmp;</code>
                                         ## solaris cant. not sure why. so we go through this HIGHLY convoluted process here.
                                         sed -e "${END_LINE_NUMBER}a\\
-                                            masters         { \"${NAMED_MASTER_ACL}\"; };" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG} > ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp;
+                                            masters         { \"${NAMED_MASTER_ACL}\"; };" ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG} > ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG}.tmp;
 
                                         ## make it the target again...
-                                        mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG};
+                                        mv ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG}.tmp ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG};
 
                                         ## and then replace the 800 million spaces that got added
-                                        sed -e "s/                                            masters         {/    masters           {/g" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG} > ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp;
+                                        sed -e "s/                                            masters         {/    masters           {/g" ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG} > ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG}.tmp;
 
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "masters clause placed. Verifying..";
 
                                         ## make sure it got placed
-                                        if [ $(grep -n "masters         { \"${NAMED_MASTER_ACL}\"; };" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp | grep -c $(expr ${END_LINE_NUMBER} + 1)) -eq 0 ]
+                                        if [ $(grep -n "masters         { \"${NAMED_MASTER_ACL}\"; };" ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG}.tmp | grep -c $(expr ${END_LINE_NUMBER} + 1)) -eq 0 ]
                                         then
                                             ## it did not. we fail here.
                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to place masters clause in dynamic zone ${ZONE_CONFIG}. Please process manually.";
@@ -283,23 +283,23 @@ function switch_to_slave
                                             ## we now need to update the allow-update line to none.
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "masters clause successfully added. Modifying allow-update clause..";
 
-                                            mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG};
+                                            mv ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG}.tmp ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG};
 
                                             ## operate a bit differently if we're on a dynamic zone..
-                                            if [ $(grep -c ${NAMED_DYNAMIC_ROOT} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}) -ne 0 ]
+                                            if [ $(grep -c ${NAMED_DYNAMIC_ROOT} ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG}) -ne 0 ]
                                             then
                                                 ## this is a dynamic zone. change appropriately
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Dynamic zone detected. Modifying allow-update clause..";
 
-                                                sed -e "s/allow-update    { key ${DHCPD_UPDATE_KEY}; };/allow-update    { none; };/g" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG} \
-                                                    >> ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp;
+                                                sed -e "s/allow-update    { key ${DHCPD_UPDATE_KEY}; };/allow-update    { none; };/g" ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG} \
+                                                    >> ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG}.tmp;
 
-                                                if [ $(grep -c ${DHCPD_UPDATE_KEY} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp) -eq 0 ]
+                                                if [ $(grep -c ${DHCPD_UPDATE_KEY} ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG}.tmp) -eq 0 ]
                                                 then
                                                     ## successfully modified the allow-update clause. this is done.
                                                     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Dynamic zone ${ZONE_NAME} successfully updated by ${REQUESTING_USER}.";
 
-                                                    mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG};
+                                                    mv ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG}.tmp ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG};
                                                 else
                                                     ## some form of failure..
                                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to place modify allow-update clause in dynamic zone ${ZONE_CONFIG}. Please process manually.";
@@ -325,12 +325,12 @@ function switch_to_slave
                                     then
                                         ## now we move the file into the proper place
                                         ## take a checksum first..
-                                        TMP_CONF_CKSUM=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG} | awk '{print $1}');
+                                        TMP_CONF_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG} | awk '{print $1}');
 
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_OP_CKSUM -> ${TMP_OP_CKSUM}";
 
                                         ## and move the file..
-                                        mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG} ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONFIG};
+                                        mv ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG} ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONFIG};
 
                                         ## take a checksum of the new file..
                                         OP_CONF_CKSUM=$(cksum ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONFIG} | awk '{print $1}');
@@ -399,48 +399,48 @@ function switch_to_slave
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Successfully validated backup creation. Creating working copy..";
 
                             ## good, we have our backup. make a working copy
-                            cp ${NAMED_CONF_FILE} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME};
+                            cp ${NAMED_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME};
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Created working copy. Validating..";
 
                             ## and make sure we have our working copy..
-                            if [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME} ]
+                            if [ -s ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME} ]
                             then
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validated working copy. Modifying query ACL.";
 
                                 ## good. lets make our changes
-                                sed -e "s/allow-query            { ${NAMED_QUERY_ACL} };/allow-query            { any; };/g" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME} \
-                                    >> ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME}.tmp;
+                                sed -e "s/allow-query            { ${NAMED_QUERY_ACL} };/allow-query            { any; };/g" ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME} \
+                                    >> ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME}.tmp;
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Query ACL modified. Validating..";
 
                                 ## make sure its there..
-                                if [ $(grep -c "allow-query            { ${NAMED_QUERY_ACL} };" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME}.tmp) -eq 0 ]
+                                if [ $(grep -c "allow-query            { ${NAMED_QUERY_ACL} };" ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME}.tmp) -eq 0 ]
                                 then
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Query ACL validated. Modifying transfer ACL..";
 
                                     ## it is. continue.
-                                    mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME}.tmp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME};
-                                    sed -e "s/allow-transfer         { ${NAMED_TRANSFER_ACL} };/allow-transfer         { none; };/g" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME} \
-                                        >> ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME}.tmp;
+                                    mv ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME}.tmp ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME};
+                                    sed -e "s/allow-transfer         { ${NAMED_TRANSFER_ACL} };/allow-transfer         { none; };/g" ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME} \
+                                        >> ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME}.tmp;
 
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Transfer ACL modified. Validating..";
 
                                     ## and make sure thats there now too...
-                                    if [ $(grep -c "allow-transfer         { ${NAMED_TRANSFER_ACL} };" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME}.tmp) -eq 0 ]
+                                    if [ $(grep -c "allow-transfer         { ${NAMED_TRANSFER_ACL} };" ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME}.tmp) -eq 0 ]
                                     then
                                         ## poifect. this means this server is now ready to be a master nameserver.
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Transfer ACL validated. Continuing..";
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Over-writing original information..";
 
                                         ## make it the original copy..
-                                        mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME}.tmp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME};
+                                        mv ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME}.tmp ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME};
 
                                         ## checksum it..
-                                        TMP_CONF_CKSUM=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME} | awk '{print $1}');
+                                        TMP_CONF_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME} | awk '{print $1}');
 
                                         ## move the file in.
-                                        mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME} ${NAMED_CONF_FILE};
+                                        mv ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME} ${NAMED_CONF_FILE};
 
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Moved file into primary configuration. Validating..";
 
@@ -460,7 +460,7 @@ function switch_to_slave
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Modifying system configuration..";
 
                                             ## take a backup and make a working copy
-                                            TMP_NAMED_CONFIG=${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(grep named_config_file ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2- | sed -e 's/^ *//g;s/ *$//g' | cut -d "/" -f 2);
+                                            TMP_NAMED_CONFIG=${PLUGIN_TMP_DIRECTORY}/$(grep named_config_file ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2- | sed -e 's/^ *//g;s/ *$//g' | cut -d "/" -f 2);
                                             BKUP_NAMED_CONFIG=${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(grep named_config_file ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2- | sed -e 's/^ *//g;s/ *$//g' | cut -d "/" -f 2).${CHANGE_NUM};
 
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_NAMED_CONFIG -> ${TMP_NAMED_CONFIG}";
@@ -689,7 +689,7 @@ function switch_to_master
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating working copy..";
 
                         ## take a copy...
-                        cp ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONFIG} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG};
+                        cp ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONFIG} ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG};
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Working copy created. Creating backup..";
 
@@ -704,29 +704,29 @@ function switch_to_master
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup verified. Verifying working copy..";
 
                             ## xlnt, make sure we have a working copy..
-                            if [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG} ]
+                            if [ -s ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG} ]
                             then
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Working copy verified. Switching from master to slave..";
 
                                 ## get a count of zones in the file..
-                                ZONE_COUNT=$(grep -c "zone" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG});
+                                ZONE_COUNT=$(grep -c "zone" ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG});
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONE_COUNT -> ${ZONE_COUNT}";
 
                                 ## lets start operating. first, change master to slave
-                                sed -e "s/slave/master/g" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG} >> ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp;
+                                sed -e "s/slave/master/g" ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG} >> ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG}.tmp;
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Switch complete. Verifying..";
 
                                 ## and make sure it was changed..
-                                if [ $(grep -c ${NAMED_MASTER_ROOT} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp) -ne 0 ]
+                                if [ $(grep -c ${NAMED_MASTER_ROOT} ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG}.tmp) -ne 0 ]
                                 then
                                     ## great. keep going - replace the masters line with the allow-update line
-                                    mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG};
+                                    mv ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG}.tmp ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG};
 
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting ZONE_NAMES..";
 
-                                    ZONE_NAMES=$(grep "zone \"" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG} | awk '{print $2}' | cut -d "\"" -f 2);
+                                    ZONE_NAMES=$(grep "zone \"" ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG} | awk '{print $2}' | cut -d "\"" -f 2);
 
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONE_NAMES set. Continuing..";
 
@@ -735,12 +735,12 @@ function switch_to_master
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating on ${ZONE_NAME}";
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing masters clause..";
 
-                                        sed -e "/masters         { \"${NAMED_MASTER_ACL}\"; };/d" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG} >> ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp;
+                                        sed -e "/masters         { \"${NAMED_MASTER_ACL}\"; };/d" ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG} >> ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG}.tmp;
 
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "masters clause removed. Verifying..";
 
                                         ## make sure it got removed
-                                        if [ $(grep -c ${NAMED_MASTER_ACL} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp) -ne 0 ]
+                                        if [ $(grep -c ${NAMED_MASTER_ACL} ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG}.tmp) -ne 0 ]
                                         then
                                             ## it did not. we fail here.
                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to remove masters clause in zone ${ZONE_CONFIG}. Please process manually.";
@@ -751,23 +751,23 @@ function switch_to_master
                                             ## we now need to update the allow-update line to none.
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "masters clause successfully removed. Modifying allow-update clause..";
 
-                                            mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG};
+                                            mv ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG}.tmp ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG};
 
                                             ## operate a bit differently if we're on a dynamic zone..
-                                            if [ $(grep -c ${NAMED_DYNAMIC_ROOT} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}) -ne 0 ]
+                                            if [ $(grep -c ${NAMED_DYNAMIC_ROOT} ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG}) -ne 0 ]
                                             then
                                                 ## this is a dynamic zone. change appropriately
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Dynamic zone detected. Modifying allow-update clause..";
 
-                                                sed -e "s/allow-update    { none; };/allow-update    { key ${DHCPD_UPDATE_KEY}; };/g" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG} \
-                                                    >> ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp;
+                                                sed -e "s/allow-update    { none; };/allow-update    { key ${DHCPD_UPDATE_KEY}; };/g" ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG} \
+                                                    >> ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG}.tmp;
 
-                                                if [ $(grep -c ${DHCPD_UPDATE_KEY} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp) -ne 0 ]
+                                                if [ $(grep -c ${DHCPD_UPDATE_KEY} ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG}.tmp) -ne 0 ]
                                                 then
                                                     ## successfully modified the allow-update clause. this is done.
                                                     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Dynamic zone ${ZONE_NAME} successfully updated by ${REQUESTING_USER}.";
 
-                                                    mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG}.tmp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG};
+                                                    mv ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG}.tmp ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG};
                                                 else
                                                     ## some form of failure..
                                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to modify allow-update clause in dynamic zone ${ZONE_CONFIG}. Please process manually.";
@@ -793,12 +793,12 @@ function switch_to_master
                                     then
                                         ## now we move the file into the proper place
                                         ## take a checksum first..
-                                        TMP_CONF_CKSUM=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG} | awk '{print $1}');
+                                        TMP_CONF_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG} | awk '{print $1}');
 
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_OP_CKSUM -> ${TMP_OP_CKSUM}";
 
                                         ## and move the file..
-                                        mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${ZONE_CONFIG} ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONFIG};
+                                        mv ${PLUGIN_TMP_DIRECTORY}/${ZONE_CONFIG} ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONFIG};
 
                                         ## take a checksum of the new file..
                                         OP_CONF_CKSUM=$(cksum ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONFIG} | awk '{print $1}');
@@ -867,48 +867,48 @@ function switch_to_master
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Successfully validated backup creation. Creating working copy..";
 
                             ## good, we have our backup. make a working copy
-                            cp ${NAMED_CONF_FILE} ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME};
+                            cp ${NAMED_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME};
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Created working copy. Validating..";
 
                             ## and make sure we have our working copy..
-                            if [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME} ]
+                            if [ -s ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME} ]
                             then
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validated working copy. Modifying query ACL.";
 
                                 ## good. lets make our changes
-                                sed -e "s/allow-query            { any; };/allow-query            { ${NAMED_QUERY_ACL} };/g" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME} \
-                                    >> ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME}.tmp;
+                                sed -e "s/allow-query            { any; };/allow-query            { ${NAMED_QUERY_ACL} };/g" ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME} \
+                                    >> ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME}.tmp;
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Query ACL modified. Validating..";
 
                                 ## make sure its there..
-                                if [ $(grep -c "{ ${NAMED_QUERY_ACL} };" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME}.tmp) -ne 0 ]
+                                if [ $(grep -c "{ ${NAMED_QUERY_ACL} };" ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME}.tmp) -ne 0 ]
                                 then
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Query ACL validated. Modifying transfer ACL..";
 
                                     ## it is. continue.
-                                    mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME}.tmp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME};
-                                    sed -e "s/allow-transfer         { none; };/allow-transfer         { ${NAMED_TRANSFER_ACL} };/g" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME} \
-                                        >> ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME}.tmp;
+                                    mv ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME}.tmp ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME};
+                                    sed -e "s/allow-transfer         { none; };/allow-transfer         { ${NAMED_TRANSFER_ACL} };/g" ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME} \
+                                        >> ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME}.tmp;
 
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Transfer ACL modified. Validating..";
 
                                     ## and make sure thats there now too...
-                                    if [ $(grep -c "{ ${NAMED_TRANSFER_ACL} }" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME}.tmp) -ne 0 ]
+                                    if [ $(grep -c "{ ${NAMED_TRANSFER_ACL} }" ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME}.tmp) -ne 0 ]
                                     then
                                         ## poifect. this means this server is now ready to be a master nameserver.
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Transfer ACL validated. Continuing..";
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Over-writing original information..";
 
                                         ## make it the original copy..
-                                        mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME}.tmp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME};
+                                        mv ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME}.tmp ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME};
 
                                         ## checksum it..
-                                        TMP_CONF_CKSUM=$(cksum ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME} | awk '{print $1}');
+                                        TMP_CONF_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME} | awk '{print $1}');
 
                                         ## move the file in.
-                                        mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME} ${NAMED_CONF_FILE};
+                                        mv ${PLUGIN_TMP_DIRECTORY}/${NAMED_CONF_CHANGENAME} ${NAMED_CONF_FILE};
 
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Moved file into primary configuration. Validating..";
 
@@ -931,7 +931,7 @@ function switch_to_master
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Modifying system configuration..";
 
                                             ## take a backup and make a working copy
-                                            TMP_NAMED_CONFIG=${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/$(grep named_config_file ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2- | sed -e 's/^ *//g;s/ *$//g' | cut -d "/" -f 2);
+                                            TMP_NAMED_CONFIG=${PLUGIN_TMP_DIRECTORY}/$(grep named_config_file ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2- | sed -e 's/^ *//g;s/ *$//g' | cut -d "/" -f 2);
                                             BKUP_NAMED_CONFIG=${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(grep named_config_file ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2- | sed -e 's/^ *//g;s/ *$//g' | cut -d "/" -f 2).${CHANGE_NUM};
 
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_NAMED_CONFIG -> ${TMP_NAMED_CONFIG}";

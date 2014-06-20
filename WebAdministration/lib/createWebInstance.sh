@@ -357,7 +357,7 @@ function createSecuredInstance
                             unset METHOD_NAME;
                             unset CNAME;
 
-                            . ${APP_ROOT}/lib/runKeyGeneration.sh -s ${SITE_HOSTNAME} -w ${IPLANET_TYPE_IDENTIFIER} \
+                            . ${APP_ROOT}/${LIB_DIRECTORY}/runKeyGeneration.sh -s ${SITE_HOSTNAME} -w ${IPLANET_TYPE_IDENTIFIER} \
                                 -d ${SERVER_ID}-${IUSER_AUDIT}- -c ${PLATFORM_CODE} -t ${CONTACT_NUMBER} -n -e;
                             typeset -i RET_CODE=${?};
 
@@ -829,7 +829,7 @@ function usage
     return 3;
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 [ ${#} -eq 0 ] && usage;

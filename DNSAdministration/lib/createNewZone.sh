@@ -109,7 +109,7 @@ function createSkeletonZone
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing service indicators..";
 
-    local BASE_DIRECTORY=${TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}
+    local BASE_DIRECTORY=${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}
     local ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1).${PROJECT_CODE};
     local DC_ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1);
     local ADMIN_CONTACT=$(echo ${DNS_SERVER_ADMIN_EMAIL} | sed -e "s/@/./");
@@ -163,6 +163,13 @@ function createSkeletonZone
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_COORDINATES -> ${SITE_COORDINATES}";
 
             printf "            IN    LOC         ${SITE_COORDINATES}\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
+        fi
+
+        if [ ! -s ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME} ]
+        then
+            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to populate zone datafile!";
+
+            (( ERROR_COUNT += 1 ));
         fi
     done
 

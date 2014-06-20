@@ -102,7 +102,7 @@ function obtainWebData
                 unset CNAME;
                 unset RET_CODE;
 
-                . ${APP_ROOT}/lib/runQuery.sh -u ${SITE_HOSTNAME} -e;
+                . ${APP_ROOT}/${LIB_DIRECTORY}/runQuery.sh -u ${SITE_HOSTNAME} -e;
                 RET_CODE=${?}
 
                 CNAME=$(basename ${0});
@@ -183,7 +183,7 @@ usage
     return 3;
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 [ ${#} -eq 0 ] && usage;

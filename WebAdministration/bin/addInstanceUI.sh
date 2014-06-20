@@ -127,14 +127,14 @@ function main
                             SERVER_PATH=${SERVER_BUILD};
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVER_PATH -> ${SERVER_PATH}";
-                            
+
                             (( SERVER_FOUND += 1 ));
                         fi
                     done
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVER_PATH -> ${SERVER_PATH}";
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVER_FOUND -> ${SERVER_FOUND}";
-                            
+
                     if [ ${SERVER_FOUND} -ne 0 ]
                     then
                         if [ ${SERVER_FOUND} -gt 1 ]
@@ -149,7 +149,7 @@ function main
                             SITE_HOSTNAME=$(grep ${SITE_HOSTNAME_IDENTIFIER} ${SERVER_PATH} | awk '{print $3}' | cut -d "\"" -f 2);
                             PLATFORM_CODE=$(grep ${PLATFORM_CODE_IDENTIFIER} ${SERVER_PATH} | awk '{print $3}' | cut -d "\"" -f 2);
                             SERVER_ID=$(grep ${SERVERID_IDENTIFIER} ${SERVER_PATH} | awk '{print $3}' | cut -d "\"" -f 2);
-                            
+
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROJECT_CODE -> ${PROJECT_CODE}";
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_HOSTNAME -> ${SITE_HOSTNAME}";
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PLATFORM_CODE -> ${PLATFORM_CODE}";
@@ -163,7 +163,7 @@ function main
                                     print "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
                                     print "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
                                     print "\t$(grep -w createsite.install.server "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                    
+
                                     read INSTALL_SERVER;
 
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INSTALL_SERVER -> ${INSTALL_SERVER}";
@@ -188,7 +188,7 @@ function main
 
                                                 print "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
-                                                if [[ ${CHANGE_NUM} == [Ee] ]] || [ $(${APP_ROOT}/lib/validators/validate_change_ticket.sh ${CHANGE_NUM}) -ne 0 ]
+                                                if [[ ${CHANGE_NUM} == [Ee] ]] || [ $(${APP_ROOT}/${LIB_DIRECTORY}/validators/validate_change_ticket.sh ${CHANGE_NUM}) -ne 0 ]
                                                 then
                                                     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A change was attempted with an invalid change order by ${IUSER_AUDIT}. Change request was ${CHANGE_NUM}.";
                                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An invalid change control was provided. A valid change control number is required to process the request.";
@@ -204,7 +204,7 @@ function main
                                                     print "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Beginning installation of ${SERVER_ID} ..";
-                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/lib/runAddInstance.sh -s ${SERVER_ID} -p ${PLATFORM_CODE} -P ${PROJECT_CODE} -w ${WS_PLATFORM} -c ${CHANGE_NUM} -e ..";
+                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/runAddInstance.sh -s ${SERVER_ID} -p ${PLATFORM_CODE} -P ${PROJECT_CODE} -w ${WS_PLATFORM} -c ${CHANGE_NUM} -e ..";
 
                                                     ## call out to the installer
                                                     unset METHOD_NAME;
@@ -212,7 +212,7 @@ function main
                                                     unset RET_CODE;
                                                     unset RETURN_CODE;
 
-                                                    . ${APP_ROOT}/lib/runAddInstance.sh -s ${SERVER_ID} -p ${PLATFORM_CODE} -P ${PROJECT_CODE} -w ${WS_PLATFORM} -c ${CHANGE_NUM} -e;
+                                                    . ${APP_ROOT}/${LIB_DIRECTORY}/runAddInstance.sh -s ${SERVER_ID} -p ${PLATFORM_CODE} -P ${PROJECT_CODE} -w ${WS_PLATFORM} -c ${CHANGE_NUM} -e;
                                                     typeset -i RET_CODE=${?};
 
                                                     CNAME=$(basename ${0});
@@ -584,7 +584,7 @@ local METHOD_NAME="${CNAME}#${0}";
                                                                                 unset PROJECT_CODE;
                                                                                 unset SERVER_TYPE;
                                                                                 unset WEBSERVER_NAMES;
-            
+
                                                                                 sleep "${MESSAGE_DELAY}"; reset; clear; break;
                                                                                 ;;
                                                                             1)
@@ -738,7 +738,7 @@ function buildServerInstance
                 print "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
                 print "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
                 print "\t$(grep -w createsite.install.server "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                
+
                 read INSTALL_SERVER;
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INSTALL_SERVER -> ${INSTALL_SERVER}";
@@ -763,7 +763,7 @@ function buildServerInstance
 
                             print "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
-                            if [[ ${CHANGE_NUM} == [Ee] ]] || [ $(${APP_ROOT}/lib/validators/validate_change_ticket.sh ${CHANGE_NUM}) -ne 0 ]
+                            if [[ ${CHANGE_NUM} == [Ee] ]] || [ $(${APP_ROOT}/${LIB_DIRECTORY}/validators/validate_change_ticket.sh ${CHANGE_NUM}) -ne 0 ]
                             then
                                 ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A change was attempted with an invalid change order by ${IUSER_AUDIT}. Change request was ${CHANGE_NUM}.";
                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An invalid change control was provided. A valid change control number is required to process the request.";
@@ -779,7 +779,7 @@ function buildServerInstance
                                 print "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Beginning installation of ${SERVER_ID} ..";
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/lib/runAddInstance.sh -s ${SERVER_ID} -p ${PLATFORM_CODE} -P ${PROJECT_CODE} -w ${WS_PLATFORM} -c ${CHANGE_NUM} -e ..";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/runAddInstance.sh -s ${SERVER_ID} -p ${PLATFORM_CODE} -P ${PROJECT_CODE} -w ${WS_PLATFORM} -c ${CHANGE_NUM} -e ..";
 
                                 ## call out to the installer
                                 unset METHOD_NAME;
@@ -787,7 +787,7 @@ function buildServerInstance
                                 unset RET_CODE;
                                 unset RETURN_CODE;
 
-                                . ${APP_ROOT}/lib/runAddInstance.sh -s ${SERVER_ID} -p ${PLATFORM_CODE} -P ${PROJECT_CODE} -w ${WS_PLATFORM} -c ${CHANGE_NUM} -e;
+                                . ${APP_ROOT}/${LIB_DIRECTORY}/runAddInstance.sh -s ${SERVER_ID} -p ${PLATFORM_CODE} -P ${PROJECT_CODE} -w ${WS_PLATFORM} -c ${CHANGE_NUM} -e;
                                 typeset -i RET_CODE=${?};
 
                                 CNAME=$(basename ${0});
@@ -1056,7 +1056,7 @@ function buildServerInstance
                                 sleep "${MESSAGE_DELAY}"; reset; clear; break;
                                 ;;
                             *)
-                                if [ $(${APP_ROOT}/lib/validators/validate_tel_num.sh ${CONTACT_NUMBER}) -ne 0 ]
+                                if [ $(${APP_ROOT}/${LIB_DIRECTORY}/validators/validate_tel_num.sh ${CONTACT_NUMBER}) -ne 0 ]
                                 then
                                     reset; clear;
                                     ## number provided was invalid
@@ -1074,10 +1074,10 @@ function buildServerInstance
 
                                     if [ "${SITE_BUILD_TYPE}" = "${BUILD_TYPE_SSL}" ]
                                     then
-                                        . ${APP_ROOT}/lib/helpers/ui/buildSSLSiteUI.sh;
+                                        . ${APP_ROOT}/${LIB_DIRECTORY}/helpers/ui/buildSSLSiteUI.sh;
                                     elif [ "${SITE_BUILD_TYPE}" = "${BUILD_TYPE_BOTH}" ]
                                     then
-                                        . ${APP_ROOT}/lib/helpers/ui/buildHybridSiteUI.sh;
+                                        . ${APP_ROOT}/${LIB_DIRECTORY}/helpers/ui/buildHybridSiteUI.sh;
                                     fi
                                 fi
                                 ;;
@@ -1088,14 +1088,14 @@ function buildServerInstance
                     unset METHOD_NAME;
                     unset CNAME;
 
-                    . ${APP_ROOT}/lib/helpers/ui/buildNoSSLSiteUI.sh;
+                    . ${APP_ROOT}/${LIB_DIRECTORY}/helpers/ui/buildNoSSLSiteUI.sh;
                     ;;
             esac
         fi
     done
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 METHOD_NAME="${CNAME}#startup";

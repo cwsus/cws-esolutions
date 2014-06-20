@@ -263,15 +263,15 @@ function addStartupException
 
                                         if [ ${PING_RCODE} -eq 0 ]
                                         then
-                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${MONITORED_HOST} \"${REMOTE_APP_ROOT}/lib/monitors/${MONITORING_SCRIPT}.sh\" websrv";
+                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${MONITORED_HOST} \"${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/monitors/${MONITORING_SCRIPT}.sh\" websrv";
 
                                             ## unset ret code from prior execution
                                             unset RET_CODE;
 
-                                            $(${APP_ROOT}/lib/tcl/runSCPConnection.exp local-copy ${MONITORED_HOST} ${APP_ROOT}/${CORE_EXCEPTION_LIST} ${REMOTE_APP_ROOT}/${CORE_EXCEPTION_LIST} websrv);
+                                            $(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp local-copy ${MONITORED_HOST} ${APP_ROOT}/${CORE_EXCEPTION_LIST} ${REMOTE_APP_ROOT}/${CORE_EXCEPTION_LIST} websrv);
 
                                             ## make sure it was copied..
-                                            REMOTE_CKSUM=$(${APP_ROOT}/lib/tcl/runSSHConnection.exp ${MONITORED_HOST} "cksum ${APP_ROOT}/${CORE_EXCEPTION_LIST}" websrv);
+                                            REMOTE_CKSUM=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${MONITORED_HOST} "cksum ${APP_ROOT}/${CORE_EXCEPTION_LIST}" websrv);
 
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REMOTE_CKSUM -> ${REMOTE_CKSUM}";
 
@@ -610,15 +610,15 @@ function addSSLException
 
                                         if [ ${PING_RCODE} -eq 0 ]
                                         then
-                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command run_ssh_connection.exp monitor ${MONITORED_HOST} \"${REMOTE_APP_ROOT}/lib/monitors/${MONITORING_SCRIPT}.sh\" websrv";
+                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command run_ssh_connection.exp monitor ${MONITORED_HOST} \"${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/monitors/${MONITORING_SCRIPT}.sh\" websrv";
 
                                             ## unset ret code from prior execution
                                             unset RET_CODE;
 
-                                            $(${APP_ROOT}/lib/tcl/runSCPConnection.exp local-copy ${MONITORED_HOST} ${APP_ROOT}/${SSL_EXCEPTION_LIST} ${REMOTE_APP_ROOT}/${SSL_EXCEPTION_LIST} websrv);
+                                            $(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp local-copy ${MONITORED_HOST} ${APP_ROOT}/${SSL_EXCEPTION_LIST} ${REMOTE_APP_ROOT}/${SSL_EXCEPTION_LIST} websrv);
 
                                             ## make sure it was copied..
-                                            REMOTE_CKSUM=$(${APP_ROOT}/lib/tcl/run_ssh_connection.exp return-data ${MONITORED_HOST} "cksum ${APP_ROOT}/${SSL_EXCEPTION_LIST}" websrv);
+                                            REMOTE_CKSUM=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/run_ssh_connection.exp return-data ${MONITORED_HOST} "cksum ${APP_ROOT}/${SSL_EXCEPTION_LIST}" websrv);
 
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REMOTE_CKSUM -> ${REMOTE_CKSUM}";
 
@@ -743,7 +743,7 @@ function usage
     return 3;
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 [ ${#} -eq 0 ] && usage;

@@ -93,7 +93,7 @@ function validate_change_request
             if [ ! -z "${VALIDATE_SERVER}" ] && [ ! -z "${VALIDATE_TYPE}" ] && [ ! -z "${VALIDATE_URL}" ]
             then
                 ## all our vars have data. we can continue.
-                ${PLUGIN_ROOT_DIR}/lib/runQuery.sh -s ${3} -t ${4} -u ${5} -o -e;
+                ${PLUGIN_LIB_DIRECTORY}/runQuery.sh -s ${3} -t ${4} -u ${5} -o -e;
                 typeset -i RET_CODE=${?};
 
                 ## check our retcode
@@ -126,7 +126,7 @@ function validate_change_request
             if [ ! -z "${VALIDATE_SERVER}" ] && [ ! -z "${VALIDATE_TYPE}" ] && [ ! -z "${VALIDATE_URL}" ]
             then
                 ## all our vars have data. we can continue.
-                ${PLUGIN_ROOT_DIR}/lib/runQuery.sh -s ${3} -t ${4} -u ${5} -o -e;
+                ${PLUGIN_LIB_DIRECTORY}/runQuery.sh -s ${3} -t ${4} -u ${5} -o -e;
                 typeset -i RET_CODE=${?};
 
                 ## check our retcode
