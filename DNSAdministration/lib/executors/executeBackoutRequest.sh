@@ -23,7 +23,7 @@
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
-METHOD_NAME="${CNAME}#startup";
+local METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
@@ -36,8 +36,8 @@ METHOD_NAME="${CNAME}#startup";
 [ -z "${PLUGIN_ROOT_DIR}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
 THIS_CNAME="${CNAME}";
 unset METHOD_NAME;
@@ -50,16 +50,19 @@ unset CNAME;
 ${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
 typeset -i RET_CODE=${?};
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 CNAME="${THIS_CNAME}";
-METHOD_NAME="${CNAME}#startup";
+local METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
 if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
 then
+    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
+    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
+
     print "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
@@ -75,8 +78,8 @@ unset CNAME;
 ${APP_ROOT}/${LIB_DIRECTORY}/lock.sh lock ${$};
 typeset -i RET_CODE=${?};
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 CNAME="${THIS_CNAME}";
 METHOD_NAME="${THIS_CNAME}#startup";
@@ -87,10 +90,7 @@ METHOD_NAME="${THIS_CNAME}#startup";
 
 unset RET_CODE;
 
-CNAME="$(basename "${0}")";
-METHOD_NAME="${CNAME}#startup";
-
-trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; return" INT TERM EXIT;
+trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; return ${RETURN_CODE}" INT TERM EXIT;
 
 #===  FUNCTION  ===============================================================
 #          NAME:  retrieve_file_list
@@ -103,8 +103,10 @@ function retrieve_file_list
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
+    local RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FILE_NAME -> ${FILE_NAME}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BUSINESS_UNIT -> ${BUSINESS_UNIT}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_NUM -> ${CHANGE_NUM}";
@@ -173,8 +175,10 @@ function backout_change
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
+    local RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FILE_NAME -> ${FILE_NAME}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BUSINESS_UNIT -> ${BUSINESS_UNIT}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_NUM -> ${CHANGE_NUM}";
@@ -263,16 +267,16 @@ function backout_change
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BIZ_UNIT -> ${BIZ_UNIT}";
 
             ## copy the backup tarfile to the tmp directory to work on
-            cp ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${FILE_NAME} ${PLUGIN_TMP_DIRECTORY}/${FILE_NAME};
+            cp ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${FILE_NAME} ${PLUGIN_WORK_DIRECTORY}/${FILE_NAME};
 
             ## make sure the file copied
-            if [ -s ${PLUGIN_TMP_DIRECTORY}/${FILE_NAME} ]
+            if [ -s ${PLUGIN_WORK_DIRECTORY}/${FILE_NAME} ]
             then
                 ## ok, we have it. decompress it -
-                gzip -dc ${PLUGIN_TMP_DIRECTORY}/${FILE_NAME} | (cd ${PLUGIN_TMP_DIRECTORY}; tar xf -)
+                gzip -dc ${PLUGIN_WORK_DIRECTORY}/${FILE_NAME} | (cd ${PLUGIN_WORK_DIRECTORY}; tar xf -)
 
                 ## and make sure it was indeed decompressed...
-                if [ -d ${PLUGIN_TMP_DIRECTORY}/${BIZ_UNIT} ]
+                if [ -d ${PLUGIN_WORK_DIRECTORY}/${BIZ_UNIT} ]
                 then
                     ## we can be pretty confident that it was indeed extracted. move forward.
                     ## make a backup of the existing files just in case we need them for some reason
@@ -300,7 +304,7 @@ function backout_change
                             ## make sure error_count is zero
                             ERROR_COUNT=0;
 
-                            for BACKUP_FILE in $(find ${PLUGIN_TMP_DIRECTORY}/${BIZ_UNIT} -type f -name "db.*" -print)
+                            for BACKUP_FILE in $(find ${PLUGIN_WORK_DIRECTORY}/${BIZ_UNIT} -type f -name "db.*" -print)
                             do
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating on ${BACKUP_FILE}";
 
@@ -335,22 +339,22 @@ function backout_change
                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more files failed to restore. Reverting to pristine state..";
 
                                 ## first, kill off everything in our tmp directory so as not to cloud issues.
-                                rm -rf ${PLUGIN_TMP_DIRECTORY}/${BIZ_UNIT};
-                                rm -rf ${PLUGIN_TMP_DIRECTORY}/${FILE_NAME};
+                                rm -rf ${PLUGIN_WORK_DIRECTORY}/${BIZ_UNIT};
+                                rm -rf ${PLUGIN_WORK_DIRECTORY}/${FILE_NAME};
 
                                 ## ok. we should be clean now. start the process of reversion
-                                cp ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar.gz ${PLUGIN_TMP_DIRECTORY}/${BACKUP_FILE}.tar.gz
+                                cp ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${BACKUP_FILE}.tar.gz ${PLUGIN_WORK_DIRECTORY}/${BACKUP_FILE}.tar.gz
 
                                 ## copy complete, now untar and move the stuff back where it belongs
-                                gzip -dc ${PLUGIN_TMP_DIRECTORY}/${BACKUP_FILE}.tar.gz | (cd ${PLUGIN_TMP_DIRECTORY}; tar xf -);
+                                gzip -dc ${PLUGIN_WORK_DIRECTORY}/${BACKUP_FILE}.tar.gz | (cd ${PLUGIN_WORK_DIRECTORY}; tar xf -);
 
                                 ## we're unzipped and untarred. make sure
-                                if [ -d ${PLUGIN_TMP_DIRECTORY}/${BIZ_UNIT} ]
+                                if [ -d ${PLUGIN_WORK_DIRECTORY}/${BIZ_UNIT} ]
                                 then
                                     ## we're good here. run the copies.
                                     ERROR_COUNT=0;
 
-                                    for BACKOUT_FILE in $(find ${PLUGIN_TMP_DIRECTORY}/${BIZ_UNIT} -type f -name "db.*" -print)
+                                    for BACKOUT_FILE in $(find ${PLUGIN_WORK_DIRECTORY}/${BIZ_UNIT} -type f -name "db.*" -print)
                                     do
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating on ${BACKOUT_FILE}";
 
@@ -423,7 +427,7 @@ function backout_change
                             ## make sure error_count is zero
                             ERROR_COUNT=0;
 
-                            for BACKUP_FILE in $(find ${PLUGIN_TMP_DIRECTORY}/${BIZ_UNIT} -type f -name "db.*" -print)
+                            for BACKUP_FILE in $(find ${PLUGIN_WORK_DIRECTORY}/${BIZ_UNIT} -type f -name "db.*" -print)
                             do
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating on ${BACKUP_FILE}";
 
@@ -614,8 +618,10 @@ function usage
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
+    local RETURN_CODE=3;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
     print "${CNAME} - Baackout a previously executed change request";
     print "Usage:  ${CNAME} [-a] [-f filename (optional)] [-b business unit] [-c change control] [-d date] [-e <execute>] [-h] [-?]";
@@ -627,15 +633,16 @@ function usage
     print "  -e      Execute the request";
     print "  -h|-?   Show this help";
 
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-    return 3;
+    return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage;
+[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
 
 while getopts ":af:b:c:d:eh:" OPTIONS 2>/dev/null
 do
@@ -643,7 +650,7 @@ do
         a)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            retrieve_file_list;
+            retrieve_file_list && RETURN_CODE=${?};
             ;;
         f)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
@@ -662,7 +669,7 @@ do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FILE_NAME -> ${FILE_NAME}";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                backout_change;
+                backout_change && RETURN_CODE=${?};
             fi
             ;;
         b)
@@ -720,19 +727,16 @@ do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                backout_change;
+                backout_change && RETURN_CODE=${?};
             fi
             ;;
         *)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            usage;
+            usage && RETURN_CODE=${?};
             ;;
     esac
 done
-
-
-printf ${RETURN_CODE};
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";

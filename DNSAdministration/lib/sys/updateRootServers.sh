@@ -19,23 +19,24 @@
 #==============================================================================
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 ## Application constants
-CNAME="$(basename "${0}")";
+CNAME="${THIS_CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 [[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${PLUGIN_LIB_DIRECTORY}/plugin.sh ]] && . ${SCRIPT_ROOT}/../${PLUGIN_LIB_DIRECTORY}/plugin.sh;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-METHOD_NAME="${CNAME}#startup";
+local METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
 ## lock it
 unset METHOD_NAME;
@@ -47,8 +48,8 @@ unset CNAME;
 ${APP_ROOT}/${LIB_DIRECTORY}/lock.sh lock ${$};
 typeset -i RET_CODE=${?};
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 CNAME="${THIS_CNAME}";
 METHOD_NAME="${THIS_CNAME}#startup";
@@ -59,29 +60,28 @@ METHOD_NAME="${THIS_CNAME}#startup";
 
 unset RET_CODE;
 
-CNAME="$(basename "${0}")";
-METHOD_NAME="${CNAME}#startup";
-
-trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; return" INT TERM EXIT;
+trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; return ${RETURN_CODE}" INT TERM EXIT;
 
 function obtainAndInstallRoots
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
+    local RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Retrieving updates to ${NAMED_ROOT_CACHE}..";
 
     ## check if we have a tmp file, if we do, kill
-    [ -s ${PLUGIN_TMP_DIRECTORY}/${NAMED_ROOT_CACHE} ] && rm -rf ${PLUGIN_TMP_DIRECTORY}/${NAMED_ROOT_CACHE};
+    [ -s ${PLUGIN_WORK_DIRECTORY}/${NAMED_ROOT_CACHE} ] && rm -rf ${PLUGIN_WORK_DIRECTORY}/${NAMED_ROOT_CACHE};
 
     if [ $(printf ${EXT_SLAVES[@]} | grep -c $(uname -n)) -eq 1 ]
     then
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "This is an external server. Executing DiG..";
 
         ## we're on an external slave. we don't need to run through a proxy
-        $(dig +bufsize=1200 +norec NS . @a.root-servers.net > ${PLUGIN_TMP_DIRECTORY}/${NAMED_ROOT_CACHE});
+        $(dig +bufsize=1200 +norec NS . @a.root-servers.net > ${PLUGIN_WORK_DIRECTORY}/${NAMED_ROOT_CACHE});
         typeset -i RET_CODE=${?};
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
@@ -90,13 +90,13 @@ function obtainAndInstallRoots
         if [ ${RET_CODE} -eq 0 ]
         then
             ## we should have a populated file. lets check
-            if [ -s ${PLUGIN_TMP_DIRECTORY}/${NAMED_ROOT_CACHE} ]
+            if [ -s ${PLUGIN_WORK_DIRECTORY}/${NAMED_ROOT_CACHE} ]
             then
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Updated root file created..";
 
                 ## file exists, make sure it doesn't contain errors
-                if [ $(grep -c "couldn\'t get address" ${PLUGIN_TMP_DIRECTORY}/${NAMED_ROOT_CACHE}) -ne 0 ] ||
-                    [ $(grep -c "connection timed out" ${PLUGIN_TMP_DIRECTORY}/${NAMED_ROOT_CACHE}) -ne 0 ]
+                if [ $(grep -c "couldn\'t get address" ${PLUGIN_WORK_DIRECTORY}/${NAMED_ROOT_CACHE}) -ne 0 ] ||
+                    [ $(grep -c "connection timed out" ${PLUGIN_WORK_DIRECTORY}/${NAMED_ROOT_CACHE}) -ne 0 ]
                 then
                     ## an "ERROR" occurred and the root server list could not be obtained
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to obtain updated root server list from a.root-servers.net.";
@@ -111,7 +111,7 @@ function obtainAndInstallRoots
                         tar cf - ${NAMED_ROOT_CACHE}) | gzip -c > ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${TARFILE_NAME};
 
                     ## take a pre-file checksum
-                    PRE_FILE_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/${NAMED_ROOT_CACHE} | awk '{print $1}');
+                    PRE_FILE_CKSUM=$(cksum ${PLUGIN_WORK_DIRECTORY}/${NAMED_ROOT_CACHE} | awk '{print $1}');
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRE_FILE_CKSUM -> ${PRE_FILE_CKSUM}";
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing existing ${NAMED_ROOT_CACHE} ..";
@@ -127,7 +127,7 @@ function obtainAndInstallRoots
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal validated. Moving new file..";
 
                         ## ok, it was, move in the new
-                        mv ${PLUGIN_TMP_DIRECTORY}/${NAMED_ROOT_CACHE} \
+                        mv ${PLUGIN_WORK_DIRECTORY}/${NAMED_ROOT_CACHE} \
                             ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_ROOT_CACHE} > /dev/null 2>&1;
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Move complete. Validating..";
@@ -191,16 +191,16 @@ function obtainAndInstallRoots
 
             if [ ${PING_RCODE} -eq 0 ]
             then
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${EXTERNAL_SERVER} \"dig +bufsize=1200 +norec NS . @a.root-servers.net\" > ${PLUGIN_TMP_DIRECTORY}/${NAMED_ROOT_CACHE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${EXTERNAL_SERVER} \"dig +bufsize=1200 +norec NS . @a.root-servers.net\" > ${PLUGIN_WORK_DIRECTORY}/${NAMED_ROOT_CACHE}";
 
-                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${EXTERNAL_SERVER} "dig +bufsize=1200 +norec NS . @a.root-servers.net" ${SSH_USER_NAME} ${SSH_USER_AUTH} > ${PLUGIN_TMP_DIRECTORY}/${NAMED_ROOT_CACHE};
+                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${EXTERNAL_SERVER} "dig +bufsize=1200 +norec NS . @a.root-servers.net" ${SSH_USER_NAME} ${SSH_USER_AUTH} > ${PLUGIN_WORK_DIRECTORY}/${NAMED_ROOT_CACHE};
 
                 ## we should have a populated file. lets check
-                if [ -s ${PLUGIN_TMP_DIRECTORY}/${NAMED_ROOT_CACHE} ]
+                if [ -s ${PLUGIN_WORK_DIRECTORY}/${NAMED_ROOT_CACHE} ]
                 then
                     ## file exists, make sure it doesn't contain errors
-                    if [ $(grep -c "couldn\'t get address" ${PLUGIN_TMP_DIRECTORY}/${NAMED_ROOT_CACHE}) -ne 0 ] ||
-                        [ $(grep -c "connection timed out" ${PLUGIN_TMP_DIRECTORY}/${NAMED_ROOT_CACHE}) -ne 0 ]
+                    if [ $(grep -c "couldn\'t get address" ${PLUGIN_WORK_DIRECTORY}/${NAMED_ROOT_CACHE}) -ne 0 ] ||
+                        [ $(grep -c "connection timed out" ${PLUGIN_WORK_DIRECTORY}/${NAMED_ROOT_CACHE}) -ne 0 ]
                     then
                         ## an "ERROR" occurred and the root server list could not be obtained
                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to obtain updated root server list from a.root-servers.net.";
@@ -215,7 +215,6 @@ function obtainAndInstallRoots
                         if [ ! -z "${RETURN_CODE}" ] || [ ! -z "${GENERATION_FAILURE}" ] || [ ! -z "${PROXY_FAILURE}" ]
                         then
                             unset PROXY_FAILURE;
-                            unset RETURN_CODE;
                             unset GENERATION_FAILURE;
                         fi
 
@@ -245,7 +244,7 @@ function obtainAndInstallRoots
                 tar cf - ${NAMED_ROOT_CACHE}) | gzip -c > ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${TARFILE_NAME};
 
             ## take a pre-file checksum
-            PRE_FILE_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/${NAMED_ROOT_CACHE} | awk '{print $1}');
+            PRE_FILE_CKSUM=$(cksum ${PLUGIN_WORK_DIRECTORY}/${NAMED_ROOT_CACHE} | awk '{print $1}');
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRE_FILE_CKSUM -> ${PRE_FILE_CKSUM}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing existing ${NAMED_ROOT_CACHE} ..";
@@ -261,7 +260,7 @@ function obtainAndInstallRoots
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removal validated. Moving new file..";
 
                 ## ok, it was, move in the new
-                mv ${PLUGIN_TMP_DIRECTORY}/${NAMED_ROOT_CACHE} \
+                mv ${PLUGIN_WORK_DIRECTORY}/${NAMED_ROOT_CACHE} \
                     ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_ROOT_CACHE} > /dev/null 2>&1;
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Move complete. Validating..";
@@ -313,7 +312,7 @@ function obtainAndInstallRoots
     fi
 
     ## post-execution cleanup
-    [ -s ${PLUGIN_TMP_DIRECTORY}/${NAMED_ROOT_CACHE} ] && rm -rf ${PLUGIN_TMP_DIRECTORY}/${NAMED_ROOT_CACHE} > /dev/null 2>&1;
+    [ -s ${PLUGIN_WORK_DIRECTORY}/${NAMED_ROOT_CACHE} ] && rm -rf ${PLUGIN_WORK_DIRECTORY}/${NAMED_ROOT_CACHE} > /dev/null 2>&1;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -322,9 +321,7 @@ function obtainAndInstallRoots
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-obtainAndInstallRoots;
-
-printf ${RETURN_CODE};
+obtainAndInstallRoots && RETURN_CODE=${?};
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";

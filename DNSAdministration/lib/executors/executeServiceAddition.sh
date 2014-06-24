@@ -24,7 +24,7 @@
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
-METHOD_NAME="${CNAME}#startup";
+local METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
@@ -37,8 +37,8 @@ METHOD_NAME="${CNAME}#startup";
 [ -z "${PLUGIN_ROOT_DIR}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
 THIS_CNAME="${CNAME}";
 unset METHOD_NAME;
@@ -51,16 +51,19 @@ unset CNAME;
 ${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
 typeset -i RET_CODE=${?};
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 CNAME="${THIS_CNAME}";
-METHOD_NAME="${CNAME}#startup";
+local METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
 if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
 then
+    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
+    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
+
     print "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
@@ -76,8 +79,8 @@ unset CNAME;
 ${APP_ROOT}/${LIB_DIRECTORY}/lock.sh lock ${$};
 typeset -i RET_CODE=${?};
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 CNAME="${THIS_CNAME}";
 METHOD_NAME="${THIS_CNAME}#startup";
@@ -88,10 +91,7 @@ METHOD_NAME="${THIS_CNAME}#startup";
 
 unset RET_CODE;
 
-CNAME="$(basename "${0}")";
-METHOD_NAME="${CNAME}#startup";
-
-trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; return" INT TERM EXIT;
+trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; return ${RETURN_CODE}" INT TERM EXIT;
 
 #===  FUNCTION  ===============================================================
 #          NAME:  install_zone
@@ -105,21 +105,22 @@ function installMasterZone
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
+    local RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Installation of group ${GROUP_ID}${BUSINESS_UNIT} starting..";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Tarfile name -> ${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${REQUESTING_USER}.tar.gz";
 
-    if [ -s ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${REQUESTING_USER}.tar.gz ]
+    if [ -s ${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${REQUESTING_USER}.tar.gz ]
     then
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Tarfile exists, proceeding..";
 
         ## decompress the archive
-        gzip -dc ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${REQUESTING_USER}.tar.gz | (cd ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}; tar xf -);
+        gzip -dc ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${REQUESTING_USER}.tar.gz | (cd ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}; tar xf -);
 
         ## make sure the tar extracted properly
-        if [ ! -d ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT} ]
+        if [ ! -d ${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT} ]
         then
             ## tar did not extract properly. throw out an "ERROR"
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "tarfile extraction FAILED. Cannot continue.";
@@ -129,7 +130,7 @@ function installMasterZone
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Moving group directory ${GROUP_ID}${BUSINESS_UNIT} into ${NAMED_ROOT}/${NAMED_MASTER_ROOT}";
 
             ## directory should exist now, lets move it into place
-            mv ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT} ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${GROUP_ID}${BUSINESS_UNIT};
+            mv ${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT} ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${GROUP_ID}${BUSINESS_UNIT};
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Move complete. Proceeding..";
 
@@ -209,12 +210,12 @@ function installMasterZone
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing tar file..";
 
                             ## clean up our tar
-                            rm -rf ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${REQUESTING_USER}.tar.gz;
-                            rm -rf ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${REQUESTING_USER}.tar;
-                            rm -rf ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT};
+                            rm -rf ${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${REQUESTING_USER}.tar.gz;
+                            rm -rf ${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${REQUESTING_USER}.tar;
+                            rm -rf ${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT};
 
                             ## make sure it actually got removed. if not, log a warning
-                            if [ -s ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${REQUESTING_USER}.tar.gz ]
+                            if [ -s ${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${REQUESTING_USER}.tar.gz ]
                             then
                                 ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to remove tarfile.";
                             fi
@@ -266,9 +267,9 @@ function installMasterZone
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     ## no matter what happens, we remove the temp files from this filesystem
-    rm -rf ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${PROJECT_CODE}.${CHANGE_DATE}.${ZONE_NAME}.tar.gz;
-    rm -rf ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${PROJECT_CODE}.${CHANGE_DATE}.${ZONE_NAME}.tar;
-    rm -rf ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${PROJECT_CODE};
+    rm -rf ${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${PROJECT_CODE}.${CHANGE_DATE}.${ZONE_NAME}.tar.gz;
+    rm -rf ${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${PROJECT_CODE}.${CHANGE_DATE}.${ZONE_NAME}.tar;
+    rm -rf ${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${PROJECT_CODE};
 
     unset ZONE_CONF_NAME;
     unset CHANGE_DATE;
@@ -291,6 +292,7 @@ function installSlaveZone
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
+    local RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -300,15 +302,15 @@ function installSlaveZone
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_DATE -> ${CHANGE_DATE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Installation of group ${GROUP} starting..";
 
-    if [ -s ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${REQUESTING_USER}.tar.gz ]
+    if [ -s ${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${REQUESTING_USER}.tar.gz ]
     then
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Tarfile exists, proceeding..";
 
         ## decompress the archive
-        gzip -dc ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${REQUESTING_USER}.tar.gz | (cd ${PLUGIN_TMP_DIRECTORY}; tar xf -);
+        gzip -dc ${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${REQUESTING_USER}.tar.gz | (cd ${PLUGIN_WORK_DIRECTORY}; tar xf -);
 
         ## make sure the tar extracted properly
-        if [ ! -d ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT} ]
+        if [ ! -d ${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT} ]
         then
             ## tar did not extract properly. throw out an "ERROR"
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "tarfile extraction FAILED. Cannot continue.";
@@ -322,11 +324,11 @@ function installSlaveZone
                 ## we're on an external slave. remove the site-specific directories prior to placement
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "External slave detected. Removing site-specific directories..";
 
-                rm -rf ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC};
-                rm -rf ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC};
+                rm -rf ${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC};
+                rm -rf ${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC};
 
                 ## check if they were removed, if not, "WARN"
-                if [ -d ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC} ] && [ -d ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC} ]
+                if [ -d ${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DC} ] && [ -d ${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${SECONDARY_DC} ]
                 then
                     ## oops. theyre still there. "WARN", but do not fail
                     ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to remove site-specific directories.";
@@ -336,7 +338,7 @@ function installSlaveZone
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Moving group directory ${GROUP_ID}${BUSINESS_UNIT} into ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}";
 
             ## directory should exist now, lets move it into place
-            mv ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT} ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT};
+            mv ${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT} ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT};
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Move complete. Proceeding..";
 
@@ -420,9 +422,9 @@ function installSlaveZone
                             ## ok, we're done. zone has been created, installed,
                             ## conf files have been created and updated.
                             ## clean up the files we were provided
-                            rm -rf ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${REQUESTING_USER}.tar.gz;
-                            rm -rf ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${REQUESTING_USER}.tar;
-                            rm -rf ${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT};
+                            rm -rf ${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${REQUESTING_USER}.tar.gz;
+                            rm -rf ${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}.${CHANGE_NUM}.${CHANGE_DATE}.${REQUESTING_USER}.tar;
+                            rm -rf ${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT};
 
                             ## "AUDIT" log
                             ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONE_NAME} installed by ${REQUESTING_USER} per change ${CHANGE_NUM} on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")";
@@ -491,6 +493,7 @@ function add_zone_entry
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
+    local RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -573,12 +576,11 @@ function add_zone_entry
 
                         ## take copies of the files to operate against
                         ## we need to update the serial number, so lets do it here
-                        cp ${SITE_ROOT}/${ZONEFILE_NAME} ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME};
+                        cp ${SITE_ROOT}/${ZONEFILE_NAME} ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME};
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding "AUDIT" indicators..";
 
-                        THIS_CNAME="${CNAME}";
-                        unset METHOD_NAME;
+                                unset METHOD_NAME;
                         unset CNAME;
 
                         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
@@ -607,16 +609,16 @@ function add_zone_entry
                         fi
 
                         cp ${SITE_ROOT}/${PRIMARY_DC}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2) \
-                            ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${PRIMARY_DC};
+                            ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${PRIMARY_DC};
                         cp ${SITE_ROOT}/${SECONDARY_DC}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2) \
-                            ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${SECONDARY_DC};
+                            ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${SECONDARY_DC};
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copies created. Validating..";
 
                         ## make sure we have them now
-                        if [ -s ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME} ] \
-                            && [ -s ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${PRIMARY_DC} ] \
-                            && [ -s ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${SECONDARY_DC} ]
+                        if [ -s ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME} ] \
+                            && [ -s ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${PRIMARY_DC} ] \
+                            && [ -s ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${SECONDARY_DC} ]
                         then
                             ## ok, we can keep going
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copies validated. Continuing..";
@@ -628,13 +630,13 @@ function add_zone_entry
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding entry ${ENTRY_NAME}             IN      ${ENTRY_TYPE}           ${ENTRY_RECORD}";
 
                                     print "${ENTRY_NAME}             IN      ${ENTRY_TYPE}           ${ENTRY_RECORD}" \
-                                        >> ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME};
+                                        >> ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME};
 
                                     print "${ENTRY_NAME}             IN      ${ENTRY_TYPE}           ${ENTRY_RECORD}" \
-                                        >> ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${PRIMARY_DC};
+                                        >> ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${PRIMARY_DC};
 
                                     print "${ENTRY_NAME}             IN      ${ENTRY_TYPE}           ${ENTRY_RECORD}" \
-                                        >> ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${SECONDARY_DC};
+                                        >> ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${SECONDARY_DC};
 
                                     ENTRY_WRITTEN=${_TRUE};
                                     ;;
@@ -643,13 +645,13 @@ function add_zone_entry
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding entry ${ENTRY_NAME}             IN      ${ENTRY_TYPE}     ${ENTRY_PRIORITY}    ${ENTRY_RECORD}";
 
                                     print "${ENTRY_NAME}             IN      ${ENTRY_TYPE}     ${ENTRY_PRIORITY}    ${ENTRY_RECORD}" \
-                                        >> ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME};
+                                        >> ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME};
 
                                     print "${ENTRY_NAME}             IN      ${ENTRY_TYPE}     ${ENTRY_PRIORITY}    ${ENTRY_RECORD}" \
-                                        >> ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${PRIMARY_DC};
+                                        >> ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${PRIMARY_DC};
 
                                     print "${ENTRY_NAME}             IN      ${ENTRY_TYPE}     ${ENTRY_PRIORITY}    ${ENTRY_RECORD}" \
-                                        >> ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${SECONDARY_DC};
+                                        >> ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${SECONDARY_DC};
 
                                     ENTRY_WRITTEN=${_TRUE};
                                     ;;
@@ -666,13 +668,13 @@ function add_zone_entry
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding entry ${SRV_TYPE}.${SRV_PROTOCOL}.${SRV_NAME}    ${SRV_TTL}    ${SRV_PRIORITY}    ${SRV_WEIGHT}    ${SRV_PORT}    ${SRV_TARGET}";
 
                                     print "${ENTRY_TYPE}.${ENTRY_PROTOCOL}.${ENTRY_NAME}    ${ENTRY_TTL}    ${ENTRY_PRIORITY}    ${ENTRY_WEIGHT}    ${ENTRY_PORT}    ${ENTRY_TARGET}" \
-                                        >> ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME};
+                                        >> ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME};
 
                                     print "${ENTRY_TYPE}.${ENTRY_PROTOCOL}.${ENTRY_NAME}    ${ENTRY_TTL}    ${ENTRY_PRIORITY}    ${ENTRY_WEIGHT}    ${ENTRY_PORT}    ${ENTRY_TARGET}" \
-                                        >> ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${PRIMARY_DC};
+                                        >> ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${PRIMARY_DC};
 
                                     print "${ENTRY_TYPE}.${ENTRY_PROTOCOL}.${ENTRY_NAME}    ${ENTRY_TTL}    ${ENTRY_PRIORITY}    ${ENTRY_WEIGHT}    ${ENTRY_PORT}    ${ENTRY_TARGET}" \
-                                        >> ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${SECONDARY_DC};
+                                        >> ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${SECONDARY_DC};
 
                                     ENTRY_WRITTEN=${_TRUE};
                                     ;;
@@ -689,20 +691,20 @@ function add_zone_entry
                             if [ ! -z "${ENTRY_WRITTEN}" ] && [ "${ENTRY_WRITTEN}" = "${_TRUE}" ]
                             then
                                 ## ok, we're told the entry was written. verify it
-                                if [ $(grep ${ENTRY_NAME} ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME} | grep -c ${ENTRY_TYPE}) -eq 1 ]
+                                if [ $(grep ${ENTRY_NAME} ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME} | grep -c ${ENTRY_TYPE}) -eq 1 ]
                                 then
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Successfully added entry to primary zone file. Checking datacenter zones..";
 
-                                    if [ $(grep ${ENTRY_NAME} ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${PRIMARY_DC} | grep -c ${ENTRY_TYPE}) -eq 1 ] \
-                                        && [ $(grep ${ENTRY_NAME} ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${SECONDARY_DC} | grep -c ${ENTRY_TYPE}) -eq 1 ]
+                                    if [ $(grep ${ENTRY_NAME} ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${PRIMARY_DC} | grep -c ${ENTRY_TYPE}) -eq 1 ] \
+                                        && [ $(grep ${ENTRY_NAME} ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${SECONDARY_DC} | grep -c ${ENTRY_TYPE}) -eq 1 ]
                                     then
                                         ## ok, good everything has it. lets take our checksums
-                                        TMP_FILE_CKSUM=$(cksum ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME} | awk '{print $1}');
+                                        TMP_FILE_CKSUM=$(cksum ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME} | awk '{print $1}');
 
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_FILE_CKSUM->${TMP_FILE_CKSUM}";
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying file..";
 
-                                        mv ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME} ${SITE_ROOT}/${ZONEFILE_NAME};
+                                        mv ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME} ${SITE_ROOT}/${ZONEFILE_NAME};
 
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copy complete. Validating..";
 
@@ -723,12 +725,12 @@ function add_zone_entry
                                                 do
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating on ${DATACENTER}";
 
-                                                    TMP_FILE_CKSUM=$(cksum ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${DATACENTER} | awk '{print $1}');
+                                                    TMP_FILE_CKSUM=$(cksum ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${DATACENTER} | awk '{print $1}');
 
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_FILE_CKSUM->${TMP_FILE_CKSUM}";
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying file..";
 
-                                                    mv ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${DATACENTER} ${SITE_ROOT}/${DATACENTER}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2);
+                                                    mv ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2).${DATACENTER} ${SITE_ROOT}/${DATACENTER}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2);
 
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copy complete. Validating..";
 
@@ -771,8 +773,7 @@ function add_zone_entry
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "HORIZON -> ${HORIZON}";
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${NAMED_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeRNDCCommands.sh -s ${NAMED_MASTER} -p ${RNDC_LOCAL_PORT} -y ${RNDC_LOCAL_KEY} -c reload -z "${ZONE_NAME}" -i ${HORIZON} -e";
 
-                                                            THIS_CNAME="${CNAME}";
-                                                            unset METHOD_NAME;
+                                                                                                        unset METHOD_NAME;
                                                             unset CNAME;
 
                                                             [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
@@ -793,8 +794,7 @@ function add_zone_entry
                                                     else
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${NAMED_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeRNDCCommands.sh -s ${NAMED_MASTER} -p ${RNDC_LOCAL_PORT} -y ${RNDC_LOCAL_KEY} -c reload -z "${ZONE_NAME}" -e";
 
-                                                        THIS_CNAME="${CNAME}";
-                                                        unset METHOD_NAME;
+                                                                                                unset METHOD_NAME;
                                                         unset CNAME;
 
                                                         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
@@ -843,8 +843,7 @@ function add_zone_entry
                                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "HORIZON -> ${HORIZON}";
                                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${NAMED_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeRNDCCommands.sh -s ${SLAVE} -p ${RNDC_REMOTE_PORT} -y ${RNDC_REMOTE_KEY} -c reload -z "${ZONE_NAME}" -i ${HORIZON} -e";
 
-                                                                        THIS_CNAME="${CNAME}";
-                                                                        unset METHOD_NAME;
+                                                                                                                                unset METHOD_NAME;
                                                                         unset CNAME;
 
                                                                         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
@@ -872,8 +871,7 @@ function add_zone_entry
                                                                 else
                                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${NAMED_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeRNDCCommands.sh -s ${SLAVE} -p ${RNDC_REMOTE_PORT} -y ${RNDC_REMOTE_KEY} -c reload -z "${ZONE_NAME}" -e";
 
-                                                                    THIS_CNAME="${CNAME}";
-                                                                    unset METHOD_NAME;
+                                                                                                                        unset METHOD_NAME;
                                                                     unset CNAME;
 
                                                                     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
@@ -1034,8 +1032,10 @@ function usage
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
+    local RETURN_CODE=3;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
     print "${CNAME} - Execute zone additions to the DNS infrastructure.";
     print "Usage: ${CNAME} [ -b business unit ] [ -p project code ] [ -z zone name ] [ -i requestor ] [ -c change request ] [ -n filename ] [ -a entry ] [-s] [-e] [-?|-h]";
@@ -1050,15 +1050,16 @@ function usage
     print "  -e      Execute processing";
     print "  -?|-h   Show this help";
 
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-    return 3;
+    return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage;
+[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
 
 while getopts ":b:p:z:i:c:n:a:seh:" OPTIONS 2>/dev/null
 do
@@ -1216,15 +1217,10 @@ do
 
                     if [ ! -z "${ADD_ENTRY}" ] && [ "${ADD_ENTRY}" = "${_TRUE}" ]
                     then
-                        add_zone_entry;
+                        add_zone_entry && RETURN_CODE=${?};
                     elif [ ! -z "${INSTALL_ZONE}" ] && [ "${INSTALL_ZONE}" = "${_TRUE}" ]
                     then
-                        if [ -z "${SLAVE_OPERATION}" ] && [ "${SLAVE_OPERATION}" = "${_TRUE}" ]
-                        then
-                            installSlaveZone;
-                        else
-                            installMasterZone;
-                        fi
+                        [ -z "${SLAVE_OPERATION}" ] && [ "${SLAVE_OPERATION}" = "${_TRUE}" ] && installSlaveZone && RETURN_CODE=${?} || installMasterZone && RETURN_CODE=${?};
                     else
                         ## no valid command type
                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No valid command type was provided. Cannot continue.";
@@ -1237,7 +1233,7 @@ do
         *)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            usage;
+            usage && RETURN_CODE=${?};
             ;;
     esac
 done

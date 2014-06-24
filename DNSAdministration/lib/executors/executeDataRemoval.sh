@@ -24,7 +24,7 @@
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
-METHOD_NAME="${CNAME}#startup";
+METHOD_NAME="${THIS_CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
@@ -37,8 +37,8 @@ METHOD_NAME="${CNAME}#startup";
 [ -z "${PLUGIN_ROOT_DIR}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
 THIS_CNAME="${CNAME}";
 unset METHOD_NAME;
@@ -51,16 +51,19 @@ unset CNAME;
 ${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
 typeset -i RET_CODE=${?};
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 CNAME="${THIS_CNAME}";
-METHOD_NAME="${CNAME}#startup";
+METHOD_NAME="${THIS_CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
 if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
 then
+    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
+    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
+
     print "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
@@ -76,8 +79,8 @@ unset CNAME;
 ${APP_ROOT}/${LIB_DIRECTORY}/lock.sh lock ${$};
 typeset -i RET_CODE=${?};
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 CNAME="${THIS_CNAME}";
 METHOD_NAME="${THIS_CNAME}#startup";
@@ -88,10 +91,7 @@ METHOD_NAME="${THIS_CNAME}#startup";
 
 unset RET_CODE;
 
-CNAME="$(basename "${0}")";
-METHOD_NAME="${CNAME}#startup";
-
-trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; return" INT TERM EXIT;
+trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; return ${RETURN_CODE}" INT TERM EXIT;
 
 #===  FUNCTION  ===============================================================
 #          NAME:  install_zone
@@ -105,8 +105,10 @@ function remove_master_zone
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
+    local RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Performing decommission of ${ZONE_NAME}";
 
     ## set up our zonefile name
@@ -177,20 +179,20 @@ function remove_master_zone
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "START_LINE_NUMBER -> ${START_LINE_NUMBER}";
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "END_LINE_NUMBER -> ${END_LINE_NUMBER}";
 
-                        sed -e "${START_LINE_NUMBER},${END_LINE_NUMBER} d" ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE} >> ${PLUGIN_TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                        sed -e "${START_LINE_NUMBER},${END_LINE_NUMBER} d" ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE} >> ${PLUGIN_WORK_DIRECTORY}/${DECOM_CONF_FILE};
 
                         ## ok, should now be removed from the tmp file we've created. validate.
-                        if [ $(grep -c "zone \"${ZONE_NAME}\" IN {" ${PLUGIN_TMP_DIRECTORY}/${DECOM_CONF_FILE}) -eq 0 ]
+                        if [ $(grep -c "zone \"${ZONE_NAME}\" IN {" ${PLUGIN_WORK_DIRECTORY}/${DECOM_CONF_FILE}) -eq 0 ]
                         then
                             ## verified removal. lets make this file the active file and call it a day.
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Moving ${PLUGIN_TMP_DIRECTORY}/${DECOM_CONF_FILE} to ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}..";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Moving ${PLUGIN_WORK_DIRECTORY}/${DECOM_CONF_FILE} to ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}..";
 
                             ## checksum tmp file
-                            CONF_TMP_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/${DECOM_CONF_FILE} | awk '{print $1}');
+                            CONF_TMP_CKSUM=$(cksum ${PLUGIN_WORK_DIRECTORY}/${DECOM_CONF_FILE} | awk '{print $1}');
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONF_TMP_CKSUM -> ${CONF_TMP_CKSUM}";
 
-                            mv ${PLUGIN_TMP_DIRECTORY}/${DECOM_CONF_FILE} ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE};
+                            mv ${PLUGIN_WORK_DIRECTORY}/${DECOM_CONF_FILE} ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE};
 
                             ## checksum operational
                             CONF_OP_CKSUM=$(cksum ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE} | awk '{print $1}');
@@ -278,8 +280,10 @@ function remove_slave_zone
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
+    local RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Performing decommission of ${ZONE_NAME}";
 
     ## set up our zonefile name
@@ -350,20 +354,20 @@ function remove_slave_zone
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "START_LINE_NUMBER -> ${START_LINE_NUMBER}";
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "END_LINE_NUMBER -> ${END_LINE_NUMBER}";
 
-                        sed -e "${START_LINE_NUMBER},${END_LINE_NUMBER} d" ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE} >> ${PLUGIN_TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                        sed -e "${START_LINE_NUMBER},${END_LINE_NUMBER} d" ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE} >> ${PLUGIN_WORK_DIRECTORY}/${DECOM_CONF_FILE};
 
                         ## ok, should now be removed from the tmp file we've created. validate.
-                        if [ $(grep -c "zone \"${ZONE_NAME}\" IN {" ${PLUGIN_TMP_DIRECTORY}/${DECOM_CONF_FILE}) -eq 0 ]
+                        if [ $(grep -c "zone \"${ZONE_NAME}\" IN {" ${PLUGIN_WORK_DIRECTORY}/${DECOM_CONF_FILE}) -eq 0 ]
                         then
                             ## verified removal. lets make this file the active file and call it a day.
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Moving ${PLUGIN_TMP_DIRECTORY}/${DECOM_CONF_FILE} to ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}..";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Moving ${PLUGIN_WORK_DIRECTORY}/${DECOM_CONF_FILE} to ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}..";
 
                             ## checksum tmp file
-                            CONF_TMP_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/${DECOM_CONF_FILE} | awk '{print $1}');
+                            CONF_TMP_CKSUM=$(cksum ${PLUGIN_WORK_DIRECTORY}/${DECOM_CONF_FILE} | awk '{print $1}');
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONF_TMP_CKSUM -> ${CONF_TMP_CKSUM}";
 
-                            mv ${PLUGIN_TMP_DIRECTORY}/${DECOM_CONF_FILE} ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE};
+                            mv ${PLUGIN_WORK_DIRECTORY}/${DECOM_CONF_FILE} ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE};
 
                             ## checksum operational
                             CONF_OP_CKSUM=$(cksum ${NAMED_ROOT}/${NAMED_CONF_DIR}/${DECOM_CONF_FILE} | awk '{print $1}');
@@ -450,8 +454,10 @@ function remove_zone_entry
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
+    local RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Performing removal of ${ZONE_ENTRY} from ${ZONE_NAME}..";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating that requested directories/files exist..";
 
@@ -479,7 +485,7 @@ function remove_zone_entry
 
             ## cut all our copies at once
             ## we need to update the serial number, so lets do it here
-            cp ${SITE_ROOT}/${ZONEFILE_NAME} ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME} > /dev/null 2>&1;
+            cp ${SITE_ROOT}/${ZONEFILE_NAME} ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME} > /dev/null 2>&1;
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding "AUDIT" indicators..";
 
@@ -513,16 +519,16 @@ function remove_zone_entry
             fi
 
             cp ${SITE_ROOT}/${PRIMARY_DC}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2) \
-                ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME}.${PRIMARY_DC} > /dev/null 2>&1;
+                ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME}.${PRIMARY_DC} > /dev/null 2>&1;
             cp ${SITE_ROOT}/${SECONDARY_DC}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2) \
-                ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME}.${SECONDARY_DC} > /dev/null 2>&1;
+                ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME}.${SECONDARY_DC} > /dev/null 2>&1;
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Working copies created. Validating..";
 
             ## and make sure it exists
-            if [ -s ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME} ] \
-                && [ -s ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME}.${PRIMARY_DC} ] \
-                && [ -s ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME}.${SECONDARY_DC} ]
+            if [ -s ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME} ] \
+                && [ -s ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME}.${PRIMARY_DC} ] \
+                && [ -s ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME}.${SECONDARY_DC} ]
             then
                 ## we have a working file. we're going to get some "INFO"
                 ## and then move forward.
@@ -531,7 +537,7 @@ function remove_zone_entry
                 ## get the line count of the file. we'll use this in part to validate
                 ## the entry was removed as well as to validate that everything else
                 ## wasnt
-                CURRENT_LINE_COUNT=$(wc -l ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME} | awk '{print $1}');
+                CURRENT_LINE_COUNT=$(wc -l ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME} | awk '{print $1}');
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CURRENT_LINE_COUNT -> ${CURRENT_LINE_COUNT}";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing entry ${ZONE_ENTRY}..";
@@ -540,25 +546,25 @@ function remove_zone_entry
                 ## update the serial number too, otherwise this
                 ## is really kinda pointless
                 sed -e "/${ZONE_ENTRY}/d" \
-                    ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME} > ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME}.tmp;
+                    ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME} > ${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME};
 
                 ## and remove the old one.
-                rm -rf ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME};
+                rm -rf ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME};
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${ZONE_ENTRY} removed. Validating..";
 
                 ## make sure tmp file was created and has content
-                if [ -s ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME}.tmp ]
+                if [ -s ${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME} ]
                 then
                     ## removal complete, rename
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Temporary file successfully created. Renaming..";
 
-                    mv ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME}.tmp ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME};
+                    mv ${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME} ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME};
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Rename complete. Validating..";
 
                     ## make sure the move worked
-                    if [ -s ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME} ]
+                    if [ -s ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME} ]
                     then
                         ## it did. validate that the entry was indeed removed
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Rename validated. Validating removal..";
@@ -569,8 +575,8 @@ function remove_zone_entry
 
                         ## validate that the removal line count matches the current line count (post-removal) and
                         ## that the entry doesnt exist in the zone anymore
-                        if [ $(wc -l ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME} | awk '{print $1}') -eq ${REMOVAL_LINE_COUNT} ] \
-                            && [ $(grep -c ${ZONE_ENTRY} ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME}) -eq 0 ]
+                        if [ $(wc -l ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME} | awk '{print $1}') -eq ${REMOVAL_LINE_COUNT} ] \
+                            && [ $(grep -c ${ZONE_ENTRY} ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME}) -eq 0 ]
                         then
                             ## it indeed was. we can now move forward to the dc-specifics and then
                             ## copy everything in
@@ -583,31 +589,31 @@ function remove_zone_entry
                                 ## get the line count of the file. we'll use this in part to validate
                                 ## the entry was removed as well as to validate that everything else
                                 ## wasnt
-                                CURRENT_LINE_COUNT=$(wc -l ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME}.${DATACENTER} | awk '{print $1}');
+                                CURRENT_LINE_COUNT=$(wc -l ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME}.${DATACENTER} | awk '{print $1}');
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CURRENT_LINE_COUNT -> ${CURRENT_LINE_COUNT}";
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing entry ${ZONE_ENTRY}..";
 
                                 ## ok, lets go forward and remove the entry
-                                sed -e "/${ZONE_ENTRY}/d" ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME}.${DATACENTER} > ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME}.${DATACENTER}.tmp;
+                                sed -e "/${ZONE_ENTRY}/d" ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME}.${DATACENTER} > ${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME}.${DATACENTER};
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${ZONE_ENTRY} removed. Validating..";
 
                                 ## and remove the old one
-                                rm -rf ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME}.${DATACENTER};
+                                rm -rf ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME}.${DATACENTER};
 
                                 ## make sure tmp file was created and has content
-                                if [ -s ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME}.${DATACENTER}.tmp ]
+                                if [ -s ${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME}.${DATACENTER} ]
                                 then
                                     ## removal complete, rename
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Temporary file successfully created. Renaming..";
 
-                                    mv ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME}.${DATACENTER}.tmp ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME}.${DATACENTER};
+                                    mv ${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME}.${DATACENTER} ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME}.${DATACENTER};
 
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Rename complete. Validating..";
 
                                     ## make sure the move worked
-                                    if [ -s ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME}.${DATACENTER} ]
+                                    if [ -s ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME}.${DATACENTER} ]
                                     then
                                         ## it did. validate that the entry was indeed removed
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Rename validated. Validating removal..";
@@ -618,8 +624,8 @@ function remove_zone_entry
 
                                         ## validate that the removal line count matches the current line count (post-removal) and
                                         ## that the entry doesnt exist in the zone anymore
-                                        if [ $(wc -l ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME}.${DATACENTER} | awk '{print $1}') -eq ${REMOVAL_LINE_COUNT} ] \
-                                            && [ $(grep -c ${ZONE_ENTRY} ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME}.${DATACENTER}) -eq 0 ]
+                                        if [ $(wc -l ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME}.${DATACENTER} | awk '{print $1}') -eq ${REMOVAL_LINE_COUNT} ] \
+                                            && [ $(grep -c ${ZONE_ENTRY} ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME}.${DATACENTER}) -eq 0 ]
                                         then
                                             ## it indeed was. we can now move forward to the dc-specifics and then
                                             ## copy everything in
@@ -658,14 +664,14 @@ function remove_zone_entry
                             ## with the changes
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "All changes successfully applied. Re-locating files..";
 
-                            TMP_FILE_CKSUM=$(cksum ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME} | awk '{print $1}');
+                            TMP_FILE_CKSUM=$(cksum ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME} | awk '{print $1}');
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_FILE_CKSUM->${TMP_FILE_CKSUM}";
 
                             ## we have our checksums, lets move in files
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Moving file ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME} ..";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Moving file ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME} ..";
 
-                            mv ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME} ${SITE_ROOT}/${ZONEFILE_NAME};
+                            mv ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME} ${SITE_ROOT}/${ZONEFILE_NAME};
 
                             ## move complete. validate.
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Move complete. Validating..";
@@ -683,13 +689,13 @@ function remove_zone_entry
 
                                 for DATACENTER in ${PRIMARY_DC} ${SECONDARY_DC}
                                 do
-                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Moving file ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME}.${DATACENTER} ..";
+                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Moving file ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME}.${DATACENTER} ..";
 
-                                    TMP_FILE_CKSUM=$(cksum ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME}.${DATACENTER} | awk '{print $1}');
+                                    TMP_FILE_CKSUM=$(cksum ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME}.${DATACENTER} | awk '{print $1}');
 
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_FILE_CKSUM -> ${TMP_FILE_CKSUM}";
 
-                                    mv ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME}.${DATACENTER} ${SITE_ROOT}/${DATACENTER}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2);
+                                    mv ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME}.${DATACENTER} ${SITE_ROOT}/${DATACENTER}/$(printf ${ZONEFILE_NAME} | cut -d "." -f 1-2);
 
                                     ## move complete. validate.
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Move complete. Validating..";
@@ -733,8 +739,7 @@ function remove_zone_entry
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "HORIZON -> ${HORIZON}";
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${NAMED_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeRNDCCommands.sh -s ${NAMED_MASTER} -p ${RNDC_LOCAL_PORT} -y ${RNDC_LOCAL_KEY} -c reload -z "${ZONE_NAME}" -i ${HORIZON} -e";
 
-                                        THIS_CNAME="${CNAME}";
-                                        unset METHOD_NAME;
+                                                                unset METHOD_NAME;
                                         unset CNAME;
 
                                         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
@@ -755,8 +760,7 @@ function remove_zone_entry
                                 else
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${NAMED_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeRNDCCommands.sh -s ${NAMED_MASTER} -p ${RNDC_LOCAL_PORT} -y ${RNDC_LOCAL_KEY} -c reload -z "${ZONE_NAME}" -e";
 
-                                    THIS_CNAME="${CNAME}";
-                                    unset METHOD_NAME;
+                                                        unset METHOD_NAME;
                                     unset CNAME;
 
                                     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
@@ -805,8 +809,7 @@ function remove_zone_entry
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "HORIZON -> ${HORIZON}";
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${NAMED_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeRNDCCommands.sh -s ${SLAVE} -p ${RNDC_REMOTE_PORT} -y ${RNDC_REMOTE_KEY} -c reload -z "${ZONE_NAME}" -i ${HORIZON} -e";
 
-                                                    THIS_CNAME="${CNAME}";
-                                                    unset METHOD_NAME;
+                                                                                        unset METHOD_NAME;
                                                     unset CNAME;
 
                                                     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
@@ -834,8 +837,7 @@ function remove_zone_entry
                                             else
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${NAMED_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeRNDCCommands.sh -s ${SLAVE} -p ${RNDC_REMOTE_PORT} -y ${RNDC_REMOTE_KEY} -c reload -z "${ZONE_NAME}" -e";
 
-                                                THIS_CNAME="${CNAME}";
-                                                unset METHOD_NAME;
+                                                                                unset METHOD_NAME;
                                                 unset CNAME;
 
                                                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
@@ -965,8 +967,10 @@ function usage
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
+    local RETURN_CODE=3;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
     print "${CNAME} - Execute modifications against a zone";
     print "Usage: ${CNAME} [ -b business unit ] [ -p project code ] [ -z zone name ] [ -i requestor ] [ -c change request ] [ -r entry ] [ -x ] [ -s ] [ -e ] [ -?|-h ]";
@@ -981,15 +985,16 @@ function usage
     print "  -e      Execute processing";
     print "  -?|-h   Show this help";
 
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-    return 3;
+    return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage;
+[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
 
 while getopts ":b:p:z:i:c:r:xseh:" OPTIONS 2>/dev/null
 do
@@ -1109,6 +1114,7 @@ do
                         ## we were asked to remove a zone entry but werent provided one.
                         ## oops.
                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "The requestors username was not provided. Unable to continue processing.";
+
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                         RETURN_CODE=29;
@@ -1116,7 +1122,7 @@ do
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                        remove_zone_entry;
+                        remove_zone_entry && RETURN_CODE=${?};
                     fi
                 elif [ ! -z "${REMOVE_ZONE}" ] && [ "${REMOVE_ZONE}" = "${_TRUE}" ]
                 then
@@ -1126,12 +1132,7 @@ do
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                    if [ ! -z "${SLAVE_OPERATION}" ] && [ "${SLAVE_OPERATION}" = "${_TRUE}" ]
-                    then
-                        remove_slave_zone;
-                    else
-                        remove_master_zone;
-                    fi
+                    [ ! -z "${SLAVE_OPERATION}" ] && [ "${SLAVE_OPERATION}" = "${_TRUE}" ] && remove_slave_zone && RETURN_CODE=${?} || remove_master_zone && RETURN_CODE=${?};
                 else
                     ## we didn't get a performance argument. since we dont know what action to take,
                     ## we fail here.
@@ -1145,13 +1146,10 @@ do
         *)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            usage;
+            usage && RETURN_CODE=${?};
             ;;
     esac
 done
-
-
-printf ${RETURN_CODE};
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";

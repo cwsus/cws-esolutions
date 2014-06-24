@@ -18,9 +18,10 @@
 #==============================================================================
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 ## Application constants
-CNAME="$(basename "${0}")";
+CNAME="${THIS_CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
@@ -29,6 +30,7 @@ function main
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
+    local RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
@@ -46,7 +48,8 @@ function main
     typeset -i RET_CODE=${?};
 
     ## reset METHOD_NAME back to THIS method
-    local METHOD_NAME="${CNAME}#${0}";
+local METHOD_NAME="${CNAME}#${0}";
+local RETURN_CODE=0;
     CNAME=$(basename ${0});
 
     ## is the application already running a site
@@ -112,7 +115,8 @@ function main
                         RET_CODE=${?}
 
                         ## reset METHOD_NAME back to THIS method
-                        local METHOD_NAME="${CNAME}#${0}";
+                    local METHOD_NAME="${CNAME}#${0}";
+local RETURN_CODE=0;
                         CNAME=$(basename ${0});
 
                         reset; clear;
@@ -349,6 +353,7 @@ function process_backout_file
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
+    local RETURN_CODE=0;
 
     if [ ${#FILE_LIST[@]} -eq 0 ]
     then
@@ -404,7 +409,8 @@ function process_backout_file
                 typeset -i RET_CODE=${?};
 
                 ## set method_name and cname back to this
-                local METHOD_NAME="${CNAME}#${0}";
+            local METHOD_NAME="${CNAME}#${0}";
+local RETURN_CODE=0;
                 CNAME=$(basename ${0});
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing complete. Return code -> ${RET_CODE}";
@@ -510,7 +516,8 @@ function process_backout_file
                                         typeset -i RET_CODE=${?};
 
                                         ## set method_name and cname back to this
-                                        local METHOD_NAME="${CNAME}#${0}";
+                                    local METHOD_NAME="${CNAME}#${0}";
+local RETURN_CODE=0;
                                         CNAME=$(basename ${0});
 
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Return code from run_backout.sh->${RET_CODE}";

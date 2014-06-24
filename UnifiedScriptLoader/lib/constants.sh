@@ -18,6 +18,7 @@
 #==============================================================================
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 case ${SCRIPT_ROOT} in
     *lib/plugins/*/executors*|*lib/plugins/*/monitors*) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../../../../etc" ;;
@@ -70,7 +71,7 @@ typeset -x -i ERROR_COUNT=0;
 typeset -x -i RETRY_COUNT=0;
 typeset -x -i STATUS=0;
 
-[ ! -d ${TEMP_DIRECTORY} ] && mkdir -p ${TEMP_DIRECTORY};
+[ ! -d ${TEMP_DIRECTORY} ] && mkdir -p ${TEMP_DIRECTORY} > /dev/null 2>&1;
 
 ## source aliases/functions ..
 [ -f ${APP_ROOT}/${LIB_DIRECTORY}/aliases ] && . ${APP_ROOT}/${LIB_DIRECTORY}/aliases;

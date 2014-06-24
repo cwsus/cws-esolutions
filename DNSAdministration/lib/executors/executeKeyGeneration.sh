@@ -25,7 +25,7 @@
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
-METHOD_NAME="${CNAME}#startup";
+local METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
@@ -38,8 +38,8 @@ METHOD_NAME="${CNAME}#startup";
 [ -z "${PLUGIN_ROOT_DIR}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
 THIS_CNAME="${CNAME}";
 unset METHOD_NAME;
@@ -52,16 +52,19 @@ unset CNAME;
 ${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
 typeset -i RET_CODE=${?};
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 CNAME="${THIS_CNAME}";
-METHOD_NAME="${CNAME}#startup";
+local METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
 if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
 then
+    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
+    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
+
     print "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
@@ -77,8 +80,8 @@ unset CNAME;
 ${APP_ROOT}/${LIB_DIRECTORY}/lock.sh lock ${$};
 typeset -i RET_CODE=${?};
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 CNAME="${THIS_CNAME}";
 METHOD_NAME="${THIS_CNAME}#startup";
@@ -89,10 +92,7 @@ METHOD_NAME="${THIS_CNAME}#startup";
 
 unset RET_CODE;
 
-CNAME="$(basename "${0}")";
-METHOD_NAME="${CNAME}#startup";
-
-trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; return" INT TERM EXIT;
+trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; return ${RETURN_CODE}" INT TERM EXIT;
 
 #===  FUNCTION  ===============================================================
 #          NAME:  generateRNDCKeys
@@ -105,6 +105,7 @@ function generateRNDCKeys
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
+    local RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -125,7 +126,7 @@ function generateRNDCKeys
     fi
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Generating RNDC keyfiles..";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command rndc-confgen -b ${RNDC_KEY_BITSIZE} -r ${RANDOM_GENERATOR} > ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command rndc-confgen -b ${RNDC_KEY_BITSIZE} -r ${RANDOM_GENERATOR} > ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}..";
 
     RETURN_KEY=$(rndc-confgen -b ${RNDC_KEY_BITSIZE} -r ${RANDOM_GENERATOR} | grep secret | head -1 | cut -d "\"" -f 2);
     KEY_GENERATION_DATE=$(date +"%m-%d-%y");
@@ -134,32 +135,32 @@ function generateRNDCKeys
     then
         if [ "${KEYTYPE}" = "${RNDC_LOCAL_KEY}" ]
         then
-            [ -s ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3) ] && rm -rf ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
-            [ -s ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3) ] && rm -rf ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3);
-            [ -s ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3).REMOTE ] && rm -rf ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3).REMOTE;
+            [ -s ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3) ] && rm -rf ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
+            [ -s ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3) ] && rm -rf ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3);
+            [ -s ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3).REMOTE ] && rm -rf ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3).REMOTE;
 
             ## this is a local rndc key. build the file
             ## once for the rndc conf file...
-            printf "# keyfile ${RNDC_LOCAL_KEY} generated by ${REQUESTING_USER} on ${GENERATION_DATE}\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
-            printf "# change request number ${CHANGE_NUM}\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
-            printf "key \"${RNDC_LOCAL_KEY}\" {\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
-            printf "    algorithm         hmac-md5;\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
-            printf "    secret            \"${RETURN_KEY}\";\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
-            printf "};\n\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
+            printf "# keyfile ${RNDC_LOCAL_KEY} generated by ${REQUESTING_USER} on ${GENERATION_DATE}\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
+            printf "# change request number ${CHANGE_NUM}\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
+            printf "key \"${RNDC_LOCAL_KEY}\" {\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
+            printf "    algorithm         hmac-md5;\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
+            printf "    secret            \"${RETURN_KEY}\";\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
+            printf "};\n\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
 
             ## and again for rndc.key
-            printf "# keyfile ${RNDC_LOCAL_KEY} generated by ${REQUESTING_USER} on ${KEY_GENERATION_DATE}\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3);
-            printf "# change request number ${CHANGE_NUM}\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3);
-            printf "key \"${RNDC_LOCAL_KEY}\" {\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3);
-            printf "    algorithm         hmac-md5;\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3);
-            printf "    secret            \"${RETURN_KEY}\";\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3);
-            printf "};\n\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3);
+            printf "# keyfile ${RNDC_LOCAL_KEY} generated by ${REQUESTING_USER} on ${KEY_GENERATION_DATE}\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3);
+            printf "# change request number ${CHANGE_NUM}\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3);
+            printf "key \"${RNDC_LOCAL_KEY}\" {\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3);
+            printf "    algorithm         hmac-md5;\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3);
+            printf "    secret            \"${RETURN_KEY}\";\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3);
+            printf "};\n\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3);
 
             ## unset the key
             unset RETURN_KEY;
 
-            if [ -s ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3) ] \
-                && [ -s ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3) ]
+            if [ -s ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3) ] \
+                && [ -s ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3) ]
             then
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${RNDC_LOCAL_KEY} generation complete. Now generating ${RNDC_REMOTE_KEY}..";
 
@@ -170,25 +171,25 @@ function generateRNDCKeys
                 then
                     ## remote key. write it out
                     ## once for the rndc conf file...
-                    printf "# keyfile ${RNDC_REMOTE_KEY} generated by ${REQUESTING_USER} on ${KEY_GENERATION_DATE}\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
-                    printf "# change request number ${CHANGE_NUM}\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
-                    printf "key \"${RNDC_REMOTE_KEY}\" {\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
-                    printf "    algorithm         hmac-md5;\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
-                    printf "    secret            \"${RETURN_KEY}\";\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
-                    printf "};\n\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
+                    printf "# keyfile ${RNDC_REMOTE_KEY} generated by ${REQUESTING_USER} on ${KEY_GENERATION_DATE}\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
+                    printf "# change request number ${CHANGE_NUM}\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
+                    printf "key \"${RNDC_REMOTE_KEY}\" {\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
+                    printf "    algorithm         hmac-md5;\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
+                    printf "    secret            \"${RETURN_KEY}\";\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
+                    printf "};\n\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
 
                     ## and then add our default server..
-                    printf "options {\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
-                    printf "    default-key       \"${RNDC_LOCAL_KEY}\";\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
-                    printf "    default-server    127.0.0.1;\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
-                    printf "    default-port      ${RNDC_LOCAL_PORT};\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
-                    printf "};\n\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
+                    printf "options {\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
+                    printf "    default-key       \"${RNDC_LOCAL_KEY}\";\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
+                    printf "    default-server    127.0.0.1;\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
+                    printf "    default-port      ${RNDC_LOCAL_PORT};\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
+                    printf "};\n\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
 
                     ## we dont write out the remote rndc key. just return it back to the requestor
                     ## this is because it needs to be transferred out to the slave servers. we
                     ## let the requestor handle that.
-                    if [ -s ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3) ] \
-                        && [ -s ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3) ]
+                    if [ -s ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3) ] \
+                        && [ -s ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3) ]
                     then
                         ## copy the keys in place
                         ## backup first
@@ -213,12 +214,12 @@ function generateRNDCKeys
                             unset BACKUP_FILE;
 
                             ## now we can move the files in
-                            cp -p ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3) ${NAMED_ROOT}/${RNDC_KEY_FILE};
-                            cp -p ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3) ${NAMED_ROOT}/${RNDC_CONF_FILE};
+                            cp -p ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3) ${NAMED_ROOT}/${RNDC_KEY_FILE};
+                            cp -p ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3) ${NAMED_ROOT}/${RNDC_CONF_FILE};
 
                             ## cksum verify
-                            for OPERATIONAL_FILE in ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3) \
-                                ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3)
+                            for OPERATIONAL_FILE in ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3) \
+                                ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3)
                             do
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating ${OPERATIONAL_FILE}..";
 
@@ -291,8 +292,8 @@ function generateRNDCKeys
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     ## remove tmp files
-    rm -rf ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3);
-    rm -rf ${PLUGIN_TMP_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
+    rm -rf ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_KEY_FILE} | cut -d "/" -f 3);
+    rm -rf ${PLUGIN_WORK_DIRECTORY}/$(printf ${RNDC_CONF_FILE} | cut -d "/" -f 3);
 
     ## unset
     unset CKSUM_FAILURE;
@@ -320,6 +321,7 @@ function generateDNSSECKeys
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
+    local RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -430,12 +432,12 @@ function generateDNSSECKeys
 
     ## unset BACKUP_FILE var
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete - continuing...";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${FILENAME} to ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${FILENAME} to ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}..";
 
     ## make a copy of the zone for operation
-    cp ${SITE_ROOT}/${FILENAME} ${PLUGIN_TMP_DIRECTORY}/${FILENAME};
+    cp ${SITE_ROOT}/${FILENAME} ${PLUGIN_WORK_DIRECTORY}/${FILENAME};
 
-    if [ ! -s ${PLUGIN_TMP_DIRECTORY}/${FILENAME} ]
+    if [ ! -s ${PLUGIN_WORK_DIRECTORY}/${FILENAME} ]
     then
         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to create copy file. Cannot continue.";
 
@@ -609,15 +611,15 @@ function generateDNSSECKeys
     ## then add the "INFO"..
     head -${START_LINE_NUMBER} ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_DIR}/${GROUP_ID}${PROJECT_CODE}/${FILENAME} | \
         sed -e "${START_LINE_NUMBER}a \$INCLUDE ${KEY_DIRECTORY}/${GENERATED_KSK_FILE}.key" \
-            -e "${START_LINE_NUMBER}a \$INCLUDE ${KEY_DIRECTORY}/${GENERATED_ZSK_FILE}.key" >> ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME};
+            -e "${START_LINE_NUMBER}a \$INCLUDE ${KEY_DIRECTORY}/${GENERATED_ZSK_FILE}.key" >> ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME};
 
     ## now we need to add the rest of the zone content into the new file
     ## and update the serial number.
     sed -e "1,${START_LINE_NUMBER}d" -e "s/${LAST_SERIAL}/${SERIAL_NUM}/" \
-        ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_DIR}/${GROUP_ID}${PROJECT_CODE}/${FILENAME} >> ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME};
+        ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_DIR}/${GROUP_ID}${PROJECT_CODE}/${FILENAME} >> ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME};
 
     ## and now we should have two includes - lets make sure
-    if [ $(grep -c INCLUDE ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME}) -ne 2 ]
+    if [ $(grep -c INCLUDE ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME}) -ne 2 ]
     then
         ## failed to sign the zone with the keys
         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to add keyfile includes in zone. Cannot continue.";
@@ -640,7 +642,7 @@ function generateDNSSECKeys
     ## here we actually sign the working copy of the zone we've created.
     RET_CODE=$(dnssec-signzone -K ${KEY_DIRECTORY} -d ${KEY_DIRECTORY} \
         -o ${ZONE_NAME} -r ${RANDOM_GENERATOR} -N INCREMENT -k ${KSKSIGN_FILE_PREFIX}-${ZONE_NAME}.${PROJECT_CODE} \
-            -f ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME}.signed ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME} \
+            -f ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME}.signed ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME} \
                 ${ZSKSIGN_FILE_PREFIX}-${ZONE_NAME}.${PROJECT_CODE});
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE->${RET_CODE}";
@@ -664,10 +666,10 @@ function generateDNSSECKeys
     ## zone was successfully signed
     ## ok, we now need to add the header back
     ## move the .signed file to the real file
-    mv ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME}.signed ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME};
+    mv ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME}.signed ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME};
 
     ## and then make sure it was created..
-    if [ ! -s ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME} ]
+    if [ ! -s ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME} ]
     then
         ## file rename failed
         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to rename signed zone to ${FILENAME}. Cannot continue.";
@@ -684,7 +686,7 @@ function generateDNSSECKeys
     fi
 
     ## and make sure its actually the signed file..
-    if [ $(grep -c dnssec_signzone ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME}) != 0 ]
+    if [ $(grep -c dnssec_signzone ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME}) != 0 ]
     then
         ## shift failed
         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Successfully renamed signed zone to ${FILENAME}, but content could not be verified. Cannot continue.";
@@ -701,11 +703,11 @@ function generateDNSSECKeys
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding header..";
 
         head -4 ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_DIR}/${GROUP_ID}${PROJECT_CODE}/${FILENAME} \
-            > ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME};
+            > ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME};
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding signed content..";
         ## header in, now add the signed content
-        cat ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME}.signed >> ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME};
+        cat ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME}.signed >> ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME};
 
         ## k, this gives our proper header and a signed zone.
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Signed zone now available. Creating datacenter-specifics...";
@@ -726,9 +728,9 @@ function generateDNSSECKeys
         ## ok, lets rock out dc-specifics
         ## start with the DC its live in
         head -4 ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_DIR}/${GROUP_ID}${PROJECT_CODE}/${FILENAME}/${CURRENT_DC}/${DC_FILE} \
-             > ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME}.${PRIMARY_DC};
+             > ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME}.${PRIMARY_DC};
         head -4 ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_DIR}/${GROUP_ID}${PROJECT_CODE}/${FILENAME}/${CURRENT_DC}/${DC_FILE} \
-             > ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME}.${SECONDARY_DC};
+             > ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME}.${SECONDARY_DC};
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Headers added. Adding signed content..";
 
@@ -738,25 +740,25 @@ function generateDNSSECKeys
             ## add in the signed content, leaving everything unchanged
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding signatures for ${PRIMARY_DC}..";
 
-            cat ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME} >> ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME}.${PRIMARY_DC};
+            cat ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME} >> ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME}.${PRIMARY_DC};
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding signatures for ${SECONDARY_DC} and flipping IP to ${SECONDARY_DATACENTER_IP}..";
 
             ## and then again for the secondary
-            sed -e "s/${PRIMARY_DATACENTER_IP}/${SECONDARY_DATACENTER_IP}/" ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME} \
-                >> ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME}.${SECONDARY_DC};
+            sed -e "s/${PRIMARY_DATACENTER_IP}/${SECONDARY_DATACENTER_IP}/" ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME} \
+                >> ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME}.${SECONDARY_DC};
         elif [ "${CURRENT_DC}" = "${SECONDARY_DC}" ]
         then
             ## add in the signed content, leaving everything unchanged
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding signatures for ${SECONDARY_DC}..";
 
-            cat ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME} >> ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME}.${SECONDARY_DC};
+            cat ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME} >> ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME}.${SECONDARY_DC};
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding signatures for ${PRIMARY_DC} and flipping IP to ${PRIMARY_DATACENTER_IP}..";
 
             ## and then again for the secondary
-            sed -e "s/${SECONDARY_DATACENTER_IP}/${PRIMARY_DATACENTER_IP}/" ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME} \
-                >> ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME}.${PRIMARY_DC};
+            sed -e "s/${SECONDARY_DATACENTER_IP}/${PRIMARY_DATACENTER_IP}/" ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME} \
+                >> ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME}.${PRIMARY_DC};
         else
             ## couldnt accurately determine what datacenter this exists in currently
             ## "ERROR" out
@@ -777,15 +779,15 @@ function generateDNSSECKeys
             ## pull checksums
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Placing files..";
 
-            SIGNED_TMP_CKSUM=$(cksum ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME} | awk '{print $1}');
-            SIGNED_PRI_CKSUM=$(cksum ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME}.${PRIMARY_DATACENTER} | awk '{print $1}');
-            SIGNED_SEC_CKSUM=$(cksum ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME}.${SECONDARY_DATACENTER} | awk '{print $1}');
+            SIGNED_TMP_CKSUM=$(cksum ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME} | awk '{print $1}');
+            SIGNED_PRI_CKSUM=$(cksum ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME}.${PRIMARY_DATACENTER} | awk '{print $1}');
+            SIGNED_SEC_CKSUM=$(cksum ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME}.${SECONDARY_DATACENTER} | awk '{print $1}');
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SIGNED_TMP_CKSUM -> ${SIGNED_TMP_CKSUM}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SIGNED_PRI_CKSUM -> ${SIGNED_PRI_CKSUM}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SIGNED_SEC_CKSUM -> ${SIGNED_SEC_CKSUM}";
 
-            cp ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME} \
+            cp ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME} \
                 ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_DIR}/${GROUP_ID}${PROJECT_CODE}/${FILENAME};
 
             ## validate it, if this didnt work then theres no point in continuing
@@ -799,7 +801,7 @@ function generateDNSSECKeys
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Operational zonefile checksum match. Continuing..";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying primary datacenter files..";
 
-                cp ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME}.${PRIMARY_DC} \
+                cp ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME}.${PRIMARY_DC} \
                     ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_DIR}/${GROUP_ID}${PROJECT_CODE}/${PRIMARY_DC}/${DC_FILE};
 
                 OP_PRI_CKSUM=$(cksum ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_DIR}/${GROUP_ID}${PROJECT_CODE}/${PRIMARY_DC}/${DC_FILE} | awk '{print $1}');
@@ -825,7 +827,7 @@ function generateDNSSECKeys
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying secondary datacenter files..";
 
-                        cp ${NAMED_ROOT}/${PLUGIN_TMP_DIRECTORY}/${FILENAME}.${SECONDARY_DC} \
+                        cp ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${FILENAME}.${SECONDARY_DC} \
                             ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_DIR}/${GROUP_ID}${PROJECT_CODE}/${SECONDARY_DC}/${DC_FILE};
 
                         OP_SEC_CKSUM=$(cksum ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_DIR}/${GROUP_ID}${PROJECT_CODE}/${SECONDARY_DC}/${DC_FILE} | awk '{print $1}');
@@ -908,6 +910,7 @@ function generateTSIGKeys
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
+    local RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -920,7 +923,7 @@ function generateTSIGKeys
     fi
 
     ## remove the file if it exists
-    [ -s ${PLUGIN_TMP_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3) ] && rm -rf ${PLUGIN_TMP_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3);
+    [ -s ${PLUGIN_WORK_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3) ] && rm -rf ${PLUGIN_WORK_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3);
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Generating TSIG keyfiles..";
 
@@ -932,12 +935,12 @@ function generateTSIGKeys
     if [ ! -z "${RETURN_KEY}" ]
     then
         ## this is a local rndc key. build the file
-        printf "# keyfile ${TSIG_TRANSFER_KEY} generated by ${REQUESTING_USER} on ${KEY_GENERATION_DATE}\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3);
-        printf "# change request number ${CHANGE_NUM}\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3);
-        printf "key \"${TSIG_TRANSFER_KEY}\" {\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3);
-        printf "    algorithm    hmac-md5;\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3);
-        printf "    secret       \"${RETURN_KEY}\";\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3);
-        printf "};\n\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3);
+        printf "# keyfile ${TSIG_TRANSFER_KEY} generated by ${REQUESTING_USER} on ${KEY_GENERATION_DATE}\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3);
+        printf "# change request number ${CHANGE_NUM}\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3);
+        printf "key \"${TSIG_TRANSFER_KEY}\" {\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3);
+        printf "    algorithm    hmac-md5;\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3);
+        printf "    secret       \"${RETURN_KEY}\";\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3);
+        printf "};\n\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3);
 
         A=0;
 
@@ -946,9 +949,9 @@ function generateTSIGKeys
         do
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS_SLAVE_IPS -> ${DNS_SLAVE_IPS[${A}]}";
 
-            printf "server ${DNS_SLAVE_IPS[${A}]} {\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3);
-            printf "    keys { ${TSIG_TRANSFER_KEY}; };\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3);
-            printf "};\n\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3);
+            printf "server ${DNS_SLAVE_IPS[${A}]} {\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3);
+            printf "    keys { ${TSIG_TRANSFER_KEY}; };\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3);
+            printf "};\n\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3);
 
             (( A += 1 ));
         done
@@ -956,12 +959,12 @@ function generateTSIGKeys
         ## unset the key and put a back to zero
         A=0;
 
-        if [ -s ${PLUGIN_TMP_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3) ]
+        if [ -s ${PLUGIN_WORK_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3) ]
         then
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${TSIG_TRANSFER_KEY} generation complete.";
 
             ## printf back the key to the requestor for build against slaves
-            if [ -s ${PLUGIN_TMP_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3) ]
+            if [ -s ${PLUGIN_WORK_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3) ]
             then
                 ## copy the keys in place
                 ## backup first
@@ -985,11 +988,11 @@ function generateTSIGKeys
                     unset BACKUP_FILE;
 
                     ## now we can move the files in
-                    cp -p ${PLUGIN_TMP_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3) ${NAMED_ROOT}/${TRANSFER_KEY_FILE};
+                    cp -p ${PLUGIN_WORK_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3) ${NAMED_ROOT}/${TRANSFER_KEY_FILE};
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating checksums..";
 
-                    OP_FILE_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3) | awk '{print $1}');
+                    OP_FILE_CKSUM=$(cksum ${PLUGIN_WORK_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3) | awk '{print $1}');
                     MOD_FILE_CKSUM=$(cksum ${NAMED_ROOT}/${TRANSFER_KEY_FILE} | awk '{print $1}');
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OP_FILE_CKSUM -> ${OP_FILE_CKSUM}";
@@ -999,8 +1002,8 @@ function generateTSIGKeys
                     then
                         ## we're all set here. return the key back to the requestor.
                         ## remove tmp files
-                        rm -rf ${PLUGIN_TMP_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3);
-                        rm -rf ${PLUGIN_TMP_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3);
+                        rm -rf ${PLUGIN_WORK_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3);
+                        rm -rf ${PLUGIN_WORK_DIRECTORY}/$(printf ${TRANSFER_KEY_FILE} | cut -d "/" -f 3);
 
                         printf ${RETURN_KEY};
                         RETURN_CODE=0;
@@ -1051,12 +1054,13 @@ function generateDHCPDKeys
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
+    local RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
     ## remove the file if it exists
-    [ -s ${PLUGIN_TMP_DIRECTORY}/$(printf ${DHCPD_KEY_FILE} | cut -d "/" -f 3) ] && rm -rf ${PLUGIN_TMP_DIRECTORY}/$(printf ${DHCPD_KEY_FILE} | cut -d "/" -f 3);
+    [ -s ${PLUGIN_WORK_DIRECTORY}/$(printf ${DHCPD_KEY_FILE} | cut -d "/" -f 3) ] && rm -rf ${PLUGIN_WORK_DIRECTORY}/$(printf ${DHCPD_KEY_FILE} | cut -d "/" -f 3);
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Generating DHCP keyfiles..";
 
@@ -1068,19 +1072,19 @@ function generateDHCPDKeys
     if [ ! -z "${RETURN_KEY}" ]
     then
         ## this is a local rndc key. build the file
-        printf "# keyfile ${DHCPD_UPDATE_KEY} generated by ${REQUESTING_USER} on ${KEY_GENERATION_DATE}\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${DHCPD_KEY_FILE} | cut -d "/" -f 3);
-        printf "# change request number ${CHANGE_NUM}\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${DHCPD_KEY_FILE} | cut -d "/" -f 3);
-        printf "key ${DHCPD_UPDATE_KEY} {\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${DHCPD_KEY_FILE} | cut -d "/" -f 3);
-        printf "    algorithm    hmac-md5;\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${DHCPD_KEY_FILE} | cut -d "/" -f 3);
-        printf "    secret       \"${RETURN_KEY}\";\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${DHCPD_KEY_FILE} | cut -d "/" -f 3);
-        printf "};\n\n" >> ${PLUGIN_TMP_DIRECTORY}/$(printf ${DHCPD_KEY_FILE} | cut -d "/" -f 3);
+        printf "# keyfile ${DHCPD_UPDATE_KEY} generated by ${REQUESTING_USER} on ${KEY_GENERATION_DATE}\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${DHCPD_KEY_FILE} | cut -d "/" -f 3);
+        printf "# change request number ${CHANGE_NUM}\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${DHCPD_KEY_FILE} | cut -d "/" -f 3);
+        printf "key ${DHCPD_UPDATE_KEY} {\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${DHCPD_KEY_FILE} | cut -d "/" -f 3);
+        printf "    algorithm    hmac-md5;\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${DHCPD_KEY_FILE} | cut -d "/" -f 3);
+        printf "    secret       \"${RETURN_KEY}\";\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${DHCPD_KEY_FILE} | cut -d "/" -f 3);
+        printf "};\n\n" >> ${PLUGIN_WORK_DIRECTORY}/$(printf ${DHCPD_KEY_FILE} | cut -d "/" -f 3);
 
-        if [ -s ${PLUGIN_TMP_DIRECTORY}/$(printf ${DHCPD_KEY_FILE} | cut -d "/" -f 3) ]
+        if [ -s ${PLUGIN_WORK_DIRECTORY}/$(printf ${DHCPD_KEY_FILE} | cut -d "/" -f 3) ]
         then
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${DHCPD_UPDATE_KEY} generation complete.";
 
             ## printf back the key to the requestor for build against slaves
-            if [ -s ${PLUGIN_TMP_DIRECTORY}/$(printf ${DHCPD_KEY_FILE} | cut -d "/" -f 3) ]
+            if [ -s ${PLUGIN_WORK_DIRECTORY}/$(printf ${DHCPD_KEY_FILE} | cut -d "/" -f 3) ]
             then
                 ## copy the keys in place
                 ## backup first
@@ -1104,11 +1108,11 @@ function generateDHCPDKeys
                     unset BACKUP_FILE;
 
                     ## now we can move the files in
-                    cp -p ${PLUGIN_TMP_DIRECTORY}/$(printf ${DHCPD_KEY_FILE} | cut -d "/" -f 3) ${NAMED_ROOT}/${DHCPD_KEY_FILE};
+                    cp -p ${PLUGIN_WORK_DIRECTORY}/$(printf ${DHCPD_KEY_FILE} | cut -d "/" -f 3) ${NAMED_ROOT}/${DHCPD_KEY_FILE};
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating checksums..";
 
-                    OP_FILE_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/$(printf ${DHCPD_KEY_FILE} | cut -d "/" -f 3) | awk '{print $1}');
+                    OP_FILE_CKSUM=$(cksum ${PLUGIN_WORK_DIRECTORY}/$(printf ${DHCPD_KEY_FILE} | cut -d "/" -f 3) | awk '{print $1}');
                     MOD_FILE_CKSUM=$(cksum ${NAMED_ROOT}/${DHCPD_KEY_FILE} | awk '{print $1}');
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OP_FILE_CKSUM -> ${OP_FILE_CKSUM}";
@@ -1118,7 +1122,7 @@ function generateDHCPDKeys
                     then
                         ## we're all set here. return the key back to the requestor.
                         ## remove tmp files
-                        rm -rf ${PLUGIN_TMP_DIRECTORY}/$(printf ${DHCPD_KEY_FILE} | cut -d "/" -f 3);
+                        rm -rf ${PLUGIN_WORK_DIRECTORY}/$(printf ${DHCPD_KEY_FILE} | cut -d "/" -f 3);
 
                         printf ${RETURN_KEY};
                         RETURN_CODE=0;
@@ -1169,8 +1173,10 @@ function usage
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
+    local RETURN_CODE=3;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
     print "${CNAME} - Execute key generation requests";
     print "Usage: ${CNAME} [ -r request information ] [ -k request information ] [-e] [-h|?]";
@@ -1179,15 +1185,16 @@ function usage
     print " -e    -> Execute the request";
     print " -h|-? -> Show this help";
 
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-    return 3;
+    return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage;
+[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
 
 while getopts ":r:k:eh:" OPTIONS 2>/dev/null
 do
@@ -1196,13 +1203,13 @@ do
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting generateRNDCKeys..";
 
-            generateRNDCKeys=${_TRUE};
+            GENERATE_RNDC_KEYS=${_TRUE};
 
             typeset -l KEYTYPE=$(printf "${OPTARG}" | cut -d "," -f 1);
             typeset -u CHANGE_NUM=$(printf "${OPTARG}" | cut -d "," -f 2);
             REQUESTING_USER="${OPTARG}";
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "generateRNDCKeys -> ${generateRNDCKeys}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "GENERATE_RNDC_KEYS -> ${GENERATE_RNDC_KEYS}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "KEYTYPE -> ${KEYTYPE}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_NUM -> ${CHANGE_NUM}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REQUESTING_USER -> ${REQUESTING_USER}";
@@ -1211,13 +1218,13 @@ do
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting generateDNSSECKeys..";
 
-            generateDNSSECKeys=${_TRUE};
+            GENERATE_DNSSEC_KEYS=${_TRUE};
 
             typeset -l KEYTYPE=$(printf "${OPTARG}" | cut -d "," -f 1);
             typeset -u CHANGE_NUM=$(printf "${OPTARG}" | cut -d "," -f 2);
             REQUESTING_USER="${OPTARG}";
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "generateDNSSECKeys -> ${generateDNSSECKeys}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "GENERATE_DNSSEC_KEYS -> ${GENERATE_DNSSEC_KEYS}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "KEYTYPE -> ${KEYTYPE}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_NUM -> ${CHANGE_NUM}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REQUESTING_USER -> ${REQUESTING_USER}";
@@ -1251,41 +1258,16 @@ do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                if [ ! -z "${generateDNSSECKeys}" ] && [ "${generateDNSSECKeys}" = "${_TRUE}" ]
-                then
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-                    print "not yet implemented";
-                    RETURN_CODE=97;
-
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
-
-                    return ${RETURN_CODE};
-                elif [ ! -z "${generateRNDCKeys}" ] && [ "${generateRNDCKeys}" = "${_TRUE}" ]
-                then
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-                    generateRNDCKeys;
-                else
-                    ## no valid command
-                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No valid command was provided. Cannot continue.";
-
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-                    usage;
-                fi
+                [ ! -z "${GENERATE_DNSSEC_KEYS}" ] && [ "${GENERATE_DNSSEC_KEYS}" = "${_TRUE}" ] && generateDNSSECKeys && RETURN_CODE=${?};
+                [ ! -z "${GENERATE_TSIG_KEYS}" ] && [ "${GENERATE_TSIG_KEYS}" = "${_TRUE}" ] && generateTSIGKeys && RETURN_CODE=${?};
+                [ ! -z "${GENERATE_DHCPD_KEYS}" ] && [ "${GENERATE_DHCPD_KEYS}" = "${_TRUE}" ] && generateDHCPDKeys && RETURN_CODE=${?};
+                [ ! -z "${GENERATE_RNDC_KEYS}" ] && [ "${GENERATE_RNDC_KEYS}" = "${_TRUE}" ] && generateRNDCKeys && RETURN_CODE=${?};
             fi
             ;;
         *)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            usage;
+            usage && RETURN_CODE=${?};
             ;;
     esac
 done

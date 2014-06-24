@@ -45,7 +45,7 @@ esac
 ## common aliases
 alias netstat='/usr/bin/env netstat -an';
 alias dig='/usr/bin/env dig +noedns';
-alias scp="/usr/bin/env scp -q -C -F ${SSH_CONFIG_FILE} -p -r";
+alias scp="/usr/bin/env scp -q -r -C -F ${SSH_CONFIG_FILE} -p -r";
 alias ssh="/usr/bin/env ssh -q -t -C -F ${SSH_CONFIG_FILE} -k -Y";
 alias mkdir='/usr/bin/env mkdir -pv';
 [ "$(uname -m)" == "x86_64" ] && alias java="${JAVA_HOME}/bin/java -d64" || alias java="${JAVA_HOME}/bin/java";

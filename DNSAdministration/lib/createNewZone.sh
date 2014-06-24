@@ -1,8 +1,8 @@
 #!/usr/bin/ksh -x
 #==============================================================================
 #
-#          FILE:  create_zone.sh
-#         USAGE:  ./create_zone.sh
+#          FILE:  createNewZone.sh
+#         USAGE:  ./createNewZone.sh
 #   DESCRIPTION:  Creates a skeleton zone file and directory structure
 #
 #       OPTIONS:  ---
@@ -23,7 +23,7 @@
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
-METHOD_NAME="${CNAME}#startup";
+local METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
@@ -36,8 +36,8 @@ METHOD_NAME="${CNAME}#startup";
 [ -z "${PLUGIN_ROOT_DIR}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${*}";
 
 THIS_CNAME="${CNAME}";
 unset METHOD_NAME;
@@ -50,16 +50,19 @@ unset CNAME;
 ${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
 typeset -i RET_CODE=${?};
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 CNAME="${THIS_CNAME}";
-METHOD_NAME="${CNAME}#startup";
+local METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
 if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
 then
+    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
+    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
+
     print "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
@@ -75,8 +78,8 @@ unset CNAME;
 ${APP_ROOT}/${LIB_DIRECTORY}/lock.sh lock ${$};
 typeset -i RET_CODE=${?};
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 CNAME="${THIS_CNAME}";
 METHOD_NAME="${THIS_CNAME}#startup";
@@ -87,10 +90,7 @@ METHOD_NAME="${THIS_CNAME}#startup";
 
 unset RET_CODE;
 
-CNAME="$(basename "${0}")";
-METHOD_NAME="${CNAME}#startup";
-
-trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; return" INT TERM EXIT;
+trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; return ${RETURN_CODE}" INT TERM EXIT;
 
 #===  FUNCTION  ===============================================================
 #          NAME:  createSkeletonZone
@@ -105,11 +105,13 @@ function createSkeletonZone
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
+    local RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing service indicators..";
 
-    local BASE_DIRECTORY=${PLUGIN_TMP_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}
+    local BASE_DIRECTORY=${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}
     local ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(printf ${ZONE_NAME} | cut -d "." -f 1).${PROJECT_CODE};
     local DC_ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(printf ${ZONE_NAME} | cut -d "." -f 1);
     local ADMIN_CONTACT=$(printf ${DNS_SERVER_ADMIN_EMAIL} | sed -e "s/@/./");
@@ -123,59 +125,9 @@ function createSkeletonZone
     [ -d ${BASE_DIRECTORY} ] && rm -rf ${BASE_DIRECTORY};
 
     ## create our directory structure
-    mkdir -p ${BASE_DIRECTORY};
-    mkdir -p ${BASE_DIRECTORY}/${PRIMARY_DATACENTER};
-    mkdir -p ${BASE_DIRECTORY}/${SECONDARY_DATACENTER};
+    mkdir -p ${BASE_DIRECTORY} > /dev/null 2>&1;
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating skeleton zonefiles..";
-
-    ## write out the file
-    for DATACENTER in ${PRIMARY_DATACENTER} ${SECONDARY_DATACENTER}
-    do
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DATACENTER -> ${DATACENTER}";
-
-        printf "; zone '${ZONE_NAME}' last serial %%LAST_SERIAL%%\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
-        printf "; Currently live in: ${DATACENTER}\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
-        printf "; updated on %%DATE%% by %%USER_NAME%% per change order %%REQUEST_NUMBER%%\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
-        printf "\$ORIGIN .\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
-        printf "\$TTL ${NAMESERVER_TTL_TIME}\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
-        printf "${ZONE_NAME} IN SOA ${NAMESERVER_PRIMARY_SOA}.${NAMESERVER_INTERNET_SUFFIX}. ${NAMESERVER_PRIMARY_SOA_CONTACT}.${NAMESERVER_INTERNET_SUFFIX} (\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
-        printf "            %%SERIAL_NUM%%      ; serial number of this zone file\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
-        printf "            ${NAMESERVER_REFRESH_INTERVAL}              ; slave refresh\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
-        printf "            ${NAMESERVER_RETRY_INTERVAL}             ; slave retry time in case of a problem\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
-        printf "            ${NAMESERVER_EXPIRATION_INTERVAL}           ; slave expiration time\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
-        printf "            ${NAMESERVER_CACHE_INTERVAL}             ; minimum caching time in case of failed lookups\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
-        printf "            )\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
-
-        for SLAVE in ${NAMESERVER_RECORDS[@]}
-        do
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SLAVE -> ${SLAVE}";
-
-            printf "            IN    NS          ${SLAVE}.${NAMESERVER_INTERNET_SUFFIX}\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
-        done
-
-        printf "            IN    RP          ${NAMESERVER_PRIMARY_SOA_CONTACT}.${NAMESERVER_INTERNET_SUFFIX}\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
-
-        if [ ! -z "${ENABLE_LOC_RECORD}" ] && [ "${ENABLE_LOC_RECORD}" = "${_TRUE}" ]
-        then
-            local SITE_COORDINATES=$(sed -e '/^ *#/d;s/#.*//' ${INTERNET_DNS_CONFIG} | awk -F "=" "/\<${DATACENTER}_SITE_COORDS\>/{print \$2}" | sed -e 's/^ *//g;s/ *$//g');
-
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_COORDINATES -> ${SITE_COORDINATES}";
-
-            printf "            IN    LOC         ${SITE_COORDINATES}\n" >> ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
-        fi
-
-        if [ ! -s ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME} ]
-        then
-            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to populate zone datafile!";
-
-            (( ERROR_COUNT += 1 ));
-        fi
-    done
-
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Directory creation and zonefile creation complete. Adding data..";
-
-    if [ ! -d ${BASE_DIRECTORY} ] || [ ! -d ${BASE_DIRECTORY}/${PRIMARY_DATACENTER} ] || [ ! -d ${BASE_DIRECTORY}/${SECONDARY_DATACENTER} ]
+    if [ ! -d ${BASE_DIRECTORY} ]
     then
         ## directories werent created
         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to create zone directory structure. Please try again.";
@@ -204,34 +156,135 @@ function createSkeletonZone
         return ${RETURN_CODE};
     fi
 
-    if [ ! -s ${BASE_DIRECTORY}/${PRIMARY_DATACENTER}/${DC_ZONEFILE_NAME} ] || [ ! -s ${BASE_DIRECTORY}/${SECONDARY_DATACENTER}/${DC_ZONEFILE_NAME} ]
-    then
-        ## files werent created
-        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to create datacenter zone files. Please try again.";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating skeleton zonefiles..";
 
-        RETURN_CODE=41;
+    ## write out the file
+    for DATACENTER in ${DATACENTERS[@]}
+    do
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DATACENTER -> ${DATACENTER}";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+        mkdir -p ${BASE_DIRECTORY}/${DATACENTER} > /dev/null 2>&1;
 
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+        if [ ! -d ${BASE_DIRECTORY}/${DATACENTER} ]
+        then
+            ## directories werent created
+            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to create zone directory structure. Please try again.";
 
-        unset ADDRESS;
-        unset SITE_COORDINATES;
-        unset DATACENTER;
-        unset BASE_DIRECTORY;
-        unset ZONEFILE_NAME;
-        unset DC_ZONEFILE_NAME;
-        unset ADMIN_CONTACT;
-        unset METHOD_NAME;
-        unset BUSINESS_UNIT;
-        unset PROJECT_CODE;
-        unset ZONE_NAME;
-        unset CHANGE_NUM;
+            RETURN_CODE=40;
 
-        return ${RETURN_CODE};
-    fi
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+            unset ADDRESS;
+            unset SITE_COORDINATES;
+            unset DATACENTER;
+            unset BASE_DIRECTORY;
+            unset ZONEFILE_NAME;
+            unset DC_ZONEFILE_NAME;
+            unset ADMIN_CONTACT;
+            unset METHOD_NAME;
+            unset BUSINESS_UNIT;
+            unset PROJECT_CODE;
+            unset ZONE_NAME;
+            unset CHANGE_NUM;
+
+            return ${RETURN_CODE};
+        fi
+
+        printf "; zone '${ZONE_NAME}' last serial %%LAST_SERIAL%%\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+        printf "; Currently live in: ${DATACENTER}\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+        printf "; updated on %%DATE%% by %%USER_NAME%% per change order %%REQUEST_NUMBER%%\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+        printf "\$ORIGIN .\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+        printf "\$TTL ${NAMESERVER_TTL_TIME}\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+        printf "${ZONE_NAME} IN SOA ${NAMESERVER_PRIMARY_SOA}.${NAMESERVER_INTERNET_SUFFIX}. ${NAMESERVER_PRIMARY_SOA_CONTACT}.${NAMESERVER_INTERNET_SUFFIX} (\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+        printf "            %%SERIAL_NUM%%      ; serial number of this zone file\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+        printf "            ${NAMESERVER_REFRESH_INTERVAL}              ; slave refresh\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+        printf "            ${NAMESERVER_RETRY_INTERVAL}             ; slave retry time in case of a problem\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+        printf "            ${NAMESERVER_EXPIRATION_INTERVAL}           ; slave expiration time\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+        printf "            ${NAMESERVER_CACHE_INTERVAL}             ; minimum caching time in case of failed lookups\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+        printf "            )\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+
+        for SLAVE in ${NAMESERVER_RECORDS[@]}
+        do
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SLAVE -> ${SLAVE}";
+
+            printf "            IN    NS          ${SLAVE}.${NAMESERVER_INTERNET_SUFFIX}\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+        done
+
+        printf "            IN    RP          ${NAMESERVER_PRIMARY_SOA_CONTACT}.${NAMESERVER_INTERNET_SUFFIX}\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+
+        if [ ! -z "${ENABLE_LOC_RECORD}" ] && [ "${ENABLE_LOC_RECORD}" = "${_TRUE}" ]
+        then
+            local SITE_COORDINATES=$(sed -e '/^ *#/d;s/#.*//' ${INTERNET_DNS_CONFIG} | awk -F "=" "/\<${DATACENTER}_SITE_COORDS\>/{print \$2}" | sed -e 's/^ *//g;s/ *$//g');
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_COORDINATES -> ${SITE_COORDINATES}";
+
+            printf "            IN    LOC         ${SITE_COORDINATES}\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+        fi
+
+        if [ ! -s ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME} ]
+        then
+            RETURN_CODE=40;
+
+            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to populate zone datafile!";
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+            unset ADDRESS;
+            unset SITE_COORDINATES;
+            unset DATACENTER;
+            unset BASE_DIRECTORY;
+            unset ZONEFILE_NAME;
+            unset DC_ZONEFILE_NAME;
+            unset ADMIN_CONTACT;
+            unset METHOD_NAME;
+            unset BUSINESS_UNIT;
+            unset PROJECT_CODE;
+            unset ZONE_NAME;
+            unset CHANGE_NUM;
+
+            return ${RETURN_CODE};
+        fi
+
+        mv ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME} ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME};
+
+        if [ ! -s ${BASE_DIRECTORY}/${DATACENTER}/${DC_ZONEFILE_NAME} ]
+        then
+            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to populate zone datafile!";
+
+            RETURN_CODE=40;
+
+            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to populate zone datafile!";
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+            unset ADDRESS;
+            unset SITE_COORDINATES;
+            unset DATACENTER;
+            unset BASE_DIRECTORY;
+            unset ZONEFILE_NAME;
+            unset DC_ZONEFILE_NAME;
+            unset ADMIN_CONTACT;
+            unset METHOD_NAME;
+            unset BUSINESS_UNIT;
+            unset PROJECT_CODE;
+            unset ZONE_NAME;
+            unset CHANGE_NUM;
+
+            return ${RETURN_CODE};
+        fi
+    done
 
     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONEFILE_NAME} created on $(date +"%m-%d-%Y") by ${IUSER_AUDIT} per change ${CHANGE_NUM}";
 
@@ -260,6 +313,160 @@ function createSkeletonZone
 }
 
 #===  FUNCTION  ===============================================================
+#          NAME:  buildWorkingZone
+#   DESCRIPTION:  Creates the zone file that the DNS servers will utilize during
+#                 queries. Takes the previously configured file from the primary
+#                 datacenter folder and adds required indicator flags, and then
+#                 places the resultant file in the group root.
+#    PARAMETERS:  None
+#          NAME:  usage
+#==============================================================================
+function buildWorkingZone
+{
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+    local METHOD_NAME="${CNAME}#${0}";
+    local RETURN_CODE=0;
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+    if [ ! -z "${IS_DNS_RECORD_ADD_ENABLED}" ] && [ "${IS_DNS_RECORD_ADD_ENABLED}" = "${_FALSE}" ]
+    then
+        RETURN_CODE=45;
+
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS Record additions have not been enabled.";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        unset BASE_DIRECTORY;
+        unset INDICATOR;
+        unset CHG_ARRAY;
+        unset DC_ZONEFILE_NAME;
+        unset ZONEFILE_NAME;
+        unset METHOD_NAME;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
+    local BASE_DIRECTORY=${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT};
+    local ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(printf ${ZONE_NAME} | cut -d "." -f 1).${PROJECT_CODE};
+    local DC_ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(printf ${ZONE_NAME} | cut -d "." -f 1);
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BASE_DIRECTORY -> ${BASE_DIRECTORY}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONEFILE_NAME -> ${ZONEFILE_NAME}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DC_ZONEFILE_NAME -> ${DC_ZONEFILE_NAME}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating operational copy..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${PRIMARY_DATACENTER}/${DC_ZONEFILE_NAME} ${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${DC_ZONEFILE_NAME}.${PROJECT_CODE}";
+
+    ## create the operational copy - this will be the copy named actually uses
+    cp ${BASE_DIRECTORY}/${PRIMARY_DATACENTER}/${DC_ZONEFILE_NAME} ${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME};
+
+    if [ ! -s ${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME} ]
+    then
+        RETURN_CODE=44;
+
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while generating the zonefile. Please try again.";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        unset BASE_DIRECTORY;
+        unset INDICATOR;
+        unset CHG_ARRAY;
+        unset DC_ZONEFILE_NAME;
+        unset ZONEFILE_NAME;
+        unset METHOD_NAME;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding indicators..";
+
+    ## process the request, iterating through the fields that require
+    ## modification for audit/track/trace etc
+    sed -e "s/%LAST_SERIAL%/${NAMED_SERIAL_START}/g;s/%DATE%/$(date +"%m-%d-%Y")/g;s/%USER_NAME%/${IUSER_AUDIT}/g;s/%REQUEST_NUMBER%/$(date +"%Y%m%d")00/g" \
+        > ${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating file ${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}/${DC_ZONEFILE_NAME}.${PROJECT_CODE}..";
+
+    if [ ! -s ${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME} ]
+    then
+        ## errored
+        RETURN_CODE=44;
+
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while generating the zonefile. Please try again.";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        unset BASE_DIRECTORY;
+        unset INDICATOR;
+        unset CHG_ARRAY;
+        unset DC_ZONEFILE_NAME;
+        unset ZONEFILE_NAME;
+        unset METHOD_NAME;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
+    mv ${PLUGIN_TMP_DIRECTORY}/${ZONEFILE_NAME} ${BASE_DIRECTORY}/${ZONEFILE_NAME};
+
+    if [ ! -s ${BASE_DIRECTORY}/${ZONEFILE_NAME} ]
+    then
+        RETURN_CODE=44;
+
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred while generating the zonefile. Please try again.";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        unset BASE_DIRECTORY;
+        unset INDICATOR;
+        unset CHG_ARRAY;
+        unset DC_ZONEFILE_NAME;
+        unset ZONEFILE_NAME;
+        unset METHOD_NAME;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
+    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone ${ZONEFILE_NAME} updated on $(date +"%m-%d-%Y") by ${IUSER_AUDIT} per change ${CHANGE_NUM}";
+
+    RETURN_CODE=0;
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    A=0;
+
+    unset BASE_DIRECTORY;
+    unset INDICATOR;
+    unset CHG_ARRAY;
+    unset DC_ZONEFILE_NAME;
+    unset ZONEFILE_NAME;
+    unset METHOD_NAME;
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+    return ${RETURN_CODE};
+}
+
+#===  FUNCTION  ===============================================================
 #          NAME:  usage
 #   DESCRIPTION:  Provide information on the function usage of this application
 #    PARAMETERS:  None
@@ -270,29 +477,33 @@ function usage
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
+    local RETURN_CODE=3;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
     print "${CNAME} - Create a skeleton zone file with the necessary components.";
-    print "Usage: ${CNAME} [-b business unit] [-p project code] [-z zone name] [-i requestor] [-c change request] [-e] [-?|-h]";
+    print "Usage: ${CNAME} [ -b <business unit> ] [ -p <project code> ] [ -z <zone name> ] [ -c <change request> ] [ -n ] [ -e ] [ -?|-h ]";
     print "  -b      The associated business unit";
     print "  -p      The associated project code";
     print "  -z      The zone name, eg example.com";
     print "  -c      The change order associated with this request";
+    print "  -n      Build an operational zonefile";
     print "  -e      Execute processing";
     print "  -?|-h   Show this help";
 
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-    return 3;
+    return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage;
+[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
 
-while getopts ":b:p:z:c:eh:" OPTIONS 2>/dev/null
+while getopts ":b:p:z:c:neh:" OPTIONS 2>/dev/null
 do
     case "${OPTIONS}" in
         b)
@@ -330,6 +541,14 @@ do
             typeset -u CHANGE_NUM="${OPTARG}";
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_NUM -> ${CHANGE_NUM}";
+            ;;
+        n)
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting BUILD_ZONE..";
+
+            ## Capture the change control
+            BUILD_ZONE="${_TRUE}";
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BUILD_ZONE -> ${BUILD_ZONE}";
             ;;
         e)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating request..";
@@ -372,13 +591,13 @@ do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                createSkeletonZone;
+                [ ! -z "${BUILD_ZONE}" ] && [ "${BUILD_ZONE}" = "${_TRUE}" ] && buildWorkingZone && RETURN_CODE=${?} || createSkeletonZone && RETURN_CODE=${?};
             fi
             ;;
         *)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            usage;
+            usage && RETURN_CODE=${?};
             ;;
     esac
 done
@@ -386,12 +605,14 @@ done
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
 
-unset SCRIPT_ABSOLUTE_PATH;
-unset SCRIPT_ROOT;
-unset THIS_CNAME;
-unset RET_CODE;
+unset BUSINESS_UNIT;
+unset PROJECT_CODE;
+unset ZONE_NAME;
+unset CHANGE_NUM;
+unset BUILD_ZONE;
 unset CNAME;
 unset METHOD_NAME;
+unset RET_CODE;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;

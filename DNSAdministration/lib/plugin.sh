@@ -20,7 +20,7 @@
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 ## Application constants
-CNAME="$(basename "${0}")";
+CNAME="${THIS_CNAME}";
 THIS_CNAME="${CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
@@ -46,16 +46,19 @@ unset CNAME;
 ${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
 typeset -i RET_CODE=${?};
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 CNAME="${THIS_CNAME}";
-METHOD_NAME="${CNAME}#startup";
+local METHOD_NAME="${CNAME}#${0}";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
 if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
 then
+    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
+    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
+
     print "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
@@ -97,9 +100,9 @@ typeset -i AUTHORIZATION_COUNT; AUTHORIZATION_COUNT=0;
 
 [[ ! -z "${PLUGIN_TMP_DIRECTORY}" && ! -d ${PLUGIN_TMP_DIRECTORY} ]] && mkdir ${PLUGIN_TMP_DIRECTORY} > /dev/null 2>&1;
 [[ ! -z "${PLUGIN_DATA_DIRECTORY}" && ! -d ${PLUGIN_DATA_DIRECTORY} ]] && mkdir ${PLUGIN_DATA_DIRECTORY} > /dev/null 2>&1;
-[[ ! -z "${WORK_DIRECTORY}" && ! -d ${WORK_DIRECTORY} ]] && mkdir ${WORK_DIRECTORY} > /dev/null 2>&1;
-[[ ! -z "${MAILSTORE}" && ! -d ${MAILSTORE} ]] && mkdir ${MAILSTORE} > /dev/null 2>&1;
-[[ ! -z "${BACKUP_DIRECTORY}" && ! -d ${BACKUP_DIRECTORY} ]] && mkdir ${BACKUP_DIRECTORY} > /dev/null 2>&1;
+[[ ! -z "${PLUGIN_WORK_DIRECTORY}" && ! -d ${PLUGIN_WORK_DIRECTORY} ]] && mkdir ${PLUGIN_WORK_DIRECTORY} > /dev/null 2>&1;
+[[ ! -z "${PLUGIN_MAILSTORE_DIR}" && ! -d ${PLUGIN_MAILSTORE_DIR} ]] && mkdir ${PLUGIN_MAILSTORE_DIR} > /dev/null 2>&1;
+[[ ! -z "${PLUGIN_BACKUP_DIR}" && ! -d ${PLUGIN_BACKUP_DIR} ]] && mkdir ${PLUGIN_BACKUP_DIR} > /dev/null 2>&1;
 
 ## common aliases
 [ -s ${PLUGIN_LIB_DIRECTORY}/aliases ] && . ${PLUGIN_LIB_DIRECTORY}/aliases;

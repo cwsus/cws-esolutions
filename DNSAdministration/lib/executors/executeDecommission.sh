@@ -24,7 +24,7 @@
 CNAME="$(basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
-METHOD_NAME="${CNAME}#startup";
+local METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
@@ -37,8 +37,8 @@ METHOD_NAME="${CNAME}#startup";
 [ -z "${PLUGIN_ROOT_DIR}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
 THIS_CNAME="${CNAME}";
 unset METHOD_NAME;
@@ -51,16 +51,19 @@ unset CNAME;
 ${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
 typeset -i RET_CODE=${?};
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 CNAME="${THIS_CNAME}";
-METHOD_NAME="${CNAME}#startup";
+local METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
 if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
 then
+    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
+    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
+
     print "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
@@ -76,8 +79,8 @@ unset CNAME;
 ${APP_ROOT}/${LIB_DIRECTORY}/lock.sh lock ${$};
 typeset -i RET_CODE=${?};
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 CNAME="${THIS_CNAME}";
 METHOD_NAME="${THIS_CNAME}#startup";
@@ -88,10 +91,7 @@ METHOD_NAME="${THIS_CNAME}#startup";
 
 unset RET_CODE;
 
-CNAME="$(basename "${0}")";
-METHOD_NAME="${CNAME}#startup";
-
-trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; return" INT TERM EXIT;
+trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; return ${RETURN_CODE}" INT TERM EXIT;
 
 #===  FUNCTION  ===============================================================
 #          NAME:  decom_master_bu
@@ -105,8 +105,10 @@ function decom_master_bu
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
+    local RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Performing decommission of ${BUSINESS_UNIT}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating that requested directories/files exist..";
 
@@ -318,15 +320,15 @@ function decom_master_bu
                                                                 ## its not there, so lets replace the existing business unit filename
                                                                 ## with the decom filename
                                                                 sed -e "s^/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}^/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}^" \
-                                                                    ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp
+                                                                    ${PLUGIN_WORK_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
                                                             else
                                                                 ## its already there, so just remove the entry
                                                                 sed -e "/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}/d" \
-                                                                    ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp
+                                                                    ${PLUGIN_WORK_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
                                                             fi
 
                                                             ## move the file back to where it was before..
-                                                            mv ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                                                            mv ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ${PLUGIN_WORK_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
 
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entry removed. Validating..";
 
@@ -603,15 +605,15 @@ function decom_master_bu
                                                             ## its not there, so lets replace the existing business unit filename
                                                             ## with the decom filename
                                                             sed -e "s^/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}^/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}^" \
-                                                                ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp
+                                                                ${PLUGIN_WORK_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
                                                         else
                                                             ## its already there, so just remove the entry
                                                             sed -e "/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}/d" \
-                                                                ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp
+                                                                ${PLUGIN_WORK_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
                                                         fi
 
                                                         ## move the file back to where it was before..
-                                                        mv ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                                                        mv ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ${PLUGIN_WORK_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
 
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entry removed. Validating..";
 
@@ -772,8 +774,10 @@ function decom_slave_bu
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
+    local RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Performing decommission of ${BUSINESS_UNIT}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating that requested directories/files exist..";
 
@@ -984,20 +988,20 @@ function decom_slave_bu
                                                                 ## its not there, so lets replace the existing business unit filename
                                                                 ## with the decom filename
                                                                 sed -e "s^/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}^/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}^" \
-                                                                    ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp
+                                                                    ${PLUGIN_WORK_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
                                                             else
                                                                 ## its already there, so just remove the entry
                                                                 sed -e "/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}/d" \
-                                                                    ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp
+                                                                    ${PLUGIN_WORK_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
                                                             fi
 
                                                             ## move the file back to where it was before..
-                                                            mv ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                                                            mv ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ${PLUGIN_WORK_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
 
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entry removed. Validating..";
 
                                                             ## and make sure it was removed..
-                                                            if [ $(grep -c $(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp) -eq 0 ]
+                                                            if [ $(grep -c $(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ${PLUGIN_WORK_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -eq 0 ]
                                                             then
                                                                 ## we should be done here. make sure our decom include is in, and if so, copy the file
                                                                 if [ $(grep -c ${DECOM_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -ne 0 ]
@@ -1267,20 +1271,20 @@ function decom_slave_bu
                                                             ## its not there, so lets replace the existing business unit filename
                                                             ## with the decom filename
                                                             sed -e "s^/${NAMED_CONF_DIR}/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}^/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}^" \
-                                                                ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp
+                                                                ${PLUGIN_WORK_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
                                                         else
                                                             ## its already there, so just remove the entry
                                                             sed -e "/$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}/d" \
-                                                                ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp
+                                                                ${PLUGIN_WORK_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} > ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
                                                         fi
 
                                                         ## move the file back to where it was before..
-                                                        mv ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                                                        mv ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM} ${PLUGIN_WORK_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
 
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entry removed. Validating..";
 
                                                         ## and make sure it was removed..
-                                                        if [ $(grep -c $(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}.tmp) -eq 0 ]
+                                                        if [ $(grep -c $(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ${PLUGIN_WORK_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -eq 0 ]
                                                         then
                                                             ## we should be done here. make sure our decom include is in, and if so, copy the file
                                                             if [ $(grep -c ${DECOM_CONF_FILE} ${PLUGIN_TMP_DIRECTORY}/$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -ne 0 ]
@@ -1436,8 +1440,10 @@ function decom_master_zone
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
+    local RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Performing decommission of ${ZONE_NAME}";
 
     ## set up our zonefile name
@@ -1624,21 +1630,21 @@ function decom_master_zone
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing entry from ${NAMED_CONF_FILE}..";
 
                                                         ## files removed, remove the entry in named.conf
-                                                        sed -e "${START_LINE_NUMBER} d" ${NAMED_CONF_FILE} >> ${PLUGIN_TMP_DIRECTORY}/named.conf.tmp;
+                                                        sed -e "${START_LINE_NUMBER} d" ${NAMED_CONF_FILE} >> ${PLUGIN_TMP_DIRECTORY}/named.conf;
 
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entry removed. Validating..";
 
                                                         ## ok should be gone. lets make sure.
-                                                        if [ $(grep -c "$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}" ${PLUGIN_TMP_DIRECTORY}/named.conf.tmp) -eq 0 ]
+                                                        if [ $(grep -c "$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}" ${PLUGIN_TMP_DIRECTORY}/named.conf) -eq 0 ]
                                                         then
                                                             ## entry successfully removed. make it the normal copy.
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Confirmed removal. Copying..";
 
-                                                            TMP_CONF_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/named.conf.tmp | awk '{print $1}');
+                                                            TMP_CONF_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/named.conf | awk '{print $1}');
 
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_CONF_CKSUM -> ${TMP_CONF_CKSUM}";
 
-                                                            mv ${PLUGIN_TMP_DIRECTORY}/named.conf.tmp ${NAMED_CONF_FILE};
+                                                            mv ${PLUGIN_TMP_DIRECTORY}/named.conf ${NAMED_CONF_FILE};
 
                                                             ## and checksum...
                                                             OP_CONF_CKSUM=$(cksum ${NAMED_CONF_FILE} | awk '{print $1}');
@@ -1856,20 +1862,20 @@ function decom_master_zone
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing entry from ${NAMED_CONF_FILE}..";
 
                                                     ## files removed, remove the entry in named.conf
-                                                    sed -e "${START_LINE_NUMBER} d" ${NAMED_CONF_FILE} >> ${PLUGIN_TMP_DIRECTORY}/named.conf.tmp;
+                                                    sed -e "${START_LINE_NUMBER} d" ${NAMED_CONF_FILE} >> ${PLUGIN_TMP_DIRECTORY}/named.conf;
 
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entry removed. Validating..";
 
                                                     ## ok should be gone. lets make sure.
-                                                    if [ $(grep -c "$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}" ${PLUGIN_TMP_DIRECTORY}/named.conf.tmp) -eq 0 ]
+                                                    if [ $(grep -c "$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}" ${PLUGIN_TMP_DIRECTORY}/named.conf) -eq 0 ]
                                                     then
                                                         ## entry successfully removed. make it the normal copy.
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Confirmed removal. Copying..";
 
-                                                        cp ${PLUGIN_TMP_DIRECTORY}/named.conf.tmp ${NAMED_CONF_FILE};
+                                                        cp ${PLUGIN_TMP_DIRECTORY}/named.conf ${NAMED_CONF_FILE};
 
                                                         ## and checksum...
-                                                        TMP_CONF_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/named.conf.tmp | awk '{print $1}');
+                                                        TMP_CONF_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/named.conf | awk '{print $1}');
                                                         OP_CONF_CKSUM=$(cksum ${NAMED_CONF_FILE} | awk '{print $1}');
 
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_CONF_CKSUM -> ${TMP_CONF_CKSUM}";
@@ -2032,7 +2038,7 @@ function decom_master_zone
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     ## remove any tmp files
-    rm -rf ${PLUGIN_TMP_DIRECTORY}/named.conf.tmp;
+    [ -f ${PLUGIN_TMP_DIRECTORY}/named.conf ] && rm -rf ${PLUGIN_TMP_DIRECTORY}/named.conf;
 
     unset END_LINE_NUMBER;
     unset START_LINE_NUMBER;
@@ -2060,8 +2066,10 @@ function decom_slave_zone
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
+    local RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Performing decommission of ${ZONE_NAME}";
 
     ## set up our zonefile name
@@ -2244,20 +2252,20 @@ function decom_slave_zone
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing entry from ${NAMED_CONF_FILE}..";
 
                                                         ## files removed, remove the entry in named.conf
-                                                        sed -e "${START_LINE_NUMBER} d" ${NAMED_CONF_FILE} >> ${PLUGIN_TMP_DIRECTORY}/named.conf.tmp;
+                                                        sed -e "${START_LINE_NUMBER} d" ${NAMED_CONF_FILE} >> ${PLUGIN_TMP_DIRECTORY}/named.conf;
 
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entry removed. Validating..";
 
                                                         ## ok should be gone. lets make sure.
-                                                        if [ $(grep -c "$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}" ${PLUGIN_TMP_DIRECTORY}/named.conf.tmp) -eq 0 ]
+                                                        if [ $(grep -c "$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}" ${PLUGIN_TMP_DIRECTORY}/named.conf) -eq 0 ]
                                                         then
                                                             ## entry successfully removed. make it the normal copy.
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Confirmed removal. Copying..";
 
-                                                            cp ${PLUGIN_TMP_DIRECTORY}/named.conf.tmp ${NAMED_CONF_FILE};
+                                                            cp ${PLUGIN_TMP_DIRECTORY}/named.conf ${NAMED_CONF_FILE};
 
                                                             ## and checksum...
-                                                            TMP_CONF_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/named.conf.tmp | awk '{print $1}');
+                                                            TMP_CONF_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/named.conf | awk '{print $1}');
                                                             OP_CONF_CKSUM=$(cksum ${NAMED_CONF_FILE} | awk '{print $1}');
 
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_CONF_CKSUM -> ${TMP_CONF_CKSUM}";
@@ -2474,20 +2482,20 @@ function decom_slave_zone
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing entry from ${NAMED_CONF_FILE}..";
 
                                                     ## files removed, remove the entry in named.conf
-                                                    sed -e "${START_LINE_NUMBER} d" ${NAMED_CONF_FILE} >> ${PLUGIN_TMP_DIRECTORY}/named.conf.tmp;
+                                                    sed -e "${START_LINE_NUMBER} d" ${NAMED_CONF_FILE} >> ${PLUGIN_TMP_DIRECTORY}/named.conf;
 
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entry removed. Validating..";
 
                                                     ## ok should be gone. lets make sure.
-                                                    if [ $(grep -c "$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}" ${PLUGIN_TMP_DIRECTORY}/named.conf.tmp) -eq 0 ]
+                                                    if [ $(grep -c "$(printf ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}" ${PLUGIN_TMP_DIRECTORY}/named.conf) -eq 0 ]
                                                     then
                                                         ## entry successfully removed. make it the normal copy.
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Confirmed removal. Copying..";
 
-                                                        cp ${PLUGIN_TMP_DIRECTORY}/named.conf.tmp ${NAMED_CONF_FILE};
+                                                        cp ${PLUGIN_TMP_DIRECTORY}/named.conf ${NAMED_CONF_FILE};
 
                                                         ## and checksum...
-                                                        TMP_CONF_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/named.conf.tmp | awk '{print $1}');
+                                                        TMP_CONF_CKSUM=$(cksum ${PLUGIN_TMP_DIRECTORY}/named.conf | awk '{print $1}');
                                                         OP_CONF_CKSUM=$(cksum ${NAMED_CONF_FILE} | awk '{print $1}');
 
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_CONF_CKSUM -> ${TMP_CONF_CKSUM}";
@@ -2650,7 +2658,7 @@ function decom_slave_zone
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     ## remove any tmp files
-    rm -rf ${PLUGIN_TMP_DIRECTORY}/named.conf.tmp;
+    [ -f ${PLUGIN_TMP_DIRECTORY}/named.conf ] && rm -rf ${PLUGIN_TMP_DIRECTORY}/named.conf;
 
     unset END_LINE_NUMBER;
     unset START_LINE_NUMBER;
@@ -2677,8 +2685,10 @@ function usage
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
+    local RETURN_CODE=3;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
     print "${CNAME} - Execute modifications against a zone";
     print "Usage: ${CNAME} [-b business unit] [-p project code] [-z zone name] [-i requestor] [-c change request] [-d change date] [-s] [-e] [-?|-h]";
@@ -2691,15 +2701,16 @@ function usage
     print "  -e      Execute processing";
     print "  -?|-h   Show this help";
 
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-    return 3;
+    return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage;
+[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
 
 while getopts ":b:p:z:i:c:seh:" OPTIONS 2>/dev/null
 do
@@ -2787,9 +2798,9 @@ do
                         RETURN_CODE=24;
                     elif [ ! -z "${PROJECT_CODE}" ] && [ ! -z "${ZONE_NAME}" ]
                     then
-                        [ ! -z "${SLAVE_OPERATION}" ] && [ "${SLAVE_OPERATION}" = "${_TRUE}" ] && decom_slave_zone || decom_master_zone;
+                        [ ! -z "${SLAVE_OPERATION}" ] && [ "${SLAVE_OPERATION}" = "${_TRUE}" ] && decom_slave_zone && RETURN_CODE=${?} || decom_master_zone && RETURN_CODE=${?};
                     else
-                        [ ! -z "${SLAVE_OPERATION}" ] && [ "${SLAVE_OPERATION}" = "${_TRUE}" ] && decom_slave_bu || decom_master_bu;
+                        [ ! -z "${SLAVE_OPERATION}" ] && [ "${SLAVE_OPERATION}" = "${_TRUE}" ] && decom_slave_bu && RETURN_CODE=${?} || decom_master_bu && RETURN_CODE=${?};
                     fi
                 fi
             fi
@@ -2797,7 +2808,7 @@ do
         *)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            usage;
+            usage && RETURN_CODE=${?};
             ;;
     esac
 done
