@@ -24,7 +24,7 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -177,11 +177,11 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    print "${CNAME} - Security request validation";
-    print "Usage: ${CNAME} [ -a ] [ -s ] [ -?|-h show this help ]";
-    print "  -a      Perform authorized account security validation";
-    print "  -s      Perform authorized system validation";
-    print "  -h|-?   Show this help";
+    echo -n "${CNAME} - Security request validation";
+    echo -n "Usage: ${CNAME} [ -a ] [ -s ] [ -?|-h show this help ]";
+    echo -n "  -a      Perform authorized account security validation";
+    echo -n "  -s      Perform authorized system validation";
+    echo -n "  -h|-?   Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";

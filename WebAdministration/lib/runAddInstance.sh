@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -182,13 +182,13 @@ function usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    print "${CNAME} - Generates a certificate signing request for a provided host.";
-    print " -s    -> The server identifier to perform installation for";
-    print " -p    -> The platform code to install to";
-    print " -w    -> Platform type to execute against - iplanet or ihs";
-    print " -c    -> The change order number.";
-    print " -e    -> Execute the request";
-    print " -h|-? -> Show this help";
+    echo -n "${CNAME} - Generates a certificate signing request for a provided host.";
+    echo -n " -s    -> The server identifier to perform installation for";
+    echo -n " -p    -> The platform code to install to";
+    echo -n " -w    -> Platform type to execute against - iplanet or ihs";
+    echo -n " -c    -> The change order number.";
+    echo -n " -e    -> Execute the request";
+    echo -n " -h|-? -> Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 

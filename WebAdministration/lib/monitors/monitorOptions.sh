@@ -23,7 +23,7 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -183,7 +183,7 @@ METHOD_NAME="${CNAME}#startup";
 
 monitorEnabledOptions;
 
-printf ${RETURN_CODE};
+echo -n ${RETURN_CODE};
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;

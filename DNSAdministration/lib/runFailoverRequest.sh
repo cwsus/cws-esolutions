@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="$(basename ${0})";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
 local METHOD_NAME="${CNAME}#startup";
 
@@ -34,7 +34,7 @@ local METHOD_NAME="${CNAME}#startup";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${PLUGIN_ROOT_DIR}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
+[ -z "${PLUGIN_ROOT_DIR}" ] && echo -n "Failed to locate configuration data. Cannot continue." && return 1;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -72,7 +72,7 @@ then
     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
 
-    print "Security configuration does not allow the requested action.";
+    echo -n "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
 fi
@@ -539,14 +539,14 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    print "${CNAME} - Execute a DNS failover request on the master nameserver based on the provided information.";
-    print "Usage: ${CNAME} [-s <request data>] [-b <request data>] [-p <request data>] [-d <request data>] [-e execute] [-?|-h show this help]";
-    print "  -s      Process a site failover based on a comma-delimited information set";
-    print "  -b      Process a business unit failover based on a comma-delimited information set";
-    print "  -p      Process a project code failover based on a comma-delimited information set";
-    print "  -d      Process a datacenter failover based on a comma-delimited information set";
-    print "  -e      Execute processing";
-    print "  -h|-?   Show this help";
+    echo -n "${CNAME} - Execute a DNS failover request on the master nameserver based on the provided information.";
+    echo -n "Usage: ${CNAME} [-s <request data>] [-b <request data>] [-p <request data>] [-d <request data>] [-e execute] [-?|-h show this help]";
+    echo -n "  -s      Process a site failover based on a comma-delimited information set";
+    echo -n "  -b      Process a business unit failover based on a comma-delimited information set";
+    echo -n "  -p      Process a project code failover based on a comma-delimited information set";
+    echo -n "  -d      Process a datacenter failover based on a comma-delimited information set";
+    echo -n "  -e      Execute processing";
+    echo -n "  -h|-?   Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -579,20 +579,20 @@ do
 
             case ${PARTITION} in
                 ${INTRANET_TYPE_IDENTIFIER})
-                    SITE_HOSTNAME=$(printf "${OPTARG}" | cut -d "," -f 1);
-                    ENABLE_POP=$(printf "${OPTARG}" | cut -d "," -f 2);
-                    DISABLE_POP=$(printf "${OPTARG}" | cut -d "," -f 3);
-                    CHG_CTRL=$(printf "${OPTARG}" | cut -d "," -f 6);
+                    SITE_HOSTNAME=$(echo -n "${OPTARG}" | cut -d "," -f 1);
+                    ENABLE_POP=$(echo -n "${OPTARG}" | cut -d "," -f 2);
+                    DISABLE_POP=$(echo -n "${OPTARG}" | cut -d "," -f 3);
+                    CHG_CTRL=$(echo -n "${OPTARG}" | cut -d "," -f 6);
                     ;;
                 ${INTERNET_TYPE_IDENTIFIER})
                     ## comma-delimited information set, lets strip the "INFO"
-                    SITE_HOSTNAME=$(printf "${OPTARG}" | cut -d "," -f 1);
-                    UNIT=$(printf "${OPTARG}" | cut -d "," -f 2);
-                    FILENAME=$(printf "${OPTARG}" | cut -d "," -f 3);
-                    TARGET=$(printf "${OPTARG}" | cut -d "," -f 4);
-                    PRJCODE=$(printf "${OPTARG}" | cut -d "," -f 5);
-                    CHG_CTRL=$(printf "${OPTARG}" | cut -d "," -f 6);
-                    IUSER_AUDIT=$(printf "${OPTARG}" | cut -d "," -f 7);
+                    SITE_HOSTNAME=$(echo -n "${OPTARG}" | cut -d "," -f 1);
+                    UNIT=$(echo -n "${OPTARG}" | cut -d "," -f 2);
+                    FILENAME=$(echo -n "${OPTARG}" | cut -d "," -f 3);
+                    TARGET=$(echo -n "${OPTARG}" | cut -d "," -f 4);
+                    PRJCODE=$(echo -n "${OPTARG}" | cut -d "," -f 5);
+                    CHG_CTRL=$(echo -n "${OPTARG}" | cut -d "," -f 6);
+                    IUSER_AUDIT=$(echo -n "${OPTARG}" | cut -d "," -f 7);
                     ;;
             esac
 
@@ -611,10 +611,10 @@ do
             FAILOVER_TYPE="unit";
 
             ## comma-delimited information set, lets strip the "INFO"
-            UNIT=$(printf "${OPTARG}" | cut -d "," -f 2);
-            TARGET=$(printf "${OPTARG}" | cut -d "," -f 3);
-            CHG_CTRL=$(printf "${OPTARG}" | cut -d "," -f 4);
-            IUSER_AUDIT=$(printf "${OPTARG}" | cut -d "," -f 5);
+            UNIT=$(echo -n "${OPTARG}" | cut -d "," -f 2);
+            TARGET=$(echo -n "${OPTARG}" | cut -d "," -f 3);
+            CHG_CTRL=$(echo -n "${OPTARG}" | cut -d "," -f 4);
+            IUSER_AUDIT=$(echo -n "${OPTARG}" | cut -d "," -f 5);
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FAILOVER_TYPE->${FAILOVER_TYPE}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "UNIT->${UNIT}";
@@ -629,11 +629,11 @@ do
             FAILOVER_TYPE="project";
 
             ## comma-delimited information set, lets strip the "INFO"
-            PRJCODE=$(printf "${OPTARG}" | cut -d "," -f 2);
-            UNIT=$(printf "${OPTARG}" | cut -d "," -f 3);
-            TARGET=$(printf "${OPTARG}" | cut -d "," -f 4);
-            CHG_CTRL=$(printf "${OPTARG}" | cut -d "," -f 5);
-            IUSER_AUDIT=$(printf "${OPTARG}" | cut -d "," -f 6);
+            PRJCODE=$(echo -n "${OPTARG}" | cut -d "," -f 2);
+            UNIT=$(echo -n "${OPTARG}" | cut -d "," -f 3);
+            TARGET=$(echo -n "${OPTARG}" | cut -d "," -f 4);
+            CHG_CTRL=$(echo -n "${OPTARG}" | cut -d "," -f 5);
+            IUSER_AUDIT=$(echo -n "${OPTARG}" | cut -d "," -f 6);
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FAILOVER_TYPE->${FAILOVER_TYPE}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRJCODE->${PRJCODE}";
@@ -649,9 +649,9 @@ do
             FAILOVER_TYPE="datacenter";
 
             ## comma-delimited information set, lets strip the "INFO"
-            TARGET=$(printf "${OPTARG}" | cut -d "," -f 1);
-            CHG_CTRL=$(printf "${OPTARG}" | cut -d "," -f 2);
-            IUSER_AUDIT=$(printf "${OPTARG}" | cut -d "," -f 3);
+            TARGET=$(echo -n "${OPTARG}" | cut -d "," -f 1);
+            CHG_CTRL=$(echo -n "${OPTARG}" | cut -d "," -f 2);
+            IUSER_AUDIT=$(echo -n "${OPTARG}" | cut -d "," -f 3);
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FAILOVER_TYPE->${FAILOVER_TYPE}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TARGET->${TARGET}";

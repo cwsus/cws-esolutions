@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -55,7 +55,7 @@ function renewiPlanetCert
     if [ ! -z "${PRE_CERT_EXPIRY}" ]
     then
         ## ok, we have a nickname and an expiration date. convert it
-        PRE_EPOCH_EXPIRY=$(returnEpochTime $(echo ${PRE_CERT_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval printf \${${PRE_EXPIRY_MONTH}})/"));
+        PRE_EPOCH_EXPIRY=$(returnEpochTime $(echo ${PRE_CERT_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval echo -n \${${PRE_EXPIRY_MONTH}})/"));
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRE_EPOCH_EXPIRY -> ${PRE_EPOCH_EXPIRY}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NOTIFY_CERT_EXPIRY -> ${NOTIFY_CERT_EXPIRY}";
@@ -135,7 +135,7 @@ function renewiPlanetCert
                 if [ ! -z "${POST_CERT_EXPIRY}" ]
                 then
                     ## capture the epoch
-                    POST_EPOCH_EXPIRY=$(returnEpochTime $(echo ${POST_CERT_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval printf \${${EXPIRY_MONTH}})/"));
+                    POST_EPOCH_EXPIRY=$(returnEpochTime $(echo ${POST_CERT_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval echo -n \${${EXPIRY_MONTH}})/"));
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "POST_EPOCH_EXPIRY -> ${POST_EPOCH_EXPIRY}";
 
@@ -843,17 +843,17 @@ function usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    print "${CNAME} - Apply a new SSL certificate to a secure site instance";
-    print "Usage: ${CNAME} [ -d certificate database ] [ -s site hostname ] [ -w webserver platform ] [ -p platform code ] [ -c change request ] [ -a ] [-e] [-?|-h]";
-    print "  -d      The certificate database to apply changes to, e.g. https-site.name_project-hostname-";
-    print "  -s      The relevant site hostname, e.g. site.name.com";
-    print "  -w      The webserver platform type associated with this website.";
-    print "  -p      The associated platform code.";
-    print "  -S      Indicates that this is a self-signed certificate";
-    print "  -c      The change order associated with this request";
-    print "  -a      Commit changes to relevant webservers";
-    print "  -e      Execute processing";
-    print "  -?|-h   Show this help";
+    echo -n "${CNAME} - Apply a new SSL certificate to a secure site instance";
+    echo -n "Usage: ${CNAME} [ -d certificate database ] [ -s site hostname ] [ -w webserver platform ] [ -p platform code ] [ -c change request ] [ -a ] [-e] [-?|-h]";
+    echo -n "  -d      The certificate database to apply changes to, e.g. https-site.name_project-hostname-";
+    echo -n "  -s      The relevant site hostname, e.g. site.name.com";
+    echo -n "  -w      The webserver platform type associated with this website.";
+    echo -n "  -p      The associated platform code.";
+    echo -n "  -S      Indicates that this is a self-signed certificate";
+    echo -n "  -c      The change order associated with this request";
+    echo -n "  -a      Commit changes to relevant webservers";
+    echo -n "  -e      Execute processing";
+    echo -n "  -?|-h   Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 

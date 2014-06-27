@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="$(basename ${0})";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
 local METHOD_NAME="${CNAME}#startup";
 
@@ -34,7 +34,7 @@ local METHOD_NAME="${CNAME}#startup";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${PLUGIN_ROOT_DIR}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
+[ -z "${PLUGIN_ROOT_DIR}" ] && echo -n "Failed to locate configuration data. Cannot continue." && return 1;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -72,7 +72,7 @@ then
     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
 
-    print "Security configuration does not allow the requested action.";
+    echo -n "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
 fi
@@ -265,7 +265,7 @@ function addApexRecordEntry
                     continue;
                 fi
 
-                printf "            IN    ${RECORD_TYPE}           ${RECORD_DATA}\n" >> ${ZONEFILE};
+                echo -n "            IN    ${RECORD_TYPE}           ${RECORD_DATA}\n" >> ${ZONEFILE};
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printed ${RECORD_TYPE} record to ${ZONEFILE}";
 
@@ -372,7 +372,7 @@ function addApexRecordEntry
                     continue;
                 fi
 
-                printf "            IN      ${RECORD_TYPE}      ${RECORD_WEIGHT}      ${RECORD_TARGET}\n" >> ${ZONEFILE};
+                echo -n "            IN      ${RECORD_TYPE}      ${RECORD_WEIGHT}      ${RECORD_TARGET}\n" >> ${ZONEFILE};
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printed ${RECORD_TYPE} record to ${ZONEFILE}";
 
@@ -546,7 +546,7 @@ function addSubRecordEntry
             return ${RETURN_CODE};
         fi
 
-        [ $(grep -c "\$ORIGIN ${ZONE_NAME}." ${FILE}) -eq 0 ] && printf "\n\$ORIGIN ${ZONE_NAME}.\n" >> ${FILE};
+        [ $(grep -c "\$ORIGIN ${ZONE_NAME}." ${FILE}) -eq 0 ] && echo -n "\n\$ORIGIN ${ZONE_NAME}.\n" >> ${FILE};
     done
 
     case ${RECORD_TYPE} in
@@ -648,8 +648,8 @@ function addSubRecordEntry
                     continue;
                 fi
 
-                [ "${RECORD_TYPE}" = "TXT" ] && printf "${RECORD_ALIAS}      IN      ${RECORD_TYPE}      \"${RECORD_TARGET}\"\n" >> ${ZONEFILE};
-                [ "${RECORD_TYPE}" != "TXT" ] && printf "${RECORD_ALIAS}      IN      ${RECORD_TYPE}      ${RECORD_TARGET}\n" >> ${ZONEFILE};
+                [ "${RECORD_TYPE}" = "TXT" ] && echo -n "${RECORD_ALIAS}      IN      ${RECORD_TYPE}      \"${RECORD_TARGET}\"\n" >> ${ZONEFILE};
+                [ "${RECORD_TYPE}" != "TXT" ] && echo -n "${RECORD_ALIAS}      IN      ${RECORD_TYPE}      ${RECORD_TARGET}\n" >> ${ZONEFILE};
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printed ${RECORD_TYPE} record to ${ZONEFILE}";
 
@@ -733,7 +733,7 @@ function addSubRecordEntry
                     continue;
                 fi
 
-                printf "${RECORD_ALIAS}      IN      ${RECORD_TYPE}      ${RECORD_WEIGHT}      ${RECORD_TARGET}.\n" >> ${ZONEFILE};
+                echo -n "${RECORD_ALIAS}      IN      ${RECORD_TYPE}      ${RECORD_WEIGHT}      ${RECORD_TARGET}.\n" >> ${ZONEFILE};
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printed ${RECORD_TYPE} record to ${ZONEFILE}";
 
@@ -926,7 +926,7 @@ function addSubRecordEntry
                         continue;
                     fi
 
-                    printf "${SRV_PREFIX}      ${SRV_TTL}      IN      SRV      ${SRV_PRIORITY}      ${SRV_WEIGHT}      ${SRV_PORT}      ${SRV_TARGET}.\n" >> ${ZONEFILE}
+                    echo -n "${SRV_PREFIX}      ${SRV_TTL}      IN      SRV      ${SRV_PRIORITY}      ${SRV_WEIGHT}      ${SRV_PORT}      ${SRV_TARGET}.\n" >> ${ZONEFILE}
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printed ${RECORD_TYPE} record to ${ZONEFILE}";
 
@@ -999,19 +999,19 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    print "${CNAME} - Add zone entries to a given zonefile";
-    print "Usage: ${CNAME} [ -b <business unit> ] [ -p <project code> ] [ -z <zone name> ] [ -c <change request> ] [ -t <address type> ] [ -a <record information> ] [ -d <datacenter> ] [ -r ] [ -s ] [ -e ] [-?|-h show this help]";
-    print "  -b      The associated business unit.";
-    print "  -p      The associated project code";
-    print "  -z      The zone name, eg example.com";
-    print "  -c      The change order associated with this request";
-    print "  -t      Address type to add, eg A, MX, CNAME";
-    print "  -a      Comma-delimited record information to add";
-    print "  -d      The datacenter to add the initial A record to.";
-    print "  -r      Add record to the apex of the provided zone";
-    print "  -s      Add record as a subdomain of the provided zone";
-    print "  -s      Execute processing";
-    print "  -h|-?   Show this help";
+    echo -n "${CNAME} - Add zone entries to a given zonefile";
+    echo -n "Usage: ${CNAME} [ -b <business unit> ] [ -p <project code> ] [ -z <zone name> ] [ -c <change request> ] [ -t <address type> ] [ -a <record information> ] [ -d <datacenter> ] [ -r ] [ -s ] [ -e ] [-?|-h show this help]";
+    echo -n "  -b      The associated business unit.";
+    echo -n "  -p      The associated project code";
+    echo -n "  -z      The zone name, eg example.com";
+    echo -n "  -c      The change order associated with this request";
+    echo -n "  -t      Address type to add, eg A, MX, CNAME";
+    echo -n "  -a      Comma-delimited record information to add";
+    echo -n "  -d      The datacenter to add the initial A record to.";
+    echo -n "  -r      Add record to the apex of the provided zone";
+    echo -n "  -s      Add record as a subdomain of the provided zone";
+    echo -n "  -s      Execute processing";
+    echo -n "  -h|-?   Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";

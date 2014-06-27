@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="$(basename ${0})";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
 local METHOD_NAME="${CNAME}#startup";
 
@@ -34,7 +34,7 @@ local METHOD_NAME="${CNAME}#startup";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${PLUGIN_ROOT_DIR}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
+[ -z "${PLUGIN_ROOT_DIR}" ] && echo -n "Failed to locate configuration data. Cannot continue." && return 1;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -72,7 +72,7 @@ then
     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
 
-    print "Security configuration does not allow the requested action.";
+    echo -n "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
 fi
@@ -480,15 +480,15 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    print "${CNAME} - Perform a backout for a previously executed change";
-    print "Usage: ${CNAME} [-a] [-f filename] [-b business unit] [-d date] [-c change request] [-e execute] [-?|-h show this help]";
-    print "  -a      Retrieve a list of all backout files";
-    print "  -f      Perform a backout using the specified backout file";
-    print "  -b      The business unit associated with the change request";
-    print "  -d      The date the change request was performed";
-    print "  -c      The change order associated with this request";
-    print "  -e      Execute processing";
-    print "  -h|-?   Show this help";
+    echo -n "${CNAME} - Perform a backout for a previously executed change";
+    echo -n "Usage: ${CNAME} [-a] [-f filename] [-b business unit] [-d date] [-c change request] [-e execute] [-?|-h show this help]";
+    echo -n "  -a      Retrieve a list of all backout files";
+    echo -n "  -f      Perform a backout using the specified backout file";
+    echo -n "  -b      The business unit associated with the change request";
+    echo -n "  -d      The date the change request was performed";
+    echo -n "  -c      The change order associated with this request";
+    echo -n "  -e      Execute processing";
+    echo -n "  -h|-?   Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";

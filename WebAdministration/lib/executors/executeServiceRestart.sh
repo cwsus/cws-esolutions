@@ -23,7 +23,7 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -426,10 +426,10 @@ function usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    print "${CNAME} - stop, start, or restart a selected service.";
-    print "Usage: ${CNAME} <instance> <control command>";
-    print " No arguments are required to operate this utility.";
-    print " -h|-? -> Show this help";
+    echo -n "${CNAME} - stop, start, or restart a selected service.";
+    echo -n "Usage: ${CNAME} <instance> <control command>";
+    echo -n " No arguments are required to operate this utility.";
+    echo -n " -h|-? -> Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -449,5 +449,5 @@ METHOD_NAME="${CNAME}#startup";
 
 serviceControl ${@};
 
-printf ${RETURN_CODE};
+echo -n ${RETURN_CODE};
 exit ${RETURN_CODE};

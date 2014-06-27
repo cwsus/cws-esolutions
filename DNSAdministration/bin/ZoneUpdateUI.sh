@@ -23,7 +23,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 local METHOD_NAME="${CNAME}#startup";
 
@@ -35,7 +35,7 @@ local METHOD_NAME="${CNAME}#startup";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${PLUGIN_ROOT_DIR}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
+[ -z "${PLUGIN_ROOT_DIR}" ] && echo -n "Failed to locate configuration data. Cannot continue." && return 1;
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -65,14 +65,14 @@ then
     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
 
-    print "Security configuration does not allow the requested action.";
+    echo -n "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
 fi
 
 unset RET_CODE;
 
-trap "print '$(awk -F "=" '/\<system.trap.signals\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//' -e "s/%SIGNAL%/Ctrl-C/")'; sleep "${MESSAGE_DELAY}"; reset; clear; continue " 1 2 3
+trap "echo -n '$(awk -F "=" '/\<system.trap.signals\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//' -e "s/%SIGNAL%/Ctrl-C/")'; sleep "${MESSAGE_DELAY}"; reset; clear; continue " 1 2 3
 
 #===  FUNCTION  ===============================================================
 #
@@ -87,7 +87,6 @@ function main
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -96,36 +95,36 @@ function main
     then
         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS zone modification has not been enabled. Cannot continue.";
 
-        print "$(awk -F "=" '/\<request.not.authorized\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+        echo -n "$(awk -F "=" '/\<request.not.authorized\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-        exec ${MAIN_CLASS};
+        sleep ${MESSAGE_DELAY}; reset; clear; exec ${MAIN_CLASS};
 
-        exit 0;
+        return 0;
     fi
 
     while true
     do
         reset; clear;
 
-        print "\n";
-        print "\t\t+-------------------------------------------------------------------+";
-        print "\t\t               WELCOME TO \E[0;31m $(awk -F "=" '/\<plugin.application.title\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//') \033[0m";
-        print "\t\t+-------------------------------------------------------------------+";
-        print "\t\tSystem Type         : \E[0;36m ${SYSTEM_HOSTNAME} \033[0m";
-        print "\t\tSystem Uptime       : \E[0;36m ${SYSTEM_UPTIME} \033[0m";
-        print "\t\tUser                : \E[0;36m ${IUSER_AUDIT} \033[0m";
-        print "\t\t+-------------------------------------------------------------------+";
-        print "";
-        print "\t\t$(awk -F "=" '/\<system.available.options\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
-        print "\t$(awk -F "=" '/\<update.zone.remove.record\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
-        print "\t$(awk -F "=" '/\<update.zone.decom.zone\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
-        print "\t$(awk -F "=" '/\<update.zone.decom.bu\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
-        print "\t$(awk -F "=" '/\<update.zone.remove.zone\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
-        print "\t$(awk -F "=" '/\<update.zone.remove.bu\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
-        print "\t$(awk -F "=" '/\<system.option.cancel\>/{print $2}' ${SYSTEM_MESSAGES} ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+        echo -n "\n
+            \t\t+-------------------------------------------------------------------+
+            \t\t               WELCOME TO \E[0;31m $(awk -F "=" '/\<system.application.title\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//') \033[0m
+            \t\t+-------------------------------------------------------------------+
+            \t\tSystem Type         : \E[0;36m ${SYSTEM_HOSTNAME} \033[0m
+            \t\tSystem Uptime       : \E[0;36m ${SYSTEM_UPTIME} \033[0m
+            \t\tUser                : \E[0;36m ${IUSER_AUDIT} \033[0m
+            \t\t+-------------------------------------------------------------------+
+            \n
+            \t$(awk -F "=" '/\<system.available.options\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n
+            \t$(awk -F "=" '/\<update.zone.remove.record\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')
+            \t$(awk -F "=" '/\<update.zone.decom.zone\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')
+            \t$(awk -F "=" '/\<update.zone.decom.bu\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')
+            \t$(awk -F "=" '/\<update.zone.remove.zone\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')
+            \t$(awk -F "=" '/\<update.zone.remove.bu\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')
+            \t$(awk -F "=" '/\<system.option.cancel\>/{print $2}' ${SYSTEM_MESSAGES} ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
         ## get the requested project code/url or business unit
         read MAINTENANCE_TYPE;
@@ -136,7 +135,7 @@ function main
             [Xx]|[Qq]|[Cc])
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover process aborted";
 
-                print "$(awk -F "=" '/\<system.request.canceled\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+                echo -n "$(awk -F "=" '/\<system.request.canceled\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
                 ## unset SVC_LIST, we dont need it now
                 unset SVC_LIST;
@@ -152,7 +151,7 @@ function main
 
                 exec ${MAIN_CLASS};
 
-                exit 0;
+                return 0;
                 ;;
             1)
                 ## remove a record from an existing zone
@@ -161,7 +160,7 @@ function main
                 ## so not really sure. zone will at a minimum probably need to be re-signed.
                 ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Function not currently available.";
 
-                print "$(awk -F "=" '/\<system.function.not.available\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+                echo -n "$(awk -F "=" '/\<system.function.not.available\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
                 ## unset SVC_LIST, we dont need it now
                 unset MAINTENANCE_TYPE;
@@ -173,7 +172,7 @@ function main
                 ## decommission a zone
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone decommission requested. Processing..";
 
-                print "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+                echo -n "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
                 ## unset SVC_LIST, we dont need it now
                 MAINTENANCE_TYPE="site_decom";
@@ -185,7 +184,7 @@ function main
                 ## decomssion a business unit
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Business Unit decommission requested. Processing..";
 
-                print "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+                echo -n "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
                 ## unset SVC_LIST, we dont need it now
                 MAINTENANCE_TYPE="bu_decom";
@@ -198,7 +197,7 @@ function main
                 ## must have already been decommissioned
                 ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Function not currently available.";
 
-                print "$(awk -F "=" '/\<system.function.not.available\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+                echo -n "$(awk -F "=" '/\<system.function.not.available\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
                 ## unset SVC_LIST, we dont need it now
                 unset MAINTENANCE_TYPE;
@@ -211,7 +210,7 @@ function main
                 ## must have already been decommissioned
                 ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Function not currently available.";
 
-                print "$(awk -F "=" '/\<system.function.not.available\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+                echo -n "$(awk -F "=" '/\<system.function.not.available\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
                 ## unset SVC_LIST, we dont need it now
                 unset MAINTENANCE_TYPE;
@@ -244,7 +243,6 @@ function retrieveSiteInfo
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -254,11 +252,12 @@ function retrieveSiteInfo
     ## get the request information
     while true
     do
-        print "\t$(awk -F "=" '/\<failover.request.info\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
-        print "\t$(awk -F "=" '/\<failover.pcode.format\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
-        print "\t$(awk -F "=" '/\<failover.bu.format\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
-        print "\t$(awk -F "=" '/\<failover.url.format\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
-        print "\t$(awk -F "=" '/\<system.option.cancel\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+        echo -n "
+            \t$(awk -F "=" '/\<failover.request.info\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')
+            \t$(awk -F "=" '/\<failover.pcode.format\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')
+            \t$(awk -F "=" '/\<failover.bu.format\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')
+            \t$(awk -F "=" '/\<failover.url.format\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')
+            \t$(awk -F "=" '/\<system.option.cancel\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
         ## get the requested project code/url or business unit
         read SVC_LIST;
@@ -267,7 +266,7 @@ function retrieveSiteInfo
             [Xx]|[Qq]|[Cc])
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover process aborted";
 
-                print "$(awk -F "=" '/\<system.request.canceled\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+                echo -n "$(awk -F "=" '/\<system.request.canceled\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
                 ## unset SVC_LIST, we dont need it now
                 unset SVC_LIST;
@@ -281,7 +280,7 @@ function retrieveSiteInfo
                 then
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
 
-                    print "$(awk -F "=" '/\<selection.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+                    echo -n "$(awk -F "=" '/\<selection.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
 
                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 else
@@ -290,7 +289,7 @@ function retrieveSiteInfo
 
                     reset; clear;
 
-                    print "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+                    echo -n "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
 
                     local THIS_CNAME=${CNAME};
                     unset METHOD_NAME;
@@ -313,8 +312,8 @@ function retrieveSiteInfo
 
                     if [[ -z "${RET_CODE}" || ${RET_CODE} -ne 0 ]]
                     then
-                        [ ! -z "${RET_CODE}" ] && print "$(awk -F "=" "/${RET_CODE}/{print \$2}" ${PLUGIN_ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
-                        [ -z "${RET_CODE}" ] && print "$(awk -F "=" '/\<99\>/{print $2}' ${PLUGIN_ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+                        [ ! -z "${RET_CODE}" ] && echo -n "$(awk -F "=" "/${RET_CODE}/{print $2}" ${PLUGIN_ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+                        [ -z "${RET_CODE}" ] && echo -n "$(awk -F "=" '/\<99\>/{print $2}' ${PLUGIN_ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
 
                         ## unset variables
                         unset RET_CODE;
@@ -368,7 +367,7 @@ function retrieveSiteInfo
                             then
                                 while true
                                 do
-                                    print "\t$(awk -F "=" '/\<system.list.available\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+                                    echo -n "\t$(awk -F "=" '/\<system.list.available\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
                                     while [ ${A} -ne ${LIST_DISPLAY_MAX} ]
                                     do
@@ -377,7 +376,7 @@ function retrieveSiteInfo
                                             ## prints the following:
                                             ## 0 - db.example.XMPL - Live in: PH - Site URL: example.com
                                             ## 7-8 for prd
-                                            print "${B} - $(printf "${SERVICE_DETAIL[${B}]}" | cut -d "|" -f 1 | cut -d "/" -f 7-8) - Live in: $(printf "${SERVICE_DETAIL[${B}]}" | cut -d "|" -f 2) - Site URL: $(printf "${SERVICE_DETAIL[${B}]}" | cut -d "|" -f 3)";
+                                            echo -n "${B} - $(echo -n "${SERVICE_DETAIL[${B}]}" | cut -d "|" -f 1 | cut -d "/" -f 7-8) - Live in: $(echo -n "${SERVICE_DETAIL[${B}]}" | cut -d "|" -f 2) - Site URL: $(echo -n "${SERVICE_DETAIL[${B}]}" | cut -d "|" -f 3)";
                                             (( A += 1 ));
                                             (( B += 1 ));
                                         else
@@ -388,15 +387,17 @@ function retrieveSiteInfo
 
                                     if [ $(expr ${B} - ${LIST_DISPLAY_MAX}) -eq 0 ]
                                     then
-                                        print "$(awk -F "=" '/\<system.display.next\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+                                        echo -n "$(awk -F "=" '/\<system.display.next\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
                                     else
-                                        print "$(awk -F "=" '/\<system.display.prev\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
-                                        print "$(awk -F "=" '/\<system.display.next\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+                                        echo -n "
+                                            $(awk -F "=" '/\<system.display.prev\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n
+                                            $(awk -F "=" '/\<system.display.next\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
                                     fi
 
                                     ## add the option to run against all sites listed
-                                    print "A - $(awk -F "=" '/\<system.display.next\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//' -e "s/%SITE%/all sites for ${SVC_REQUEST_OPTION}/")\n";
-                                    print "C - $(awk -F "=" '/\<system.option.cancel\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+                                    echo -n "
+                                        A - $(awk -F "=" '/\<system.display.next\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//' -e "s/%SITE%/all sites for ${SVC_REQUEST_OPTION}/")\n
+                                        C - $(awk -F "=" '/\<system.option.cancel\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
                                     read SELECTION;
 
@@ -407,7 +408,7 @@ function retrieveSiteInfo
 
                                             if [ ${B} -ge ${#SERVICE_DETAIL[@]} ]
                                             then
-                                                print "$(awk -F "=" '/\<forward.shift.failed\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+                                                echo -n "$(awk -F "=" '/\<forward.shift.failed\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
                                                 A=0;
                                                 B=0;
                                                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
@@ -422,7 +423,7 @@ function retrieveSiteInfo
 
                                             if [ $(expr ${B} - ${LIST_DISPLAY_MAX}) -eq 0 ]
                                             then
-                                                print "$(awk -F "=" '/\<previous.shift.failed\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+                                                echo -n "$(awk -F "=" '/\<previous.shift.failed\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
 
                                                 A=0; B=0;
 
@@ -467,7 +468,7 @@ function retrieveSiteInfo
                                             ## make b 0 again
                                             A=0; B=0;
 
-                                            print "$(awk -F "=" '/\<system.request.canceled\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+                                            echo -n "$(awk -F "=" '/\<system.request.canceled\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
 
                                             sleep "${MESSAGE_DELAY}"; reset; clear; break;
                                             ;;
@@ -479,7 +480,7 @@ function retrieveSiteInfo
 
                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
 
-                                            print "$(awk -F "=" '/\<selection.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+                                            echo -n "$(awk -F "=" '/\<selection.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
 
                                             sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                             ;;
@@ -488,20 +489,20 @@ function retrieveSiteInfo
                             else
                                 while true
                                 do
-                                    print "\t$(awk -F "=" '/\<system.list.available\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+                                    echo -n "\t$(awk -F "=" '/\<system.list.available\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
                                     while [ ${A} -ne ${#SERVICE_DETAIL[@]} ]
                                     do
                                         ## prints the following:
                                         ## 0 - db.example.XMPL - Live in: PH - Site URL: example.com
                                         ## 7-8 for prd
-                                        print "${A} - $(printf "${SERVICE_DETAIL[${A}]}" | cut -d "|" -f 1 | cut -d "/" -f 7-8) - Live in: $(printf "${SERVICE_DETAIL[${A}]}" | cut -d "|" -f 2) - Site URL: $(printf "${SERVICE_DETAIL[${A}]}" | cut -d "|" -f 3)";
+                                        echo -n "${A} - $(echo -n "${SERVICE_DETAIL[${A}]}" | cut -d "|" -f 1 | cut -d "/" -f 7-8) - Live in: $(echo -n "${SERVICE_DETAIL[${A}]}" | cut -d "|" -f 2) - Site URL: $(echo -n "${SERVICE_DETAIL[${A}]}" | cut -d "|" -f 3)";
                                         (( A += 1 ));
                                     done
 
                                     ## add the option to run against all sites listed
-                                    [ ${#SERVICE_DETAIL[@]} -ge 1 ] && print "A - $(awk -F "=" '/\<system.display.next\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//' -e "s/%SITE%/all sites for ${SVC_REQUEST_OPTION}/")\n";
-                                    print "$(awk -F "=" '/\<system.option.cancel\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+                                    [ ${#SERVICE_DETAIL[@]} -ge 1 ] && echo -n "A - $(awk -F "=" '/\<system.display.next\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//' -e "s/%SITE%/all sites for ${SVC_REQUEST_OPTION}/")\n";
+                                    echo -n "$(awk -F "=" '/\<system.option.cancel\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
                                     read SELECTION;
 
@@ -539,7 +540,7 @@ function retrieveSiteInfo
 
                                                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
 
-                                                        print "$(awk -F "=" '/\<selection.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+                                                        echo -n "$(awk -F "=" '/\<selection.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
 
                                                         sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                                     else
@@ -555,7 +556,7 @@ function retrieveSiteInfo
                                         [Xx]|[Qq]|[Cc])
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover request has been cancelled.";
 
-                                            print "$(awk -F "=" '/\<system.request.canceled\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+                                            echo -n "$(awk -F "=" '/\<system.request.canceled\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
 
                                             A=0; B=0;
 
@@ -570,7 +571,7 @@ function retrieveSiteInfo
 
                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
 
-                                            print "$(awk -F "=" '/\<selection.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+                                            echo -n "$(awk -F "=" '/\<selection.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
 
                                             sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                             ;;
@@ -582,8 +583,8 @@ function retrieveSiteInfo
                             ## return message to user
                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Result code from retrieve_service->${RET_CODE}";
 
-                            [ ! -z "${RET_CODE}" ] && print "$(awk -F "=" "/${RET_CODE}/{print \$2}" ${PLUGIN_ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
-                            [ -z "${RET_CODE}" ] && print "$(awk -F "=" "/99/{print \$2}" ${PLUGIN_ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+                            [ ! -z "${RET_CODE}" ] && echo -n "$(awk -F "=" "/${RET_CODE}/{print $2}" ${PLUGIN_ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+                            [ -z "${RET_CODE}" ] && echo -n "$(awk -F "=" "/99/{print $2}" ${PLUGIN_ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
 
                             ## unset our variables
                             unset SVC_LIST;
@@ -628,7 +629,6 @@ function processDecomRequest
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -637,7 +637,7 @@ function processDecomRequest
 
     while true
     do
-        print "\t\t$(awk -F "=" '/\<confirm.request\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+        echo -n "\t\t$(awk -F "=" '/\<confirm.request\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
         read CONFIRM;
 
@@ -645,7 +645,7 @@ function processDecomRequest
 
         reset; clear;
 
-        print "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+        echo -n "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
         case ${CONFIRM} in
             [Yy][Ee][Ss]|[Yy])
@@ -685,7 +685,7 @@ function processDecomRequest
                     then
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover process aborted";
 
-                        print "$(awk -F "=" '/\<system.request.canceled\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+                        echo -n "$(awk -F "=" '/\<system.request.canceled\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
                         ## unset SVC_LIST, we dont need it now
                         unset SVC_LIST;
@@ -717,7 +717,7 @@ function processDecomRequest
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TDC -> ${TDC}";
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_CONTROL -> ${CHANGE_CONTROL}";
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IUSER_AUDIT -> ${IUSER_AUDIT}";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command run_decom.sh -b $(printf "${SERVICE_DETAIL[${B}]}" | cut -d "|" -f 3),${BU},${CHANGE_CONTROL},${IUSER_AUDIT} -e";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command run_decom.sh -b $(echo -n "${SERVICE_DETAIL[${B}]}" | cut -d "|" -f 3),${BU},${CHANGE_CONTROL},${IUSER_AUDIT} -e";
 
                     local THIS_CNAME=${CNAME};
                     unset METHOD_NAME;
@@ -778,14 +778,14 @@ function processDecomRequest
                         ## one or more slave services failed processing
                         if [ ! -z "${FAILED_SERVERS}" ]
                         then
-                            print "$(awk -F "=" '/\<failover.request.servers.success.failure\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+                            echo -n "$(awk -F "=" '/\<failover.request.servers.success.failure\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
 
                             ## make sure d is zero
                             D=0;
 
                             while [ ${D} -ne ${#FAILED_SERVERS[@]} ]
                             do
-                                print "${FAILED_SERVERS[${D}]}\n";
+                                echo -n "${FAILED_SERVERS[${D}]}\n";
 
                                 (( D += 1 ));
                             done
@@ -828,11 +828,12 @@ function processDecomRequest
                     do
                         reset; clear;
 
-                        print "$(awk -F "=" '/\<system.process.successful\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
-                        print "$(awk -F "=" '/\<system.process.perform.another\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+                        echo -n "
+                            $(awk -F "=" '/\<system.process.successful\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')
+                            $(awk -F "=" '/\<system.process.perform.another\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
                         read RESPONSE;
-                        print "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+                        echo -n "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RESPONSE -> ${RESPONSE}";
 
@@ -858,8 +859,8 @@ function processDecomRequest
                     ## show it
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Caught an "ERROR" performing the failover. RET_CODE -> ${RET_CODE}";
 
-                    [ -z "${RET_CODE}" ] && print "$(awk -F "=" '/\<99\>/{print $2}' ${PLUGIN_ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
-                    [ ! -z "${RET_CODE}" ] && print "$(awk -F "=" "/${RET_CODE}/{print \$2}" ${PLUGIN_ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+                    [ -z "${RET_CODE}" ] && echo -n "$(awk -F "=" '/\<99\>/{print $2}' ${PLUGIN_ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+                    [ ! -z "${RET_CODE}" ] && echo -n "$(awk -F "=" "/${RET_CODE}/{print $2}" ${PLUGIN_ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
                     unset CHANGE_CONTROL;
                     unset RET_CODE;
@@ -888,7 +889,7 @@ function processDecomRequest
                 ## because we aren't starting over
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover request has been cancelled.";
 
-                print "$(awk -F "=" '/\<system.request.canceled\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+                echo -n "$(awk -F "=" '/\<system.request.canceled\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
 
                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 ;;
@@ -897,7 +898,7 @@ function processDecomRequest
                 unset CONFIRM;
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Selection provided is invalid";
 
-                print "$(awk -F "=" '/\<selection.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+                echo -n "$(awk -F "=" '/\<selection.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
 
                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 ;;
@@ -923,7 +924,6 @@ function removeZoneEntry
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -953,4 +953,4 @@ unset METHOD_NAME;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-return ${RETURN_CODE};
+return 0;

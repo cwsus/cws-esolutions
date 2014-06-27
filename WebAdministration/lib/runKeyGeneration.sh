@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -1071,17 +1071,17 @@ function usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    print "${CNAME} - Generates a certificate signing request for a provided host.";
-    print " -s    -> The site domain name to operate against";
-    print " -v    -> The source server to obtain the necessary key databases from";
-    print " -w    -> Platform type to execute against - iplanet or ihs";
-    print " -p    -> The webserver base path (e.g. /opt/IBMIHS70)";
-    print " -d    -> The certificate database to work against";
-    print " -c    -> The target platform code.";
-    print " -t    -> The requestor telephone number";
-    print " -n    -> Indicates that this is a new SSL request";
-    print " -e    -> Execute the request";
-    print " -h|-? -> Show this help";
+    echo -n "${CNAME} - Generates a certificate signing request for a provided host.";
+    echo -n " -s    -> The site domain name to operate against";
+    echo -n " -v    -> The source server to obtain the necessary key databases from";
+    echo -n " -w    -> Platform type to execute against - iplanet or ihs";
+    echo -n " -p    -> The webserver base path (e.g. /opt/IBMIHS70)";
+    echo -n " -d    -> The certificate database to work against";
+    echo -n " -c    -> The target platform code.";
+    echo -n " -t    -> The requestor telephone number";
+    echo -n " -n    -> Indicates that this is a new SSL request";
+    echo -n " -e    -> Execute the request";
+    echo -n " -h|-? -> Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 

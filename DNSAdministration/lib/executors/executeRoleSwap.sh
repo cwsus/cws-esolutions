@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 METHOD_NAME="${THIS_CNAME}#startup";
 
@@ -34,7 +34,7 @@ METHOD_NAME="${THIS_CNAME}#startup";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${PLUGIN_ROOT_DIR}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
+[ -z "${PLUGIN_ROOT_DIR}" ] && echo -n "Failed to locate configuration data. Cannot continue." && return 1;
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -64,7 +64,7 @@ then
     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
 
-    printf "Security configuration does not allow the requested action.";
+    echo -n "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
 fi
@@ -87,7 +87,7 @@ METHOD_NAME="${THIS_CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-[ ${RET_CODE} -ne 0 ] && printf "Application currently in use." && printf ${RET_CODE} && return ${RET_CODE};
+[ ${RET_CODE} -ne 0 ] && echo -n "Application currently in use." && echo -n ${RET_CODE} && return ${RET_CODE};
 
 unset RET_CODE;
 
@@ -1126,16 +1126,16 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    printf "${CNAME} - Process a service re-configuration from a slave to a master";
-    printf "Usage: ${CNAME} [ -p tarfile name ] [ -s ] [ -f ] [ -i "AUDIT" user ] [ -c change order ] [ -e ] [ -? | -h ]";
-    printf "  -p      Re-configure server as a master server. If provided, a tarfile name must also be provided.";
-    printf "  -s      Re-configure server as a slave server";
-    printf "  -f      Force re-configuration if master tarfile does not exist";
-    printf "  -t      The name of the new master nameserver";
-    printf "  -i      The user performing the request";
-    printf "  -c      The change order associated with this request";
-    printf "  -e      Execute processing";
-    printf "  -?|-h   Show this help";
+    echo -n "${CNAME} - Process a service re-configuration from a slave to a master";
+    echo -n "Usage: ${CNAME} [ -p tarfile name ] [ -s ] [ -f ] [ -i "AUDIT" user ] [ -c change order ] [ -e ] [ -? | -h ]";
+    echo -n "  -p      Re-configure server as a master server. If provided, a tarfile name must also be provided.";
+    echo -n "  -s      Re-configure server as a slave server";
+    echo -n "  -f      Force re-configuration if master tarfile does not exist";
+    echo -n "  -t      The name of the new master nameserver";
+    echo -n "  -i      The user performing the request";
+    echo -n "  -c      The change order associated with this request";
+    echo -n "  -e      Execute processing";
+    echo -n "  -?|-h   Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -1282,5 +1282,5 @@ unset METHOD_NAME;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-[ -z "${RETURN_CODE}" ] && printf "1" || printf "${RETURN_CODE}";
+[ -z "${RETURN_CODE}" ] && echo -n "1" || echo -n "${RETURN_CODE}";
 [ -z "${RETURN_CODE}" ] && return 1 || return "${RETURN_CODE}";

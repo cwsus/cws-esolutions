@@ -17,7 +17,7 @@
 #==============================================================================
 ## Constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 function check_ui
@@ -35,7 +35,7 @@ function check_ui
         if [ ! $(echo ${AUTHORIZED_USERS[@]} | grep -c $(whoami)) -eq 1 ]
         then
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "$(whoami) is not authorized to execute ${CNAME}.";
-            print "$(whoami) is not authorized to execute ${CNAME}.";
+            echo -n "$(whoami) is not authorized to execute ${CNAME}.";
             RETURN_CODE=97;
         else
             RETURN_CODE=0;

@@ -23,7 +23,7 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -162,11 +162,11 @@ function usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    print "${CNAME} - Execute RNDC (Remote Name Daemon Control) commands against a provided server";
-    print "Usage: ${CNAME} [ -s server ] [ -c command ] [ -r ] [ -e ] [ -h|? ]";
-    print " -r    -> Indicate that the restart is performed to reload RNDC keyfiles.";
-    print " -e    -> Execute the request";
-    print " -h|-? -> Show this help";
+    echo -n "${CNAME} - Execute RNDC (Remote Name Daemon Control) commands against a provided server";
+    echo -n "Usage: ${CNAME} [ -s server ] [ -c command ] [ -r ] [ -e ] [ -h|? ]";
+    echo -n " -r    -> Indicate that the restart is performed to reload RNDC keyfiles.";
+    echo -n " -e    -> Execute the request";
+    echo -n " -h|-? -> Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -241,5 +241,5 @@ do
 done
 
 
-printf ${RETURN_CODE};
+echo -n ${RETURN_CODE};
 exit ${RETURN_CODE};

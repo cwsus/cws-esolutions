@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -86,7 +86,7 @@ function remove_master_zone
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checking for remaining files in ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}";
 
                 if [ $(find ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT} -type f \
-                    -print | wc -l) -eq 0 ]
+                    -echo -n | wc -l) -eq 0 ]
                 then
                     ## ok, we didnt find any files, so we can remove the directory
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No files found, removing..";
@@ -261,7 +261,7 @@ function remove_slave_zone
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checking for remaining files in ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}";
 
                 if [ $(find ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT} -type f \
-                    -print | wc -l) -eq 0 ]
+                    -echo -n | wc -l) -eq 0 ]
                 then
                     ## ok, we didnt find any files, so we can remove the directory
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No files found, removing..";
@@ -811,19 +811,19 @@ function usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    print "${CNAME} - Execute modifications against a zone";
-    print "Usage: ${CNAME} [ -b business unit ] [ -p project code ] [ -z zone name ] [ -i requestor ] [ -c change request ] [ -r entry ] " \
-    print "[ -x ] [ -s ] [ -e ] [ -?|-h ]";
-    print "  -b      The associated business unit";
-    print "  -p      The associated project code";
-    print "  -z      The zone name, eg example.com";
-    print "  -i      The user performing the request";
-    print "  -c      The change order associated with this request";
-    print "  -r      Remove an entry from an existing zone. Entry name is required.";
-    print "  -x      Remove a previously decommissioned zone.";
-    print "  -s      Specifies whether or not to operate against a slave server";
-    print "  -e      Execute processing";
-    print "  -?|-h   Show this help";
+    echo -n "${CNAME} - Execute modifications against a zone";
+    echo -n "Usage: ${CNAME} [ -b business unit ] [ -p project code ] [ -z zone name ] [ -i requestor ] [ -c change request ] [ -r entry ] " \
+    echo -n "[ -x ] [ -s ] [ -e ] [ -?|-h ]";
+    echo -n "  -b      The associated business unit";
+    echo -n "  -p      The associated project code";
+    echo -n "  -z      The zone name, eg example.com";
+    echo -n "  -i      The user performing the request";
+    echo -n "  -c      The change order associated with this request";
+    echo -n "  -r      Remove an entry from an existing zone. Entry name is required.";
+    echo -n "  -x      Remove a previously decommissioned zone.";
+    echo -n "  -s      Specifies whether or not to operate against a slave server";
+    echo -n "  -e      Execute processing";
+    echo -n "  -?|-h   Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -1007,7 +1007,7 @@ then
 
     fi
 
-printf ${RETURN_CODE};
+echo -n ${RETURN_CODE};
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;

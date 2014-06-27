@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -41,7 +41,7 @@ function buildSSLSite
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Buildout SSL-enabled website ..";
 
-    trap "print '$(grep system.trap.signals "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%SIGNAL%/Ctrl-C/")'; sleep ${MESSAGE_DELAY}; reset; clear; continue " 1 2 3
+    trap "echo -n '$(grep system.trap.signals "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%SIGNAL%/Ctrl-C/")'; sleep ${MESSAGE_DELAY}; reset; clear; continue " 1 2 3
 
     while true
     do
@@ -54,10 +54,10 @@ function buildSSLSite
 
         reset; clear;
 
-        print "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-        print "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-        print "\t$(grep -w createsite.provide.sslport "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-        print "\t$(grep -w system.option.cancel "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+        echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+        echo -n "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+        echo -n "\t$(grep -w createsite.provide.sslport "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+        echo -n "\t$(grep -w system.option.cancel "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
         read SSL_PORTNUM;
 
@@ -65,7 +65,7 @@ function buildSSLSite
 
         reset; clear;
 
-        print "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+        echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
         case ${SSL_PORTNUM} in
             [Xx]|[Qq]|[Cc])
@@ -79,7 +79,7 @@ function buildSSLSite
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover process aborted";
 
-                print "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                echo -n "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                 ## unset SVC_LIST, we dont need it now
                 unset SVC_LIST;
@@ -105,7 +105,7 @@ function buildSSLSite
                         ## port number invalid
                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An invalid port number was provided.";
 
-                        print "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                        echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                         ## unset SVC_LIST, we dont need it now
                         unset PORT_CONFIRMATION;
@@ -120,9 +120,9 @@ function buildSSLSite
                         do
                             reset; clear;
 
-                            print "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                            print "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                            print "\t$(grep -w createsite.privileged.port "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                            echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                            echo -n "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                            echo -n "\t$(grep -w createsite.privileged.port "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                             read PORT_CONFIRMATION;
 
@@ -130,7 +130,7 @@ function buildSSLSite
 
                             reset; clear;
 
-                            print "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                            echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                             case ${PORT_CONFIRMATION} in
                                 [Yy][Ee][Ss]|[Yy])
@@ -151,7 +151,7 @@ function buildSSLSite
                                 *)
                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An invalid response was provided.";
 
-                                    print "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                    echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                     ## unset SVC_LIST, we dont need it now
                                     unset PORT_CONFIRMATION;
@@ -178,10 +178,10 @@ function buildSSLSite
                             ## get the nonssl port
                             reset; clear;
 
-                            print "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                            print "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                            print "\t$(grep -w createsite.provide.nosslport "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                            print "\t$(grep -w system.option.cancel "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                            echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                            echo -n "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                            echo -n "\t$(grep -w createsite.provide.nosslport "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                            echo -n "\t$(grep -w system.option.cancel "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                             read NONSSL_PORTNUM;
 
@@ -189,7 +189,7 @@ function buildSSLSite
 
                             reset; clear;
 
-                            print "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                            echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                             case ${NONSSL_PORTNUM} in
                                 [Xx]|[Qq]|[Cc])
@@ -203,7 +203,7 @@ function buildSSLSite
 
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover process aborted";
 
-                                    print "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                    echo -n "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                     ## unset SVC_LIST, we dont need it now
                                     unset SVC_LIST;
@@ -229,7 +229,7 @@ function buildSSLSite
                                             ## port number invalid
                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An invalid port number was provided.";
 
-                                            print "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                            echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                             ## unset SVC_LIST, we dont need it now
                                             unset PORT_CONFIRMATION;
@@ -244,9 +244,9 @@ function buildSSLSite
                                             do
                                                 reset; clear;
 
-                                                print "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                print "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                print "\t$(grep -w createsite.privileged.port "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                echo -n "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                echo -n "\t$(grep -w createsite.privileged.port "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                                 read PORT_CONFIRMATION;
 
@@ -254,7 +254,7 @@ function buildSSLSite
 
                                                 reset; clear;
 
-                                                print "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                                 case ${PORT_CONFIRMATION} in
                                                     [Yy][Ee][Ss]|[Yy])
@@ -275,7 +275,7 @@ function buildSSLSite
                                                     *)
                                                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An invalid response was provided.";
 
-                                                        print "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                        echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                                         ## unset SVC_LIST, we dont need it now
                                                         unset PORT_CONFIRMATION;
@@ -303,10 +303,10 @@ function buildSSLSite
                                                 do
                                                     reset; clear;
 
-                                                    print "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                    print "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                    print "\t$(grep -w createsite.enable.websphere "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                                    print "\t$(grep -w system.option.cancel "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                    echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                    echo -n "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                    echo -n "\t$(grep -w createsite.enable.websphere "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                    echo -n "\t$(grep -w system.option.cancel "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                                     read ENABLE_WEBSPHERE;
 
@@ -314,7 +314,7 @@ function buildSSLSite
 
                                                     reset; clear;
 
-                                                    print "$(grep -w system.pending.message  "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                    echo -n "$(grep -w system.pending.message  "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                                     case ${ENABLE_WEBSPHERE} in
                                                         [Xx]|[Qq]|[Cc])
@@ -328,7 +328,7 @@ function buildSSLSite
 
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover process aborted";
 
-                                                            print "$(grep -w system.request.canceled  "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                            echo -n "$(grep -w system.request.canceled  "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                                             ## terminate this thread and return control to main
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -366,7 +366,7 @@ function buildSSLSite
 
                                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not provided.";
 
-                                                            print "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                            echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                                             ## unset SVC_LIST, we dont need it now
                                                             unset SSL_PORTNUM;
@@ -380,7 +380,7 @@ function buildSSLSite
                                                 then
                                                     reset; clear;
 
-                                                    print "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                    echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command createWebInstance.sh ${BUILD_TYPE_SSL} ..";
 
@@ -395,10 +395,10 @@ function buildSSLSite
                                                     then
                                                         BUILD_COMPLETE=${_TRUE};
 
-                                                        print "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                        print "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                        print "\t$(grep createsite.build.complete "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%SITE_HOSTNAME%/${SITE_HOSTNAME}/")\n";
-                                                        print "\n\n\t$(grep -w system.continue.enter "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                        echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                        echo -n "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                        echo -n "\t$(grep createsite.build.complete "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%SITE_HOSTNAME%/${SITE_HOSTNAME}/")\n";
+                                                        echo -n "\n\n\t$(grep -w system.continue.enter "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                                         read INPUT;
 
@@ -406,10 +406,10 @@ function buildSSLSite
                                                     else
                                                         BUILD_COMPLETE=${_TRUE};
 
-                                                        print "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                        print "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                        print "\t$(grep ${RET_CODE} "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                        print "\n\n\t$(grep -w system.continue.enter "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                        echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                        echo -n "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                        echo -n "\t$(grep ${RET_CODE} "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                        echo -n "\n\n\t$(grep -w system.continue.enter "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                                         read INPUT;
 
@@ -419,7 +419,7 @@ function buildSSLSite
                                                     ## missing variable, cant continue
                                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No response was obtained for ENABLE_WEBSPHERE.";
 
-                                                    print "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                    echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                                     ## unset SVC_LIST, we dont need it now
                                                     unset SSL_PORTNUM;
@@ -430,7 +430,7 @@ function buildSSLSite
                                                 ## port in use
                                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Port number provided is already in use.";
 
-                                                print "$(grep -w provided.port.already.used -e "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                echo -n "$(grep -w provided.port.already.used -e "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                                 ## unset SVC_LIST, we dont need it now
                                                 unset SSL_PORTNUM;
@@ -442,7 +442,7 @@ function buildSSLSite
                                             ## port number provided isnt a number
                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided port number, ${SSL_PORTNUM}, is not a number.";
 
-                                            print "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                            echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                             ## unset SVC_LIST, we dont need it now
                                             unset SSL_PORTNUM;
@@ -453,7 +453,7 @@ function buildSSLSite
                                         ## port number provided isnt a number
                                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided port number, ${SSL_PORTNUM}, is not a number.";
 
-                                        print "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                        echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                         ## unset SVC_LIST, we dont need it now
                                         unset SSL_PORTNUM;
@@ -465,7 +465,7 @@ function buildSSLSite
                         else
                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Port number provided is already in use.";
 
-                            print "$(grep -w provided.port.already.used -e "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                            echo -n "$(grep -w provided.port.already.used -e "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                             ## unset SVC_LIST, we dont need it now
                             unset SSL_PORTNUM;
@@ -477,7 +477,7 @@ function buildSSLSite
                     ## port number provided isnt a number
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided port number, ${SSL_PORTNUM}, is not a number.";
 
-                    print "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                    echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                     ## unset SVC_LIST, we dont need it now
                     unset SSL_PORTNUM;

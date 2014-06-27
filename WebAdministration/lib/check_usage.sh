@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -63,7 +63,7 @@ function check_usage
         ## file doesn't exist, create it and continue forward
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "First time use - lets keep going";
 
-        print "Application started by $(${IUSER_AUDIT} | awk '{print $1}') on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")" >> ${APP_ROOT}/${APP_FLAG};
+        echo -n "Application started by $(${IUSER_AUDIT} | awk '{print $1}') on $(date +"%m-%d-%Y") at $(date +"%H:%M:%S")" >> ${APP_ROOT}/${APP_FLAG};
 
         RETURN_CODE=0;
     fi

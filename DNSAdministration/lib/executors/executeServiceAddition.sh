@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 local METHOD_NAME="${CNAME}#startup";
 
@@ -34,7 +34,7 @@ local METHOD_NAME="${CNAME}#startup";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${PLUGIN_ROOT_DIR}" ] && printf "Failed to locate configuration data. Cannot continue." && exit 1;
+[ -z "${PLUGIN_ROOT_DIR}" ] && echo -n "Failed to locate configuration data. Cannot continue." && exit 1;
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -64,7 +64,7 @@ then
     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while excuting ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks excution. Please verify security configuration.";
 
-    print "Security configuration does not allow the requested action.";
+    echo -n "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
 fi
@@ -87,7 +87,7 @@ METHOD_NAME="${THIS_CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-[ ${RET_CODE} -ne 0 ] && printf "Application currently in use." && print ${RET_CODE} && return ${RET_CODE};
+[ ${RET_CODE} -ne 0 ] && echo -n "Application currently in use." && echo -n ${RET_CODE} && return ${RET_CODE};
 
 unset RET_CODE;
 
@@ -152,44 +152,44 @@ function installMasterZone
                 then
                     ## ok, time to create a conf file for the new zone
                     ## and update named.conf so it gets loaded
-                    print "zone \"${ZONE_NAME}\" IN {" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    type               master;" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    allow-update       { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    allow-transfer     { key ${TSIG_TRANSFER_KEY}; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    file               \"${NAMED_MASTER_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.${CUT_ZONE_NAME}.${UC_PROJECT_CODE}\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "};\n" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "zone \"${ZONE_NAME}\" IN {" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    type               master;" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    allow-update       { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    allow-transfer     { key ${TSIG_TRANSFER_KEY}; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    file               \"${NAMED_MASTER_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.${CUT_ZONE_NAME}.${UC_PROJECT_CODE}\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "};\n" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
                 elif [ ! -z "${USE_NAMED_ACL}" ] && [ "${USE_NAMED_ACL}" = "${_TRUE}" ]
                 then
                     ## ok, time to create a conf file for the new zone
                     ## and update named.conf so it gets loaded
-                    print "zone \"${ZONE_NAME}\" IN {" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    type               slave;" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    masters            { \"${NAMED_MASTER_ACL}\"; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    allow-update       { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    allow-transfer     { ${NAMED_TRANSFER_ACL}; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    file               \"${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.${CUT_ZONE_NAME}.${UC_PROJECT_CODE}\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "};\n" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "zone \"${ZONE_NAME}\" IN {" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    type               slave;" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    masters            { \"${NAMED_MASTER_ACL}\"; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    allow-update       { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    allow-transfer     { ${NAMED_TRANSFER_ACL}; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    file               \"${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.${CUT_ZONE_NAME}.${UC_PROJECT_CODE}\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "};\n" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
                 elif [ ! -z "${USE_NAMED_ACL}" ] && [ "${USE_NAMED_ACL}" = "${_TRUE}" ] && [ ! -z "${USE_TRANSFER_ACL}" ] && [ "${USE_TRANSFER_ACL}" = "${_TRUE}" ]
                 then
                     ## ok, time to create a conf file for the new zone
                     ## and update named.conf so it gets loaded
-                    print "zone \"${ZONE_NAME}\" IN {" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    type               slave;" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    masters            { \"${NAMED_MASTER_ACL}\"; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    allow-update       { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    allow-transfer     { key ${TSIG_TRANSFER_KEY}; ${NAMED_TRANSFER_ACL}; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    file               \"${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.${CUT_ZONE_NAME}.${UC_PROJECT_CODE}\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "};\n" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "zone \"${ZONE_NAME}\" IN {" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    type               slave;" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    masters            { \"${NAMED_MASTER_ACL}\"; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    allow-update       { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    allow-transfer     { key ${TSIG_TRANSFER_KEY}; ${NAMED_TRANSFER_ACL}; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    file               \"${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.${CUT_ZONE_NAME}.${UC_PROJECT_CODE}\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "};\n" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
                 else
                     ## no transfer acl is specified. this could be an oversight or on purpose. assume on purpose
                     ## and specify none for allow-transfer
-                    print "zone \"${ZONE_NAME}\" IN {" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    type               slave;" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    masters            { \"${NAMED_MASTER_ACL}\"; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    allow-update       { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    allow-transfer     { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    file               \"${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.${CUT_ZONE_NAME}.${UC_PROJECT_CODE}\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "};\n" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "zone \"${ZONE_NAME}\" IN {" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    type               slave;" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    masters            { \"${NAMED_MASTER_ACL}\"; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    allow-update       { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    allow-transfer     { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    file               \"${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.${CUT_ZONE_NAME}.${UC_PROJECT_CODE}\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "};\n" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
                 fi
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Created ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME}";
@@ -206,7 +206,7 @@ function installMasterZone
                     ## make sure the backup file exists -
                     if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${CONF_FILE}.${CHANGE_NUM} ]
                     then
-                        print "include \"/${NAMED_CONF_DIR}/${ZONE_CONF_NAME}\";" >> ${NAMED_CONF_FILE};
+                        echo -n "include \"/${NAMED_CONF_DIR}/${ZONE_CONF_NAME}\";" >> ${NAMED_CONF_FILE};
 
                         ## should have our new zone included now. verify it
                         if [ $(grep -c ${ZONE_CONF_NAME} ${NAMED_CONF_FILE}) -eq 1 ]
@@ -366,45 +366,45 @@ function installSlaveZone
                 then
                     ## ok, time to create a conf file for the new zone
                     ## and update named.conf so it gets loaded
-                    print "zone \"${ZONE_NAME}\" IN {" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    type               slave;" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    masters            { \"${NAMED_MASTER_ACL}\"; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    allow-update       { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    allow-transfer     { key ${TSIG_TRANSFER_KEY}; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    file               \"${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.${CUT_ZONE_NAME}.${UC_PROJECT_CODE}\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "};\n" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "zone \"${ZONE_NAME}\" IN {" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    type               slave;" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    masters            { \"${NAMED_MASTER_ACL}\"; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    allow-update       { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    allow-transfer     { key ${TSIG_TRANSFER_KEY}; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    file               \"${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.${CUT_ZONE_NAME}.${UC_PROJECT_CODE}\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "};\n" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
                 elif [ ! -z "${USE_NAMED_ACL}" ] && [ "${USE_NAMED_ACL}" = "${_TRUE}" ]
                 then
                     ## ok, time to create a conf file for the new zone
                     ## and update named.conf so it gets loaded
-                    print "zone \"${ZONE_NAME}\" IN {" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    type               slave;" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    masters            { \"${NAMED_MASTER_ACL}\"; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    allow-update       { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    allow-transfer     { ${NAMED_TRANSFER_ACL}; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    file               \"${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.${CUT_ZONE_NAME}.${UC_PROJECT_CODE}\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "};\n" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "zone \"${ZONE_NAME}\" IN {" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    type               slave;" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    masters            { \"${NAMED_MASTER_ACL}\"; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    allow-update       { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    allow-transfer     { ${NAMED_TRANSFER_ACL}; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    file               \"${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.${CUT_ZONE_NAME}.${UC_PROJECT_CODE}\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "};\n" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
                 elif [ ! -z "${USE_NAMED_ACL}" ] && [ "${USE_NAMED_ACL}" = "${_TRUE}" ] && [ ! -z "${USE_TRANSFER_ACL}" ] && [ "${USE_TRANSFER_ACL}" = "${_TRUE}" ]
                 then
                     ## ok, time to create a conf file for the new zone
                     ## and update named.conf so it gets loaded
-                    print "zone \"${ZONE_NAME}\" IN {" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    type               slave;" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    masters            { \"${NAMED_MASTER_ACL}\"; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    allow-update       { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    allow-transfer     { key ${TSIG_TRANSFER_KEY}; ${NAMED_TRANSFER_ACL}; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    file               \"${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.${CUT_ZONE_NAME}.${UC_PROJECT_CODE}\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "};\n" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "zone \"${ZONE_NAME}\" IN {" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    type               slave;" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    masters            { \"${NAMED_MASTER_ACL}\"; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    allow-update       { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    allow-transfer     { key ${TSIG_TRANSFER_KEY}; ${NAMED_TRANSFER_ACL}; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    file               \"${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.${CUT_ZONE_NAME}.${UC_PROJECT_CODE}\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "};\n" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
                 else
                     ## no transfer acl is specified. this could be an oversight or on purpose. assume on purpose
                     ## and specify none for allow-transfer
-                    print "zone \"${ZONE_NAME}\" IN {" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    type               slave;" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    masters            { \"${NAMED_MASTER_ACL}\"; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    allow-update       { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    allow-transfer     { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "    file               \"${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.${CUT_ZONE_NAME}.${UC_PROJECT_CODE}\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                    print "};\n" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "zone \"${ZONE_NAME}\" IN {" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    type               slave;" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    masters            { \"${NAMED_MASTER_ACL}\"; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    allow-update       { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    allow-transfer     { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "    file               \"${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.${CUT_ZONE_NAME}.${UC_PROJECT_CODE}\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                    echo -n "};\n" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
                 fi
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Created ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME}";
@@ -421,7 +421,7 @@ function installSlaveZone
                     ## make sure the backup file exists -
                     if [ -s ${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${CONF_FILE}.${CHANGE_NUM} ]
                     then
-                        print "include \"/${NAMED_CONF_DIR}/${ZONE_CONF_NAME}\";" >> ${NAMED_CONF_FILE};
+                        echo -n "include \"/${NAMED_CONF_DIR}/${ZONE_CONF_NAME}\";" >> ${NAMED_CONF_FILE};
 
                         ## should have our new zone included now. verify it
                         if [ $(grep -c ${ZONE_CONF_NAME} ${NAMED_CONF_FILE}) -eq 1 ]
@@ -642,13 +642,13 @@ function add_zone_entry
                                 [Aa]|[Nn][Ss]|[Cc][Nn][Aa][Mm][Ee]|[Tt][Xx][Tt])
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding entry ${ENTRY_NAME}             IN      ${ENTRY_TYPE}           ${ENTRY_RECORD}";
 
-                                    print "${ENTRY_NAME}             IN      ${ENTRY_TYPE}           ${ENTRY_RECORD}" \
+                                    echo -n "${ENTRY_NAME}             IN      ${ENTRY_TYPE}           ${ENTRY_RECORD}" \
                                         >> ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME};
 
-                                    print "${ENTRY_NAME}             IN      ${ENTRY_TYPE}           ${ENTRY_RECORD}" \
+                                    echo -n "${ENTRY_NAME}             IN      ${ENTRY_TYPE}           ${ENTRY_RECORD}" \
                                         >> ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/$(cut -d "." -f 1-2 <<< ${ZONEFILE_NAME}).${PRIMARY_DC};
 
-                                    print "${ENTRY_NAME}             IN      ${ENTRY_TYPE}           ${ENTRY_RECORD}" \
+                                    echo -n "${ENTRY_NAME}             IN      ${ENTRY_TYPE}           ${ENTRY_RECORD}" \
                                         >> ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/$(cut -d "." -f 1-2 <<< ${ZONEFILE_NAME}).${SECONDARY_DC};
 
                                     ENTRY_WRITTEN=${_TRUE};
@@ -657,13 +657,13 @@ function add_zone_entry
                                     ## mx records will have a weight associated
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding entry ${ENTRY_NAME}             IN      ${ENTRY_TYPE}     ${ENTRY_PRIORITY}    ${ENTRY_RECORD}";
 
-                                    print "${ENTRY_NAME}             IN      ${ENTRY_TYPE}     ${ENTRY_PRIORITY}    ${ENTRY_RECORD}" \
+                                    echo -n "${ENTRY_NAME}             IN      ${ENTRY_TYPE}     ${ENTRY_PRIORITY}    ${ENTRY_RECORD}" \
                                         >> ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME};
 
-                                    print "${ENTRY_NAME}             IN      ${ENTRY_TYPE}     ${ENTRY_PRIORITY}    ${ENTRY_RECORD}" \
+                                    echo -n "${ENTRY_NAME}             IN      ${ENTRY_TYPE}     ${ENTRY_PRIORITY}    ${ENTRY_RECORD}" \
                                         >> ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/$(cut -d "." -f 1-2 <<< ${ZONEFILE_NAME}).${PRIMARY_DC};
 
-                                    print "${ENTRY_NAME}             IN      ${ENTRY_TYPE}     ${ENTRY_PRIORITY}    ${ENTRY_RECORD}" \
+                                    echo -n "${ENTRY_NAME}             IN      ${ENTRY_TYPE}     ${ENTRY_PRIORITY}    ${ENTRY_RECORD}" \
                                         >> ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/$(cut -d "." -f 1-2 <<< ${ZONEFILE_NAME}).${SECONDARY_DC};
 
                                     ENTRY_WRITTEN=${_TRUE};
@@ -680,13 +680,13 @@ function add_zone_entry
                                     ## set up our record information
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding entry ${SRV_TYPE}.${SRV_PROTOCOL}.${SRV_NAME}    ${SRV_TTL}    ${SRV_PRIORITY}    ${SRV_WEIGHT}    ${SRV_PORT}    ${SRV_TARGET}";
 
-                                    print "${ENTRY_TYPE}.${ENTRY_PROTOCOL}.${ENTRY_NAME}    ${ENTRY_TTL}    ${ENTRY_PRIORITY}    ${ENTRY_WEIGHT}    ${ENTRY_PORT}    ${ENTRY_TARGET}" \
+                                    echo -n "${ENTRY_TYPE}.${ENTRY_PROTOCOL}.${ENTRY_NAME}    ${ENTRY_TTL}    ${ENTRY_PRIORITY}    ${ENTRY_WEIGHT}    ${ENTRY_PORT}    ${ENTRY_TARGET}" \
                                         >> ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${ZONEFILE_NAME};
 
-                                    print "${ENTRY_TYPE}.${ENTRY_PROTOCOL}.${ENTRY_NAME}    ${ENTRY_TTL}    ${ENTRY_PRIORITY}    ${ENTRY_WEIGHT}    ${ENTRY_PORT}    ${ENTRY_TARGET}" \
+                                    echo -n "${ENTRY_TYPE}.${ENTRY_PROTOCOL}.${ENTRY_NAME}    ${ENTRY_TTL}    ${ENTRY_PRIORITY}    ${ENTRY_WEIGHT}    ${ENTRY_PORT}    ${ENTRY_TARGET}" \
                                         >> ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/$(cut -d "." -f 1-2 <<< ${ZONEFILE_NAME}).${PRIMARY_DC};
 
-                                    print "${ENTRY_TYPE}.${ENTRY_PROTOCOL}.${ENTRY_NAME}    ${ENTRY_TTL}    ${ENTRY_PRIORITY}    ${ENTRY_WEIGHT}    ${ENTRY_PORT}    ${ENTRY_TARGET}" \
+                                    echo -n "${ENTRY_TYPE}.${ENTRY_PROTOCOL}.${ENTRY_NAME}    ${ENTRY_TTL}    ${ENTRY_PRIORITY}    ${ENTRY_WEIGHT}    ${ENTRY_PORT}    ${ENTRY_TARGET}" \
                                         >> ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/$(cut -d "." -f 1-2 <<< ${ZONEFILE_NAME}).${SECONDARY_DC};
 
                                     ENTRY_WRITTEN=${_TRUE};
@@ -1050,18 +1050,18 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    printf "${CNAME} - Excute zone additions to the DNS infrastructure.";
-    printf "Usage: ${CNAME} [ -b business unit ] [ -p project code ] [ -z zone name ] [ -i requestor ] [ -c change request ] [ -n filename ] [ -a entry ] [-s] [-e] [-?|-h]";
-    printf "  -b      The associated business unit";
-    printf "  -p      The associated project code";
-    printf "  -z      The zone name, eg example.com";
-    printf "  -i      The user performing the request";
-    printf "  -c      The change order associated with this request";
-    printf "  -n      Add a new zone to the DNS infrastructure. Full path to zone data required.";
-    printf "  -a      Add a new entry to an existing zone. Comma-delimited information set required.";
-    printf "  -s      Specifies whether or not to operate against a slave server. Only valid with -n.";
-    printf "  -e      Excute processing";
-    printf "  -?|-h   Show this help";
+    echo -n "${CNAME} - Excute zone additions to the DNS infrastructure.";
+    echo -n "Usage: ${CNAME} [ -b business unit ] [ -p project code ] [ -z zone name ] [ -i requestor ] [ -c change request ] [ -n filename ] [ -a entry ] [-s] [-e] [-?|-h]";
+    echo -n "  -b      The associated business unit";
+    echo -n "  -p      The associated project code";
+    echo -n "  -z      The zone name, eg example.com";
+    echo -n "  -i      The user performing the request";
+    echo -n "  -c      The change order associated with this request";
+    echo -n "  -n      Add a new zone to the DNS infrastructure. Full path to zone data required.";
+    echo -n "  -a      Add a new entry to an existing zone. Comma-delimited information set required.";
+    echo -n "  -s      Specifies whether or not to operate against a slave server. Only valid with -n.";
+    echo -n "  -e      Excute processing";
+    echo -n "  -?|-h   Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -1263,5 +1263,5 @@ unset METHOD_NAME;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-[ -z "${RETURN_CODE}" ] && printf "1" || printf "${RETURN_CODE}";
+[ -z "${RETURN_CODE}" ] && echo -n "1" || echo -n "${RETURN_CODE}";
 [ -z "${RETURN_CODE}" ] && return 1 || return "${RETURN_CODE}";

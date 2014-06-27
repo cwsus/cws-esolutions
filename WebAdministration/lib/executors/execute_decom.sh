@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -151,12 +151,12 @@ function decom_master_bu
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding configuration entry for ${ZONE_LISTING[${D}]}";
 
                                         ## add the entry...
-                                        print "zone \"${ZONE_LISTING[${D}]}\" IN {" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                        print "    type              master;" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                        print "    file              \"${FILE_LISTING[${D}]}\";" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                        print "    allow-update      { none; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                        print "    allow-transfer    { key ${TSIG_TRANSFER_KEY}; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                        print "};\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                        echo -n "zone \"${ZONE_LISTING[${D}]}\" IN {" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                        echo -n "    type              master;" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                        echo -n "    file              \"${FILE_LISTING[${D}]}\";" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                        echo -n "    allow-update      { none; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                        echo -n "    allow-transfer    { key ${TSIG_TRANSFER_KEY}; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                        echo -n "};\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
 
                                         ## confirm the entry..
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entry added. Confirming..";
@@ -267,7 +267,7 @@ function decom_master_bu
                                                                 if [ $(grep -c ${DECOM_CONF_FILE} ${APP_ROOT}/${TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -eq 0 ]
                                                                 then
                                                                     ## its not there, lets add it
-                                                                    print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${APP_ROOT}/${TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                                                                    echo -n "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${APP_ROOT}/${TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
                                                                 fi
 
                                                                 ## we should be done here. make sure our decom include is in, and if so, copy the file
@@ -439,12 +439,12 @@ function decom_master_bu
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding configuration entry for ${ZONE_LISTING[${D}]}";
 
                                     ## add the entry...
-                                    print "zone \"${ZONE_LISTING[${D}]}\" IN {" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                    print "    type              master;" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                    print "    file              \"${FILE_LISTING[${D}]}\";" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                    print "    allow-update      { none; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                    print "    allow-transfer    { key ${TSIG_TRANSFER_KEY}; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                    print "};\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                    echo -n "zone \"${ZONE_LISTING[${D}]}\" IN {" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                    echo -n "    type              master;" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                    echo -n "    file              \"${FILE_LISTING[${D}]}\";" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                    echo -n "    allow-update      { none; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                    echo -n "    allow-transfer    { key ${TSIG_TRANSFER_KEY}; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                    echo -n "};\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
 
                                     ## confirm the entry..
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entry added. Confirming..";
@@ -555,7 +555,7 @@ function decom_master_bu
                                                             if [ $(grep -c ${DECOM_CONF_FILE} ${APP_ROOT}/${TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -eq 0 ]
                                                             then
                                                                 ## its not there, lets add it
-                                                                print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${APP_ROOT}/${TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                                                                echo -n "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${APP_ROOT}/${TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
                                                             fi
 
                                                             ## we should be done here. make sure our decom include is in, and if so, copy the file
@@ -819,12 +819,12 @@ function decom_slave_bu
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding configuration entry for ${ZONE_LISTING[${D}]}";
 
                                         ## add the entry...
-                                        print "zone \"${ZONE_LISTING[${D}]}\" IN {" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                        print "    type              master;" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                        print "    file              \"${FILE_LISTING[${D}]}\";" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                        print "    allow-update      { none; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                        print "    allow-transfer    { key ${TSIG_TRANSFER_KEY}; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                        print "};\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                        echo -n "zone \"${ZONE_LISTING[${D}]}\" IN {" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                        echo -n "    type              master;" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                        echo -n "    file              \"${FILE_LISTING[${D}]}\";" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                        echo -n "    allow-update      { none; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                        echo -n "    allow-transfer    { key ${TSIG_TRANSFER_KEY}; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                        echo -n "};\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
 
                                         ## confirm the entry..
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entry added. Confirming..";
@@ -935,7 +935,7 @@ function decom_slave_bu
                                                                 if [ $(grep -c ${DECOM_CONF_FILE} ${APP_ROOT}/${TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -eq 0 ]
                                                                 then
                                                                     ## its not there, lets add it
-                                                                    print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${APP_ROOT}/${TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                                                                    echo -n "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${APP_ROOT}/${TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
                                                                 fi
 
                                                                 ## we should be done here. make sure our decom include is in, and if so, copy the file
@@ -1107,12 +1107,12 @@ function decom_slave_bu
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding configuration entry for ${ZONE_LISTING[${D}]}";
 
                                     ## add the entry...
-                                    print "zone \"${ZONE_LISTING[${D}]}\" IN {" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                    print "    type              master;" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                    print "    file              \"${FILE_LISTING[${D}]}\";" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                    print "    allow-update      { none; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                    print "    allow-transfer    { key ${TSIG_TRANSFER_KEY}; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                    print "};\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                    echo -n "zone \"${ZONE_LISTING[${D}]}\" IN {" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                    echo -n "    type              master;" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                    echo -n "    file              \"${FILE_LISTING[${D}]}\";" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                    echo -n "    allow-update      { none; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                    echo -n "    allow-transfer    { key ${TSIG_TRANSFER_KEY}; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                    echo -n "};\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
 
                                     ## confirm the entry..
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entry added. Confirming..";
@@ -1223,7 +1223,7 @@ function decom_slave_bu
                                                             if [ $(grep -c ${DECOM_CONF_FILE} ${APP_ROOT}/${TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM}) -eq 0 ]
                                                             then
                                                                 ## its not there, lets add it
-                                                                print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${APP_ROOT}/${TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                                                                echo -n "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${APP_ROOT}/${TMP_DIRECTORY}/$(echo ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
                                                             fi
 
                                                             ## we should be done here. make sure our decom include is in, and if so, copy the file
@@ -1456,7 +1456,7 @@ function decom_master_zone
 
                     ## check if theres anything left
                     if [ $(find ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${GROUP_ID}${BUSINESS_UNIT} -type f \
-                        -print | wc -l) -eq 0 ]
+                        -echo -n | wc -l) -eq 0 ]
                     then
                         ## ok, we didnt find any files, so we can remove the directory
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No files found, removing..";
@@ -1485,12 +1485,12 @@ function decom_master_zone
                             then
                                 ## excellent! now we can remove it from the biz unit conf file and pipe a new entry into the decom conf file
                                 ## first, add it to the decom conf file
-                                print "zone \"${ZONE_NAME}\" IN {" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                print "    type              master;" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                print "    file              \"${NAMED_MASTER_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${ZONEFILE_NAME}\";" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                print "    allow-update      { none; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                print "    allow-transfer    { key ${TSIG_TRANSFER_KEY}; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                print "};\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                echo -n "zone \"${ZONE_NAME}\" IN {" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                echo -n "    type              master;" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                echo -n "    file              \"${NAMED_MASTER_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${ZONEFILE_NAME}\";" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                echo -n "    allow-update      { none; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                echo -n "    allow-transfer    { key ${TSIG_TRANSFER_KEY}; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                echo -n "};\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entry added. Confirming..";
 
@@ -1592,7 +1592,7 @@ function decom_master_zone
                                                                 if [ $(grep -c ${DECOM_CONF_FILE} ${NAMED_CONF_FILE}) -eq 0 ]
                                                                 then
                                                                     ## its not there, lets add it
-                                                                    print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
+                                                                    echo -n "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
                                                                 fi
 
                                                                 ## ok, checksums match, we're super.
@@ -1608,7 +1608,7 @@ function decom_master_zone
                                                                 if [ $(grep -c ${DECOM_CONF_FILE} ${NAMED_CONF_FILE}) -eq 0 ]
                                                                 then
                                                                     ## its not there, lets add it
-                                                                    print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
+                                                                    echo -n "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
                                                                 fi
 
                                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
@@ -1626,7 +1626,7 @@ function decom_master_zone
                                                             if [ $(grep -c ${DECOM_CONF_FILE} ${NAMED_CONF_FILE}) -eq 0 ]
                                                             then
                                                                 ## its not there, lets add it
-                                                                print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
+                                                                echo -n "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
                                                             fi
 
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
@@ -1658,7 +1658,7 @@ function decom_master_zone
                                                             if [ $(grep -c ${DECOM_CONF_FILE} ${NAMED_CONF_FILE}) -eq 0 ]
                                                             then
                                                                 ## its not there, lets add it
-                                                                print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
+                                                                echo -n "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
                                                             fi
 
                                                             ## we're done here.
@@ -1720,12 +1720,12 @@ function decom_master_zone
                         then
                             ## excellent! now we can remove it from the biz unit conf file and pipe a new entry into the decom conf file
                             ## first, add it to the decom conf file
-                            print "zone \"${ZONE_NAME}\" IN {" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                            print "    type              master;" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                            print "    file              \"${NAMED_MASTER_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${ZONEFILE_NAME}\";" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                            print "    allow-update      { none; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                            print "    allow-transfer    { key ${TSIG_TRANSFER_KEY}; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                            print "};\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                            echo -n "zone \"${ZONE_NAME}\" IN {" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                            echo -n "    type              master;" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                            echo -n "    file              \"${NAMED_MASTER_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${ZONEFILE_NAME}\";" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                            echo -n "    allow-update      { none; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                            echo -n "    allow-transfer    { key ${TSIG_TRANSFER_KEY}; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                            echo -n "};\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entry added. Confirming..";
 
@@ -1822,7 +1822,7 @@ function decom_master_zone
                                                             if [ $(grep -c ${DECOM_CONF_FILE} ${NAMED_CONF_FILE}) -eq 0 ]
                                                             then
                                                                 ## its not there, lets add it
-                                                                print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
+                                                                echo -n "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
                                                             fi
 
                                                             ## ok, checksums match, we're super.
@@ -1838,7 +1838,7 @@ function decom_master_zone
                                                             if [ $(grep -c ${DECOM_CONF_FILE} ${NAMED_CONF_FILE}) -eq 0 ]
                                                             then
                                                                 ## its not there, lets add it
-                                                                print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
+                                                                echo -n "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
                                                             fi
 
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
@@ -1856,7 +1856,7 @@ function decom_master_zone
                                                         if [ $(grep -c ${DECOM_CONF_FILE} ${NAMED_CONF_FILE}) -eq 0 ]
                                                         then
                                                             ## its not there, lets add it
-                                                            print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
+                                                            echo -n "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
                                                         fi
 
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
@@ -1888,7 +1888,7 @@ function decom_master_zone
                                                         if [ $(grep -c ${DECOM_CONF_FILE} ${NAMED_CONF_FILE}) -eq 0 ]
                                                         then
                                                             ## its not there, lets add it
-                                                            print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
+                                                            echo -n "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
                                                         fi
 
                                                         ## we're done here.
@@ -2072,7 +2072,7 @@ function decom_slave_zone
 
                     ## check if theres anything left
                     if [ $(find ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_SLAVE_ROOT}/${GROUP_ID}${BUSINESS_UNIT} -type f \
-                        -print | wc -l) -eq 0 ]
+                        -echo -n | wc -l) -eq 0 ]
                     then
                         ## ok, we didnt find any files, so we can remove the directory
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No files found, removing..";
@@ -2101,12 +2101,12 @@ function decom_slave_zone
                             then
                                 ## excellent! now we can remove it from the biz unit conf file and pipe a new entry into the decom conf file
                                 ## first, add it to the decom conf file
-                                print "zone \"${ZONE_NAME}\" IN {" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                print "    type              slave;" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                print "    masters           { \"${NAMED_MASTER_ACL}\"; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                print "    file              \"${NAMED_SLAVE_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${ZONEFILE_NAME}\";" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                print "    allow-transfer    { key ${TSIG_TRANSFER_KEY}; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                                print "};\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                echo -n "zone \"${ZONE_NAME}\" IN {" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                echo -n "    type              slave;" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                echo -n "    masters           { \"${NAMED_MASTER_ACL}\"; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                echo -n "    file              \"${NAMED_SLAVE_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${ZONEFILE_NAME}\";" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                echo -n "    allow-transfer    { key ${TSIG_TRANSFER_KEY}; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                                echo -n "};\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entry added. Confirming..";
 
@@ -2204,7 +2204,7 @@ function decom_slave_zone
                                                                 if [ $(grep -c ${DECOM_CONF_FILE} ${NAMED_CONF_FILE}) -eq 0 ]
                                                                 then
                                                                     ## its not there, lets add it
-                                                                    print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
+                                                                    echo -n "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
                                                                 fi
 
                                                                 ## ok, checksums match, we're super.
@@ -2220,7 +2220,7 @@ function decom_slave_zone
                                                                 if [ $(grep -c ${DECOM_CONF_FILE} ${NAMED_CONF_FILE}) -eq 0 ]
                                                                 then
                                                                     ## its not there, lets add it
-                                                                    print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
+                                                                    echo -n "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
                                                                 fi
 
                                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
@@ -2238,7 +2238,7 @@ function decom_slave_zone
                                                             if [ $(grep -c ${DECOM_CONF_FILE} ${NAMED_CONF_FILE}) -eq 0 ]
                                                             then
                                                                 ## its not there, lets add it
-                                                                print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
+                                                                echo -n "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
                                                             fi
 
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
@@ -2270,7 +2270,7 @@ function decom_slave_zone
                                                             if [ $(grep -c ${DECOM_CONF_FILE} ${NAMED_CONF_FILE}) -eq 0 ]
                                                             then
                                                                 ## its not there, lets add it
-                                                                print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
+                                                                echo -n "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
                                                             fi
 
                                                             ## we're done here.
@@ -2332,12 +2332,12 @@ function decom_slave_zone
                         then
                             ## excellent! now we can remove it from the biz unit conf file and pipe a new entry into the decom conf file
                             ## first, add it to the decom conf file
-                            print "zone \"${ZONE_NAME}\" IN {" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                            print "    type              slave;" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                            print "    masters           { \"${NAMED_MASTER_ACL}\"; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                            print "    file              \"${NAMED_SLAVE_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${ZONEFILE_NAME}\";" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                            print "    allow-transfer    { key ${TSIG_TRANSFER_KEY}; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
-                            print "};\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                            echo -n "zone \"${ZONE_NAME}\" IN {" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                            echo -n "    type              slave;" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                            echo -n "    masters           { \"${NAMED_MASTER_ACL}\"; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                            echo -n "    file              \"${NAMED_SLAVE_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR}/${GROUP_ID}${BUSINESS_UNIT}/${ZONEFILE_NAME}\";" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                            echo -n "    allow-transfer    { key ${TSIG_TRANSFER_KEY}; };" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
+                            echo -n "};\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${DECOM_CONF_FILE};
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entry added. Confirming..";
 
@@ -2434,7 +2434,7 @@ function decom_slave_zone
                                                             if [ $(grep -c ${DECOM_CONF_FILE} ${NAMED_CONF_FILE}) -eq 0 ]
                                                             then
                                                                 ## its not there, lets add it
-                                                                print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
+                                                                echo -n "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
                                                             fi
 
                                                             ## ok, checksums match, we're super.
@@ -2450,7 +2450,7 @@ function decom_slave_zone
                                                             if [ $(grep -c ${DECOM_CONF_FILE} ${NAMED_CONF_FILE}) -eq 0 ]
                                                             then
                                                                 ## its not there, lets add it
-                                                                print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
+                                                                echo -n "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
                                                             fi
 
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
@@ -2468,7 +2468,7 @@ function decom_slave_zone
                                                         if [ $(grep -c ${DECOM_CONF_FILE} ${NAMED_CONF_FILE}) -eq 0 ]
                                                         then
                                                             ## its not there, lets add it
-                                                            print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
+                                                            echo -n "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
                                                         fi
 
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decommission of ${ZONE_NAME} from ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BUSINESS_UNIT} | tr "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} complete.";
@@ -2500,7 +2500,7 @@ function decom_slave_zone
                                                         if [ $(grep -c ${DECOM_CONF_FILE} ${NAMED_CONF_FILE}) -eq 0 ]
                                                         then
                                                             ## its not there, lets add it
-                                                            print "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
+                                                            echo -n "include \"/${NAMED_CONF_DIR}/${DECOM_CONF_FILE}\";" >> ${NAMED_CONF_FILE};
                                                         fi
 
                                                         ## we're done here.
@@ -2607,16 +2607,16 @@ usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    print "${CNAME} - Execute modifications against a zone";
-    print "Usage: ${CNAME} [-b business unit] [-p project code] [-z zone name] [-i requestor] [-c change request] [-d change date] [-s] [-e] [-?|-h]";
-    print "  -b      The associated business unit.";
-    print "  -p      The associated project code. Optional if a business unit is being decommissioned";
-    print "  -z      The zone name, eg example.com. Optional if a business unit is being decommissioned";
-    print "  -i      The user performing the request.";
-    print "  -c      The change order associated with this request.";
-    print "  -s      Specifies whether or not to operate against a slave server";
-    print "  -e      Execute processing";
-    print "  -?|-h   Show this help";
+    echo -n "${CNAME} - Execute modifications against a zone";
+    echo -n "Usage: ${CNAME} [-b business unit] [-p project code] [-z zone name] [-i requestor] [-c change request] [-d change date] [-s] [-e] [-?|-h]";
+    echo -n "  -b      The associated business unit.";
+    echo -n "  -p      The associated project code. Optional if a business unit is being decommissioned";
+    echo -n "  -z      The zone name, eg example.com. Optional if a business unit is being decommissioned";
+    echo -n "  -i      The user performing the request.";
+    echo -n "  -c      The change order associated with this request.";
+    echo -n "  -s      Specifies whether or not to operate against a slave server";
+    echo -n "  -e      Execute processing";
+    echo -n "  -?|-h   Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -2768,6 +2768,6 @@ do
 done
 
 
-printf ${RETURN_CODE};
+echo -n ${RETURN_CODE};
 exit ${RETURN_CODE};
 

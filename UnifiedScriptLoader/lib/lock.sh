@@ -25,7 +25,7 @@
 
 ## Constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -42,7 +42,7 @@ function lockProcess
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    [ -e "${LOCK_FILE}" ] && [ kill -0 $(<"${LOCK_FILE}") ] && RETURN_CODE=1 || printf "${1}" > "${LOCK_FILE}" && RETURN_CODE=0;
+    [ -e "${LOCK_FILE}" ] && [ kill -0 $(<"${LOCK_FILE}") ] && RETURN_CODE=1 || echo -n "${1}" > "${LOCK_FILE}" && RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -94,10 +94,10 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    print "${CNAME} - Create and assign a lockfile";
-    print "Usage: ${CNAME} [ lock | unlock ] [ <pid> ]";
-    print " -> Create or release a lockfile. To create, use \"lock\", to release, use \"unlock\".";
-    print " -> The PID to create the lockfile for.";
+    echo -n "${CNAME} - Create and assign a lockfile";
+    echo -n "Usage: ${CNAME} [ lock | unlock ] [ <pid> ]";
+    echo -n " -> Create or release a lockfile. To create, use \"lock\", to release, use \"unlock\".";
+    echo -n " -> The PID to create the lockfile for.";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";

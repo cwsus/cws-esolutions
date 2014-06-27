@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -109,15 +109,15 @@ function usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    print "${CNAME} - Perform a backout for a previously executed change";
-    print "Usage: ${CNAME} [-a] [-f filename] [-b business unit] [-d date] [-c change request] [-e execute] [-?|-h show this help]";
-    print "  -a      Retrieve a list of all backout files";
-    print "  -f      Perform a backout using the specified backout file";
-    print "  -b      The business unit associated with the change request";
-    print "  -d      The date the change request was performed";
-    print "  -c      The change order associated with this request";
-    print "  -e      Execute processing";
-    print "  -h|-?   Show this help";
+    echo -n "${CNAME} - Perform a backout for a previously executed change";
+    echo -n "Usage: ${CNAME} [-a] [-f filename] [-b business unit] [-d date] [-c change request] [-e execute] [-?|-h show this help]";
+    echo -n "  -a      Retrieve a list of all backout files";
+    echo -n "  -f      Perform a backout using the specified backout file";
+    echo -n "  -b      The business unit associated with the change request";
+    echo -n "  -d      The date the change request was performed";
+    echo -n "  -c      The change order associated with this request";
+    echo -n "  -e      Execute processing";
+    echo -n "  -h|-?   Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 

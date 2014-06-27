@@ -25,7 +25,7 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 function validate_change_request
@@ -152,9 +152,9 @@ function usage
     local METHOD_NAME="${CNAME}#${0}";
     local RETURN_CODE=0;
 
-    print "${CNAME} - Validate that a change request has been successfully performed.";
-    print "Usage: ${CNAME} certdb";
-    print "          certdb is the name of the certificate database (e.g. https-site.name_project-hostname-) to validate";
+    echo -n "${CNAME} - Validate that a change request has been successfully performed.";
+    echo -n "Usage: ${CNAME} certdb";
+    echo -n "          certdb is the name of the certificate database (e.g. https-site.name_project-hostname-) to validate";
 
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -175,7 +175,7 @@ METHOD_NAME="${CNAME}#startup";
 
 validate_change_request ${@};
 
-printf ${OPERATION_TYPE};
+echo -n ${OPERATION_TYPE};
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;

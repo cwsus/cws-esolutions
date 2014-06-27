@@ -17,7 +17,7 @@
 #==============================================================================
 ## Application contants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -118,7 +118,7 @@ function applyiPlanetCertificate
                 if [ ! -z "${PRE_CERT_EXPIRY}" ]
                 then
                     ## ok, we have a nickname and an expiration date. convert it
-                    PRE_EPOCH_EXPIRY=$(returnEpochTime $(echo ${PRE_CERT_EXPIRY} | sed -e "s/${PRE_EXPIRY_MONTH}/$(eval printf \${${PRE_EXPIRY_MONTH}})/"));
+                    PRE_EPOCH_EXPIRY=$(returnEpochTime $(echo ${PRE_CERT_EXPIRY} | sed -e "s/${PRE_EXPIRY_MONTH}/$(eval echo -n \${${PRE_EXPIRY_MONTH}})/"));
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRE_EPOCH_EXPIRY -> ${PRE_EPOCH_EXPIRY}";
 
@@ -238,7 +238,7 @@ function applyiPlanetCertificate
                                 if [ ! -z "${POST_CERT_EXPIRY}" ]
                                 then
                                     ## ok, we have a nickname and an expiration date. convert it
-                                    POST_EPOCH_EXPIRY=$(returnEpochTime $(echo ${POST_CERT_EXPIRY} | sed -e "s/${POST_EXPIRY_MONTH}/$(eval printf \${${POST_EXPIRY_MONTH}})/"));
+                                    POST_EPOCH_EXPIRY=$(returnEpochTime $(echo ${POST_CERT_EXPIRY} | sed -e "s/${POST_EXPIRY_MONTH}/$(eval echo -n \${${POST_EXPIRY_MONTH}})/"));
 
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "POST_EPOCH_EXPIRY -> ${POST_EPOCH_EXPIRY}";
 
@@ -384,7 +384,7 @@ function applyiPlanetCertificate
                                                     if [ ! -z "${POST_CERT_EXPIRY}" ]
                                                     then
                                                         ## ok, we have a nickname and an expiration date. convert it
-                                                        POST_EPOCH_EXPIRY=$(returnEpochTime $(echo ${POST_CERT_EXPIRY} | sed -e "s/${POST_EXPIRY_MONTH}/$(eval printf \${${POST_EXPIRY_MONTH}})/"));
+                                                        POST_EPOCH_EXPIRY=$(returnEpochTime $(echo ${POST_CERT_EXPIRY} | sed -e "s/${POST_EXPIRY_MONTH}/$(eval echo -n \${${POST_EXPIRY_MONTH}})/"));
 
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "POST_EPOCH_EXPIRY -> ${POST_EPOCH_EXPIRY}";
 
@@ -772,18 +772,18 @@ function usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    print "${CNAME} - Execute a site failover";
-    print "Usage: ${CNAME} [ -w web instance ] [ -p platform ] [ -r region ] [ -d database ] [ -n cert nickname ] " \
+    echo -n "${CNAME} - Execute a site failover";
+    echo -n "Usage: ${CNAME} [ -w web instance ] [ -p platform ] [ -r region ] [ -d database ] [ -n cert nickname ] " \
         "[ -i username ] [ -c change order ] [ -e ] [-h] [-?]";
-    print " -w     The web instance name to operate against";
-    print " -p     The webserver platform type";
-    print " -r     The region associated with this website (eg ist, stg)";
-    print " -d     The certificate database to be utilized";
-    print " -n     The certificate nickname to renew";
-    print " -i     The username associated with this request";
-    print " -c     The change order associated with this request";
-    print " -e     Execute the request";
-    print " -h|-?  Show this help";
+    echo -n " -w     The web instance name to operate against";
+    echo -n " -p     The webserver platform type";
+    echo -n " -r     The region associated with this website (eg ist, stg)";
+    echo -n " -d     The certificate database to be utilized";
+    echo -n " -n     The certificate nickname to renew";
+    echo -n " -i     The username associated with this request";
+    echo -n " -c     The change order associated with this request";
+    echo -n " -e     Execute the request";
+    echo -n " -h|-?  Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -952,6 +952,6 @@ do
 done
 
 
-printf ${RETURN_CODE};
+echo -n ${RETURN_CODE};
 exit ${RETURN_CODE};
 

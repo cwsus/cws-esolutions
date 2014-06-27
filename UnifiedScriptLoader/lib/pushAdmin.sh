@@ -21,7 +21,7 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -33,7 +33,7 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${APP_ROOT}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
+[ -z "${APP_ROOT}" ] && echo -n "Failed to locate configuration data. Cannot continue." && exit 1;
 
 METHOD_NAME="${CNAME}#startup";
 
@@ -59,7 +59,7 @@ function buildPlugin
     [[ ! -z ${VERBOSE} && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating plugin bundle..";
 
     ## create a temp file with the release date in it.. this will get cleaned up afterwords
-    print "${PLUGIN} version ${VERSION} built on $(date +"%Y-%m-%d %H:%M:%S") by ${IUSER_AUDIT}" > ${PLUGIN_CONF_ROOT}/etc/${PLUGIN}.version;
+    echo -n "${PLUGIN} version ${VERSION} built on $(date +"%Y-%m-%d %H:%M:%S") by ${IUSER_AUDIT}" > ${PLUGIN_CONF_ROOT}/etc/${PLUGIN}.version;
 
     for TARGET_HOSTNAME in list-of-servers
     do
@@ -142,14 +142,14 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    print "${CNAME} - Build and deploy the most current version of the web administration utilities";
-    print "Usage: ${CNAME} [ -v release version ] [ -p (buildRelease|installRelease) ] [ -e ] [ -h|? ]";
-    print " -v    -> The release version for this build";
-    print " -p    -> The process to execute. One of buildRelease or installRelease is required.";
-    print " -t    -> The tarfile date. Only applicable when -p is install.";
-    print " -i    -> The executing user. Only applicable when -p is install.";
-    print " -e    -> Execute the request";
-    print " -h|-? -> Show this help";
+    echo -n "${CNAME} - Build and deploy the most current version of the web administration utilities";
+    echo -n "Usage: ${CNAME} [ -v release version ] [ -p (buildRelease|installRelease) ] [ -e ] [ -h|? ]";
+    echo -n " -v    -> The release version for this build";
+    echo -n " -p    -> The process to execute. One of buildRelease or installRelease is required.";
+    echo -n " -t    -> The tarfile date. Only applicable when -p is install.";
+    echo -n " -i    -> The executing user. Only applicable when -p is install.";
+    echo -n " -e    -> Execute the request";
+    echo -n " -h|-? -> Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";

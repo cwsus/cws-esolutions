@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
@@ -33,7 +33,7 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${APP_ROOT}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
+[ -z "${APP_ROOT}" ] && echo -n "Failed to locate configuration data. Cannot continue." && exit 1;
 
 METHOD_NAME="${CNAME}#startup";
 
@@ -187,14 +187,14 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    print "${CNAME} - Perform a backup of requested information.";
-    print "Usage: ${CNAME} [ -d directory ] [ -l lifetime ] [ -b ] [ -c ] [-e] [-?|-h]";
-    print "  -d      The directory to perform the operation against";
-    print "  -l      The lifetime for files in the source directory. Files older than this will be removed. (Optional)";
-    print "  -b      Requests a backup of the directory specified";
-    print "  -c      Requests a cleanup of the directory specified";
-    print "  -e      Execute processing";
-    print "  -?|-h   Show this help";
+    echo -n "${CNAME} - Perform a backup of requested information.";
+    echo -n "Usage: ${CNAME} [ -d directory ] [ -l lifetime ] [ -b ] [ -c ] [-e] [-?|-h]";
+    echo -n "  -d      The directory to perform the operation against";
+    echo -n "  -l      The lifetime for files in the source directory. Files older than this will be removed. (Optional)";
+    echo -n "  -b      Requests a backup of the directory specified";
+    echo -n "  -c      Requests a cleanup of the directory specified";
+    echo -n "  -e      Execute processing";
+    echo -n "  -?|-h   Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";

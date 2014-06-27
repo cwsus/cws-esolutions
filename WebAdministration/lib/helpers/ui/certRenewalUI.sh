@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -41,7 +41,7 @@ function updateCertificate
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requesting subdomain CNAME record information..";
 
-    trap "print '$(grep system.trap.signals "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%SIGNAL%/Ctrl-C/")'; sleep ${MESSAGE_DELAY}; reset; clear; continue " 1 2 3
+    trap "echo -n '$(grep system.trap.signals "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%SIGNAL%/Ctrl-C/")'; sleep ${MESSAGE_DELAY}; reset; clear; continue " 1 2 3
 
     while true
     do
@@ -72,9 +72,9 @@ function updateCertificate
                 break;
             fi
 
-            print "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-            print "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-            print "\t$(grep -w cert.mgmt.provide.certificate "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%SITE_HOSTNAME%/${SITE_HOSTNAME}/")";
+            echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+            echo -n "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+            echo -n "\t$(grep -w cert.mgmt.provide.certificate "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%SITE_HOSTNAME%/${SITE_HOSTNAME}/")";
 
             sleep "${MESSAGE_DELAY}"; reset; clear;
 
@@ -95,7 +95,7 @@ function updateCertificate
                     ## no cert here.....
                     rm ${APP_ROOT}/${CERTSTORE}/${CERTDB}.cer > /dev/null 2>&1;
 
-                    print "\t$(grep -w no.cert.data.found "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                    echo -n "\t$(grep -w no.cert.data.found "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 fi
@@ -103,13 +103,13 @@ function updateCertificate
                 ## no cert file generated
                 rm ${APP_ROOT}/${CERTSTORE}/${CERTDB}.cer > /dev/null 2>&1;
 
-                print "\t$(grep -w no.cert.data.found "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                echo -n "\t$(grep -w no.cert.data.found "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
             fi
         done
 
-        print "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+        echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing runCertRenewal.sh -d ${CERTDB} -s ${SITE_HOSTNAME} -w ${WEBSERVER_PLATFORM} -e..";
 
@@ -146,15 +146,15 @@ local RETURN_CODE=0;
                 then
                     unset RET_CODE;
 
-                    print "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                    print "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                    print "\t$(grep -w pem.mail.generation.failed "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                    echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                    echo -n "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                    echo -n "\t$(grep -w pem.mail.generation.failed "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                     sleep "${MESSAGE_DELAY}"; reset; clear;
 
                     cat ${APP_ROOT}/${MAILSTORE}/PEM-${SITE_HOSTNAME}.message;
 
-                    print "\n\n\t$(grep -w system.continue.enter "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                    echo -n "\n\n\t$(grep -w system.continue.enter "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                     read INPUT;
 
@@ -166,9 +166,9 @@ local RETURN_CODE=0;
                 ## if this is a production renewal, send the owner notify
                 if [ "${ENVIRONMENT_TYPE}" = "${ENV_TYPE_PRD}" ]
                 then
-                    print "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                    print "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                    print "\t$(grep -w system.provide.changenum "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                    echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                    echo -n "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                    echo -n "\t$(grep -w system.provide.changenum "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                     read CHANGE_NUM;
 
@@ -176,7 +176,7 @@ local RETURN_CODE=0;
 
                     reset; clear;
 
-                    print "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                    echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                     if [[ ${CHANGE_NUM} == [Ee] ]]
                     then
@@ -184,7 +184,7 @@ local RETURN_CODE=0;
 
                         unset CHANGE_NUM;
 
-                        print "$(grep -w change.control.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                        echo -n "$(grep -w change.control.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                         sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                     fi
 
@@ -197,7 +197,7 @@ local RETURN_CODE=0;
 
                         unset CHANGE_NUM;
 
-                        print "$(grep -w change.control.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                        echo -n "$(grep -w change.control.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                         sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                     else
                         while true
@@ -212,9 +212,9 @@ local RETURN_CODE=0;
                             ## valid cr number. get the expected process date
                             reset; clear;
 
-                            print "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                            print "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                            print "\t$(grep -w cert.mgmt.provide.process.date "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                            echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                            echo -n "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                            echo -n "\t$(grep -w cert.mgmt.provide.process.date "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                             read PROCESS_DATE;
 
@@ -262,15 +262,15 @@ local RETURN_CODE=0;
                                         ## owner notify failed
                                         reset; clear;
 
-                                        print "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                        print "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                        print "\t$(grep -w owner.mail.generation.failed "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                        echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                        echo -n "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                        echo -n "\t$(grep -w owner.mail.generation.failed "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                         sleep "${MESSAGE_DELAY}"; reset; clear;
 
                                         cat ${APP_ROOT}/${MAILSTORE}/OWNER-${SITE_HOSTNAME}.message;
 
-                                        print "\n\n\t$(grep -w system.continue.enter "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                        echo -n "\n\n\t$(grep -w system.continue.enter "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                         read INPUT;
 
@@ -278,7 +278,7 @@ local RETURN_CODE=0;
                                     else
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Owner notification sent. Continuing..";
 
-                                        print "\t$(grep -w cert.mgmt.owner.notification.sent "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                        echo -n "\t$(grep -w cert.mgmt.owner.notification.sent "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                         sleep "${MESSAGE_DELAY}"; reset; clear; break;
                                     fi
@@ -287,7 +287,7 @@ local RETURN_CODE=0;
 
                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not provided. Cannot continue.";
 
-                                    print "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                    echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                 fi
                             else
@@ -295,7 +295,7 @@ local RETURN_CODE=0;
 
                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not provided. Cannot continue.";
 
-                                print "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                             fi
                         done
@@ -303,10 +303,10 @@ local RETURN_CODE=0;
                 else
                     PREIMP_COMPLETE=${_TRUE};
 
-                    print "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                    print "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                    print "\t$(grep -w cert.mgmt.cert.implemented "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%SITE_HOSTNAME%/${SITE_HOSTNAME}/")";
-                    print "\n\n\t$(grep -w system.continue.enter "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                    echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                    echo -n "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                    echo -n "\t$(grep -w cert.mgmt.cert.implemented "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%SITE_HOSTNAME%/${SITE_HOSTNAME}/")";
+                    echo -n "\n\n\t$(grep -w system.continue.enter "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                     read INPUT;
 
@@ -317,11 +317,11 @@ local RETURN_CODE=0;
             ## an "ERROR" occurred, we can start over
             PREIMP_COMPLETE=${_TRUE};
 
-            print "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-            print "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-            print "\t$(grep ${RET_CODE} "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-            print "\t$(grep -w cert.mgmt.cert.application.failed "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%SITE_HOSTNAME%/${SITE_HOSTNAME}/")";
-            print "\n\n\t$(grep -w system.continue.enter "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+            echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+            echo -n "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+            echo -n "\t$(grep ${RET_CODE} "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+            echo -n "\t$(grep -w cert.mgmt.cert.application.failed "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%SITE_HOSTNAME%/${SITE_HOSTNAME}/")";
+            echo -n "\n\n\t$(grep -w system.continue.enter "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
             read INPUT;
 

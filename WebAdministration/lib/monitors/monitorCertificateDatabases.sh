@@ -23,7 +23,7 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -110,7 +110,7 @@ local RETURN_CODE=0;
                                 if [ ! -z "${CERT_EXPIRY}" ]
                                 then
                                     ## ok, we have a nickname and an expiration date. convert it
-                                    EPOCH_EXPIRY=$(returnEpochTime $(echo ${CERT_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval printf \${${EXPIRY_MONTH}})/"));
+                                    EPOCH_EXPIRY=$(returnEpochTime $(echo ${CERT_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval echo -n \${${EXPIRY_MONTH}})/"));
 
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EPOCH_EXPIRY -> ${EPOCH_EXPIRY}";
 
@@ -181,7 +181,7 @@ local RETURN_CODE=0;
                             if [ ! -z "${CERT_EXPIRY}" ]
                             then
                                 ## ok, we have a nickname and an expiration date. convert it
-                                EPOCH_EXPIRY=$(returnEpochTime $(echo ${CERT_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval printf \${${EXPIRY_MONTH}})/"));
+                                EPOCH_EXPIRY=$(returnEpochTime $(echo ${CERT_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval echo -n \${${EXPIRY_MONTH}})/"));
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EPOCH_EXPIRY -> ${EPOCH_EXPIRY}";
 
@@ -223,7 +223,7 @@ local RETURN_CODE=0;
                             if [ ! -z "${CERT_EXPIRY}" ]
                             then
                                 ## ok, we have a nickname and an expiration date. convert it
-                                EPOCH_EXPIRY=$(returnEpochTime $(echo ${CERT_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval printf \${${EXPIRY_MONTH}})/"));
+                                EPOCH_EXPIRY=$(returnEpochTime $(echo ${CERT_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval echo -n \${${EXPIRY_MONTH}})/"));
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EPOCH_EXPIRY -> ${EPOCH_EXPIRY}";
 
@@ -292,7 +292,7 @@ METHOD_NAME="${CNAME}#startup";
 
 monitorCertDatabases ${@};
 
-printf ${RETURN_CODE};
+echo -n ${RETURN_CODE};
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;

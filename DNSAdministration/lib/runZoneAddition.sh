@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="$(basename ${0})";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
 local METHOD_NAME="${CNAME}#startup";
 
@@ -34,7 +34,7 @@ local METHOD_NAME="${CNAME}#startup";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${PLUGIN_ROOT_DIR}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
+[ -z "${PLUGIN_ROOT_DIR}" ] && echo -n "Failed to locate configuration data. Cannot continue." && return 1;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -72,7 +72,7 @@ then
     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
 
-    print "Security configuration does not allow the requested action.";
+    echo -n "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
 fi
@@ -960,17 +960,17 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    print "${CNAME} - Execute zone additions to the DNS infrastructure.";
-    print "Usage: ${CNAME} [ -b business unit ] [ -p project code ] [ -z zone name ] [ -c change request ] [ -n filename ] [ -a entry ] [-s] [-e] [-?|-h]";
-    print "  -b      The associated business unit";
-    print "  -p      The associated project code";
-    print "  -z      The zone name, eg example.com";
-    print "  -c      The change order associated with this request";
-    print "  -n      Add a new zone to the DNS infrastructure. Full path to zone data required.";
-    print "  -a      Add a new entry to an existing zone. Comma-delimited information set required.";
-    print "  -s      Specifies whether or not to operate against a slave server. Only valid with -n.";
-    print "  -e      Execute processing";
-    print "  -?|-h   Show this help";
+    echo -n "${CNAME} - Execute zone additions to the DNS infrastructure.";
+    echo -n "Usage: ${CNAME} [ -b business unit ] [ -p project code ] [ -z zone name ] [ -c change request ] [ -n filename ] [ -a entry ] [-s] [-e] [-?|-h]";
+    echo -n "  -b      The associated business unit";
+    echo -n "  -p      The associated project code";
+    echo -n "  -z      The zone name, eg example.com";
+    echo -n "  -c      The change order associated with this request";
+    echo -n "  -n      Add a new zone to the DNS infrastructure. Full path to zone data required.";
+    echo -n "  -a      Add a new entry to an existing zone. Comma-delimited information set required.";
+    echo -n "  -s      Specifies whether or not to operate against a slave server. Only valid with -n.";
+    echo -n "  -e      Execute processing";
+    echo -n "  -?|-h   Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";

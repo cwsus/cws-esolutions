@@ -24,7 +24,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 METHOD_NAME="${CNAME}#startup";
 
@@ -37,7 +37,7 @@ METHOD_NAME="${CNAME}#startup";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${APP_ROOT}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
+[ -z "${APP_ROOT}" ] && echo -n "Failed to locate configuration data. Cannot continue." && exit 1;
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -134,7 +134,7 @@ function createEntropyFile
     do
         while true
         do
-            printf ${RANDOM_DATA} >> ${ENTROPY_FILE};
+            echo -n ${RANDOM_DATA} >> ${ENTROPY_FILE};
 
             local FILE_SIZE=$(wc -c ${ENTROPY_FILE} | awk '{print $1}');
 

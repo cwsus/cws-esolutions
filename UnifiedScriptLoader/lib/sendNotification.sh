@@ -23,7 +23,7 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -35,7 +35,7 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${APP_ROOT}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
+[ -z "${APP_ROOT}" ] && echo -n "Failed to locate configuration data. Cannot continue." && exit 1;
 
 METHOD_NAME="${CNAME}#startup";
 
@@ -86,12 +86,12 @@ function sendNotificationEmail
         do
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REPLACEMENT_ITEM - ${REPLACEMENT_ITEM}";
 
-            sed -e "s/&${REPLACEMENT_ITEM}/$(eval printf \${${REPLACEMENT_ITEM}})/g" \
+            sed -e "s/&${REPLACEMENT_ITEM}/$(eval echo -n \${${REPLACEMENT_ITEM}})/g" \
                 ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")> ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.tmp;
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating...";
 
-            if [ "$(grep $(eval printf \${${REPLACEMENT_ITEM}}) ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.tmp)" != "" ]
+            if [ "$(grep $(eval echo -n \${${REPLACEMENT_ITEM}}) ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.tmp)" != "" ]
             then
                 ## ok, move it over now..
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -100,7 +100,7 @@ function sendNotificationEmail
                     ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")> /dev/null 2>&1;
 
                 ## and ensure..
-                if [ "$(grep $(eval printf \${${REPLACEMENT_ITEM}}) ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT})" != "" ]
+                if [ "$(grep $(eval echo -n \${${REPLACEMENT_ITEM}}) ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT})" != "" ]
                 then
                     ## good, keep going
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -140,7 +140,7 @@ function sendNotificationEmail
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRE_FILE_SIZE -> ${PRE_FILE_SIZE}";
 
-                    ## printf in the zone
+                    ## echo -n in the zone
                     cat ${FILE_CONTENT} >> ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT};
 
                     local POST_FILE_SIZE=$(wc -c ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")| awk '{print $1}');
@@ -256,14 +256,14 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    print "${CNAME} - Generates notification email to send to a selected audience.";
-    print "Usage: ${CNAME} [ -m <message template> ] [ -f <file> ] [ -t <send to> ] [ -a ] [ -e ] [ -?|-h show this help ]";
-    print " -m    -> The message template to utilize.";
-    print " -f    -> If the content of a file should be applied to the message, the file should be specified here.";
-    print " -t    -> The target audience for the email";
-    print " -a    -> Add an option attachment. If specified, path to the attachment and filename must be provided as an argument.";
-    print " -e    -> Execute processing.";
-    print " -h|-? -> Show this help";
+    echo -n "${CNAME} - Generates notification email to send to a selected audience.";
+    echo -n "Usage: ${CNAME} [ -m <message template> ] [ -f <file> ] [ -t <send to> ] [ -a ] [ -e ] [ -?|-h show this help ]";
+    echo -n " -m    -> The message template to utilize.";
+    echo -n " -f    -> If the content of a file should be applied to the message, the file should be specified here.";
+    echo -n " -t    -> The target audience for the email";
+    echo -n " -a    -> Add an option attachment. If specified, path to the attachment and filename must be provided as an argument.";
+    echo -n " -e    -> Execute processing.";
+    echo -n " -h|-? -> Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";

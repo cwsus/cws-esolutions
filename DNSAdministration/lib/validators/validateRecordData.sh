@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 local METHOD_NAME="${CNAME}#startup";
 
@@ -68,7 +68,7 @@ function validateIPAddress
         return ${RETURN_CODE};
     fi
 
-    local IS_VALID_IP=$(printf "${2}" | perl -ne '/(\b\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}\b)/ && print');
+    local IS_VALID_IP=$(echo -n "${2}" | perl -ne '/(\b\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}\b)/ && print');
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IS_VALID_IP -> ${IS_VALID_IP}";
 
@@ -99,7 +99,7 @@ function validateIPAddress
         do
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ADDRESS -> ${ADDRESS}";
 
-            OCTET_MATCH=$(printf "${1}" | cut -d "." -f 1-$(tr -dc "." <<< ${ADDRESS} | wc -c));
+            OCTET_MATCH=$(echo -n "${1}" | cut -d "." -f 1-$(tr -dc "." <<< ${ADDRESS} | wc -c));
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OCTET_MATCH -> ${OCTET_MATCH}";
 
@@ -656,10 +656,10 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    print "${CNAME} - Validate data provided for a SRV record.";
-    print "Usage:  ${CNAME} validate-type validate-data";
-    print "         validate-type can be one of: protocol or type";
-    print "         validate-data must be the data to perform validation against";
+    echo -n "${CNAME} - Validate data provided for a SRV record.";
+    echo -n "Usage:  ${CNAME} validate-type validate-data";
+    echo -n "         validate-type can be one of: protocol or type";
+    echo -n "         validate-data must be the data to perform validation against";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";

@@ -25,7 +25,7 @@ env -i;
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -37,7 +37,7 @@ SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${APP_ROOT}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
+[ -z "${APP_ROOT}" ] && echo -n "Failed to locate configuration data. Cannot continue." && return 1;
 
 METHOD_NAME="${CNAME}#startup";
 
@@ -45,7 +45,7 @@ METHOD_NAME="${CNAME}#startup";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-trap "print '$(awk -F "=" '/\<system.trap.signals\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//' -e "s/%SIGNAL%/Ctrl-C/")'; sleep ${MESSAGE_DELAY}; reset; clear; continue " 1 2 3
+trap "echo -n '$(awk -F "=" '/\<system.trap.signals\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//' -e "s/%SIGNAL%/Ctrl-C/")'; sleep ${MESSAGE_DELAY}; reset; clear; continue " 1 2 3
 
 #===  FUNCTION  ===============================================================
 #         NAME:  main
@@ -58,7 +58,6 @@ function main
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
@@ -66,16 +65,16 @@ function main
     do
         reset; clear;
 
-        print "\n";
-        print "\t\t+-------------------------------------------------------------------+";
-        print "\t\t               WELCOME TO \E[0;31m $(awk -F "=" '/\<system.application.title\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//') \033[0m";
-        print "\t\t+-------------------------------------------------------------------+";
-        print "\t\tSystem Type         : \E[0;36m ${SYSTEM_HOSTNAME} \033[0m";
-        print "\t\tSystem Uptime       : \E[0;36m ${SYSTEM_UPTIME} \033[0m";
-        print "\t\tUser                : \E[0;36m ${IUSER_AUDIT} \033[0m";
-        print "\t\t+-------------------------------------------------------------------+";
-        print "";
-        print "\t\t$(awk -F "=" '/\<system.available.options\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+        echo -n "\n
+            \t\t+-------------------------------------------------------------------+
+            \t\t               WELCOME TO \E[0;31m $(awk -F "=" '/\<system.application.title\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//') \033[0m
+            \t\t+-------------------------------------------------------------------+
+            \t\tSystem Type         : \E[0;36m ${SYSTEM_HOSTNAME} \033[0m
+            \t\tSystem Uptime       : \E[0;36m ${SYSTEM_UPTIME} \033[0m
+            \t\tUser                : \E[0;36m ${IUSER_AUDIT} \033[0m
+            \t\t+-------------------------------------------------------------------+
+            \n
+            \t$(awk -F "=" '/\<system.available.options\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
         set -A PLUGIN_LIST $(ls -ltr ${PLUGIN_DIR} | egrep "^l|^d" | awk '{print $9}' | cut -d "/" -f 1);
 
@@ -92,13 +91,13 @@ function main
             do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ENTRY -> ${ENTRY}";
 
-                print "\t${LOADABLE_PLUGIN}/${A} - $(cut -d "=" -f 1 <<< "${ENTRY}" | sed -e '/^ *#/d;s/#.*//' | cut -d "|" -f 2)";
+                echo -n "\t${LOADABLE_PLUGIN}/${A} - $(cut -d "=" -f 1 <<< "${ENTRY}" | sed -e '/^ *#/d;s/#.*//' | cut -d "|" -f 2)";
 
                 (( A += 1 ));
             done
         done
 
-        print "\t$(awk -F "=" '/\<system.option.cancel\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+        echo -n "\t$(awk -F "=" '/\<system.option.cancel\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
         read ANSWER;
 
@@ -113,7 +112,7 @@ function main
         case ${PLUGIN_RESPONSE} in
             [Xx]|[Qq]|[Cc])
                 ## user chose to quit, close us out
-                print "$(awk -F "=" '/\<system.terminate.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+                echo -n "$(awk -F "=" '/\<system.terminate.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
 
                 local TERMINATE_APPLICATION=${_TRUE};
 
@@ -127,12 +126,12 @@ function main
                     unset CMD_ENTRY;
                     unset RET_CODE;
 
-                    print "$(awk -F "=" '/\<selection.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+                    echo -n "$(awk -F "=" '/\<selection.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
 
                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 fi
 
-                local CMD_ENTRY=$(awk -F "=" "/${ENTRY_RESPONSE}/{print \$2}" ${PLUGIN_DIR}/${PLUGIN_RESPONSE}/${ETC_DIRECTORY}/ui.properties | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//');
+                local CMD_ENTRY=$(awk -F "=" "/${ENTRY_RESPONSE}/{print $2}" ${PLUGIN_DIR}/${PLUGIN_RESPONSE}/${ETC_DIRECTORY}/ui.properties | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//');
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CMD_ENTRY -> ${CMD_ENTRY}";
 
@@ -143,7 +142,7 @@ function main
                     unset CMD_ENTRY;
                     unset RET_CODE;
 
-                    print "$(awk -F "=" '/\<selection.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+                    echo -n "$(awk -F "=" '/\<selection.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
 
                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 fi
@@ -153,7 +152,7 @@ function main
 
                 exec ${PLUGIN_DIR}/${PLUGIN_RESPONSE}/${BIN_DIRECTORY}/${CMD_ENTRY};
 
-                exit 0;
+                return 0;
                 ;;
         esac
 
@@ -195,4 +194,4 @@ unset METHOD_NAME;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-return ${RETURN_CODE};
+return 0;

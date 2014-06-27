@@ -21,7 +21,7 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -301,13 +301,13 @@ function usage
 
     [[ ! -z ${VERBOSE} && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME}->enter";
 
-    print "${CNAME} - Perform a full or specified backup operation";
-    print "Usage: ${CNAME} <no arguments> | zone | conf";
-    print "  No arguments are required to perform a complete backup of all zone and operational configuration files. If";
-    print "  arguments are specified, they must be one of the following:";
-    print "  ";
-    print "  zone - performs a backup of all zone files housed in this installation";
-    print "  conf - performs a backup of all configuration files necessary to operate a DNS installation";
+    echo -n "${CNAME} - Perform a full or specified backup operation";
+    echo -n "Usage: ${CNAME} <no arguments> | zone | conf";
+    echo -n "  No arguments are required to perform a complete backup of all zone and operational configuration files. If";
+    echo -n "  arguments are specified, they must be one of the following:";
+    echo -n "  ";
+    echo -n "  zone - performs a backup of all zone files housed in this installation";
+    echo -n "  conf - performs a backup of all configuration files necessary to operate a DNS installation";
 
     [[ ! -z ${VERBOSE} && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME}->exit";
 
@@ -339,7 +339,7 @@ then
     fi
 fi
 
-printf ${RETURN_CODE};
+echo -n ${RETURN_CODE};
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;

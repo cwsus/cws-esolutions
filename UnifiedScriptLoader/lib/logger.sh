@@ -60,7 +60,7 @@ function rotateLogs
 
     [ ! -f ${LOG_ROOT}/${1} ] && return 0;
 
-    if [ $(( $(date +"%s") - $(stat -L --format %Y ${LOG_ROOT}/${1}) > $(printf "${ROLLOVER_PERIOD} * 60 * 60" | bc) )) -eq 1 ]
+    if [ $(( $(date +"%s") - $(stat -L --format %Y ${LOG_ROOT}/${1}) > $(echo -n "${ROLLOVER_PERIOD} * 60 * 60" | bc) )) -eq 1 ]
     then
         if [ -f ${LOG_ROOT}/${1}.${LOG_RETENTION_PERIOD} ]
         then
@@ -81,7 +81,7 @@ function rotateLogs
         touch ${LOG_ROOT}/${1};
     fi
 
-    if [ $(/usr/bin/env stat -c %s "${LOG_ROOT}/${1}") -gt $(printf "${ROTATE_ON_SIZE} * 1024" | bc) ]
+    if [ $(/usr/bin/env stat -c %s "${LOG_ROOT}/${1}") -gt $(echo -n "${ROTATE_ON_SIZE} * 1024" | bc) ]
     then
         if [ -f ${LOG_ROOT}/${1}.${LOG_RETENTION_PERIOD} ]
         then
@@ -145,7 +145,7 @@ function writeLogEntry
             ;;
     esac
 
-    print "${RECORDER}" >> ${LOG_ROOT}/${LOG_FILE};
+    echo -n "${RECORDER}" >> ${LOG_ROOT}/${LOG_FILE};
 
     unset TIMESTAMP_OPTS;
     unset RECORDER;

@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="$(basename ${0})";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
 local METHOD_NAME="${CNAME}#startup";
 
@@ -34,7 +34,7 @@ local METHOD_NAME="${CNAME}#startup";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${PLUGIN_ROOT_DIR}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
+[ -z "${PLUGIN_ROOT_DIR}" ] && echo -n "Failed to locate configuration data. Cannot continue." && return 1;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -72,7 +72,7 @@ then
     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
 
-    print "Security configuration does not allow the requested action.";
+    echo -n "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
 fi
@@ -256,17 +256,17 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    print "${CNAME} - Performs a DNS query against the nameserver specified.";
-    print "Usage: ${CNAME} [ -s server ] [ -p port ] [ -y key ] [ -c command ] [ -z zone ] [ -e ] [ -h|? ]";
-    print " -s    -> The server to execute the request against. If no server is provided, defaults to localhost.";
-    print " -p    -> The port that the requested server is listening on for requests. If no port is provided, the";
-    print "          server provided is interrogated and defaults are obtained from the system configuration.";
-    print " -y    -> The RNDC key to utilize for the request. If no key is provided, the server provided is";
-    print "          interrogated and defaults are obtained from the system configuration.";
-    print " -c    -> The RNDC command to send. If no command is provided, defaults to status.";
-    print " -z    -> An optional zone to execute a request against. Useful with commands reload, refresh and retransfer.";
-    print " -e    -> Execute the request";
-    print " -h|-? -> Show this help";
+    echo -n "${CNAME} - Performs a DNS query against the nameserver specified.";
+    echo -n "Usage: ${CNAME} [ -s server ] [ -p port ] [ -y key ] [ -c command ] [ -z zone ] [ -e ] [ -h|? ]";
+    echo -n " -s    -> The server to execute the request against. If no server is provided, defaults to localhost.";
+    echo -n " -p    -> The port that the requested server is listening on for requests. If no port is provided, the";
+    echo -n "          server provided is interrogated and defaults are obtained from the system configuration.";
+    echo -n " -y    -> The RNDC key to utilize for the request. If no key is provided, the server provided is";
+    echo -n "          interrogated and defaults are obtained from the system configuration.";
+    echo -n " -c    -> The RNDC command to send. If no command is provided, defaults to status.";
+    echo -n " -z    -> An optional zone to execute a request against. Useful with commands reload, refresh and retransfer.";
+    echo -n " -e    -> Execute the request";
+    echo -n " -h|-? -> Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";

@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="$(basename ${0})";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
 local METHOD_NAME="${CNAME}#startup";
 
@@ -34,7 +34,7 @@ local METHOD_NAME="${CNAME}#startup";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${PLUGIN_ROOT_DIR}" ] && printf "Failed to locate configuration data. Cannot continue." && exit 1;
+[ -z "${PLUGIN_ROOT_DIR}" ] && echo -n "Failed to locate configuration data. Cannot continue." && exit 1;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -72,7 +72,7 @@ then
     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
 
-    printf "Security configuration does not allow the requested action.";
+    echo -n "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
 fi
@@ -152,7 +152,7 @@ function obtainInternetService
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_DETAIL -> ${SERVICE_DETAIL[@]}";
 
-    [ ! -z "${SERVICE_DETAIL[@]}" ] && [ ! -z "${PRINT_RESPONSE}" ] && [ "${PRINT_RESPONSE}" = "${_TRUE}" ] && print ${SERVICE_DETAIL[@]};
+    [ ! -z "${SERVICE_DETAIL[@]}" ] && [ ! -z "${PRINT_RESPONSE}" ] && [ "${PRINT_RESPONSE}" = "${_TRUE}" ] && echo -n ${SERVICE_DETAIL[@]};
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -434,7 +434,7 @@ function obtainIntranetService
 
         local POPS_LINE_NUMBER=$(grep -n "label = ${POP_NAME}" ${PLUGIN_ROOT_DIR}/${GD_CONFIG_FILE} | cut -d ":" -f 1);
         local POPE_LINE_NUMBER=$((${POPS_LINE_NUMBER}+1))
-        set -A POP_STATUS ${POP_STATUS[@]} $(printf "${POP_NAME}|$(sed -n -e "${POPE_LINE_NUMBER}p" \
+        set -A POP_STATUS ${POP_STATUS[@]} $(echo -n "${POP_NAME}|$(sed -n -e "${POPE_LINE_NUMBER}p" \
             ${PLUGIN_ROOT_DIR}/${GD_CONFIG_FILE} | cut -d "=" -f 2 | sed -e "s/^ *//g" -e "s/;//g")")
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "POPS_LINE_NUMBER -> ${POPS_LINE_NUMBER}";
@@ -722,13 +722,13 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    printf "${CNAME} - Add zone entries to a given zonefile";
-    printf "Usage: ${CNAME} [ -i < type identifier> ] [ -b <business unit> ] [ -r ] [ -e ] [ -?|-h <show this help> ]";
-    printf "  -b      The associated business unit.";
-    printf "  -i      The associated type identifier, internet or intranet.";
-    printf "  -r      Retrieve zone files from the remote system.";
-    printf "  -s      Execute processing";
-    printf "  -h|-?   Show this help";
+    echo -n "${CNAME} - Add zone entries to a given zonefile";
+    echo -n "Usage: ${CNAME} [ -i < type identifier> ] [ -b <business unit> ] [ -r ] [ -e ] [ -?|-h <show this help> ]";
+    echo -n "  -b      The associated business unit.";
+    echo -n "  -i      The associated type identifier, internet or intranet.";
+    echo -n "  -r      Retrieve zone files from the remote system.";
+    echo -n "  -s      Execute processing";
+    echo -n "  -h|-?   Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";

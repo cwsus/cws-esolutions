@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -83,7 +83,7 @@ function executeMonitoringScript
                         ## if not, pull it back
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Command execution successful. Checking for anomolies..";
 
-                        IS_LOGFILE_PRESENT=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${MONITORED_HOST} "[ -s ${REMOTE_APP_ROOT}/${LOG_ROOT}/${BASE_LOG_NAME}-${MONITOR_RECORDER} ] && printf true || printf false" ${IPLANET_OWNING_USER});
+                        IS_LOGFILE_PRESENT=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${MONITORED_HOST} "[ -s ${REMOTE_APP_ROOT}/${LOG_ROOT}/${BASE_LOG_NAME}-${MONITOR_RECORDER} ] && echo -n true || echo -n false" ${IPLANET_OWNING_USER});
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IS_LOGFILE_PRESENT -> ${IS_LOGFILE_PRESENT}";
 
@@ -95,12 +95,12 @@ function executeMonitoringScript
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Logfiles obtained. Scanning..";
 
-                            print "${MONITORED_HOST}:\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
+                            echo -n "${MONITORED_HOST}:\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
 
                             sed -n "/${MONITORING_SCRIPT}/p" ${APP_ROOT}/${TMP_DIRECTORY}/${MONITORED_HOST}.${BASE_LOG_NAME}-${MONITOR_RECORDER} | \
                                 grep "${EXECUTION_DATE}" | cut -d "-" -f 3- | uniq >> ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
 
-                            print "\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
+                            echo -n "\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
                         else
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No logfile present - no anomalies found.";
                         fi
@@ -108,7 +108,7 @@ function executeMonitoringScript
                         ## an "ERROR" occurred executing the monitor.
                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred executing ${MONITORING_SCRIPT} on ${MONITORED_HOST}. Return code -> ${RET_CODE}";
 
-                        print "1i\n${MONITORED_HOST}: Execution failure. RET_CODE -> ${RET_CODE}.\n\n.\nwq" | ex -s ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
+                        echo -n "1i\n${MONITORED_HOST}: Execution failure. RET_CODE -> ${RET_CODE}.\n\n.\nwq" | ex -s ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
 
                         (( ERROR_COUNT += 1 ));
                     fi
@@ -116,7 +116,7 @@ function executeMonitoringScript
                     ## ping test failure
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${MONITORED_HOST} appears unavailable. PING_RCODE -> ${PING_RCODE}";
 
-                    print "1i\n${MONITORED_HOST}: Connection failure. PING_RCODE -> ${PING_RCODE}.\n\n.\nwq" | ex -s ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
+                    echo -n "1i\n${MONITORED_HOST}: Connection failure. PING_RCODE -> ${PING_RCODE}.\n\n.\nwq" | ex -s ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
 
                     (( ERROR_COUNT += 1 ));
                 fi
@@ -159,7 +159,7 @@ function executeMonitoringScript
                     ## if not, pull it back
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Command execution successful. Checking for anomolies..";
 
-                    IS_LOGFILE_PRESENT=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${MONITORED_HOST} "[ -s ${REMOTE_APP_ROOT}/${LOG_ROOT}/${BASE_LOG_NAME}-${MONITOR_RECORDER} ] && printf true || printf false" ${IPLANET_OWNING_USER});
+                    IS_LOGFILE_PRESENT=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${MONITORED_HOST} "[ -s ${REMOTE_APP_ROOT}/${LOG_ROOT}/${BASE_LOG_NAME}-${MONITOR_RECORDER} ] && echo -n true || echo -n false" ${IPLANET_OWNING_USER});
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IS_LOGFILE_PRESENT -> ${IS_LOGFILE_PRESENT}";
 
@@ -171,12 +171,12 @@ function executeMonitoringScript
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Logfiles obtained. Scanning..";
 
-                        print "${MONITORED_HOST}:\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
+                        echo -n "${MONITORED_HOST}:\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
 
                         sed -n "/${MONITORING_SCRIPT}/p" ${APP_ROOT}/${TMP_DIRECTORY}/${MONITORED_HOST}.${BASE_LOG_NAME}-${MONITOR_RECORDER} | \
                             grep "${EXECUTION_DATE}" | cut -d "-" -f 3- | uniq >> ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
 
-                        print "\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
+                        echo -n "\n" >> ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
                     else
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No logfile present - no anomalies found.";
                     fi
@@ -184,7 +184,7 @@ function executeMonitoringScript
                     ## an "ERROR" occurred executing the monitor.
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred executing ${MONITORING_SCRIPT} on ${MONITORED_HOST}. Return code -> ${RET_CODE}";
 
-                    print "1i\n${MONITORED_HOST}: Execution failure. RET_CODE -> ${RET_CODE}.\n\n.\nwq" | ex -s ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
+                    echo -n "1i\n${MONITORED_HOST}: Execution failure. RET_CODE -> ${RET_CODE}.\n\n.\nwq" | ex -s ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
 
                     (( ERROR_COUNT += 1 ));
                 fi
@@ -192,7 +192,7 @@ function executeMonitoringScript
                 ## ping test failure
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${MONITORED_HOST} appears unavailable. PING_RCODE -> ${PING_RCODE}";
 
-                print "1i\n${MONITORED_HOST}: Connection failure. PING_RCODE -> ${PING_RCODE}.\n\n.\nwq" | ex -s ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
+                echo -n "1i\n${MONITORED_HOST}: Connection failure. PING_RCODE -> ${PING_RCODE}.\n\n.\nwq" | ex -s ${APP_ROOT}/${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
 
                 (( ERROR_COUNT += 1 ));
             fi
@@ -305,12 +305,12 @@ function usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    print "${CNAME} - Executes a selected monitoring process.";
-    print " -m    -> The monitoring process to execute.";
-    print " -s    -> Target server to execute against. (Optional)";
-    print " -d    -> The expiration date (in unix epoch) (Optional)";
-    print " -e    -> Execute the request";
-    print " -h|-? -> Show this help";
+    echo -n "${CNAME} - Executes a selected monitoring process.";
+    echo -n " -m    -> The monitoring process to execute.";
+    echo -n " -s    -> Target server to execute against. (Optional)";
+    echo -n " -d    -> The expiration date (in unix epoch) (Optional)";
+    echo -n " -e    -> Execute the request";
+    echo -n " -h|-? -> Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 

@@ -23,7 +23,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 METHOD_NAME="${THIS_CNAME}#startup";
 
@@ -35,7 +35,7 @@ METHOD_NAME="${THIS_CNAME}#startup";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${PLUGIN_ROOT_DIR}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
+[ -z "${PLUGIN_ROOT_DIR}" ] && echo -n "Failed to locate configuration data. Cannot continue." && return 1;
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -65,7 +65,7 @@ then
     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
 
-    print "Security configuration does not allow the requested action.";
+    echo -n "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
 fi
@@ -88,7 +88,7 @@ METHOD_NAME="${THIS_CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-[ ${RET_CODE} -ne 0 ] && printf "Application currently in use." && print ${RET_CODE} && return ${RET_CODE};
+[ ${RET_CODE} -ne 0 ] && echo -n "Application currently in use." && echo -n ${RET_CODE} && return ${RET_CODE};
 
 unset RET_CODE;
 
@@ -233,16 +233,16 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    print "${CNAME} - Execute RNDC (Remote Name Daemon Control) commands against a provided server";
-    print "Usage: ${CNAME} [-s server] [-p port] [-y keyfile] [-c command] [-z zone] [-e] [-h|?]";
-    print " -s    -> The server to execute commands against. If not provided, defaults to localhost";
-    print " -p    -> The RNDC listening port. If not provided, defaults to 953.";
-    print " -y    -> The RNDC keyfile to utilize. If not provided, defaults to rndc-key";
-    print " -c    -> The service command to send. If no command is provided, defaults to status.";
-    print " -z    -> The zone to reload. Optional.";
-    print " -i    -> The horizon to execute against. Only utilized in a split-horizon configuration.";
-    print " -e    -> Execute the request";
-    print " -h|-? -> Show this help";
+    echo -n "${CNAME} - Execute RNDC (Remote Name Daemon Control) commands against a provided server";
+    echo -n "Usage: ${CNAME} [-s server] [-p port] [-y keyfile] [-c command] [-z zone] [-e] [-h|?]";
+    echo -n " -s    -> The server to execute commands against. If not provided, defaults to localhost";
+    echo -n " -p    -> The RNDC listening port. If not provided, defaults to 953.";
+    echo -n " -y    -> The RNDC keyfile to utilize. If not provided, defaults to rndc-key";
+    echo -n " -c    -> The service command to send. If no command is provided, defaults to status.";
+    echo -n " -z    -> The zone to reload. Optional.";
+    echo -n " -i    -> The horizon to execute against. Only utilized in a split-horizon configuration.";
+    echo -n " -e    -> Execute the request";
+    echo -n " -h|-? -> Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -397,5 +397,5 @@ unset METHOD_NAME;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-[ -z "${RETURN_CODE}" ] && printf "1" || printf "${RETURN_CODE}";
+[ -z "${RETURN_CODE}" ] && echo -n "1" || echo -n "${RETURN_CODE}";
 [ -z "${RETURN_CODE}" ] && return 1 || return "${RETURN_CODE}";

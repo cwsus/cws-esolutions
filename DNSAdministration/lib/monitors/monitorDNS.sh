@@ -23,12 +23,12 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 METHOD_NAME="${THIS_CNAME}#startup";
 
 [[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${PLUGIN_LIB_DIRECTORY}/plugin.sh ]] && . ${SCRIPT_ROOT}/../${PLUGIN_LIB_DIRECTORY}/plugin.sh;
-[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
+[ -z "${PLUGIN_ROOT_DIR}" ] && return 1;
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -222,18 +222,18 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    print "${CNAME} - Execute RNDC (Remote Name Daemon Control) commands against a provided server";
-    print "Usage: ${CNAME} [-s server] [-p port] [-y keyfile] [-c command] [-z zone] [-e] [-h|?]";
-    print " -s    -> The server to execute commands against. If not provided, defaults to localhost";
-    print " -p    -> The RNDC listening port. If not provided, defaults to 953.";
-    print " -y    -> The RNDC keyfile to utilize. If not provided, defaults to rndc-key";
-    print " -c    -> The service command to send. If no command is provided, defaults to status.";
-    print " -z    -> The zone to reload. Optional.";
-    print " -i    -> The horizon to execute against. Only utilized in a split-horizon configuration.";
-    print " -p    -> Perform only process presence monitoring";
-    print " -l    -> Perform only log watch monitoring";
-    print " -e    -> Execute the request";
-    print " -h|-? -> Show this help";
+    echo -n "${CNAME} - Execute RNDC (Remote Name Daemon Control) commands against a provided server";
+    echo -n "Usage: ${CNAME} [-s server] [-p port] [-y keyfile] [-c command] [-z zone] [-e] [-h|?]";
+    echo -n " -s    -> The server to execute commands against. If not provided, defaults to localhost";
+    echo -n " -p    -> The RNDC listening port. If not provided, defaults to 953.";
+    echo -n " -y    -> The RNDC keyfile to utilize. If not provided, defaults to rndc-key";
+    echo -n " -c    -> The service command to send. If no command is provided, defaults to status.";
+    echo -n " -z    -> The zone to reload. Optional.";
+    echo -n " -i    -> The horizon to execute against. Only utilized in a split-horizon configuration.";
+    echo -n " -p    -> Perform only process presence monitoring";
+    echo -n " -l    -> Perform only log watch monitoring";
+    echo -n " -e    -> Execute the request";
+    echo -n " -h|-? -> Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";

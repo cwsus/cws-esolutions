@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -92,13 +92,13 @@ function usage
 
     [[ ! -z ${VERBOSE} && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME}->enter";
 
-    print "${CNAME} - Add "AUDIT" indicators and other flags to the failover zone file";
-    print "Usage: ${CNAME} [-r ZONE_ROOT] [-f filename] [-t target datacenter] [-i requestor] [-c change request] [-e execute] [-?|-h show this help]";
-    print "  -t      Timespan to clean. Default of 30 days.";
-    print "  -i      The user performing the request";
-    print "  -n      Clean the named backup directory as well as the application backup directory.";
-    print "  -e      Execute processing";
-    print "  -h|-?   Show this help";
+    echo -n "${CNAME} - Add "AUDIT" indicators and other flags to the failover zone file";
+    echo -n "Usage: ${CNAME} [-r ZONE_ROOT] [-f filename] [-t target datacenter] [-i requestor] [-c change request] [-e execute] [-?|-h show this help]";
+    echo -n "  -t      Timespan to clean. Default of 30 days.";
+    echo -n "  -i      The user performing the request";
+    echo -n "  -n      Clean the named backup directory as well as the application backup directory.";
+    echo -n "  -e      Execute processing";
+    echo -n "  -h|-?   Show this help";
 
     [[ ! -z ${VERBOSE} && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME}->exit";
 
@@ -189,5 +189,5 @@ do
 done
 
 
-printf ${RETURN_CODE};
+echo -n ${RETURN_CODE};
 return ${RETURN_CODE};

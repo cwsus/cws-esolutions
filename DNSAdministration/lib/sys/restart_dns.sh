@@ -71,7 +71,7 @@ case "${ACTION}" in
     start)
         if [ -n "`pidof -s -n -m ${NAMED_BIN}`" ]
         then
-            printf -n $"named: already running:"
+            echo -n -n $"named: already running:"
             ${RNDC_BIN} ${RNDC_OPTS} status;
 
             exit 0;
@@ -93,10 +93,10 @@ case "${ACTION}" in
             named_err="`${NAMED_CHKCONF} ${NAMED_CHKCONF_OPTS} ${NAMED_CONF} 2>&1`";
 
             echo
-            printf ""ERROR" in named configuration:";
-            printf "${named_err}";
+            echo -n ""ERROR" in named configuration:";
+            echo -n "${named_err}";
 
-            [ -x /usr/bin/logger ] && printf "${named_err}" | /usr/bin/logger -pdaemon."ERROR" -tnamed;
+            [ -x /usr/bin/logger ] && echo -n "${named_err}" | /usr/bin/logger -pdaemon."ERROR" -tnamed;
 
             exit 2;
         fi
@@ -111,22 +111,22 @@ case "${ACTION}" in
     stop)
         if [ ! -s ${NAMED_PID} ]
         then
-            printf "Service named not running";
+            echo -n "Service named not running";
 
             exit 1;
         else
-            printf "Shutting down named: ";
+            echo -n "Shutting down named: ";
             ${RNDC_BIN} ${RNDC_OPTS} stop;
 
             sleep 5;
 
             if [ -s ${NAMED_PID} ]
             then
-                kill `cat ${NAMED_PID}`;
+                kill `<${NAMED_PID}`;
                 rm -rf ${NAMED_PID};
             fi
 
-            printf "[ OK ]";
+            echo -n "[ OK ]";
 
             exit 0;
         fi
@@ -156,10 +156,10 @@ case "${ACTION}" in
     probe)
         # named knows how to reload intelligently; we don't want linuxconf
         # to offer to restart every time
-        ${RNDC_BIN} ${RNDC_OPTS} reload > ${NAMED_LOG_DIR}/rndc-reload.log 2>&1 || printf start;
+        ${RNDC_BIN} ${RNDC_OPTS} reload > ${NAMED_LOG_DIR}/rndc-reload.log 2>&1 || echo -n start;
         exit 0;
         ;;
     *)
-        printf "Usage: named {start|stop|status|restart|reload}";
+        echo -n "Usage: named {start|stop|status|restart|reload}";
         exit 1;
 esac

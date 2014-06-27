@@ -23,7 +23,7 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -79,14 +79,14 @@ function obtainVerifiableDomains
                     ## at least one website was found and returned for validation
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Web instances listed and returned.";
 
-                    printf ${RETRIEVED_WEB_INSTANCES[@]};
+                    echo -n ${RETRIEVED_WEB_INSTANCES[@]};
 
                     RETURN_CODE=0;
                 else
                     ## no web instances were found or no urlhosts were identified
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_WEB_INSTANCES was found to be empty. Cannot continue.";
 
-                    printf ${_FALSE};
+                    echo -n ${_FALSE};
 
                     RETURN_CODE=0;
                 fi
@@ -94,12 +94,12 @@ function obtainVerifiableDomains
                 ## no web instances
                 ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST was found to be empty. No security-enabled sites were found for validation.";
 
-                printf ${_FALSE};
+                echo -n ${_FALSE};
                 RETURN_CODE=0;
             fi
         else
             ## ihs platform
-            printf "IHS";
+            echo -n "IHS";
         fi
     else
         ## unknown platform
@@ -180,14 +180,14 @@ function obtainVerifiableSSLInstances
                     ## at least one website was found and returned for validation
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Web instances listed and returned.";
 
-                    printf ${VALIDATE_INSTANCE_LIST[@]};
+                    echo -n ${VALIDATE_INSTANCE_LIST[@]};
 
                     RETURN_CODE=0;
                 else
                     ## no web instances were found or no urlhosts were identified
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_INSTANCE_LIST was found to be empty. Cannot continue.";
 
-                    printf ${_FALSE};
+                    echo -n ${_FALSE};
 
                     RETURN_CODE=0;
                 fi
@@ -195,13 +195,13 @@ function obtainVerifiableSSLInstances
                 ## no web instances
                 ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST was found to be empty. No security-enabled sites were found for validation.";
 
-                printf ${_FALSE};
+                echo -n ${_FALSE};
 
                 RETURN_CODE=0;
             fi
         else
             ## ihs platform
-            printf "IHS";
+            echo -n "IHS";
         fi
     else
         ## unknown platform
@@ -254,7 +254,7 @@ function obtainVerifiableInstances
 
             if [ ! -z "${VALIDATE_SERVER_LIST}" ]
             then
-                printf ${VALIDATE_SERVER_LIST[@]};
+                echo -n ${VALIDATE_SERVER_LIST[@]};
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Web instances listed and returned.";
 
@@ -263,13 +263,13 @@ function obtainVerifiableInstances
                 ## no web instances were found or no urlhosts were identified
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST was found to be empty. Cannot continue.";
 
-                printf ${_FALSE};
+                echo -n ${_FALSE};
 
                 RETURN_CODE=0;
             fi
         else
             ## ihs platform
-            printf "IHS";
+            echo -n "IHS";
         fi
     else
         ## unknown platform
@@ -307,10 +307,10 @@ function usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    print "${CNAME} - Monitor and provide information for housed servers.";
-    print "Usage: $0";
-    print " No arguments are required to operate this utility.";
-    print " -h|-? -> Show this help";
+    echo -n "${CNAME} - Monitor and provide information for housed servers.";
+    echo -n "Usage: $0";
+    echo -n " No arguments are required to operate this utility.";
+    echo -n " -h|-? -> Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 

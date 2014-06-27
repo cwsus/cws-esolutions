@@ -37,12 +37,12 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    print "${CNAME} - Watchdog for process execution";
-    print "Usage: ${CNAME} [ -t <timeout> ] [ -i <interval> ] [ -d <delay> ] <command> [-?|-h show this help]";
-    print "  -t      Number of seconds to wait for command completion. Default value: ${THREAD_TIMEOUT} seconds.";
-    print "  -i      Interval between checks if the process is still alive. Positive integer, default value: ${THREAD_INTERVAL} seconds.";
-    print "  -d      Delay between posting the SIGTERM signal and destroying the process by SIGKILL. Default value: ${THREAD_DELAY} seconds.";
-    print "  -h|-?   Show this help";
+    echo -n "${CNAME} - Watchdog for process execution";
+    echo -n "Usage: ${CNAME} [ -t <timeout> ] [ -i <interval> ] [ -d <delay> ] <command> [-?|-h show this help]";
+    echo -n "  -t      Number of seconds to wait for command completion. Default value: ${THREAD_TIMEOUT} seconds.";
+    echo -n "  -i      Interval between checks if the process is still alive. Positive integer, default value: ${THREAD_INTERVAL} seconds.";
+    echo -n "  -d      Delay between posting the SIGTERM signal and destroying the process by SIGKILL. Default value: ${THREAD_DELAY} seconds.";
+    echo -n "  -h|-?   Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -81,7 +81,7 @@ shift $((OPTIND - 1))
         (( t -= ${INTERVAL} ));
     done
 
-    print "Terminating process - timeout threshold exceeded";
+    echo -n "Terminating process - timeout threshold exceeded";
 
     kill -s SIGTERM ${$} && kill -0 ${$} || exit 1;
     sleep ${DELAY} && kill -s SIGKILL ${$} && kill -0 ${$} || exit 1;

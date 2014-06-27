@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -346,14 +346,14 @@ function usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    print "${CNAME} - Execute zone additions to the DNS infrastructure.";
-    print "Usage: ${CNAME} [ -s server id ] [ -p project code ] [ -i requestor ] [ -c change request ] [ -e ] [ -?|-h ]";
-    print "  -s      The associated server identifier";
-    print "  -p      The associated project code";
-    print "  -i      The user performing the request";
-    print "  -c      The change order associated with this request";
-    print "  -e      Execute processing";
-    print "  -?|-h   Show this help";
+    echo -n "${CNAME} - Execute zone additions to the DNS infrastructure.";
+    echo -n "Usage: ${CNAME} [ -s server id ] [ -p project code ] [ -i requestor ] [ -c change request ] [ -e ] [ -?|-h ]";
+    echo -n "  -s      The associated server identifier";
+    echo -n "  -p      The associated project code";
+    echo -n "  -i      The user performing the request";
+    echo -n "  -c      The change order associated with this request";
+    echo -n "  -e      Execute processing";
+    echo -n "  -?|-h   Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -481,7 +481,7 @@ do
 done
 
 
-printf ${RETURN_CODE};
+echo -n ${RETURN_CODE};
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;

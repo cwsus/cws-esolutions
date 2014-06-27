@@ -16,7 +16,7 @@
 #      REVISION:  ---
 #==============================================================================
 
-[[ "$(uname)" = CYGWIN_NT* ]] && [ -z "$(set | grep CYGWIN)" ] && typeset -rx CYGWIN="winsymlinks:lnk error_start=C:\cygwin\bin\gdb.exe -nw %1 %2";
+[[ "$(uname)" = CYGWIN_NT* ]] && [ -z "$(set | grep CYGWIN)" ] && typeset -rx CYGWIN="error_start=C:/cygwin/bin/gdb.exe -nw %1 %2";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -24,7 +24,7 @@
 ## Application constants
 CNAME="${THIS_CNAME}";
 THIS_CNAME="${CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 typeset -r PLUGIN_NAME="DNSAdministration";
 
@@ -61,7 +61,7 @@ then
     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
 
-    print "Security configuration does not allow the requested action.";
+    echo -n "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
 fi

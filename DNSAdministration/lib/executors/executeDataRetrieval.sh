@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 METHOD_NAME="${THIS_CNAME}#startup";
 
@@ -34,7 +34,7 @@ METHOD_NAME="${THIS_CNAME}#startup";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${PLUGIN_ROOT_DIR}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
+[ -z "${PLUGIN_ROOT_DIR}" ] && echo -n "Failed to locate configuration data. Cannot continue." && return 1;
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -64,7 +64,7 @@ then
     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
 
-    printf "Security configuration does not allow the requested action.";
+    echo -n "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
 fi
@@ -87,7 +87,7 @@ METHOD_NAME="${THIS_CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-[ ${RET_CODE} -ne 0 ] && printf "Application currently in use." && print ${RET_CODE} && return ${RET_CODE};
+[ ${RET_CODE} -ne 0 ] && echo -n "Application currently in use." && echo -n ${RET_CODE} && return ${RET_CODE};
 
 unset RET_CODE;
 
@@ -122,9 +122,9 @@ function get_site_by_url
     ## filter the ones in the DC directories
     if [ ! -z "${SEARCH_DECOM}" ] && [ "${SEARCH_DECOM}" = "${_TRUE}" ]
     then
-        set -A RETRIEVAL_LIST $(find ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR} -type f -name "${NAMED_ZONE_PREFIX}.*" -exec grep -i "${SITE_ID}" {} /dev/null \; -print | awk '{print $1}' | cut -d ":" -f 1-1 | grep -v -w "[PV]H" | uniq);
+        set -A RETRIEVAL_LIST $(find ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR} -type f -name "${NAMED_ZONE_PREFIX}.*" -exec grep -i "${SITE_ID}" {} /dev/null \; -echo -n | awk '{print $1}' | cut -d ":" -f 1-1 | grep -v -w "[PV]H" | uniq);
     else
-        set -A RETRIEVAL_LIST $(find ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT} -type f -name "${NAMED_ZONE_PREFIX}.*" -exec grep -i "${SITE_ID}" {} /dev/null \; -print  | grep -v ${GROUP_ID}${NAMED_DECOM_DIR} | awk '{print $1}' | cut -d ":" -f 1-1 | grep -v -w "[PV]H" | uniq);
+        set -A RETRIEVAL_LIST $(find ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT} -type f -name "${NAMED_ZONE_PREFIX}.*" -exec grep -i "${SITE_ID}" {} /dev/null \; -echo -n  | grep -v ${GROUP_ID}${NAMED_DECOM_DIR} | awk '{print $1}' | cut -d ":" -f 1-1 | grep -v -w "[PV]H" | uniq);
     fi
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Completed command execution.. processing..";
@@ -209,7 +209,7 @@ function get_site_by_url
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INFO_VAR -> ${INFO_VAR}";
 
                 ## write the data out to a file
-                printf "$(sed -e 's/^[ \t]*//' <<< ${SITE_FILE})$(sed -e 's/^[ \t]*//' <<< ${INFO_VAR})";
+                echo -n "$(sed -e 's/^[ \t]*//' <<< ${SITE_FILE})$(sed -e 's/^[ \t]*//' <<< ${INFO_VAR})";
 
                 ## unset the variables so we get fresh
                 ## results
@@ -378,7 +378,7 @@ function get_site_by_bu
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INFO_VAR -> ${INFO_VAR}";
 
                     ## write the data out to a file
-                    printf "$(sed -e 's/^[ \t]*//' <<< ${SITE_ROOT}/${SITE_FILE})$(sed -e 's/^[ \t]*//' <<< ${INFO_VAR})";
+                    echo -n "$(sed -e 's/^[ \t]*//' <<< ${SITE_ROOT}/${SITE_FILE})$(sed -e 's/^[ \t]*//' <<< ${INFO_VAR})";
 
                     ## unset the variables so we get fresh
                     ## results
@@ -528,7 +528,7 @@ function get_site_by_prj_code
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INFO_VAR -> ${INFO_VAR}";
 
                 ## write the data out to a file
-                printf "$(sed -e 's/^[ \t]*//')$(sed -e 's/^[ \t]*//' <<< ${INFO_VAR}) <<< ${SITE_FILE}";
+                echo -n "$(sed -e 's/^[ \t]*//')$(sed -e 's/^[ \t]*//' <<< ${INFO_VAR}) <<< ${SITE_FILE}";
 
                 ## unset the variables so we get fresh
                 ## results
@@ -579,14 +579,14 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    printf "${CNAME} - Obtain information regarding DNS entries";
-    printf "Usage: ${CNAME} [-u url] [-b business unit)] [-p project code] [ -d ] [ -e ] [-h] [-?]";
-    printf "  -u      Obtains information from the DNS master regarding the supplied URL";
-    printf "  -b      Obtains information from the DNS master regarding the supplied Business Unit";
-    printf "  -p      Obtains information from the DNS master regarding the supplied project code";
-    printf "  -d      Search only for decommissioned records";
-    printf "  -e      Execute processing";
-    printf "  -h|-?   Show this help";
+    echo -n "${CNAME} - Obtain information regarding DNS entries";
+    echo -n "Usage: ${CNAME} [-u url] [-b business unit)] [-p project code] [ -d ] [ -e ] [-h] [-?]";
+    echo -n "  -u      Obtains information from the DNS master regarding the supplied URL";
+    echo -n "  -b      Obtains information from the DNS master regarding the supplied Business Unit";
+    echo -n "  -p      Obtains information from the DNS master regarding the supplied project code";
+    echo -n "  -d      Search only for decommissioned records";
+    echo -n "  -e      Execute processing";
+    echo -n "  -h|-?   Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -696,5 +696,5 @@ unset METHOD_NAME;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-[ -z "${RETURN_CODE}" ] && printf "1" || printf "${RETURN_CODE}";
+[ -z "${RETURN_CODE}" ] && echo -n "1" || echo -n "${RETURN_CODE}";
 [ -z "${RETURN_CODE}" ] && return 1 || return "${RETURN_CODE}";

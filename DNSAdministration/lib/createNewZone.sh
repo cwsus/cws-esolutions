@@ -21,7 +21,7 @@
 
 ## Application constants
 CNAME="$(basename ${0})";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
 local METHOD_NAME="${CNAME}#startup";
 
@@ -33,7 +33,7 @@ local METHOD_NAME="${CNAME}#startup";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${PLUGIN_ROOT_DIR}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
+[ -z "${PLUGIN_ROOT_DIR}" ] && echo -n "Failed to locate configuration data. Cannot continue." && return 1;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -71,7 +71,7 @@ then
     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
 
-    print "Security configuration does not allow the requested action.";
+    echo -n "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
 fi
@@ -94,7 +94,7 @@ METHOD_NAME="${THIS_CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-[ ${RET_CODE} -ne 0 ] && printf "Application currently in use." && print ${RET_CODE} && return ${RET_CODE};
+[ ${RET_CODE} -ne 0 ] && echo -n "Application currently in use." && echo -n ${RET_CODE} && return ${RET_CODE};
 
 unset RET_CODE;
 
@@ -202,35 +202,35 @@ function createSkeletonZone
             return ${RETURN_CODE};
         fi
 
-        printf "; zone '${ZONE_NAME}' last serial %%LAST_SERIAL%%\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
-        printf "; Currently live in: ${DATACENTER}\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
-        printf "; updated on %%DATE%% by %%USER_NAME%% per change order %%REQUEST_NUMBER%%\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
-        printf "\$ORIGIN .\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
-        printf "\$TTL ${NAMESERVER_TTL_TIME}\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
-        printf "${ZONE_NAME} IN SOA ${NAMESERVER_PRIMARY_SOA}.${NAMESERVER_INTERNET_SUFFIX}. ${NAMESERVER_PRIMARY_SOA_CONTACT}.${NAMESERVER_INTERNET_SUFFIX} (\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
-        printf "            %%SERIAL_NUM%%       ; serial number of this zone file\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
-        printf "            ${NAMESERVER_REFRESH_INTERVAL}              ; slave refresh\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
-        printf "            ${NAMESERVER_RETRY_INTERVAL}             ; slave retry time in case of a problem\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
-        printf "            ${NAMESERVER_EXPIRATION_INTERVAL}           ; slave expiration time\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
-        printf "            ${NAMESERVER_CACHE_INTERVAL}             ; minimum caching time in case of failed lookups\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
-        printf "            )\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+        echo -n "; zone '${ZONE_NAME}' last serial %LAST_SERIAL%\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+        echo -n "; Currently live in: ${DATACENTER}\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+        echo -n "; updated on %DATE% by %USER_NAME% per change order %REQUEST_NUMBER%\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+        echo -n "\$ORIGIN .\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+        echo -n "\$TTL ${NAMESERVER_TTL_TIME}\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+        echo -n "${ZONE_NAME} IN SOA ${NAMESERVER_PRIMARY_SOA}.${NAMESERVER_INTERNET_SUFFIX}. ${NAMESERVER_PRIMARY_SOA_CONTACT}.${NAMESERVER_INTERNET_SUFFIX} (\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+        echo -n "            %SERIAL_NUM%       ; serial number of this zone file\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+        echo -n "            ${NAMESERVER_REFRESH_INTERVAL}              ; slave refresh\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+        echo -n "            ${NAMESERVER_RETRY_INTERVAL}             ; slave retry time in case of a problem\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+        echo -n "            ${NAMESERVER_EXPIRATION_INTERVAL}           ; slave expiration time\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+        echo -n "            ${NAMESERVER_CACHE_INTERVAL}             ; minimum caching time in case of failed lookups\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+        echo -n "            )\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
 
         for SLAVE in ${NAMESERVER_RECORDS[@]}
         do
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SLAVE -> ${SLAVE}";
 
-            printf "            IN    NS          ${SLAVE}.${NAMESERVER_INTERNET_SUFFIX}\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+            echo -n "            IN    NS          ${SLAVE}.${NAMESERVER_INTERNET_SUFFIX}\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
         done
 
-        printf "            IN    RP          ${NAMESERVER_PRIMARY_SOA_CONTACT}.${NAMESERVER_INTERNET_SUFFIX}\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+        echo -n "            IN    RP          ${NAMESERVER_PRIMARY_SOA_CONTACT}.${NAMESERVER_INTERNET_SUFFIX}\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
 
         if [ ! -z "${ENABLE_LOC_RECORD}" ] && [ "${ENABLE_LOC_RECORD}" = "${_TRUE}" ]
         then
-            local SITE_COORDINATES=$(awk -F "=" '/\<${DATACENTER}_SITE_COORDS\>/{print $2}' ${INTERNET_DNS_CONFIG} | sed -e 's/^ *//g;s/ *$//g');
+            local SITE_COORDINATES=$(awk -F "=" "/\<${DATACENTER}_SITE_COORDS\>/{print \$2}" ${INTERNET_DNS_CONFIG} | sed -e 's/^ *//g;s/ *$//g');
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_COORDINATES -> ${SITE_COORDINATES}";
 
-            printf "            IN    LOC         ${SITE_COORDINATES}\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
+            echo -n "            IN    LOC         ${SITE_COORDINATES}\n" >> ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME};
         fi
 
         if [ ! -s ${PLUGIN_TMP_DIRECTORY}/${DC_ZONEFILE_NAME} ]
@@ -465,15 +465,15 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    print "${CNAME} - Create a skeleton zone file with the necessary components.";
-    print "Usage: ${CNAME} [ -b <business unit> ] [ -p <project code> ] [ -z <zone name> ] [ -c <change request> ] [ -n ] [ -e ] [ -?|-h ]";
-    print "  -b      The associated business unit";
-    print "  -p      The associated project code";
-    print "  -z      The zone name, eg example.com";
-    print "  -c      The change order associated with this request";
-    print "  -n      Build an operational zonefile";
-    print "  -e      Execute processing";
-    print "  -?|-h   Show this help";
+    echo -n "${CNAME} - Create a skeleton zone file with the necessary components.";
+    echo -n "Usage: ${CNAME} [ -b <business unit> ] [ -p <project code> ] [ -z <zone name> ] [ -c <change request> ] [ -n ] [ -e ] [ -?|-h ]";
+    echo -n "  -b      The associated business unit";
+    echo -n "  -p      The associated project code";
+    echo -n "  -z      The zone name, eg example.com";
+    echo -n "  -c      The change order associated with this request";
+    echo -n "  -n      Build an operational zonefile";
+    echo -n "  -e      Execute processing";
+    echo -n "  -?|-h   Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
