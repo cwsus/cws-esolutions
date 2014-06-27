@@ -115,14 +115,14 @@ function monitorCertExpiry
                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to connect to ${WEBSITE} using both standard (${STD_SSL_PORT_NUMBER}) and non-standard (${NONSTD_SSL_PORT_NUMBER}).";
                                 else
                                     ## got back a date, convert it
-                                    EXPIRY_MONTH=$(printf ${RETURNED_EXPIRY} | awk '{print $2}');
+                                    EXPIRY_MONTH=$(echo ${RETURNED_EXPIRY} | awk '{print $2}');
 
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXPIRY_MONTH -> ${EXPIRY_MONTH}";
 
                                     if [ ! -z "${EXPIRY_MONTH}" ]
                                     then
                                         ## ok, we have a nickname and an expiration date. convert it
-                                        EPOCH_EXPIRY=$(returnEpochTime $(printf ${RETURNED_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval printf \${${EXPIRY_MONTH}})/"));
+                                        EPOCH_EXPIRY=$(returnEpochTime $(echo ${RETURNED_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval printf \${${EXPIRY_MONTH}})/"));
 
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EPOCH_EXPIRY -> ${EPOCH_EXPIRY}";
 
@@ -137,14 +137,14 @@ function monitorCertExpiry
                                     fi
                                 fi
                             else
-                                EXPIRY_MONTH=$(printf ${RETURNED_EXPIRY} | awk '{print $2}');
+                                EXPIRY_MONTH=$(echo ${RETURNED_EXPIRY} | awk '{print $2}');
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXPIRY_MONTH -> ${EXPIRY_MONTH}";
 
                                 if [ ! -z "${EXPIRY_MONTH}" ]
                                 then
                                     ## ok, we have a nickname and an expiration date. convert it
-                                    EPOCH_EXPIRY=$(returnEpochTime $(printf ${RETURNED_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval printf \${${EXPIRY_MONTH}})/"));
+                                    EPOCH_EXPIRY=$(returnEpochTime $(echo ${RETURNED_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval printf \${${EXPIRY_MONTH}})/"));
 
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EPOCH_EXPIRY -> ${EPOCH_EXPIRY}";
 
@@ -199,14 +199,14 @@ function monitorCertExpiry
                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to connect to ${WEBSITE} using both standard (${STD_SSL_PORT_NUMBER}) and non-standard (${NONSTD_SSL_PORT_NUMBER}).";
                         else
                             ## got back a date, convert it
-                            EXPIRY_MONTH=$(printf ${RETURNED_EXPIRY} | awk '{print $2}');
+                            EXPIRY_MONTH=$(echo ${RETURNED_EXPIRY} | awk '{print $2}');
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXPIRY_MONTH -> ${EXPIRY_MONTH}";
 
                             if [ ! -z "${EXPIRY_MONTH}" ]
                             then
                                 ## ok, we have a nickname and an expiration date. convert it
-                                EPOCH_EXPIRY=$(returnEpochTime $(printf ${RETURNED_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval printf \${${EXPIRY_MONTH}})/"));
+                                EPOCH_EXPIRY=$(returnEpochTime $(echo ${RETURNED_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval printf \${${EXPIRY_MONTH}})/"));
 
                                 [ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EPOCH_EXPIRY -> ${EPOCH_EXPIRY}";
 
@@ -221,14 +221,14 @@ function monitorCertExpiry
                             fi
                         fi
                     else
-                        EXPIRY_MONTH=$(printf ${RETURNED_EXPIRY} | awk '{print $2}');
+                        EXPIRY_MONTH=$(echo ${RETURNED_EXPIRY} | awk '{print $2}');
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXPIRY_MONTH -> ${EXPIRY_MONTH}";
 
                         if [ ! -z "${EXPIRY_MONTH}" ]
                         then
                             ## ok, we have a nickname and an expiration date. convert it
-                            EPOCH_EXPIRY=$(returnEpochTime $(printf ${RETURNED_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval printf \${${EXPIRY_MONTH}})/"));
+                            EPOCH_EXPIRY=$(returnEpochTime $(echo ${RETURNED_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval printf \${${EXPIRY_MONTH}})/"));
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EPOCH_EXPIRY -> ${EPOCH_EXPIRY}";
 

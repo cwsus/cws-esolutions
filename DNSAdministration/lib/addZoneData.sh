@@ -39,6 +39,11 @@ local METHOD_NAME="${CNAME}#startup";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
+[ -f ${APP_ROOT}/${LIB_DIRECTORY}/aliases ] && . ${APP_ROOT}/${LIB_DIRECTORY}/aliases;
+[ -f ${APP_ROOT}/${LIB_DIRECTORY}/functions ] && . ${APP_ROOT}/${LIB_DIRECTORY}/functions;
+[ -s ${PLUGIN_LIB_DIRECTORY}/aliases ] && . ${PLUGIN_LIB_DIRECTORY}/aliases;
+[ -s ${PLUGIN_LIB_DIRECTORY}/functions ] && . ${PLUGIN_LIB_DIRECTORY}/functions;
+
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -132,8 +137,8 @@ function addApexRecordEntry
     fi
 
     ## set up our zonefile names so we can operate on them
-    ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(printf ${ZONE_NAME} | cut -d "." -f 1).${PROJECT_CODE};
-    DC_ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(printf ${ZONE_NAME} | cut -d "." -f 1);
+    ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(cut -d "." -f 1 <<< ${ZONE_NAME}).${PROJECT_CODE};
+    DC_ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(cut -d "." -f 1 <<< ${ZONE_NAME});
 
     if [ "${DATACENTER}" = "BOTH" ]
     then
@@ -279,8 +284,8 @@ function addApexRecordEntry
             RETURN_CODE=${ERROR_COUNT};
             ;;
         [Mm][Xx])
-            RECORD_TARGET=$(printf ${RECORD_DATA} | cut -d "," -f 1);
-            RECORD_WEIGHT=$(printf ${RECORD_DATA} | cut -d "," -f 2);
+            RECORD_TARGET=$(cut -d "," -f 1 <<< ${RECORD_DATA});
+            RECORD_WEIGHT=$(cut -d "," -f 2 <<< ${RECORD_DATA});
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RECORD_WEIGHT -> ${RECORD_WEIGHT}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RECORD_TARGET -> ${RECORD_TARGET}";
@@ -483,8 +488,8 @@ function addSubRecordEntry
     fi
 
     ## set up our zonefile names so we can operate on them
-    ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(printf ${ZONE_NAME} | cut -d "." -f 1).${PROJECT_CODE};
-    DC_ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(printf ${ZONE_NAME} | cut -d "." -f 1);
+    ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(cut -d "." -f 1 <<< ${ZONE_NAME}).${PROJECT_CODE};
+    DC_ZONEFILE_NAME=${NAMED_ZONE_PREFIX}.$(cut -d "." -f 1 <<< ${ZONE_NAME});
 
     if [ "${DATACENTER}" = "BOTH" ]
     then
@@ -546,8 +551,8 @@ function addSubRecordEntry
 
     case ${RECORD_TYPE} in
         [Aa]|[Cc][Nn][Aa][Mm][Ee]|[Tt][Xx][Tt])
-            RECORD_ALIAS=$(printf ${RECORD_DATA} | cut -d "," -f 1);
-            RECORD_TARGET=$(printf ${RECORD_DATA} | cut -d "," -f 2);
+            RECORD_ALIAS=$(cut -d "," -f 1 <<< ${RECORD_DATA});
+            RECORD_TARGET=$(cut -d "," -f 2 <<< ${RECORD_DATA});
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RECORD_ALIAS -> ${RECORD_ALIAS}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RECORD_TARGET -> ${RECORD_TARGET}";
@@ -663,9 +668,9 @@ function addSubRecordEntry
             RETURN_CODE=${ERROR_COUNT};
             ;;
         [Mm][Xx])
-            RECORD_ALIAS=$(printf ${RECORD_DATA} | cut -d "," -f 1);
-            RECORD_WEIGHT=$(printf ${RECORD_DATA} | cut -d "," -f 2);
-            RECORD_TARGET=$(printf ${RECORD_DATA} | cut -d "," -f 3);
+            RECORD_ALIAS=$(cut -d "," -f 1 <<< ${RECORD_DATA});
+            RECORD_WEIGHT=$(cut -d "," -f 2 <<< ${RECORD_DATA});
+            RECORD_TARGET=$(cut -d "," -f 3 <<< ${RECORD_DATA});
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RECORD_ALIAS -> ${RECORD_ALIAS}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RECORD_WEIGHT -> ${RECORD_WEIGHT}";
@@ -755,14 +760,14 @@ function addSubRecordEntry
             ## _submission._tcp.email.caspersbox.com 86400 IN SRV 10 10 25 caspersb-r1b13.caspersbox.com
             ## see http://en.wikipedia.org/wiki/SRV_record for more "INFO"
             ## set up our record information
-            SRV_TYPE=$(printf ${IP_ADDR} | cut -d "," -f 1);
-            SRV_PROTOCOL=$(printf ${IP_ADDR} | cut -d "," -f 2);
-            SRV_NAME=$(printf ${IP_ADDR} | cut -d "," -f 3);
-            SRV_TTL=$(printf ${IP_ADDR} | cut -d "," -f 4);
-            SRV_PRIORITY=$(printf ${IP_ADDR} | cut -d "," -f 5);
-            SRV_WEIGHT=$(printf ${IP_ADDR} | cut -d "," -f 6);
-            SRV_PORT=$(printf ${IP_ADDR} | cut -d "," -f 7);
-            SRV_TARGET=$(printf ${IP_ADDR} | cut -d "," -f 8);
+            SRV_TYPE=$(cut -d "," -f 1 <<< ${RECORD_DATA});
+            SRV_PROTOCOL=$(cut -d "," -f 2 <<< ${RECORD_DATA});
+            SRV_NAME=$(cut -d "," -f 3 <<< ${RECORD_DATA});
+            SRV_TTL=$(cut -d "," -f 4 <<< ${RECORD_DATA});
+            SRV_PRIORITY=$cut -d "," -f 5 <<< ${RECORD_DATA};
+            SRV_WEIGHT=$(cut -d "," -f 6 <<< ${RECORD_DATA});
+            SRV_PORT=$(cut -d "," -f 7 <<< ${RECORD_DATA});
+            SRV_TARGET=$(cut -d "," -f 8 <<< ${RECORD_DATA});
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SRV_TYPE->${SRV_TYPE}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SRV_PROTOCOL->${SRV_PROTOCOL}";
@@ -1164,4 +1169,4 @@ unset RET_CODE;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-return ${RETURN_CODE};
+[ -z "${RETURN_CODE}" ] && return 1 || return "${RETURN_CODE}";

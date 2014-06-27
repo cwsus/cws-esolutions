@@ -63,7 +63,7 @@ function obtainVerifiableDomains
 
                     if [ $(grep -c ${WEBSERVER} ${APP_ROOT}/${CORE_EXCEPTION_LIST}) -eq 0 ] \
                         && [ $(grep -c ${WEBSERVER} ${APP_ROOT}/${TMP_EXCEPTION_LIST}) -eq 0 ] \
-                        && [ $(printf ${IPLANET_STARTUP_IGNORE_LIST} | grep -c ${WEBSERVER}) -eq 0 ]
+                        && [ $(echo ${IPLANET_STARTUP_IGNORE_LIST} | grep -c ${WEBSERVER}) -eq 0 ]
                     then
                         ## only pull out the web instances that have ssl enabled, via security="on"
                         set -A RETRIEVED_WEB_INSTANCES ${VALIDATE_WEB_INSTANCES[@]} \
@@ -158,7 +158,7 @@ function obtainVerifiableSSLInstances
                     if [ $(grep -c ${WEBSERVER} ${APP_ROOT}/${CORE_EXCEPTION_LIST}) -eq 0 ] \
                         && [ $(grep -c ${WEBSERVER} ${APP_ROOT}/${TMP_EXCEPTION_LIST}) -eq 0 ] \
                         && [ $(grep -c ${WEBSERVER} ${APP_ROOT}/${SSL_EXCEPTION_LIST}) -eq 0 ] \
-                        && [ $(printf ${IPLANET_STARTUP_IGNORE_LIST} | grep -c ${WEBSERVER}) -eq 0 ]
+                        && [ $(echo ${IPLANET_STARTUP_IGNORE_LIST} | grep -c ${WEBSERVER}) -eq 0 ]
                     then
                         ## only pull out the web instances that have ssl enabled, via security="on"
                         IS_SECURITY_ENABLED=$(grep ${IPLANET_SECURITY_IDENTIFIER} ${IPLANET_ROOT}/${WEBSERVER}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG} | \

@@ -56,7 +56,7 @@ METHOD_NAME="${THIS_CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-[ ${RET_CODE} -ne 0 ] && print "Application currently in use." && print ${RET_CODE} && exit ${RET_CODE};
+[ ${RET_CODE} -ne 0 ] && printf "Application currently in use." && print ${RET_CODE} && return ${RET_CODE};
 
 unset RET_CODE;
 
@@ -76,7 +76,7 @@ function obtainAndInstallRoots
     ## check if we have a tmp file, if we do, kill
     [ -s ${PLUGIN_WORK_DIRECTORY}/${NAMED_ROOT_CACHE} ] && rm -rf ${PLUGIN_WORK_DIRECTORY}/${NAMED_ROOT_CACHE};
 
-    if [ $(printf ${EXT_SLAVES[@]} | grep -c $(uname -n)) -eq 1 ]
+    if [ $(grep -c $(uname -n) <<< ${EXT_SLAVES[@]}) -eq 1 ]
     then
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "This is an external server. Executing DiG..";
 
@@ -328,7 +328,6 @@ obtainAndInstallRoots && RETURN_CODE=${?};
 
 unset SCRIPT_ABSOLUTE_PATH;
 unset SCRIPT_ROOT;
-unset THIS_CNAME;
 unset RET_CODE;
 unset CNAME;
 unset METHOD_NAME;
@@ -336,4 +335,4 @@ unset METHOD_NAME;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-return ${RETURN_CODE};
+[ -z "${RETURN_CODE}" ] && return 1 || return "${RETURN_CODE}";

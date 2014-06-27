@@ -32,7 +32,7 @@ function check_ui
 
     if [ ! -z "${ENFORCE_SECURITY}" ] && [ "${ENFORCE_SECURITY}" = "${_TRUE}" ]
     then
-        if [ ! $(printf ${AUTHORIZED_USERS[@]} | grep -c $(whoami)) -eq 1 ]
+        if [ ! $(echo ${AUTHORIZED_USERS[@]} | grep -c $(whoami)) -eq 1 ]
         then
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "$(whoami) is not authorized to execute ${CNAME}.";
             print "$(whoami) is not authorized to execute ${CNAME}.";
@@ -41,7 +41,7 @@ function check_ui
             RETURN_CODE=0;
         fi
 
-        if [ ! $(printf ${ALLOWED_SERVERS[@]} | grep -c $(uname -n)) -eq 1 ]
+        if [ ! $(echo ${ALLOWED_SERVERS[@]} | grep -c $(uname -n)) -eq 1 ]
         then
             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} cannot be executed on $(hostname).";
             RETURN_CODE=98;

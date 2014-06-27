@@ -26,19 +26,20 @@ case $(uname) in
         alias whoami='/usr/ucb/whoami';
         alias grep='/usr/xpg4/bin/grep';
         alias egrep='/usr/xpg4/bin/egrep';
-        alias ping='/usr/bin/env ping -a -n 1 -c 4';
+        alias ping='/usr/bin/env ping -a -n';
         ;;
     AIX)
         alias ls='/usr/bin/env ls -F';
         alias grep='/usr/bin/env grep';
         alias egrep='/usr/bin/env egrep';
         alias ping='/usr/bin/env ping -c 1 -q';
+        alias ping="/usr/bin/env ping -c 1-w ${THREAD_TIMEOUT} -n -q -s 512";
         ;;
     *)
         alias ls='/usr/bin/env ls -F --color=auto';
         alias grep='/usr/bin/env grep --color=auto'
         alias egrep='/usr/bin/env egrep --color=auto'
-        alias ping='/usr/bin/env ping -a -n 1 -l 512 -w 3';
+        alias ping="/usr/bin/env ping -c 1 -n -q -s 512 -w ${TIMEOUT}";
         ;;
 esac
 

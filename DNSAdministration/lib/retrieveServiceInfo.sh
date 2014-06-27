@@ -21,9 +21,9 @@
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 ## Application constants
-CNAME="$(basename "${0}")";
+CNAME="$(basename ${0})";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
 local METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -34,7 +34,15 @@ local METHOD_NAME="${CNAME}#startup";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${PLUGIN_ROOT_DIR}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
+[ -z "${PLUGIN_ROOT_DIR}" ] && printf "Failed to locate configuration data. Cannot continue." && exit 1;
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+
+[ -f ${APP_ROOT}/${LIB_DIRECTORY}/aliases ] && . ${APP_ROOT}/${LIB_DIRECTORY}/aliases;
+[ -f ${APP_ROOT}/${LIB_DIRECTORY}/functions ] && . ${APP_ROOT}/${LIB_DIRECTORY}/functions;
+[ -s ${PLUGIN_LIB_DIRECTORY}/aliases ] && . ${PLUGIN_LIB_DIRECTORY}/aliases;
+[ -s ${PLUGIN_LIB_DIRECTORY}/functions ] && . ${PLUGIN_LIB_DIRECTORY}/functions;
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -64,12 +72,10 @@ then
     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
 
-    print "Security configuration does not allow the requested action.";
+    printf "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
 fi
-
-unset RET_CODE;
 
 #===  FUNCTION  ===============================================================
 #          NAME:  obtainInternetService
@@ -90,8 +96,8 @@ function obtainInternetService
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting request detail..";
 
     ## configure the request indicators
-    local REQUEST_TYPE=$(printf ${1} | cut -d "," -f 1);
-    local REQUEST_OPTION=$(printf ${1} | cut -d "," -f 2);
+    local REQUEST_TYPE=$(cut -d "," -f 1 <<< ${1});
+    local REQUEST_OPTION=$(cut -d "," -f 2 <<< ${1});
 
     [ ! -z "${SERVICE_DETAIL}" ] && unset SERVICE_DETAIL;
 
@@ -144,41 +150,20 @@ function obtainInternetService
         done
     fi
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_DETAIL->${SERVICE_DETAIL[@]}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_DETAIL -> ${SERVICE_DETAIL[@]}";
 
-    if [ -z "${SERVICE_DETAIL[@]}" ] || [ ${#SERVICE_DETAIL[@]} -eq 0 ]
-    then
-        RETURN_CODE=12;
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
-
-        unset SERVICE_DETAIL;
-        unset REQUEST_OPTION;
-        unset REQUEST_TYPE;
-        unset METHOD_NAME;
-
-        return ${RETURN_CODE};
-    fi
-
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Command executed successfully on ${NAMED_MASTER}.";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing data..";
-
-    [ ! -z "${PRINT_RESPONSE}" ] && [ "${PRINT_RESPONSE}" = "${_TRUE}" ] && print ${SERVICE_DETAIL[@]};
+    [ ! -z "${SERVICE_DETAIL[@]}" ] && [ ! -z "${PRINT_RESPONSE}" ] && [ "${PRINT_RESPONSE}" = "${_TRUE}" ] && print ${SERVICE_DETAIL[@]};
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
     unset SERVICE_DETAIL;
     unset REQUEST_OPTION;
     unset REQUEST_TYPE;
     unset METHOD_NAME;
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
     return ${RETURN_CODE};
 }
@@ -209,13 +194,24 @@ function obtainIntranetService
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
+        unset DISABLE_POP;
+        unset ENABLE_POP;
+        unset STATUS;
+        unset POP_STATUS;
+        unset POP_NAME;
+        unset POP_NAMES;
+        unset END_LINE_NUMBER;
+        unset START_LINE_NUMBER;
+        unset VHOST_LINE_NUMBER;
+        unset RET_CODE;
+        unset GD_SERVER;
+        unset SITE_VHOST_NAME;
+        unset POPS_LINE_NUMBER;
+        unset POPE_LINE_NUMBER;
+        unset METHOD_NAME;
+
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
-
-        unset SERVICE_DETAIL;
-        unset REQUEST_OPTION;
-        unset REQUEST_TYPE;
-        unset METHOD_NAME;
 
         return ${RETURN_CODE};
     fi
@@ -271,7 +267,22 @@ function obtainIntranetService
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Server availability confirmed. GD_SERVER -> ${GD_SERVER}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${GD_SERVER} \"gdctl -k\" > ${PLUGIN_ROOT_DIR}/${GD_CONFIG_FILE}";
 
+            local THIS_CNAME="${CNAME}";
+            unset METHOD_NAME;
+            unset CNAME;
+
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+            ## validate the input
             ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${GD_SERVER} "gdctl -k" ${SSH_USER_NAME} ${SSH_USER_AUTH} | sed -e "s/^M//g" > ${PLUGIN_ROOT_DIR}/${GD_CONFIG_FILE};
+            typeset -i RET_CODE=${?};
+
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+            CNAME="${THIS_CNAME}";
+            local METHOD_NAME="${THIS_CNAME}#${0}";
 
             break;
         done
@@ -286,13 +297,24 @@ function obtainIntranetService
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
+        unset DISABLE_POP;
+        unset ENABLE_POP;
+        unset STATUS;
+        unset POP_STATUS;
+        unset POP_NAME;
+        unset POP_NAMES;
+        unset END_LINE_NUMBER;
+        unset START_LINE_NUMBER;
+        unset VHOST_LINE_NUMBER;
+        unset RET_CODE;
+        unset GD_SERVER;
+        unset SITE_VHOST_NAME;
+        unset POPS_LINE_NUMBER;
+        unset POPE_LINE_NUMBER;
+        unset METHOD_NAME;
+
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
-
-        unset SERVICE_DETAIL;
-        unset REQUEST_OPTION;
-        unset REQUEST_TYPE;
-        unset METHOD_NAME;
 
         return ${RETURN_CODE};
     fi
@@ -306,13 +328,24 @@ function obtainIntranetService
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
+        unset DISABLE_POP;
+        unset ENABLE_POP;
+        unset STATUS;
+        unset POP_STATUS;
+        unset POP_NAME;
+        unset POP_NAMES;
+        unset END_LINE_NUMBER;
+        unset START_LINE_NUMBER;
+        unset VHOST_LINE_NUMBER;
+        unset RET_CODE;
+        unset GD_SERVER;
+        unset SITE_VHOST_NAME;
+        unset POPS_LINE_NUMBER;
+        unset POPE_LINE_NUMBER;
+        unset METHOD_NAME;
+
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
-
-        unset SERVICE_DETAIL;
-        unset REQUEST_OPTION;
-        unset REQUEST_TYPE;
-        unset METHOD_NAME;
 
         return ${RETURN_CODE};
     fi
@@ -331,13 +364,24 @@ function obtainIntranetService
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
+        unset DISABLE_POP;
+        unset ENABLE_POP;
+        unset STATUS;
+        unset POP_STATUS;
+        unset POP_NAME;
+        unset POP_NAMES;
+        unset END_LINE_NUMBER;
+        unset START_LINE_NUMBER;
+        unset VHOST_LINE_NUMBER;
+        unset RET_CODE;
+        unset GD_SERVER;
+        unset SITE_VHOST_NAME;
+        unset POPS_LINE_NUMBER;
+        unset POPE_LINE_NUMBER;
+        unset METHOD_NAME;
+
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
-
-        unset SERVICE_DETAIL;
-        unset REQUEST_OPTION;
-        unset REQUEST_TYPE;
-        unset METHOD_NAME;
 
         return ${RETURN_CODE};
     fi
@@ -361,13 +405,24 @@ function obtainIntranetService
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
+        unset DISABLE_POP;
+        unset ENABLE_POP;
+        unset STATUS;
+        unset POP_STATUS;
+        unset POP_NAME;
+        unset POP_NAMES;
+        unset END_LINE_NUMBER;
+        unset START_LINE_NUMBER;
+        unset VHOST_LINE_NUMBER;
+        unset RET_CODE;
+        unset GD_SERVER;
+        unset SITE_VHOST_NAME;
+        unset POPS_LINE_NUMBER;
+        unset POPE_LINE_NUMBER;
+        unset METHOD_NAME;
+
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
-
-        unset SERVICE_DETAIL;
-        unset REQUEST_OPTION;
-        unset REQUEST_TYPE;
-        unset METHOD_NAME;
 
         return ${RETURN_CODE};
     fi
@@ -396,27 +451,38 @@ function obtainIntranetService
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
+        unset DISABLE_POP;
+        unset ENABLE_POP;
+        unset STATUS;
+        unset POP_STATUS;
+        unset POP_NAME;
+        unset POP_NAMES;
+        unset END_LINE_NUMBER;
+        unset START_LINE_NUMBER;
+        unset VHOST_LINE_NUMBER;
+        unset RET_CODE;
+        unset GD_SERVER;
+        unset SITE_VHOST_NAME;
+        unset POPS_LINE_NUMBER;
+        unset POPE_LINE_NUMBER;
+        unset METHOD_NAME;
+
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
-
-        unset SERVICE_DETAIL;
-        unset REQUEST_OPTION;
-        unset REQUEST_TYPE;
-        unset METHOD_NAME;
 
         return ${RETURN_CODE};
     fi
 
     for STATUS in ${POP_STATUS[@]}
     do
-        if [ "$(printf ${STATUS} | cut -d "|" -f 2)" = "no" ]
+        if [ "$(cut -d "|" -f 2 <<< ${STATUS})" = "no" ]
         then
-            local ENABLE_POP=$(printf ${STATUS} | cut -d "|" -f 1);
+            local ENABLE_POP=$(cut -d "|" -f 1 <<< ${STATUS});
         fi
 
-        if [ "$(printf ${STATUS} | cut -d "|" -f 2)" = "yes" ]
+        if [ "$(cut -d "|" -f 2 <<< ${STATUS})" = "yes" ]
         then
-            local DISABLE_POP=$(printf ${STATUS} | cut -d "|" -f 1);
+            local DISABLE_POP=$(cut -d "|" -f 1 <<< ${STATUS});
         fi
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ENABLE_POP -> ${ENABLE_POP}";
@@ -425,9 +491,6 @@ function obtainIntranetService
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
     unset DISABLE_POP;
     unset ENABLE_POP;
@@ -444,6 +507,9 @@ function obtainIntranetService
     unset POPS_LINE_NUMBER;
     unset POPE_LINE_NUMBER;
     unset METHOD_NAME;
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
     return ${RETURN_CODE};
 }
@@ -527,13 +593,13 @@ function retrieveZoneFiles
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
-
             unset METHOD_NAME;
             unset RET_CODE;
             unset IS_SOURCE_MASTER;
             unset TARGET_SERVER;
+
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
             return ${RETURN_CODE};
         fi
@@ -567,13 +633,13 @@ function retrieveZoneFiles
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
-
             unset METHOD_NAME;
             unset RET_CODE;
             unset IS_SOURCE_MASTER;
             unset TARGET_SERVER;
+
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
             return ${RETURN_CODE};
         fi
@@ -588,13 +654,13 @@ function retrieveZoneFiles
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
-
         unset METHOD_NAME;
         unset RET_CODE;
         unset IS_SOURCE_MASTER;
         unset TARGET_SERVER;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
         return ${RETURN_CODE};
     fi
@@ -615,13 +681,13 @@ function retrieveZoneFiles
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
-
         unset METHOD_NAME;
         unset RET_CODE;
         unset IS_SOURCE_MASTER;
         unset TARGET_SERVER;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
         return ${RETURN_CODE};
     fi
@@ -629,13 +695,13 @@ function retrieveZoneFiles
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
-
     unset METHOD_NAME;
     unset RET_CODE;
     unset IS_SOURCE_MASTER;
     unset TARGET_SERVER;
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
     return ${RETURN_CODE};
 }
@@ -656,13 +722,13 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    print "${CNAME} - Add zone entries to a given zonefile";
-    print "Usage: ${CNAME} [ -i < type identifier> ] [ -b <business unit> ] [ -r ] [ -e ] [ -?|-h <show this help> ]";
-    print "  -b      The associated business unit.";
-    print "  -i      The associated type identifier, internet or intranet.";
-    print "  -r      Retrieve zone files from the remote system.";
-    print "  -s      Execute processing";
-    print "  -h|-?   Show this help";
+    printf "${CNAME} - Add zone entries to a given zonefile";
+    printf "Usage: ${CNAME} [ -i < type identifier> ] [ -b <business unit> ] [ -r ] [ -e ] [ -?|-h <show this help> ]";
+    printf "  -b      The associated business unit.";
+    printf "  -i      The associated type identifier, internet or intranet.";
+    printf "  -r      Retrieve zone files from the remote system.";
+    printf "  -s      Execute processing";
+    printf "  -h|-?   Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -715,19 +781,9 @@ do
 
                 RETURN_CODE=24;
             else
-                [ ! -z "${RETRIEVE_FILES}" ] && [ "${RETRIEVE_FILES}" = "${_TRUE}" ] && retrieveZoneFiles;
-
-                case ${TYPE_IDENTIFIER} in
-                    ${INTERNET_TYPE_IDENTIFIER});
-                        obtainInternetService ${BUSINESS_UNIT} && RETURN_CODE=${?};
-                        ;;
-                    ${INTRANET_TYPE_IDENTIFIER})
-                        obtainIntranetService ${BUSINESS_UNIT} && RETURN_CODE=${?};
-                        ;;
-                    *)
-                        usage && RETURN_CODE=${?};
-                        ;;
-                esac
+                [ ! -z "${RETRIEVE_FILES}" ] && [ "${RETRIEVE_FILES}" = "${_TRUE}" ] && retrieveZoneFiles && RETURN_CODE=${?};
+                [ ! -z "${TYPE_IDENTIFIER}" ] && [ "${TYPE_IDENTIFIER}" = "${INTERNET_TYPE_IDENTIFIER}" ] && obtainInternetService && RETURN_CODE=${?};
+                [ ! -z "${TYPE_IDENTIFIER}" ] && [ "${TYPE_IDENTIFIER}" = "${INTRANET_TYPE_IDENTIFIER}" ] && obtainIntranetService && RETURN_CODE=${?};
             fi
             ;;
         *)
@@ -744,7 +800,6 @@ unset TYPE_IDENTIFIER;
 unset RETRIEVE_FILES;
 unset SCRIPT_ABSOLUTE_PATH;
 unset SCRIPT_ROOT;
-unset THIS_CNAME;
 unset RET_CODE;
 unset CNAME;
 unset METHOD_NAME;
@@ -752,4 +807,4 @@ unset METHOD_NAME;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-return ${RETURN_CODE};
+[ -z "${RETURN_CODE}" ] && return 1 || return "${RETURN_CODE}";

@@ -42,7 +42,7 @@ function addServiceIndicators
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "LAST_SERIAL -> ${LAST_SERIAL}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TARGET_DC -> ${TARGET_DC}";
 
-    if [ $(echo ${LAST_SERIAL} | cut -c 1-8) -eq $(date +"%Y%m%d") ]
+    if [ $(cut -c 1-8 <<< ${LAST_SERIAL}) -eq $(date +"%Y%m%d") ]
     then
         SERIAL_NUM=$(( ${LAST_SERIAL} + 1 ));
     else
@@ -72,7 +72,7 @@ function addServiceIndicators
         ## take a copy of the target dc file, otherwise none of this works.
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FAILOVER is ${FAILOVER}. Copying file..";
 
-        cp ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${ZONE_ROOT}/${TARGET_DC}/$(echo ${FILENAME} | cut -d "." -f 1-2) ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME};
+        cp ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${ZONE_ROOT}/${TARGET_DC}/$(cut -d "." -f 1-2 <<< ${FILENAME}) ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME};
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copy complete.";
     fi

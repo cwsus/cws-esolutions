@@ -64,7 +64,7 @@ then
     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
 
-    print "Security configuration does not allow the requested action.";
+    printf "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
 fi
@@ -87,7 +87,7 @@ METHOD_NAME="${THIS_CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-[ ${RET_CODE} -ne 0 ] && print "Application currently in use." && print ${RET_CODE} && exit ${RET_CODE};
+[ ${RET_CODE} -ne 0 ] && printf "Application currently in use." && print ${RET_CODE} && return ${RET_CODE};
 
 unset RET_CODE;
 
@@ -151,16 +151,16 @@ function get_site_by_url
 
         while [ ${A} -ne ${#RETRIEVAL_LIST[@]} ]
         do
-            if [ $(printf ${IGNORE_LIST} | grep -c $(printf ${RETRIEVAL_LIST[${A}]} | cut -d "/" -f 6)) -eq 1 ] && [ "${SEARCH_DECOM}" != "${_TRUE}" ]
+            if [ $(grep -c $(cut -d "/" -f 6 <<< ${RETRIEVAL_LIST[${A}]}) <<< ${IGNORE_LIST}) -eq 1 ] && [ "${SEARCH_DECOM}" != "${_TRUE}" ]
             then
                 ## drop it, its in the ignore list
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Ignoring ${RETRIEVAL_LIST[${A}]} due to exclusion rule.";
 
-                TMP_LIST=$(for ITEM in ${RETRIEVAL_LIST[@]}; do printf ${ITEM} | grep -v ${RETRIEVAL_LIST[${A}]}; done);
+                TMP_LIST=$(for ITEM in ${RETRIEVAL_LIST[@]}; do grep -v ${RETRIEVAL_LIST[${A}]} <<< ${ITEM}; done);
 
                 if [ ! -z "${TMP_LIST}" ]
                 then
-                    set -A RETRIEVAL_LIST $(printf ${TMP_LIST});
+                    set -A RETRIEVAL_LIST ${RETRIEVAL_LIST[@]} ${TMP_LIST};
                 else
                     ## we didnt get a resultset, log the "ERROR"
                     ## and return the code
@@ -177,7 +177,7 @@ function get_site_by_url
             else
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "URLs obtained: ${RETRIEVAL_LIST[${A}]}";
 
-                SITE_FILE=$(printf ${RETRIEVAL_LIST[${A}]})"|";
+                SITE_FILE=$(echo ${RETRIEVAL_LIST[${A}]})"|";
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_FILE -> ${SITE_FILE[${A}]}";
 
@@ -195,7 +195,7 @@ function get_site_by_url
                     ## because of differences in the way
                     ## the text is placed, we need to know
                     ## where to look based on the INFO requested
-                    if [ "${INFO}" = "$(printf ${ZONE_DATA_RETRIEVALS} | awk '{print $1}')" ]
+                    if [ "${INFO}" = "$(awk '{print $1}' <<< ${ZONE_DATA_RETRIEVALS})" ]
                     then
                         INFO_VAR=${INFO_VAR}""$(grep "${INFO}" ${RETRIEVAL_LIST[${A}]} | awk '{print $5}')"|";
                     else
@@ -209,7 +209,7 @@ function get_site_by_url
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INFO_VAR -> ${INFO_VAR}";
 
                 ## write the data out to a file
-                printf "$(printf ${SITE_FILE} | sed -e 's/^[ \t]*//')$(printf ${INFO_VAR} | sed -e 's/^[ \t]*//')";
+                printf "$(sed -e 's/^[ \t]*//' <<< ${SITE_FILE})$(sed -e 's/^[ \t]*//' <<< ${INFO_VAR})";
 
                 ## unset the variables so we get fresh
                 ## results
@@ -320,16 +320,16 @@ function get_site_by_bu
 
             while [ ${A} -ne ${#RETRIEVAL_LIST[@]} ]
             do
-                if [ $(printf ${IGNORE_LIST} | grep -c $(printf ${RETRIEVAL_LIST[${A}]} | cut -d "/" -f 6)) -eq 1 ] && [ "${SEARCH_DECOM}" != "${_TRUE}" ]
+                if [ $(grep -c $(cut -d "/" -f 6 <<< ${RETRIEVAL_LIST[${A}]}) <<< ${IGNORE_LIST}) -eq 1 ] && [ "${SEARCH_DECOM}" != "${_TRUE}" ]
                 then
                     ## drop it, its in the ignore list
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Ignoring ${RETRIEVAL_LIST[${A}]} due to exclusion rule.";
 
-                    TMP_LIST=$(for ITEM in ${RETRIEVAL_LIST[@]}; do printf ${ITEM} | grep -v ${RETRIEVAL_LIST[${A}]}; done);
+                    TMP_LIST=$(for ITEM in ${RETRIEVAL_LIST[@]}; do grep -v ${RETRIEVAL_LIST[${A}] <<< ${ITEM}}; done);
 
                     if [ ! -z "${TMP_LIST}" ]
                     then
-                        set -A RETRIEVAL_LIST $(printf ${TMP_LIST});
+                        set -A RETRIEVAL_LIST ${RETRIEVAL_LIST[@]} ${TMP_LIST};
                     else
                         ## we didnt get a resultset, log the "ERROR"
                         ## and return the code
@@ -346,7 +346,7 @@ function get_site_by_bu
                 else
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "URLs obtained: ${RETRIEVAL_LIST[${A}]}";
 
-                    SITE_FILE=$(printf ${RETRIEVAL_LIST[${A}]})"|";
+                    SITE_FILE=$(echo ${RETRIEVAL_LIST[${A}]})"|";
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_FILE -> ${SITE_FILE[${A}]}";
 
@@ -364,7 +364,7 @@ function get_site_by_bu
                         ## because of differences in the way
                         ## the text is placed, we need to know
                         ## where to look based on the INFO requested
-                        if [ "${INFO}" = "$(printf ${ZONE_DATA_RETRIEVALS} | awk '{print $1}')" ]
+                        if [ "${INFO}" = "$(awk '{print $1}' <<< ${ZONE_DATA_RETRIEVALS})" ]
                         then
                             INFO_VAR=${INFO_VAR}""$(grep "${INFO}" ${SITE_ROOT}/${RETRIEVAL_LIST[${A}]} | awk '{print $5}')"|";
                         else
@@ -378,7 +378,7 @@ function get_site_by_bu
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INFO_VAR -> ${INFO_VAR}";
 
                     ## write the data out to a file
-                    printf "$(printf ${SITE_ROOT}/${SITE_FILE} | sed -e 's/^[ \t]*//')$(printf ${INFO_VAR} | sed -e 's/^[ \t]*//')";
+                    printf "$(sed -e 's/^[ \t]*//' <<< ${SITE_ROOT}/${SITE_FILE})$(sed -e 's/^[ \t]*//' <<< ${INFO_VAR})";
 
                     ## unset the variables so we get fresh
                     ## results
@@ -470,16 +470,16 @@ function get_site_by_prj_code
 
         while [ ${A} -ne ${#RETRIEVAL_LIST[@]} ]
         do
-            if [ $(printf ${IGNORE_LIST} | grep -c $(printf ${RETRIEVAL_LIST[${A}]} | cut -d "/" -f 6)) -eq 1 ] && [ "${SEARCH_DECOM}" != "${_TRUE}" ]
+            if [ $(grep -c $(cut -d "/" -f 6 <<< ${RETRIEVAL_LIST[${A}]}) <<< ${IGNORE_LIST}) -eq 1 ] && [ "${SEARCH_DECOM}" != "${_TRUE}" ]
             then
                 ## drop it, its in the ignore list
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Ignoring ${RETRIEVAL_LIST[${A}]} due to exclusion rule.";
 
-                TMP_LIST=$(for ITEM in ${RETRIEVAL_LIST[@]}; do printf ${ITEM} | grep -v ${RETRIEVAL_LIST[${A}]}; done);
+                TMP_LIST=$(for ITEM in ${RETRIEVAL_LIST[@]}; do grep -v ${RETRIEVAL_LIST[${A}] <<< ${ITEM}}; done);
 
                 if [ ! -z "${TMP_LIST}" ]
                 then
-                    set -A RETRIEVAL_LIST $(printf ${TMP_LIST});
+                    set -A RETRIEVAL_LIST ${RETRIEVAL_LIST[@]} ${TMP_LIST};
                 else
                     ## we didnt get a resultset, log the "ERROR"
                     ## and return the code
@@ -496,7 +496,7 @@ function get_site_by_prj_code
             else
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "URLs obtained: ${RETRIEVAL_LIST[${A}]}";
 
-                SITE_FILE=$(printf ${RETRIEVAL_LIST[${A}]})"|";
+                SITE_FILE=$(echo ${RETRIEVAL_LIST[${A}]})"|";
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_FILE -> ${SITE_FILE[${A}]}";
 
@@ -514,7 +514,7 @@ function get_site_by_prj_code
                     ## because of differences in the way
                     ## the text is placed, we need to know
                     ## where to look based on the INFO requested
-                    if [ "${INFO}" = "$(printf ${ZONE_DATA_RETRIEVALS} | awk '{print $1}')" ]
+                    if [ "${INFO}" = "$(awk '{print $1}' <<< ${ZONE_DATA_RETRIEVALS})" ]
                     then
                         INFO_VAR=${INFO_VAR}""$(grep "${INFO}" ${SITE_ROOT}/${RETRIEVAL_LIST[${A}]} | awk '{print $5}')"|";
                     else
@@ -528,7 +528,7 @@ function get_site_by_prj_code
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INFO_VAR -> ${INFO_VAR}";
 
                 ## write the data out to a file
-                printf "$(printf ${SITE_FILE} | sed -e 's/^[ \t]*//')$(printf ${INFO_VAR} | sed -e 's/^[ \t]*//')";
+                printf "$(sed -e 's/^[ \t]*//')$(sed -e 's/^[ \t]*//' <<< ${INFO_VAR}) <<< ${SITE_FILE}";
 
                 ## unset the variables so we get fresh
                 ## results
@@ -579,14 +579,14 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    print "${CNAME} - Obtain information regarding DNS entries";
-    print "Usage: ${CNAME} [-u url] [-b business unit)] [-p project code] [ -d ] [ -e ] [-h] [-?]";
-    print "  -u      Obtains information from the DNS master regarding the supplied URL";
-    print "  -b      Obtains information from the DNS master regarding the supplied Business Unit";
-    print "  -p      Obtains information from the DNS master regarding the supplied project code";
-    print "  -d      Search only for decommissioned records";
-    print "  -e      Execute processing";
-    print "  -h|-?   Show this help";
+    printf "${CNAME} - Obtain information regarding DNS entries";
+    printf "Usage: ${CNAME} [-u url] [-b business unit)] [-p project code] [ -d ] [ -e ] [-h] [-?]";
+    printf "  -u      Obtains information from the DNS master regarding the supplied URL";
+    printf "  -b      Obtains information from the DNS master regarding the supplied Business Unit";
+    printf "  -p      Obtains information from the DNS master regarding the supplied project code";
+    printf "  -d      Search only for decommissioned records";
+    printf "  -e      Execute processing";
+    printf "  -h|-?   Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -607,7 +607,7 @@ do
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting SITE_OPTION and SITE_ID..";
 
             SITE_OPTION=u;
-            typeset -u SITE_ID=$(printf "${OPTARG}" | sed -e 's/^ *//g;s/ *$//g');
+            typeset -u SITE_ID=$(sed -e 's/^ *//g;s/ *$//g' <<< ${OPTARG});
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_OPTION set to ${SITE_OPTION}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_ID set to ${SITE_ID}";
@@ -617,7 +617,7 @@ do
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting SITE_OPTION and SITE_ID..";
 
             SITE_OPTION=b;
-            typeset -u SITE_ID=$(printf "${OPTARG}" | sed -e 's/^ *//g;s/ *$//g');
+            typeset -u SITE_ID=$(sed -e 's/^ *//g;s/ *$//g' <<< ${OPTARG});
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_OPTION set to ${SITE_OPTION}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_ID set to ${SITE_ID}";
@@ -627,7 +627,7 @@ do
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting SITE_OPTION and SITE_ID..";
 
             SITE_OPTION=p;
-            typeset -u SITE_ID=$(printf "${OPTARG}" | sed -e 's/^ *//g;s/ *$//g');
+            typeset -u SITE_ID=$(sed -e 's/^ *//g;s/ *$//g' <<< ${OPTARG});
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_OPTION set to ${SITE_OPTION}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_ID set to ${SITE_ID}";
@@ -689,7 +689,6 @@ done
 
 unset SCRIPT_ABSOLUTE_PATH;
 unset SCRIPT_ROOT;
-unset THIS_CNAME;
 unset RET_CODE;
 unset CNAME;
 unset METHOD_NAME;
@@ -697,4 +696,5 @@ unset METHOD_NAME;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-return ${RETURN_CODE};
+[ -z "${RETURN_CODE}" ] && printf "1" || printf "${RETURN_CODE}";
+[ -z "${RETURN_CODE}" ] && return 1 || return "${RETURN_CODE}";

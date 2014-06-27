@@ -72,7 +72,7 @@ local RETURN_CODE=0;
 
             if [ ! -z "${VALIDATE_SERVER_LIST}" ]
             then
-                if [ "$(printf ${VALIDATE_SERVER_LIST[@]})" != "${_FALSE}" ]
+                if [ "$(echo ${VALIDATE_SERVER_LIST[@]})" != "${_FALSE}" ]
                 then
                     ## ok, validate it
                     for VALIDATE_SITE in ${VALIDATE_SERVER_LIST[@]}
@@ -98,9 +98,9 @@ local RETURN_CODE=0;
                             then
                                 CERT_DETAIL=$(certutil -L -d ${IPLANET_ROOT}/${IPLANET_CERT_DIR} -P ${CERT_DATABASE} -n ${CERT_NICKNAME} | \
                                     sed -e "s/CN=/%/" -e "s/Not After : /%/")
-                                CERT_HOSTNAME=$(printf ${CERT_DETAIL} | cut -d "%" -f 4| cut -d "," -f 1);
-                                CERT_EXPIRY=$(printf ${CERT_DETAIL} | cut -d "%" -f 3 | awk '{print $5, $2, $3}');
-                                EXPIRY_MONTH=$(printf ${CERT_EXPIRY} | awk '{print $2}');
+                                CERT_HOSTNAME=$(echo ${CERT_DETAIL} | cut -d "%" -f 4| cut -d "," -f 1);
+                                CERT_EXPIRY=$(echo ${CERT_DETAIL} | cut -d "%" -f 3 | awk '{print $5, $2, $3}');
+                                EXPIRY_MONTH=$(echo ${CERT_EXPIRY} | awk '{print $2}');
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_NICKNAME -> ${CERT_NICKNAME}";
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_HOSTNAME -> ${CERT_HOSTNAME}";
@@ -110,7 +110,7 @@ local RETURN_CODE=0;
                                 if [ ! -z "${CERT_EXPIRY}" ]
                                 then
                                     ## ok, we have a nickname and an expiration date. convert it
-                                    EPOCH_EXPIRY=$(returnEpochTime $(printf ${CERT_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval printf \${${EXPIRY_MONTH}})/"));
+                                    EPOCH_EXPIRY=$(returnEpochTime $(echo ${CERT_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval printf \${${EXPIRY_MONTH}})/"));
 
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EPOCH_EXPIRY -> ${EPOCH_EXPIRY}";
 
@@ -170,9 +170,9 @@ local RETURN_CODE=0;
                             CERT_DETAIL=$(keyman -cert -details -db ${IHS_CERT_DIR}/${VALIDATE_SITE}${IHS_DB_CRT_SUFFIX} \
                                 -pw $(cat ${APP_ROOT}/${IHS_CERT_DB_PASSFILE}) -label "${CERT_NICKNAME}" -type ${IHS_KEY_DB_TYPE} | \
                                 sed -e "s/Subject: CN=/@/" -e "s/To:/@/");
-                            CERT_HOSTNAME=$(printf ${CERT_DETAIL} | cut -d "@" -f 2 | cut -d "," -f 1);
-                            CERT_EXPIRY=$(printf ${CERT_DETAIL} | cut -d "@" -f 3 | awk '{print $4, $2, $3}' | sed -e "s/,//");
-                            EXPIRY_MONTH=$(printf ${CERT_EXPIRY} | awk '{print $2}' | cut -c 1-3);
+                            CERT_HOSTNAME=$(echo ${CERT_DETAIL} | cut -d "@" -f 2 | cut -d "," -f 1);
+                            CERT_EXPIRY=$(echo ${CERT_DETAIL} | cut -d "@" -f 3 | awk '{print $4, $2, $3}' | sed -e "s/,//");
+                            EXPIRY_MONTH=$(echo ${CERT_EXPIRY} | awk '{print $2}' | cut -c 1-3);
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_HOSTNAME -> ${CERT_HOSTNAME}";
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_EXPIRY -> ${CERT_EXPIRY}";
@@ -181,7 +181,7 @@ local RETURN_CODE=0;
                             if [ ! -z "${CERT_EXPIRY}" ]
                             then
                                 ## ok, we have a nickname and an expiration date. convert it
-                                EPOCH_EXPIRY=$(returnEpochTime $(printf ${CERT_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval printf \${${EXPIRY_MONTH}})/"));
+                                EPOCH_EXPIRY=$(returnEpochTime $(echo ${CERT_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval printf \${${EXPIRY_MONTH}})/"));
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EPOCH_EXPIRY -> ${EPOCH_EXPIRY}";
 
@@ -212,9 +212,9 @@ local RETURN_CODE=0;
                             CERT_DETAIL=$(keyman -cert -details -db ${IHS_CERT_DIR}/${VALIDATE_SITE}${IHS_DB_CRT_SUFFIX} \
                                 -pw $(cat ${APP_ROOT}/${IHS_CERT_DB_PASSFILE}) -label "${CERT_NICKNAME}" -type ${IHS_KEY_DB_TYPE} | \
                                 sed -e "s/Subject: CN=/@/" -e "s/To:/@/");
-                            CERT_HOSTNAME=$(printf ${CERT_DETAIL} | cut -d "@" -f 2 | cut -d "," -f 1);
-                            CERT_EXPIRY=$(printf ${CERT_DETAIL} | cut -d "@" -f 3 | awk '{print $4, $2, $3}' | sed -e "s/,//");
-                            EXPIRY_MONTH=$(printf ${CERT_EXPIRY} | awk '{print $2}' | cut -c 1-3);
+                            CERT_HOSTNAME=$(echo ${CERT_DETAIL} | cut -d "@" -f 2 | cut -d "," -f 1);
+                            CERT_EXPIRY=$(echo ${CERT_DETAIL} | cut -d "@" -f 3 | awk '{print $4, $2, $3}' | sed -e "s/,//");
+                            EXPIRY_MONTH=$(echo ${CERT_EXPIRY} | awk '{print $2}' | cut -c 1-3);
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_HOSTNAME -> ${CERT_HOSTNAME}";
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_EXPIRY -> ${CERT_EXPIRY}";
@@ -223,7 +223,7 @@ local RETURN_CODE=0;
                             if [ ! -z "${CERT_EXPIRY}" ]
                             then
                                 ## ok, we have a nickname and an expiration date. convert it
-                                EPOCH_EXPIRY=$(returnEpochTime $(printf ${CERT_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval printf \${${EXPIRY_MONTH}})/"));
+                                EPOCH_EXPIRY=$(returnEpochTime $(echo ${CERT_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval printf \${${EXPIRY_MONTH}})/"));
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EPOCH_EXPIRY -> ${EPOCH_EXPIRY}";
 

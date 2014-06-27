@@ -236,7 +236,7 @@ local RETURN_CODE=0;
                                     unset RET_CODE;
 
                                     ## re-define process date
-                                    PROCESS_DATE=$(printf ${PROCESS_DATE} | awk '{print $2, $3, $1}');
+                                    PROCESS_DATE=$(echo ${PROCESS_DATE} | awk '{print $2, $3, $1}');
 
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_DATE -> ${PROCESS_DATE}";
 

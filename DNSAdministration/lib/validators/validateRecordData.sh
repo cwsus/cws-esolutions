@@ -48,7 +48,7 @@ function validateIPAddress
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    if [ -z "${2}" ] || [ $(printf ${2} | tr -dc "." | wc -c) -ne 3 ]
+    if [ -z "${2}" ] || [ $(tr -dc "." <<< ${2} | wc -c) -ne 3 ]
     then
         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "The provided address is invalid. Cannot continue.";
 
@@ -99,7 +99,7 @@ function validateIPAddress
         do
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ADDRESS -> ${ADDRESS}";
 
-            OCTET_MATCH=$(printf "${1}" | cut -d "." -f 1-$(printf ${ADDRESS} | tr -dc "." | wc -c));
+            OCTET_MATCH=$(printf "${1}" | cut -d "." -f 1-$(tr -dc "." <<< ${ADDRESS} | wc -c));
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OCTET_MATCH -> ${OCTET_MATCH}";
 
@@ -133,10 +133,10 @@ function validateIPAddress
     fi
 
 
-    FIRST_OCTET=$(printf ${2} | cut -d "." -f 1);
-    SECOND_OCTET=$(printf ${2} | cut -d "." -f 2);
-    THIRD_OCTET=$(printf ${2} | cut -d "." -f 3);
-    FOURTH_OCTET=$(printf ${2} | cut -d "." -f 4);
+    FIRST_OCTET=$(cut -d "." -f 1 <<< ${2});
+    SECOND_OCTET=$(cut -d "." -f 2 <<< ${2});
+    THIRD_OCTET=$(cut -d "." -f 3 <<< ${2});
+    FOURTH_OCTET=$(cut -d "." -f 4 <<< ${2});
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FIRST_OCTET -> ${FIRST_OCTET}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SECOND_OCTET -> ${SECOND_OCTET}";
@@ -183,7 +183,7 @@ function validateRecordType
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     local METHOD_NAME="${CNAME}#${0}";
     local RETURN_CODE=0;
-    local RECORD_TYPE=$(printf ${2} | tr "[a-z]" "[A-Z]");
+    local RECORD_TYPE=$(tr "[a-z]" "[A-Z]" <<< ${2});
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -205,7 +205,7 @@ function validateRecordType
     do
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ALLOWED_RECORD -> ${ALLOWED_RECORD}";
 
-        [ -z "$(echo ${ALLOWED_RECORD} | sed -e '/^ *#/d;s/#.*//;s/^ *//g;s/ *$//g')" ] && continue;
+        [ -z "$(sed -e '/^ *#/d;s/#.*//;s/^ *//g;s/ *$//g' <<< ${ALLOWED_RECORD})" ] && continue;
 
         if [ "${RECORD_TYPE}" = "${ALLOWED_RECORD}" ]
         then
@@ -435,7 +435,7 @@ function validateRecordTarget
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-                        [ ! -z "${RET_CODE}" ] && [ ${RET_CODE} -eq 0 ] && RESOLVED_NAME=$(cat ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE});
+                        [ ! -z "${RET_CODE}" ] && [ ${RET_CODE} -eq 0 ] && RESOLVED_NAME=$(<${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE});
                     done
 
                     if [ ! -z "${RESOLVED_NAME}" ]
@@ -471,7 +471,7 @@ function validateRecordTarget
             ## or it might point to a wholly different resources
             ## (eg search.example.com points to www.google.com)
             ## need to know what file to look at
-            SOURCE_FILE=${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(echo ${SITE_HOSTNAME} | cut -d "." -f 1);
+            SOURCE_FILE=${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${BIZ_UNIT}/${PRIMARY_DC}/${NAMED_ZONE_PREFIX}.$(cut -d "." -f 1 <<< ${SITE_HOSTNAME});
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SOURCE_FILE -> ${SOURCE_FILE}";
 
@@ -522,7 +522,7 @@ function validateRecordTarget
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-                        [ ! -z "${RET_CODE}" ] && [ ${RET_CODE} -eq 0 ] && RESOLVED_NAME=$(cat ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE});
+                        [ ! -z "${RET_CODE}" ] && [ ${RET_CODE} -eq 0 ] && RESOLVED_NAME=$(<${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE});
                     done
 
                     if [ ! -z "${RESOLVED_NAME}" ]
@@ -690,7 +690,6 @@ local METHOD_NAME="${CNAME}#${0}";
 
 unset SCRIPT_ABSOLUTE_PATH;
 unset SCRIPT_ROOT;
-unset THIS_CNAME;
 unset RET_CODE;
 unset CNAME;
 unset METHOD_NAME;
@@ -698,4 +697,4 @@ unset METHOD_NAME;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-return ${RETURN_CODE};
+[ -z "${RETURN_CODE}" ] && return 1 || return "${RETURN_CODE}";

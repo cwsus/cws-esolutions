@@ -85,7 +85,7 @@ function validate_change_request
         fi
     elif [ "${WEB_PLATFORM_TYPE}" = "${IHS_TYPE_IDENTIFIER}" ]
     then
-        REAL_CERTDB_NAME=$(printf ${VALIDATE_CERT_DB} | cut -d "-" -f 1);
+        REAL_CERTDB_NAME=$(echo ${VALIDATE_CERT_DB} | cut -d "-" -f 1);
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_CERT_DB -> ${VALIDATE_CERT_DB}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REAL_CERTDB_NAME -> ${REAL_CERTDB_NAME}";

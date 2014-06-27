@@ -149,7 +149,7 @@ function backout_change
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting TAR_FILE..";
 
                     ## get the tar file nice
-                    TAR_FILE=$(printf ${FILE_LIST[${A}]} | cut -d "." -f 0-6);
+                    TAR_FILE=$(echo ${FILE_LIST[${A}]} | cut -d "." -f 0-6);
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TAR_FILE->${TAR_FILE}";
 
@@ -182,8 +182,8 @@ function backout_change
             ## got a filename to operate against.
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing backout file ${FILE_NAME}";
 
-            BIZ_UNIT=$(printf ${FILE_NAME} | cut -d "." -f 1);
-            CHG_NUM=$(printf ${FILE_NAME} | cut -d "." -f 2);
+            BIZ_UNIT=$(echo ${FILE_NAME} | cut -d "." -f 1);
+            CHG_NUM=$(echo ${FILE_NAME} | cut -d "." -f 2);
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BIZ_UNIT -> ${BIZ_UNIT}";
 
@@ -378,26 +378,26 @@ function backout_change
                             then
                                 ## success! we've "AUDIT" logged the file restorations as they happened, so all we need to do is build the zone conf file
                                 ## find out if we have a conf file
-                                if [ -s $(printf ${BIZ_UNIT} "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHG_NUM} ]
+                                if [ -s $(echo ${BIZ_UNIT} "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHG_NUM} ]
                                 then
                                     ## wooo, we've already got a file to use. this is pretty straight-forward, copy it in
                                     ## and $include it into named.conf
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying existing files..";
 
-                                    cp ${APP_ROOT}/${BACKUP_DIRECTORY}/$(printf ${BIZ_UNIT} "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHG_NUM} \
-                                        ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BIZ_UNIT} "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
+                                    cp ${APP_ROOT}/${BACKUP_DIRECTORY}/$(echo ${BIZ_UNIT} "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}.${CHG_NUM} \
+                                        ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BIZ_UNIT} "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
 
                                     ## ok, copy should be done
-                                    if [ -s ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BIZ_UNIT} "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ]
+                                    if [ -s ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BIZ_UNIT} "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ]
                                     then
                                         ## we've copied, now we need to $include
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copy complete. Including configuration file..";
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Including configuration file..";
 
-                                        print "include \"/${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BIZ_UNIT} "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}\";" >> ${NAMED_CONF_FILE};
+                                        print "include \"/${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BIZ_UNIT} "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}\";" >> ${NAMED_CONF_FILE};
 
                                         ## should have our new zone included now. verify it
-                                        if [ $(grep -c ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(printf ${BIZ_UNIT} "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ${NAMED_CONF_FILE}) -eq 1 ]
+                                        if [ $(grep -c ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BIZ_UNIT} "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ${NAMED_CONF_FILE}) -eq 1 ]
                                         then
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Printed include statement to ${NAMED_CONF_FILE}";
 
@@ -426,18 +426,18 @@ function backout_change
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Obtaining list of zonefiles from tarball..";
 
                                     ZONE_LIST=$(tar tvf ${FILE_NAME} | awk '{print $6}' | cut -d "/" -f 2 | grep -v "[PV]H");
-                                    ZONE_CONF_NAME=$(printf ${BIZ_UNIT} "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
+                                    ZONE_CONF_NAME=$(echo ${BIZ_UNIT} "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME};
 
                                     for ZONE in ${ZONE_LIST}
                                     do
                                         ## we should have a list of zones. we need to build a zone conf file.
-                                        ZONE_NAME=$(printf ${ZONE} | cut -d "." -f 2 | tru '-' '.');
+                                        ZONE_NAME=$(echo ${ZONE} | cut -d "." -f 2 | tru '-' '.');
 
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Placing ${ZONE_NAME} into config file..";
 
                                         print "zone \"${ZONE_NAME}\" IN {" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
                                         print "    type         master;" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                                        print "    file         \"${NAMED_MASTER_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.$(printf ${ZONE_NAME} | cut -d "." -f 1).$(printf ${PROJECT_CODE} | tr "[a-z]" "[A-Z]")\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                                        print "    file         \"${NAMED_MASTER_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1).$(echo ${PROJECT_CODE} | tr "[a-z]" "[A-Z]")\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
                                         print "    allow-update { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
                                         print "};\n" >> ${NAMED_ROOT}/${NAME_CONF_DIR}/${ZONE_CONF_NAME};
 

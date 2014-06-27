@@ -55,8 +55,8 @@ function monitorProcessPresence
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "COMMAND_NAME -> ${COMMAND_NAME}";
 
     ## generate the stuff we need
-    SVC_VERIFICATION_DOMAIN=$(printf ${MONITOR_DOMAIN_NAME} | cut -d ":" -f 1);
-    SVC_VERIFICATION_ADDRESS=$(printf ${MONITOR_DOMAIN_NAME} | cut -d ":" -f 2);
+    SVC_VERIFICATION_DOMAIN=$(cut -d ":" -f 1 <<< ${MONITOR_DOMAIN_NAME});
+    SVC_VERIFICATION_ADDRESS=$(cut -d ":" -f 2 <<< ${MONITOR_DOMAIN_NAME});
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SVC_VERIFICATION_DOMAIN -> ${SVC_VERIFICATION_DOMAIN}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SVC_VERIFICATION_ADDRESS -> ${SVC_VERIFICATION_ADDRESS}";
@@ -66,7 +66,7 @@ function monitorProcessPresence
     if [ -s ${NAMED_ROOT}/${NAMED_PID_FILE} ]
     then
         ## ok, pid exists
-        NAMED_PID=$(cat ${NAMED_ROOT}/${NAMED_PID_FILE});
+        NAMED_PID=$(<${NAMED_ROOT}/${NAMED_PID_FILE});
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NAMED_PID -> ${NAMED_PID}";
 
@@ -77,7 +77,7 @@ function monitorProcessPresence
 
         if [ ! -z "${PROCESS_OUTPUT}" ]
         then
-            PROCESS_PID=$(printf ${PROCESS_OUTPUT} | awk '{print $2}');
+            PROCESS_PID=$(awk '{print $2}' <<< ${PROCESS_OUTPUT});
 
             if [ ${PROCESS_PID} != ${NAMED_PID} ]
             then
@@ -438,4 +438,4 @@ done
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-return ${RETURN_CODE};
+[ -z "${RETURN_CODE}" ] && return 1 || return "${RETURN_CODE}";

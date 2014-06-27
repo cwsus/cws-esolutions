@@ -101,7 +101,7 @@ function installiPlanetInstance
 
                             ## its there. get the directories we need so we can create them
                             WEB_LOG_ROOT=${IPLANET_BASE_LOG_ROOT}/${SERVER_ID};
-                            WEB_DOC_ROOT=$(printf ${IPLANET_BASE_DOC_ROOT} | sed -e "s/%PROJECT_CODE%/${PROJECT_CODE}/");
+                            WEB_DOC_ROOT=$(echo ${IPLANET_BASE_DOC_ROOT} | sed -e "s/%PROJECT_CODE%/${PROJECT_CODE}/");
                             WEB_TMP_DIR=$(grep ${IPLANET_TMPDIR_IDENTIFIER} ${IPLANET_ROOT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG} | awk '{print $2}');
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WEB_LOG_ROOT -> ${WEB_LOG_ROOT}";
@@ -183,7 +183,7 @@ function installiPlanetInstance
 
                                         for ACL in ${IPLANET_ACL_NAMES}
                                         do
-                                            ACL_FILE=$(printf ${ACL} | sed -e "s/%SERVER_ID%/${SERVER_ID}/");
+                                            ACL_FILE=$(echo ${ACL} | sed -e "s/%SERVER_ID%/${SERVER_ID}/");
 
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ACL_FILE -> ${ACL_FILE}";
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating file ${ACL_FILE} ..";

@@ -47,7 +47,7 @@ function obtainManagedServerList
         getMachineInfo | grep -v "^#" | grep WEB | grep sol9 | cut -d "|" -f 1 | sort | uniq; \
         getMachineInfo | grep -v "^#" | grep WEB | grep sol10 | cut -d "|" -f 1 | sort | uniq;)
     do
-        if [ $(printf ${SERVER_IGNORE_LIST} | grep -c ${SERVER}) -eq 0 ]
+        if [ $(echo ${SERVER_IGNORE_LIST} | grep -c ${SERVER}) -eq 0 ]
         then
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding ${SERVER} to MANAGED_SERVERS..";
 

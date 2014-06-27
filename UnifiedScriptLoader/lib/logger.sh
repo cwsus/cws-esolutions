@@ -81,7 +81,7 @@ function rotateLogs
         touch ${LOG_ROOT}/${1};
     fi
 
-    if [ $(/usr/${BIN_DIRECTORY}/env stat -c %s "${LOG_ROOT}/${1}") -gt $(printf "${ROTATE_ON_SIZE} * 1024" | bc) ]
+    if [ $(/usr/bin/env stat -c %s "${LOG_ROOT}/${1}") -gt $(printf "${ROTATE_ON_SIZE} * 1024" | bc) ]
     then
         if [ -f ${LOG_ROOT}/${1}.${LOG_RETENTION_PERIOD} ]
         then
@@ -120,27 +120,27 @@ function writeLogEntry
     #[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
     ## always do the timestamp first
-    local TIMESTAMP_OPTS=$(echo ${CONVERSION_PATTERN} | cut -d "[" -f 2 | cut -d "]" -f 1 | cut -d ":" -f 2- | sed -e '/^ *#/d;s/#.*//')
+    local TIMESTAMP_OPTS=$(cut -d "[" -f 2 <<< ${CONVERSION_PATTERN} | cut -d "]" -f 1 | cut -d ":" -f 2- | sed -e '/^ *#/d;s/#.*//')
 
     case ${1} in
         [Ee][Rr][Rr][Oo][Rr]|[Ee])
-            RECORDER=$(echo ${CONVERSION_PATTERN} | sed -e "s^${TIMESTAMP_OPTS}^$(date +"${TIMESTAMP_OPTS}")^;s^%t^${PPID}^;s^%c^${ERROR_LOG_FILE}^;s^%-5p^${1}^;s^%M^${2}^;s^%F^${3}^;s^%L^${4}^;s^%m^${5}^");
+            RECORDER=$(sed -e "s^${TIMESTAMP_OPTS}^$(date +"${TIMESTAMP_OPTS}")^;s^%t^${PPID}^;s^%c^${ERROR_LOG_FILE}^;s^%-5p^${1}^;s^%M^${2}^;s^%F^${3}^;s^%L^${4}^;s^%m^${5}^" <<< ${CONVERSION_PATTERN});
             LOG_FILE=${ERROR_LOG_FILE};
             ;;
         [Dd][Ee][Bb][Uu][Gg]|[Dd])
-            RECORDER=$(echo ${CONVERSION_PATTERN} | sed -e "s^${TIMESTAMP_OPTS}^$(date +"${TIMESTAMP_OPTS}")^;s^%t^${PPID}^;s^%c^${DEBUG_LOG_FILE}^;s^%-5p^${1}^;s^%M^${2}^;s^%F^${3}^;s^%L^${4}^;s^%m^${5}^");
+            RECORDER=$(sed -e "s^${TIMESTAMP_OPTS}^$(date +"${TIMESTAMP_OPTS}")^;s^%t^${PPID}^;s^%c^${DEBUG_LOG_FILE}^;s^%-5p^${1}^;s^%M^${2}^;s^%F^${3}^;s^%L^${4}^;s^%m^${5}^" <<< ${CONVERSION_PATTERN});
             LOG_FILE=${DEBUG_LOG_FILE};
             ;;
         [Aa][Uu][Dd][Ii][Tt]|[Aa])
-            RECORDER=$(echo ${CONVERSION_PATTERN} | sed -e "s^${TIMESTAMP_OPTS}^$(date +"${TIMESTAMP_OPTS}")^;s^%t^${PPID}^;s^%c^${AUDIT_LOG_FILE}^;s^%-5p^${1}^;s^%M^${2}^;s^%F^${3}^;s^%L^${4}^;s^%m^${5}^");
+            RECORDER=$(sed -e "s^${TIMESTAMP_OPTS}^$(date +"${TIMESTAMP_OPTS}")^;s^%t^${PPID}^;s^%c^${AUDIT_LOG_FILE}^;s^%-5p^${1}^;s^%M^${2}^;s^%F^${3}^;s^%L^${4}^;s^%m^${5}^" <<< ${CONVERSION_PATTERN});
             LOG_FILE=${AUDIT_LOG_FILE};
             ;;
         [Ww][Aa][Rr][Nn]|[Ww])
-            RECORDER=$(echo ${CONVERSION_PATTERN} | sed -e "s^${TIMESTAMP_OPTS}^$(date +"${TIMESTAMP_OPTS}")^;s^%t^${PPID}^;s^%c^${WARN_LOG_FILE}^;s^%-5p^${1}^;s^%M^${2}^;s^%F^${3}^;s^%L^${4}^;s^%m^${5}^");
+            RECORDER=$(sed -e "s^${TIMESTAMP_OPTS}^$(date +"${TIMESTAMP_OPTS}")^;s^%t^${PPID}^;s^%c^${WARN_LOG_FILE}^;s^%-5p^${1}^;s^%M^${2}^;s^%F^${3}^;s^%L^${4}^;s^%m^${5}^" <<< ${CONVERSION_PATTERN});
             LOG_FILE=${WARN_LOG_FILE};
             ;;
         *)
-            RECORDER=$(echo ${CONVERSION_PATTERN} | sed -e "s^${TIMESTAMP_OPTS}^$(date +"${TIMESTAMP_OPTS}")^;s^%t^${PPID}^;s^%c^${INFO_LOG_FILE}^;s^%-5p^${1}^;s^%M^${2}^;s^%F^${3}^;s^%L^${4}^;s^%m^${5}^");
+            RECORDER=$(sed -e "s^${TIMESTAMP_OPTS}^$(date +"${TIMESTAMP_OPTS}")^;s^%t^${PPID}^;s^%c^${INFO_LOG_FILE}^;s^%-5p^${1}^;s^%M^${2}^;s^%F^${3}^;s^%L^${4}^;s^%m^${5}^" <<< ${CONVERSION_PATTERN});
             LOG_FILE=${INFO_LOG_FILE};
             ;;
     esac

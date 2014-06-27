@@ -40,9 +40,9 @@ function createSecuredInstance
 
     [ -z "${1}" ] && HYBRID="${_TRUE}";
 
-    SERVER_ID=${IPLANET_CERT_STORE_PREFIX}$(printf ${SITE_HOSTNAME} | cut -d "." -f -2)_${PROJECT_CODE};
+    SERVER_ID=${IPLANET_CERT_STORE_PREFIX}$(echo ${SITE_HOSTNAME} | cut -d "." -f -2)_${PROJECT_CODE};
     SERVER_ROOT=$(
-        PLATFORM_TYPE_IDENTIFIER=$(printf ${PLATFORM_CODE} | cut -d "_" -f 3 | tr '[A-Z]' '[a-z]');
+        PLATFORM_TYPE_IDENTIFIER=$(echo ${PLATFORM_CODE} | cut -d "_" -f 3 | tr '[A-Z]' '[a-z]');
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PLATFORM_TYPE_IDENTIFIER -> ${PLATFORM_TYPE_IDENTIFIER}";
 
@@ -62,8 +62,8 @@ function createSecuredInstance
         esac
     );
     WEB_LOG_ROOT=${IPLANET_BASE_LOG_ROOT}/${SERVER_ID};
-    WEB_DOC_ROOT=$(printf ${IPLANET_BASE_DOC_ROOT} | sed -e "s/%PROJECT_CODE%/${PROJECT_CODE}/");
-    CERT_NICKNAME=$(printf ${SERVER_ID} | cut -d "-" -f 2);
+    WEB_DOC_ROOT=$(echo ${IPLANET_BASE_DOC_ROOT} | sed -e "s/%PROJECT_CODE%/${PROJECT_CODE}/");
+    CERT_NICKNAME=$(echo ${SERVER_ID} | cut -d "-" -f 2);
     WEB_TMP_DIR=${IPLANET_WEB_TMPDIR}/${SERVER_ID}-$(returnRandomCharacters 6);
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVER_ROOT -> ${SERVER_ROOT}";
@@ -124,11 +124,11 @@ function createSecuredInstance
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${ACL} ..";
 
             sed -e "s^%SERVER_ROOT%^${SERVER_ROOT}^g" ${APP_ROOT}/${IPLANET_ACL_TEMPLATE} \
-                > ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_ACL_DIR}/$(printf ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^");
+                > ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_ACL_DIR}/$(echo ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^");
 
-            if [ ! -s ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_ACL_DIR}/$(printf ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^") ]
+            if [ ! -s ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_ACL_DIR}/$(echo ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^") ]
             then
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred copying ${APP_ROOT}/${IPLANET_ACL_TEMPLATE} to ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_ACL_DIR}/$(printf ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^")";
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred copying ${APP_ROOT}/${IPLANET_ACL_TEMPLATE} to ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_ACL_DIR}/$(echo ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^")";
 
                 (( ERROR_COUNT += 1 ));
             fi
@@ -200,7 +200,7 @@ function createSecuredInstance
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding WebSphere configuration to ${IPLANET_CORE_CONFIG} ..";
 
                         print "${IPLANET_WAS_FUNCTION}" >> ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG};
-                        print "$(printf ${IPLANET_WAS_BOOTSTRAP} | sed -e "s^%SERVER_ROOT%^${SERVER_ROOT}^" \
+                        print "$(echo ${IPLANET_WAS_BOOTSTRAP} | sed -e "s^%SERVER_ROOT%^${SERVER_ROOT}^" \
                             -e "s^%SERVER_ID%^${SERVER_ID}^g" -e "s/%PROJECT_CODE%/${PROJECT_CODE}/")" >> ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG};
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding WebSphere configuration to ${IPLANET_WEB_CONFIG} ..";
@@ -382,7 +382,7 @@ local RETURN_CODE=0;
 
                                     for TOKEN in ${SECURITY_TOKENS}
                                     do
-                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding security token $(printf ${TOKEN} | cut -d ":" -f 1) ..";
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding security token $(echo ${TOKEN} | cut -d ":" -f 1) ..";
 
                                         print "${TOKEN}" >> ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_PASSWORD_FILE};
 
@@ -392,7 +392,7 @@ local RETURN_CODE=0;
                                             ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_PASSWORD_FILE}) -eq 0 ]
                                         then
                                             ## "ERROR" occurred adding
-                                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred adding $(printf ${TOKEN} | cut -d ":" -f 1) to ${IPLANET_PASSWORD_FILE}";
+                                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred adding $(echo ${TOKEN} | cut -d ":" -f 1) to ${IPLANET_PASSWORD_FILE}";
 
                                             (( ERROR_COUNT += 1 ));
                                         fi
@@ -478,9 +478,9 @@ function createUnsecuredInstance
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    SERVER_ID=${IPLANET_CERT_STORE_PREFIX}$(printf ${SITE_HOSTNAME} | cut -d "." -f -2)_${PROJECT_CODE};
+    SERVER_ID=${IPLANET_CERT_STORE_PREFIX}$(echo ${SITE_HOSTNAME} | cut -d "." -f -2)_${PROJECT_CODE};
     SERVER_ROOT=$(
-        PLATFORM_TYPE_IDENTIFIER=$(printf ${PLATFORM_CODE} | cut -d "_" -f 3 | tr '[A-Z]' '[a-z]');
+        PLATFORM_TYPE_IDENTIFIER=$(echo ${PLATFORM_CODE} | cut -d "_" -f 3 | tr '[A-Z]' '[a-z]');
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PLATFORM_TYPE_IDENTIFIER -> ${PLATFORM_TYPE_IDENTIFIER}";
 
@@ -500,8 +500,8 @@ function createUnsecuredInstance
         esac
     );
     WEB_LOG_ROOT=${IPLANET_BASE_LOG_ROOT}/${SERVER_ID};
-    WEB_DOC_ROOT=$(printf ${IPLANET_BASE_DOC_ROOT} | sed -e "s^%SERVER_ID%^${SERVER_ID}^");
-    CERT_NICKNAME=$(printf ${SERVER_ID} | cut -d "-" -f 2);
+    WEB_DOC_ROOT=$(echo ${IPLANET_BASE_DOC_ROOT} | sed -e "s^%SERVER_ID%^${SERVER_ID}^");
+    CERT_NICKNAME=$(echo ${SERVER_ID} | cut -d "-" -f 2);
     WEB_TMP_DIR=${IPLANET_WEB_TMPDIR}/${SERVER_ID}-$(returnRandomCharacters 6);
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVER_ROOT -> ${SERVER_ROOT}";
@@ -535,11 +535,11 @@ function createUnsecuredInstance
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${ACL} ..";
 
             sed -e "s^%SERVER_ROOT%^${SERVER_ROOT}^g" ${APP_ROOT}/${IPLANET_ACL_TEMPLATE} \
-                > ${APP_ROOT}/${BUILD_TMP_DIR}/${IPLANET_ACL_DIR}$(printf ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^");
+                > ${APP_ROOT}/${BUILD_TMP_DIR}/${IPLANET_ACL_DIR}$(echo ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^");
 
-            if [ ! -s ${APP_ROOT}/${BUILD_TMP_DIR}/${IPLANET_ACL_DIR}$(printf ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^") ]
+            if [ ! -s ${APP_ROOT}/${BUILD_TMP_DIR}/${IPLANET_ACL_DIR}$(echo ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^") ]
             then
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred copying ${APP_ROOT}/${IPLANET_ACL_TEMPLATE} to ${APP_ROOT}/${BUILD_TMP_DIR}/${IPLANET_ACL_DIR}$(printf ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^")";
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred copying ${APP_ROOT}/${IPLANET_ACL_TEMPLATE} to ${APP_ROOT}/${BUILD_TMP_DIR}/${IPLANET_ACL_DIR}$(echo ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^")";
 
                 (( ERROR_COUNT += 1 ));
             fi
@@ -611,7 +611,7 @@ function createUnsecuredInstance
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding WebSphere configuration to ${IPLANET_CORE_CONFIG} ..";
 
                         print "${IPLANET_WAS_FUNCTION}" >> ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG};
-                        print "$(printf ${IPLANET_WAS_BOOTSTRAP} | sed -e "s^%SERVER_ROOT%^${SERVER_ROOT}^" \
+                        print "$(echo ${IPLANET_WAS_BOOTSTRAP} | sed -e "s^%SERVER_ROOT%^${SERVER_ROOT}^" \
                             -e "s^%SERVER_ID%^${SERVER_ID}^g" -e "s/%PROJECT_CODE%/${PROJECT_CODE}/")" >> ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG};
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding WebSphere configuration to ${IPLANET_WEB_CONFIG} ..";

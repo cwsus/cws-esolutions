@@ -42,7 +42,7 @@ function lockProcess
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    [ -e "${LOCK_FILE}" ] && [ kill -0 $(cat "${LOCK_FILE}") ] && RETURN_CODE=1 || printf "${1}" > "${LOCK_FILE}" && RETURN_CODE=0;
+    [ -e "${LOCK_FILE}" ] && [ kill -0 $(<"${LOCK_FILE}") ] && RETURN_CODE=1 || printf "${1}" > "${LOCK_FILE}" && RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -117,7 +117,7 @@ METHOD_NAME="${CNAME}#startup";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
 ## clean up the lockfile if it exists
-[ -s ${LOCK_FILE} ] && kill -0 $(cat ${LOCK_FILE}) 2>/dev/null && return 1 || rm -rf ${LOCK_FILE};
+[ -s ${LOCK_FILE} ] && kill -0 $(<${LOCK_FILE}) 2>/dev/null && return 1 || rm -rf ${LOCK_FILE};
 
 [[ ${1} = @([Ll]|[Ll][Oo][Cc][Kk]) ]] && lockProcess "${2}" && RETURN_CODE=${?};
 [[ ${1} = @([Uu]|[Uu][Nn][Ll][Oo][Cc][Kk]) ]] && unlockProcess "${2}" && RETURN_CODE=${?};
@@ -127,7 +127,6 @@ METHOD_NAME="${CNAME}#startup";
 
 unset SCRIPT_ABSOLUTE_PATH;
 unset SCRIPT_ROOT;
-unset THIS_CNAME;
 unset RET_CODE;
 unset CNAME;
 unset METHOD_NAME;
@@ -135,4 +134,4 @@ unset METHOD_NAME;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-return ${RETURN_CODE};
+[ -z "${RETURN_CODE}" ] && return 1 || return "${RETURN_CODE}";

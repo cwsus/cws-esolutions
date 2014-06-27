@@ -54,7 +54,7 @@ function executeMonitoringScript
         ## we were asked to monitor on a specific server - execute
         for MONITORED_HOST in ${TARGET_SYSTEM}
         do
-            if [ $(printf ${SERVER_IGNORE_LIST} | grep -c ${MONITORED_HOST}) -eq 0 ]
+            if [ $(echo ${SERVER_IGNORE_LIST} | grep -c ${MONITORED_HOST}) -eq 0 ]
             then
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating against ${MONITORED_HOST}..";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now validating access..";

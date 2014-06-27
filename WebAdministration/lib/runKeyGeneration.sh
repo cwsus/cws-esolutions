@@ -50,8 +50,8 @@ function createNewCertificate
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERTIFICATE_DATABASE -> ${CERTIFICATE_DATABASE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_DOMAIN_NAME -> ${SITE_DOMAIN_NAME}";
 
-    SITE_IDENTIFIER=$(printf ${PLATFORM_CODE} | cut -d "_" -f 1);
-    REGION_IDENTIFIER=$(printf ${PLATFORM_CODE} | cut -d "_" -f 2);
+    SITE_IDENTIFIER=$(echo ${PLATFORM_CODE} | cut -d "_" -f 1);
+    REGION_IDENTIFIER=$(echo ${PLATFORM_CODE} | cut -d "_" -f 2);
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_IDENTIFIER -> ${SITE_IDENTIFIER}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REGION_IDENTIFIER -> ${REGION_IDENTIFIER}";
@@ -68,35 +68,35 @@ function createNewCertificate
         then
             ## site exists in the site overrides file
             CERT_SIGNER=$(grep -w ${SITE_DOMAIN_NAME} ${APP_ROOT}/${SITE_OVERRIDES} | cut -d ":" -f 2);
-            CERT_SUBJECT=$(printf ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+            CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
         else
-            if [ "$(printf ${PLATFORM_CODE} | cut -d "_" -f 2)" = "I" ]
+            if [ "$(echo ${PLATFORM_CODE} | cut -d "_" -f 2)" = "I" ]
             then
                 CERT_SIGNER=${INTRANET_CERT_SIGNATORY};
-                CERT_SUBJECT=$(printf ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-            elif [ "$(printf ${PLATFORM_CODE} | cut -d "_" -f 2)" = "X" ]
+                CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+            elif [ "$(echo ${PLATFORM_CODE} | cut -d "_" -f 2)" = "X" ]
             then
                 CERT_SIGNER=${INTERNET_CERT_SIGNATORY};
 
                 case ${SITE_IDENTIFIER} in
                     [Pp][Hh]|[Vv][Hh]|[Bb][Rr]|[Aa][Hh]|[Bb][Uu]|[Vv][Oo]|[Vv][Oo][Vv][Hh])
-                        CERT_SUBJECT=$(printf ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+                        CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
                         ;;
                     [Nn][Ww]|[Ss][Yy]|[Nn][Ww][Nn]|[Ss][Yy][Gg]|[Ss][Hh]|[Ll][Pp])
-                        if [ ! -z "$(printf ${SITE_DOMAIN_NAME} | grep .ca)" ]
+                        if [ ! -z "$(echo ${SITE_DOMAIN_NAME} | grep .ca)" ]
                         then
-                            CERT_SUBJECT=$(printf ${CA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-                        elif [ ! -z "$(printf ${SITE_DOMAIN_NAME} | grep .au)" ]
+                            CERT_SUBJECT=$(echo ${CA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+                        elif [ ! -z "$(echo ${SITE_DOMAIN_NAME} | grep .au)" ]
                         then
-                            CERT_SUBJECT=$(printf ${AU_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+                            CERT_SUBJECT=$(echo ${AU_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
                         else
                             ## default to north america
-                            CERT_SUBJECT=$(printf ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+                            CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
                         fi
                         ;;
                     *)
                         ## unknown site identifier, default to north america for now
-                        CERT_SUBJECT=$(printf ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+                        CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
                         ;;
                 esac
             else
@@ -145,19 +145,19 @@ function createNewCertificate
                 if [ ! -z "${GENERATE_SELF_SIGNED}" ] && [ "${GENERATE_SELF_SIGNED}" = "${_TRUE}" ]
                 then
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Configured for self-signed certs. Continuing..";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command certutil -R -d ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_CERT_DIR} -P ${CERTIFICATE_DATABASE} -s \"$(printf ${SELF_SIGN_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_HOSTNAME}/")\" -o ${APP_ROOT}/${CSRSTORE}/SS-${CERT_NICKNAME}.csr -p ${REQUEST_CONTACT_NUM} -a -f ${APP_ROOT}/${IPLANET_CERT_DB_PASSFILE} -z "${APP_ROOT}"/${ENTROPY_FILE} -g ${CERT_BIT_LENGTH}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command certutil -R -d ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_CERT_DIR} -P ${CERTIFICATE_DATABASE} -s \"$(echo ${SELF_SIGN_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_HOSTNAME}/")\" -o ${APP_ROOT}/${CSRSTORE}/SS-${CERT_NICKNAME}.csr -p ${REQUEST_CONTACT_NUM} -a -f ${APP_ROOT}/${IPLANET_CERT_DB_PASSFILE} -z "${APP_ROOT}"/${ENTROPY_FILE} -g ${CERT_BIT_LENGTH}";
 
                     ## this is basically the same as generating a normal csr, except we're going to
                     ## generate a cert off it too.
                     if [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ]
                     then
                         certutil -R -d ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_CERT_DIR} -P ${CERTIFICATE_DATABASE} \
-                            -s "$(printf ${SELF_SIGN_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_HOSTNAME}/")" \
+                            -s "$(echo ${SELF_SIGN_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_HOSTNAME}/")" \
                             -o ${APP_ROOT}/${CSRSTORE}/SS-${CERT_NICKNAME}.csr -p ${REQUEST_CONTACT_NUM} -a \
                             -f ${APP_ROOT}/${IPLANET_CERT_DB_PASSFILE} -z "${APP_ROOT}"/${ENTROPY_FILE} -g ${CERT_BIT_LENGTH};
                     else
                         certutil -R -d ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_CERT_DIR} -P ${CERTIFICATE_DATABASE} \
-                            -s "$(printf ${SELF_SIGN_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_HOSTNAME}/")" \
+                            -s "$(echo ${SELF_SIGN_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_HOSTNAME}/")" \
                             -o ${APP_ROOT}/${CSRSTORE}/SS-${CERT_NICKNAME}.csr -p ${REQUEST_CONTACT_NUM} -a \
                             -f ${APP_ROOT}/${IPLANET_CERT_DB_PASSFILE} -z "${APP_ROOT}"/${ENTROPY_FILE} -g ${CERT_BIT_LENGTH} > ${APP_ROOT}/${LOG_ROOT}/certutil.csr-gen.${SITE_DOMAIN_NAME}.${IUSER_AUDIT} 2>&1;
                     fi
@@ -297,7 +297,7 @@ function createiPlanetCSR
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "UK_CSR_SUBJECT -> ${UK_CSR_SUBJECT}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERTIFICATE_DATABASE -> ${CERTIFICATE_DATABASE}";
 
-    SITE_IDENTIFIER=$(printf ${TARGET_PLATFORM_CODE} | cut -d "_" -f 1);
+    SITE_IDENTIFIER=$(echo ${TARGET_PLATFORM_CODE} | cut -d "_" -f 1);
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_IDENTIFIER -> ${SITE_IDENTIFIER}";
 
@@ -330,35 +330,35 @@ function createiPlanetCSR
         then
             ## site exists in the site overrides file
             CERT_SIGNER=$(grep -w ${SITE_DOMAIN_NAME} ${APP_ROOT}/${SITE_OVERRIDES} | cut -d ":" -f 2);
-            CERT_SUBJECT=$(printf ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+            CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
         else
-            if [ "$(printf ${TARGET_PLATFORM_CODE} | cut -d "_" -f 2)" = "I" ]
+            if [ "$(echo ${TARGET_PLATFORM_CODE} | cut -d "_" -f 2)" = "I" ]
             then
                 CERT_SIGNER=${INTRANET_CERT_SIGNATORY};
-                CERT_SUBJECT=$(printf ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-            elif [ "$(printf ${TARGET_PLATFORM_CODE} | cut -d "_" -f 2)" = "X" ]
+                CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+            elif [ "$(echo ${TARGET_PLATFORM_CODE} | cut -d "_" -f 2)" = "X" ]
             then
                 CERT_SIGNER=${INTERNET_CERT_SIGNATORY};
 
                 case ${SITE_IDENTIFIER} in
                     [Pp][Hh]|[Vv][Hh]|[Bb][Rr]|[Aa][Hh]|[Bb][Uu]|[Vv][Oo]|[Vv][Oo][Vv][Hh])
-                        CERT_SUBJECT=$(printf ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+                        CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
                         ;;
                     [Nn][Ww]|[Ss][Yy]|[Nn][Ww][Nn]|[Ss][Yy][Gg]|[Ss][Hh]|[Ll][Pp])
-                        if [ ! -z "$(printf ${SITE_DOMAIN_NAME} | grep .ca)" ]
+                        if [ ! -z "$(echo ${SITE_DOMAIN_NAME} | grep .ca)" ]
                         then
-                            CERT_SUBJECT=$(printf ${CA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-                        elif [ ! -z "$(printf ${SITE_DOMAIN_NAME} | grep .au)" ]
+                            CERT_SUBJECT=$(echo ${CA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+                        elif [ ! -z "$(echo ${SITE_DOMAIN_NAME} | grep .au)" ]
                         then
-                            CERT_SUBJECT=$(printf ${AU_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+                            CERT_SUBJECT=$(echo ${AU_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
                         else
                             ## default to north america
-                            CERT_SUBJECT=$(printf ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+                            CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
                         fi
                         ;;
                     *)
                         ## unknown site identifier, default to north america for now
-                        CERT_SUBJECT=$(printf ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+                        CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
                         ;;
                 esac
             else
@@ -428,7 +428,7 @@ local RETURN_CODE=0;
         ## we dont have a cert database, so lets go out and get it
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate database not found for ${SITE_DOMAIN_NAME}. Obtaining..";
 
-        SOURCE_CERT_DATABASE=$(printf ${CERTIFICATE_DATABASE} | sed -e "s/${IUSER_AUDIT}/${SOURCE_WEB_SERVER}/");
+        SOURCE_CERT_DATABASE=$(echo ${CERTIFICATE_DATABASE} | sed -e "s/${IUSER_AUDIT}/${SOURCE_WEB_SERVER}/");
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SOURCE_CERT_DATABASE -> ${SOURCE_CERT_DATABASE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating access to ${SOURCE_WEB_SERVER}..";
@@ -490,35 +490,35 @@ local RETURN_CODE=0;
 		        then
 		            ## site exists in the site overrides file
 		            CERT_SIGNER=$(grep -w ${SITE_DOMAIN_NAME} ${APP_ROOT}/${SITE_OVERRIDES} | cut -d ":" -f 2);
-		            CERT_SUBJECT=$(printf ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+		            CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
 		        else
-		            if [ "$(printf ${TARGET_PLATFORM_CODE} | cut -d "_" -f 2)" = "I" ]
+		            if [ "$(echo ${TARGET_PLATFORM_CODE} | cut -d "_" -f 2)" = "I" ]
 		            then
 		                CERT_SIGNER=${INTRANET_CERT_SIGNATORY};
-		                CERT_SUBJECT=$(printf ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-		            elif [ "$(printf ${TARGET_PLATFORM_CODE} | cut -d "_" -f 2)" = "X" ]
+		                CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+		            elif [ "$(echo ${TARGET_PLATFORM_CODE} | cut -d "_" -f 2)" = "X" ]
 		            then
 		                CERT_SIGNER=${INTERNET_CERT_SIGNATORY};
 
 		                case ${SITE_IDENTIFIER} in
 		                    [Pp][Hh]|[Vv][Hh]|[Bb][Rr]|[Aa][Hh]|[Bb][Uu]|[Vv][Oo]|[Vv][Oo][Vv][Hh])
-		                        CERT_SUBJECT=$(printf ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+		                        CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
 		                        ;;
 		                    [Nn][Ww]|[Ss][Yy]|[Nn][Ww][Nn]|[Ss][Yy][Gg]|[Ss][Hh]|[Ll][Pp])
-		                        if [ ! -z "$(printf ${SITE_DOMAIN_NAME} | grep .ca)" ]
+		                        if [ ! -z "$(echo ${SITE_DOMAIN_NAME} | grep .ca)" ]
 		                        then
-		                            CERT_SUBJECT=$(printf ${CA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-		                        elif [ ! -z "$(printf ${SITE_DOMAIN_NAME} | grep .au)" ]
+		                            CERT_SUBJECT=$(echo ${CA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+		                        elif [ ! -z "$(echo ${SITE_DOMAIN_NAME} | grep .au)" ]
 		                        then
-		                            CERT_SUBJECT=$(printf ${AU_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+		                            CERT_SUBJECT=$(echo ${AU_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
 		                        else
 		                            ## default to north america
-		                            CERT_SUBJECT=$(printf ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+		                            CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
 		                        fi
 		                        ;;
 		                    *)
 		                        ## unknown site identifier, default to north america for now
-		                        CERT_SUBJECT=$(printf ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+		                        CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
 		                        ;;
 		                esac
 		            else
@@ -626,7 +626,7 @@ function createIHSCSR
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "UK_CSR_SUBJECT -> ${UK_CSR_SUBJECT}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERTIFICATE_DATABASE -> ${CERTIFICATE_DATABASE}";
 
-    SITE_IDENTIFIER=$(printf ${TARGET_PLATFORM_CODE} | cut -d "_" -f 1);
+    SITE_IDENTIFIER=$(echo ${TARGET_PLATFORM_CODE} | cut -d "_" -f 1);
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_IDENTIFIER -> ${SITE_IDENTIFIER}";
 
@@ -691,35 +691,35 @@ function createIHSCSR
                 then
                     ## site exists in the site overrides file
                     CERT_SIGNER=$(grep -w ${SITE_DOMAIN_NAME} ${APP_ROOT}/${SITE_OVERRIDES} | cut -d ":" -f 2);
-                    CERT_SUBJECT=$(printf ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+                    CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
                 else
-                    if [ "$(printf ${TARGET_PLATFORM_CODE} | cut -d "_" -f 2)" = "I" ]
+                    if [ "$(echo ${TARGET_PLATFORM_CODE} | cut -d "_" -f 2)" = "I" ]
                     then
                         CERT_SIGNER=${INTRANET_CERT_SIGNATORY};
-                        CERT_SUBJECT=$(printf ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-                    elif [ "$(printf ${TARGET_PLATFORM_CODE} | cut -d "_" -f 2)" = "X" ]
+                        CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+                    elif [ "$(echo ${TARGET_PLATFORM_CODE} | cut -d "_" -f 2)" = "X" ]
                     then
                         CERT_SIGNER=${INTERNET_CERT_SIGNATORY};
 
                         case ${SITE_IDENTIFIER} in
                             [Pp][Hh]|[Vv][Hh]|[Bb][Rr]|[Aa][Hh]|[Bb][Uu]|[Vv][Oo]|[Vv][Oo][Vv][Hh])
-                                CERT_SUBJECT=$(printf ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+                                CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
                                 ;;
                             [Nn][Ww]|[Ss][Yy]|[Nn][Ww][Nn]|[Ss][Yy][Gg]|[Ss][Hh]|[Ll][Pp])
-                                if [ ! -z "$(printf ${SITE_DOMAIN_NAME} | grep .ca)" ]
+                                if [ ! -z "$(echo ${SITE_DOMAIN_NAME} | grep .ca)" ]
                                 then
-                                    CERT_SUBJECT=$(printf ${CA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-                                elif [ ! -z "$(printf ${SITE_DOMAIN_NAME} | grep .au)" ]
+                                    CERT_SUBJECT=$(echo ${CA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+                                elif [ ! -z "$(echo ${SITE_DOMAIN_NAME} | grep .au)" ]
                                 then
-                                    CERT_SUBJECT=$(printf ${AU_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+                                    CERT_SUBJECT=$(echo ${AU_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
                                 else
                                     ## default to north america
-                                    CERT_SUBJECT=$(printf ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+                                    CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
                                 fi
                                 ;;
                             *)
                                 ## unknown site identifier, default to north america for now
-                                CERT_SUBJECT=$(printf ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+                                CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
                                 ;;
                         esac
                     else
@@ -733,7 +733,7 @@ function createIHSCSR
                 if [ -z "${RETURN_CODE}" ]
                 then
                     ## ihs doesnt like ; or E=, so remove them
-                    CERT_SUBJECT=$(printf ${CERT_SUBJECT} | cut -d ";" -f 1-6 | sed -e "s/;/,/g");
+                    CERT_SUBJECT=$(echo ${CERT_SUBJECT} | cut -d ";" -f 1-6 | sed -e "s/;/,/g");
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_SIGNER -> ${CERT_SIGNER}";
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_SUBJECT -> ${CERT_SUBJECT}";
@@ -815,7 +815,7 @@ local RETURN_CODE=0;
         ## we dont have a cert database, so lets go out and get it
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate database not found for ${SITE_DOMAIN_NAME}. Obtaining..";
 
-        SOURCE_CERT_DATABASE=$(printf ${CERTIFICATE_DATABASE} | cut -d "-" -f 1);
+        SOURCE_CERT_DATABASE=$(echo ${CERTIFICATE_DATABASE} | cut -d "-" -f 1);
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SOURCE_CERT_DATABASE -> ${SOURCE_CERT_DATABASE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating access to ${SOURCE_WEB_SERVER}..";
@@ -906,7 +906,7 @@ local RETURN_CODE=0;
                         fi
 
                         ## determine the subject to utilize
-                        if [ "$(printf ${TARGET_PLATFORM_CODE} | cut -d "_" -f 2)" = "I" ]
+                        if [ "$(echo ${TARGET_PLATFORM_CODE} | cut -d "_" -f 2)" = "I" ]
                         then
                             if [[ "${SITE_IDENTIFIER}" = "[Cc][Ll]" ]]
                             then
@@ -916,30 +916,30 @@ local RETURN_CODE=0;
                                 CERT_SIGNER=${INTRANET_CERT_SIGNATORY};
                             fi
 
-                            CERT_SUBJECT=$(printf ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-                        elif [ "$(printf ${TARGET_PLATFORM_CODE} | cut -d "_" -f 2)" = "X" ]
+                            CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+                        elif [ "$(echo ${TARGET_PLATFORM_CODE} | cut -d "_" -f 2)" = "X" ]
                         then
                             CERT_SIGNER=${INTERNET_CERT_SIGNATORY};
 
                             case ${SITE_IDENTIFIER} in
                                 [Pp][Hh]|[Vv][Hh]|[Bb][Rr]|[Aa][Hh]|[Bb][Uu]|[Vv][Oo]|[Vv][Oo][Vv][Hh])
-                                    CERT_SUBJECT=$(printf ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+                                    CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
                                     ;;
                                 [Nn][Ww]|[Ss][Yy]|[Nn][Ww][Nn]|[Ss][Yy][Gg]|[Ss][Hh]|[Ll][Pp])
-                                    if [ ! -z "$(printf ${SITE_DOMAIN_NAME} | grep .ca)" ]
+                                    if [ ! -z "$(echo ${SITE_DOMAIN_NAME} | grep .ca)" ]
                                     then
-                                        CERT_SUBJECT=$(printf ${CA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-                                    elif [ ! -z "$(printf ${SITE_DOMAIN_NAME} | grep .au)" ]
+                                        CERT_SUBJECT=$(echo ${CA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+                                    elif [ ! -z "$(echo ${SITE_DOMAIN_NAME} | grep .au)" ]
                                     then
-                                        CERT_SUBJECT=$(printf ${AU_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+                                        CERT_SUBJECT=$(echo ${AU_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
                                     else
                                         ## default to north america
-                                        CERT_SUBJECT=$(printf ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+                                        CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
                                     fi
                                     ;;
                                 *)
                                     ## unknown site identifier, default to north america for now
-                                    CERT_SUBJECT=$(printf ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
+                                    CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
                                     ;;
                             esac
                         else
@@ -952,7 +952,7 @@ local RETURN_CODE=0;
                         if [ -z "${RETURN_CODE}" ] || [ ${RETURN_CODE} -eq 99 ]
                         then
                             ## ihs doesnt like ; or E=, so remove them
-                            CERT_SUBJECT=$(printf ${CERT_SUBJECT} | cut -d ";" -f 1-6 | sed -e "s/;/,/g");
+                            CERT_SUBJECT=$(echo ${CERT_SUBJECT} | cut -d ";" -f 1-6 | sed -e "s/;/,/g");
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_SIGNER -> ${CERT_SIGNER}";
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_SUBJECT -> ${CERT_SUBJECT}";
@@ -974,11 +974,11 @@ local RETURN_CODE=0;
                             then
                                 keyman -certreq -create -db ${APP_ROOT}/${CERTDB_STORE}/${CERTIFICATE_DATABASE}${IHS_DB_CRT_SUFFIX} \
                                     -label ${CERT_NICKNAME} -file ${APP_ROOT}/${CSRSTORE}/${CERT_NICKNAME}.csr -pw $(cat ${APP_ROOT}/${IHS_CERT_DB_PASSFILE}) \
-                                    -type $(printf ${IHS_DB_CRT_SUFFIX} | sed -e "s/.//") -dn "${CERT_SUBJECT}" -size ${CERT_BIT_LENGTH};
+                                    -type $(echo ${IHS_DB_CRT_SUFFIX} | sed -e "s/.//") -dn "${CERT_SUBJECT}" -size ${CERT_BIT_LENGTH};
                             else
                                 keyman -certreq -create -db ${APP_ROOT}/${CERTDB_STORE}/${CERTIFICATE_DATABASE}${IHS_DB_CRT_SUFFIX} \
                                     -label ${CERT_NICKNAME} -file ${APP_ROOT}/${CSRSTORE}/${CERT_NICKNAME}.csr -pw $(cat ${APP_ROOT}/${IHS_CERT_DB_PASSFILE}) \
-                                    -type $(printf ${IHS_DB_CRT_SUFFIX} | sed -e "s/.//") -dn "${CERT_SUBJECT}" -size ${CERT_BIT_LENGTH} > ${APP_ROOT}/${LOG_ROOT}/keyman.csr-gen.${SITE_DOMAIN_NAME}.${IUSER_AUDIT} 2>&1;
+                                    -type $(echo ${IHS_DB_CRT_SUFFIX} | sed -e "s/.//") -dn "${CERT_SUBJECT}" -size ${CERT_BIT_LENGTH} > ${APP_ROOT}/${LOG_ROOT}/keyman.csr-gen.${SITE_DOMAIN_NAME}.${IUSER_AUDIT} 2>&1;
                             fi
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "keyman executed..";

@@ -47,7 +47,7 @@ function restart_service
 
     ## make sure we got a valid target and
     ## that we're configured to operate against it
-    if [ ! -z "${SERVER_NAME}" ] && [ $(printf ${DNS_SERVERS[@]} | grep -c ${SERVER_NAME}) -eq 1 ]
+    if [ ! -z "${SERVER_NAME}" ] && [ $(echo ${DNS_SERVERS[@]} | grep -c ${SERVER_NAME}) -eq 1 ]
     then
         ## a server was passed in and it is configured
         ## for use
@@ -110,7 +110,7 @@ function restart_service
                 ## give it a little love first...
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE non-numeric. Interrogating..";
 
-                RET_CODE=$(printf ${RET_CODE} | tr '\n' ' ' | sed -e 's/[ \t]*$//');
+                RET_CODE=$(echo ${RET_CODE} | tr '\n' ' ' | sed -e 's/[ \t]*$//');
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NAMED_SERVICE_START_TXT -> ${NAMED_SERVICE_START_TXT}";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";

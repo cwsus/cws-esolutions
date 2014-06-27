@@ -17,6 +17,8 @@
 #
 #==============================================================================
 
+[[ "$(uname)" = CYGWIN_NT* ]] && [ -z "$(set | grep CYGWIN)" ] && typeset -rx CYGWIN="winsymlinks:lnk error_start=C:\cygwin\bin\gdb.exe -nw %1 %2";
+
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
@@ -56,7 +58,7 @@ typeset -rx CURRENT_TIMESTAMP=$(date '+%Y%m%d%H%M');
 typeset -rx SYSTEM_HOSTNAME="$(uname -n)";
 typeset -rx SYSTEM_UPTIME="$(uptime | sed -e 's/^ *//g;s/ *$//g')";
 set -A IUSER_GROUPS $(groups); typeset -rx IUSER_GROUPS;
-[ -z "$(/usr/${BIN_DIRECTORY}/env who am i | awk '{print $1}')" ] && typeset -rx IUSER_AUDIT=$(/usr/${BIN_DIRECTORY}/env whoami) || typeset -rx IUSER_AUDIT=$(/usr/${BIN_DIRECTORY}/env who am i | awk '{print $1}');
+[ -z "$(/usr/bin/env who am i | awk '{print $1}')" ] && typeset -rx IUSER_AUDIT=$(/usr/bin/env whoami) || typeset -rx IUSER_AUDIT=$(/usr/bin/env who am i | awk '{print $1}');
 
 ## path
 typeset -x PATH=${PATH}:${APP_PATH}:${SYS_PATH};

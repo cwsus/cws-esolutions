@@ -64,7 +64,7 @@ then
     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
 
-    print "Security configuration does not allow the requested action.";
+    printf "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
 fi
@@ -87,7 +87,7 @@ METHOD_NAME="${THIS_CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-[ ${RET_CODE} -ne 0 ] && print "Application currently in use." && print ${RET_CODE} && exit ${RET_CODE};
+[ ${RET_CODE} -ne 0 ] && printf "Application currently in use." && printf ${RET_CODE} && return ${RET_CODE};
 
 unset RET_CODE;
 
@@ -386,7 +386,7 @@ function switch_to_slave
                         ## we now need to re-configure named to operate as a slave
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone configuration processing was successful. Now re-configuring named..";
 
-                        NAMED_CONF_CHANGENAME=$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                        NAMED_CONF_CHANGENAME=$(cut -d "/" -f 5 <<< ${NAMED_CONF_FILE}).${CHANGE_NUM};
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NAMED_CONF_CHANGENAME -> ${NAMED_CONF_CHANGENAME}";
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating backup copy of primary configuration..";
@@ -462,8 +462,8 @@ function switch_to_slave
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Modifying system configuration..";
 
                                             ## take a backup and make a working copy
-                                            TMP_NAMED_CONFIG=${PLUGIN_WORK_DIRECTORY}/$(grep named_config_file ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2- | sed -e 's/^ *//g;s/ *$//g' | cut -d "/" -f 2);
-                                            BKUP_NAMED_CONFIG=${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(grep named_config_file ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2- | sed -e 's/^ *//g;s/ *$//g' | cut -d "/" -f 2).${CHANGE_NUM};
+                                            TMP_NAMED_CONFIG=${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 2 <<< ${NAMED_CONF_FILE});
+                                            BKUP_NAMED_CONFIG=${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(cut -d "/" -f 2 <<< ${NAMED_CONF_FILE}).${CHANGE_NUM};
 
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_NAMED_CONFIG -> ${TMP_NAMED_CONFIG}";
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BKUP_NAMED_CONFIG -> ${BKUP_NAMED_CONFIG}";
@@ -856,7 +856,7 @@ function switch_to_master
                         ## we now need to re-configure named to operate as a slave
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Zone configuration processing was successful. Now re-configuring named..";
 
-                        NAMED_CONF_CHANGENAME=$(printf ${NAMED_CONF_FILE} | cut -d "/" -f 5).${CHANGE_NUM};
+                        NAMED_CONF_CHANGENAME=$(cut -d "/" -f 5 <<< ${NAMED_CONF_FILE}).${CHANGE_NUM};
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NAMED_CONF_CHANGENAME -> ${NAMED_CONF_CHANGENAME}";
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating backup copy of primary configuration..";
@@ -1126,16 +1126,16 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    print "${CNAME} - Process a service re-configuration from a slave to a master";
-    print "Usage: ${CNAME} [ -p tarfile name ] [ -s ] [ -f ] [ -i "AUDIT" user ] [ -c change order ] [ -e ] [ -? | -h ]";
-    print "  -p      Re-configure server as a master server. If provided, a tarfile name must also be provided.";
-    print "  -s      Re-configure server as a slave server";
-    print "  -f      Force re-configuration if master tarfile does not exist";
-    print "  -t      The name of the new master nameserver";
-    print "  -i      The user performing the request";
-    print "  -c      The change order associated with this request";
-    print "  -e      Execute processing";
-    print "  -?|-h   Show this help";
+    printf "${CNAME} - Process a service re-configuration from a slave to a master";
+    printf "Usage: ${CNAME} [ -p tarfile name ] [ -s ] [ -f ] [ -i "AUDIT" user ] [ -c change order ] [ -e ] [ -? | -h ]";
+    printf "  -p      Re-configure server as a master server. If provided, a tarfile name must also be provided.";
+    printf "  -s      Re-configure server as a slave server";
+    printf "  -f      Force re-configuration if master tarfile does not exist";
+    printf "  -t      The name of the new master nameserver";
+    printf "  -i      The user performing the request";
+    printf "  -c      The change order associated with this request";
+    printf "  -e      Execute processing";
+    printf "  -?|-h   Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -1275,7 +1275,6 @@ done
 
 unset SCRIPT_ABSOLUTE_PATH;
 unset SCRIPT_ROOT;
-unset THIS_CNAME;
 unset RET_CODE;
 unset CNAME;
 unset METHOD_NAME;
@@ -1283,4 +1282,5 @@ unset METHOD_NAME;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-return ${RETURN_CODE};
+[ -z "${RETURN_CODE}" ] && printf "1" || printf "${RETURN_CODE}";
+[ -z "${RETURN_CODE}" ] && return 1 || return "${RETURN_CODE}";

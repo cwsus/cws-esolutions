@@ -45,7 +45,7 @@ function renewiPlanetCert
     CERTIFICATE_NICKNAME=$(certutil -L -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} | grep "u,u,u" | awk '{print $1}');
     NOTIFY_CERT_EXPIRY=$(certutil -L -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} -n ${CERTIFICATE_NICKNAME} | grep "Not After" | cut -d ":" -f 2- | awk '{print $1, $2, $3, $5}');
     PRE_CERT_EXPIRY=$(certutil -L -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} -n ${CERTIFICATE_NICKNAME} | grep "Not After" | awk '{print $8, $5, $6}');
-    PRE_EXPIRY_MONTH=$(printf ${PRE_CERT_EXPIRY} | awk '{print $2}');
+    PRE_EXPIRY_MONTH=$(echo ${PRE_CERT_EXPIRY} | awk '{print $2}');
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERTIFICATE_NICKNAME -> ${CERTIFICATE_NICKNAME}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NOTIFY_CERT_EXPIRY -> ${NOTIFY_CERT_EXPIRY}";
@@ -55,7 +55,7 @@ function renewiPlanetCert
     if [ ! -z "${PRE_CERT_EXPIRY}" ]
     then
         ## ok, we have a nickname and an expiration date. convert it
-        PRE_EPOCH_EXPIRY=$(returnEpochTime $(printf ${PRE_CERT_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval printf \${${PRE_EXPIRY_MONTH}})/"));
+        PRE_EPOCH_EXPIRY=$(returnEpochTime $(echo ${PRE_CERT_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval printf \${${PRE_EXPIRY_MONTH}})/"));
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRE_EPOCH_EXPIRY -> ${PRE_EPOCH_EXPIRY}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NOTIFY_CERT_EXPIRY -> ${NOTIFY_CERT_EXPIRY}";
@@ -135,7 +135,7 @@ function renewiPlanetCert
                 if [ ! -z "${POST_CERT_EXPIRY}" ]
                 then
                     ## capture the epoch
-                    POST_EPOCH_EXPIRY=$(returnEpochTime $(printf ${POST_CERT_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval printf \${${EXPIRY_MONTH}})/"));
+                    POST_EPOCH_EXPIRY=$(returnEpochTime $(echo ${POST_CERT_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval printf \${${EXPIRY_MONTH}})/"));
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "POST_EPOCH_EXPIRY -> ${POST_EPOCH_EXPIRY}";
 
@@ -540,7 +540,7 @@ function applyiPlanetCert
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    WEB_INSTANCE_NAME=$(printf ${CERTIFICATE_DATABASE} | cut -d "-" -f 1-2);
+    WEB_INSTANCE_NAME=$(echo ${CERTIFICATE_DATABASE} | cut -d "-" -f 1-2);
     SERVER_LIST=$(getPlatformInfo | grep -w ${PLATFORM_CODE} | cut -d "|" -f 5 | sed -e "s/,/ /g");
     CERTIFICATE_NICKNAME=$(certutil -L -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} | grep "u,u,u" | awk '{print $1}');
 
@@ -573,7 +573,7 @@ function applyiPlanetCert
                     then
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Submitting files to ${WEBSERVER}..";
 
-                        REMOTE_CERT_DB=$(printf ${CERTIFICATE_DATABASE} | sed -e "s/${IUSER_AUDIT}/${WEBSERVER}/");
+                        REMOTE_CERT_DB=$(echo ${CERTIFICATE_DATABASE} | sed -e "s/${IUSER_AUDIT}/${WEBSERVER}/");
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REMOTE_CERT_DB -> ${REMOTE_CERT_DB}";
 

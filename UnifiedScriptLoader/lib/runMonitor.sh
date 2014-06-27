@@ -83,7 +83,7 @@ function executeMonitoringScript
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MONITORED_HOST -> ${MONITORED_HOST}";
 
-        IGNORE_SERVER=$(sed -e '/^ *#/d;s/#.*//' ${SERVER_IGNORE_LIST} | awk -F "=" "/\<\${MONITORED_HOST}\>/{print \$2}" | sed -e 's/^ *//g;s/ *$//g');
+        IGNORE_SERVER=$(awk -F "=" '/\<${MONITORED_HOST}\>/{print $2}' ${SERVER_IGNORE_LIST} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//');
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IGNORE_SERVER -> ${IGNORE_SERVER}";
 
@@ -234,8 +234,8 @@ function executeMonitoringScript
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     ERROR_COUNT=0;
+
     unset MONITOR;
-    unset THIS_CNAME;
     unset METHOD_NAME;
     unset RET_CODE;
     unset IS_LOGFILE_PRESENT;
@@ -366,4 +366,4 @@ unset METHOD_NAME;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-return ${RETURN_CODE};
+[ -z "${RETURN_CODE}" ] && return 1 || return "${RETURN_CODE}";

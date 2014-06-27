@@ -21,10 +21,10 @@
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 ## Application constants
-CNAME="$(basename "${0}")";
+CNAME="$(basename ${0})";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; printf "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
-METHOD_NAME="${THIS_CNAME}#startup";
+SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
+local METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
@@ -35,6 +35,14 @@ METHOD_NAME="${THIS_CNAME}#startup";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 [ -z "${PLUGIN_ROOT_DIR}" ] && print "Failed to locate configuration data. Cannot continue." && exit 1;
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+
+[ -f ${APP_ROOT}/${LIB_DIRECTORY}/aliases ] && . ${APP_ROOT}/${LIB_DIRECTORY}/aliases;
+[ -f ${APP_ROOT}/${LIB_DIRECTORY}/functions ] && . ${APP_ROOT}/${LIB_DIRECTORY}/functions;
+[ -s ${PLUGIN_LIB_DIRECTORY}/aliases ] && . ${PLUGIN_LIB_DIRECTORY}/aliases;
+[ -s ${PLUGIN_LIB_DIRECTORY}/functions ] && . ${PLUGIN_LIB_DIRECTORY}/functions;
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -55,7 +63,7 @@ typeset -i RET_CODE=${?};
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 CNAME="${THIS_CNAME}";
-METHOD_NAME="${THIS_CNAME}#startup";
+local METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -68,8 +76,6 @@ then
 
     return ${RET_CODE};
 fi
-
-unset RET_CODE;
 
 #===  FUNCTION  ===============================================================
 #          NAME:  copyZoneToMaster
@@ -1036,19 +1042,19 @@ do
 
             ## Capture the change control
             ADD_ENTRY=${_TRUE};
-            typeset -u ENTRY_TYPE=$(printf "${OPTARG}" | cut -d "," -f 1);
+            typeset -u ENTRY_TYPE=$(cut -d "," -f 1 <<< ${OPTARG});
 
             case ${ENTRY_TYPE} in
                 [Aa]|[Nn][Ss]|[Cc][Nn][Aa][Mm][Ee]|[Tt][Xx][Tt])
                     ## these only have a target, no other data associated with them
-                    typeset -l ENTRY_NAME=$(printf "${OPTARG}" | cut -d "," -f 2);
-                    typeset -l ENTRY_RECORD=$(printf "${OPTARG}" | cut -d "," -f 3);
+                    typeset -l ENTRY_NAME=$(cut -d "," -f 2 <<< ${OPTARG});
+                    typeset -l ENTRY_RECORD=$(cut -d "," -f 3 <<< ${OPTARG});
                     ;;
                 [Mm][Xx])
                     ## mx records will have a weight associated
-                    typeset -l ENTRY_NAME="${OPTARG}";
-                    typeset -l ENTRY_PRIORITY="${OPTARG}";
-                    typeset -l ENTRY_RECORD="${OPTARG}";
+                    typeset -l ENTRY_NAME=$(cut -d "," -f 2 <<< ${OPTARG});
+                    typeset -l ENTRY_RECORD=$(cut -d "," -f 3 <<< ${OPTARG});
+                    typeset -l ENTRY_PRIORITY=$(cut -d "," -f 4 <<< ${OPTARG});
                     ;;
                 [Ss][Rr][Vv])
                     ## set up our record information
@@ -1060,14 +1066,14 @@ do
                     ## _submission._tcp.email.caspersbox.com 86400 IN SRV 10 10 25 caspersb-r1b13.caspersbox.com
                     ## see http://en.wikipedia.org/wiki/SRV_record for more "INFO"
                     ## set up our record information
-                    ENTRY_TYPE=$(printf ${IP_ADDR} | cut -d "," -f 1);
-                    ENTRY_PROTOCOL=$(printf ${IP_ADDR} | cut -d "," -f 2);
-                    ENTRY_NAME=$(printf ${IP_ADDR} | cut -d "," -f 3);
-                    ENTRY_TTL=$(printf ${IP_ADDR} | cut -d "," -f 4);
-                    ENTRY_PRIORITY=$(printf ${IP_ADDR} | cut -d "," -f 5);
-                    ENTRY_WEIGHT=$(printf ${IP_ADDR} | cut -d "," -f 6);
-                    ENTRY_PORT=$(printf ${IP_ADDR} | cut -d "," -f 7);
-                    ENTRY_RECORD=$(printf ${IP_ADDR} | cut -d "," -f 8);
+                    ENTRY_TYPE=$(cut -d "," -f 1 <<< ${OPTARG});
+                    ENTRY_PROTOCOL=$(cut -d "," -f 2 <<< ${OPTARG});
+                    ENTRY_NAME=$(cut -d "," -f 3 <<< ${OPTARG});
+                    ENTRY_TTL=$(cut -d "," -f 4 <<< ${OPTARG});
+                    ENTRY_PRIORITY=$(cut -d "," -f 5 <<< ${OPTARG});
+                    ENTRY_WEIGHT=$(cut -d "," -f 6 <<< ${OPTARG});
+                    ENTRY_PORT=$(cut -d "," -f 7 <<< ${OPTARG});
+                    ENTRY_RECORD=$(cut -d "," -f 8 <<< ${OPTARG});
                     ;;
                 *)
                     ## as-yet unsupported record type - this list should follow the list
@@ -1173,7 +1179,6 @@ done
 
 unset SCRIPT_ABSOLUTE_PATH;
 unset SCRIPT_ROOT;
-unset THIS_CNAME;
 unset RET_CODE;
 unset CNAME;
 unset METHOD_NAME;
@@ -1181,4 +1186,4 @@ unset METHOD_NAME;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-return ${RETURN_CODE};
+[ -z "${RETURN_CODE}" ] && return 1 || return "${RETURN_CODE}";

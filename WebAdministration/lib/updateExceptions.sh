@@ -41,7 +41,7 @@ function addStartupException
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing previous temporary files..";
 
-    EXCEPTION_FILE_NAME=$(printf ${CORE_EXCEPTION_LIST} | cut -d "/" -f 2);
+    EXCEPTION_FILE_NAME=$(echo ${CORE_EXCEPTION_LIST} | cut -d "/" -f 2);
     TMP_EXCEPTION_FILE=${APP_ROOT}/${TMP_DIRECTORY}/${EXCEPTION_FILE_NAME};
     NEW_EXCEPTION_FILE=${APP_ROOT}/${TMP_DIRECTORY}/${EXCEPTION_FILE_NAME}.new;
 
@@ -193,7 +193,7 @@ function addStartupException
             ## backup the existing file..
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backing up configuration..";
 
-            BACKUP_FILENAME=$(printf ${CORE_EXCEPTION_LIST} | cut -d "/" -f 2).$(date +"%m-%d-%Y").${IUSER_AUDIT};
+            BACKUP_FILENAME=$(echo ${CORE_EXCEPTION_LIST} | cut -d "/" -f 2).$(date +"%m-%d-%Y").${IUSER_AUDIT};
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BACKUP_FILENAME -> ${BACKUP_FILENAME}";
 
@@ -252,7 +252,7 @@ function addStartupException
                                     getMachineInfo | grep -v "^#" | grep WEB | grep sol9 | cut -d "|" -f 1 | sort | uniq; \
                                     getMachineInfo | grep -v "^#" | grep WEB | grep sol10 | cut -d "|" -f 1 | sort | uniq;)
                                 do
-                                    if [ $(printf ${SERVER_IGNORE_LIST} | grep -c ${MONITORED_HOST}) -eq 0 ]
+                                    if [ $(echo ${SERVER_IGNORE_LIST} | grep -c ${MONITORED_HOST}) -eq 0 ]
                                     then
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating against ${MONITORED_HOST}..";
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now validating proxy ${PROXY}..";
@@ -389,7 +389,7 @@ function addSSLException
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing previous temporary files..";
 
-    EXCEPTION_FILE_NAME=$(printf ${SSL_EXCEPTION_LIST} | cut -d "/" -f 2);
+    EXCEPTION_FILE_NAME=$(echo ${SSL_EXCEPTION_LIST} | cut -d "/" -f 2);
     TMP_EXCEPTION_FILE=${APP_ROOT}/${TMP_DIRECTORY}/${EXCEPTION_FILE_NAME};
     NEW_EXCEPTION_FILE=${APP_ROOT}/${TMP_DIRECTORY}/${EXCEPTION_FILE_NAME}.new;
 
@@ -541,7 +541,7 @@ function addSSLException
             ## backup the existing file..
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backing up configuration..";
 
-            BACKUP_FILENAME=$(printf ${SSL_EXCEPTION_LIST} | cut -d "/" -f 2).$(date +"%m-%d-%Y").${IUSER_AUDIT};
+            BACKUP_FILENAME=$(echo ${SSL_EXCEPTION_LIST} | cut -d "/" -f 2).$(date +"%m-%d-%Y").${IUSER_AUDIT};
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BACKUP_FILENAME -> ${BACKUP_FILENAME}";
 
@@ -600,7 +600,7 @@ function addSSLException
                                     getMachineInfo | grep -v "^#" | grep WEB | grep sol9 | cut -d "|" -f 1 | sort | uniq; \
                                     getMachineInfo | grep -v "^#" | grep WEB | grep sol10 | cut -d "|" -f 1 | sort | uniq;)
                                 do
-                                    if [ $(printf ${SERVER_IGNORE_LIST} | grep -c ${MONITORED_HOST}) -eq 0 ]
+                                    if [ $(echo ${SERVER_IGNORE_LIST} | grep -c ${MONITORED_HOST}) -eq 0 ]
                                     then
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating against ${MONITORED_HOST}..";
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now validating proxy ${PROXY}..";

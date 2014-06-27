@@ -63,7 +63,7 @@ function validateAccountAccess
         do
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "USER -> ${USER}";
 
-            if [ $(printf ${AUTHORIZED_USERS[@]} | grep -c ${USER}) -eq 1 ]
+            if [ $(grep -c ${USER} <<< ${AUTHORIZED_USERS[@]}) -eq 1 ]
             then
                 ## we only need to match one, its unlikely that all users will be in all groups
 
@@ -86,7 +86,7 @@ function validateAccountAccess
         do
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "GROUP -> ${GROUP}";
 
-            if [ $(printf ${AUTHORIZED_GROUPS[@]} | grep -c ${GROUP}) -eq 1 ]
+            if [ $(grep -c ${GROUP} <<< ${AUTHORIZED_GROUPS[@]}) -eq 1 ]
             then
                 ## we only need to match one, its unlikely that all users will be in all groups
 
@@ -142,7 +142,7 @@ function validateSystemAccess
             RETURN_CODE=0;
 
             break;
-        elif [ $(printf ${REAL_ALIAS_NAMES} | grep -c ${SYSTEM_HOSTNAME}) -eq 1 ]
+        elif [ $(grep -c ${SYSTEM_HOSTNAME} <<< ${REAL_ALIAS_NAMES[@]}) -eq 1 ]
         then
             RETURN_CODE=0;
 
@@ -233,7 +233,6 @@ done
 
 unset SCRIPT_ABSOLUTE_PATH;
 unset SCRIPT_ROOT;
-unset THIS_CNAME;
 unset RET_CODE;
 unset CNAME;
 unset METHOD_NAME;
@@ -241,4 +240,4 @@ unset METHOD_NAME;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-return ${RETURN_CODE};
+[ -z "${RETURN_CODE}" ] && return 1 || return "${RETURN_CODE}";

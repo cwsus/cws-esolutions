@@ -64,7 +64,7 @@ then
     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
 
-    print "Security configuration does not allow the requested action.";
+    printf "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
 fi
@@ -87,7 +87,7 @@ METHOD_NAME="${THIS_CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-[ ${RET_CODE} -ne 0 ] && print "Application currently in use." && print ${RET_CODE} && exit ${RET_CODE};
+[ ${RET_CODE} -ne 0 ] && printf "Application currently in use." && printf ${RET_CODE} && exit ${RET_CODE};
 
 unset RET_CODE;
 
@@ -115,7 +115,7 @@ function failoverInternetSite
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_NUM -> ${CHANGE_NUM}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting change array and DC_FILE..";
 
-    DC_FILE=$(printf ${FILENAME} | cut -d "." -f 1-2);
+    DC_FILE=$(cut -d "." -f 1-2 <<< ${FILENAME});
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHG_ARRAY and DC_FILE configured..";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DC_FILE->${DC_FILE}";
@@ -295,7 +295,7 @@ function failoverIntranetSite
     ## first, take a backup
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backing up existing configuration..";
 
-    BACKUP_FILE_NAME=$(printf ${BACKUP_FILE_NAME} | sed -e "s/%TYPE%.%SERVER_NAME%.%DATE%/GLD.${HOSTNAME}.$(date +"%Y-%m-%d")/");
+    BACKUP_FILE_NAME=$(sed -e "s/%TYPE%.%SERVER_NAME%.%DATE%/GLD.${HOSTNAME}.$(date +"%Y-%m-%d")/" <<< ${BACKUP_FILE_NAME});
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BACKUP_FILE_NAME -> ${BACKUP_FILE_NAME}";
 
@@ -385,7 +385,7 @@ function failoverDatacenter
     ## in the db directory.
     for UNIT in $(ls -ltr ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT} | awk '{print $9}' | grep -v '^$')
     do
-        if [ $(printf ${IGNORE_LIST} | grep -c ${UNIT}) -eq 1 ]
+        if [ $(grep -c ${UNIT} <<< ${IGNORE_LIST}) -eq 1 ]
         then
             ${LOGGER} "INFO" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Dropping ${UNIT} per configured ignore list";
 
@@ -421,11 +421,11 @@ function failoverDatacenter
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating on ${UNIT}/${FILENAME}..";
 
                 ## copy the target datacenter file
-                cp ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${UNIT}/${TARGET_DC}/$(printf ${FILENAME} | cut -d "." -f 1-2) ${PLUGIN_WORK_DIRECTORY}/${UNIT}/${FILENAME};
+                cp ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${UNIT}/${TARGET_DC}/$(cut -d "." -f 1-2 <<< ${FILENAME}) ${PLUGIN_WORK_DIRECTORY}/${UNIT}/${FILENAME};
 
                 ## setup serial numbers
                 LAST_SERIAL=$(grep "; serial" ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME} | awk '{print $1}' | sed -e '/^$/d');
-                [ $(printf ${LAST_SERIAL} | cut -c 1-8) -eq $(date +"%Y%m%d") ] && SERIAL_NUM=$(( ${LAST_SERIAL} + 1 )) || SERIAL_NUM=${DEFAULT_SERIAL_NUMBER};
+                [ $(cut -c 1-8 <<< ${LAST_SERIAL}) -eq $(date +"%Y%m%d") ] && SERIAL_NUM=$(( ${LAST_SERIAL} + 1 )) || SERIAL_NUM=${DEFAULT_SERIAL_NUMBER};
 
                 ## fill it
                 set -A CHG_ARRAY ${LAST_SERIAL} ${TARGET_DC} $(date +"%m-%d-%Y") ${REQUESTING_USER} ${CHANGE_NUM} ${SERIAL_NUM};
@@ -661,8 +661,8 @@ function failoverBusinessUnit
             ## NOTE: this looks good, leave it alone
             for FILENAME in $(ls -ltr ${SITE_ROOT} | awk '{print $9}' | cut -d ":" -f 1 | grep -v "[PV]H" | uniq | sed -e '/ *#/d' -e '/^ *$/d')
             do
-                SPLIT=$(printf ${FILENAME} | tr -dc '.' | wc -c);
-                DC_FILE=$(printf ${FILENAME} | cut -d "." -f 0-$(printf ${SPLIT}));
+                SPLIT=$(tr -dc '.' <<< ${FILENAME}| wc -c);
+                DC_FILE=$(cut -d "." -f 0-$(echo ${SPLIT}) <<< ${FILENAME});
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SPLIT -> ${SPLIT}";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DC_FILE -> ${DC_FILE}";
@@ -878,8 +878,8 @@ function failoverProject
             ## NOTE: this looks good, leave it alone
             for FILENAME in $(ls -ltr ${SITE_ROOT} | grep ${PROJECT_CODE} | awk '{print $9}' | cut -d ":" -f 1 | grep -v "[PV]H" | uniq | sed -e '/ *#/d' -e '/^ *$/d')
             do
-                SPLIT=$(printf ${FILENAME} | tr -dc '.' | wc -c);
-                DC_FILE=$(printf ${FILENAME} | cut -d "." -f 0-$(printf ${SPLIT}));
+                SPLIT=$(tr -dc '.' <<< ${FILENAME} | wc -c);
+                DC_FILE=$(cut -d "." -f 0-$(echo ${SPLIT}) <<< ${FILENAME});
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SPLIT->${SPLIT}";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DC_FILE->${DC_FILE}";
@@ -1045,18 +1045,18 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    print "${CNAME} - Execute a site failover";
-    print "Usage: ${CNAME} [ -t < failover type >  ] [ -b < business unit > ] [ -p < project code > ] [ -s < site hostname > ] [ -a ] [ -x < target > ] [ -i < requesting user > ] [ -c < change request > ] [ -e ] [-h | ->]";
-    print " -t     The failover type to execute - internal or external.";
-    print " -b     If performing a business unit failover, please provide the unit name. Required if failing over a project code.";
-    print " -p     If performing a project code failover, please provide the code name. The project's business unit must also be provided.";
-    print " -s     If performing a site failover, please provide the site hostname.";
-    print " -a     Selected if performing a full datacenter failover.";
-    print " -x     The target datacenter to failover to.";
-    print " -i     The user account requesting the action.";
-    print " -c     The change request associated with the action.";
-    print " -e     Execute the request";
-    print " -h|?   Show this help";
+    printf "${CNAME} - Execute a site failover";
+    printf "Usage: ${CNAME} [ -t < failover type >  ] [ -b < business unit > ] [ -p < project code > ] [ -s < site hostname > ] [ -a ] [ -x < target > ] [ -i < requesting user > ] [ -c < change request > ] [ -e ] [-h | ->]";
+    printf " -t     The failover type to execute - internal or external.";
+    printf " -b     If performing a business unit failover, please provide the unit name. Required if failing over a project code.";
+    printf " -p     If performing a project code failover, please provide the code name. The project business unit must also be provided.";
+    printf " -s     If performing a site failover, please provide the site hostname.";
+    printf " -a     Selected if performing a full datacenter failover.";
+    printf " -x     The target datacenter to failover to.";
+    printf " -i     The user account requesting the action.";
+    printf " -c     The change request associated with the action.";
+    printf " -e     Execute the request";
+    printf " -h|?   Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -1219,7 +1219,6 @@ done
 
 unset SCRIPT_ABSOLUTE_PATH;
 unset SCRIPT_ROOT;
-unset THIS_CNAME;
 unset RET_CODE;
 unset CNAME;
 unset METHOD_NAME;
@@ -1227,4 +1226,5 @@ unset METHOD_NAME;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-return ${RETURN_CODE};
+[ -z "${RETURN_CODE}" ] && printf "1" || printf "${RETURN_CODE}";
+[ -z "${RETURN_CODE}" ] && return 1 || return "${RETURN_CODE}";

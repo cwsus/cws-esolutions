@@ -65,7 +65,7 @@ then
     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
 
-    print "Security configuration does not allow the requested action.";
+    printf "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
 fi
@@ -88,7 +88,7 @@ METHOD_NAME="${THIS_CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-[ ${RET_CODE} -ne 0 ] && print "Application currently in use." && print ${RET_CODE} && exit ${RET_CODE};
+[ ${RET_CODE} -ne 0 ] && printf "Application currently in use." && printf ${RET_CODE} && return ${RET_CODE};
 
 unset RET_CODE;
 
@@ -121,7 +121,7 @@ function execute_service_command
             ${NAMED_INIT_SCRIPT} ${COMMAND_NAME};
             typeset -i RET_CODE=${?};
 
-            if [ $(printf ${RET_CODE} | grep "${NAMED_SERVICE_STOP_TXT}" | grep -c ${_OK}) -eq 1 ]
+            if [ $(grep "${NAMED_SERVICE_STOP_TXT}" <<< ${RET_CODE} | grep -c ${_OK}) -eq 1 ]
             then
                 ## service was successfully stopped. we can confirm by checking a few things...
                 ## the pid file
@@ -135,7 +135,7 @@ function execute_service_command
                 then
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "named pidfile still exists. Checking for validity..";
 
-                    NAMED_PID=$(cat ${NAMED_ROOT}/${NAMED_PID_FILE});
+                    NAMED_PID=$(<${NAMED_ROOT}/${NAMED_PID_FILE});
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NAMED_PID -> ${NAMED_PID}";
 
@@ -192,7 +192,7 @@ function execute_service_command
                 fi
                 typeset -i RET_CODE=${?};
 
-                if [ $(printf ${RET_CODE} | grep "${NAMED_SERVICE_START_TXT}" | grep -c ${_OK}) -eq 1 ]
+                if [ $(grep "${NAMED_SERVICE_START_TXT}" <<< ${RET_CODE} | grep -c ${_OK}) -eq 1 ]
                 then
                     ## service was successfully started. we can confirm by checking a few things...
                     ## the pid file
@@ -203,7 +203,7 @@ function execute_service_command
                     then
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "named pidfile exists. Checking for validity..";
 
-                        NAMED_PID=$(cat ${NAMED_ROOT}/${NAMED_PID_FILE});
+                        NAMED_PID=$(<${NAMED_ROOT}/${NAMED_PID_FILE});
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NAMED_PID -> ${NAMED_PID}";
 
@@ -256,7 +256,7 @@ function execute_service_command
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing restart for key reload.";
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Grabbing PID..";
 
-                        NAMED_PID=$(cat ${NAMED_ROOT}/${NAMED_PID_FILE});
+                        NAMED_PID=$(<${NAMED_ROOT}/${NAMED_PID_FILE});
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NAMED_PID -> ${NAMED_PID}";
 
@@ -281,7 +281,7 @@ function execute_service_command
                             fi
                             typeset -i RET_CODE=${?};
 
-                            if [ $(printf ${RET_CODE} | grep "${NAMED_SERVICE_START_TXT}" | grep -c ${_OK}) -eq 1 ]
+                            if [ $(grep "${NAMED_SERVICE_START_TXT}" <<< ${RET_CODE} | grep -c ${_OK}) -eq 1 ]
                             then
                                 ## service was successfully started. we can confirm by checking a few things...
                                 ## the pid file
@@ -292,7 +292,7 @@ function execute_service_command
                                 then
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "named pidfile exists. Checking for validity..";
 
-                                    NAMED_PID=$(cat ${NAMED_ROOT}/${NAMED_PID_FILE});
+                                    NAMED_PID=$(<${NAMED_ROOT}/${NAMED_PID_FILE});
 
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NAMED_PID -> ${NAMED_PID}";
 
@@ -404,7 +404,7 @@ function execute_service_command
             sudo ${NAMED_INIT_SCRIPT} ${COMMAND_NAME};
             typeset -i RET_CODE=${?};
 
-            if [ $(printf ${RET_CODE} | grep -c "${NAMED_SERVICE_RELOAD_TXT}") -eq 1 ]
+            if [ $(grep -c "${NAMED_SERVICE_RELOAD_TXT}" <<< ${RET_CODE}) -eq 1 ]
             then
                 ## service was successfully reloaded. we can confirm by checking a few things...
                 ## the pid file
@@ -449,12 +449,12 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    print "${CNAME} - Execute RNDC (Remote Name Daemon Control) commands against a provided server";
-    print "Usage: ${CNAME} [ -c command ] [ -r ] [ -e ] [ -h|? ]";
-    print " -c    -> The service command to send. If no command is provided, defaults to status.";
-    print " -r    -> Indicate that the restart is performed to reload RNDC keyfiles.";
-    print " -e    -> Execute the request";
-    print " -h|-? -> Show this help";
+    printf "${CNAME} - Execute RNDC (Remote Name Daemon Control) commands against a provided server";
+    printf "Usage: ${CNAME} [ -c command ] [ -r ] [ -e ] [ -h|? ]";
+    printf " -c    -> The service command to send. If no command is provided, defaults to status.";
+    printf " -r    -> Indicate that the restart is performed to reload RNDC keyfiles.";
+    printf " -e    -> Execute the request";
+    printf " -h|-? -> Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -529,7 +529,6 @@ done
 
 unset SCRIPT_ABSOLUTE_PATH;
 unset SCRIPT_ROOT;
-unset THIS_CNAME;
 unset RET_CODE;
 unset CNAME;
 unset METHOD_NAME;
@@ -537,4 +536,5 @@ unset METHOD_NAME;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-return ${RETURN_CODE};
+[ -z "${RETURN_CODE}" ] && printf "1" || printf "${RETURN_CODE}";
+[ -z "${RETURN_CODE}" ] && return 1 || return "${RETURN_CODE}";

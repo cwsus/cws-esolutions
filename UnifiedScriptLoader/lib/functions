@@ -179,7 +179,7 @@ function isNaN
     [ -z "${1}" ] && local RETURN_CODE=1;
 
     case ${1} in
-        ?([+-])+([0-9])) RETURN_CODE=0;;
+        [\d]) RETURN_CODE=0;;
         *) RETURN_CODE=1 ;;
     esac
 
@@ -212,6 +212,7 @@ function contains
 
     typeset -i COUNTER=0;
 
+    # LAST=${!#}
     (( LAST_ARG = ${#} - 1))
     eval SEARCH_STRING=\$$#;
 
