@@ -22,22 +22,22 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 function main
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     if [ ! -z "${IS_WEB_BUILD_ENABLED}" ] && [ "${IS_WEB_BUILD_ENABLED}" = "${_TRUE}" ]
     then
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
         ## don't allow ctrl-c to be sent
-        trap "echo -n '$(grep -w system.trap.signals "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%SIGNAL%/Ctrl-C/")'; sleep "${MESSAGE_DELAY}"; reset; clear; continue " 1 2 3
+        trap "echo '$(grep -w system.trap.signals "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%SIGNAL%/Ctrl-C/")'; sleep "${MESSAGE_DELAY}"; reset; clear; continue " 1 2 3
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checking if application is already in operation...";
 
@@ -46,13 +46,13 @@ function main
         ## get the request information
         while true
         do
-            echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-            echo -n "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-            echo -n "\t$(grep -w cert.mgmt.create.new.cert "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-            echo -n "\t$(grep -w cert.mgmt.renew.cert "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-            echo -n "\t$(grep -w cert.mgmt.exclude.cert "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-            echo -n "\t$(grep -w cert.mgmt.run.adhoc.report "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-            echo -n "\t$(grep -w system.option.cancel "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+            echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+            echo "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+            echo "\t$(grep -w cert.mgmt.create.new.cert "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+            echo "\t$(grep -w cert.mgmt.renew.cert "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+            echo "\t$(grep -w cert.mgmt.exclude.cert "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+            echo "\t$(grep -w cert.mgmt.run.adhoc.report "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+            echo "\t$(grep -w system.option.cancel "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
             ## get the requested project code/url or business unit
             read REQUEST_OPTION;
@@ -94,7 +94,7 @@ function main
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover process aborted";
 
-                    echo -n "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                    echo "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                     ## unset SVC_LIST, we dont need it now
                     unset SVC_LIST;
@@ -115,7 +115,7 @@ function main
                 1)
                     ## request to create a new certificate for an existing site
                     ## this would be for a new cert, most commonly a new site too
-                    echo -n "not yet implemented";
+                    echo "not yet implemented";
                     reset; clear; continue;
                     ;;
                 2)
@@ -124,9 +124,9 @@ function main
 
                     while true
                     do
-                        echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                        echo -n "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                        echo -n "\t$(grep -w cert.mgmt.renew.provide.site "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                        echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                        echo "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                        echo "\t$(grep -w cert.mgmt.renew.provide.site "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                         read SITE_HOSTNAME;
 
@@ -136,13 +136,13 @@ function main
 
                         reset; clear;
 
-                        echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                        echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                         case ${SITE_HOSTNAME} in
                             [Xx]|[Qq]|[Cc])
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Renewal process aborted";
 
-                                echo -n "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                echo "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                 ## unset SVC_LIST, we dont need it now
                                 unset SITE_HOSTNAME;
@@ -185,7 +185,7 @@ function main
                                             ## unsupported platform
                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unsupported platform detected - Renewal process aborted";
 
-                                            echo -n "$(grep -w unsupported.platform.detected "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                            echo "$(grep -w unsupported.platform.detected "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                             ## unset SVC_LIST, we dont need it now
                                             unset REQUEST_OPTION;
@@ -213,7 +213,7 @@ function main
                                             CERTDB=${INSTANCE_NAME}-${IUSER_AUDIT}-;
 
                                             reset; clear;
-                                            echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                            echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WEB_PROJECT_CODE -> ${WEB_PROJECT_CODE}";
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WEBSERVER_PLATFORM -> ${WEBSERVER_PLATFORM}";
@@ -245,8 +245,8 @@ function main
                                                 MGMT_OP=$(${APP_ROOT}/${LIB_DIRECTORY}/validators/validate_change_request.sh ${WEBSERVER_PLATFORM} ${CERTDB});
 
                                                 CNAME=$(basename ${0});
-                                            local METHOD_NAME="${CNAME}#${0}";
-local RETURN_CODE=0;
+                                            typeset METHOD_NAME="${CNAME}#${0}";
+typeset RETURN_CODE=0;
 
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MGMT_OP -> ${MGMT_OP}";
 
@@ -304,7 +304,7 @@ local RETURN_CODE=0;
 
                                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No information was found for the provided hostname. Cannot continue.";
 
-                                                echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                             fi
                                         fi
@@ -313,7 +313,7 @@ local RETURN_CODE=0;
 
                                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to locate configuration data for provided site hostname. Cannot continue.";
 
-                                        echo -n "$(grep -w configuration.not.found.for.host "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                        echo "$(grep -w configuration.not.found.for.host "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                         sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                     fi
                                 else
@@ -322,7 +322,7 @@ local RETURN_CODE=0;
 
                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
 
-                                    echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                    echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                 fi
                                 ;;
@@ -335,9 +335,9 @@ local RETURN_CODE=0;
 
                     while true
                     do
-                        echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                        echo -n "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                        echo -n "\t$(grep -w cert.mgmt.exception.provide.site "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                        echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                        echo "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                        echo "\t$(grep -w cert.mgmt.exception.provide.site "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                         read SITE_HOSTNAME;
 
@@ -347,13 +347,13 @@ local RETURN_CODE=0;
 
                         reset; clear;
 
-                        echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                        echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                         case ${SITE_HOSTNAME} in
                             [Xx]|[Qq]|[Cc])
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Renewal process aborted";
 
-                                echo -n "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                echo "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                 ## unset SVC_LIST, we dont need it now
                                 unset SITE_HOSTNAME;
@@ -381,9 +381,9 @@ local RETURN_CODE=0;
                                             ## entry added, yay
                                             reset; clear;
 
-                                            echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                            echo -n "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                            echo -n "\t$(grep -w exception.list.updated "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s^&LIST^${SSL_EXCEPTION_LIST}^")";
+                                            echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                            echo "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                            echo "\t$(grep -w exception.list.updated "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s^&LIST^${SSL_EXCEPTION_LIST}^")";
 
                                             read RESPONSE;
 
@@ -392,9 +392,9 @@ local RETURN_CODE=0;
                                             ## some "ERROR" occurred adding the entry
                                             reset; clear;
 
-                                            echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                            echo -n "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                            echo -n "\t$(grep -w ${RET_CODE} "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                            echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                            echo "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                            echo "\t$(grep -w ${RET_CODE} "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                             read INPUT;
 
@@ -409,7 +409,7 @@ local RETURN_CODE=0;
 
                                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to locate configuration data for provided site hostname. Cannot continue.";
 
-                                        echo -n "$(grep -w configuration.not.found.for.host "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                        echo "$(grep -w configuration.not.found.for.host "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                         sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                     fi
                                 else
@@ -418,7 +418,7 @@ local RETURN_CODE=0;
 
                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
 
-                                    echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                    echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                 fi
                                 ;;
@@ -431,9 +431,9 @@ local RETURN_CODE=0;
 
                     while true
                     do
-                        echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                        echo -n "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                        echo -n "\t$(grep -w cert.mgmt.adhoc.provide.platform "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                        echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                        echo "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                        echo "\t$(grep -w cert.mgmt.adhoc.provide.platform "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                         read PLATFORM_CODE;
 
@@ -443,13 +443,13 @@ local RETURN_CODE=0;
 
                         reset; clear;
 
-                        echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                        echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                         case ${PLATFORM_CODE} in
                             [Xx]|[Qq]|[Cc])
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Renewal process aborted";
 
-                                echo -n "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                echo "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                 ## unset SVC_LIST, we dont need it now
                                 unset PLATFORM_CODE;
@@ -495,9 +495,9 @@ local RETURN_CODE=0;
                                                 reset; clear;
 
                                                 ## ask if we want a specific date
-                                                echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                echo -n "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                echo -n "\t$(grep -w cert.mgmt.adhoc.provide.days "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                echo "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                echo "\t$(grep -w cert.mgmt.adhoc.provide.days "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                                 read REPORT_DAYS;
 
@@ -505,7 +505,7 @@ local RETURN_CODE=0;
 
                                                 reset; clear;
 
-                                                echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                                 if [ ! -z "${REPORT_DAYS}" ]
                                                 then
@@ -518,7 +518,7 @@ local RETURN_CODE=0;
 
                                                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided response is not numeric. Cannot continue.";
 
-                                                        echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                        echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                                         sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                                     fi
@@ -531,9 +531,9 @@ local RETURN_CODE=0;
                                             done
 
                                             ## ask if we want to send a targetted email
-                                            echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                            echo -n "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                            echo -n "\t$(grep -w cert.mgmt.adhoc.provide.email "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                            echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                            echo "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                            echo "\t$(grep -w cert.mgmt.adhoc.provide.email "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                             read TARGET_EMAIL;
 
@@ -546,7 +546,7 @@ local RETURN_CODE=0;
 
                                             reset; clear;
 
-                                            echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                            echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command nohup ${APP_ROOT}/${LIB_DIRECTORY}/runMonitor.sh -m monitorCertificateDatabases -s \"$(echo ${WEBSERVER_NAMES[@]})\" -d $(returnEpochTime \"$(date +"%Y %m %d")\" ${REPORT_DAYS}) -a \"${TARGET_EMAIL}\" -e > /dev/null 2>&1 &";
 
@@ -562,10 +562,10 @@ local RETURN_CODE=0;
                                             unset OPERABLE_PLATFORMS;
                                             unset TARGET_EMAIL;
 
-                                            echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                            echo -n "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                            echo -n "\t$(grep -w cert.mgmt.adhoc.report.running "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                            echo -n "\t$(grep -w system.continue.enter "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                            echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                            echo "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                            echo "\t$(grep -w cert.mgmt.adhoc.report.running "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                            echo "\t$(grep -w system.continue.enter "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                             read INPUT;
 
@@ -578,7 +578,7 @@ local RETURN_CODE=0;
 
                                             unset PLATFORM_CODE;
 
-                                            echo -n "$(grep -w configuration.not.found.for.host "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                            echo "$(grep -w configuration.not.found.for.host "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                             sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                         fi
@@ -588,7 +588,7 @@ local RETURN_CODE=0;
 
                                         unset PLATFORM_CODE;
 
-                                        echo -n "$(grep -w configuration.not.found.for.host "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                        echo "$(grep -w configuration.not.found.for.host "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                         sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                     fi
@@ -598,7 +598,7 @@ local RETURN_CODE=0;
 
                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
 
-                                    echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                    echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                 fi
@@ -611,7 +611,7 @@ local RETURN_CODE=0;
 
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
 
-                    echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                    echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                     ;;
             esac
@@ -619,7 +619,7 @@ local RETURN_CODE=0;
     else
         $(${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate management has not been enabled. Cannot continue.");
 
-        echo -n "$(grep -w request.not.authorized "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+        echo "$(grep -w request.not.authorized "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
         exec ${MAIN_CLASS};
 
@@ -637,8 +637,8 @@ function createCSR
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing via csrGenerationUI helper..";
@@ -675,8 +675,8 @@ function createCSR
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Received request to break. CANCEL_REQ->${CANCEL_REQ}, ADD_RECORDS->${ADD_RECORDS}, ADD_SUBDOMAINS->${ADD_SUBDOMAINS}. Breaking..";
 
             ## put methodname and cname back
-        local METHOD_NAME="${CNAME}#${0}";
-local RETURN_CODE=0;
+        typeset METHOD_NAME="${CNAME}#${0}";
+typeset RETURN_CODE=0;
             CNAME=$(basename ${0});
 
             reset; clear; main;
@@ -685,8 +685,8 @@ local RETURN_CODE=0;
             ## record has been added successfully through the helper
             ## ask if we want to add additional records to the zone
             ## put methodname and cname back
-        local METHOD_NAME="${CNAME}#${0}";
-local RETURN_CODE=0;
+        typeset METHOD_NAME="${CNAME}#${0}";
+typeset RETURN_CODE=0;
             CNAME=$(basename ${0});
 
             unset REQUEST_OPTION;
@@ -715,9 +715,9 @@ local RETURN_CODE=0;
 
             while true
             do
-                echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                echo -n "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                echo -n "\t$(grep -w cert.mgmt.perform.more.tasks "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                echo "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                echo "\t$(grep -w cert.mgmt.perform.more.tasks "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                 read RESPONSE;
 
@@ -752,7 +752,7 @@ local RETURN_CODE=0;
                         unset RESPONSE;
                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not provided. Cannot continue.";
 
-                        echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                        echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                         sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                         ;;
                 esac
@@ -782,8 +782,8 @@ function applyLocalCertificate
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing via certRenewalUI helper..";
@@ -820,8 +820,8 @@ function applyLocalCertificate
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Received request to break. CANCEL_REQ->${CANCEL_REQ}, ADD_RECORDS->${ADD_RECORDS}, ADD_SUBDOMAINS->${ADD_SUBDOMAINS}. Breaking..";
 
             ## put methodname and cname back
-        local METHOD_NAME="${CNAME}#${0}";
-local RETURN_CODE=0;
+        typeset METHOD_NAME="${CNAME}#${0}";
+typeset RETURN_CODE=0;
             CNAME=$(basename ${0});
 
             reset; clear; main;
@@ -830,8 +830,8 @@ local RETURN_CODE=0;
             ## record has been added successfully through the helper
             ## ask if we want to add additional records to the zone
             ## put methodname and cname back
-        local METHOD_NAME="${CNAME}#${0}";
-local RETURN_CODE=0;
+        typeset METHOD_NAME="${CNAME}#${0}";
+typeset RETURN_CODE=0;
             CNAME=$(basename ${0});
 
             unset REQUEST_OPTION;
@@ -860,9 +860,9 @@ local RETURN_CODE=0;
 
             while true
             do
-                echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                echo -n "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                echo -n "\t$(grep -w cert.mgmt.perform.more.tasks "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                echo "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                echo "\t$(grep -w cert.mgmt.perform.more.tasks "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                 read RESPONSE;
 
@@ -897,7 +897,7 @@ local RETURN_CODE=0;
                         unset RESPONSE;
                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not provided. Cannot continue.";
 
-                        echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                        echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                         sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                         ;;
                 esac
@@ -927,8 +927,8 @@ function implementCertificateChange
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing via implementCertUI helper..";
@@ -965,8 +965,8 @@ function implementCertificateChange
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Received request to break. CANCEL_REQ->${CANCEL_REQ}, ADD_RECORDS->${ADD_RECORDS}, ADD_SUBDOMAINS->${ADD_SUBDOMAINS}. Breaking..";
 
             ## put methodname and cname back
-        local METHOD_NAME="${CNAME}#${0}";
-local RETURN_CODE=0;
+        typeset METHOD_NAME="${CNAME}#${0}";
+typeset RETURN_CODE=0;
             CNAME=$(basename ${0});
 
             reset; clear; main;
@@ -975,8 +975,8 @@ local RETURN_CODE=0;
             ## record has been added successfully through the helper
             ## ask if we want to add additional records to the zone
             ## put methodname and cname back
-        local METHOD_NAME="${CNAME}#${0}";
-local RETURN_CODE=0;
+        typeset METHOD_NAME="${CNAME}#${0}";
+typeset RETURN_CODE=0;
             CNAME=$(basename ${0});
 
             unset REQUEST_OPTION;
@@ -1005,10 +1005,10 @@ local RETURN_CODE=0;
 
             while true
             do
-                echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                echo -n "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                echo -n "\t$(grep -w cert.mgmt.cert.applied "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%SITE_HOSTNAME%/${SITE_HOSTNAME}/")";
-                echo -n "\t$(grep -w cert.mgmt.perform.more.tasks "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                echo "\t\t\t$(grep -w certmgmt.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                echo "\t$(grep -w cert.mgmt.cert.applied "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%SITE_HOSTNAME%/${SITE_HOSTNAME}/")";
+                echo "\t$(grep -w cert.mgmt.perform.more.tasks "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                 read RESPONSE;
 
@@ -1044,7 +1044,7 @@ local RETURN_CODE=0;
                         unset RESPONSE;
                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not provided. Cannot continue.";
 
-                        echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                        echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                         sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                         ;;
                 esac
@@ -1065,7 +1065,7 @@ local RETURN_CODE=0;
     done
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 METHOD_NAME="${CNAME}#startup";

@@ -17,14 +17,14 @@
 #
 #==============================================================================
 
-[[ "$(uname)" = CYGWIN_NT* ]] && [ -z "$(set | grep CYGWIN)" ] && typeset -rx CYGWIN="winsymlinks:lnk error_start=C:\cygwin\bin\gdb.exe -nw %1 %2";
+[[ "$(/usr/bin/env uname)" = CYGWIN_NT* ]] && [ -z "$(set | /usr/bin/env grep CYGWIN)" ] && typeset -rx CYGWIN="winsymlinks:lnk error_start=C:\cygwin\bin\gdb.exe -nw %1 %2";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 case ${SCRIPT_ROOT} in
-    *lib/plugins/*/executors*|*lib/plugins/*/monitors*) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../../../../etc" ;;
-    *lib/plugins/*/sys*|*lib/plugins/*/bin*|*lib/plugins/*/lib*) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../../../../etc" ;;
+    *lib/plugins/*/executors*|*lib/plugins/*/monitors*) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../../../../../etc" ;;
+    *lib/plugins/*/sys*|*lib/plugins/*/bin*|*lib/plugins/*/lib*) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../../../../../etc" ;;
     *lib/plugins/*) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../../../etc" ;;
     *lib/sys*) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../../etc" ;;
     *lib*|*bin*) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../etc" ;;
@@ -44,21 +44,24 @@ typeset -r APP_SYS_CONFIG;
 
 if [ ! -s ${APP_SYS_CONFIG} ]
 then
-    echo -n "Failed to locate configuration data. Cannot continue.";
+    /usr/bin/env echo "Failed to locate configuration data. Cannot continue.";
 
-    echo -n 1; exit 1;
+    /usr/bin/env echo 1; exit 1;
 fi
 
 . ${APP_SYS_CONFIG};
 
 ## uncommon constants
-typeset -rx DATESYS=$(date +%Y%m%d_%H-%M-%S);
-typeset -rx CURRENT_DATE=$(date '+%Y%m%d');
-typeset -rx CURRENT_TIMESTAMP=$(date '+%Y%m%d%H%M');
-typeset -rx SYSTEM_HOSTNAME="$(uname -n)";
-typeset -rx SYSTEM_UPTIME="$(uptime | sed -e 's/^ *//g;s/ *$//g')";
+typeset -rx DATESYS=$(/usr/bin/env date +%Y%m%d_%H-%M-%S);
+typeset -rx CURRENT_DATE=$(/usr/bin/env date '+%Y%m%d');
+typeset -rx CURRENT_TIMESTAMP=$(/usr/bin/env date '+%Y%m%d%H%M');
+typeset -rx SYSTEM_PLATFORM=$(/usr/bin/env uname -s);
+typeset -rx SYSTEM_HOSTNAME="$(/usr/bin/env uname -n)";
+typeset -rx SYSTEM_UPTIME="$(/usr/bin/env uptime | /usr/bin/env cut -d "," -f 1 | /usr/bin/env sed -e 's/^ *//g;s/ *$//g')";
+typeset -rx IS_EXPECT_INSTALLED=$(/usr/bin/env expect -v 2>/dev/null);
+
 set -A IUSER_GROUPS $(groups); typeset -rx IUSER_GROUPS;
-[ -z "$(/usr/bin/env who am i | awk '{print $1}')" ] && typeset -rx IUSER_AUDIT=$(/usr/bin/env whoami) || typeset -rx IUSER_AUDIT=$(/usr/bin/env who am i | awk '{print $1}');
+[ -z "$(/usr/bin/env who am i | /usr/bin/env awk '{print $1}')" ] && typeset -rx IUSER_AUDIT=$(/usr/bin/env whoami) || typeset -rx IUSER_AUDIT=$(/usr/bin/env who am i | /usr/bin/env awk '{print $1}');
 
 ## path
 typeset -x PATH=${PATH}:${APP_PATH}:${SYS_PATH};
@@ -73,7 +76,7 @@ typeset -x -i ERROR_COUNT=0;
 typeset -x -i RETRY_COUNT=0;
 typeset -x -i STATUS=0;
 
-[ ! -d ${TEMP_DIRECTORY} ] && mkdir -p ${TEMP_DIRECTORY} > /dev/null 2>&1;
+[ ! -d ${TEMP_DIRECTORY} ] && /usr/bin/env mkdir -p ${TEMP_DIRECTORY} > /dev/null 2>&1;
 
 ## source aliases/functions ..
 [ -f ${APP_ROOT}/${LIB_DIRECTORY}/aliases ] && . ${APP_ROOT}/${LIB_DIRECTORY}/aliases;

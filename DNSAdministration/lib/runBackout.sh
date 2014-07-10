@@ -21,20 +21,20 @@
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 ## Application constants
-CNAME="$(basename ${0})";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
+CNAME="$(/usr/bin/env basename ${0})";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; /usr/bin/env echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
-local METHOD_NAME="${CNAME}#startup";
+METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/plugin ]] && . ${SCRIPT_ROOT}/../lib/plugin;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${PLUGIN_ROOT_DIR}" ] && echo -n "Failed to locate configuration data. Cannot continue." && return 1;
+[ -z "${PLUGIN_ROOT_DIR}" ] && /usr/bin/env echo "Failed to locate configuration data. Cannot continue." && return 1;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -63,7 +63,7 @@ typeset -i RET_CODE=${?};
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 CNAME="${THIS_CNAME}";
-local METHOD_NAME="${CNAME}#startup";
+typeset METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -72,7 +72,7 @@ then
     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
 
-    echo -n "Security configuration does not allow the requested action.";
+    echo "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
 fi
@@ -87,8 +87,8 @@ function obtainBackoutList
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -110,7 +110,7 @@ function obtainBackoutList
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
     CNAME="${THIS_CNAME}";
-    local METHOD_NAME="${THIS_CNAME}#${0}";
+    typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -128,7 +128,7 @@ function obtainBackoutList
         then
             set -A FILE_LIST $(sed -e "s/^M//g" ${PLUGIN_ROOT_DIR}/${BACKUP_LIST});
         else
-            set -A FILE_LIST $(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "sed \"s/^M//g\" ${PLUGIN_ROOT_DIR}/${BACKUP_LIST}" ${SSH_USER_NAME} ${SSH_USER_AUTH});
+            set -A FILE_LIST $(ssh ${NAMED_MASTER} "sed \"s/^M//g\" ${PLUGIN_ROOT_DIR}/${BACKUP_LIST}");
         fi
 
         if [ ${#FILE_LIST[@]} -eq 0 ]
@@ -170,8 +170,8 @@ function runBackoutWithOptions
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -191,7 +191,7 @@ function runBackoutWithOptions
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
     CNAME="${THIS_CNAME}";
-    local METHOD_NAME="${THIS_CNAME}#${0}";
+    typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -213,7 +213,7 @@ function runBackoutWithOptions
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
         CNAME="${THIS_CNAME}";
-        local METHOD_NAME="${THIS_CNAME}#${0}";
+        typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -250,7 +250,7 @@ function runBackoutWithOptions
                     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
                     CNAME="${THIS_CNAME}";
-                    local METHOD_NAME="${THIS_CNAME}#${0}";
+                    typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -290,7 +290,7 @@ function runBackoutWithOptions
         then
             set -A BACKUP_FILES $(<${PLUGIN_ROOT_DIR}/${BACKUP_LIST});
         else
-            set -A BACKUP_FILES $(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "sed \"s/^M//g\" ${PLUGIN_ROOT_DIR}/${BACKUP_LIST}" ${SSH_USER_NAME} ${SSH_USER_AUTH});
+            set -A BACKUP_FILES $(ssh ${NAMED_MASTER} "sed \"s/^M//g\" ${PLUGIN_ROOT_DIR}/${BACKUP_LIST}");
         fi
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BACKUP_FILES -> ${BACKUP_FILES[@]}";
@@ -326,8 +326,8 @@ function runBackoutWithFileName
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -347,7 +347,7 @@ function runBackoutWithFileName
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
     CNAME="${THIS_CNAME}";
-    local METHOD_NAME="${THIS_CNAME}#${0}";
+    typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -372,7 +372,7 @@ function runBackoutWithFileName
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
         CNAME="${THIS_CNAME}";
-        local METHOD_NAME="${THIS_CNAME}#${0}";
+        typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -408,7 +408,7 @@ function runBackoutWithFileName
                     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
                     CNAME="${THIS_CNAME}";
-                    local METHOD_NAME="${THIS_CNAME}#${0}";
+                    typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -474,21 +474,21 @@ function usage
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=3;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=3;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo -n "${CNAME} - Perform a backout for a previously executed change";
-    echo -n "Usage: ${CNAME} [-a] [-f filename] [-b business unit] [-d date] [-c change request] [-e execute] [-?|-h show this help]";
-    echo -n "  -a      Retrieve a list of all backout files";
-    echo -n "  -f      Perform a backout using the specified backout file";
-    echo -n "  -b      The business unit associated with the change request";
-    echo -n "  -d      The date the change request was performed";
-    echo -n "  -c      The change order associated with this request";
-    echo -n "  -e      Execute processing";
-    echo -n "  -h|-?   Show this help";
+    echo "${CNAME} - Perform a backout for a previously executed change\n";
+    echo "Usage: ${CNAME} [ -a ] [ -f <filename> ] [ -b <business unit> ] [ -d <date> ] [ -c <change request> ] [ -e ] [ -h|-? ]
+    -a         -> Retrieve a list of all backout files
+    -f         -> Perform a backout using the specified backout file
+    -b         -> The business unit associated with the change request
+    -d         -> The date the change request was performed
+    -c         -> The change order associated with this request
+    -e         -> Execute processing
+    -h|-?      -> Show this help\n";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -499,7 +499,7 @@ function usage
     return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
+[ ${#} -eq 0 ] && usage&& RETURN_CODE=${?};
 
 while getopts ":af:b:d:c:eh:" OPTIONS 2>/dev/null
 do
@@ -509,7 +509,7 @@ do
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
 
             ## Capture the site root
-            obtainBackoutList && RETURN_CODE=${?};
+            obtainBackoutList&& RETURN_CODE=${?};
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
             ;;
@@ -523,7 +523,7 @@ do
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
             ## we were given a filename, process it
-            runBackoutWithFileName && RETURN_CODE=${?};
+            runBackoutWithFileName&& RETURN_CODE=${?};
             ;;
         b)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
@@ -580,13 +580,13 @@ do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                runBackoutWithOptions && RETURN_CODE=${?};
+                runBackoutWithOptions&& RETURN_CODE=${?};
             fi
             ;;
         *)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            usage && RETURN_CODE=${?};
+            usage&& RETURN_CODE=${?};
             ;;
     esac
 done

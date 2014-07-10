@@ -21,20 +21,20 @@
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 ## Application constants
-CNAME="$(basename ${0})";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
+CNAME="$(/usr/bin/env basename ${0})";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; /usr/bin/env echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
-local METHOD_NAME="${CNAME}#startup";
+METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/plugin ]] && . ${SCRIPT_ROOT}/../lib/plugin;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${PLUGIN_ROOT_DIR}" ] && echo -n "Failed to locate configuration data. Cannot continue." && return 1;
+[ -z "${PLUGIN_ROOT_DIR}" ] && /usr/bin/env echo "Failed to locate configuration data. Cannot continue." && return 1;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -63,7 +63,7 @@ typeset -i RET_CODE=${?};
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 CNAME="${THIS_CNAME}";
-local METHOD_NAME="${CNAME}#startup";
+typeset METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -72,7 +72,7 @@ then
     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
 
-    echo -n "Security configuration does not allow the requested action.";
+    echo "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
 fi
@@ -86,8 +86,8 @@ function returnResponse
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -127,14 +127,14 @@ function returnResponse
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
                 ## validate the input
-                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${SERVER} "${DIG_CMD} +short -t ${RECORD_TYPE} ${SITE_URL}" ${SSH_USER_NAME} ${SSH_USER_AUTH} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
+                ssh ${SERVER} "${DIG_CMD} +short -t ${RECORD_TYPE} ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
                 typeset -i RET_CODE=${?};
 
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
                 CNAME="${THIS_CNAME}";
-                local METHOD_NAME="${THIS_CNAME}#${0}";
+                typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -163,7 +163,7 @@ function returnResponse
                 do
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROXY -> ${PROXY}";
 
-                    local THIS_CNAME="${CNAME}";
+                    typeset THIS_CNAME="${CNAME}";
                     unset METHOD_NAME;
                     unset CNAME;
 
@@ -178,7 +178,7 @@ function returnResponse
                     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
                     CNAME="${THIS_CNAME}";
-                    local METHOD_NAME="${THIS_CNAME}#${0}";
+                    typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -195,14 +195,14 @@ function returnResponse
                         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
                         ## validate the input
-                        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "${DIG_CMD} -t ${RECORD_TYPE} ${SITE_URL}" ${SSH_USER_NAME} ${SSH_USER_AUTH} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
+                        ssh ${PROXY} "${DIG_CMD} -t ${RECORD_TYPE} ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
                         typeset -i RET_CODE=${?};
 
                         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
                         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
                         CNAME="${THIS_CNAME}";
-                        local METHOD_NAME="${THIS_CNAME}#${0}";
+                        typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -246,8 +246,8 @@ function returnReverseResponse
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -283,11 +283,11 @@ function returnReverseResponse
             then
                 if [[ ! -z "${SHORT_RESPONSE}" && "${SHORT_RESPONSE}" = "${_TRUE}" ]]
                 then
-                    [ -z "${NAMESERVER}" ] && ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig +short -x ${SITE_URL}" ${SSH_USER_NAME} ${SSH_USER_AUTH} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} || \
-                        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} +short -x ${SITE_URL}"  ${SSH_USER_NAME} ${SSH_USER_AUTH}> ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
+                    [ -z "${NAMESERVER}" ] && ssh ${NAMESERVER} "dig +short -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} || \
+                        ssh ${NAMESERVER} "dig @${NAMESERVER} +short -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
                 else
-                    [ -z "${NAMESERVER}" ] && ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig -x ${SITE_URL}" ${SSH_USER_NAME} ${SSH_USER_AUTH} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} || \
-                        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMESERVER} "dig @${NAMESERVER} -x ${SITE_URL}" ${SSH_USER_NAME} ${SSH_USER_AUTH} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
+                    [ -z "${NAMESERVER}" ] && ssh ${NAMESERVER} "dig -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} || \
+                        ssh ${NAMESERVER} "dig @${NAMESERVER} -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
                 fi
 
                 REQUEST_COMPLETE="${_TRUE}";
@@ -320,7 +320,7 @@ function returnReverseResponse
                 do
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROXY -> ${PROXY}";
 
-                    local THIS_CNAME="${CNAME}";
+                    typeset THIS_CNAME="${CNAME}";
                     unset METHOD_NAME;
                     unset CNAME;
 
@@ -335,7 +335,7 @@ function returnReverseResponse
                     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
                     CNAME="${THIS_CNAME}";
-                    local METHOD_NAME="${THIS_CNAME}#${0}";
+                    typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -347,11 +347,11 @@ function returnReverseResponse
 
                         if [[ ! -z "${SHORT_RESPONSE}" && "${SHORT_RESPONSE}" = "${_TRUE}" ]]
                         then
-                            [ -z "${NAMESERVER}" ] && ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig +short -x ${SITE_URL}" ${SSH_USER_NAME} ${SSH_USER_AUTH} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} || \
-                                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} +short -x ${SITE_URL}" ${SSH_USER_NAME} ${SSH_USER_AUTH} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
+                            [ -z "${NAMESERVER}" ] && ssh ${PROXY} "dig +short -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} || \
+                                ssh ${PROXY} "dig @${NAMESERVER} +short -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
                         else
-                            [ -z "${NAMESERVER}" ] && ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig -x ${SITE_URL}" ${SSH_USER_NAME} ${SSH_USER_AUTH} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} || \
-                                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "dig @${NAMESERVER} -x ${SITE_URL}" ${SSH_USER_NAME} ${SSH_USER_AUTH} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
+                            [ -z "${NAMESERVER}" ] && ssh ${PROXY} "dig -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} || \
+                                ssh ${PROXY} "dig @${NAMESERVER} -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
                         fi
 
                         break;
@@ -394,22 +394,22 @@ function usage
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=3;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=3;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo -n "${CNAME} - Performs a DNS query against the nameserver specified.";
-    echo -n "Usage: ${CNAME} [ -s nameserver ] [ -t record type ] [ -u url ] [ -r ] [ -o ] [ -p ] [ -e execute ] [ -?|-h show this help ]";
-    echo -n "  -s      Nameserver to query against. If no server is provided, the system default nameserver is utilized.";
-    echo -n "  -t      Type of record to retrieve (if blank, A assumed)";
-    echo -n "  -u      URL/IP address to query";
-    echo -n "  -r      Request reverse mapping for provided IP address";
-    echo -n "  -o      Return a short response instead of a full response";
-    echo -n "  -p      Print output to terminal";
-    echo -n "  -e      Execute processing";
-    echo -n "  -h|-?   Show this help";
+    echo "${CNAME} - Performs a DNS query against the nameserver specified.\n";
+    echo "Usage: ${CNAME} [ -s <nameserver> ] [ -t <record type> ] [ -u <url> ] [ -r ] [ -o ] [ -p ] [ -e ] [ -h|-? ]
+    -s         -> Nameserver to query against. If no server is provided, the system default nameserver is utilized.
+    -t         -> Type of record to retrieve (if blank, A assumed)
+    -u         -> URL/IP address to query
+    -r         -> Request reverse mapping for provided IP address
+    -o         -> Return a short response instead of a full response
+    -p         -> Print output to terminal
+    -e         -> Execute processing
+    -h|-?      -> Show this help\n";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -420,7 +420,7 @@ function usage
     return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
+[ ${#} -eq 0 ] && usage&& RETURN_CODE=${?};
 
 while getopts ":s:t:u:ropeh:" OPTIONS 2>/dev/null
 do
@@ -497,7 +497,7 @@ do
         *)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            usage && RETURN_CODE=${?};
+            usage&& RETURN_CODE=${?};
             ;;
     esac
 done

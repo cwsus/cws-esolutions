@@ -21,10 +21,8 @@
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 ## Application constants
-CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
-local METHOD_NAME="${CNAME}#startup";
+CNAME="$(/usr/bin/env basename ${0})";
+METHOD_NAME="${0}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -42,8 +40,8 @@ function validateIPAddress
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -68,7 +66,7 @@ function validateIPAddress
         return ${RETURN_CODE};
     fi
 
-    local IS_VALID_IP=$(echo -n "${2}" | perl -ne '/(\b\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}\b)/ && print');
+    typeset IS_VALID_IP=$(echo "${2}" | /usr/bin/env perl -ne '/(\b\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}\b)/ && print');
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IS_VALID_IP -> ${IS_VALID_IP}";
 
@@ -99,11 +97,11 @@ function validateIPAddress
         do
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ADDRESS -> ${ADDRESS}";
 
-            OCTET_MATCH=$(echo -n "${1}" | cut -d "." -f 1-$(tr -dc "." <<< ${ADDRESS} | wc -c));
+            typeset ADDRESS_PREFIX="$(echo "${2}" | cut -d "." -f 1-$(( $(tr -dc "." <<< ${ADDRESS} | wc -c) + 1)))"
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OCTET_MATCH -> ${OCTET_MATCH}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ADDRESS_PREFIX -> ${ADDRESS_PREFIX}";
 
-            [ "${OCTET_MATCH}" = "${ADDRESS}" ] && ERROR_COUNT=0 && break;
+            [ "${ADDRESS_PREFIX}" = "${ADDRESS}" ] && ERROR_COUNT=0 && break;
 
             (( ERROR_COUNT += 1 ));
 
@@ -133,10 +131,10 @@ function validateIPAddress
     fi
 
 
-    FIRST_OCTET=$(cut -d "." -f 1 <<< ${2});
-    SECOND_OCTET=$(cut -d "." -f 2 <<< ${2});
-    THIRD_OCTET=$(cut -d "." -f 3 <<< ${2});
-    FOURTH_OCTET=$(cut -d "." -f 4 <<< ${2});
+    typeset FIRST_OCTET=$(cut -d "." -f 1 <<< ${2});
+    typeset SECOND_OCTET=$(cut -d "." -f 2 <<< ${2});
+    typeset THIRD_OCTET=$(cut -d "." -f 3 <<< ${2});
+    typeset FOURTH_OCTET=$(cut -d "." -f 4 <<< ${2});
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FIRST_OCTET -> ${FIRST_OCTET}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SECOND_OCTET -> ${SECOND_OCTET}";
@@ -147,7 +145,7 @@ function validateIPAddress
     do
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OCTET -> ${OCTET}";
 
-        if [ ! ${OCTET} -le 255 ]
+        if [ ${OCTET} -gt 255 ]
         then
             RETURN_CODE=45;
 
@@ -181,9 +179,9 @@ function validateRecordType
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
-    local RECORD_TYPE=$(tr "[a-z]" "[A-Z]" <<< ${2});
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
+    typeset RECORD_TYPE=$(tr "[a-z]" "[A-Z]" <<< ${2});
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -241,8 +239,8 @@ function validateRecordTarget
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -252,7 +250,7 @@ function validateRecordTarget
     ## NS records.
     if [ ${#} -ne 3 ]
     then
-        usage && RETURN_CODE=${?};
+        usage&& RETURN_CODE=${?};
 
         RETURN_CODE=3;
 
@@ -417,7 +415,7 @@ function validateRecordTarget
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command on ${EXTERNAL_SERVER}..";
 
                         ## unset methodname and cname
-                        local         unset METHOD_NAME;
+                        typeset         unset METHOD_NAME;
                         unset CNAME;
 
                         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
@@ -431,7 +429,7 @@ function validateRecordTarget
                         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
                         CNAME="${THIS_CNAME}";
-                        local METHOD_NAME="${THIS_CNAME}#${0}";
+                        typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -504,7 +502,7 @@ function validateRecordTarget
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command on ${EXTERNAL_SERVER}..";
 
                         ## unset methodname and cname
-                        local         unset METHOD_NAME;
+                        typeset         unset METHOD_NAME;
                         unset CNAME;
 
                         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
@@ -518,7 +516,7 @@ function validateRecordTarget
                         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
                         CNAME="${THIS_CNAME}";
-                        local METHOD_NAME="${THIS_CNAME}#${0}";
+                        typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -565,8 +563,8 @@ function validateServiceProtocol
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -607,8 +605,8 @@ function validateServiceType
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -650,16 +648,16 @@ function usage
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=3;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=3;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo -n "${CNAME} - Validate data provided for a SRV record.";
-    echo -n "Usage:  ${CNAME} validate-type validate-data";
-    echo -n "         validate-type can be one of: protocol or type";
-    echo -n "         validate-data must be the data to perform validation against";
+    echo "${CNAME} - Validate data provided for a SRV record.";
+    echo "Usage:  ${CNAME} validate-type validate-data";
+    echo "         validate-type can be one of: protocol or type";
+    echo "         validate-data must be the data to perform validation against";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -670,26 +668,25 @@ function usage
     return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
-local METHOD_NAME="${CNAME}#${0}";
+[ ${#} -eq 0 ] && RETURN_CODE=1 && return ${RETURN_CODE};
+
+typeset METHOD_NAME="${CNAME}#${0}";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
 ## make sure we have args
-[ "${1}" = "address" ] && validateIPAddress ${@} && RETURN_CODE=${?};
-[ "${1}" = "datacenter" ] && validateIPAddress ${@} && RETURN_CODE=${?};
-[ "${1}" = "type" ] && validateRecordType ${@} && RETURN_CODE=${?};
-[ "${1}" = "target" ] && validateRecordTarget ${@} && RETURN_CODE=${?};
-[ "${1}" = "srvtype" ] && validateServiceType ${@} && RETURN_CODE=${?};
-[ "${1}" = "srvproto" ] && validateServiceProtocol ${@} && RETURN_CODE=${?};
+[ "${1}" = "address" ] && validateIPAddress ${@}&& RETURN_CODE=${?};
+[ "${1}" = "datacenter" ] && validateIPAddress ${@}&& RETURN_CODE=${?};
+[ "${1}" = "type" ] && validateRecordType ${@}&& RETURN_CODE=${?};
+[ "${1}" = "target" ] && validateRecordTarget ${@}&& RETURN_CODE=${?};
+[ "${1}" = "srvtype" ] && validateServiceType ${@}&& RETURN_CODE=${?};
+[ "${1}" = "srvproto" ] && validateServiceProtocol ${@}&& RETURN_CODE=${?};
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
 
-unset SCRIPT_ABSOLUTE_PATH;
-unset SCRIPT_ROOT;
 unset RET_CODE;
 unset CNAME;
 unset METHOD_NAME;

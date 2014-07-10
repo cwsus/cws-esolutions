@@ -23,7 +23,7 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -36,8 +36,8 @@ function obtainVerifiableDomains
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing monitor on: ${HOSTNAME}";
@@ -79,14 +79,14 @@ function obtainVerifiableDomains
                     ## at least one website was found and returned for validation
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Web instances listed and returned.";
 
-                    echo -n ${RETRIEVED_WEB_INSTANCES[@]};
+                    echo ${RETRIEVED_WEB_INSTANCES[@]};
 
                     RETURN_CODE=0;
                 else
                     ## no web instances were found or no urlhosts were identified
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_WEB_INSTANCES was found to be empty. Cannot continue.";
 
-                    echo -n ${_FALSE};
+                    echo ${_FALSE};
 
                     RETURN_CODE=0;
                 fi
@@ -94,12 +94,12 @@ function obtainVerifiableDomains
                 ## no web instances
                 ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST was found to be empty. No security-enabled sites were found for validation.";
 
-                echo -n ${_FALSE};
+                echo ${_FALSE};
                 RETURN_CODE=0;
             fi
         else
             ## ihs platform
-            echo -n "IHS";
+            echo "IHS";
         fi
     else
         ## unknown platform
@@ -130,8 +130,8 @@ function obtainVerifiableSSLInstances
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing monitor on: ${HOSTNAME}";
@@ -180,14 +180,14 @@ function obtainVerifiableSSLInstances
                     ## at least one website was found and returned for validation
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Web instances listed and returned.";
 
-                    echo -n ${VALIDATE_INSTANCE_LIST[@]};
+                    echo ${VALIDATE_INSTANCE_LIST[@]};
 
                     RETURN_CODE=0;
                 else
                     ## no web instances were found or no urlhosts were identified
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_INSTANCE_LIST was found to be empty. Cannot continue.";
 
-                    echo -n ${_FALSE};
+                    echo ${_FALSE};
 
                     RETURN_CODE=0;
                 fi
@@ -195,13 +195,13 @@ function obtainVerifiableSSLInstances
                 ## no web instances
                 ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST was found to be empty. No security-enabled sites were found for validation.";
 
-                echo -n ${_FALSE};
+                echo ${_FALSE};
 
                 RETURN_CODE=0;
             fi
         else
             ## ihs platform
-            echo -n "IHS";
+            echo "IHS";
         fi
     else
         ## unknown platform
@@ -234,8 +234,8 @@ function obtainVerifiableInstances
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing monitor on: ${HOSTNAME}";
@@ -254,7 +254,7 @@ function obtainVerifiableInstances
 
             if [ ! -z "${VALIDATE_SERVER_LIST}" ]
             then
-                echo -n ${VALIDATE_SERVER_LIST[@]};
+                echo ${VALIDATE_SERVER_LIST[@]};
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Web instances listed and returned.";
 
@@ -263,13 +263,13 @@ function obtainVerifiableInstances
                 ## no web instances were found or no urlhosts were identified
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST was found to be empty. Cannot continue.";
 
-                echo -n ${_FALSE};
+                echo ${_FALSE};
 
                 RETURN_CODE=0;
             fi
         else
             ## ihs platform
-            echo -n "IHS";
+            echo "IHS";
         fi
     else
         ## unknown platform
@@ -302,15 +302,15 @@ function usage
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    echo -n "${CNAME} - Monitor and provide information for housed servers.";
-    echo -n "Usage: $0";
-    echo -n " No arguments are required to operate this utility.";
-    echo -n " -h|-? -> Show this help";
+    echo "${CNAME} - Monitor and provide information for housed servers.";
+    echo "Usage: $0";
+    echo " No arguments are required to operate this utility.";
+    echo " -h|-? -> Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -320,10 +320,10 @@ function usage
     return 3;
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
-[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
+[ ${#} -eq 0 ] && usage&& RETURN_CODE=${?};
 
 METHOD_NAME="${CNAME}#startup";
 

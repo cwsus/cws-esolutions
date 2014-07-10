@@ -23,7 +23,7 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 METHOD_NAME="${CNAME}#startup";
 
@@ -35,8 +35,8 @@ function validateChangeNumber
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
     RETURN_CODE=0;
 
     [ ! -z "${ENABLE_CHANGE_RECORDS}" ] && [ "${ENABLE_CHANGE_RECORDS}" != "${_TRUE}" ] && return 0;
@@ -65,7 +65,7 @@ function validateChangeNumber
         return ${RETURN_CODE};
     fi
 
-    local IS_VALID_TICKET=$(echo -n "${1}" | perl -ne '/\b([Cc][Rr]\d{6,})|([Tt]\d{6,})|(\d{20})|([Ee])\b/ && print');
+    typeset IS_VALID_TICKET=$(echo "${1}" | perl -ne '/\b([Cc][Rr]\d{6,})|([Tt]\d{6,})|(\d{20})|([Ee])\b/ && print');
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IS_VALID_TICKET -> ${IS_VALID_TICKET}";
 
@@ -98,7 +98,7 @@ function validateChangeNumber
     return ${RETURN_CODE};
 }
 
-validateChangeNumber ${1} && RETURN_CODE=${?};
+validateChangeNumber ${1}&& RETURN_CODE=${?};
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_CONTROL -> ${CHANGE_CONTROL}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";

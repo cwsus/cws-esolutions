@@ -24,20 +24,20 @@
 
 ## Application constants
 CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
-[[ -z "${APP_ROOT}" && -f ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/constants.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/constants.sh;
+[[ -z "${APP_ROOT}" && -f ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/constants ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/constants;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${APP_ROOT}" ] && echo -n "Failed to locate configuration data. Cannot continue." && exit 1;
+[ -z "${APP_ROOT}" ] && echo "Failed to locate configuration data. Cannot continue." && exit 1;
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -53,8 +53,8 @@ function generateEntropyFile
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -62,9 +62,9 @@ function generateEntropyFile
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RANDOM_GENERATOR -> ${RANDOM_GENERATOR}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ENTROPY_FILE_SIZE -> ${ENTROPY_FILE_SIZE}";
 
-    local ENTROPY_FILE_NAME=${ENTROPY_FILE##*/};
-    local ENTROPY_FILE_PATH=${ENTROPY_FILE%/*};
-    local ENTROPY_BACKUP_TIMESTAMP=$(date +"%m-%d-%Y");
+    typeset ENTROPY_FILE_NAME=${ENTROPY_FILE##*/};
+    typeset ENTROPY_FILE_PATH=${ENTROPY_FILE%/*};
+    typeset ENTROPY_BACKUP_TIMESTAMP=$(date +"%m-%d-%Y");
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ENTROPY_FILE_PATH -> ${ENTROPY_FILE_PATH}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ENTROPY_FILE_NAME -> ${ENTROPY_FILE_NAME}";
@@ -72,7 +72,7 @@ function generateEntropyFile
 
     [ -s ${APP_ROOT}/${ENTROPY_FILE} ] && cp ${APP_ROOT}/${ENTROPY_FILE} ${APP_ROOT}/${ENTROPY_FILE}.${ENTROPY_BACKUP_TIMESTAMP} > /dev/null 2>&1;
 
-    local THIS_CNAME="${CNAME}";
+    typeset THIS_CNAME="${CNAME}";
     unset METHOD_NAME;
     unset CNAME;
 
@@ -91,11 +91,11 @@ function generateEntropyFile
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
     CNAME="${THIS_CNAME}";
-    local METHOD_NAME="${THIS_CNAME}#${0}";
+    typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-    [ -z "${RET_CODE}" ] && local RETURN_CODE=1 || local RETURN_CODE=${RET_CODE};
+    [ -z "${RET_CODE}" ] && typeset RETURN_CODE=1 || typeset RETURN_CODE=${RET_CODE};
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -124,8 +124,8 @@ function createEntropyFile
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -134,13 +134,13 @@ function createEntropyFile
     do
         while true
         do
-            echo -n ${RANDOM_DATA} >> ${ENTROPY_FILE};
+            echo ${RANDOM_DATA} >> ${ENTROPY_FILE};
 
-            local FILE_SIZE=$(wc -c ${ENTROPY_FILE} | awk '{print $1}');
+            typeset FILE_SIZE=$(wc -c ${ENTROPY_FILE} | awk '{print $1}');
 
             if [ ${FILE_SIZE} -ge ${ENTROPY_FILE_SIZE} ]
             then
-                local GENERATION_COMPLETE=${_TRUE};
+                typeset GENERATION_COMPLETE=${_TRUE};
 
                 break;
             fi
@@ -189,7 +189,7 @@ function createEntropyFile
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-generateEntropyFile && RETURN_CODE=${?};
+generateEntropyFile&& RETURN_CODE=${?};
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";

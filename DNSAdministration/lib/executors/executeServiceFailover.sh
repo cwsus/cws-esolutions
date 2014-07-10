@@ -21,20 +21,20 @@
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 ## Application constants
-CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
-local METHOD_NAME="${CNAME}#startup";
+CNAME="$(/usr/bin/env basename ${0})";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; /usr/bin/env echo "${PWD}"/"${0##*/}")";
+SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
+METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../plugin ]] && . ${SCRIPT_ROOT}/../plugin;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${PLUGIN_ROOT_DIR}" ] && echo -n "Failed to locate configuration data. Cannot continue." && return 1;
+[ -z "${PLUGIN_ROOT_DIR}" ] && /usr/bin/env echo "Failed to locate configuration data. Cannot continue." && return 1;
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -55,7 +55,7 @@ typeset -i RET_CODE=${?};
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 CNAME="${THIS_CNAME}";
-local METHOD_NAME="${CNAME}#startup";
+typeset METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -64,7 +64,7 @@ then
     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
 
-    echo -n "Security configuration does not allow the requested action.";
+    echo "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
 fi
@@ -87,11 +87,9 @@ METHOD_NAME="${THIS_CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-[ ${RET_CODE} -ne 0 ] && echo -n "Application currently in use." && echo -n ${RET_CODE} && exit ${RET_CODE};
+[ ${RET_CODE} -ne 0 ] && echo "Application currently in use." && echo ${RET_CODE} && exit ${RET_CODE};
 
 unset RET_CODE;
-
-trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; return ${RETURN_CODE}" INT TERM EXIT;
 
 #===  FUNCTION  ===============================================================
 #          NAME:  failoverInternetSite
@@ -103,8 +101,8 @@ function failoverInternetSite
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -180,7 +178,7 @@ function failoverInternetSite
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
                 CNAME="${THIS_CNAME}";
-                local METHOD_NAME="${THIS_CNAME}#${0}";
+                typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -275,8 +273,8 @@ function failoverIntranetSite
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -372,8 +370,8 @@ function failoverDatacenter
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -448,7 +446,7 @@ function failoverDatacenter
                     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
                     CNAME="${THIS_CNAME}";
-                    local METHOD_NAME="${THIS_CNAME}#${0}";
+                    typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -608,8 +606,8 @@ function failoverBusinessUnit
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -687,7 +685,7 @@ function failoverBusinessUnit
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
                 CNAME="${THIS_CNAME}";
-                local METHOD_NAME="${THIS_CNAME}#${0}";
+                typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -699,7 +697,7 @@ function failoverBusinessUnit
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Indicators set - checksumming..";
 
                     ## set the checksum
-                    set -A TMP_MD5SUM $(echo -n "${TMP_MD5SUM[@]}" "$(cksum ${PLUGIN_WORK_DIRECTORY}/${FILENAME} | awk '{print $1}')");
+                    set -A TMP_MD5SUM $(echo "${TMP_MD5SUM[@]}" "$(cksum ${PLUGIN_WORK_DIRECTORY}/${FILENAME} | awk '{print $1}')");
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksum complete -> ${TMP_MD5SUM[${A}]}";
 
@@ -733,7 +731,7 @@ function failoverBusinessUnit
                 cp ${PLUGIN_WORK_DIRECTORY}/${FILENAME} ${SITE_ROOT}/${FILENAME};
 
                 ## configure the checksum array
-                set -A NEW_MD5SUM $(echo -n "${NEW_MD5SUM[@]}" "$(cksum ${SITE_ROOT}/${FILENAME} | awk '{print $1}')");
+                set -A NEW_MD5SUM $(echo "${NEW_MD5SUM[@]}" "$(cksum ${SITE_ROOT}/${FILENAME} | awk '{print $1}')");
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksum complete -> ${TMP_MD5SUM[${A}]}";
 
@@ -824,8 +822,8 @@ function failoverProject
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -904,7 +902,7 @@ function failoverProject
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
                 CNAME="${THIS_CNAME}";
-                local METHOD_NAME="${THIS_CNAME}#${0}";
+                typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -916,7 +914,7 @@ function failoverProject
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Indicators set - checksumming..";
 
                     ## set the checksum
-                    set -A TMP_MD5SUM $(echo -n "${TMP_MD5SUM[@]}" "$(cksum ${PLUGIN_WORK_DIRECTORY}/${FILENAME} | awk '{print $1}')");
+                    set -A TMP_MD5SUM $(echo "${TMP_MD5SUM[@]}" "$(cksum ${PLUGIN_WORK_DIRECTORY}/${FILENAME} | awk '{print $1}')");
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksum complete -> ${TMP_MD5SUM[${A}]}";
 
@@ -950,7 +948,7 @@ function failoverProject
                 cp ${PLUGIN_WORK_DIRECTORY}/${FILENAME} ${SITE_ROOT}/${FILENAME};
 
                 ## configure the checksum array
-                set -A NEW_MD5SUM $(echo -n "${NEW_MD5SUM[@]}" "$(cksum ${SITE_ROOT}/${FILENAME} | awk '{print $1}')");
+                set -A NEW_MD5SUM $(echo "${NEW_MD5SUM[@]}" "$(cksum ${SITE_ROOT}/${FILENAME} | awk '{print $1}')");
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksum complete -> ${TMP_MD5SUM[${A}]}";
 
@@ -1039,24 +1037,24 @@ function usage
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=3;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=3;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo -n "${CNAME} - Execute a site failover";
-    echo -n "Usage: ${CNAME} [ -t < failover type >  ] [ -b < business unit > ] [ -p < project code > ] [ -s < site hostname > ] [ -a ] [ -x < target > ] [ -i < requesting user > ] [ -c < change request > ] [ -e ] [-h | ->]";
-    echo -n " -t     The failover type to execute - internal or external.";
-    echo -n " -b     If performing a business unit failover, please provide the unit name. Required if failing over a project code.";
-    echo -n " -p     If performing a project code failover, please provide the code name. The project business unit must also be provided.";
-    echo -n " -s     If performing a site failover, please provide the site hostname.";
-    echo -n " -a     Selected if performing a full datacenter failover.";
-    echo -n " -x     The target datacenter to failover to.";
-    echo -n " -i     The user account requesting the action.";
-    echo -n " -c     The change request associated with the action.";
-    echo -n " -e     Execute the request";
-    echo -n " -h|?   Show this help";
+    echo "${CNAME} - Execute a site failover\n";
+    echo "Usage: ${CNAME} [ -t <failover type>  ] [ -b <business unit> ] [ -p <project code> ] [ -s <site hostname> ] [ -a ] [ -x <target> ] [ -i <requesting user> ] [ -c <change request> ] [ -e ] [ -h|-? ]
+    -t         -> The failover type to execute - internal or external.
+    -b         -> If performing a business unit failover, please provide the unit name. Required if failing over a project code.
+    -p         -> If performing a project code failover, please provide the code name. The project business unit must also be provided.
+    -s         -> If performing a site failover, please provide the site hostname.
+    -a         -> Selected if performing a full datacenter failover.
+    -x         -> The target datacenter to failover to.
+    -i         -> The user account requesting the action.
+    -c         -> The change request associated with the action.
+    -e         -> Execute the request
+    -h|-?      -> Show this help\n";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -1067,7 +1065,7 @@ function usage
     return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
+[ ${#} -eq 0 ] && usage&& RETURN_CODE=${?};
 
 while getopts ":t:b:p:s:ax:i:c:eh:" OPTIONS 2>/dev/null
 do
@@ -1177,7 +1175,7 @@ do
 
                             RETURN_CODE=19;
                         else
-                            failoverIntranetSite && RETURN_CODE=${?};
+                            failoverIntranetSite&& RETURN_CODE=${?};
                         fi
                         ;;
                     ${INTERNET_TYPE_IDENTIFIER})
@@ -1195,12 +1193,12 @@ do
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                            [[ ! -z "${BUSINESS_UNIT}" && -z "${PROJECT_CODE}" ]] && failoverBusinessUnit && RETURN_CODE=${?};
-                            [[ ! -z "${PROJECT_CODE}" && ! -z "${BUSINESS_UNIT}" ]] && failoverProject && RETURN_CODE=${?};
-                            [ ! -z "${SITE_HOSTNAME}" ] && failoverInternetSite && RETURN_CODE=${?};
-                            [[ ! -z "${FULL_DATACENTER}" && "${FULL_DATACENTER}" = "${_TRUE}" ]] && failoverDatacenter && RETURN_CODE=${?};
+                            [[ ! -z "${BUSINESS_UNIT}" && -z "${PROJECT_CODE}" ]] && failoverBusinessUnit&& RETURN_CODE=${?};
+                            [[ ! -z "${PROJECT_CODE}" && ! -z "${BUSINESS_UNIT}" ]] && failoverProject&& RETURN_CODE=${?};
+                            [ ! -z "${SITE_HOSTNAME}" ] && failoverInternetSite&& RETURN_CODE=${?};
+                            [[ ! -z "${FULL_DATACENTER}" && "${FULL_DATACENTER}" = "${_TRUE}" ]] && failoverDatacenter&& RETURN_CODE=${?};
 
-                            usage && RETURN_CODE=${?};
+                            usage&& RETURN_CODE=${?};
                         fi
                         ;;
                 esac
@@ -1209,10 +1207,12 @@ do
         *)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            usage && RETURN_CODE=${?};
+            usage&& RETURN_CODE=${?};
             ;;
     esac
 done
+
+trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; return ${RETURN_CODE}" INT TERM EXIT;
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
@@ -1226,5 +1226,5 @@ unset METHOD_NAME;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-[ -z "${RETURN_CODE}" ] && echo -n "1" || echo -n "${RETURN_CODE}";
+[ -z "${RETURN_CODE}" ] && echo "1" || echo "${RETURN_CODE}";
 [ -z "${RETURN_CODE}" ] && return 1 || return "${RETURN_CODE}";

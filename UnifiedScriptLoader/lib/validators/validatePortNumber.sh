@@ -22,7 +22,7 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 METHOD_NAME="${CNAME}#startup";
@@ -41,8 +41,8 @@ function checkIfPortFree
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
@@ -71,12 +71,12 @@ function validateFreePort
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    ## check local config first
+    ## check typeset config first
     for SITE_BUILD in $(ls -ltr ${APP_ROOT}/${BUILD_TMP_DIR} | grep ${IPLANET_CERT_STORE_PREFIX} | awk '{print $9}')
     do
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating port number ${1} on server ${SITE_BUILD} ..";
@@ -108,7 +108,7 @@ function validateFreePort
                 ## unset ret code from prior execution
                 unset RET_CODE;
 
-                IS_PORT_ACTIVE=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${WEBSERVER} "[ $(netstat -an | grep -c ${1}) -eq 0 ] && echo -n false || echo -n true" ${IPLANET_OWNING_USER});
+                IS_PORT_ACTIVE=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${WEBSERVER} "[ $(netstat -an | grep -c ${1}) -eq 0 ] && echo false || echo true" ${IPLANET_OWNING_USER});
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IS_PORT_ACTIVE -> ${IS_PORT_ACTIVE}";
 

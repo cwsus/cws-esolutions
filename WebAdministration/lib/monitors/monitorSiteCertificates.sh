@@ -23,7 +23,7 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -36,8 +36,8 @@ function monitorCertExpiry
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
@@ -90,7 +90,7 @@ function monitorCertExpiry
 
                             ## everything is supposed to be on standard port numbers. sadly, not everything is.
                             ## check standard first, if that fails, check non-standard
-                            RETURNED_EXPIRY=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "echo -n \"quit\n\" | \
+                            RETURNED_EXPIRY=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "echo \"quit\n\" | \
                                 openssl s_client -connect ${WEBSITE}:${STD_SSL_PORT_NUMBER} -nbio -ssl3 -mtu 1500 -bugs -rand file:${RANDOM_GENERATOR} 2>/dev/null | \
                                 sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | openssl x509 -noout -subject -dates | grep notAfter" | cut -d "=" -f 2 | \
                                 awk '{print $4, $1, $2}');
@@ -102,7 +102,7 @@ function monitorCertExpiry
                                 ## guess its not a standard port. unset and re-try
                                 unset RETURNED_EXPIRY;
 
-                                RETURNED_EXPIRY=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "echo -n \"quit\n\" | \
+                                RETURNED_EXPIRY=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} "echo \"quit\n\" | \
                                     openssl s_client -connect ${WEBSITE}:${NONSTD_SSL_PORT_NUMBER} -nbio -ssl3 -mtu 1500 -bugs -rand file:${RANDOM_GENERATOR} 2>/dev/null | \
                                     sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | openssl x509 -noout -subject -dates | grep notAfter" | cut -d "=" -f 2 | \
                                     awk '{print $4, $1, $2}');
@@ -122,7 +122,7 @@ function monitorCertExpiry
                                     if [ ! -z "${EXPIRY_MONTH}" ]
                                     then
                                         ## ok, we have a nickname and an expiration date. convert it
-                                        EPOCH_EXPIRY=$(returnEpochTime $(echo ${RETURNED_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval echo -n \${${EXPIRY_MONTH}})/"));
+                                        EPOCH_EXPIRY=$(returnEpochTime $(echo ${RETURNED_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval echo \${${EXPIRY_MONTH}})/"));
 
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EPOCH_EXPIRY -> ${EPOCH_EXPIRY}";
 
@@ -144,7 +144,7 @@ function monitorCertExpiry
                                 if [ ! -z "${EXPIRY_MONTH}" ]
                                 then
                                     ## ok, we have a nickname and an expiration date. convert it
-                                    EPOCH_EXPIRY=$(returnEpochTime $(echo ${RETURNED_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval echo -n \${${EXPIRY_MONTH}})/"));
+                                    EPOCH_EXPIRY=$(returnEpochTime $(echo ${RETURNED_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval echo \${${EXPIRY_MONTH}})/"));
 
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EPOCH_EXPIRY -> ${EPOCH_EXPIRY}";
 
@@ -174,7 +174,7 @@ function monitorCertExpiry
 
                     ## everything is supposed to be on standard port numbers. sadly, not everything is.
                     ## check standard first, if that fails, check non-standard
-                    RETURNED_EXPIRY=$(echo -n "quit\n" | \
+                    RETURNED_EXPIRY=$(echo "quit\n" | \
                         openssl s_client -connect ${WEBSITE}:${STD_SSL_PORT_NUMBER} -nbio -ssl3 -mtu 1500 -bugs -rand file:${RANDOM_GENERATOR} 2>/dev/null | \
                         sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | openssl x509 -noout -subject -dates | grep notAfter | cut -d "=" -f 2 | \
                         awk '{print $4, $1, $2}');
@@ -186,7 +186,7 @@ function monitorCertExpiry
                         ## guess its not a standard port. unset and re-try
                         unset RETURNED_EXPIRY;
 
-                        RETURNED_EXPIRY=$(echo -n "quit\n" | \
+                        RETURNED_EXPIRY=$(echo "quit\n" | \
                             openssl s_client -connect ${WEBSITE}:${NONSTD_SSL_PORT_NUMBER} -nbio -ssl3 -mtu 1500 -bugs -rand file:${RANDOM_GENERATOR} 2>/dev/null | \
                             sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | openssl x509 -noout -subject -dates | grep notAfter | cut -d "=" -f 2 | \
                             awk '{print $4, $1, $2}');
@@ -206,7 +206,7 @@ function monitorCertExpiry
                             if [ ! -z "${EXPIRY_MONTH}" ]
                             then
                                 ## ok, we have a nickname and an expiration date. convert it
-                                EPOCH_EXPIRY=$(returnEpochTime $(echo ${RETURNED_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval echo -n \${${EXPIRY_MONTH}})/"));
+                                EPOCH_EXPIRY=$(returnEpochTime $(echo ${RETURNED_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval echo \${${EXPIRY_MONTH}})/"));
 
                                 [ ! -z "${VERBOSE}" && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EPOCH_EXPIRY -> ${EPOCH_EXPIRY}";
 
@@ -228,7 +228,7 @@ function monitorCertExpiry
                         if [ ! -z "${EXPIRY_MONTH}" ]
                         then
                             ## ok, we have a nickname and an expiration date. convert it
-                            EPOCH_EXPIRY=$(returnEpochTime $(echo ${RETURNED_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval echo -n \${${EXPIRY_MONTH}})/"));
+                            EPOCH_EXPIRY=$(returnEpochTime $(echo ${RETURNED_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval echo \${${EXPIRY_MONTH}})/"));
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EPOCH_EXPIRY -> ${EPOCH_EXPIRY}";
 
@@ -272,7 +272,7 @@ function monitorCertExpiry
     return ${RETURN_CODE};
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 METHOD_NAME="${CNAME}#startup";
@@ -283,7 +283,7 @@ METHOD_NAME="${CNAME}#startup";
 
 monitorCertExpiry;
 
-echo -n ${RETURN_CODE};
+echo ${RETURN_CODE};
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;

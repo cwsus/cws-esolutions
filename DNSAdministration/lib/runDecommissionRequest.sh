@@ -21,20 +21,20 @@
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 ## Application constants
-CNAME="$(basename ${0})";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
+CNAME="$(/usr/bin/env basename ${0})";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; /usr/bin/env echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
-local METHOD_NAME="${CNAME}#startup";
+METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/plugin ]] && . ${SCRIPT_ROOT}/../lib/plugin;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${PLUGIN_ROOT_DIR}" ] && echo -n "Failed to locate configuration data. Cannot continue." && return 1;
+[ -z "${PLUGIN_ROOT_DIR}" ] && /usr/bin/env echo "Failed to locate configuration data. Cannot continue." && return 1;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -63,7 +63,7 @@ typeset -i RET_CODE=${?};
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 CNAME="${THIS_CNAME}";
-local METHOD_NAME="${CNAME}#startup";
+typeset METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -72,7 +72,7 @@ then
     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
 
-    echo -n "Security configuration does not allow the requested action.";
+    echo "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
 fi
@@ -87,8 +87,8 @@ function decom_site
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -118,7 +118,7 @@ function decom_site
             . ${PLUGIN_LIB_DIRECTORY}/executors/execute_decom.sh -b ${UNIT} -p ${PRJCODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -s -e;
 
             CNAME="${THIS_CNAME}";
-            local METHOD_NAME="${CNAME}#${0}";
+            typeset METHOD_NAME="${CNAME}#${0}";
         else
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command execute_decom.sh -b ${UNIT} -p ${PRJCODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -s -e ..";
 
@@ -129,7 +129,7 @@ function decom_site
             . ${PLUGIN_LIB_DIRECTORY}/executors/execute_decom.sh -b ${UNIT} -p ${PRJCODE} -z "${ZONE_NAME}" -i ${IUSER_AUDIT} -c ${CHG_CTRL} -e;
 
             CNAME="${THIS_CNAME}";
-            local METHOD_NAME="${CNAME}#${0}";
+            typeset METHOD_NAME="${CNAME}#${0}";
         fi
     else
         ## remote exec
@@ -168,7 +168,7 @@ function decom_site
         RNDC_CODE=${?};
 
         CNAME="${THIS_CNAME}";
-        local METHOD_NAME="${CNAME}#${0}";
+        typeset METHOD_NAME="${CNAME}#${0}";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RNDC_CODE -> ${RNDC_CODE}";
 
@@ -190,7 +190,7 @@ function decom_site
             . ${MAILER_CLASS} -m notifyDecommission -p ${PROJECT_CODE} -a "${DNS_SERVER_ADMIN_EMAIL}" -e;
 
             CNAME="${THIS_CNAME}";
-            local METHOD_NAME="${CNAME}#${0}";
+            typeset METHOD_NAME="${CNAME}#${0}";
 
             ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS decommission: Requestor: ${IUSER_AUDIT} - Date: $(date +"%d-%m-%Y") - Site: ${UNIT}/${PRJCODE}/${FILENAME} - Change Request: ${CHG_CTRL} - Switched To: ${TARGET}")";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -236,8 +236,8 @@ function decom_bu
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -264,7 +264,7 @@ function decom_bu
             . ${PLUGIN_LIB_DIRECTORY}/executors/execute_decom.sh -b ${UNIT} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -s -e;
 
             CNAME="${THIS_CNAME}";
-            local METHOD_NAME="${CNAME}#${0}";
+            typeset METHOD_NAME="${CNAME}#${0}";
         else
             unset CNAME;
             unset METHOD_NAME;
@@ -272,7 +272,7 @@ function decom_bu
             . ${PLUGIN_LIB_DIRECTORY}/executors/execute_decom.sh -b ${UNIT} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -s -e;
 
             CNAME="${THIS_CNAME}";
-            local METHOD_NAME="${CNAME}#${0}";
+            typeset METHOD_NAME="${CNAME}#${0}";
         fi
     else
         ## remote exec
@@ -308,7 +308,7 @@ function decom_bu
         RNDC_CODE=${?};
 
         CNAME="${THIS_CNAME}";
-        local METHOD_NAME="${CNAME}#${0}";
+        typeset METHOD_NAME="${CNAME}#${0}";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RNDC_CODE -> ${RNDC_CODE}";
 
@@ -334,7 +334,7 @@ function decom_bu
             fi
 
             CNAME="${THIS_CNAME}";
-            local METHOD_NAME="${CNAME}#${0}";
+            typeset METHOD_NAME="${CNAME}#${0}";
 
             ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNS decommission: Requestor: ${IUSER_AUDIT} - Date: $(date +"%d-%m-%Y") - Site: ${UNIT}/${PRJCODE}/${FILENAME} - Change Request: ${CHG_CTRL} - Switched To: ${TARGET}")";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -379,19 +379,19 @@ function usage
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=3;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=3;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo -n "${CNAME} - Execute a DNS failover request on the master nameserver based on the provided information.";
-    echo -n "Usage: ${CNAME} [ -s <request data> ] [ -b requestdata ] [ -d server ] [ -e execute ] [-?|-h show this help]";
-    echo -n "  -s      Process a site failover based on a comma-delimited information set";
-    echo -n "  -b      Process a business unit failover based on a comma-delimited information set";
-    echo -n "  -d      If provided, operates against a provided slave server";
-    echo -n "  -e      Execute processing";
-    echo -n "  -h|-?   Show this help";
+    echo "${CNAME} - Execute a DNS failover request on the master nameserver based on the provided information.\n";
+    echo "Usage: ${CNAME} [ -s <request data> ] [ -b <request data> ] [ -d <server> ] [ -e ] [ -h|-? ]
+    -s         -> Process a site failover based on a comma-delimited information set
+    -b         -> Process a business unit failover based on a comma-delimited information set
+    -d         -> If provided, operates against a provided slave server
+    -e         -> Execute processing
+    -h|-?      -> Show this help\n";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -402,7 +402,7 @@ function usage
     return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
+[ ${#} -eq 0 ] && usage&& RETURN_CODE=${?};
 
 while getopts ":s:b:d:eh:" OPTIONS 2>/dev/null
 do
@@ -414,11 +414,11 @@ do
             DECOM_TYPE="site";
 
             ## comma-delimited information set, lets strip the "INFO"
-            UNIT=$(echo -n "${OPTARG}" | cut -d "," -f 1);
-            PRJCODE=$(echo -n "${OPTARG}" | cut -d "," -f 2);
-            ZONE_NAME=$(echo -n "${OPTARG}" | cut -d "," -f 3);
-            CHG_CTRL=$(echo -n "${OPTARG}" | cut -d "," -f 4);
-            IUSER_AUDIT=$(echo -n "${OPTARG}" | cut -d "," -f 5);
+            UNIT=$(echo "${OPTARG}" | cut -d "," -f 1);
+            PRJCODE=$(echo "${OPTARG}" | cut -d "," -f 2);
+            ZONE_NAME=$(echo "${OPTARG}" | cut -d "," -f 3);
+            CHG_CTRL=$(echo "${OPTARG}" | cut -d "," -f 4);
+            IUSER_AUDIT=$(echo "${OPTARG}" | cut -d "," -f 5);
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DECOM_TYPE -> ${DECOM_TYPE}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "UNIT -> ${UNIT}";
@@ -434,9 +434,9 @@ do
             DECOM_TYPE="unit";
 
             ## comma-delimited information set, lets strip the "INFO"
-            UNIT=$(echo -n "${OPTARG}" | cut -d "," -f 2);
-            CHG_CTRL=$(echo -n "${OPTARG}" | cut -d "," -f 4);
-            IUSER_AUDIT=$(echo -n "${OPTARG}" | cut -d "," -f 5);
+            UNIT=$(echo "${OPTARG}" | cut -d "," -f 2);
+            CHG_CTRL=$(echo "${OPTARG}" | cut -d "," -f 4);
+            IUSER_AUDIT=$(echo "${OPTARG}" | cut -d "," -f 5);
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DECOM_TYPE->${DECOM_TYPE}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "UNIT->${UNIT}";
@@ -505,7 +505,7 @@ do
                 then
                     if [ "${DECOM_TYPE}" = "unit" ]
                     then
-                        decom_bu && RETURN_CODE=${?};
+                        decom_bu&& RETURN_CODE=${?};
                     elif [ "${DECOM_TYPE}" = "site" ]
                     then
                         if [ -z "${ZONE_NAME}" ] || [ -z "${PRJCODE}" ]
@@ -515,7 +515,7 @@ do
 
                             RETURN_CODE=3;
                         else
-                            decom_site && RETURN_CODE=${?};
+                            decom_site&& RETURN_CODE=${?};
                         fi
                     else
                         ## no valid decommission type was provided

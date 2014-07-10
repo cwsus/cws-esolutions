@@ -19,10 +19,10 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
-trap "echo -n '$(grep -w system.trap.signals "${SYSTEM_MESSAGES}"| grep -v "#" | cut -d "=" -f 2 | sed -e "s/%SIGNAL%/Ctrl-C/")'; sleep "${MESSAGE_DELAY}"; reset; clear; continue " 1 2 3
+trap "echo '$(grep -w system.trap.signals "${SYSTEM_MESSAGES}"| grep -v "#" | cut -d "=" -f 2 | sed -e "s/%SIGNAL%/Ctrl-C/")'; sleep "${MESSAGE_DELAY}"; reset; clear; continue " 1 2 3
 
 #===  FUNCTION  ===============================================================
 #          NAME:  main
@@ -36,8 +36,8 @@ function main
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -46,7 +46,7 @@ function main
     then
         $(${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Web builds has not been enabled. Cannot continue.");
 
-        echo -n "$(grep -w request.not.authorized "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+        echo "$(grep -w request.not.authorized "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
         exec ${MAIN_CLASS};
 
@@ -57,19 +57,19 @@ function main
     do
         reset; clear;
 
-        echo -n "\n";
-        echo -n "\t\t+-------------------------------------------------------------------+";
-        echo -n "\t\t               WELCOME TO \E[0;31m $(awk -F "=" '/\<plugin.application.title\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//') \033[0m";
-        echo -n "\t\t+-------------------------------------------------------------------+";
-        echo -n "\t\tSystem Type         : \E[0;36m ${SYSTEM_HOSTNAME} \033[0m";
-        echo -n "\t\tSystem Uptime       : \E[0;36m ${SYSTEM_UPTIME} \033[0m";
-        echo -n "\t\tUser                : \E[0;36m ${IUSER_AUDIT} \033[0m";
-        echo -n "\t\t+-------------------------------------------------------------------+";
-        echo -n "";
-        echo -n "\t\t$(awk -F "=" '/\<system.available.options\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
-        echo -n "\t$(${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<createsite.application.title\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
-        echo -n "\t$(${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<createsite.provide.hostname\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
-        echo -n "\t$(awk -F "=" '/\<system.option.cancel\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+        echo "\n";
+        echo "\t\t+-------------------------------------------------------------------+";
+        echo "\t\t               WELCOME TO $(awk -F "=" '/\<plugin.application.title\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+        echo "\t\t+-------------------------------------------------------------------+";
+        echo "\t\tSystem Type         : ${SYSTEM_HOSTNAME}";
+        echo "\t\tSystem Uptime       : ${SYSTEM_UPTIME}";
+        echo "\t\tUser                : ${IUSER_AUDIT}";
+        echo "\t\t+-------------------------------------------------------------------+";
+        echo "";
+        echo "\t\t$(awk -F "=" '/\<system.available.options\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+        echo "\t$(${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<createsite.application.title\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+        echo "\t$(${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<createsite.provide.hostname\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+        echo "\t$(awk -F "=" '/\<system.option.cancel\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
         read SITE_HOSTNAME;
 
@@ -79,7 +79,7 @@ function main
 
         reset; clear;
 
-        echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+        echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
         case ${SITE_HOSTNAME} in
             [Xx]|[Qq]|[Cc])
@@ -93,7 +93,7 @@ function main
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover process aborted";
 
-                echo -n "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                echo "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                 ## unset SVC_LIST, we dont need it now
                 unset SVC_LIST;
@@ -161,15 +161,15 @@ function main
                                 while true
                                 do
                                     ## find out if we want to install
-                                    echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                    echo -n "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                    echo -n "\t$(grep -w createsite.install.server "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                    echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                    echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                    echo "\t$(grep -w createsite.install.server "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                     read INSTALL_SERVER;
 
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INSTALL_SERVER -> ${INSTALL_SERVER}";
 
-                                    echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                    echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                     case ${INSTALL_SERVER} in
                                         [Yy][Ee][Ss]|[Yy])
@@ -177,9 +177,9 @@ function main
 
                                             while true
                                             do
-                                                echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                echo -n "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                echo -n "\t$(grep -w system.provide.changenum "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                echo "\t$(grep -w system.provide.changenum "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                                 read CHANGE_NUM;
 
@@ -187,7 +187,7 @@ function main
 
                                                 reset; clear;
 
-                                                echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                                 if [[ ${CHANGE_NUM} == [Ee] ]] || [ $(${APP_ROOT}/${LIB_DIRECTORY}/validators/validate_change_ticket.sh ${CHANGE_NUM}) -ne 0 ]
                                                 then
@@ -196,13 +196,13 @@ function main
 
                                                     unset CHANGE_NUM;
 
-                                                    echo -n "$(grep -w change.control.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                    echo "$(grep -w change.control.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                                 else
                                                     reset; clear;
 
-                                                    echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                    echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Beginning installation of ${SERVER_ID} ..";
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/runAddInstance.sh -s ${SERVER_ID} -p ${PLATFORM_CODE} -P ${PROJECT_CODE} -w ${WS_PLATFORM} -c ${CHANGE_NUM} -e ..";
@@ -219,7 +219,7 @@ function main
                                                     CNAME=$(basename ${0});
                                                     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-local METHOD_NAME="${CNAME}#${0}";
+typeset METHOD_NAME="${CNAME}#${0}";
 
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -247,14 +247,14 @@ local METHOD_NAME="${CNAME}#${0}";
                                                         do
                                                             reset; clear;
 
-                                                            echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                            echo -n "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                            echo -n "\t$(grep -w createsite.installation.complete "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                                            echo -n "\t$(grep -w createsite.perform.more.tasks "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                            echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                            echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                            echo "\t$(grep -w createsite.installation.complete "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                            echo "\t$(grep -w createsite.perform.more.tasks "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                                             read RESPONSE;
 
-                                                            echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                            echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RESPONSE -> ${RESPONSE}";
 
@@ -287,7 +287,7 @@ local METHOD_NAME="${CNAME}#${0}";
 
                                                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not provided. Cannot continue.";
 
-                                                                    echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                                    echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                                                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                                                     ;;
                                                             esac
@@ -312,17 +312,17 @@ local METHOD_NAME="${CNAME}#${0}";
 
                                                         while true
                                                         do
-                                                            echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                            echo -n "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                            echo -n "\t$(grep -w ${RET_CODE} "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                                            echo -n "\t$(grep -w createsite.installation.failed "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                                            echo -n "\t$(grep -w createsite.perform.more.tasks "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                            echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                            echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                            echo "\t$(grep -w ${RET_CODE} "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                            echo "\t$(grep -w createsite.installation.failed "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                            echo "\t$(grep -w createsite.perform.more.tasks "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                                             read RESPONSE;
 
                                                             unset RET_CODE;
 
-                                                            echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                            echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RESPONSE -> ${RESPONSE}";
 
@@ -355,7 +355,7 @@ local METHOD_NAME="${CNAME}#${0}";
 
                                                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not provided. Cannot continue.";
 
-                                                                    echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                                    echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                                                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                                                     ;;
                                                             esac
@@ -381,13 +381,13 @@ local METHOD_NAME="${CNAME}#${0}";
 
                                             while true
                                             do
-                                                echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                echo -n "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                echo -n "\t$(grep -w createsite.perform.more.tasks "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                echo "\t$(grep -w createsite.perform.more.tasks "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                                 read RESPONSE;
 
-                                                echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RESPONSE -> ${RESPONSE}";
 
@@ -420,7 +420,7 @@ local METHOD_NAME="${CNAME}#${0}";
 
                                                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not provided. Cannot continue.";
 
-                                                        echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                        echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                                         sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                                         ;;
                                                 esac
@@ -431,7 +431,7 @@ local METHOD_NAME="${CNAME}#${0}";
 
                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not provided. Cannot continue.";
 
-                                            echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                            echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                             sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                             ;;
@@ -466,7 +466,7 @@ local METHOD_NAME="${CNAME}#${0}";
 
                             unset SITE_HOSTNAME;
 
-                            echo -n "$(grep -w site.already.exists "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                            echo "$(grep -w site.already.exists "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                             sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                         else
                             ## get the platform code
@@ -474,10 +474,10 @@ local METHOD_NAME="${CNAME}#${0}";
                             do
                                 reset; clear;
 
-                                echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                echo -n "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                echo -n "\t$(grep -w createsite.provide.project.code "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                echo -n "\t$(grep -w system.option.cancel "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                echo "\t$(grep -w createsite.provide.project.code "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                echo "\t$(grep -w system.option.cancel "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                 read PROJECT_CODE;
 
@@ -487,13 +487,13 @@ local METHOD_NAME="${CNAME}#${0}";
 
                                 reset; clear;
 
-                                echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                 case ${PROJECT_CODE} in
                                     [Xx]|[Qq]|[Cc])
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Renewal process aborted";
 
-                                        echo -n "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                        echo "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                         ## unset SVC_LIST, we dont need it now
                                         unset SITE_HOSTNAME;
@@ -509,10 +509,10 @@ local METHOD_NAME="${CNAME}#${0}";
                                             do
                                                 reset; clear;
 
-                                                echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                echo -n "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                echo -n "\t$(grep -w createsite.provide.platform.code "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                                echo -n "\t$(grep -w system.option.cancel "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                echo "\t$(grep -w createsite.provide.platform.code "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                echo "\t$(grep -w system.option.cancel "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                                 read PLATFORM_CODE;
 
@@ -522,13 +522,13 @@ local METHOD_NAME="${CNAME}#${0}";
 
                                                 reset; clear;
 
-                                                echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                                 case ${PLATFORM_CODE} in
                                                     [Xx]|[Qq]|[Cc])
                                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Renewal process aborted";
 
-                                                        echo -n "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                        echo "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                                         ## unset SVC_LIST, we dont need it now
                                                         unset SITE_HOSTNAME;
@@ -557,13 +557,13 @@ local METHOD_NAME="${CNAME}#${0}";
                                                                     do
                                                                         reset; clear;
 
-                                                                        echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                                        echo -n "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                                        echo -n "\t$(grep -w createsite.provide.server.type "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                                        echo -n "$(grep -w createsite.server.type.ssl "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                                                        echo -n "$(grep -w createsite.server.type.nossl "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                                                        echo -n "$(grep -w createsite.server.type.both "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                                                        echo -n "$(grep -w system.option.cancel "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                                        echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                                        echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                                        echo "\t$(grep -w createsite.provide.server.type "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                                        echo "$(grep -w createsite.server.type.ssl "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                                        echo "$(grep -w createsite.server.type.nossl "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                                        echo "$(grep -w createsite.server.type.both "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                                        echo "$(grep -w system.option.cancel "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                                                         read SERVER_TYPE;
 
@@ -571,13 +571,13 @@ local METHOD_NAME="${CNAME}#${0}";
 
                                                                         reset; clear;
 
-                                                                        echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                                        echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                                                         case ${SERVER_TYPE} in
                                                                             [Xx]|[Qq]|[Cc])
                                                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Renewal process aborted";
 
-                                                                                echo -n "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                                                echo "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                                                                 ## unset SVC_LIST, we dont need it now
                                                                                 unset SITE_HOSTNAME;
@@ -609,7 +609,7 @@ local METHOD_NAME="${CNAME}#${0}";
 
                                                                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
 
-                                                                                echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                                                echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                                                                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                                                                 ;;
                                                                         esac
@@ -622,7 +622,7 @@ local METHOD_NAME="${CNAME}#${0}";
 
                                                                     unset PLATFORM_CODE;
 
-                                                                    echo -n "$(grep -w configuration.not.found.for.host "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                                    echo "$(grep -w configuration.not.found.for.host "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                                                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                                                 fi
                                                             else
@@ -631,7 +631,7 @@ local METHOD_NAME="${CNAME}#${0}";
 
                                                                 unset PLATFORM_CODE;
 
-                                                                echo -n "$(grep -w configuration.not.found.for.host "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                                echo "$(grep -w configuration.not.found.for.host "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                                                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                                             fi
                                                         else
@@ -640,7 +640,7 @@ local METHOD_NAME="${CNAME}#${0}";
 
                                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
 
-                                                            echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                            echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                                             sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                                         fi
                                                         ;;
@@ -652,7 +652,7 @@ local METHOD_NAME="${CNAME}#${0}";
 
                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
 
-                                            echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                            echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                             sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                         fi
                                         ;;
@@ -665,7 +665,7 @@ local METHOD_NAME="${CNAME}#${0}";
 
                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
 
-                        echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                        echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                         sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                     fi
                 fi
@@ -675,7 +675,7 @@ local METHOD_NAME="${CNAME}#${0}";
 
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Site hostname not properly formatted. Cannot continue.";
 
-                echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 ;;
@@ -695,8 +695,8 @@ function buildServerInstance
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing via csrGenerationUI helper..";
@@ -706,8 +706,8 @@ function buildServerInstance
         if [ ! -z "${CANCEL_REQ}" ] && [ "${CANCEL_REQ}" = "${_TRUE}" ]
         then
             CNAME=$(basename ${0});
-        local METHOD_NAME="${CNAME}#${0}";
-local RETURN_CODE=0;
+        typeset METHOD_NAME="${CNAME}#${0}";
+typeset RETURN_CODE=0;
 
             unset RET_CODE;
             unset VHOST_NAME;
@@ -732,22 +732,22 @@ local RETURN_CODE=0;
             ## record has been added successfully through the helper
             ## ask if we want to add additional records to the zone
             ## put methodname and cname back
-        local METHOD_NAME="${CNAME}#${0}";
-local RETURN_CODE=0;
+        typeset METHOD_NAME="${CNAME}#${0}";
+typeset RETURN_CODE=0;
             CNAME=$(basename ${0});
 
             while true
             do
                 ## find out if we want to install
-                echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                echo -n "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                echo -n "\t$(grep -w createsite.install.server "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                echo "\t$(grep -w createsite.install.server "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                 read INSTALL_SERVER;
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INSTALL_SERVER -> ${INSTALL_SERVER}";
 
-                echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                 case ${INSTALL_SERVER} in
                     [Yy][Ee][Ss]|[Yy])
@@ -755,9 +755,9 @@ local RETURN_CODE=0;
 
                         while true
                         do
-                            echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                            echo -n "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                            echo -n "\t$(grep -w system.provide.changenum "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                            echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                            echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                            echo "\t$(grep -w system.provide.changenum "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                             read CHANGE_NUM;
 
@@ -765,7 +765,7 @@ local RETURN_CODE=0;
 
                             reset; clear;
 
-                            echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                            echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                             if [[ ${CHANGE_NUM} == [Ee] ]] || [ $(${APP_ROOT}/${LIB_DIRECTORY}/validators/validate_change_ticket.sh ${CHANGE_NUM}) -ne 0 ]
                             then
@@ -774,13 +774,13 @@ local RETURN_CODE=0;
 
                                 unset CHANGE_NUM;
 
-                                echo -n "$(grep -w change.control.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                echo "$(grep -w change.control.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                             else
                                 reset; clear;
 
-                                echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Beginning installation of ${SERVER_ID} ..";
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/runAddInstance.sh -s ${SERVER_ID} -p ${PLATFORM_CODE} -P ${PROJECT_CODE} -w ${WS_PLATFORM} -c ${CHANGE_NUM} -e ..";
@@ -795,8 +795,8 @@ local RETURN_CODE=0;
                                 typeset -i RET_CODE=${?};
 
                                 CNAME=$(basename ${0});
-                            local METHOD_NAME="${CNAME}#${0}";
-local RETURN_CODE=0;
+                            typeset METHOD_NAME="${CNAME}#${0}";
+typeset RETURN_CODE=0;
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -824,14 +824,14 @@ local RETURN_CODE=0;
                                     do
                                         reset; clear;
 
-                                        echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                        echo -n "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                        echo -n "\t$(grep -w createsite.installation.complete "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                        echo -n "\t$(grep -w createsite.perform.more.tasks "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                        echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                        echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                        echo "\t$(grep -w createsite.installation.complete "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                        echo "\t$(grep -w createsite.perform.more.tasks "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                         read RESPONSE;
 
-                                        echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                        echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RESPONSE -> ${RESPONSE}";
 
@@ -864,7 +864,7 @@ local RETURN_CODE=0;
 
                                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not provided. Cannot continue.";
 
-                                                echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                                 ;;
                                         esac
@@ -889,17 +889,17 @@ local RETURN_CODE=0;
 
                                     while true
                                     do
-                                        echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                        echo -n "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                        echo -n "\t$(grep -w ${RET_CODE} "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                        echo -n "\t$(grep -w createsite.installation.failed "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                        echo -n "\t$(grep -w createsite.perform.more.tasks "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                        echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                        echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                        echo "\t$(grep -w ${RET_CODE} "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                        echo "\t$(grep -w createsite.installation.failed "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                        echo "\t$(grep -w createsite.perform.more.tasks "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                         read RESPONSE;
 
                                         unset RET_CODE;
 
-                                        echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                        echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RESPONSE -> ${RESPONSE}";
 
@@ -932,7 +932,7 @@ local RETURN_CODE=0;
 
                                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not provided. Cannot continue.";
 
-                                                echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                                 ;;
                                         esac
@@ -960,13 +960,13 @@ local RETURN_CODE=0;
 
                         while true
                         do
-                            echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                            echo -n "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                            echo -n "\t$(grep -w createsite.perform.more.tasks "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                            echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                            echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                            echo "\t$(grep -w createsite.perform.more.tasks "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                             read RESPONSE;
 
-                            echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                            echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RESPONSE -> ${RESPONSE}";
 
@@ -999,7 +999,7 @@ local RETURN_CODE=0;
 
                                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not provided. Cannot continue.";
 
-                                    echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                    echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                     ;;
                             esac
@@ -1010,7 +1010,7 @@ local RETURN_CODE=0;
 
                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not provided. Cannot continue.";
 
-                        echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                        echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                         sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                         ;;
@@ -1034,16 +1034,16 @@ local RETURN_CODE=0;
                         fi
                         reset; clear;
 
-                        echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                        echo -n "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                        echo -n "\t$(grep -w cert.mgmt.provide.contact.number "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                        echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                        echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                        echo "\t$(grep -w cert.mgmt.provide.contact.number "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                         read CONTACT_NUMBER;
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONTACT_NUMBER -> ${CONTACT_NUMBER}";
 
                         reset; clear;
 
-                        echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                        echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                         ## validate it
                         case ${CONTACT_NUMBER} in
@@ -1053,9 +1053,9 @@ local RETURN_CODE=0;
 
                                 unset CONTACT_NUMBER;
 
-                                echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                echo -n "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                echo -n "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                echo "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                 CANCEL_REQ=${_TRUE};
 
                                 sleep "${MESSAGE_DELAY}"; reset; clear; break;
@@ -1071,7 +1071,7 @@ local RETURN_CODE=0;
                                     unset RET_CODE;
                                     unset RETURN_CODE;
 
-                                    echo -n "$(grep -w contact.number.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                    echo "$(grep -w contact.number.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                     sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                 else
                                     unset CNAME;
@@ -1100,7 +1100,7 @@ local RETURN_CODE=0;
     done
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 METHOD_NAME="${CNAME}#startup";

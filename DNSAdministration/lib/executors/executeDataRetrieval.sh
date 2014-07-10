@@ -21,20 +21,20 @@
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 ## Application constants
-CNAME="$(basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
-METHOD_NAME="${THIS_CNAME}#startup";
+CNAME="$(/usr/bin/env basename ${0})";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; /usr/bin/env echo "${PWD}"/"${0##*/}")";
+SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
+METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../plugin ]] && . ${SCRIPT_ROOT}/../plugin;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${PLUGIN_ROOT_DIR}" ] && echo -n "Failed to locate configuration data. Cannot continue." && return 1;
+[ -z "${PLUGIN_ROOT_DIR}" ] && /usr/bin/env echo "Failed to locate configuration data. Cannot continue." && return 1;
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -64,7 +64,7 @@ then
     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
 
-    echo -n "Security configuration does not allow the requested action.";
+    echo "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
 fi
@@ -87,11 +87,9 @@ METHOD_NAME="${THIS_CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-[ ${RET_CODE} -ne 0 ] && echo -n "Application currently in use." && echo -n ${RET_CODE} && return ${RET_CODE};
+[ ${RET_CODE} -ne 0 ] && echo "Application currently in use." && echo ${RET_CODE} && return ${RET_CODE};
 
 unset RET_CODE;
-
-trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; return ${RETURN_CODE}" INT TERM EXIT;
 
 #===  FUNCTION  ===============================================================
 #      NAME:  get_site_by_url
@@ -122,9 +120,9 @@ function get_site_by_url
     ## filter the ones in the DC directories
     if [ ! -z "${SEARCH_DECOM}" ] && [ "${SEARCH_DECOM}" = "${_TRUE}" ]
     then
-        set -A RETRIEVAL_LIST $(find ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR} -type f -name "${NAMED_ZONE_PREFIX}.*" -exec grep -i "${SITE_ID}" {} /dev/null \; -echo -n | awk '{print $1}' | cut -d ":" -f 1-1 | grep -v -w "[PV]H" | uniq);
+        set -A RETRIEVAL_LIST $(find ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${GROUP_ID}${NAMED_DECOM_DIR} -type f -name "${NAMED_ZONE_PREFIX}.*" -exec grep -i "${SITE_ID}" {} /dev/null \; -echo | awk '{print $1}' | cut -d ":" -f 1-1 | grep -v -w "[PV]H" | uniq);
     else
-        set -A RETRIEVAL_LIST $(find ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT} -type f -name "${NAMED_ZONE_PREFIX}.*" -exec grep -i "${SITE_ID}" {} /dev/null \; -echo -n  | grep -v ${GROUP_ID}${NAMED_DECOM_DIR} | awk '{print $1}' | cut -d ":" -f 1-1 | grep -v -w "[PV]H" | uniq);
+        set -A RETRIEVAL_LIST $(find ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT} -type f -name "${NAMED_ZONE_PREFIX}.*" -exec grep -i "${SITE_ID}" {} /dev/null \; -echo  | grep -v ${GROUP_ID}${NAMED_DECOM_DIR} | awk '{print $1}' | cut -d ":" -f 1-1 | grep -v -w "[PV]H" | uniq);
     fi
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Completed command execution.. processing..";
@@ -209,7 +207,7 @@ function get_site_by_url
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INFO_VAR -> ${INFO_VAR}";
 
                 ## write the data out to a file
-                echo -n "$(sed -e 's/^[ \t]*//' <<< ${SITE_FILE})$(sed -e 's/^[ \t]*//' <<< ${INFO_VAR})";
+                echo "$(sed -e 's/^[ \t]*//' <<< ${SITE_FILE})$(sed -e 's/^[ \t]*//' <<< ${INFO_VAR})";
 
                 ## unset the variables so we get fresh
                 ## results
@@ -378,7 +376,7 @@ function get_site_by_bu
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INFO_VAR -> ${INFO_VAR}";
 
                     ## write the data out to a file
-                    echo -n "$(sed -e 's/^[ \t]*//' <<< ${SITE_ROOT}/${SITE_FILE})$(sed -e 's/^[ \t]*//' <<< ${INFO_VAR})";
+                    echo "$(sed -e 's/^[ \t]*//' <<< ${SITE_ROOT}/${SITE_FILE})$(sed -e 's/^[ \t]*//' <<< ${INFO_VAR})";
 
                     ## unset the variables so we get fresh
                     ## results
@@ -428,8 +426,8 @@ function get_site_by_prj_code
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -528,7 +526,7 @@ function get_site_by_prj_code
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INFO_VAR -> ${INFO_VAR}";
 
                 ## write the data out to a file
-                echo -n "$(sed -e 's/^[ \t]*//')$(sed -e 's/^[ \t]*//' <<< ${INFO_VAR}) <<< ${SITE_FILE}";
+                echo "$(sed -e 's/^[ \t]*//')$(sed -e 's/^[ \t]*//' <<< ${INFO_VAR}) <<< ${SITE_FILE}";
 
                 ## unset the variables so we get fresh
                 ## results
@@ -573,20 +571,20 @@ function usage
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=3;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=3;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo -n "${CNAME} - Obtain information regarding DNS entries";
-    echo -n "Usage: ${CNAME} [-u url] [-b business unit)] [-p project code] [ -d ] [ -e ] [-h] [-?]";
-    echo -n "  -u      Obtains information from the DNS master regarding the supplied URL";
-    echo -n "  -b      Obtains information from the DNS master regarding the supplied Business Unit";
-    echo -n "  -p      Obtains information from the DNS master regarding the supplied project code";
-    echo -n "  -d      Search only for decommissioned records";
-    echo -n "  -e      Execute processing";
-    echo -n "  -h|-?   Show this help";
+    echo "${CNAME} - Obtain information regarding DNS entries\n";
+    echo "Usage: ${CNAME} [ -u <url> ] [ -b <business unit> ] [ -p <project code> ] [ -d ] [ -i <requesting user> ] [ -e ] [ -h|-? ]
+    -u         -> Obtains information from the DNS master regarding the supplied URL
+    -b         -> Obtains information from the DNS master regarding the supplied Business Unit
+    -p         -> Obtains information from the DNS master regarding the supplied project code
+    -d         -> Search only for decommissioned records
+    -e         -> Execute processing
+    -h|-?      -> Show this help\n";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -597,9 +595,9 @@ function usage
     return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
+[ ${#} -eq 0 ] && usage&& RETURN_CODE=${?};
 
-while getopts ":u:b:p:deh:" OPTIONS 2>/dev/null
+while getopts ":u:b:p:i:deh:" OPTIONS 2>/dev/null
 do
     case "${OPTIONS}" in
         u)
@@ -640,6 +638,14 @@ do
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SEARCH_DECOM -> ${SEARCH_DECOM}";
             ;;
+        i)
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting REQUESTING_USER..";
+
+            REQUESTING_USER="${OPTARG}";
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REQUESTING_USER -> ${REQUESTING_USER}";
+            ;;
         e)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating request..";
 
@@ -655,15 +661,15 @@ do
                 case ${SITE_OPTION} in
                     u)
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-                        get_site_by_url && RETURN_CODE=${?};
+                        get_site_by_url&& RETURN_CODE=${?};
                         ;;
                     b)
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-                        get_site_by_bu && RETURN_CODE=${?};
+                        get_site_by_bu&& RETURN_CODE=${?};
                         ;;
                     p)
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-                        get_site_by_prj_code && RETURN_CODE=${?};
+                        get_site_by_prj_code&& RETURN_CODE=${?};
                         ;;
                     *)
                         ## no valid option was found. return an "ERROR"
@@ -679,10 +685,12 @@ do
         *)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            usage && RETURN_CODE=${?};
+            usage&& RETURN_CODE=${?};
             ;;
     esac
 done
+
+trap "${APP_ROOT}/${LIB_DIRECTORY}/lock.sh unlock ${$}; return ${RETURN_CODE}" INT TERM EXIT;
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
@@ -696,5 +704,5 @@ unset METHOD_NAME;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-[ -z "${RETURN_CODE}" ] && echo -n "1" || echo -n "${RETURN_CODE}";
+[ -z "${RETURN_CODE}" ] && echo "1" || echo "${RETURN_CODE}";
 [ -z "${RETURN_CODE}" ] && return 1 || return "${RETURN_CODE}";

@@ -21,20 +21,20 @@
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 ## Application constants
-CNAME="$(basename ${0})";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
+CNAME="$(/usr/bin/env basename ${0})";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; /usr/bin/env echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
-local METHOD_NAME="${CNAME}#startup";
+METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/plugin ]] && . ${SCRIPT_ROOT}/../lib/plugin;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${PLUGIN_ROOT_DIR}" ] && echo -n "Failed to locate configuration data. Cannot continue." && return 1;
+[ -z "${PLUGIN_ROOT_DIR}" ] && /usr/bin/env echo "Failed to locate configuration data. Cannot continue." && return 1;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -63,7 +63,7 @@ typeset -i RET_CODE=${?};
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 CNAME="${THIS_CNAME}";
-local METHOD_NAME="${CNAME}#startup";
+typeset METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -72,7 +72,7 @@ then
     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
 
-    echo -n "Security configuration does not allow the requested action.";
+    echo "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
 fi
@@ -87,8 +87,8 @@ function generateRNDCKeys
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -112,18 +112,19 @@ function generateRNDCKeys
 
     GENERATION_DATE=$(date +"%m-%d-%Y");
 
-    ## build out rndc keys. we generate two - the local and the remote.
+    ## build out rndc keys. we generate two - the typeset and the remote.
     ## start with the local
     if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
     then
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing ${PLUGIN_LIB_DIRECTORY}/executors/execute_key_generation.sh -g ${KEYTYPE},${CHANGE_NUM},${IUSER_AUDIT} -e..";
 
-        RET_CODE=$(${PLUGIN_LIB_DIRECTORY}/executors/executeKeyGeneration.sh -g ${KEYTYPE},${CHANGE_NUM},${IUSER_AUDIT} -e);
+        ${PLUGIN_LIB_DIRECTORY}/executors/executeKeyGeneration.sh -g ${KEYTYPE},${CHANGE_NUM},${IUSER_AUDIT} -e;
     else
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} \"execute_key_generation.sh -g ${KEYTYPE},${CHANGE_NUM},${IUSER_AUDIT} -e\"";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing ssh ${NAMED_MASTER} \"execute_key_generation.sh -g ${KEYTYPE},${CHANGE_NUM},${IUSER_AUDIT} -e\"";
 
-        RET_CODE=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeKeyGeneration.sh -g ${KEYTYPE},${CHANGE_NUM},${IUSER_AUDIT} -e" ${SSH_USER_NAME} ${SSH_USER_AUTH});
+        ssh ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeKeyGeneration.sh -g ${KEYTYPE},${CHANGE_NUM},${IUSER_AUDIT} -e";
     fi
+    typeset -i RET_CODE=${?};
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -148,29 +149,29 @@ function generateRNDCKeys
     [ -s ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_KEY_FILE}) ] && rm -rf ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_KEY_FILE});
 
     ## we only get back the remote key. build out the files
-    ## this is a local rndc key. build the file
+    ## this is a typeset rndc key. build the file
     ## once for the rndc conf file...
-    echo -n "# keyfile ${RNDC_LOCAL_KEY} generated by ${IUSER_AUDIT} on ${GENERATION_DATE}\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_CONF_FILE});
-    echo -n "# change request number ${CHANGE_NUM}\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_CONF_FILE});
-    echo -n "key \"${RNDC_LOCAL_KEY}\" {\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_CONF_FILE});
-    echo -n "    algorithm         hmac-md5;\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_CONF_FILE});
-    echo -n "    secret            \"${RET_CODE}\";\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_CONF_FILE});
-    echo -n "};\n\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_CONF_FILE});
+    echo "# keyfile ${RNDC_LOCAL_KEY} generated by ${IUSER_AUDIT} on ${GENERATION_DATE}\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_CONF_FILE});
+    echo "# change request number ${CHANGE_NUM}\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_CONF_FILE});
+    echo "key \"${RNDC_LOCAL_KEY}\" {\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_CONF_FILE});
+    echo "    algorithm         hmac-md5;\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_CONF_FILE});
+    echo "    secret            \"${RET_CODE}\";\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_CONF_FILE});
+    echo "};\n\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_CONF_FILE});
 
     ## and then add our default server..
-    echo -n "options {\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_CONF_FILE});
-    echo -n "    default-key       \"${RNDC_LOCAL_KEY}\";\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_CONF_FILE});
-    echo -n "    default-server    127.0.0.1;\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_CONF_FILE});
-    echo -n "    default-port      ${RNDC_LOCAL_PORT};\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_CONF_FILE});
-    echo -n "};\n\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_CONF_FILE});
+    echo "options {\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_CONF_FILE});
+    echo "    default-key       \"${RNDC_LOCAL_KEY}\";\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_CONF_FILE});
+    echo "    default-server    127.0.0.1;\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_CONF_FILE});
+    echo "    default-port      ${RNDC_LOCAL_PORT};\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_CONF_FILE});
+    echo "};\n\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_CONF_FILE});
 
     ## and again for rndc.key
-    echo -n "# keyfile ${RNDC_LOCAL_KEY} generated by ${IUSER_AUDIT} on ${GENERATION_DATE}\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_KEY_FILE});
-    echo -n "# change request number ${CHANGE_NUM}\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_KEY_FILE});
-    echo -n "key \"${RNDC_LOCAL_KEY}\" {\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_KEY_FILE});
-    echo -n "    algorithm         hmac-md5;\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_KEY_FILE});
-    echo -n "    secret            \"${RET_CODE}\";\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_KEY_FILE});
-    echo -n "};\n\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_KEY_FILE});
+    echo "# keyfile ${RNDC_LOCAL_KEY} generated by ${IUSER_AUDIT} on ${GENERATION_DATE}\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_KEY_FILE});
+    echo "# change request number ${CHANGE_NUM}\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_KEY_FILE});
+    echo "key \"${RNDC_LOCAL_KEY}\" {\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_KEY_FILE});
+    echo "    algorithm         hmac-md5;\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_KEY_FILE});
+    echo "    secret            \"${RET_CODE}\";\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_KEY_FILE});
+    echo "};\n\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_KEY_FILE});
 
     ## unset the key
     unset RET_CODE;
@@ -225,9 +226,9 @@ function generateRNDCKeys
 
                             ## file copied. validate -
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File copied. Validating..";
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${AVAILABLE_MASTER} \"cksum ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE}\"";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ssh ${AVAILABLE_MASTER} \"cksum ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE}\"";
 
-                            DST_FILE_CKSUM=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${AVAILABLE_MASTER} "cksum ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE}" ${SSH_USER_NAME} ${SSH_USER_AUTH} | awk '{print $1}');
+                            ssh ${AVAILABLE_MASTER} "cksum ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE} | awk '{print $1}'";
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DST_FILE_CKSUM -> ${DST_FILE_CKSUM}";
 
@@ -270,7 +271,7 @@ function generateRNDCKeys
                             else
                                 ## MUST execute as root - sudo is best possible option.
                                 ## this is NOT required if you are configured to ssh as root.
-                                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${AVAILABLE_MASTER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeControlRequest.sh -c restart -r -e" ${SSH_USER_NAME} ${SSH_USER_AUTH};
+                                ssh ${AVAILABLE_MASTER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeControlRequest.sh -c restart -r -e";
                             fi
 
                             RESTART_CODE=${?};
@@ -281,7 +282,7 @@ function generateRNDCKeys
                             then
                                 ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "named service on ${AVAILABLE_MASTER} failed to restart.";
 
-                                echo -n "WARNING: named service on ${AVAILABLE_MASTER} failed to restart.";
+                                echo "WARNING: named service on ${AVAILABLE_MASTER} failed to restart.";
 
                                 sleep "${MESSAGE_DELAY}";
                             fi
@@ -325,9 +326,9 @@ function generateRNDCKeys
 
                         ## file copied. validate -
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File copied. Validating..";
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${DNS_SLAVES[${A}]} \"cksum ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE}\"";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ssh ${DNS_SLAVES[${A}]} \"cksum ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE}\"";
 
-                        DST_FILE_CKSUM=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${DNS_SLAVES[${A}]} "cksum ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE}" ${SSH_USER_NAME} ${SSH_USER_AUTH} | awk '{print $1}');
+                        DST_FILE_CKSUM=$(ssh ${DNS_SLAVES[${A}]} "cksum ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE}" | awk '{print $1}');
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DST_FILE_CKSUM -> ${DST_FILE_CKSUM}";
 
@@ -370,7 +371,7 @@ function generateRNDCKeys
                         else
                             ## MUST execute as root - sudo is best possible option.
                             ## this is NOT required if you are configured to ssh as root.
-                            ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${DNS_SLAVES[${A}]} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeControlRequest.sh -c restart -r -e" ${SSH_USER_NAME} ${SSH_USER_AUTH};
+                            ssh ${DNS_SLAVES[${A}]} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeControlRequest.sh -c restart -r -e";
                         fi
 
                         RESTART_CODE=${?};
@@ -381,7 +382,7 @@ function generateRNDCKeys
                         then
                             ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "named service on ${DNS_SLAVES[${A}]} failed to restart.";
 
-                            echo -n "WARNING: named service on ${DNS_SLAVES[${A}]} failed to restart.";
+                            echo "WARNING: named service on ${DNS_SLAVES[${A}]} failed to restart.";
 
                             sleep "${MESSAGE_DELAY}";
                         fi
@@ -408,9 +409,9 @@ function generateRNDCKeys
 
                         ## file copied. validate -
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File copied. Validating..";
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${EXT_SLAVES[${A}]} \"cksum ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE}\"";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ssh ${EXT_SLAVES[${A}]} \"cksum ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE}\"";
 
-                        DST_FILE_CKSUM=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${EXT_SLAVES[${A}]} "cksum ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE}" | awk '{print $1}' ${SSH_USER_NAME} ${SSH_USER_AUTH});
+                        DST_FILE_CKSUM=$(ssh ${EXT_SLAVES[${A}]} "cksum ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE}" | awk '{print $1}');
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DST_FILE_CKSUM -> ${DST_FILE_CKSUM}";
 
@@ -449,13 +450,12 @@ function generateRNDCKeys
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local execution is set to TRUE.";
 
                             ## no trace here, this is a bourne shell script
-                            . ${PLUGIN_LIB_DIRECTORY}/executors/executeControlRequest.sh -c restart -r -e;
+                            ${PLUGIN_LIB_DIRECTORY}/executors/executeControlRequest.sh -c restart -r -e;
                         else
                             ## MUST execute as root - sudo is best possible option.
                             ## this is NOT required if you are configured to ssh as root.
-                            ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${EXT_SLAVES[${A}]} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeControlRequest.sh -c restart -r -e" ${SSH_USER_NAME} ${SSH_USER_AUTH};
+                            ssh ${EXT_SLAVES[${A}]} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeControlRequest.sh -c restart -r -e";
                         fi
-
                         RESTART_CODE=${?};
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RESTART_CODE -> ${RESTART_CODE}";
@@ -464,7 +464,7 @@ function generateRNDCKeys
                         then
                             ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "named service on ${EXT_SLAVES[${A}]} failed to restart.";
 
-                            echo -n "WARNING: named service on ${EXT_SLAVES[${A}]} failed to restart.";
+                            echo "WARNING: named service on ${EXT_SLAVES[${A}]} failed to restart.";
 
                             sleep "${MESSAGE_DELAY}";
                         fi
@@ -487,13 +487,12 @@ function generateRNDCKeys
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local execution is set to TRUE.";
 
                 ## no trace here, this is a bourne shell script
-                . ${PLUGIN_LIB_DIRECTORY}/executors/executeControlRequest.sh -c restart -r -e;
+                ${PLUGIN_LIB_DIRECTORY}/executors/executeControlRequest.sh -c restart -r -e;
             else
                 ## MUST execute as root - sudo is best possible option.
                 ## this is NOT required if you are configured to ssh as root.
-                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeControlRequest.sh -c restart -r -e" ${SSH_USER_NAME} ${SSH_USER_AUTH};
+                ssh ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeControlRequest.sh -c restart -r -e";
             fi
-
             RESTART_CODE=${?};
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RESTART_CODE -> ${RESTART_CODE}";
@@ -502,7 +501,7 @@ function generateRNDCKeys
             then
                 ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "named service on ${NAMED_MASTER} failed to restart.";
 
-                echo -n "WARNING: named service on ${NAMED_MASTER} failed to restart.";
+                echo "WARNING: named service on ${NAMED_MASTER} failed to restart.";
 
                 sleep "${MESSAGE_DELAY}";
             fi
@@ -539,8 +538,8 @@ function generateTSIGKeys
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -564,7 +563,7 @@ function generateTSIGKeys
 
     GENERATION_DATE=$(date +"%m-%d-%Y");
 
-    ## build out rndc keys. we generate two - the local and the remote.
+    ## build out rndc keys. we generate two - the typeset and the remote.
     ## start with the local
     if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
     then
@@ -572,9 +571,9 @@ function generateTSIGKeys
 
         RET_CODE=$(${PLUGIN_LIB_DIRECTORY}/executors/executeKeyGeneration.sh -g ${KEYTYPE},${CHANGE_NUM},${IUSER_AUDIT} -e);
     else
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} \"execute_key_generation.sh -g ${KEYTYPE},${CHANGE_NUM},${IUSER_AUDIT} -e\"";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing ssh ${NAMED_MASTER} \"execute_key_generation.sh -g ${KEYTYPE},${CHANGE_NUM},${IUSER_AUDIT} -e\"";
 
-        RET_CODE=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeKeyGeneration.sh -g ${KEYTYPE},${CHANGE_NUM},${IUSER_AUDIT} -e" ${SSH_USER_NAME} ${SSH_USER_AUTH});
+        RET_CODE=$(ssh ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeKeyGeneration.sh -g ${KEYTYPE},${CHANGE_NUM},${IUSER_AUDIT} -e");
     fi
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
@@ -595,18 +594,18 @@ function generateTSIGKeys
 
     ## we get back the key, but its for the slave servers.
     ## write it out
-    ## this is a local rndc key. build the file
-    echo -n "# keyfile ${TSIG_TRANSFER_KEY} generated by ${IUSER_AUDIT} on ${GENERATION_DATE}\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${TRANSFER_KEY_FILE});
-    echo -n "# change request number ${CHANGE_NUM}\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${TRANSFER_KEY_FILE});
-    echo -n "key \"${TSIG_TRANSFER_KEY}\" {\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${TRANSFER_KEY_FILE});
-    echo -n "    algorithm    hmac-md5;\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${TRANSFER_KEY_FILE});
-    echo -n "    secret       \"${RET_CODE}\";\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${TRANSFER_KEY_FILE});
-    echo -n "};\n\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${TRANSFER_KEY_FILE});
+    ## this is a typeset rndc key. build the file
+    echo "# keyfile ${TSIG_TRANSFER_KEY} generated by ${IUSER_AUDIT} on ${GENERATION_DATE}\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${TRANSFER_KEY_FILE});
+    echo "# change request number ${CHANGE_NUM}\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${TRANSFER_KEY_FILE});
+    echo "key \"${TSIG_TRANSFER_KEY}\" {\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${TRANSFER_KEY_FILE});
+    echo "    algorithm    hmac-md5;\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${TRANSFER_KEY_FILE});
+    echo "    secret       \"${RET_CODE}\";\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${TRANSFER_KEY_FILE});
+    echo "};\n\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${TRANSFER_KEY_FILE});
 
     ## and then write out our master nameserver clauses
-    echo -n "server ${NAMED_MASTER_ADDRESS} {\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${TRANSFER_KEY_FILE});
-    echo -n "    keys { ${TSIG_TRANSFER_KEY}; };\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${TRANSFER_KEY_FILE});
-    echo -n "};\n\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${TRANSFER_KEY_FILE});
+    echo "server ${NAMED_MASTER_ADDRESS} {\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${TRANSFER_KEY_FILE});
+    echo "    keys { ${TSIG_TRANSFER_KEY}; };\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${TRANSFER_KEY_FILE});
+    echo "};\n\n" >> ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${TRANSFER_KEY_FILE});
 
     if [ -s ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${TRANSFER_KEY_FILE}) ]
     then
@@ -642,15 +641,15 @@ function generateTSIGKeys
             [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
             CNAME="${THIS_CNAME}";
-            local METHOD_NAME="${THIS_CNAME}#${0}";
+            typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
             ## file copied. validate -
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File copied. Validating..";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${DNS_SLAVES[${A}]} \"cksum ${NAMED_ROOT}/${TRANSFER_KEY_FILE} | awk '{print $1}'\"";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ssh ${DNS_SLAVES[${A}]} \"cksum ${NAMED_ROOT}/${TRANSFER_KEY_FILE} | awk '{print $1}'\"";
 
-            DST_FILE_CKSUM=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "cksum ${NAMED_ROOT}/${TRANSFER_KEY_FILE} | awk '{print $1}'" ${SSH_USER_NAME} ${SSH_USER_AUTH});
+            DST_FILE_CKSUM=$(ssh ${NAMED_MASTER} "cksum ${NAMED_ROOT}/${TRANSFER_KEY_FILE} | awk '{print $1}'");
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DST_FILE_CKSUM -> ${DST_FILE_CKSUM}";
 
@@ -701,7 +700,7 @@ function generateTSIGKeys
                     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
                     CNAME="${THIS_CNAME}";
-                    local METHOD_NAME="${THIS_CNAME}#${0}";
+                    typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
                 else
@@ -714,14 +713,14 @@ function generateTSIGKeys
                     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
                     ## validate the input
-                    ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${DNS_SLAVES[${A}]} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeControlRequest.sh -c restart -e" ${SSH_USER_NAME} ${SSH_USER_AUTH};
+                    ssh ${DNS_SLAVES[${A}]} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeControlRequest.sh -c restart -e";
                     typeset -i RET_CODE=${?};
 
                     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
                     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
                     CNAME="${THIS_CNAME}";
-                    local METHOD_NAME="${THIS_CNAME}#${0}";
+                    typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
                 fi
@@ -734,7 +733,7 @@ function generateTSIGKeys
                 then
                     ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "named service on ${DNS_SLAVES[${A}]} failed to restart.";
 
-                    echo -n "WARNING: named service on ${DNS_SLAVES[${A}]} failed to restart.";
+                    echo "WARNING: named service on ${DNS_SLAVES[${A}]} failed to restart.";
 
                     sleep "${MESSAGE_DELAY}";
                 fi
@@ -771,7 +770,7 @@ function generateTSIGKeys
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
                 CNAME="${THIS_CNAME}";
-                local METHOD_NAME="${THIS_CNAME}#${0}";
+                typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
             else
@@ -784,14 +783,14 @@ function generateTSIGKeys
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
                 ## validate the input
-                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeControlRequest.sh -c restart -e" ${SSH_USER_NAME} ${SSH_USER_AUTH};
+                ssh ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeControlRequest.sh -c restart -e";
                 typeset -i RET_CODE=${?};
 
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
                 CNAME="${THIS_CNAME}";
-                local METHOD_NAME="${THIS_CNAME}#${0}";
+                typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
             fi
@@ -804,7 +803,7 @@ function generateTSIGKeys
             then
                 ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "named service on ${NAMED_MASTER} failed to restart.";
 
-                echo -n "WARNING: named service on ${DNS_SLAVES[${A}]} failed to restart.";
+                echo "WARNING: named service on ${DNS_SLAVES[${A}]} failed to restart.";
 
                 sleep "${MESSAGE_DELAY}";
             fi
@@ -846,8 +845,8 @@ function generateDNSSECKeys
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -889,8 +888,8 @@ function generateDHCPDKeys
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -932,21 +931,21 @@ function usage
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=3;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=3;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo -n "${CNAME} - Performs a DNS query against the nameserver specified.";
-    echo -n "Usage: ${CNAME} [ -r ] [ -d ] [ -D ] [ -t ] [ -c <change number> ] [ -e ] [ -h|? ]";
-    echo -n " -r    -> Generate new RNDC keys.";
-    echo -n " -d    -> Generate new DNSSEC keys.";
-    echo -n " -D    -> Generate new DHCPD keys.";
-    echo -n " -t    -> Generate new TSIG keys.";
-    echo -n " -c    -> Generate new DNSSEC keys.";
-    echo -n " -e    -> Execute the request";
-    echo -n " -h|-? -> Show this help";
+    echo "${CNAME} - Performs a DNS query against the nameserver specified.\n";
+    echo "Usage: ${CNAME} [ -r ] [ -d ] [ -D ] [ -t ] [ -c <change number> ] [ -e ] [ -h|-? ]
+    -r         -> Generate new RNDC keys.
+    -d         -> Generate new DNSSEC keys.
+    -D         -> Generate new DHCPD keys.
+    -t         -> Generate new TSIG keys.
+    -c         -> Generate new DNSSEC keys.
+    -e         -> Execute the request
+    -h|-?      -> Show this help\n";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -957,7 +956,7 @@ function usage
     return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
+[ ${#} -eq 0 ] && usage&& RETURN_CODE=${?};
 
 while getopts ":rdDtc:eh:" OPTIONS 2>/dev/null
 do
@@ -1043,15 +1042,15 @@ do
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            [ "${GENERATE_RNDC_KEYS}" = "${_TRUE}" ] && generateRNDCKeys && RETURN_CODE=${?};
-            [ "${GENERATE_DNSSEC_KEYS}" = "${_TRUE}" ] && generateDNSSECKeys && RETURN_CODE=${?};
-            [ "${GENERATE_TSIG_KEYS}" = "${_TRUE}" ] && generateTSIGKeys && RETURN_CODE=${?};
-            [ "${GENERATE_DHCPD_KEYS}" = "${_TRUE}" ] && generateDHCPDKeys && RETURN_CODE=${?};
+            [ "${GENERATE_RNDC_KEYS}" = "${_TRUE}" ] && generateRNDCKeys&& RETURN_CODE=${?};
+            [ "${GENERATE_DNSSEC_KEYS}" = "${_TRUE}" ] && generateDNSSECKeys&& RETURN_CODE=${?};
+            [ "${GENERATE_TSIG_KEYS}" = "${_TRUE}" ] && generateTSIGKeys&& RETURN_CODE=${?};
+            [ "${GENERATE_DHCPD_KEYS}" = "${_TRUE}" ] && generateDHCPDKeys&& RETURN_CODE=${?};
             ;;
         *)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            usage && RETURN_CODE=${?};
+            usage&& RETURN_CODE=${?};
             ;;
     esac
 done

@@ -21,19 +21,19 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
-[[ -z "${APP_ROOT}" && -f ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/constants.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/constants.sh;
+[[ -z "${APP_ROOT}" && -f ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/constants ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/constants;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${APP_ROOT}" ] && echo -n "Failed to locate configuration data. Cannot continue." && exit 1;
+[ -z "${APP_ROOT}" ] && echo "Failed to locate configuration data. Cannot continue." && exit 1;
 
 METHOD_NAME="${CNAME}#startup";
 
@@ -51,15 +51,15 @@ function buildPlugin
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [[ ! -z ${VERBOSE} && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
     [[ ! -z ${VERBOSE} && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating plugin bundle..";
 
     ## create a temp file with the release date in it.. this will get cleaned up afterwords
-    echo -n "${PLUGIN} version ${VERSION} built on $(date +"%Y-%m-%d %H:%M:%S") by ${IUSER_AUDIT}" > ${PLUGIN_CONF_ROOT}/etc/${PLUGIN}.version;
+    echo "${PLUGIN} version ${VERSION} built on $(date +"%Y-%m-%d %H:%M:%S") by ${IUSER_AUDIT}" > ${PLUGIN_CONF_ROOT}/etc/${PLUGIN}.version;
 
     for TARGET_HOSTNAME in list-of-servers
     do
@@ -93,7 +93,7 @@ function buildPlugin
         [[ ! -z ${VERBOSE} && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Distributing to ${TARGET_HOSTNAME}..";
 
         distributePackage ${SSH_USER_ACCOUNT} ${PLUGIN_CONFIG_DIR}/${PLUGIN} ${TARGET_HOSTNAME} ${TARGET_HOSTNAME} ${APP_ROOT}/${PLUGIN_CONFIG_DIR}/${PLUGIN};
-        local typeset -i RET_CODE=${?};
+        typeset -i RET_CODE=${?};
 
         if [[ -z "${RET_CODE}" || ${RET_CODE} -ne 0 ]]
         then
@@ -105,7 +105,7 @@ function buildPlugin
         fi
 
         distributePackage ${SSH_USER_ACCOUNT} ${PLUGIN_LIB_DIR}/${PLUGIN} ${TARGET_HOSTNAME} ${TARGET_HOSTNAME} ${APP_ROOT}/${PLUGIN_LIB_DIR}/${PLUGIN};
-        local typeset -i RET_CODE=${?};
+        typeset -i RET_CODE=${?};
 
         if [[ -z "${RET_CODE}" || ${RET_CODE} -ne 0 ]]
         then
@@ -136,20 +136,20 @@ function usage
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=3;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=3;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo -n "${CNAME} - Build and deploy the most current version of the web administration utilities";
-    echo -n "Usage: ${CNAME} [ -v release version ] [ -p (buildRelease|installRelease) ] [ -e ] [ -h|? ]";
-    echo -n " -v    -> The release version for this build";
-    echo -n " -p    -> The process to execute. One of buildRelease or installRelease is required.";
-    echo -n " -t    -> The tarfile date. Only applicable when -p is install.";
-    echo -n " -i    -> The executing user. Only applicable when -p is install.";
-    echo -n " -e    -> Execute the request";
-    echo -n " -h|-? -> Show this help";
+    echo "${CNAME} - Build and deploy the most current version of the web administration utilities";
+    echo "Usage: ${CNAME} [ -v release version ] [ -p (buildRelease|installRelease) ] [ -e ] [ -h|? ]";
+    echo " -v    -> The release version for this build";
+    echo " -p    -> The process to execute. One of buildRelease or installRelease is required.";
+    echo " -t    -> The tarfile date. Only applicable when -p is install.";
+    echo " -i    -> The executing user. Only applicable when -p is install.";
+    echo " -e    -> Execute the request";
+    echo " -h|-? -> Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -160,7 +160,7 @@ function usage
     return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
+[ ${#} -eq 0 ] && usage&& RETURN_CODE=${?};
 
 while getopts ":v:p:t:i:eh:" OPTIONS 2>/dev/null
 do
@@ -210,14 +210,14 @@ do
                 ## We have enough information to process the request, continue
                 [[ ! -z ${VERBOSE} && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
 
-                [ "${EXECUTION_TYPE}" = "buildRelease" ] && buildRelease && RETURN_CODE=${?};
-                [ "${EXECUTION_TYPE}" = "installRelease" ] && installRelease && RETURN_CODE=${?};
+                [ "${EXECUTION_TYPE}" = "buildRelease" ] && buildRelease&& RETURN_CODE=${?};
+                [ "${EXECUTION_TYPE}" = "installRelease" ] && installRelease&& RETURN_CODE=${?};
             fi
             ;;
         *)
             [[ ! -z ${VERBOSE} && "${VERBOSE}" = "${_TRUE}" ]] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME}->exit";
 
-            usage && RETURN_CODE=${?};
+            usage&& RETURN_CODE=${?};
             ;;
     esac
 done

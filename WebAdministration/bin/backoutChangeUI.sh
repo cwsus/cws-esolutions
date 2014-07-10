@@ -22,20 +22,20 @@
 
 ## Application constants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 function main
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
     ## don't allow ctrl-c to be sent
-    trap "echo -n '$(grep -w system.trap.signals "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%SIGNAL%/Ctrl-C/")'; sleep "${MESSAGE_DELAY}"; reset; clear; continue " 1 2 3
+    trap "echo '$(grep -w system.trap.signals "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%SIGNAL%/Ctrl-C/")'; sleep "${MESSAGE_DELAY}"; reset; clear; continue " 1 2 3
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checking if application is already in operation...";
 
@@ -48,8 +48,8 @@ function main
     typeset -i RET_CODE=${?};
 
     ## reset METHOD_NAME back to THIS method
-local METHOD_NAME="${CNAME}#${0}";
-local RETURN_CODE=0;
+typeset METHOD_NAME="${CNAME}#${0}";
+typeset RETURN_CODE=0;
     CNAME=$(basename ${0});
 
     ## is the application already running a site
@@ -68,12 +68,12 @@ local RETURN_CODE=0;
             ## get the request information
             while true
             do
-                echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                echo -n "\t\t\t$(grep -w backout.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                echo -n "\t$(grep -w backout.enter.info "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                echo -n "\t$(grep -w backout.request.format "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                echo -n "\t$(grep -w backout.retrieve.all "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                echo -n "\t$(grep -w system.option.cancel "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                echo "\t\t\t$(grep -w backout.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                echo "\t$(grep -w backout.enter.info "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                echo "\t$(grep -w backout.request.format "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                echo "\t$(grep -w backout.retrieve.all "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                echo "\t$(grep -w system.option.cancel "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                 ## get the requested project code/url or business unit
                 read SVC_LIST;
@@ -87,7 +87,7 @@ local RETURN_CODE=0;
                         ## cancel, return control back to dns_administration.sh
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                        echo -n "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                        echo "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                         reset; clear;
 
@@ -105,7 +105,7 @@ local RETURN_CODE=0;
 
                         reset; clear;
 
-                        echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                        echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                         ## temporarily unset stuff
                         unset METHOD_NAME;
@@ -115,8 +115,8 @@ local RETURN_CODE=0;
                         RET_CODE=${?}
 
                         ## reset METHOD_NAME back to THIS method
-                    local METHOD_NAME="${CNAME}#${0}";
-local RETURN_CODE=0;
+                    typeset METHOD_NAME="${CNAME}#${0}";
+typeset RETURN_CODE=0;
                         CNAME=$(basename ${0});
 
                         reset; clear;
@@ -131,9 +131,9 @@ local RETURN_CODE=0;
                             then
                                 while true
                                 do
-                                    echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                    echo -n "\t\t\t$(grep -w backout.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                    echo -n "\t$(grep -w system.list.available "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                    echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                    echo "\t\t\t$(grep -w backout.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                    echo "\t$(grep -w system.list.available "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                     while [ ${A} -ne ${LIST_DISPLAY_MAX} ]
                                     do
@@ -142,7 +142,7 @@ local RETURN_CODE=0;
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${B} - $(echo ${FILE_LIST[${B}]} | cut -d "/" -f 7)";
 
                                             # NOTE: this will need to change depending on where backups should go
-                                            echo -n "${B} - $(echo ${FILE_LIST[${B}]} | cut -d "/" -f 7)";
+                                            echo "${B} - $(echo ${FILE_LIST[${B}]} | cut -d "/" -f 7)";
                                             (( A += 1 ));
                                             (( B += 1 ));
                                         else
@@ -153,13 +153,13 @@ local RETURN_CODE=0;
 
                                     if [ $(expr ${B} - ${LIST_DISPLAY_MAX}) -eq 0 ]
                                     then
-                                        echo -n "$(grep -w system.display.next "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                        echo "$(grep -w system.display.next "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
                                     else
-                                        echo -n "$(grep -w system.display.prev "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                        echo -n "$(grep -w system.display.next "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                        echo "$(grep -w system.display.prev "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                        echo "$(grep -w system.display.next "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
                                     fi
 
-                                    echo -n "$(grep -w system.option.cancel "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                    echo "$(grep -w system.option.cancel "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                     read SELECTION;
 
@@ -174,7 +174,7 @@ local RETURN_CODE=0;
                                             then
                                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Cannot shift past end of data.";
 
-                                                echo -n "$(grep -w forward.shift.failed "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                echo "$(grep -w forward.shift.failed "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                                 B=0;
                                                 A=0;
                                                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
@@ -193,7 +193,7 @@ local RETURN_CODE=0;
                                             then
                                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Cannot shift past end of data.";
 
-                                                echo -n "$(grep -w previous.shift.failed "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                                echo "$(grep -w previous.shift.failed "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                                 A=0;
                                                 B=0;
                                                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
@@ -219,7 +219,7 @@ local RETURN_CODE=0;
 
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover request has been cancelled.";
 
-                                            echo -n "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                            echo "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                             sleep "${MESSAGE_DELAY}"; reset; clear; break;
                                             ;;
@@ -229,7 +229,7 @@ local RETURN_CODE=0;
                                             unset SELECTION;
                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
 
-                                            echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                            echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                             sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                             ;;
                                     esac
@@ -239,20 +239,20 @@ local RETURN_CODE=0;
 
                                 while true
                                 do
-                                    echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}"| grep -v "#" | cut -d "=" -f 2)\n";
-                                    echo -n "\t\t\t$(grep -w backout.application.title "${PLUGIN_MESSAGES}"| grep -v "#" | cut -d "=" -f 2)\n";
-                                    echo -n "\t$(grep -w system.list.available "${SYSTEM_MESSAGES}"| grep -v "#" | cut -d "=" -f 2)\n";
+                                    echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}"| grep -v "#" | cut -d "=" -f 2)\n";
+                                    echo "\t\t\t$(grep -w backout.application.title "${PLUGIN_MESSAGES}"| grep -v "#" | cut -d "=" -f 2)\n";
+                                    echo "\t$(grep -w system.list.available "${SYSTEM_MESSAGES}"| grep -v "#" | cut -d "=" -f 2)\n";
 
                                     while [ ${A} -ne ${#FILE_LIST[@]} ]
                                     do
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${A} - $(echo ${FILE_LIST[${A}]} | cut -d "/" -f 7)";
 
                                         # NOTE: this will need to change depending on where backups should go
-                                        echo -n "${A} - $(echo ${FILE_LIST[${A}]} | cut -d "/" -f 7)";
+                                        echo "${A} - $(echo ${FILE_LIST[${A}]} | cut -d "/" -f 7)";
                                         (( A += 1 ));
                                     done
 
-                                    echo -n "$(grep -w system.option.cancel "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                    echo "$(grep -w system.option.cancel "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                     read SELECTION;
 
@@ -272,7 +272,7 @@ local RETURN_CODE=0;
                                             B=0;
 
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover request has been cancelled.";
-                                            echo -n "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                            echo "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                             sleep "${MESSAGE_DELAY}"; reset; clear; break;
                                             ;;
                                         *)
@@ -281,7 +281,7 @@ local RETURN_CODE=0;
                                             A=0;
                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
 
-                                            echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                            echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                             sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                             ;;
                                     esac
@@ -289,7 +289,7 @@ local RETURN_CODE=0;
                             fi
                         else
                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backout request FAILED. Return code -> ${RET_CODE}";
-                            echo -n "$(grep ${RET_CODE} "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                            echo "$(grep ${RET_CODE} "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                             sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                         fi
                         ;;
@@ -300,7 +300,7 @@ local RETURN_CODE=0;
                             unset SVC_LIST;
                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
 
-                            echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                            echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                             sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                         else
                             ## we need to make sure we were given real options.
@@ -321,7 +321,7 @@ local RETURN_CODE=0;
                                 ## request was invalid
                                 unset SVC_LIST;
                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${SVC_LIST} invalid";
-                                echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                             fi
                         fi
@@ -329,14 +329,14 @@ local RETURN_CODE=0;
                 esac
             done
         else
-            echo -n "this is for esupport";
+            echo "this is for esupport";
             exit 0;
         fi
     else
         ## app already in use, inform the
         ## user
         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Application already in use. Cannot continue processing";
-        echo -n "$(grep ${RET_CODE} "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+        echo "$(grep ${RET_CODE} "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
         unset RET_CODE;
         sleep "${MESSAGE_DELAY}"; reset; clear;
 
@@ -352,8 +352,8 @@ function process_backout_file
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     if [ ${#FILE_LIST[@]} -eq 0 ]
     then
@@ -380,11 +380,11 @@ function process_backout_file
     do
         ## provide user a chance to confirm the request
         ## prior to execution
-        echo -n "$(grep -w request.confirmation "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%CHANGE_REQ%/${CHANGE_REQ}/" -e "s/%BUSINESS_UNIT%/${BU}/")";
+        echo "$(grep -w request.confirmation "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%CHANGE_REQ%/${CHANGE_REQ}/" -e "s/%BUSINESS_UNIT%/${BU}/")";
 
         read CONFIRM;
         reset; clear;
-        echo -n "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+        echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONFIRM -> ${CONFIRM}";
 
@@ -409,8 +409,8 @@ function process_backout_file
                 typeset -i RET_CODE=${?};
 
                 ## set method_name and cname back to this
-            local METHOD_NAME="${CNAME}#${0}";
-local RETURN_CODE=0;
+            typeset METHOD_NAME="${CNAME}#${0}";
+typeset RETURN_CODE=0;
                 CNAME=$(basename ${0});
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing complete. Return code -> ${RET_CODE}";
@@ -427,12 +427,12 @@ local RETURN_CODE=0;
                     do
                         reset; clear;
 
-                        echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                        echo -n "\t\t\t$(grep -w backout.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                        echo -n "\t$(grep -w backout.process.complete "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                        echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                        echo "\t\t\t$(grep -w backout.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                        echo "\t$(grep -w backout.process.complete "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                         read RESPONSE;
-                        echo -n "\t$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                        echo "\t$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RESPONSE -> ${RESPONSE}";
 
@@ -461,19 +461,19 @@ local RETURN_CODE=0;
                     ## decision
                     while true
                     do
-                        echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                        echo -n "\t\t\t$(grep -w backout.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                        echo -n "\t$(grep -w backout.select.file "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                        echo -n "\t$(grep -w system.option.cancel "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                        echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                        echo "\t\t\t$(grep -w backout.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                        echo "\t$(grep -w backout.select.file "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                        echo "\t$(grep -w system.option.cancel "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                         while [ ${A} -ne ${#FILE_LIST[@]} ]
                         do
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File ${A} -> ${FILE_LIST[${A}]}";
-                            echo -n "${A} - ${FILE_LIST[${A}]}";
+                            echo "${A} - ${FILE_LIST[${A}]}";
                         done
 
                         ## allow cancel
-                        echo -n "$(grep -w system.option.cancel "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e 's/%SITE%/all sites for ${REQUEST_OPTION}/')\n";
+                        echo "$(grep -w system.option.cancel "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e 's/%SITE%/all sites for ${REQUEST_OPTION}/')\n";
 
                         ## read in the request
                         read SELECTION;
@@ -486,7 +486,7 @@ local RETURN_CODE=0;
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SELECTION->${SELECTION}";
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover request has been cancelled.";
 
-                                echo -n "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                echo "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                 ;;
@@ -497,7 +497,7 @@ local RETURN_CODE=0;
                                 CHANGE_REQ=$(echo ${FILE_LIST[${SELECTION}]} | cut -d "." -f 4);
                                 BU=$(echo ${FILE_LIST[${SELECTION}]} | cut -d "_" -f 3 | cut -d "." -f 1);
 
-                                echo -n "$(grep -w request.confirmation "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%CHANGE_REQ%/${CHANGE_REQ}/" -e "s/%BUSINESS_UNIT%/${BU}/")";
+                                echo "$(grep -w request.confirmation "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2 | sed -e "s/%CHANGE_REQ%/${CHANGE_REQ}/" -e "s/%BUSINESS_UNIT%/${BU}/")";
 
                                 read CONFIRM;
 
@@ -516,8 +516,8 @@ local RETURN_CODE=0;
                                         typeset -i RET_CODE=${?};
 
                                         ## set method_name and cname back to this
-                                    local METHOD_NAME="${CNAME}#${0}";
-local RETURN_CODE=0;
+                                    typeset METHOD_NAME="${CNAME}#${0}";
+typeset RETURN_CODE=0;
                                         CNAME=$(basename ${0});
 
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Return code from run_backout.sh->${RET_CODE}";
@@ -529,12 +529,12 @@ local RETURN_CODE=0;
                                             do
                                                 reset; clear;
 
-                                                echo -n "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                echo -n "\t\t\t$(grep -w backout.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                echo -n "\t$(grep -w process.complete "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                echo "\t\t\t$(grep -w backout.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                echo "\t$(grep -w process.complete "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                                 read RESPONSE;
-                                                echo -n "\t$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                                                echo "\t$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RESPONSE -> ${RESPONSE}";
 
@@ -557,7 +557,7 @@ local RETURN_CODE=0;
                                         else
                                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while processing the requested backout. Return code from call: ${RET_CODE}";
 
-                                            echo -n "$(grep -w backout.failure "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                            echo "$(grep -w backout.failure "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
 
                                             sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                         fi
@@ -566,19 +566,19 @@ local RETURN_CODE=0;
                                         ## request canceled
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backout request canceled";
 
-                                        echo -n "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                        echo "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                         sleep "${MESSAGE_DELAY}"; reset; clear; break;
                                         ;;
                                     *)
                                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Selection ${CONFIRM} is invalid.";
-                                        echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                        echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                         sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                         ;;
                                 esac
                                 ;;
                            *)
                                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Selection ${SELECTION} is invalid.";
-                                echo -n "$(grep -w selection.invalid "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                echo "$(grep -w selection.invalid "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                                 ;;
                         esac
@@ -590,7 +590,7 @@ local RETURN_CODE=0;
                     unset CONFIRM;
                     unset SELECTION;
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while processing run_backout.sh. Return code->${RET_CODE}.";
-                    echo -n "$(grep ${RET_CODE} "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                    echo "$(grep ${RET_CODE} "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                     sleep "${MESSAGE_DELAY}"; reset; clear; break;
                 fi
                 ;;
@@ -603,7 +603,7 @@ local RETURN_CODE=0;
                 B=0;
 
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred while processing run_backout.sh. Return code->${RET_CODE}.";
-                echo -n "$(grep ${RET_CODE} "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                echo "$(grep ${RET_CODE} "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                 sleep "${MESSAGE_DELAY}"; reset; clear; break;
                 ;;
             *)
@@ -611,14 +611,14 @@ local RETURN_CODE=0;
                 unset CONFIRM;
                 unset SELECTION;
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No valid response was provided.";
-                echo -n "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
                 ;;
         esac
     done
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
 METHOD_NAME="${CNAME}#startup";

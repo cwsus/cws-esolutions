@@ -60,7 +60,7 @@ function rotateLogs
 
     [ ! -f ${LOG_ROOT}/${1} ] && return 0;
 
-    if [ $(( $(date +"%s") - $(stat -L --format %Y ${LOG_ROOT}/${1}) > $(echo -n "${ROLLOVER_PERIOD} * 60 * 60" | bc) )) -eq 1 ]
+    if [ $(( $(date +"%s") - $(stat -L --format %Y ${LOG_ROOT}/${1}) > $(echo "${ROLLOVER_PERIOD} * 60 * 60" | bc) )) -eq 1 ]
     then
         if [ -f ${LOG_ROOT}/${1}.${LOG_RETENTION_PERIOD} ]
         then
@@ -81,7 +81,7 @@ function rotateLogs
         touch ${LOG_ROOT}/${1};
     fi
 
-    if [ $(/usr/bin/env stat -c %s "${LOG_ROOT}/${1}") -gt $(echo -n "${ROTATE_ON_SIZE} * 1024" | bc) ]
+    if [ $(/usr/bin/env stat -c %s "${LOG_ROOT}/${1}") -gt $(echo "${ROTATE_ON_SIZE} * 1024" | bc) ]
     then
         if [ -f ${LOG_ROOT}/${1}.${LOG_RETENTION_PERIOD} ]
         then
@@ -120,7 +120,7 @@ function writeLogEntry
     #[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
     ## always do the timestamp first
-    local TIMESTAMP_OPTS=$(cut -d "[" -f 2 <<< ${CONVERSION_PATTERN} | cut -d "]" -f 1 | cut -d ":" -f 2- | sed -e '/^ *#/d;s/#.*//')
+    typeset TIMESTAMP_OPTS=$(cut -d "[" -f 2 <<< ${CONVERSION_PATTERN} | cut -d "]" -f 1 | cut -d ":" -f 2- | sed -e '/^ *#/d;s/#.*//')
 
     case ${1} in
         [Ee][Rr][Rr][Oo][Rr]|[Ee])
@@ -145,7 +145,7 @@ function writeLogEntry
             ;;
     esac
 
-    echo -n "${RECORDER}" >> ${LOG_ROOT}/${LOG_FILE};
+    echo "${RECORDER}" >> ${LOG_ROOT}/${LOG_FILE};
 
     unset TIMESTAMP_OPTS;
     unset RECORDER;

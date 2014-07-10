@@ -35,31 +35,12 @@ NAMED_OPTS="-4 -c /etc/named.conf -m usage -n 1 -p 53 -t ${NAMED_CHROOT} -u ${NA
 NAMED_LOG_DIR=/var/named/var/log;
 RNDC_BIN=/usr/sbin/rndc;
 RNDC_OPTS="-c /var/named/etc/dnssec-keys/rndc.conf";
-PLATFORM_TYPE=`uname`;
+PLATFORM_TYPE=`/usr/bin/env uname`;
 KRB5_KTNAME=${KEYTAB_FILE:-/etc/named.keytab};
 
 [ -f /etc/rc.d/init.d/functions ] && . /etc/rc.d/init.d/functions;
 [ -r /etc/sysconfig/named ] && . /etc/sysconfig/named;
 [ -r /etc/sysconfig/network ] && . /etc/sysconfig/network;
-
-## find out what our platform is
-## we currently support solaris and
-## linux, hooray
-if [ "${PLATFORM_TYPE}" = "SunOS" ]
-then
-    ## alias grep to /usr/xpg4/bin/grep because /usr/bin/grep doesnt have a -x option
-    alias grep='/usr/xpg4/bin/grep';
-
-    ## alias ps to /usr/ucb/ps -auxwww
-    alias ps='/usr/ucb/ps -auxww';
-elif [ "${PLATFORM_TYPE}" = "Linux" ]
-then
-    ## alias ps to ps -ef
-    alias ps='/bin/ps -ef';
-
-    ## alias grep to grep without the colors
-    alias grep='/bin/grep';
-fi
 
 ACTION=${1};
 
@@ -69,9 +50,9 @@ ACTION=${1};
 # See how we were called.
 case "${ACTION}" in
     start)
-        if [ -n "`pidof -s -n -m ${NAMED_BIN}`" ]
+        if [ -n "`/usr/bin/env pidof -s -n -m ${NAMED_BIN}`" ]
         then
-            echo -n -n $"named: already running:"
+            /usr/bin/env echo $"named: already running:"
             ${RNDC_BIN} ${RNDC_OPTS} status;
 
             exit 0;
@@ -86,24 +67,23 @@ case "${ACTION}" in
 
             if [ ${RETVAL} -eq 0 ]
             then
-                rm -f /var/run/${NAMED_PID};
-                ln -s ${NAMED_PID} /var/run/named.pid;
+                /usr/bin/env rm -f /var/run/${NAMED_PID};
+                /usr/bin/env ln -s ${NAMED_PID} /var/run/named.pid;
             fi
         else
             named_err="`${NAMED_CHKCONF} ${NAMED_CHKCONF_OPTS} ${NAMED_CONF} 2>&1`";
 
-            echo
-            echo -n ""ERROR" in named configuration:";
-            echo -n "${named_err}";
+            /usr/bin/env echo "An error exists in the named configuration:\n\n
+            ${named_err}";
 
-            [ -x /usr/bin/logger ] && echo -n "${named_err}" | /usr/bin/logger -pdaemon."ERROR" -tnamed;
+            [ -x /usr/bin/logger ] && /usr/bin/env echo "${named_err}" | /usr/bin/logger -pdaemon."ERROR" -tnamed;
 
             exit 2;
         fi
 
         if [ ${RETVAL} -eq 0 ]
         then
-            touch /var/lock/subsys/named;
+            /usr/bin/env touch /var/lock/subsys/named;
         else
             exit 7;
         fi
@@ -111,22 +91,23 @@ case "${ACTION}" in
     stop)
         if [ ! -s ${NAMED_PID} ]
         then
-            echo -n "Service named not running";
+            /usr/bin/env echo "Service named not running";
 
             exit 1;
         else
-            echo -n "Shutting down named: ";
+            /usr/bin/env echo "Shutting down named: ";
+
             ${RNDC_BIN} ${RNDC_OPTS} stop;
 
-            sleep 5;
+            /usr/bin/env sleep 5;
 
             if [ -s ${NAMED_PID} ]
             then
-                kill `<${NAMED_PID}`;
-                rm -rf ${NAMED_PID};
+                /usr/bin/env kill `<${NAMED_PID}`;
+                /usr/bin/env rm -rf ${NAMED_PID};
             fi
 
-            echo -n "[ OK ]";
+            /usr/bin/env echo "[ OK ]";
 
             exit 0;
         fi
@@ -142,24 +123,29 @@ case "${ACTION}" in
         ;;
     status)
         ${RNDC_BIN} ${RNDC_OPTS} status;
+
         exit ${?}
         ;;
     restart)
         ${0} stop;
         ${0} start;
+
         exit ${?};
         ;;
     reload)
         ${RNDC_BIN} ${RNDC_OPTS} reload;
+
         exit ${?};
         ;;
     probe)
         # named knows how to reload intelligently; we don't want linuxconf
         # to offer to restart every time
-        ${RNDC_BIN} ${RNDC_OPTS} reload > ${NAMED_LOG_DIR}/rndc-reload.log 2>&1 || echo -n start;
+        ${RNDC_BIN} ${RNDC_OPTS} reload > ${NAMED_LOG_DIR}/rndc-reload.log 2>&1 || /usr/bin/env echo start;
+
         exit 0;
         ;;
     *)
-        echo -n "Usage: named {start|stop|status|restart|reload}";
+        /usr/bin/env echo "Usage: named {start|stop|status|restart|reload}";
+
         exit 1;
 esac

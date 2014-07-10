@@ -17,7 +17,7 @@
 #==============================================================================
 # Application contants
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
@@ -30,8 +30,8 @@ function retrieve_file_list
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FILE_NAME -> ${FILE_NAME}";
@@ -65,7 +65,7 @@ function retrieve_file_list
             do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FILE_LIST->${FILE_LIST[${A}]}";
 
-                echo -n ${FILE_LIST[${A}]} >> ${APP_ROOT}/${BACKUP_LIST};
+                echo ${FILE_LIST[${A}]} >> ${APP_ROOT}/${BACKUP_LIST};
 
                 (( A += 1 ));
             done
@@ -96,8 +96,8 @@ function backout_change
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FILE_NAME -> ${FILE_NAME}";
@@ -134,7 +134,7 @@ function backout_change
                     do
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FILE_LIST->${FILE_LIST[${A}]}";
 
-                        echo -n ${FILE_LIST[${A}]} >> ${APP_ROOT}/${BACKUP_LIST};
+                        echo ${FILE_LIST[${A}]} >> ${APP_ROOT}/${BACKUP_LIST};
 
                         (( A += 1 ));
                     done
@@ -394,7 +394,7 @@ function backout_change
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copy complete. Including configuration file..";
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Including configuration file..";
 
-                                        echo -n "include \"/${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BIZ_UNIT} "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}\";" >> ${NAMED_CONF_FILE};
+                                        echo "include \"/${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BIZ_UNIT} "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME}\";" >> ${NAMED_CONF_FILE};
 
                                         ## should have our new zone included now. verify it
                                         if [ $(grep -c ${NAMED_ROOT}/${NAMED_CONF_DIR}/$(echo ${BIZ_UNIT} "[A-Z]" "[a-z]").${NAMED_ZONE_CONF_NAME} ${NAMED_CONF_FILE}) -eq 1 ]
@@ -435,11 +435,11 @@ function backout_change
 
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Placing ${ZONE_NAME} into config file..";
 
-                                        echo -n "zone \"${ZONE_NAME}\" IN {" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                                        echo -n "    type         master;" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                                        echo -n "    file         \"${NAMED_MASTER_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1).$(echo ${PROJECT_CODE} | tr "[a-z]" "[A-Z]")\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                                        echo -n "    allow-update { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
-                                        echo -n "};\n" >> ${NAMED_ROOT}/${NAME_CONF_DIR}/${ZONE_CONF_NAME};
+                                        echo "zone \"${ZONE_NAME}\" IN {" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                                        echo "    type         master;" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                                        echo "    file         \"${NAMED_MASTER_ROOT}/${GROUP_ID}${BUSINESS_UNIT}/${NAMED_ZONE_PREFIX}.$(echo ${ZONE_NAME} | cut -d "." -f 1).$(echo ${PROJECT_CODE} | tr "[a-z]" "[A-Z]")\";" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                                        echo "    allow-update { none; };" >> ${NAMED_ROOT}/${NAMED_CONF_DIR}/${ZONE_CONF_NAME};
+                                        echo "};\n" >> ${NAMED_ROOT}/${NAME_CONF_DIR}/${ZONE_CONF_NAME};
 
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Placement complete..";
                                     done
@@ -451,7 +451,7 @@ function backout_change
                                         ## we do. write out the $include entry
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decompression and zone configuration successfully built. Adding into primary config file..";
 
-                                        echo -n "include \"/${NAMED_CONF_DIR}/${ZONE_CONF_NAME}\";" >> ${NAMED_CONF_FILE};
+                                        echo "include \"/${NAMED_CONF_DIR}/${ZONE_CONF_NAME}\";" >> ${NAMED_CONF_FILE};
 
                                         ## make sure it was printed..
                                         if [ $(grep -c ${ZONE_CONF_NAME} ${NAMED_CONF_FILE}) -eq 1 ]
@@ -533,30 +533,30 @@ function usage
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    echo -n "${CNAME} - Baackout a previously executed change request";
-    echo -n "Usage: ${CNAME} [-a] [-f filename (optional)] [-b business unit] [-c change control] [-d date] [-e <execute>] [-h] [-?]";
-    echo -n "  -a      Retrieve a list of all available backout files";
-    echo -n "  -f      The file name to process (optional)";
-    echo -n "  -b      The business unit that will be failed over";
-    echo -n "  -c      The change control associated with the request to be backed out";
-    echo -n "  -d      The date of the change";
-    echo -n "  -e      Execute the request";
-    echo -n "  -h|-?   Show this help";
+    echo "${CNAME} - Baackout a previously executed change request";
+    echo "Usage: ${CNAME} [-a] [-f filename (optional)] [-b business unit] [-c change control] [-d date] [-e <execute>] [-h] [-?]";
+    echo "  -a      Retrieve a list of all available backout files";
+    echo "  -f      The file name to process (optional)";
+    echo "  -b      The business unit that will be failed over";
+    echo "  -c      The change control associated with the request to be backed out";
+    echo "  -d      The date of the change";
+    echo "  -e      Execute the request";
+    echo "  -h|-?   Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     return 3;
 }
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin;
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
-[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
+[ ${#} -eq 0 ] && usage&& RETURN_CODE=${?};
 
 METHOD_NAME="${CNAME}#startup";
 
@@ -653,21 +653,21 @@ do
         h)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            usage && RETURN_CODE=${?};
+            usage&& RETURN_CODE=${?};
             ;;
         [\?])
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            usage && RETURN_CODE=${?};
+            usage&& RETURN_CODE=${?};
             ;;
         *)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            usage && RETURN_CODE=${?};
+            usage&& RETURN_CODE=${?};
             ;;
     esac
 done
 
 
-echo -n ${RETURN_CODE};
+echo ${RETURN_CODE};
 exit ${RETURN_CODE};

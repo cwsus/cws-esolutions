@@ -31,18 +31,18 @@ function usage
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=3;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=3;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo -n "${CNAME} - Watchdog for process execution";
-    echo -n "Usage: ${CNAME} [ -t <timeout> ] [ -i <interval> ] [ -d <delay> ] <command> [-?|-h show this help]";
-    echo -n "  -t      Number of seconds to wait for command completion. Default value: ${THREAD_TIMEOUT} seconds.";
-    echo -n "  -i      Interval between checks if the process is still alive. Positive integer, default value: ${THREAD_INTERVAL} seconds.";
-    echo -n "  -d      Delay between posting the SIGTERM signal and destroying the process by SIGKILL. Default value: ${THREAD_DELAY} seconds.";
-    echo -n "  -h|-?   Show this help";
+    echo "${CNAME} - Watchdog for process execution";
+    echo "Usage: ${CNAME} [ -t <timeout> ] [ -i <interval> ] [ -d <delay> ] <command> [-?|-h show this help]";
+    echo "  -t      Number of seconds to wait for command completion. Default value: ${THREAD_TIMEOUT} seconds.";
+    echo "  -i      Interval between checks if the process is still alive. Positive integer, default value: ${THREAD_INTERVAL} seconds.";
+    echo "  -d      Delay between posting the SIGTERM signal and destroying the process by SIGKILL. Default value: ${THREAD_DELAY} seconds.";
+    echo "  -h|-?   Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -55,7 +55,7 @@ function usage
 
 ## make sure we have arguments, if we do
 ## then load our constants and continue
-[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
+[ ${#} -eq 0 ] && usage&& RETURN_CODE=${?};
 
 [ -f ${APP_ROOT}/${LIB_DIRECTORY}/functions ] && . ${APP_ROOT}/${LIB_DIRECTORY}/functions;
 [ -f ${APP_ROOT}/${LIB_DIRECTORY}/aliases ] && . ${APP_ROOT}/${LIB_DIRECTORY}/aliases;
@@ -65,7 +65,7 @@ while getopts ":t:i:d:" OPTIONS 2>/dev/null; do
         t) [[ ! -z "${OPTARG}" && $(isNaN ${OPTARG}) -eq 0 ]] && TIMEOUT=${OPTARG} || TIMEOUT=${THREAD_TIMEOUT} ;;
         n) [[ ! -z "${OPTARG}" && $(isNaN ${OPTARG}) -eq 0 ]] && INTERVAL=${OPTARG} || INTERVAL=${THREAD_INTERVAL} ;;
         d) [[ ! -z "${OPTARG}" && $(isNaN ${OPTARG}) -eq 0 ]] && DELAY=${OPTARG} || DELAY=${THREAD_DELAY} ;;
-        *) usage && RETURN_CODE=${?}; exit 1 ;;
+        *) usage&& RETURN_CODE=${?}; exit 1 ;;
     esac
 done
 
@@ -81,7 +81,7 @@ shift $((OPTIND - 1))
         (( t -= ${INTERVAL} ));
     done
 
-    echo -n "Terminating process - timeout threshold exceeded";
+    echo "Terminating process - timeout threshold exceeded";
 
     kill -s SIGTERM ${$} && kill -0 ${$} || exit 1;
     sleep ${DELAY} && kill -s SIGKILL ${$} && kill -0 ${$} || exit 1;

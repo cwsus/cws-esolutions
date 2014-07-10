@@ -21,20 +21,20 @@
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 ## Application constants
-CNAME="$(basename ${0})";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
+CNAME="$(/usr/bin/env basename ${0})";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; /usr/bin/env echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
-local METHOD_NAME="${CNAME}#startup";
+METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/plugin ]] && . ${SCRIPT_ROOT}/../lib/plugin;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${PLUGIN_ROOT_DIR}" ] && echo -n "Failed to locate configuration data. Cannot continue." && exit 1;
+[ -z "${PLUGIN_ROOT_DIR}" ] && /usr/bin/env echo "Failed to locate configuration data. Cannot continue." && return 1;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -63,7 +63,7 @@ typeset -i RET_CODE=${?};
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 CNAME="${THIS_CNAME}";
-local METHOD_NAME="${CNAME}#startup";
+typeset METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -72,7 +72,7 @@ then
     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
 
-    echo -n "Security configuration does not allow the requested action.";
+    echo "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
 fi
@@ -87,8 +87,8 @@ function run_role_swap
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -143,10 +143,10 @@ function run_role_swap
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Our target nameserver has been validated. Processing role swap from slave to master against ${MASTER_TARGET}..";
 
                 ## our target master is not the same as the one we're on today and its authorized. move forward.
-                ## check if we're local - if so, we just execute the commands. if not, copy first, the exec
+                ## check if we're typeset - if so, we just execute the commands. if not, copy first, the exec
                 if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
                 then
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "We are in local execution mode. Working..";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "We are in typeset execution mode. Working..";
 
                     ## run the switch
                     ${PLUGIN_LIB_DIRECTORY}/executors/execute_role_swap.sh -p ${PLUGIN_WORK_DIRECTORY}/${TARFILE_NAME} -t ${MASTER_TARGET} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e;
@@ -193,7 +193,7 @@ function run_role_swap
                             RETURN_CODE=0;
                         else
                             ## our existing master did not properly flip. this is not good, so send out a warning
-                            ## send the warning but switch our local config anyway.
+                            ## send the warning but switch our typeset config anyway.
                             ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Role swap from master to slave FAILED for ${NAMED_MASTER}. Please try again.";
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -248,8 +248,8 @@ function switch_local_config
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -260,14 +260,13 @@ function switch_local_config
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating backup and operational copies..";
 
         ## take a backup and make a working copy
-        TMP_NAMED_CONFIG=${PLUGIN_WORK_DIRECTORY}/$(grep named_config_file ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2- | sed -e 's| ||g' | cut -d "/" -f 2);
-        BKUP_NAMED_CONFIG=${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/$(grep named_config_file ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | cut -d "=" -f 2- | sed -e 's| ||g' | cut -d "/" -f 2).${CHANGE_NUM};
+        WORKING_NAMED_CONFIG=${PLUGIN_WORK_DIRECTORY}/${NAMED_CONF_FILE};
+        BKUP_NAMED_CONFIG=${PLUGIN_ROOT_DIR}/${BACKUP_DIRECTORY}/${NAMED_CONF_FILE};
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_NAMED_CONFIG -> ${TMP_NAMED_CONFIG}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WORKING_NAMED_CONFIG -> ${WORKING_NAMED_CONFIG}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BKUP_NAMED_CONFIG -> ${BKUP_NAMED_CONFIG}";
 
-        cp ${INTERNET_DNS_CONFIG} ${TMP_NAMED_CONFIG};
-        cp ${INTERNET_DNS_CONFIG} ${BKUP_NAMED_CONFIG};
+        cp ${WORKING_NAMED_CONFIG} ${BKUP_NAMED_CONFIG};
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copies created. Validating..";
 
@@ -276,72 +275,68 @@ function switch_local_config
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup copy confirmed. Validating operational..";
 
             ## we have our backup copy...
-            if [ -s ${TMP_NAMED_CONFIG} ]
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Operational copy confirmed. Continuing..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Switching master_dns from ${NAMED_MASTER} to ${MASTER_TARGET}..";
+
+            TMPFILE=$(mktemp);
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMPFILE -> ${TMPFILE}";
+
+            ## we have our working copy. move forward
+            sed -e "s/master_dns = ${NAMED_MASTER}/master_dns = ${MASTER_TARGET}/" ${WORKING_NAMED_CONFIG} >> ${TMPFILE};
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Switch complete. Verifying..";
+
+            ## make sure it was changed..
+            if [ $(grep -c "master_dns = ${NAMED_MASTER}" ${TMPFILE}) -eq 0 ]
             then
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Operational copy confirmed. Continuing..";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Switching master_dns from ${NAMED_MASTER} to ${MASTER_TARGET}..";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Switch verified. Placing file..";
 
-                ## we have our working copy. move forward
-                sed -e "s/master_dns = ${NAMED_MASTER}/master_dns = ${MASTER_TARGET}/" ${PLUGIN_WORK_DIRECTORY}/${TMP_NAMED_CONFIG} >> ${PLUGIN_TMP_DIRECTORY}/${TMP_NAMED_CONFIG};
+                ## it was. make this the active copy
+                mv ${TMPFILE} ${WORKING_NAMED_CONFIG};
 
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Switch complete. Verifying..";
+                ## take some checksums..
+                TMP_CONF_CKSUM=$(cksum ${WORKING_NAMED_CONFIG} | awk '{print $1}');
 
-                ## make sure it was changed..
-                if [ $(grep -c "master_dns = ${NAMED_MASTER}" ${PLUGIN_TMP_DIRECTORY}/${TMP_NAMED_CONFIG}) -eq 0 ]
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_CONF_CKSUM -> ${TMP_CONF_CKSUM}";
+
+                ## move the file into place..
+                mv ${TMPFILE} ${WORKING_NAMED_CONFIG};
+
+                ## make sure it was moved..
+                if [ -s ${TMP_NAMED_CONFIG} ]
                 then
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Switch verified. Placing file..";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File moved. Verifying..";
 
-                    ## it was. make this the active copy
-                    mv ${PLUGIN_TMP_DIRECTORY}/${TMP_NAMED_CONFIG} ${PLUGIN_WORK_DIRECTORY}/${TMP_NAMED_CONFIG};
+                    ## and cksum..
+                    OP_CONF_CKSUM=$(cksum ${INTERNET_DNS_CONFIG} | awk '{print $1}');
 
-                    ## take some checksums..
-                    TMP_CONF_CKSUM=$(cksum ${TMP_NAMED_CONFIG} | awk '{print $1}');
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OP_CONF_CKSUM -> ${OP_CONF_CKSUM}";
 
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMP_CONF_CKSUM -> ${TMP_CONF_CKSUM}";
-
-                    ## move the file into place..
-                    mv ${TMP_NAMED_CONFIG} ${INTERNET_DNS_CONFIG};
-
-                    ## make sure it was moved..
-                    if [ -s ${TMP_NAMED_CONFIG} ]
+                    ## and make sure they agree
+                    if [ ${TMP_CONF_CKSUM} -eq ${OP_CONF_CKSUM} ]
                     then
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File moved. Verifying..";
+                        ## they do. respond with success
+                        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local config switch -> master_nameserver modification - performed by ${IUSER_AUDIT}.";
 
-                        ## and cksum..
-                        OP_CONF_CKSUM=$(cksum ${INTERNET_DNS_CONFIG} | awk '{print $1}');
-
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OP_CONF_CKSUM -> ${OP_CONF_CKSUM}";
-
-                        ## and make sure they agree
-                        if [ ${TMP_CONF_CKSUM} -eq ${OP_CONF_CKSUM} ]
-                        then
-                            ## they do. respond with success
-                            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local config switch -> master_nameserver modification - performed by ${IUSER_AUDIT}.";
-
-                            RETURN_CODE=0;
-                        else
-                            ## cksum mismatch. file failed to copy
-                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksum validation failed. New configuration has not been applied.";
-
-                            RETURN_CODE=90;
-                        fi
+                        RETURN_CODE=0;
                     else
-                        ## failed to move the tmp file into place
+                        ## cksum mismatch. file failed to copy
                         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksum validation failed. New configuration has not been applied.";
 
-                        RETURN_CODE=44;
+                        RETURN_CODE=90;
                     fi
                 else
-                    ## failed to update the file with the proper information
-                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to apply new configuration information. Please try again.";
+                    ## failed to move the tmp file into place
+                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksum validation failed. New configuration has not been applied.";
 
-                    RETURN_CODE=89;
+                    RETURN_CODE=44;
                 fi
             else
-                ## failed to create a working copy of the config file
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to create a working copy of the existing configuration. Cannot continue.";
+                ## failed to update the file with the proper information
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to apply new configuration information. Please try again.";
 
-                RETURN_CODE=47;
+                RETURN_CODE=89;
             fi
         else
             ## failed to create a backup of the config file
@@ -351,7 +346,7 @@ function switch_local_config
         fi
     else
         ## this can only be done after a confirmed successful role swap. any other time is invalid.
-        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A successful role-swap has not yet been performed. Unable to modify local configuration.";
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A successful role-swap has not yet been performed. Unable to modify typeset configuration.";
 
         RETURN_CODE=93;
     fi
@@ -375,20 +370,20 @@ function usage
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=3;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=3;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo -n "${CNAME} - Execute a DNS failover request on the master nameserver based on the provided information.";
-    echo -n "Usage: ${CNAME} [ -s switch from ] [ -t switch to ] [ -c change order ] [ -e ] [-?|-h show this help]";
-    echo -n "  -s      Switch services on this server to that provided with the -t option";
-    echo -n "  -t      Switch services to this server from that provided with the -s option.";
-    echo -n "  -l      Switch local configuration. This option is only valid after a completed role-swap.";
-    echo -n "  -c      Change order number";
-    echo -n "  -e      Execute processing";
-    echo -n "  -h|-?   Show this help";
+    echo "${CNAME} - Execute a DNS failover request on the master nameserver based on the provided information.\n";
+    echo "Usage: ${CNAME} [ -s <switch from> ] [ -t <switch to> ] [ -c <change order> ] [ -e ] [ -h|-? ]
+    -s         -> Switch services on this server to that provided with the -t option
+    -t         -> Switch services to this server from that provided with the -s option.
+    -l         -> Switch typeset configuration. This option is only valid after a completed role-swap.
+    -c         -> Change order number
+    -e         -> Execute processing
+    -h|-?      -> Show this help\n";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -399,7 +394,7 @@ function usage
     return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
+[ ${#} -eq 0 ] && usage&& RETURN_CODE=${?};
 
 while getopts ":s:t:lc:eh" OPTIONS 2>/dev/null
 do
@@ -477,15 +472,10 @@ do
                 [ ! -z "${LOCAL_CONFIG}" ] && [ "${LOCAL_CONFIG}" = "${_TRUE}" ] && switch_local_config || run_role_swap;
             fi
             ;;
-        h|[\?])
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-            usage && RETURN_CODE=${?};
-            ;;
         *)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            usage && RETURN_CODE=${?};
+            usage&& RETURN_CODE=${?};
             ;;
     esac
 done

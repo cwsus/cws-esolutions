@@ -22,3 +22,4 @@ alias dnssec-keygen='/usr/bin/env dnssec-keygen';
 alias dnssec-signzone='/usr/bin/env dnssec-signzone';
 alias rndc-confgen='/usr/bin/env rndc-confgen';
 alias dig='/usr/bin/env dig +noedns'
+alias gdctl='/usr/bin/env gdctl';

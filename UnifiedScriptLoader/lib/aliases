@@ -32,8 +32,10 @@ case $(uname) in
         alias ls='/usr/bin/env ls -F';
         alias grep='/usr/bin/env grep';
         alias egrep='/usr/bin/env egrep';
-        alias ping='/usr/bin/env ping -c 1 -q';
-        alias ping="/usr/bin/env ping -c 1-w ${THREAD_TIMEOUT} -n -q -s 512";
+        alias ping="/usr/bin/env ping -c 1 -w ${THREAD_TIMEOUT} -n -q -s 512";
+        ;;
+    [Cc][Yy][Gg][Ww][Ii][Nn]*)
+        alias ping='/usr/bin/env ping -q';
         ;;
     *)
         alias ls='/usr/bin/env ls -F --color=auto';
@@ -44,12 +46,30 @@ case $(uname) in
 esac
 
 ## common aliases
+alias mktemp='/usr/bin/env mktemp --tmpdir=${TEMP_DIRECTORY}';
 alias netstat='/usr/bin/env netstat -an';
 alias dig='/usr/bin/env dig +noedns';
 alias scp="/usr/bin/env scp -q -r -C -F ${SSH_CONFIG_FILE} -p -r";
 alias ssh="/usr/bin/env ssh -q -t -C -F ${SSH_CONFIG_FILE} -k -Y";
 alias mkdir='/usr/bin/env mkdir -pv';
-[ "$(uname -m)" == "x86_64" ] && alias java="${JAVA_HOME}/bin/java -d64" || alias java="${JAVA_HOME}/bin/java";
+alias tar='/usr/bin/env tar -v';
+alias gzip='/usr/bin/env gzip -v';
+alias mv='/usr/bin/env mv';
+alias cp='/usr/bin/env cp';
+alias sed='/usr/bin/env sed';
+alias echo='/usr/bin/env echo -ne';
+alias sleep='/usr/bin/env sleep';
+alias wc='/usr/bin/env wc';
+alias kill='/usr/bin/env kill';
+alias sudo='/usr/bin/env sudo';
+alias sudon='/usr/bin/env sudo -u named';
+alias sudor='/usr/bin/env sudo -u root';
+alias head='/usr/bin/env head';
+alias cut='/usr/bin/env cut';
+alias awk='/usr/bin/env awk';
+alias cat='/usr/bin/env cat';
+
+[ "$(/usr/bin/env uname -m)" == "x86_64" ] && alias java="${JAVA_HOME}/bin/java -d64" || alias java="${JAVA_HOME}/bin/java";
 
 alias rm='/usr/bin/env rm --preserve-root'
 alias chown='/usr/bin/env chown --preserve-root';

@@ -21,20 +21,20 @@
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 ## Application constants
-CNAME="$(basename ${0})";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo -n "${PWD}"/"${0##*/}")";
+CNAME="$(/usr/bin/env basename ${0})";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; /usr/bin/env echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
-local METHOD_NAME="${CNAME}#startup";
+METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/plugin.sh ]] && . ${SCRIPT_ROOT}/../lib/plugin.sh;
+[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/plugin ]] && . ${SCRIPT_ROOT}/../lib/plugin;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${PLUGIN_ROOT_DIR}" ] && echo -n "Failed to locate configuration data. Cannot continue." && return 1;
+[ -z "${PLUGIN_ROOT_DIR}" ] && /usr/bin/env echo "Failed to locate configuration data. Cannot continue." && return 1;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -63,7 +63,7 @@ typeset -i RET_CODE=${?};
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 CNAME="${THIS_CNAME}";
-local METHOD_NAME="${CNAME}#startup";
+typeset METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -72,7 +72,7 @@ then
     ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
 
-    echo -n "Security configuration does not allow the requested action.";
+    echo "Security configuration does not allow the requested action.";
 
     return ${RET_CODE};
 fi
@@ -87,8 +87,8 @@ function runInternetSiteFailover
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -126,7 +126,7 @@ function runInternetSiteFailover
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
         CNAME="${THIS_CNAME}";
-        local METHOD_NAME="${THIS_CNAME}#${0}";
+        typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
     else
@@ -139,17 +139,17 @@ function runInternetSiteFailover
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e" ${SSH_USER_NAME} ${SSH_USER_AUTH};
-        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -p ${PRJCODE} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e" ${SSH_USER_NAME} ${SSH_USER_AUTH};
-        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -a -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e" ${SSH_USER_NAME} ${SSH_USER_AUTH};
-        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -a -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e" ${SSH_USER_NAME} ${SSH_USER_AUTH};
+        ssh ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e";
+        ssh ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -b ${UNIT} -p ${PRJCODE} -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e";
+        ssh ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -a -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e";
+        ssh ${NAMED_MASTER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeServiceFailover.sh -t ${INTERNET_TYPE_IDENTIFIER} -a -x ${TARGET} -c ${CHG_CTRL} -i ${IUSER_AUDIT} -e";
         typeset -i RET_CODE=${?};
 
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
         CNAME="${THIS_CNAME}";
-        local METHOD_NAME="${THIS_CNAME}#${0}";
+        typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
     fi
@@ -201,7 +201,7 @@ function runInternetSiteFailover
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
     CNAME="${THIS_CNAME}";
-    local METHOD_NAME="${THIS_CNAME}#${0}";
+    typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -253,7 +253,7 @@ function runInternetSiteFailover
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
     CNAME="${THIS_CNAME}";
-    local METHOD_NAME="${THIS_CNAME}#${0}";
+    typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -290,7 +290,7 @@ function runInternetSiteFailover
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVER -> ${SERVER}";
 
         ## make sure its alive
-        local THIS_CNAME="${CNAME}";
+        typeset THIS_CNAME="${CNAME}";
         unset METHOD_NAME;
         unset CNAME;
 
@@ -305,7 +305,7 @@ function runInternetSiteFailover
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
         CNAME="${THIS_CNAME}";
-        local METHOD_NAME="${THIS_CNAME}#${0}";
+        typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -320,7 +320,7 @@ function runInternetSiteFailover
 
         ## stop if its available and run the command
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Proxy access confirmed. Proxy: ${PROXY}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} \"dig @${NAMESERVER} -t ${RECORD_TYPE} ${SITE_URL}\" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ssh ${PROXY} \"dig @${NAMESERVER} -t ${RECORD_TYPE} ${SITE_URL}\" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE}";
 
         THIS_CNAME="${CNAME}";
         unset METHOD_NAME;
@@ -337,7 +337,7 @@ function runInternetSiteFailover
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
         CNAME="${THIS_CNAME}";
-        local METHOD_NAME="${THIS_CNAME}#${0}";
+        typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -364,7 +364,7 @@ function runInternetSiteFailover
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
     CNAME="${THIS_CNAME}";
-    local METHOD_NAME="${THIS_CNAME}#${0}";
+    typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -396,8 +396,8 @@ function runIntranetSiteFailover
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=0;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -421,14 +421,14 @@ function runIntranetSiteFailover
         FAILOVER_CODE=$(${PLUGIN_LIB_DIRECTORY}/executors/executeSiteFailover.sh -d i -f ${DISABLE_POP} -t ${ENABLE_POP} -c ${CHANGE_NUM} -i ${IUSER_AUDIT} -e);
 
         CNAME="${THIS_CNAME}";
-        local METHOD_NAME="${CNAME}#${0}";
+        typeset METHOD_NAME="${CNAME}#${0}";
         unset RFR_OPTIND;
     else
         for GD_SERVER in ${GD_SERVERS}
         do
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now validating server ${GD_SERVER}..";
 
-            local THIS_CNAME="${CNAME}";
+            typeset THIS_CNAME="${CNAME}";
             unset METHOD_NAME;
             unset CNAME;
 
@@ -443,7 +443,7 @@ function runIntranetSiteFailover
             [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
             CNAME="${THIS_CNAME}";
-            local METHOD_NAME="${THIS_CNAME}#${0}";
+            typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -458,14 +458,14 @@ function runIntranetSiteFailover
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
                 ## validate the input
-                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${GD_SERVER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeSiteFailover.sh -d i -f ${DISABLE_POP} -t ${ENABLE_POP} -c ${CHANGE_NUM} -i ${IUSER_AUDIT} -e" ${SSH_USER_NAME} ${SSH_USER_AUTH};
+                ssh ${GD_SERVER} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeSiteFailover.sh -d i -f ${DISABLE_POP} -t ${ENABLE_POP} -c ${CHANGE_NUM} -i ${IUSER_AUDIT} -e";
                 typeset -i RET_CODE=${?};
 
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
                 CNAME="${THIS_CNAME}";
-                local METHOD_NAME="${THIS_CNAME}#${0}";
+                typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -485,8 +485,8 @@ function runIntranetSiteFailover
                     ## TODO: work out validation here. probably retrieveServiceInfo -validate or some such
 
                     CNAME="${THIS_CNAME}";
-                    local METHOD_NAME="${CNAME}#${0}";
-                    local RETURN_CODE=0;
+                    typeset METHOD_NAME="${CNAME}#${0}";
+                    typeset RETURN_CODE=0;
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RNDC_CODE -> ${RNDC_CODE}";
 
@@ -533,20 +533,20 @@ function usage
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
-    local RETURN_CODE=3;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=3;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo -n "${CNAME} - Execute a DNS failover request on the master nameserver based on the provided information.";
-    echo -n "Usage: ${CNAME} [-s <request data>] [-b <request data>] [-p <request data>] [-d <request data>] [-e execute] [-?|-h show this help]";
-    echo -n "  -s      Process a site failover based on a comma-delimited information set";
-    echo -n "  -b      Process a business unit failover based on a comma-delimited information set";
-    echo -n "  -p      Process a project code failover based on a comma-delimited information set";
-    echo -n "  -d      Process a datacenter failover based on a comma-delimited information set";
-    echo -n "  -e      Execute processing";
-    echo -n "  -h|-?   Show this help";
+    echo "${CNAME} - Execute a DNS failover request on the master nameserver based on the provided information.\n";
+    echo "Usage: ${CNAME} [ -s <request data> ] [ -b <request data> ] [ -p <request data> ] [ -d <request data> ] [ -e ] [ -h|-? ]
+    -s         -> Process a site failover based on a comma-delimited information set
+    -b         -> Process a business unit failover based on a comma-delimited information set
+    -p         -> Process a project code failover based on a comma-delimited information set
+    -d         -> Process a datacenter failover based on a comma-delimited information set
+    -e         -> Execute processing
+    -h|-?      -> Show this help\n";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -557,7 +557,7 @@ function usage
     return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
+[ ${#} -eq 0 ] && usage&& RETURN_CODE=${?};
 
 while getopts ":r:s:b:p:d:eh:" OPTIONS 2>/dev/null
 do
@@ -579,20 +579,20 @@ do
 
             case ${PARTITION} in
                 ${INTRANET_TYPE_IDENTIFIER})
-                    SITE_HOSTNAME=$(echo -n "${OPTARG}" | cut -d "," -f 1);
-                    ENABLE_POP=$(echo -n "${OPTARG}" | cut -d "," -f 2);
-                    DISABLE_POP=$(echo -n "${OPTARG}" | cut -d "," -f 3);
-                    CHG_CTRL=$(echo -n "${OPTARG}" | cut -d "," -f 6);
+                    SITE_HOSTNAME=$(echo "${OPTARG}" | cut -d "," -f 1);
+                    ENABLE_POP=$(echo "${OPTARG}" | cut -d "," -f 2);
+                    DISABLE_POP=$(echo "${OPTARG}" | cut -d "," -f 3);
+                    CHG_CTRL=$(echo "${OPTARG}" | cut -d "," -f 6);
                     ;;
                 ${INTERNET_TYPE_IDENTIFIER})
                     ## comma-delimited information set, lets strip the "INFO"
-                    SITE_HOSTNAME=$(echo -n "${OPTARG}" | cut -d "," -f 1);
-                    UNIT=$(echo -n "${OPTARG}" | cut -d "," -f 2);
-                    FILENAME=$(echo -n "${OPTARG}" | cut -d "," -f 3);
-                    TARGET=$(echo -n "${OPTARG}" | cut -d "," -f 4);
-                    PRJCODE=$(echo -n "${OPTARG}" | cut -d "," -f 5);
-                    CHG_CTRL=$(echo -n "${OPTARG}" | cut -d "," -f 6);
-                    IUSER_AUDIT=$(echo -n "${OPTARG}" | cut -d "," -f 7);
+                    SITE_HOSTNAME=$(echo "${OPTARG}" | cut -d "," -f 1);
+                    UNIT=$(echo "${OPTARG}" | cut -d "," -f 2);
+                    FILENAME=$(echo "${OPTARG}" | cut -d "," -f 3);
+                    TARGET=$(echo "${OPTARG}" | cut -d "," -f 4);
+                    PRJCODE=$(echo "${OPTARG}" | cut -d "," -f 5);
+                    CHG_CTRL=$(echo "${OPTARG}" | cut -d "," -f 6);
+                    IUSER_AUDIT=$(echo "${OPTARG}" | cut -d "," -f 7);
                     ;;
             esac
 
@@ -611,10 +611,10 @@ do
             FAILOVER_TYPE="unit";
 
             ## comma-delimited information set, lets strip the "INFO"
-            UNIT=$(echo -n "${OPTARG}" | cut -d "," -f 2);
-            TARGET=$(echo -n "${OPTARG}" | cut -d "," -f 3);
-            CHG_CTRL=$(echo -n "${OPTARG}" | cut -d "," -f 4);
-            IUSER_AUDIT=$(echo -n "${OPTARG}" | cut -d "," -f 5);
+            UNIT=$(echo "${OPTARG}" | cut -d "," -f 2);
+            TARGET=$(echo "${OPTARG}" | cut -d "," -f 3);
+            CHG_CTRL=$(echo "${OPTARG}" | cut -d "," -f 4);
+            IUSER_AUDIT=$(echo "${OPTARG}" | cut -d "," -f 5);
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FAILOVER_TYPE->${FAILOVER_TYPE}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "UNIT->${UNIT}";
@@ -629,11 +629,11 @@ do
             FAILOVER_TYPE="project";
 
             ## comma-delimited information set, lets strip the "INFO"
-            PRJCODE=$(echo -n "${OPTARG}" | cut -d "," -f 2);
-            UNIT=$(echo -n "${OPTARG}" | cut -d "," -f 3);
-            TARGET=$(echo -n "${OPTARG}" | cut -d "," -f 4);
-            CHG_CTRL=$(echo -n "${OPTARG}" | cut -d "," -f 5);
-            IUSER_AUDIT=$(echo -n "${OPTARG}" | cut -d "," -f 6);
+            PRJCODE=$(echo "${OPTARG}" | cut -d "," -f 2);
+            UNIT=$(echo "${OPTARG}" | cut -d "," -f 3);
+            TARGET=$(echo "${OPTARG}" | cut -d "," -f 4);
+            CHG_CTRL=$(echo "${OPTARG}" | cut -d "," -f 5);
+            IUSER_AUDIT=$(echo "${OPTARG}" | cut -d "," -f 6);
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FAILOVER_TYPE->${FAILOVER_TYPE}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRJCODE->${PRJCODE}";
@@ -649,9 +649,9 @@ do
             FAILOVER_TYPE="datacenter";
 
             ## comma-delimited information set, lets strip the "INFO"
-            TARGET=$(echo -n "${OPTARG}" | cut -d "," -f 1);
-            CHG_CTRL=$(echo -n "${OPTARG}" | cut -d "," -f 2);
-            IUSER_AUDIT=$(echo -n "${OPTARG}" | cut -d "," -f 3);
+            TARGET=$(echo "${OPTARG}" | cut -d "," -f 1);
+            CHG_CTRL=$(echo "${OPTARG}" | cut -d "," -f 2);
+            IUSER_AUDIT=$(echo "${OPTARG}" | cut -d "," -f 3);
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FAILOVER_TYPE->${FAILOVER_TYPE}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TARGET->${TARGET}";
@@ -744,10 +744,10 @@ do
 
                         case ${PARTITION} in
                             ${INTRANET_TYPE_IDENTIFIER})
-                                runIntranetSiteFailover && RETURN_CODE=${?};
+                                runIntranetSiteFailover&& RETURN_CODE=${?};
                                 ;;
                             ${INTERNET_TYPE_IDENTIFIER})
-                                runInternetSiteFailover && RETURN_CODE=${?};
+                                runInternetSiteFailover&& RETURN_CODE=${?};
                                 ;;
                         esac
                     fi
@@ -799,7 +799,7 @@ do
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing.";
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                        failover_bu && RETURN_CODE=${?};
+                        failover_bu&& RETURN_CODE=${?};
                     fi
                     ;;
                 datacenter)
@@ -830,7 +830,7 @@ do
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing.";
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                        failover_datacenter && RETURN_CODE=${?};
+                        failover_datacenter&& RETURN_CODE=${?};
                     fi
                     ;;
                 *)
@@ -844,7 +844,7 @@ do
         *)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            usage && RETURN_CODE=${?};
+            usage&& RETURN_CODE=${?};
             ;;
     esac
 done

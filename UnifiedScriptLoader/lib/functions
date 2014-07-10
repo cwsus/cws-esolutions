@@ -26,7 +26,7 @@ function returnEpochTime
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${CNAME}#${0}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -34,18 +34,21 @@ function returnEpochTime
 
     if [ ${#} -eq 0 ]
     then
-        RETURN_CODE=3;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+        typeset METHOD_NAME="${CNAME}#${0}";
+        typeset RETURN_CODE=3;
 
-        echo "${0} - Generates and returns the Unix epoch for a provided date (or date range).";
-        echo " Required arguments: The date to convert in form YYYY MM DD, quoted. (if provided, MUST be qouted)";
-        echo " Optional arguments: A number of days to calculate a future epoch, for example, 45.";
-        echo " Example: returnEpochTime \"2011 11 18\" 45";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+        echo -n "${0} - Generates and returns the Unix epoch for a provided date (or date range)\n";
+        echo -n "Usage: ${0} [ <date to convert> ] [ <future date> ]
+                 -> Required arguments: The date to convert in form YYYY MM DD, quoted. (if provided, MUST be qouted)
+                 -> Optional arguments: A number of days to calculate a future epoch, for example, 45.\n";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-        unset METHOD_NAME;
-        unset TIMEOUT_VALUE;
 
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -56,10 +59,10 @@ function returnEpochTime
     case ${#} in
         2)
             echo ${@} | /usr/bin/env perl -MTime::Local -ane '
-                qw(timelocal);
+                qw(timetypeset);
 
                 my $seconds = (3600 * 24);
-                my $now = timelocal(0, 0, 0, $F[2], $F[1] - 1, $F[0]);
+                my $now = timetypeset(0, 0, 0, $F[2], $F[1] - 1, $F[0]);
                 my $validationPeriod = $now + ($F[3] * $seconds);
 
                 echo "$validationPeriod\n"; ';
@@ -67,18 +70,18 @@ function returnEpochTime
         4)
             ## supposed to be quoted but support it anyway
             echo ${@} | /usr/bin/env perl -MTime::Local -ane '
-                qw(timelocal);
+                qw(timetypeset);
 
                 my $seconds = (3600 * 24);
-                my $now = timelocal(0, 0, 0, $F[2], $F[1] - 1, $F[0]);
+                my $now = timetypeset(0, 0, 0, $F[2], $F[1] - 1, $F[0]);
                 my $validationPeriod = $now + ($F[3] * $seconds);
 
                 echo "$validationPeriod\n"; ';
             ;;
         *)
             echo ${@} | /usr/bin/env perl -MTime::Local -ane '
-                qw(timelocal);
-                my $epochtime = timelocal(0, 0, 0, $F[2], $F[1] - 1, $F[0]);
+                qw(timetypeset);
+                my $epochtime = timetypeset(0, 0, 0, $F[2], $F[1] - 1, $F[0]);
                 echo "$epochtime\n"; ';
             ;;
     esac
@@ -104,14 +107,14 @@ function obtainLogWatchStamp
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${CNAME}#${0}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
     /usr/bin/env perl -e '
-        @d=localtime time() - $ENV{"LOG_FILE_DELAY"};
+        @d=typesettime time() - $ENV{"LOG_FILE_DELAY"};
         printf "%02d:%02d:%02d\n", $d[2],$d[1],$d[0];';
 
     [ ! -z ${ENABLE_TRACE} ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
@@ -137,14 +140,37 @@ function getFileStat
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${CNAME}#${0}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
+    if [ ${#} -eq 0 ]
+    then
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+        typeset METHOD_NAME="${CNAME}#${0}";
+        typeset RETURN_CODE=3;
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+        echo -n "${0} - Obtain statistics for a given file\n";
+        echo -n "Usage: ${0} [ file ]
+                 -> The full path to the file to obtain statistics for\n";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
     /usr/bin/env perl -e '
-        @d=localtime ((stat(shift)) [10]);
+        @d=typesettime ((stat(shift)) [10]);
         printf "%4d%02d%02d\n", $d[5]+1900,$d[4]+1,$d[3]' ${1};
 
     [ ! -z ${ENABLE_TRACE} ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
@@ -170,18 +196,36 @@ function isNaN
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${CNAME}#${0}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    [ -z "${1}" ] && local RETURN_CODE=1;
+    if [ ${#} -eq 0 ]
+    then
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+        typeset METHOD_NAME="${CNAME}#${0}";
+        typeset RETURN_CODE=3;
 
-    case ${1} in
-        [\d]) RETURN_CODE=0;;
-        *) RETURN_CODE=1 ;;
-    esac
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+        echo -n "${0} - Validate that the provided string is numeric\n";
+        echo -n "Usage: ${0} [ string ]
+                 -> The string to validate\n";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
+    [ -z "$(echo -n "${1}" | /usr/bin/env perl -ne '/^(\d)+$/gm && print')" ] && RETURN_CODE=1 || RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -204,13 +248,36 @@ function contains
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${CNAME}#${0}";
     typeset -i RETURN_CODE=0;
+    typeset -i COUNTER=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    typeset -i COUNTER=0;
+    if [ ${#} -eq 0 ]
+    then
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+        typeset METHOD_NAME="${CNAME}#${0}";
+        typeset RETURN_CODE=3;
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+        echo -n "${0} - Validate that the provided string is contained in the given array\n";
+        echo -n "Usage: ${0} [ array ] [ string ]
+                 -> The array to search against
+                 -> The string to search for\n";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
 
     # LAST=${!#}
     (( LAST_ARG = ${#} - 1))
@@ -250,7 +317,7 @@ function cancelRequest
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${CNAME}#${0}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -286,7 +353,7 @@ function stringCrypt
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${CNAME}#${0}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -294,22 +361,24 @@ function stringCrypt
 
     if [ ${#} -ne 3 ]
     then
-        RETURN_CODE=3;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+        typeset METHOD_NAME="${CNAME}#${0}";
+        typeset RETURN_CODE=3;
 
-        echo "${0} - Encrypt/Decrypt a provided string";
-        echo "Usage: ${0} method string";
-        echo "  method             The desired method of operation: one of encrypt or decrypt";
-        echo "  string             The string to operate against";
-        echo "  pass               The password to utilize";
-        echo "\tauthentication     Specify an authentication mechanism. One of 'pass', 'file' can be provided in the following formats:";
-        echo "\t\t For password authentication: pass:the-password";
-        echo "\t\t To use a file containing the password, provide file:/path/to/file.";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+        echo -n "${0} - Generates and returns an encrypted or decrypted string\n";
+        echo -n "Usage: ${0} [ <method> ] [ <string> ] ( <password> )
+                 -> The operation to perform. One of encrypt or decrypt.
+                 -> The string to operate against.
+                 -> The password, or password file, to utilize for the operation.
+                    If a file is utilized, the parameter must be file:/path/to/file
+                    If a password is utilized, the parameter must be pass:the-password\n";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-        unset METHOD_NAME;
-        unset TIMEOUT_VALUE;
 
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -347,26 +416,51 @@ function stringCrypt
 }
 
 #===  FUNCTION  ===============================================================
-#          NAME:  getKey
+#          NAME:  getHostKeys
 #   DESCRIPTION:  Obtains and stores the public key for a remote SSH node
 #    PARAMETERS:  Target host to obtain keys for
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
-function getKey
+function getHostKeys
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${CNAME}#${0}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    [ ${#} -eq 0 ] && echo "A hostname must be provided" && return 1;
+    if [ ${#} -eq 0 ]
+    then
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+        typeset METHOD_NAME="${CNAME}#${0}";
+        typeset RETURN_CODE=3;
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+        echo -n "${0} - Obtain SSH host keys for a provided server.\n";
+        echo -n "Usage: ${0} [ <host> ]
+                 -> The hostname to obtain SSH host keys for.\n";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
     [ "$(/usr/bin/env dig +short -t a ${1})" != ""] && echo "Host ${1} not found in DNS" && return 1;
 
-    /usr/bin/env ssh-keyscan -t rsa ${1} 2>>~/.ssh/known_hosts 1>>~/.ssh/known_hosts;
-    /usr/bin/env ssh-keyscan -t dsa ${1} 2>/dev/null 1>>~/.ssh/known_hosts;
+    if [ -z "$(grep ${1} ${APP_ROOT}/etc/ssh/known_hosts") ]
+    then
+        /usr/bin/env ssh-keyscan -t rsa ${1} 2>>${APP_ROOT}/etc/ssh/known_hosts 1>>${APP_ROOT}/etc/ssh/known_hosts;
+        /usr/bin/env ssh-keyscan -t dsa ${1} 2>/dev/null 1>>${APP_ROOT}/etc/ssh/known_hosts;
+    fi
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -389,7 +483,7 @@ function distributePackage
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${CNAME}#${0}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -397,20 +491,23 @@ function distributePackage
 
     if [ ${#} -ne 4 ]
     then
-        RETURN_CODE=3;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+        typeset METHOD_NAME="${CNAME}#${0}";
+        typeset RETURN_CODE=3;
 
-        print "${0} - Perform an rsync backup of a remote filesystem";
-        print "Usage: ${0} [ username ] [ source ] [ hostname ] [ destination ]";
-        print " -> The username to execute the rsync (and subsequent ssh) as.";
-        print " -> The source directory to obtain";
-        print " -> The target host to obtain the source from";
-        print " -> The target directory to store the source into";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+        echo -n "${0} - Distribute a provided package to remote systems\n";
+        echo -n "Usage: ${0} [ username ] [ source ] [ hostname ] [ destination ]
+                 -> The username to execute the rsync (and subsequent ssh) as.
+                 -> The source file to distribute
+                 -> The target host to distribute the package to
+                 -> The target directory to store the source into\n";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-        unset METHOD_NAME;
-        unset TIMEOUT_VALUE;
 
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -420,9 +517,9 @@ function distributePackage
 
     ## create the exclude file if not exists - rsync will choke otherwise
     [ -z "${THREAD_TIMEOUT}" ] && TIMEOUT_VALUE=30 || TIMEOUT_VALUE=${THREAD_TIMEOUT};
-    [ ! -f ${1}/.etc/excludes ] && touch ${1}/.etc/excludes;
+    [ ! -f ${APP_ROOT}/etc/excludes ] && touch ${APP_ROOT}/etc/excludes;
 
-    /usr/bin/env rsync -vqcarupeAtzhi --timeout ${TIMEOUT_VALUE} --no-motd --safe-links --delete --delete-excluded --progress --exclude-from=${1}/.etc/excludes -e "/usr/bin/env ssh -q -t -l ${1}" ${2} ${3}:${4};
+    /usr/bin/env rsync -vqcarupeAtzhi --timeout ${TIMEOUT_VALUE} --no-motd --safe-links --delete --delete-excluded --progress --exclude-from=${APP_ROOT}/etc/excludes -e "/usr/bin/env ssh -q -t -l ${1}" ${2} ${3}:${4};
     RETURN_CODE=${?};
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
@@ -447,7 +544,7 @@ function createBackup
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${CNAME}#${0}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -455,20 +552,23 @@ function createBackup
 
     if [ ${#} -ne 4 ]
     then
-        RETURN_CODE=3;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+        typeset METHOD_NAME="${CNAME}#${0}";
+        typeset RETURN_CODE=3;
 
-        print "${0} - Perform an rsync backup of a remote filesystem";
-        print "Usage: ${0} [ username ] [ source ] [ hostname ] [ destination ]";
-        print " -> The username to execute the rsync (and subsequent ssh) as.";
-        print " -> The source directory to obtain";
-        print " -> The target host to obtain the source from";
-        print " -> The target directory to store the source into";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+        echo -n "${0} - Perform an rsync backup of a filesystem\n";
+        echo -n "Usage: ${0} [ username ] [ source ] [ hostname ] [ destination ]
+                 -> The username to execute the rsync (and subsequent ssh) as.
+                 -> The source file/directory to obtain
+                 -> The target host to obtain the source from
+                 -> The target directory to store the source into\n";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-        unset METHOD_NAME;
-        unset TIMEOUT_VALUE;
 
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -478,10 +578,72 @@ function createBackup
 
     ## create the exclude file if not exists - rsync will choke otherwise
     [ -z "${THREAD_TIMEOUT}" ] && TIMEOUT_VALUE=30 || TIMEOUT_VALUE=${THREAD_TIMEOUT};
-    [ ! -f ${1}/.etc/excludes ] && touch ${1}/.etc/excludes;
+    [ ! -f ${APP_ROOT}/etc/excludes ] && touch ${APP_ROOT}/etc/excludes;
     [ ! -d ${4} ] && mkdir -p ${4};
 
-    /usr/bin/env rsync -vqcarupeAtzhi --timeout ${TIMEOUT_VALUE} --no-motd --safe-links --delete --delete-excluded --progress --exclude-from=${1}/.etc/excludes -e "/usr/bin/env ssh -q -t -l ${1}" ${3}:${2} ${4};
+    /usr/bin/env rsync -vqcarupeAtzhi --timeout ${TIMEOUT_VALUE} --no-motd --safe-links --delete --delete-excluded --progress --exclude-from=${APP_ROOT}/etc/excludes -e "/usr/bin/env ssh -q -t -l ${1}" ${3}:${2} ${4};
+    RETURN_CODE=${?};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    unset METHOD_NAME;
+    unset TIMEOUT_VALUE;
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+    return ${RETURN_CODE};
+}
+
+#===  FUNCTION  ===============================================================
+#          NAME:  restoreBackup
+#   DESCRIPTION:  Obtains and stores the public key for a remote SSH node
+#    PARAMETERS:  Target host to obtain keys for
+#       RETURNS:  0 if success, 1 otherwise
+#==============================================================================
+function restoreBackup
+{
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset -i RETURN_CODE=0;
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+    if [ ${#} -ne 4 ]
+    then
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+        typeset METHOD_NAME="${CNAME}#${0}";
+        typeset RETURN_CODE=3;
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+        echo -n "${0} - Perform an rsync restore of a filesystem\n";
+        echo -n "Usage: ${0} [ username ] [ source ] [ hostname ] [ destination ]
+                 -> The username to execute the rsync (and subsequent ssh) as.
+                 -> The source file/directory to restore
+                 -> The target host to restore the source to
+                 -> The target directory to store the source into\n";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
+    ## create the exclude file if not exists - rsync will choke otherwise
+    [ -z "${THREAD_TIMEOUT}" ] && TIMEOUT_VALUE=30 || TIMEOUT_VALUE=${THREAD_TIMEOUT};
+    [ ! -f ${APP_ROOT}/etc/excludes ] && touch ${APP_ROOT}/etc/excludes;
+    [ ! -d ${4} ] && mkdir -p ${4};
+
+    /usr/bin/env rsync -vqcarupeAtzhi --timeout ${TIMEOUT_VALUE} --no-motd --safe-links --delete --delete-excluded --progress --exclude-from=${APP_ROOT}/etc/excludes -e "/usr/bin/env ssh -q -t -l ${1}" ${1}:${2} ${3};
     RETURN_CODE=${?};
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
@@ -506,25 +668,28 @@ function validateServerAvailability
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    local METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${CNAME}#${0}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    if [ ${#} -ne 1 ]
+    if [ ${#} -ne 4 ]
     then
-        RETURN_CODE=3;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+        typeset METHOD_NAME="${CNAME}#${0}";
+        typeset RETURN_CODE=3;
 
-        print "${0} - Validate that a provided server is alive";
-        print "Usage: ${0} [ hostname ]";
-        print " -> The target host to validate";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+        echo -n "${0} - Validate a provided server's availability\n";
+        echo -n "Usage: ${0} [ hostname ]
+                 -> The target host to validate\n";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-        unset METHOD_NAME;
-        unset TIMEOUT_VALUE;
 
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -533,6 +698,92 @@ function validateServerAvailability
     fi
 
     ping ${1};
+    RETURN_CODE=${?};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    unset METHOD_NAME;
+    unset TIMEOUT_VALUE;
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+    return ${RETURN_CODE};
+}
+
+#===  FUNCTION  ===============================================================
+#          NAME:  ssh
+#   DESCRIPTION:  Wrapper around the actual ssh implementation.
+#    PARAMETERS:  Target host to obtain keys for
+#       RETURNS:  0 if success, 1 otherwise
+#==============================================================================
+function ssh
+{
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+    local METHOD_NAME="${CNAME}#${0}";
+    typeset -i RETURN_CODE=0;
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+    if [ ${#} -eq 0 ]
+    then
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+        local METHOD_NAME="${CNAME}#${0}";
+        local RETURN_CODE=3;
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+        echo -n "${0} - Validate a provided server's availability\n";
+        echo -n "Usage: ${0} [ hostname ] [ command ]
+                 -> The target host to perform the SSH against
+                 -> The command to execute on the remote system\n";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
+    typeset HOSTNAME=${1};
+    typeset COMMAND="${2}";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "HOSTNAME -> ${HOSTNAME}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "COMMAND -> ${COMMAND}";
+
+    validateServerAvailability ${HOSTNAME};
+    RET_CODE=${?};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+    then
+        RETURN_CODE=1;
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
+    getHostKeys ${HOSTNAME};
+
+    if [ -z "${IS_EXPECT_INSTALLED}" ]
+    then
+        ${APP_ROOT}/${LIB_DIRECTORY}/watchdog.sh -t ${SSH_THREAD_TIMEOUT} /usr/bin/env ssh -q -t -l ${USERNAME} ${HOSTNAME} "${COMMAND}";
+    else
+        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${HOSTNAME} "${COMMAND}" ${SSH_USER_ACCOUNT} ${SSH_USER_AUTH} ${SSH_THREAD_TIMEOUT};
+    fi
     RETURN_CODE=${?};
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
