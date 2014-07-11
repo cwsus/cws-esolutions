@@ -370,7 +370,7 @@ function validateRecordTarget
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-                    if [[ -z "${RET_CODE}" || ${RET_CODE} -ne 0 ]]
+                    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
                     then
                         RETURN_CODE=1;
                     else

@@ -62,9 +62,9 @@ function usage
 
 while getopts ":t:i:d:" OPTIONS 2>/dev/null; do
     case ${OPTIONS} in
-        t) [[ ! -z "${OPTARG}" && $(isNaN ${OPTARG}) -eq 0 ]] && TIMEOUT=${OPTARG} || TIMEOUT=${THREAD_TIMEOUT} ;;
-        n) [[ ! -z "${OPTARG}" && $(isNaN ${OPTARG}) -eq 0 ]] && INTERVAL=${OPTARG} || INTERVAL=${THREAD_INTERVAL} ;;
-        d) [[ ! -z "${OPTARG}" && $(isNaN ${OPTARG}) -eq 0 ]] && DELAY=${OPTARG} || DELAY=${THREAD_DELAY} ;;
+        t) [ ! -z "${OPTARG}" ] && [ $(isNaN ${OPTARG}) -eq 0 ] && TIMEOUT=${OPTARG} || TIMEOUT=${THREAD_TIMEOUT} ;;
+        n) [ ! -z "${OPTARG}" ] && [ $(isNaN ${OPTARG}) -eq 0 ] && INTERVAL=${OPTARG} || INTERVAL=${THREAD_INTERVAL} ;;
+        d) [ ! -z "${OPTARG}" ] && [ $(isNaN ${OPTARG}) -eq 0 ] && DELAY=${OPTARG} || DELAY=${THREAD_DELAY} ;;
         *) usage&& RETURN_CODE=${?}; exit 1 ;;
     esac
 done

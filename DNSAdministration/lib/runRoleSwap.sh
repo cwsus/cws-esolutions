@@ -29,7 +29,7 @@ METHOD_NAME="${CNAME}#startup";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/plugin ]] && . ${SCRIPT_ROOT}/../lib/plugin;
+[ -z "${PLUGIN_ROOT_DIR}" ] && [ -f ${SCRIPT_ROOT}/../lib/plugin ] && . ${SCRIPT_ROOT}/../lib/plugin;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -103,7 +103,7 @@ function run_role_swap
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing zone backup on ${NAMED_MASTER}..";
 
     ## first things first. we need to get a tarfile from the existing master and pull it down.
-    if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
+    if [ ! -z "${LOCAL_EXECUTION}" ] && [ "${LOCAL_EXECUTION}" = "${_TRUE}" ]
     then
         ${PLUGIN_LIB_DIRECTORY}/sys/systemBackup.sh zone master;
     else
@@ -115,14 +115,14 @@ function run_role_swap
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Execution complete. RET_CODE -> ${RET_CODE}";
 
-    if [[ ! -z "${RET_CODE}" && ${RET_CODE} -eq 0 ]]
+    if [ ! -z "${RET_CODE}" ] && [ ${RET_CODE} -eq 0 ]
     then
         unset RET_CODE;
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup successfully created. Obtaining files..";
 
         ## got our file. bring it over.
-        if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
+        if [ ! -z "${LOCAL_EXECUTION}" ] && [ "${LOCAL_EXECUTION}" = "${_TRUE}" ]
         then
             cp ${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}/${TARFILE_NAME} ${PLUGIN_WORK_DIRECTORY}/${TARFILE_NAME};
         else
@@ -144,7 +144,7 @@ function run_role_swap
 
                 ## our target master is not the same as the one we're on today and its authorized. move forward.
                 ## check if we're typeset - if so, we just execute the commands. if not, copy first, the exec
-                if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
+                if [ ! -z "${LOCAL_EXECUTION}" ] && [ "${LOCAL_EXECUTION}" = "${_TRUE}" ]
                 then
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "We are in typeset execution mode. Working..";
 
@@ -163,7 +163,7 @@ function run_role_swap
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Execution complete. RET_CODE -> ${RET_CODE}";
 
-                    if [[ ! -z "${RET_CODE}" && "${RET_CODE}" -eq 0 ]]
+                    if [ ! -z "${RET_CODE}" ] && [ ${RET_CODE} -eq 0 ]
                     then
                         unset RET_CODE;
 
@@ -178,14 +178,14 @@ function run_role_swap
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Execution complete. RET_CODE -> ${RET_CODE}";
 
-                        if [[ ! -z "${RET_CODE}" && "${RET_CODE}" -eq 0 ]]
+                        if [ ! -z "${RET_CODE}" ] && [ ${RET_CODE} -eq 0 ]
                         then
                             ## good. our existing master is now a slave.
                             ## now we re-configure ourself
                             ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Role swap from master to slave complete for ${NAMED_MASTER}, performed by ${IUSER_AUDIT}.";
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Sending notification...";
 
-                            . ${MAILER_CLASS} -m notifyRoleSwap -p ${PROJECT_CODE} -a "${DNS_SERVER_ADMIN_EMAIL}" -e;
+                            ${MAILER_CLASS} -m notifyRoleSwap -p ${PROJECT_CODE} -a "${DNS_SERVER_ADMIN_EMAIL}" -e;
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 

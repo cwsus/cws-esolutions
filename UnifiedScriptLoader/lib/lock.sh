@@ -112,7 +112,7 @@ function usage
     return ${RETURN_CODE};
 }
 
-[[ ${#} -eq 0 || ${#} -ne 2 ]] && usage && RETURN_CODE=${?};
+[ ${#} -eq 0]  || [ ${#} -ne 2 ] && usage && RETURN_CODE=${?};
 
 METHOD_NAME="${CNAME}#startup";
 

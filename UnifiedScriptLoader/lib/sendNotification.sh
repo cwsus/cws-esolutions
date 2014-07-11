@@ -22,14 +22,14 @@
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 ## Application constants
-CNAME="${THIS_CNAME}";
+CNAME="$(/usr/bin/env basename ${0})";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
-[[ -z "${APP_ROOT}" && -f ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/constants ]] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/constants;
+[ -z "${APP_ROOT}" ] && [ -f ${SCRIPT_ROOT}/../lib/constants ] && . ${SCRIPT_ROOT}/../lib/constants;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -41,6 +41,8 @@ METHOD_NAME="${CNAME}#startup";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+
+[ -z "${ENABLE_EMAIL}" ] || [ "${ENABLE_EMAIL}" = "${_FALSE}" ] && return 0;
 
 #===  FUNCTION  ===============================================================
 #          NAME:  sendNotificationEmail
@@ -59,47 +61,49 @@ function sendNotificationEmail
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing notification email for ${MESSAGE_TEMPLATE}..";
 
-    ## make sure mail code doesnt exist
-    unset MAILER_CODE;
+    [ -z "${MAILRC_ACCOUNT_NAME}" ] && MAIL_CMD="/usr/bin/env mailx" || MAIL_CMD="/usr/bin/env mailx -A ${MAILRC_ACCOUNT_NAME}";
+    typeset MESSAGE_FILE=${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.${DATESYS};
+    typeset TEMPLATE_FILE=${MAIL_TEMPLATE_DIR}/${MESSAGE_TEMPLATE};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MAIL_CMD -> ${MESSAGE_FILE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MESSAGE_FILE -> ${MESSAGE_FILE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TEMPLATE_FILE -> ${TEMPLATE_FILE}";
 
     ## and cleanup a little..
-    [ -f ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S") ] && \
-        rm -rf ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")> /dev/null 2>&1;
+    [ -f ${MESSAGE_FILE} ] && rm -rf ${MESSAGE_FILE} > /dev/null 2>&1;
 
-    if [ -s ${MAIL_TEMPLATE_DIR}/${MESSAGE_TEMPLATE} ]
+    if [ -s ${TEMPLATE_FILE} ]
     then
         ## the message provided exists - process
         ## create copy
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating working copy of ${MESSAGE_TEMPLATE}..";
 
-        sed -e '1d' ${MAIL_TEMPLATE_DIR}/${MESSAGE_TEMPLATE} > ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")2>/dev/null;
+        typeset MESSAGE_SUBJECT=$(head -1 ${TEMPLATE_FILE});
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MESSAGE_SUBJECT - ${MESSAGE_SUBJECT}";
+
+        sed -e '1,2d' ${TEMPLATE_FILE} > ${MESSAGE_FILE} 2>/dev/null;
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copy complete. Operating..";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Obtaining message subject from template..";
 
-        typeset MESSAGE_SUBJECT=$(head -1 ${MAIL_TEMPLATE_DIR}/${MESSAGE_TEMPLATE});
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MESSAGE_SUBJECT - ${MESSAGE_SUBJECT}";
-
-        for REPLACEMENT_ITEM in $(grep "&" ${MAIL_TEMPLATE_DIR}/${MESSAGE_TEMPLATE} | cut -d "&" -f 2)
+        for REPLACEMENT_ITEM in $(grep "&" ${TEMPLATE_FILE} | cut -d "&" -f 2)
         do
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REPLACEMENT_ITEM - ${REPLACEMENT_ITEM}";
 
-            sed -e "s/&${REPLACEMENT_ITEM}/$(eval echo \${${REPLACEMENT_ITEM}})/g" \
-                ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")> ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.tmp;
+            sed -e "s/&${REPLACEMENT_ITEM}/$(eval echo \${${REPLACEMENT_ITEM}})/g" ${MESSAGE_FILE} > ${MESSAGE_FILE}.tmp;
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating...";
 
-            if [ "$(grep $(eval echo \${${REPLACEMENT_ITEM}}) ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.tmp)" != "" ]
+            if [ ! -z "$(grep $(eval echo \${${REPLACEMENT_ITEM}}) ${MESSAGE_FILE}.tmp)" ]
             then
                 ## ok, move it over now..
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
 
-                mv ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.tmp \
-                    ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")> /dev/null 2>&1;
+                mv ${MAILSTORE}/${MESSAGE_FILE}.tmp ${MESSAGE_FILE}> /dev/null 2>&1;
 
                 ## and ensure..
-                if [ "$(grep $(eval echo \${${REPLACEMENT_ITEM}}) ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT})" != "" ]
+                if [ ! -z "$(grep $(eval echo \${${REPLACEMENT_ITEM}}) ${MESSAGE_FILE})" ]
                 then
                     ## good, keep going
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
@@ -122,27 +126,27 @@ function sendNotificationEmail
             fi
         done
 
-        if [ -z "${MAILER_CODE}" || ${MAILER_CODE} -eq 0 ]
+        if [ -z "${MAILER_CODE}" ] || [ ${MAILER_CODE} -eq 0 ]
         then
             ## unset mailer code so we can re-use it
             unset MAILER_CODE;
 
             ## message generated, mail it out
-            if [ -s ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")]
+            if [ -s ${MESSAGE_FILE} ]
             then
                 if [ ! -z "${FILE_CONTENT}" ]
                 then
                     ## we've been asked to include file content within the email. slide it in ...
                     ## print in the zone..
                     ## cut the filesize
-                    typeset PRE_FILE_SIZE=$(wc -c ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")| awk '{print $1}');
+                    typeset PRE_FILE_SIZE=$(wc -c ${MESSAGE_FILE} | awk '{print $1}');
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PRE_FILE_SIZE -> ${PRE_FILE_SIZE}";
 
                     ## echo in the zone
-                    cat ${FILE_CONTENT} >> ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT};
+                    cat ${FILE_CONTENT} >> ${MESSAGE_FILE};
 
-                    typeset POST_FILE_SIZE=$(wc -c ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}.$(date +"%Y%m%d_%H%M%S")| awk '{print $1}');
+                    typeset POST_FILE_SIZE=$(wc -c ${MESSAGE_FILE} | awk '{print $1}');
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "POST_FILE_SIZE -> ${POST_FILE_SIZE}";
 
@@ -159,29 +163,29 @@ function sendNotificationEmail
                     fi
                 fi
 
-                if [ -z "${RETURN_CODE}" || ${RETURN_CODE} -eq 0 ]
+                if [ -z "${RETURN_CODE}" ] || [ ${RETURN_CODE} -eq 0 ]
                 then
                     ## send it out
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command mailx -s \"${NOTIFY_SUBJECT}\" -r \"${NOTIFY_FROM_ADDRESS}\" \"${TARGET_AUDIENCE}\" < ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT}";
 
                     if [ ! -z "${ATTACH_FILE}" ]
                     then
-                        if [ "${VERBOSE}" = "${_TRUE}" ]
+
+                        if [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ]
                         then
-                            $(/usr/bin/env uuencode ${ATTACH_FILE} $(basename ${ATTACH_FILE}) | mailx -v -s "${MESSAGE_SUBJECT}" -r "${NOTIFY_FROM_ADDRESS}" \
-                                "${TARGET_AUDIENCE}" < ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT} > ${LOG_ROOT}/${MESSAGE_TEMPLATE}.log 2>&1;);
+                            /usr/bin/env uuencode ${ATTACH_FILE} $(/usr/bin/env basename ${ATTACH_FILE}) | ${MAIL_CMD} -v -s "${MESSAGE_SUBJECT}" -r "${NOTIFY_FROM_ADDRESS}" \
+                                "${TARGET_AUDIENCE}" < ${MESSAGE_FILE} > ${LOG_ROOT}/${MESSAGE_TEMPLATE}.log 2>&1;
                         else
-                            $(/usr/bin/env uuencode ${ATTACH_FILE} $(basename ${ATTACH_FILE}) | mailx -s "${MESSAGE_SUBJECT}" -r "${NOTIFY_FROM_ADDRESS}" \
-                                "${TARGET_AUDIENCE}" < ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT});
+                            /usr/bin/env uuencode ${ATTACH_FILE} $(/usr/bin/env basename ${ATTACH_FILE}) | ${MAIL_CMD} -s "${MESSAGE_SUBJECT}" -r "${NOTIFY_FROM_ADDRESS}" \
+                                "${TARGET_AUDIENCE}" < ${MESSAGE_FILE};
                         fi
                     else
-                        if [ "${VERBOSE}" = "${_TRUE}" ]
+                        if [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ]
                         then
-                            $(mailx -v -s "${MESSAGE_SUBJECT}" -r "${NOTIFY_FROM_ADDRESS}" \
-                                "${TARGET_AUDIENCE}" < ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT} > ${LOG_ROOT}/${MESSAGE_TEMPLATE}.log 2>&1;);
+                            ${MAIL_CMD} -v -s "${MESSAGE_SUBJECT}" -r "${NOTIFY_FROM_ADDRESS}" \
+                                "${TARGET_AUDIENCE}" < ${MESSAGE_FILE} > ${LOG_ROOT}/${MESSAGE_TEMPLATE}.log 2>&1;
                         else
-                            $(mailx -s "${MESSAGE_SUBJECT}" -r "${NOTIFY_FROM_ADDRESS}" \
-                                "${TARGET_AUDIENCE}" < ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT});
+                            ${MAIL_CMD} -s "${MESSAGE_SUBJECT}" -r "${NOTIFY_FROM_ADDRESS}" "${TARGET_AUDIENCE}" < ${MESSAGE_FILE};
                         fi
                     fi
                     typeset -i RET_CODE=${?};
@@ -196,8 +200,6 @@ function sendNotificationEmail
                         RETURN_CODE=1;
                     else
                         ## we're done. we no longer need the email file so lets get rid of it
-                        rm -rf ${MAILSTORE}/${MESSAGE_TEMPLATE}-${IUSER_AUDIT};
-
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                         ## and return
@@ -220,6 +222,8 @@ function sendNotificationEmail
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ -f ${MESSAGE_FILE} ] && rm -rf ${MESSAGE_FILE};
 
     unset MESSAGE_TEMPLATE;
     unset FILE_CONTENT;
@@ -327,7 +331,7 @@ do
 
             ## Make sure we have enough information to process
             ## and execute
-            if [[ -z "${RETURN_CODE}" || ${RETURN_CODE} -eq 0 ]]
+            if [ -z "${RETURN_CODE}" ] || [ ${RETURN_CODE} -eq 0 ]
             then
                 if [ -z "${MESSAGE_TEMPLATE}" ]
                 then
@@ -346,7 +350,7 @@ do
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                    sendNotificationEmail&& RETURN_CODE=${?};
+                    sendNotificationEmail && RETURN_CODE=${?};
                 fi
             fi
             ;;

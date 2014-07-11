@@ -29,7 +29,7 @@ METHOD_NAME="${CNAME}#startup";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
-[[ -z "${PLUGIN_ROOT_DIR}" && -f ${SCRIPT_ROOT}/../lib/plugin ]] && . ${SCRIPT_ROOT}/../lib/plugin;
+[ -z "${PLUGIN_ROOT_DIR}" ] && [ -f ${SCRIPT_ROOT}/../lib/plugin ] && . ${SCRIPT_ROOT}/../lib/plugin;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -93,7 +93,7 @@ function returnResponse
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing DiG query against ${NAMESERVER} for ${SITE_URL}..";
 
-    [[ -z "${NAMESERVER}" && -z "${SHORT_RESPONSE}" ]] && DIG_CMD="/usr/bin/env dig +noedns";
+    [ -z "${NAMESERVER}" ] && [ -z "${SHORT_RESPONSE}" ] && DIG_CMD="/usr/bin/env dig +noedns";
     [[ ! -z "${NAMESERVER}" && -z "${SHORT_RESPONSE}" ]] && DIG_CMD="/usr/bin/env dig @${NAMESERVER} +noedns";
     [[ -z "${NAMESERVER}" && "${SHORT_RESPONSE}" = "${_TRUE}" ]] && DIG_CMD="/usr/bin/env dig +noedns +short";
     [[ ! -z "${NAMESERVER}" && "${SHORT_RESPONSE}" = "${_TRUE}" ]] && DIG_CMD="/usr/bin/env dig @${NAMESERVER} +noedns +short";
@@ -108,7 +108,7 @@ function returnResponse
 
     ## spawn an ssh connection to the provided server to run a DiG query
     ## check to see if we have an internal or external box
-    if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
+    if [ ! -z "${LOCAL_EXECUTION}" ] && [ "${LOCAL_EXECUTION}" = "${_TRUE}" ]
     then
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local execution is ON. Processing..";
 
@@ -264,11 +264,11 @@ function returnReverseResponse
 
     ## spawn an ssh connection to the provided server to run a DiG query
     ## check to see if we have an internal or external box
-    if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
+    if [ ! -z "${LOCAL_EXECUTION}" ] && [ "${LOCAL_EXECUTION}" = "${_TRUE}" ]
     then
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local execution is ON. Processing..";
 
-        if [[ ! -z "${SHORT_RESPONSE}" && "${SHORT_RESPONSE}" = "${_TRUE}" ]]
+        if [ ! -z "${SHORT_RESPONSE}" ] && [ "${SHORT_RESPONSE}" = "${_TRUE}" ]
         then
             [ -z "${NAMESERVER}" ] && dig +short -x ${SITE_URL} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} || dig @${NAMESERVER} +short -x ${SITE_URL} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
         else
@@ -281,7 +281,7 @@ function returnReverseResponse
 
             if [ "${NAMESERVER}" = "${SERVER}" ]
             then
-                if [[ ! -z "${SHORT_RESPONSE}" && "${SHORT_RESPONSE}" = "${_TRUE}" ]]
+                if [ ! -z "${SHORT_RESPONSE}" ] && [ "${SHORT_RESPONSE}" = "${_TRUE}" ]
                 then
                     [ -z "${NAMESERVER}" ] && ssh ${NAMESERVER} "dig +short -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} || \
                         ssh ${NAMESERVER} "dig @${NAMESERVER} +short -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
@@ -305,7 +305,7 @@ function returnReverseResponse
             if [[ ! -z "$(dig +short ${NAMESERVER})" || ! -z "$(dig +short -x ${NAMESERVER})" ]]
             then
                 ## external
-                if [[ ! -z "${SHORT_RESPONSE}" && "${SHORT_RESPONSE}" = "${_TRUE}" ]]
+                if [ ! -z "${SHORT_RESPONSE}" ] && [ "${SHORT_RESPONSE}" = "${_TRUE}" ]
                 then
                     [ -z "${NAMESERVER}" ] && dig +short -x ${SITE_URL} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} || dig @${NAMESERVER} +short -x ${SITE_URL} > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};
                 else
@@ -345,7 +345,7 @@ function returnReverseResponse
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Proxy access confirmed. Proxy: ${PROXY}";
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${PROXY} \"dig @${NAMESERVER} -x ${SITE_URL}\" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE}";
 
-                        if [[ ! -z "${SHORT_RESPONSE}" && "${SHORT_RESPONSE}" = "${_TRUE}" ]]
+                        if [ ! -z "${SHORT_RESPONSE}" ] && [ "${SHORT_RESPONSE}" = "${_TRUE}" ]
                         then
                             [ -z "${NAMESERVER}" ] && ssh ${PROXY} "dig +short -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE} || \
                                 ssh ${PROXY} "dig @${NAMESERVER} +short -x ${SITE_URL}" > ${PLUGIN_ROOT_DIR}/${DIG_DATA_FILE};

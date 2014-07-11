@@ -37,7 +37,7 @@ METHOD_NAME="${CNAME}#startup";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-[[ -z "${ENFORCE_SECURITY}" || "${ENFORCE_SECURITY}" = "${_FALSE}" ]] && return 0;
+[ -z "${ENFORCE_SECURITY}" ] || [ "${ENFORCE_SECURITY}" = "${_FALSE}" ] && return 0;
 
 #===  FUNCTION  ===============================================================
 #          NAME:  validateAccountAccess
@@ -55,7 +55,7 @@ function validateAccountAccess
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    if [[ ! -z "${#AUTHORIZED_USERS[@]}" && ${#AUTHORIZED_USERS[@]} -ne 0 ]]
+    if [ ! -z "${#AUTHORIZED_USERS[@]}" ] && [ ${#AUTHORIZED_USERS[@]} -ne 0 ]
     then
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "We have a list of authorized users. Validate..";
 
@@ -83,7 +83,7 @@ function validateAccountAccess
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "USER_RETURN -> ${USER_RETURN}";
     fi
 
-    if [[ ! -z "${#AUTHORIZED_GROUPS[@]}" && ${#AUTHORIZED_GROUPS[@]} -ne 0 ]]
+    if [ ! -z "${#AUTHORIZED_GROUPS[@]}" ] && [ ${#AUTHORIZED_GROUPS[@]} -ne 0 ]
     then
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "We have a list of authorized groups. Validate..";
 
@@ -106,8 +106,8 @@ function validateAccountAccess
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "GROUP_RETURN -> ${GROUP_RETURN}";
     fi
 
-    [[ -z "${GROUP_RETURN}" || ${GROUP_RETURN} -ne 0 ]] && RETURN_CODE=1 || RETURN_CODE=0;
-    [[ -z "${USER_RETURN}" || ${USER_RETURN} -ne 0 ]] && RETURN_CODE=1 || RETURN_CODE=0;
+    [ -z "${GROUP_RETURN}" ] || [ ${GROUP_RETURN} -ne 0 ] && RETURN_CODE=1 || RETURN_CODE=0;
+    [ -z "${USER_RETURN}" ] || [ ${USER_RETURN} -ne 0 ] && RETURN_CODE=1 || RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
