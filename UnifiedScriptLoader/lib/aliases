@@ -49,9 +49,7 @@ esac
 alias mktemp='/usr/bin/env mktemp --tmpdir=${TEMP_DIRECTORY}';
 alias netstat='/usr/bin/env netstat -an';
 alias dig='/usr/bin/env dig +noedns';
-alias scp="/usr/bin/env scp -q -r -C -F ${SSH_CONFIG_FILE} -p -r";
-alias ssh="/usr/bin/env ssh -q -t -C -F ${SSH_CONFIG_FILE} -k -Y";
-alias mkdir='/usr/bin/env mkdir -pv';
+alias mkdir='/usr/bin/env mkdir -p';
 alias tar='/usr/bin/env tar -v';
 alias gzip='/usr/bin/env gzip -v';
 alias mv='/usr/bin/env mv';
@@ -69,7 +67,9 @@ alias cut='/usr/bin/env cut';
 alias awk='/usr/bin/env awk';
 alias cat='/usr/bin/env cat';
 
-[ "$(/usr/bin/env uname -m)" == "x86_64" ] && alias java="${JAVA_HOME}/bin/java -d64" || alias java="${JAVA_HOME}/bin/java";
+## alias java appropriately
+[ ! -z "${SYSTEM_ARCHITECTURE}" ] && [ "${SYSTEM_ARCHITECTURE}" = "64" ] || [ "${SYSTEM_ARCHITECTURE}" = "x86_64" ] && alias java="${JAVA_HOME}/bin/java -d64";
+[ ! -z "${SYSTEM_ARCHITECTURE}" ] && [ "${SYSTEM_ARCHITECTURE}" = "32" ] || [ "${SYSTEM_ARCHITECTURE}" != "x86_64" ] && alias java="${JAVA_HOME}/bin/java";
 
 alias rm='/usr/bin/env rm --preserve-root'
 alias chown='/usr/bin/env chown --preserve-root';

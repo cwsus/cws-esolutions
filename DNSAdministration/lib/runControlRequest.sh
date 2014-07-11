@@ -114,11 +114,11 @@ function controlService
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local execution is set to TRUE.";
 
                 ## no trace here, this is a bourne shell script
-                . ${PLUGIN_LIB_DIRECTORY}/executors/executeControlRequest.sh -c ${CONTROL_COMMAND} -r -e;
+                ${PLUGIN_LIB_DIRECTORY}/executors/executeControlRequest.sh -c ${CONTROL_COMMAND} -r -e;
             else
                 ## MUST execute as root - sudo is best possible option.
                 ## this is NOT required if you are configured to ssh as root.
-                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${SERVER_NAME} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeControlRequest.sh -c ${CONTROL_COMMAND} -r -e" ${SSH_USER_NAME} ${SSH_USER_AUTH};
+                ssh ${SERVER_NAME} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeControlRequest.sh -c ${CONTROL_COMMAND} -r -e";
             fi
         else
             if [[ ! -z "${LOCAL_EXECUTION}" && "${LOCAL_EXECUTION}" = "${_TRUE}" ]]
@@ -126,11 +126,11 @@ function controlService
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Local execution is set to TRUE.";
 
                 ## no trace here, this is a bourne shell script
-                . ${PLUGIN_LIB_DIRECTORY}/executors/executeControlRequest.sh -c ${CONTROL_COMMAND} -e;
+                ${PLUGIN_LIB_DIRECTORY}/executors/executeControlRequest.sh -c ${CONTROL_COMMAND} -e;
             else
                 ## MUST execute as root - sudo is best possible option.
                 ## this is NOT required if you are configured to ssh as root.
-                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${SERVER_NAME} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeControlRequest.sh -c ${CONTROL_COMMAND} -e" ${SSH_USER_NAME} ${SSH_USER_AUTH};
+                ssh ${SERVER_NAME} "${REMOTE_APP_ROOT}/${PLUGIN_LIB_DIRECTORY}/executors/executeControlRequest.sh -c ${CONTROL_COMMAND} -e";
             fi
         fi
 

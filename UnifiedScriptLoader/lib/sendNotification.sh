@@ -255,14 +255,14 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo "${CNAME} - Generates notification email to send to a selected audience.";
-    echo "Usage: ${CNAME} [ -m <message template> ] [ -f <file> ] [ -t <send to> ] [ -a ] [ -e ] [ -?|-h show this help ]";
-    echo " -m    -> The message template to utilize.";
-    echo " -f    -> If the content of a file should be applied to the message, the file should be specified here.";
-    echo " -t    -> The target audience for the email";
-    echo " -a    -> Add an option attachment. If specified, path to the attachment and filename must be provided as an argument.";
-    echo " -e    -> Execute processing.";
-    echo " -h|-? -> Show this help";
+    echo "${THIS_CNAME} - Generates notification email to send to a selected audience.";
+    echo "Usage: ${THIS_CNAME} [ -m <message template> ] [ -f <file> ] [ -t <send to> ] [ -a ] [ -e ] [ -h|-? ]
+    -m         -> The message template to utilize.
+    -f         -> If the content of a file should be applied to the message, the file should be specified here.
+    -t         -> The target audience for the email
+    -a         -> Add an option attachment. If specified, path to the attachment and filename must be provided as an argument.
+    -e         -> Execute processing.
+    -h|-?      -> Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";

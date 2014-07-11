@@ -99,9 +99,9 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
     echo "${CNAME} - Create and assign a lockfile";
-    echo "Usage: ${CNAME} [ lock | unlock ] [ <pid> ]";
-    echo " -> Create or release a lockfile. To create, use \"lock\", to release, use \"unlock\".";
-    echo " -> The PID to create the lockfile for.";
+    echo "Usage: ${CNAME} [ lock | unlock ] [ <pid> ]
+             -> Create or release a lockfile. To create, use \"lock\", to release, use \"unlock\".
+             -> The PID to create the lockfile for.";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";

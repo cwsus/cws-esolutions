@@ -112,7 +112,7 @@ function executeMonitoringScript
             continue;
         fi
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command runSSHConnection.exp ${MONITORED_HOST} \"${REMOTE_APP_ROOT}/${LIB_DIRECTORY}/monitors/${MONITORING_SCRIPT}.sh\" ${MONITOR_THREAD_TIMEOUT}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ssh ${MONITORED_HOST} \"${MONITORING_SCRIPT}\"";
 
         typeset THIS_CNAME="${CNAME}";
         unset METHOD_NAME;
@@ -122,7 +122,7 @@ function executeMonitoringScript
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
         ## validate the input
-        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${MONITORED_HOST} "${MONITORING_SCRIPT}" ${USER_ACCOUNT} ${AUTH_DATA} ${MONITOR_THREAD_TIMEOUT};
+        ssh ${MONITORED_HOST} "${MONITORING_SCRIPT}";
         typeset -i RET_CODE=${?};
 
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -149,7 +149,7 @@ function executeMonitoringScript
         ## if not, pull it back
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Command execution successful. Checking for anomolies..";
 
-        typeset IS_LOGFILE_PRESENT=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${MONITORED_HOST} "[ -s ${REMOTE_APP_ROOT}/${LOG_ROOT}/${BASE_LOG_NAME}-${MONITOR_RECORDER} ] && echo true || echo false" ${SSH_USER_NAME} ${SSH_USER_AUTH});
+        typeset IS_LOGFILE_PRESENT=$(ssh ${MONITORED_HOST} "[ -s ${REMOTE_APP_ROOT}/${LOG_ROOT}/${BASE_LOG_NAME}-${MONITOR_RECORDER} ] && echo true || echo false";);
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IS_LOGFILE_PRESENT -> ${IS_LOGFILE_PRESENT}";
 
@@ -266,13 +266,14 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo "${CNAME} - Executes a selected monitoring process.";
-    echo " -m    -> The monitoring process to execute.";
-    echo " -s    -> Target server to execute against.";
-    echo " -u    -> User account, if necessary, to execute the monitor as.";
-    echo " -p    -> Authentication data for the provided user account, if necessary.";
-    echo " -e    -> Execute the request";
-    echo " -h|-? -> Show this help";
+    echo "${THIS_CNAME} - Executes a selected monitoring process.";
+    echo "Usage: ${THIS_CNAME} [ -m <monitor> ] [ -s <target host> ] [ -u <user account> ] [ -p <authentication data> ] [ -e ] [ -h|? ]
+    -m         -> The monitoring process to execute.
+    -s         -> Target server to execute against.
+    -u         -> User account, if necessary, to execute the monitor as.
+    -p         -> Authentication data for the provided user account, if necessary.
+    -e         -> Execute the request
+    -h|-?      -> Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";

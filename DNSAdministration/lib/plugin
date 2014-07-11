@@ -42,10 +42,13 @@ fi
 ## load application-wide constants if not already done
 if [ -z "${APP_ROOT}" ]
 then
-    case $(pwd) in
-        *monitors*|*executors*|*sys*|*bin*) . $(pwd)/../../../constants.sh ;;
-        *home*|*lib*) . ${SCRIPT_ROOT}/../../../constants.sh ;;
-        *) . ${SCRIPT_ROOT}/../../constants.sh ;;
+    case ${SCRIPT_ROOT} in
+        *lib/plugins/*/sys|*lib/plugins/*/monitors|*lib/plugins/*/executors) . ${SCRIPT_ROOT}/../../../../../lib/constants.sh ;;
+        *lib/plugins/*/bin|*lib/plugins/*/lib) . ${SCRIPT_ROOT}/../../../../lib/constants.sh ;;
+        *lib/plugins/*) . ${SCRIPT_ROOT}/../../../lib/constants.sh ;;
+        *lib/plugins) . ${SCRIPT_ROOT}/../../lib/constants.sh ;;
+        *lib|*bin) . ${SCRIPT_ROOT}/../lib/constants.sh ;;
+        *) . ${SCRIPT_ROOT}/lib/constants.sh ;;
     esac
 fi
 

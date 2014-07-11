@@ -191,9 +191,9 @@ function obtainAndInstallRoots
 
             if [ ${PING_RCODE} -eq 0 ]
             then
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${EXTERNAL_SERVER} \"dig +bufsize=1200 +norec NS . @a.root-servers.net\" > ${PLUGIN_WORK_DIRECTORY}/${NAMED_ROOT_CACHE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing ssh ${EXTERNAL_SERVER} \"dig +bufsize=1200 +norec NS . @a.root-servers.net\" > ${PLUGIN_WORK_DIRECTORY}/${NAMED_ROOT_CACHE}";
 
-                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${EXTERNAL_SERVER} "dig +bufsize=1200 +norec NS . @a.root-servers.net" ${SSH_USER_NAME} ${SSH_USER_AUTH} > ${PLUGIN_WORK_DIRECTORY}/${NAMED_ROOT_CACHE};
+                ssh ${EXTERNAL_SERVER} "dig +bufsize=1200 +norec NS . @a.root-servers.net" > ${PLUGIN_WORK_DIRECTORY}/${NAMED_ROOT_CACHE};
 
                 ## we should have a populated file. lets check
                 if [ -s ${PLUGIN_WORK_DIRECTORY}/${NAMED_ROOT_CACHE} ]

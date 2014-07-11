@@ -284,12 +284,12 @@ function validateRecordTarget
                     ## to the IP being put in place (although this is highly unlikely)
                     ## we cant ping from the bastions. we have to run against
                     ## one of the proxies
-                    ping ${3} > /dev/null 2>&1;
-                    PING_RCODE=${?}
+                    validateServerAvailability ${3};
+                    typeset -i RET_CODE=${?};
 
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-                    if [ ${PING_RCODE} -eq 0 ]
+                    if [ ${RET_CODE} -eq 0 ]
                     then
                         ## IP is up and responsive. all set.
                         RETURN_CODE=0;
@@ -299,10 +299,10 @@ function validateRecordTarget
                         do
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXTERNAL_SERVER -> ${EXTERNAL_SERVER}";
 
-                            PING_RCODE=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${EXTERNAL_SERVER} "ping ${3} > /dev/null 2>&1 && echo ${?}" ${SSH_USER_NAME} ${SSH_USER_AUTH});
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
+                            RET_CODE=$(ssh ${EXTERNAL_SERVER} "ping ${3} > /dev/null 2>&1 && echo ${?}");
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-                            if [ -z "${PING_RCODE}" ] || [ ${PING_RCODE} -ne 0 ]
+                            if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
                     		then
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${EXTERNAL_SERVER} not responding to ping. Continuing..";
 
@@ -320,12 +320,12 @@ function validateRecordTarget
                     if [ "${RR_TYPE}" = "NS" ]
                     then
                         ## okay, ns record. ping validate
-                        ping ${3} > /dev/null 2>&1;
-                        PING_RCODE=${?}
+                        validateServerAvailability ${3};
+                        typeset -i RET_CODE=${?};
 
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-                        if [ ${PING_RCODE} -eq 0 ]
+                        if [ ${RET_CODE} -eq 0 ]
                         then
                             ## IP is up and responsive. all set.
                             RETURN_CODE=0;
@@ -335,10 +335,10 @@ function validateRecordTarget
                             do
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXTERNAL_SERVER -> ${EXTERNAL_SERVER}";
 
-                                PING_RCODE=$(${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${EXTERNAL_SERVER} "ping ${3} > /dev/null 2>&1 && echo ${?}" ${SSH_USER_NAME} ${SSH_USER_AUTH});
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
+                                RET_CODE=$(ssh ${EXTERNAL_SERVER} "ping ${3} > /dev/null 2>&1 && echo ${?}" ${SSH_USER_NAME} ${SSH_USER_AUTH});
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-                                if [ -z "${PING_RCODE}" ] || [ ${PING_RCODE} -ne 0 ]
+                                if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
                         		then
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${EXTERNAL_SERVER} not responding to ping. Continuing..";
 
@@ -377,12 +377,12 @@ function validateRecordTarget
                         ## we have a name associated with our IP. we can therefore
                         ## skip the other validation check (reverse lookup) and move into
                         ## ping validation
-                        ping ${RESOLVED_NAME} > /dev/null 2>&1;
-                        PING_RCODE=${?}
+                        validateServerAvailability ${RESOLVED_NAME};
+                        typeset -i RET_CODE=${?};
 
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-                        if [ ${PING_RCODE} -eq 0 ]
+                        if [ ${RET_CODE} -eq 0 ]
                         then
                             ## all set.
                             RETURN_CODE=0;
@@ -398,12 +398,12 @@ function validateRecordTarget
                     ## make sure this record has an A record .. and maybe further to that make sure it has a reverse entry
                     for EXTERNAL_SERVER in ${EXT_SLAVES[@]}
                     do
-                        ping ${EXTERNAL_SERVER} > /dev/null 2>&1;
-                        PING_RCODE=${?}
+                        validateServerAvailability ${EXTERNAL_SERVER};
+                        typeset -i RET_CODE=${?};
 
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-                        if [ -z "${PING_RCODE}" ] || [ ${PING_RCODE} -ne 0 ]
+                        if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
                 		then
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${EXTERNAL_SERVER} not responding to ping. Continuing..";
 
@@ -415,7 +415,7 @@ function validateRecordTarget
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command on ${EXTERNAL_SERVER}..";
 
                         ## unset methodname and cname
-                        typeset         unset METHOD_NAME;
+                        unset METHOD_NAME;
                         unset CNAME;
 
                         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
@@ -441,8 +441,8 @@ function validateRecordTarget
                         ## we have a name associated with our IP. we can therefore
                         ## skip the other validation check (reverse lookup) and move into
                         ## ping validation
-                        ping ${RESOLVED_NAME} > /dev/null 2>&1;
-                        PING_RCODE=${?}
+                        validateServerAvailability ${RESOLVED_NAME};
+                        typeset -i RET_CODE=${?};
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
 
@@ -485,12 +485,12 @@ function validateRecordTarget
                     ## NOT a part of this domain. lets see if it exists anywhere -
                     for EXTERNAL_SERVER in ${EXT_SLAVES[@]}
                     do
-                        ping ${EXTERNAL_SERVER} > /dev/null 2>&1;
-                        PING_RCODE=${?}
+                        validateServerAvailability ${EXTERNAL_SERVER};
+                        typeset -i RET_CODE=${?};
 
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-                        if [ -z "${PING_RCODE}" ] || [ ${PING_RCODE} -ne 0 ]
+                        if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
                 		then
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${EXTERNAL_SERVER} not responding to ping. Continuing..";
 
@@ -502,7 +502,7 @@ function validateRecordTarget
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command on ${EXTERNAL_SERVER}..";
 
                         ## unset methodname and cname
-                        typeset         unset METHOD_NAME;
+                        unset METHOD_NAME;
                         unset CNAME;
 
                         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
@@ -542,7 +542,7 @@ function validateRecordTarget
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    unset PING_RCODE;
+    unset RET_CODE;
     unset RR_TYPE;
     unset SOURCE_FILE;
     unset RESOLVED_NAME;
@@ -654,10 +654,10 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo "${CNAME} - Validate data provided for a SRV record.";
-    echo "Usage:  ${CNAME} validate-type validate-data";
-    echo "         validate-type can be one of: protocol or type";
-    echo "         validate-data must be the data to perform validation against";
+    echo "${THIS_CNAME} - Validate data provided for a SRV record.";
+    echo "Usage:  ${THIS_CNAME} validate-type validate-data
+               -> validate-type can be one of: protocol or type
+               -> validate-data must be the data to perform validation against";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";

@@ -182,11 +182,11 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo "${CNAME} - Security request validation";
-    echo "Usage: ${CNAME} [ -a ] [ -s ] [ -?|-h show this help ]";
-    echo "  -a      Perform authorized account security validation";
-    echo "  -s      Perform authorized system validation";
-    echo "  -h|-?   Show this help";
+    echo "${THIS_CNAME} - Security request validation";
+    echo "Usage: ${THIS_CNAME} [ -a ] [ -s ] [ -h|-? ]
+    -a         -> Perform authorized account security validation
+    -s         -> Perform authorized system validation
+    -h|-?      -> Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";

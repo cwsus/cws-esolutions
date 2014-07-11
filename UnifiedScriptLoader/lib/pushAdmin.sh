@@ -142,14 +142,14 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo "${CNAME} - Build and deploy the most current version of the web administration utilities";
-    echo "Usage: ${CNAME} [ -v release version ] [ -p (buildRelease|installRelease) ] [ -e ] [ -h|? ]";
-    echo " -v    -> The release version for this build";
-    echo " -p    -> The process to execute. One of buildRelease or installRelease is required.";
-    echo " -t    -> The tarfile date. Only applicable when -p is install.";
-    echo " -i    -> The executing user. Only applicable when -p is install.";
-    echo " -e    -> Execute the request";
-    echo " -h|-? -> Show this help";
+    echo "${THIS_CNAME} - Build and deploy the most current version of the web administration utilities";
+    echo "Usage: ${THIS_CNAME} [ -v release version ] [ -p (buildRelease|installRelease) ] [ -e ] [ -h|? ]
+    -v         -> The release version for this build
+    -p         -> The process to execute. One of buildRelease or installRelease is required.
+    -t         -> The tarfile date. Only applicable when -p is install.
+    -i         -> The executing user. Only applicable when -p is install.
+    -e         -> Execute the request
+    -h|-?      -> Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";

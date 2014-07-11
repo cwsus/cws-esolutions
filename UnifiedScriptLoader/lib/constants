@@ -23,12 +23,12 @@
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 case ${SCRIPT_ROOT} in
-    *lib/plugins/*/executors*|*lib/plugins/*/monitors*) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../../../../../etc" ;;
-    *lib/plugins/*/sys*|*lib/plugins/*/bin*|*lib/plugins/*/lib*) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../../../../../etc" ;;
+    *lib/plugins/*/sys|*lib/plugins/*/monitors|*lib/plugins/*/executors) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../../../../../etc" ;;
+    *lib/plugins/*/bin|*lib/plugins/*/lib) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../../../../etc" ;;
     *lib/plugins/*) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../../../etc" ;;
-    *lib/sys*) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../../etc" ;;
-    *lib*|*bin*) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../etc" ;;
-    *) LOAD_CONFIG_DIR="$(pwd)/../etc" ;;
+    *lib/plugins) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../../etc" ;;
+    *lib|*bin) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../etc" ;;
+    *) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/etc" ;;
 esac
 
 typeset -r LOAD_CONFIG_DIR;
@@ -51,21 +51,34 @@ fi
 
 . ${APP_SYS_CONFIG};
 
+## path
+typeset -x PATH=${PATH}:${APP_PATH}:${SYS_PATH};
+typeset -x LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${APP_LIB_PATH};
+
+## system constants
+case $(uname) in
+    SunOS)
+        typeset -rx SYSTEM_ARCHITECTURE=$(/usr/bin/env isainfo -b);
+        ;;
+    AIX)
+        typeset -rx SYSTEM_ARCHITECTURE=$(/usr/bin/env getconf HARDWARE_BITMODE);
+        ;;
+    *)
+        typeset -rx SYSTEM_ARCHITECTURE=$(/usr/bin/env uname -m);
+        ;;
+esac
+
+typeset -rx SYSTEM_PLATFORM=$(/usr/bin/env uname -s);
+typeset -rx SYSTEM_HOSTNAME="$(/usr/bin/env uname -n)";
+typeset -rx SYSTEM_UPTIME="$(/usr/bin/env uptime | /usr/bin/env cut -d "," -f 1 | /usr/bin/env sed -e 's/^ *//g;s/ *$//g')";
+
 ## uncommon constants
 typeset -rx DATESYS=$(/usr/bin/env date +%Y%m%d_%H-%M-%S);
 typeset -rx CURRENT_DATE=$(/usr/bin/env date '+%Y%m%d');
 typeset -rx CURRENT_TIMESTAMP=$(/usr/bin/env date '+%Y%m%d%H%M');
-typeset -rx SYSTEM_PLATFORM=$(/usr/bin/env uname -s);
-typeset -rx SYSTEM_HOSTNAME="$(/usr/bin/env uname -n)";
-typeset -rx SYSTEM_UPTIME="$(/usr/bin/env uptime | /usr/bin/env cut -d "," -f 1 | /usr/bin/env sed -e 's/^ *//g;s/ *$//g')";
 typeset -rx IS_EXPECT_INSTALLED=$(/usr/bin/env expect -v 2>/dev/null);
-
 set -A IUSER_GROUPS $(groups); typeset -rx IUSER_GROUPS;
 [ -z "$(/usr/bin/env who am i | /usr/bin/env awk '{print $1}')" ] && typeset -rx IUSER_AUDIT=$(/usr/bin/env whoami) || typeset -rx IUSER_AUDIT=$(/usr/bin/env who am i | /usr/bin/env awk '{print $1}');
-
-## path
-typeset -x PATH=${PATH}:${APP_PATH}:${SYS_PATH};
-typeset -x LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${APP_LIB_PATH};
 
 ## counters
 typeset -x -i A=0;

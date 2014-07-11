@@ -181,49 +181,55 @@ if { [ expr $argc < 3 ] } {
 ## a previous execution, it breaks
 sleep $env(EXECUTION_DELAY)
 
+if { [ file exists $env(SSH_CONFIG_FILE) ] } {
+    _SSH_CMD="/usr/bin/env ssh -q -t -C -F $env(SSH_CONFIG_FILE) -k -Y
+} else {
+    _SSH_CMD="/usr/bin/env ssh -q -t -C -k -Y
+}
+
 ## spawn the ssh connection
 if { [ info exists _USER_LOGINID ] } {
     if { [ info exists _USER_KEY ] } {
         if { [ string compare -nocase $_USER_KEY "default" ] == 0 } {
             if { [ string compare -nocase $_EXEC_CMD "shell" ] == 0 } {
-                set _SSH_COMMAND "ssh -q -t -l $_USER_LOGINID $_TARGET_SYSTEM"
+                set _SSH_COMMAND "$_SSH_CMD -l $_USER_LOGINID $_TARGET_SYSTEM"
             } else {
-                set _SSH_COMMAND "ssh -q -t -l $_USER_LOGINID $_TARGET_SYSTEM \"$_EXEC_CMD\""
+                set _SSH_COMMAND "$_SSH_CMD -l $_USER_LOGINID $_TARGET_SYSTEM \"$_EXEC_CMD\""
             }
         } else {
             if { [ string compare -nocase $_EXEC_CMD "shell" ] == 0 } {
-                set _SSH_COMMAND "ssh -q -t -l $_USER_LOGINID -i $_USER_KEY $_TARGET_SYSTEM"
+                set _SSH_COMMAND "$_SSH_CMD -l $_USER_LOGINID -i $_USER_KEY $_TARGET_SYSTEM"
             } else {
-                set _SSH_COMMAND "ssh -q -t -l $_USER_LOGINID -i $_USER_KEY $_TARGET_SYSTEM \"$_EXEC_CMD\""
+                set _SSH_COMMAND "$_SSH_CMD -l $_USER_LOGINID -i $_USER_KEY $_TARGET_SYSTEM \"$_EXEC_CMD\""
             }
         }
     } else {
         if { [ string compare -nocase $_EXEC_CMD "shell" ] == 0 } {
-            set _SSH_COMMAND "ssh -q -t -l $_USER_LOGINID $_TARGET_SYSTEM"
+            set _SSH_COMMAND "$_SSH_CMD -l $_USER_LOGINID $_TARGET_SYSTEM"
         } else {
-            set _SSH_COMMAND "ssh -q -t -l $_USER_LOGINID $_TARGET_SYSTEM \"$_EXEC_CMD\""
+            set _SSH_COMMAND "$_SSH_CMD -l $_USER_LOGINID $_TARGET_SYSTEM \"$_EXEC_CMD\""
         }
     }
 } else {
     if { [ info exists _USER_KEY ] } {
         if { [ string compare -nocase $_USER_KEY "default" ] == 0 } {
             if { [ string compare -nocase $_EXEC_CMD "shell" ] == 0 } {
-                set _SSH_COMMAND "ssh -q -t -l $_USER_LOGINID $_TARGET_SYSTEM"
+                set _SSH_COMMAND "$_SSH_CMD -l $_USER_LOGINID $_TARGET_SYSTEM"
             } else {
-                set _SSH_COMMAND "ssh -q -t -l $_USER_LOGINID $_TARGET_SYSTEM \"$_EXEC_CMD\""
+                set _SSH_COMMAND "$_SSH_CMD -l $_USER_LOGINID $_TARGET_SYSTEM \"$_EXEC_CMD\""
             }
         } else {
             if { [ string compare -nocase $_EXEC_CMD "shell" ] == 0 } {
-                set _SSH_COMMAND "ssh -q -t -l $_USER_LOGINID -i $_USER_KEY $_TARGET_SYSTEM"
+                set _SSH_COMMAND "$_SSH_CMD -l $_USER_LOGINID -i $_USER_KEY $_TARGET_SYSTEM"
             } else {
-                set _SSH_COMMAND "ssh -q -t -l $_USER_LOGINID -i $_USER_KEY $_TARGET_SYSTEM \"$_EXEC_CMD\""
+                set _SSH_COMMAND "$_SSH_CMD -l $_USER_LOGINID -i $_USER_KEY $_TARGET_SYSTEM \"$_EXEC_CMD\""
             }
         }
     } else {
         if { [ string compare -nocase $_EXEC_CMD "shell" ] == 0 } {
-            set _SSH_COMMAND "ssh -q -t -l $_USER_LOGINID $_TARGET_SYSTEM"
+            set _SSH_COMMAND "$_SSH_CMD -l $_USER_LOGINID $_TARGET_SYSTEM"
         } else {
-            set _SSH_COMMAND "ssh -q -t -l $_USER_LOGINID $_TARGET_SYSTEM \"$_EXEC_CMD\""
+            set _SSH_COMMAND "$_SSH_CMD -l $_USER_LOGINID $_TARGET_SYSTEM \"$_EXEC_CMD\""
         }
     }
 }

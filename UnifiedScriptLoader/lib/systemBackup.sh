@@ -187,14 +187,14 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo "${CNAME} - Perform a backup of requested information.";
-    echo "Usage: ${CNAME} [ -d directory ] [ -l lifetime ] [ -b ] [ -c ] [-e] [-?|-h]";
-    echo "  -d      The directory to perform the operation against";
-    echo "  -l      The lifetime for files in the source directory. Files older than this will be removed. (Optional)";
-    echo "  -b      Requests a backup of the directory specified";
-    echo "  -c      Requests a cleanup of the directory specified";
-    echo "  -e      Execute processing";
-    echo "  -?|-h   Show this help";
+    echo "${THIS_CNAME} - Perform a backup of requested information.";
+    echo "Usage: ${THIS_CNAME} [ -d directory ] [ -l lifetime ] [ -b ] [ -c ] [-e] [ -h|-? ]
+    -d         -> The directory to perform the operation against
+    -l         -> The lifetime for files in the source directory. Files older than this will be removed. (Optional)
+    -b         -> Requests a backup of the directory specified
+    -c         -> Requests a cleanup of the directory specified
+    -e         -> Execute processing
+    -h|-?      -> Show this help";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
