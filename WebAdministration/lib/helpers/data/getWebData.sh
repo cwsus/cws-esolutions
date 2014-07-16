@@ -23,7 +23,7 @@
 ## Application constants
 CNAME="${THIS_CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  obtainWebData
@@ -107,7 +107,7 @@ function obtainWebData
                 . ${APP_ROOT}/${LIB_DIRECTORY}/runQuery.sh -u ${SITE_HOSTNAME} -e;
                 RET_CODE=${?}
 
-                CNAME=$(basename ${0});
+                CNAME=$(/usr/bin/env basename ${0});
             typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
 
@@ -167,7 +167,7 @@ usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    echo "${CNAME} - Generates a certificate signing request for a provided host.";
+    echo "${THIS_CNAME} - Generates a certificate signing request for a provided host.";
     echo " -s    -> The site domain name to operate against";
     echo " -v    -> The source server to obtain the necessary key databases from";
     echo " -w    -> Platform type to execute against - iplanet or ihs";

@@ -16,9 +16,26 @@
 #
 #==============================================================================
 
-## find out what our platform is
-## we currently support solaris and
-## linux, hooray
+## common aliases
+alias mktemp='/usr/bin/env mktemp --tmpdir=${TEMP_DIRECTORY}';
+alias netstat='/usr/bin/env netstat -an';
+alias dig='/usr/bin/env dig +noedns';
+alias mkdir='/usr/bin/env mkdir -p';
+alias tar='/usr/bin/env tar -v';
+alias gzip='/usr/bin/env gzip -v';
+alias sudon='/usr/bin/env sudo -u named';
+alias sudor='/usr/bin/env sudo -u root';
+alias echoe='/usr/bin/env echo -ne';
+
+## alias java appropriately
+[ ! -z "${SYSTEM_ARCHITECTURE}" ] && [ "${SYSTEM_ARCHITECTURE}" = "64" ] || [ "${SYSTEM_ARCHITECTURE}" = "x86_64" ] && alias java="${JAVA_HOME}/bin/java -d64";
+[ ! -z "${SYSTEM_ARCHITECTURE}" ] && [ "${SYSTEM_ARCHITECTURE}" = "32" ] || [ "${SYSTEM_ARCHITECTURE}" != "x86_64" ] && alias java="${JAVA_HOME}/bin/java";
+
+alias rm='/usr/bin/env rm --preserve-root'
+alias chown='/usr/bin/env chown --preserve-root';
+alias chmod='/usr/bin/env chmod --preserve-root';
+alias chgrp='/usr/bin/env chgrp --preserve-root';
+
 case $(uname) in
     SunOS)
         alias ls='/usr/ucb/ls';
@@ -29,6 +46,8 @@ case $(uname) in
         alias ping='/usr/bin/env ping -a -n';
         ;;
     AIX)
+        ## need to undo some things here because aix
+        alias mktemp='mktemp ${TEMP_DIRECTORY}';
         alias ls='/usr/bin/env ls -F';
         alias grep='/usr/bin/env grep';
         alias egrep='/usr/bin/env egrep';
@@ -44,34 +63,3 @@ case $(uname) in
         alias ping="/usr/bin/env ping -c 1 -n -q -s 512 -w ${TIMEOUT}";
         ;;
 esac
-
-## common aliases
-alias mktemp='/usr/bin/env mktemp --tmpdir=${TEMP_DIRECTORY}';
-alias netstat='/usr/bin/env netstat -an';
-alias dig='/usr/bin/env dig +noedns';
-alias mkdir='/usr/bin/env mkdir -p';
-alias tar='/usr/bin/env tar -v';
-alias gzip='/usr/bin/env gzip -v';
-alias mv='/usr/bin/env mv';
-alias cp='/usr/bin/env cp';
-alias sed='/usr/bin/env sed';
-alias echo='/usr/bin/env echo -ne';
-alias sleep='/usr/bin/env sleep';
-alias wc='/usr/bin/env wc';
-alias kill='/usr/bin/env kill';
-alias sudo='/usr/bin/env sudo';
-alias sudon='/usr/bin/env sudo -u named';
-alias sudor='/usr/bin/env sudo -u root';
-alias head='/usr/bin/env head';
-alias cut='/usr/bin/env cut';
-alias awk='/usr/bin/env awk';
-alias cat='/usr/bin/env cat';
-
-## alias java appropriately
-[ ! -z "${SYSTEM_ARCHITECTURE}" ] && [ "${SYSTEM_ARCHITECTURE}" = "64" ] || [ "${SYSTEM_ARCHITECTURE}" = "x86_64" ] && alias java="${JAVA_HOME}/bin/java -d64";
-[ ! -z "${SYSTEM_ARCHITECTURE}" ] && [ "${SYSTEM_ARCHITECTURE}" = "32" ] || [ "${SYSTEM_ARCHITECTURE}" != "x86_64" ] && alias java="${JAVA_HOME}/bin/java";
-
-alias rm='/usr/bin/env rm --preserve-root'
-alias chown='/usr/bin/env chown --preserve-root';
-alias chmod='/usr/bin/env chmod --preserve-root';
-alias chgrp='/usr/bin/env chgrp --preserve-root';

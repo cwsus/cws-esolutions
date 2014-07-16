@@ -23,7 +23,7 @@
 ## Application constants
 CNAME="$(/usr/bin/env basename ${0})";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; /usr/bin/env echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
+SCRIPT_ROOT="$(/usr/bin/env dirname ${SCRIPT_ABSOLUTE_PATH})";
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -722,8 +722,8 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo "${CNAME} - Add zone entries to a given zonefile\n";
-    echo "Usage: ${CNAME} [ -i < type identifier> ] [ -b <business unit> ] [ -r ] [ -e ] [ -h|-? ]
+    echo "${THIS_CNAME} - Add zone entries to a given zonefile\n";
+    echo "Usage: ${THIS_CNAME} [ -i < type identifier> ] [ -b <business unit> ] [ -r ] [ -e ] [ -h|-? ]
     -b         -> The associated business unit.
     -i         -> The associated type identifier, internet or intranet.
     -r         -> Retrieve zone files from the remote system.
@@ -739,7 +739,7 @@ function usage
     return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage&& RETURN_CODE=${?};
+[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
 
 while getopts "b:i:reh" OPTIONS 2>/dev/null
 do
@@ -781,13 +781,13 @@ do
 
                 RETURN_CODE=24;
             else
-                [ ! -z "${RETRIEVE_FILES}" ] && [ "${RETRIEVE_FILES}" = "${_TRUE}" ] && retrieveZoneFiles&& RETURN_CODE=${?};
-                [ ! -z "${TYPE_IDENTIFIER}" ] && [ "${TYPE_IDENTIFIER}" = "${INTERNET_TYPE_IDENTIFIER}" ] && obtainInternetService&& RETURN_CODE=${?};
-                [ ! -z "${TYPE_IDENTIFIER}" ] && [ "${TYPE_IDENTIFIER}" = "${INTRANET_TYPE_IDENTIFIER}" ] && obtainIntranetService&& RETURN_CODE=${?};
+                [ ! -z "${RETRIEVE_FILES}" ] && [ "${RETRIEVE_FILES}" = "${_TRUE}" ] && retrieveZoneFiles && RETURN_CODE=${?};
+                [ ! -z "${TYPE_IDENTIFIER}" ] && [ "${TYPE_IDENTIFIER}" = "${INTERNET_TYPE_IDENTIFIER}" ] && obtainInternetService && RETURN_CODE=${?};
+                [ ! -z "${TYPE_IDENTIFIER}" ] && [ "${TYPE_IDENTIFIER}" = "${INTRANET_TYPE_IDENTIFIER}" ] && obtainIntranetService && RETURN_CODE=${?};
             fi
             ;;
         *)
-            usage&& RETURN_CODE=${?};
+            usage && RETURN_CODE=${?};
             ;;
     esac
 done

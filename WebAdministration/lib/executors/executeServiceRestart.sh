@@ -24,7 +24,7 @@
 ## Application constants
 CNAME="${THIS_CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  serviceControl
@@ -426,8 +426,8 @@ function usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    echo "${CNAME} - stop, start, or restart a selected service.";
-    echo "Usage: ${CNAME} <instance> <control command>";
+    echo "${THIS_CNAME} - stop, start, or restart a selected service.";
+    echo "Usage: ${THIS_CNAME} <instance> <control command>";
     echo " No arguments are required to operate this utility.";
     echo " -h|-? -> Show this help";
 

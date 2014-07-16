@@ -23,7 +23,7 @@
 ## Application constants
 CNAME="$(/usr/bin/env basename ${0})";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; /usr/bin/env echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
+SCRIPT_ROOT="$(/usr/bin/env dirname ${SCRIPT_ABSOLUTE_PATH})";
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -972,8 +972,8 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo "${CNAME} - Execute modifications against a zone\n";
-    echo "Usage: ${CNAME} [ -b <business unit> ] [ -p <project code> ] [ -z <zone name> ] [ -i <requesting user> ] [ -c <change request> ] [ -r <entry> ] [ -x ] [ -s ] [ -e ] [ -h|-? ]
+    echo "${THIS_CNAME} - Execute modifications against a zone\n";
+    echo "Usage: ${THIS_CNAME} [ -b <business unit> ] [ -p <project code> ] [ -z <zone name> ] [ -i <requesting user> ] [ -c <change request> ] [ -r <entry> ] [ -x ] [ -s ] [ -e ] [ -h|-? ]
     -b         -> The associated business unit
     -p         -> The associated project code
     -z         -> The zone name, eg example.com
@@ -994,7 +994,7 @@ function usage
     return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage&& RETURN_CODE=${?};
+[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
 
 while getopts ":b:p:z:i:c:r:xseh:" OPTIONS 2>/dev/null
 do
@@ -1122,7 +1122,7 @@ do
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                        remove_zone_entry&& RETURN_CODE=${?};
+                        remove_zone_entry && RETURN_CODE=${?};
                     fi
                 elif [ ! -z "${REMOVE_ZONE}" ] && [ "${REMOVE_ZONE}" = "${_TRUE}" ]
                 then
@@ -1132,7 +1132,7 @@ do
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                    [ ! -z "${SLAVE_OPERATION}" ] && [ "${SLAVE_OPERATION}" = "${_TRUE}" ] && remove_slave_zone && RETURN_CODE=${?} || remove_master_zone&& RETURN_CODE=${?};
+                    [ ! -z "${SLAVE_OPERATION}" ] && [ "${SLAVE_OPERATION}" = "${_TRUE}" ] && remove_slave_zone && RETURN_CODE=${?} || remove_master_zone && RETURN_CODE=${?};
                 else
                     ## we didn't get a performance argument. since we dont know what action to take,
                     ## we fail here.
@@ -1146,7 +1146,7 @@ do
         *)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            usage&& RETURN_CODE=${?};
+            usage && RETURN_CODE=${?};
             ;;
     esac
 done

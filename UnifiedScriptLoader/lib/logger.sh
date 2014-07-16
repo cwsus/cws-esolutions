@@ -139,6 +139,10 @@ function writeLogEntry
             RECORDER=$(sed -e "s^${TIMESTAMP_OPTS}^$(date +"${TIMESTAMP_OPTS}")^;s^%t^${PPID}^;s^%c^${WARN_LOG_FILE}^;s^%-5p^${1}^;s^%M^${2}^;s^%F^${3}^;s^%L^${4}^;s^%m^${5}^" <<< ${CONVERSION_PATTERN});
             LOG_FILE=${WARN_LOG_FILE};
             ;;
+        [Mm][Oo][Nn][Ii][Tt][Oo][Rr]|[Mm])
+            RECORDER=$(sed -e "s^${TIMESTAMP_OPTS}^$(date +"${TIMESTAMP_OPTS}")^;s^%t^${PPID}^;s^%c^${MONITOR_LOG_FILE}^;s^%-5p^${1}^;s^%M^${2}^;s^%F^${3}^;s^%L^${4}^;s^%m^${5}^" <<< ${CONVERSION_PATTERN});
+            LOG_FILE=${MONITOR_LOG_FILE};
+            ;;
         *)
             RECORDER=$(sed -e "s^${TIMESTAMP_OPTS}^$(date +"${TIMESTAMP_OPTS}")^;s^%t^${PPID}^;s^%c^${INFO_LOG_FILE}^;s^%-5p^${1}^;s^%M^${2}^;s^%F^${3}^;s^%L^${4}^;s^%m^${5}^" <<< ${CONVERSION_PATTERN});
             LOG_FILE=${INFO_LOG_FILE};

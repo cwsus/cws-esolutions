@@ -24,7 +24,7 @@
 ## Application constants
 CNAME="$(/usr/bin/env basename ${0})";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; /usr/bin/env echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
+SCRIPT_ROOT="$(/usr/bin/env dirname ${SCRIPT_ABSOLUTE_PATH})";
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -1176,8 +1176,8 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo "${CNAME} - Execute key generation requests\n";
-    echo "Usage: ${CNAME} [ -r <request information> ] [ -k <request information> ] [ -i <requesting user> ] [ -e ] [ -h|-? ]
+    echo "${THIS_CNAME} - Execute key generation requests\n";
+    echo "Usage: ${THIS_CNAME} [ -r <request information> ] [ -k <request information> ] [ -i <requesting user> ] [ -e ] [ -h|-? ]
     -r         -> Generate new RNDC keys. Requires a comma-delimited information set to execute the request.
     -k         -> Generate DNSSEC keys. Requires a comma-delimited information set to execute the request.
     -e         -> Execute the request
@@ -1192,7 +1192,7 @@ function usage
     return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage&& RETURN_CODE=${?};
+[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
 
 while getopts ":r:k:i:eh:" OPTIONS 2>/dev/null
 do
@@ -1262,16 +1262,16 @@ do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                [ ! -z "${GENERATE_DNSSEC_KEYS}" ] && [ "${GENERATE_DNSSEC_KEYS}" = "${_TRUE}" ] && generateDNSSECKeys&& RETURN_CODE=${?};
-                [ ! -z "${GENERATE_TSIG_KEYS}" ] && [ "${GENERATE_TSIG_KEYS}" = "${_TRUE}" ] && generateTSIGKeys&& RETURN_CODE=${?};
-                [ ! -z "${GENERATE_DHCPD_KEYS}" ] && [ "${GENERATE_DHCPD_KEYS}" = "${_TRUE}" ] && generateDHCPDKeys&& RETURN_CODE=${?};
-                [ ! -z "${GENERATE_RNDC_KEYS}" ] && [ "${GENERATE_RNDC_KEYS}" = "${_TRUE}" ] && generateRNDCKeys&& RETURN_CODE=${?};
+                [ ! -z "${GENERATE_DNSSEC_KEYS}" ] && [ "${GENERATE_DNSSEC_KEYS}" = "${_TRUE}" ] && generateDNSSECKeys && RETURN_CODE=${?};
+                [ ! -z "${GENERATE_TSIG_KEYS}" ] && [ "${GENERATE_TSIG_KEYS}" = "${_TRUE}" ] && generateTSIGKeys && RETURN_CODE=${?};
+                [ ! -z "${GENERATE_DHCPD_KEYS}" ] && [ "${GENERATE_DHCPD_KEYS}" = "${_TRUE}" ] && generateDHCPDKeys && RETURN_CODE=${?};
+                [ ! -z "${GENERATE_RNDC_KEYS}" ] && [ "${GENERATE_RNDC_KEYS}" = "${_TRUE}" ] && generateRNDCKeys && RETURN_CODE=${?};
             fi
             ;;
         *)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            usage&& RETURN_CODE=${?};
+            usage && RETURN_CODE=${?};
             ;;
     esac
 done

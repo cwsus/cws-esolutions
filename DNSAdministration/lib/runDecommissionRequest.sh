@@ -23,7 +23,7 @@
 ## Application constants
 CNAME="$(/usr/bin/env basename ${0})";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; /usr/bin/env echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
+SCRIPT_ROOT="$(/usr/bin/env dirname ${SCRIPT_ABSOLUTE_PATH})";
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -385,8 +385,8 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo "${CNAME} - Execute a DNS failover request on the master nameserver based on the provided information.\n";
-    echo "Usage: ${CNAME} [ -s <request data> ] [ -b <request data> ] [ -d <server> ] [ -e ] [ -h|-? ]
+    echo "${THIS_CNAME} - Execute a DNS failover request on the master nameserver based on the provided information.\n";
+    echo "Usage: ${THIS_CNAME} [ -s <request data> ] [ -b <request data> ] [ -d <server> ] [ -e ] [ -h|-? ]
     -s         -> Process a site failover based on a comma-delimited information set
     -b         -> Process a business unit failover based on a comma-delimited information set
     -d         -> If provided, operates against a provided slave server
@@ -402,7 +402,7 @@ function usage
     return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage&& RETURN_CODE=${?};
+[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
 
 while getopts ":s:b:d:eh:" OPTIONS 2>/dev/null
 do
@@ -505,7 +505,7 @@ do
                 then
                     if [ "${DECOM_TYPE}" = "unit" ]
                     then
-                        decom_bu&& RETURN_CODE=${?};
+                        decom_bu && RETURN_CODE=${?};
                     elif [ "${DECOM_TYPE}" = "site" ]
                     then
                         if [ -z "${ZONE_NAME}" ] || [ -z "${PRJCODE}" ]
@@ -515,7 +515,7 @@ do
 
                             RETURN_CODE=3;
                         else
-                            decom_site&& RETURN_CODE=${?};
+                            decom_site && RETURN_CODE=${?};
                         fi
                     else
                         ## no valid decommission type was provided

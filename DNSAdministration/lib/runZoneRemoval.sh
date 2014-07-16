@@ -23,7 +23,7 @@
 ## Application constants
 CNAME="$(/usr/bin/env basename ${0})";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; /usr/bin/env echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
+SCRIPT_ROOT="$(/usr/bin/env dirname ${SCRIPT_ABSOLUTE_PATH})";
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -476,8 +476,8 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo "${CNAME} - Execute a DNS decommission or removal. All arguments require a comma-delimited information set to properly process.\n";
-    echo "Usage: ${CNAME} [ -s <request data> ] [ -b <request data> ] [ -p <request data> ] [ -x <request data> ] [ -e <execute> ] [ -h|-? ]
+    echo "${THIS_CNAME} - Execute a DNS decommission or removal. All arguments require a comma-delimited information set to properly process.\n";
+    echo "Usage: ${THIS_CNAME} [ -s <request data> ] [ -b <request data> ] [ -p <request data> ] [ -x <request data> ] [ -e <execute> ] [ -h|-? ]
     -s         -> Processes a site decommission.
     -b         -> Processes a business unit decommission
     -p         -> Processes a project code decommission
@@ -494,7 +494,7 @@ function usage
     return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage&& RETURN_CODE=${?};
+[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
 
 while getopts ":s:b:p:x:eh:" OPTIONS 2>/dev/null
 do
@@ -652,7 +652,7 @@ do
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                        decom_site&& RETURN_CODE=${?};
+                        decom_site && RETURN_CODE=${?};
                     fi
                     ;;
                 unit)
@@ -715,7 +715,7 @@ do
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing.";
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                        decom_bu&& RETURN_CODE=${?};
+                        decom_bu && RETURN_CODE=${?};
                     fi
                     ;;
                 project)
@@ -756,7 +756,7 @@ do
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing.";
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                        decom_project&& RETURN_CODE=${?};
+                        decom_project && RETURN_CODE=${?};
                     fi
                     ;;
                 entry)
@@ -865,21 +865,21 @@ do
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                        decom_site&& RETURN_CODE=${?};
+                        decom_site && RETURN_CODE=${?};
                     fi
                     ;;
                 *)
                     ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No information was provided. Unable to continue processing.";
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                    usage&& RETURN_CODE=${?};
+                    usage && RETURN_CODE=${?};
                     ;;
             esac
             ;;
         *)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            usage&& RETURN_CODE=${?};
+            usage && RETURN_CODE=${?};
             ;;
     esac
 done

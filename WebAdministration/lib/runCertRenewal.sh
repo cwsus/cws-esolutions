@@ -23,7 +23,7 @@
 ## Application constants
 CNAME="${THIS_CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  create_working_copy
@@ -220,7 +220,7 @@ function renewiPlanetCert
                                                 MAILER_CODE=${?};
 
                                                 OPTIND=${RR_OPTIND};
-                                                CNAME=$(basename ${0});
+                                                CNAME=$(/usr/bin/env basename ${0});
                                             typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
 
@@ -445,7 +445,7 @@ function renewIHSCert
                                         . ${MAILER_CLASS} -m ${NOTIFY_PEM_EMAIL} -p ${WEB_PROJECT_CODE} -a "${NOTIFY_PEM_ADDRESS}" -t ${NOTIFY_TYPE_NOTIFY} -e;
                                         MAILER_CODE=${?};
 
-                                        CNAME=$(basename ${0});
+                                        CNAME=$(/usr/bin/env basename ${0});
                                     typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
 
@@ -843,8 +843,8 @@ function usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    echo "${CNAME} - Apply a new SSL certificate to a secure site instance";
-    echo "Usage: ${CNAME} [ -d certificate database ] [ -s site hostname ] [ -w webserver platform ] [ -p platform code ] [ -c change request ] [ -a ] [-e] [-?|-h]";
+    echo "${THIS_CNAME} - Apply a new SSL certificate to a secure site instance";
+    echo "Usage: ${THIS_CNAME} [ -d certificate database ] [ -s site hostname ] [ -w webserver platform ] [ -p platform code ] [ -c change request ] [ -a ] [-e] [-?|-h]";
     echo "  -d      The certificate database to apply changes to, e.g. https-site.name_project-hostname-";
     echo "  -s      The relevant site hostname, e.g. site.name.com";
     echo "  -w      The webserver platform type associated with this website.";

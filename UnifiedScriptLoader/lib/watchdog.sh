@@ -37,12 +37,12 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo "${CNAME} - Watchdog for process execution";
-    echo "Usage: ${CNAME} [ -t <timeout> ] [ -i <interval> ] [ -d <delay> ] <command> [-?|-h show this help]";
-    echo "  -t      Number of seconds to wait for command completion. Default value: ${THREAD_TIMEOUT} seconds.";
-    echo "  -i      Interval between checks if the process is still alive. Positive integer, default value: ${THREAD_INTERVAL} seconds.";
-    echo "  -d      Delay between posting the SIGTERM signal and destroying the process by SIGKILL. Default value: ${THREAD_DELAY} seconds.";
-    echo "  -h|-?   Show this help";
+    echo "${THIS_CNAME} - Watchdog for process execution\n";
+    echo "Usage: ${THIS_CNAME} [ -t <timeout> ] [ -i <interval> ] [ -d <delay> ] <command> [-?|-h show this help]
+    -t         -> Number of seconds to wait for command completion. Default value: ${THREAD_TIMEOUT} seconds.
+    -i         -> Interval between checks if the process is still alive. Positive integer, default value: ${THREAD_INTERVAL} seconds.
+    -d         -> Delay between posting the SIGTERM signal and destroying the process by SIGKILL. Default value: ${THREAD_DELAY} seconds.
+    -h|-?      -> Show this help\n";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -55,17 +55,18 @@ function usage
 
 ## make sure we have arguments, if we do
 ## then load our constants and continue
-[ ${#} -eq 0 ] && usage&& RETURN_CODE=${?};
+[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
 
 [ -f ${APP_ROOT}/${LIB_DIRECTORY}/functions ] && . ${APP_ROOT}/${LIB_DIRECTORY}/functions;
 [ -f ${APP_ROOT}/${LIB_DIRECTORY}/aliases ] && . ${APP_ROOT}/${LIB_DIRECTORY}/aliases;
 
-while getopts ":t:i:d:" OPTIONS 2>/dev/null; do
+while getopts ":t:i:d:" OPTIONS 2>/dev/null
+do
     case ${OPTIONS} in
-        t) [ ! -z "${OPTARG}" ] && [ $(isNaN ${OPTARG}) -eq 0 ] && TIMEOUT=${OPTARG} || TIMEOUT=${THREAD_TIMEOUT} ;;
-        n) [ ! -z "${OPTARG}" ] && [ $(isNaN ${OPTARG}) -eq 0 ] && INTERVAL=${OPTARG} || INTERVAL=${THREAD_INTERVAL} ;;
-        d) [ ! -z "${OPTARG}" ] && [ $(isNaN ${OPTARG}) -eq 0 ] && DELAY=${OPTARG} || DELAY=${THREAD_DELAY} ;;
-        *) usage&& RETURN_CODE=${?}; exit 1 ;;
+        t) [ ! -z "${OPTARG}" ] && typeset -i TIMEOUT=${OPTARG} || typeset -i TIMEOUT=${THREAD_TIMEOUT} ;;
+        n) [ ! -z "${OPTARG}" ] && typeset -i INTERVAL=${OPTARG} || typeset -i INTERVAL=${THREAD_INTERVAL} ;;
+        d) [ ! -z "${OPTARG}" ] && typeset -i DELAY=${OPTARG} || typeset -i DELAY=${THREAD_DELAY} ;;
+        *) usage && RETURN_CODE=${?}; exit 1 ;;
     esac
 done
 

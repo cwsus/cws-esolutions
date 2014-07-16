@@ -23,7 +23,7 @@
 ## Application constants
 CNAME="${THIS_CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  generateCSR
@@ -124,7 +124,7 @@ function generateCSR
                             -t ${CONTACT_NUMBER} -e;
                         RET_CODE=${?}
 
-                        CNAME=$(basename ${0});
+                        CNAME=$(/usr/bin/env basename ${0});
                     typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
                         CSR_COMPLETE=${_TRUE};

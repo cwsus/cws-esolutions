@@ -20,7 +20,7 @@
 ## Application constants
 CNAME="${THIS_CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 trap "echo '$(grep -w system.trap.signals "${SYSTEM_MESSAGES}"| grep -v "#" | cut -d "=" -f 2 | sed -e "s/%SIGNAL%/Ctrl-C/")'; sleep "${MESSAGE_DELAY}"; reset; clear; continue " 1 2 3
 
@@ -216,7 +216,7 @@ function main
                                                     . ${APP_ROOT}/${LIB_DIRECTORY}/runAddInstance.sh -s ${SERVER_ID} -p ${PLATFORM_CODE} -P ${PROJECT_CODE} -w ${WS_PLATFORM} -c ${CHANGE_NUM} -e;
                                                     typeset -i RET_CODE=${?};
 
-                                                    CNAME=$(basename ${0});
+                                                    CNAME=$(/usr/bin/env basename ${0});
                                                     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 typeset METHOD_NAME="${CNAME}#${0}";
@@ -705,7 +705,7 @@ function buildServerInstance
     do
         if [ ! -z "${CANCEL_REQ}" ] && [ "${CANCEL_REQ}" = "${_TRUE}" ]
         then
-            CNAME=$(basename ${0});
+            CNAME=$(/usr/bin/env basename ${0});
         typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
 
@@ -734,7 +734,7 @@ typeset RETURN_CODE=0;
             ## put methodname and cname back
         typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
-            CNAME=$(basename ${0});
+            CNAME=$(/usr/bin/env basename ${0});
 
             while true
             do
@@ -794,7 +794,7 @@ typeset RETURN_CODE=0;
                                 . ${APP_ROOT}/${LIB_DIRECTORY}/runAddInstance.sh -s ${SERVER_ID} -p ${PLATFORM_CODE} -P ${PROJECT_CODE} -w ${WS_PLATFORM} -c ${CHANGE_NUM} -e;
                                 typeset -i RET_CODE=${?};
 
-                                CNAME=$(basename ${0});
+                                CNAME=$(/usr/bin/env basename ${0});
                             typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
 

@@ -23,7 +23,7 @@
 ## Application constants
 CNAME="$(/usr/bin/env basename ${0})";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; /usr/bin/env echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
+SCRIPT_ROOT="$(/usr/bin/env dirname ${SCRIPT_ABSOLUTE_PATH})";
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -1043,8 +1043,8 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo "${CNAME} - Execute a site failover\n";
-    echo "Usage: ${CNAME} [ -t <failover type>  ] [ -b <business unit> ] [ -p <project code> ] [ -s <site hostname> ] [ -a ] [ -x <target> ] [ -i <requesting user> ] [ -c <change request> ] [ -e ] [ -h|-? ]
+    echo "${THIS_CNAME} - Execute a site failover\n";
+    echo "Usage: ${THIS_CNAME} [ -t <failover type>  ] [ -b <business unit> ] [ -p <project code> ] [ -s <site hostname> ] [ -a ] [ -x <target> ] [ -i <requesting user> ] [ -c <change request> ] [ -e ] [ -h|-? ]
     -t         -> The failover type to execute - internal or external.
     -b         -> If performing a business unit failover, please provide the unit name. Required if failing over a project code.
     -p         -> If performing a project code failover, please provide the code name. The project business unit must also be provided.
@@ -1065,7 +1065,7 @@ function usage
     return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage&& RETURN_CODE=${?};
+[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
 
 while getopts ":t:b:p:s:ax:i:c:eh:" OPTIONS 2>/dev/null
 do
@@ -1175,7 +1175,7 @@ do
 
                             RETURN_CODE=19;
                         else
-                            failoverIntranetSite&& RETURN_CODE=${?};
+                            failoverIntranetSite && RETURN_CODE=${?};
                         fi
                         ;;
                     ${INTERNET_TYPE_IDENTIFIER})
@@ -1193,12 +1193,12 @@ do
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                            [[ ! -z "${BUSINESS_UNIT}" && -z "${PROJECT_CODE}" ]] && failoverBusinessUnit&& RETURN_CODE=${?};
-                            [[ ! -z "${PROJECT_CODE}" && ! -z "${BUSINESS_UNIT}" ]] && failoverProject&& RETURN_CODE=${?};
-                            [ ! -z "${SITE_HOSTNAME}" ] && failoverInternetSite&& RETURN_CODE=${?};
-                            [[ ! -z "${FULL_DATACENTER}" && "${FULL_DATACENTER}" = "${_TRUE}" ]] && failoverDatacenter&& RETURN_CODE=${?};
+                            [[ ! -z "${BUSINESS_UNIT}" && -z "${PROJECT_CODE}" ]] && failoverBusinessUnit && RETURN_CODE=${?};
+                            [[ ! -z "${PROJECT_CODE}" && ! -z "${BUSINESS_UNIT}" ]] && failoverProject && RETURN_CODE=${?};
+                            [ ! -z "${SITE_HOSTNAME}" ] && failoverInternetSite && RETURN_CODE=${?};
+                            [[ ! -z "${FULL_DATACENTER}" && "${FULL_DATACENTER}" = "${_TRUE}" ]] && failoverDatacenter && RETURN_CODE=${?};
 
-                            usage&& RETURN_CODE=${?};
+                            usage && RETURN_CODE=${?};
                         fi
                         ;;
                 esac
@@ -1207,7 +1207,7 @@ do
         *)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            usage&& RETURN_CODE=${?};
+            usage && RETURN_CODE=${?};
             ;;
     esac
 done

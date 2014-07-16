@@ -24,7 +24,7 @@
 ## Application constants
 CNAME="$(/usr/bin/env basename ${0})";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; /usr/bin/env echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
+SCRIPT_ROOT="$(/usr/bin/env dirname ${SCRIPT_ABSOLUTE_PATH})";
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -230,8 +230,8 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo "${CNAME} - Execute RNDC (Remote Name Daemon Control) commands against a provided server\n";
-    echo "Usage: ${CNAME} [ -s <server> ] [ -p <port> ] [ -y <keyfile> ] [ -c <command> ] [ -z <zone> ] [ -e ] [ -h|-? ]
+    echo "${THIS_CNAME} - Execute RNDC (Remote Name Daemon Control) commands against a provided server\n";
+    echo "Usage: ${THIS_CNAME} [ -s <server> ] [ -p <port> ] [ -y <keyfile> ] [ -c <command> ] [ -z <zone> ] [ -e ] [ -h|-? ]
     -s         -> The server to execute commands against. If not provided, defaults to localhost
     -p         -> The RNDC listening port. If not provided, defaults to 953.
     -y         -> The RNDC keyfile to utilize. If not provided, defaults to rndc-key
@@ -252,7 +252,7 @@ function usage
     return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage&& RETURN_CODE=${?};
+[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
 
 while getopts ":s:p:y:c:z:i:pleh:" OPTIONS 2>/dev/null
 do
@@ -423,19 +423,19 @@ do
 
             if [ ! -z "${CHECK_LOG_ENTRIES}" ] && [ "${CHECK_LOG_ENTRIES}" = "${_TRUE}" ]
             then
-                monitorLogEntries&& RETURN_CODE=${?};
+                monitorLogEntries && RETURN_CODE=${?};
             elif [ ! -z "${CHECK_PROCESS_PRESENCE}" ] && [ "${CHECK_PROCESS_PRESENCE}" = "${_TRUE}" ]
             then
-                monitorProcessPresence&& RETURN_CODE=${?};
+                monitorProcessPresence && RETURN_CODE=${?};
             else
-                monitorProcessPresence&& RETURN_CODE=${?};
-                monitorLogEntries&& RETURN_CODE=${?};
+                monitorProcessPresence && RETURN_CODE=${?};
+                monitorLogEntries && RETURN_CODE=${?};
             fi
             ;;
         *)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            usage&& RETURN_CODE=${?};
+            usage && RETURN_CODE=${?};
             ;;
     esac
 done

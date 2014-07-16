@@ -23,7 +23,7 @@
 ## Application constants
 CNAME="${THIS_CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  install_zone
@@ -346,8 +346,8 @@ function usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    echo "${CNAME} - Execute zone additions to the DNS infrastructure.";
-    echo "Usage: ${CNAME} [ -s server id ] [ -p project code ] [ -i requestor ] [ -c change request ] [ -e ] [ -?|-h ]";
+    echo "${THIS_CNAME} - Execute zone additions to the DNS infrastructure.";
+    echo "Usage: ${THIS_CNAME} [ -s server id ] [ -p project code ] [ -i requestor ] [ -c change request ] [ -e ] [ -?|-h ]";
     echo "  -s      The associated server identifier";
     echo "  -p      The associated project code";
     echo "  -i      The user performing the request";

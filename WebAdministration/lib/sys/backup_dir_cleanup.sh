@@ -23,7 +23,7 @@
 ## Application constants
 CNAME="${THIS_CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  add_indicators
@@ -92,8 +92,8 @@ function usage
 
     [ ! -z ${ENABLE_DEBUG} ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME}->enter";
 
-    echo "${CNAME} - Add "AUDIT" indicators and other flags to the failover zone file";
-    echo "Usage: ${CNAME} [-r ZONE_ROOT] [-f filename] [-t target datacenter] [-i requestor] [-c change request] [-e execute] [-?|-h show this help]";
+    echo "${THIS_CNAME} - Add "AUDIT" indicators and other flags to the failover zone file";
+    echo "Usage: ${THIS_CNAME} [-r ZONE_ROOT] [-f filename] [-t target datacenter] [-i requestor] [-c change request] [-e execute] [-?|-h show this help]";
     echo "  -t      Timespan to clean. Default of 30 days.";
     echo "  -i      The user performing the request";
     echo "  -n      Clean the named backup directory as well as the application backup directory.";

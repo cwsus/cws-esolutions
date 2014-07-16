@@ -23,7 +23,7 @@
 ## Application constants
 CNAME="${THIS_CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  implementCertificate
@@ -100,7 +100,7 @@ function implementCertificate
                         . ${APP_ROOT}/${LIB_DIRECTORY}/runQuery.sh -u ${SITE_HOSTNAME} -e;
                         RET_CODE=${?}
 
-                        CNAME=$(basename ${0});
+                        CNAME=$(/usr/bin/env basename ${0});
                     typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
 
@@ -216,7 +216,7 @@ typeset RETURN_CODE=0;
                                 -w ${WEBSERVER_PLATFORM} -p ${PLATFORM} -c ${CHANGE_NUM} -a -e;
                             typeset -i RET_CODE=${?};
 
-                            CNAME=$(basename ${0});
+                            CNAME=$(/usr/bin/env basename ${0});
                         typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
 
@@ -278,7 +278,7 @@ typeset RETURN_CODE=0;
                         . ${APP_ROOT}/${LIB_DIRECTORY}/runCertRenewal.sh -d ${CERTDB} -s ${SITE_HOSTNAME} -w ${WEBSERVER_PLATFORM} -p ${PLATFORM_CODE} -c ${CHANGE_NUM} -a -e;
                         typeset -i RET_CODE=${?};
 
-                        CNAME=$(basename ${0});
+                        CNAME=$(/usr/bin/env basename ${0});
                     typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
 

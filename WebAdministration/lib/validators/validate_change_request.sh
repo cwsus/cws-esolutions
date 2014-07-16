@@ -26,7 +26,7 @@
 ## Application constants
 CNAME="${THIS_CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 function validate_change_request
 {
@@ -152,8 +152,8 @@ function usage
     typeset METHOD_NAME="${CNAME}#${0}";
     typeset RETURN_CODE=0;
 
-    echo "${CNAME} - Validate that a change request has been successfully performed.";
-    echo "Usage: ${CNAME} certdb";
+    echo "${THIS_CNAME} - Validate that a change request has been successfully performed.";
+    echo "Usage: ${THIS_CNAME} certdb";
     echo "          certdb is the name of the certificate database (e.g. https-site.name_project-hostname-) to validate";
 
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;

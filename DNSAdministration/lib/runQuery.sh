@@ -23,7 +23,7 @@
 ## Application constants
 CNAME="$(/usr/bin/env basename ${0})";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; /usr/bin/env echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
+SCRIPT_ROOT="$(/usr/bin/env dirname ${SCRIPT_ABSOLUTE_PATH})";
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -400,8 +400,8 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo "${CNAME} - Performs a DNS query against the nameserver specified.\n";
-    echo "Usage: ${CNAME} [ -s <nameserver> ] [ -t <record type> ] [ -u <url> ] [ -r ] [ -o ] [ -p ] [ -e ] [ -h|-? ]
+    echo "${THIS_CNAME} - Performs a DNS query against the nameserver specified.\n";
+    echo "Usage: ${THIS_CNAME} [ -s <nameserver> ] [ -t <record type> ] [ -u <url> ] [ -r ] [ -o ] [ -p ] [ -e ] [ -h|-? ]
     -s         -> Nameserver to query against. If no server is provided, the system default nameserver is utilized.
     -t         -> Type of record to retrieve (if blank, A assumed)
     -u         -> URL/IP address to query
@@ -420,7 +420,7 @@ function usage
     return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage&& RETURN_CODE=${?};
+[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
 
 while getopts ":s:t:u:ropeh:" OPTIONS 2>/dev/null
 do
@@ -497,7 +497,7 @@ do
         *)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            usage&& RETURN_CODE=${?};
+            usage && RETURN_CODE=${?};
             ;;
     esac
 done

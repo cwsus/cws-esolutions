@@ -24,7 +24,7 @@
 ## Application constants
 CNAME="${THIS_CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
 #      NAME:  restart_service
@@ -162,8 +162,8 @@ function usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    echo "${CNAME} - Execute RNDC (Remote Name Daemon Control) commands against a provided server";
-    echo "Usage: ${CNAME} [ -s server ] [ -c command ] [ -r ] [ -e ] [ -h|? ]";
+    echo "${THIS_CNAME} - Execute RNDC (Remote Name Daemon Control) commands against a provided server";
+    echo "Usage: ${THIS_CNAME} [ -s server ] [ -c command ] [ -r ] [ -e ] [ -h|? ]";
     echo " -r    -> Indicate that the restart is performed to reload RNDC keyfiles.";
     echo " -e    -> Execute the request";
     echo " -h|-? -> Show this help";

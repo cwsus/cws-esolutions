@@ -22,7 +22,7 @@
 ## Application constants
 CNAME="${THIS_CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  perform_zone_backup
@@ -301,8 +301,8 @@ function usage
 
     [ ! -z ${ENABLE_DEBUG} ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME}->enter";
 
-    echo "${CNAME} - Perform a full or specified backup operation";
-    echo "Usage: ${CNAME} <no arguments> | zone | conf";
+    echo "${THIS_CNAME} - Perform a full or specified backup operation";
+    echo "Usage: ${THIS_CNAME} <no arguments> | zone | conf";
     echo "  No arguments are required to perform a complete backup of all zone and operational configuration files. If";
     echo "  arguments are specified, they must be one of the following:";
     echo "  ";

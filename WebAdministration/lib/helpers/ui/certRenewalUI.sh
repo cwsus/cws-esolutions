@@ -23,7 +23,7 @@
 ## Application constants
 CNAME="${THIS_CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  updateCertificate
@@ -122,7 +122,7 @@ function updateCertificate
         RET_CODE=${?}
 
         OPTIND=${CURR_OPTIND};
-        CNAME=$(basename ${0});
+        CNAME=$(/usr/bin/env basename ${0});
     typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
 
@@ -249,7 +249,7 @@ typeset RETURN_CODE=0;
                                     . ${MAILER_CLASS} -m ${NOTIFY_OWNER_EMAIL} -p ${WEB_PROJECT_CODE} -a "${OWNER_DIST}" -t ${NOTIFY_TYPE_NOTIFY} -e;
                                     typeset -i RET_CODE=${?};
 
-                                    CNAME=$(basename ${0});
+                                    CNAME=$(/usr/bin/env basename ${0});
                                 typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
 

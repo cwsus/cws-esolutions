@@ -24,7 +24,7 @@
 ## Application constants
 CNAME="${THIS_CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  monitorWebInstances
@@ -55,7 +55,7 @@ function monitorWebInstances
 
             set -A VALIDATE_SERVER_LIST $(${APP_ROOT}/${LIB_DIRECTORY}/retrieveSiteList.sh status);
 
-            CNAME=$(basename ${0});
+            CNAME=$(/usr/bin/env basename ${0});
         typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
 

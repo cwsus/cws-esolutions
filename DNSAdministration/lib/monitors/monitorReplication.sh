@@ -24,7 +24,7 @@
 ## Application constants
 CNAME="$(/usr/bin/env basename ${0})";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; /usr/bin/env echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
+SCRIPT_ROOT="$(/usr/bin/env dirname ${SCRIPT_ABSOLUTE_PATH})";
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -59,11 +59,11 @@ function monitorSerialStatus
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checking synchronization status..";
 
     ## start processing records
-    for CONFIG_ENTRY in $(ls -ltr ${NAMED_ROOT}/${NAMED_CONF_DIR} | grep ${NAMED_ZONE_CONF_NAME} | awk '{print $9}')
+    for CONFIG_ENTRY in $(find ${NAMED_ROOT}/${NAMED_CONF_DIR} -type f -name *.${NAMED_ZONE_CONF_NAME} -print)
     do
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing configuration file ${CONFIG_ENTRY}..";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONFIG_ENTRY -> ${CONFIG_ENTRY}";
 
-        for ZONE_ENTRY in $(grep "${ZONE_IDENT_STRING}" ${NAMED_ROOT}/${NAMED_CONF_DIR}/${CONFIG_ENTRY} ${PLUGIN_SYSTEM_MESSAGES} | grep -v "#" | grep -v "file" | sed -e "s/${ZONE_IDENT_STRING} \"//" -e "s/\" IN {//")
+        for ZONE_ENTRY in $(grep "${ZONE_IDENT_STRING}" ${CONFIG_ENTRY} | egrep -v "#|file" | sed -e "s/${ZONE_IDENT_STRING} \"//" -e "s/\" IN {//")
         do
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ZONE_ENTRY -> ${ZONE_ENTRY}";
 
@@ -71,7 +71,12 @@ function monitorSerialStatus
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MASTER_SOA_SERIAL -> ${MASTER_SOA_SERIAL}";
 
-            if [ "$(isNaN ${MASTER_SOA_SERIAL})" = "${_FALSE}" ]
+            isNaN ${MASTER_SOA_SERIAL};
+            typeset -i RET_CODE=${?};
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+            if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
             then
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MASTER_SOA_SERIAL -> is not a serial number. Obtaining..";
 
@@ -179,8 +184,8 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo "${CNAME} - Execute RNDC (Remote Name Daemon Control) commands against a provided server\n";
-    echo "Usage: ${CNAME} [ -s ] [ -a ] [ -e ] [ -h|-? ]
+    echo "${THIS_CNAME} - Execute RNDC (Remote Name Daemon Control) commands against a provided server\n";
+    echo "Usage: ${THIS_CNAME} [ -s ] [ -a ] [ -e ] [ -h|-? ]
     -s         -> Execute serial number validation
     -a         -> Execute address validation
     -e         -> Execute the request
@@ -195,13 +200,13 @@ function usage
     return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage&& RETURN_CODE=${?};
+[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-[ ${#} -eq 0 ] && monitorSerialStatus && monitorAddressSynchronization&& RETURN_CODE=${?};
-[ "${1}" = "${MONITOR_SERIAL}" ] && monitorSerialStatus&& RETURN_CODE=${?};
-[ "${1}" = "${MONITOR_ADDRESS}" ] && monitorAddressSynchronization&& RETURN_CODE=${?};
+[ ${#} -eq 0 ] && monitorSerialStatus && monitorAddressSynchronization && RETURN_CODE=${?};
+[ "${1}" = "${MONITOR_SERIAL}" ] && monitorSerialStatus && RETURN_CODE=${?};
+[ "${1}" = "${MONITOR_ADDRESS}" ] && monitorAddressSynchronization && RETURN_CODE=${?};
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";

@@ -26,7 +26,7 @@
 ## Constants
 CNAME="${THIS_CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  lockProcess
@@ -98,8 +98,8 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo "${CNAME} - Create and assign a lockfile";
-    echo "Usage: ${CNAME} [ lock | unlock ] [ <pid> ]
+    echo "${THIS_CNAME} - Create and assign a lockfile";
+    echo "Usage: ${THIS_CNAME} [ lock | unlock ] [ <pid> ]
              -> Create or release a lockfile. To create, use \"lock\", to release, use \"unlock\".
              -> The PID to create the lockfile for.";
 
@@ -112,7 +112,7 @@ function usage
     return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0]  || [ ${#} -ne 2 ] && usage && RETURN_CODE=${?};
+[ ${#} -eq 0] || [ ${#} -ne 2 ] && usage && RETURN_CODE=${?};
 
 METHOD_NAME="${CNAME}#startup";
 

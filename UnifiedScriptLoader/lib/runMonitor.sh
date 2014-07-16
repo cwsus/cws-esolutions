@@ -23,7 +23,7 @@
 ## Application constants
 CNAME="${THIS_CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
@@ -46,7 +46,6 @@ METHOD_NAME="${CNAME}#startup";
 #          NAME:  executeMonitoringScript
 #   DESCRIPTION:  Processes and implements a DNS site failover
 #    PARAMETERS:  Parameters obtained via command-line flags
-#          NAME:  usage for positive result, >1 for non-positive
 #==============================================================================
 function executeMonitoringScript
 {
@@ -59,20 +58,30 @@ function executeMonitoringScript
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing monitor on: ${HOSTNAME}";
 
-    ## clean up the output file
-    cat /dev/null > ${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
+    typeset MONITOR_SCRIPT=$(echo ${MONITORING_SCRIPT} | cut -d "|" -f 1);
+    typeset MONITOR_LOG=$(echo ${MONITORING_SCRIPT} | cut -d "|" -f 2);
 
-    ## set up our execution date
-    typeset EXECUTION_DATE=$(date +"%d %b %Y");
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MONITOR_SCRIPT -> ${MONITOR_SCRIPT}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MONITOR_LOG -> ${MONITOR_LOG}";
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXECUTION_DATE -> ${EXECUTION_DATE}";
-
-    if [ -z "${TARGET_SYSTEMS[@]}" ] || [ ${#TARGET_SYSTEMS[@]} -eq 0 ]
+    if [ ! -s ${MONITOR_SCRIPT} ]
     then
-        set -A TARGET_SYSTEMS ${DNS_SERVERS[@]};
-    fi
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "The provided monitoring script could not be located. Cannot continue.";
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TARGET_SYSTEMS -> ${TARGET_SYSTEMS[@]}";
+        RETURN_CODE=29;
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        unset MONITOR_SCRIPT;
+        unset MONITOR_LOG;
+        unset METHOD_NAME;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
 
     ## we were asked to monitor on a specific server - execute
     for MONITORED_HOST in ${TARGET_SYSTEMS[@]}
@@ -83,29 +92,46 @@ function executeMonitoringScript
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MONITORED_HOST -> ${MONITORED_HOST}";
 
-        IGNORE_SERVER=$(awk -F "=" "/\<${MONITORED_HOST}\>/{print \$2}" ${SERVER_IGNORE_LIST} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//');
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IGNORE_SERVER -> ${IGNORE_SERVER}";
-
-        if [ ! -z "${IGNORE_SERVER}" ]
+        if [ ! -z "${SERVER_IGNORE_LIST}" ] && [ -f "${SERVER_IGNORE_LIST}" ]
         then
-            ## server found in exclusion list
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${MONITORED_HOST} was found in exclusion list. Skippiing.";
+            typeset IGNORE_SERVER=$(awk -F "=" "/\<${MONITORED_HOST}\>/{print \$2}" ${SERVER_IGNORE_LIST} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//');
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IGNORE_SERVER -> ${IGNORE_SERVER}";
+
+            if [ ! -z "${IGNORE_SERVER}" ]
+            then
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${MONITORED_HOST} was found in exclusion list. Skippiing.";
+
+                continue;
+            fi
         fi
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating against ${MONITORED_HOST}..";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now validating access..";
 
-        ping ${MONITORED_HOST} > /dev/null 2>&1;
-        typeset PING_RCODE=${?}
+        typeset THIS_CNAME="${CNAME}";
+        unset METHOD_NAME;
+        unset CNAME;
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-        if [ ${PING_RCODE} -eq 0 ]
+        ## validate the input
+        validateServerAvailability ${MONITORED_HOST};
+        typeset -i RET_CODE=${?};
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+        CNAME="${THIS_CNAME}";
+        typeset METHOD_NAME="${THIS_CNAME}#${0}";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+        if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -eq 0 ]
         then
-            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${MONITORED_HOST} appears unavailable. PING_RCODE -> ${PING_RCODE}";
-
-            echo "1i\n${MONITORED_HOST}: Connection failure. PING_RCODE -> ${PING_RCODE}.\n\n.\nwq" | ex -s ${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
+            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${MONITORED_HOST} appears unavailable. RET_CODE -> ${RET_CODE}";
+            ${LOGGER} "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${MONITORED_HOST}: Connection failure. RET_CODE -> ${RET_CODE}";
 
             (( ERROR_COUNT += 1 ));
 
@@ -122,7 +148,7 @@ function executeMonitoringScript
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
         ## validate the input
-        ssh ${MONITORED_HOST} "${MONITORING_SCRIPT}";
+        ssh ${MONITORED_HOST} "${MONITOR_SCRIPT}";
         typeset -i RET_CODE=${?};
 
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -136,9 +162,8 @@ function executeMonitoringScript
         if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
         then
             ## an "ERROR" occurred executing the monitor.
-            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred executing ${MONITORING_SCRIPT} on ${MONITORED_HOST}. Return code -> ${RET_CODE}";
-
-            echo "1i\n${MONITORED_HOST}: Execution failure. RET_CODE -> ${RET_CODE}.\n\n.\nwq" | ex -s ${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
+            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred executing ${MONITORING_SCRIPT} on ${MONITORED_HOST}. Return code -> ${RET_CODE}";
+            ${LOGGER} "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${MONITORED_HOST}: Execution failure. RET_CODE -> ${RET_CODE}.";
 
             (( ERROR_COUNT += 1 ));
 
@@ -149,7 +174,7 @@ function executeMonitoringScript
         ## if not, pull it back
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Command execution successful. Checking for anomolies..";
 
-        typeset IS_LOGFILE_PRESENT=$(ssh ${MONITORED_HOST} "[ -s ${REMOTE_APP_ROOT}/${LOG_ROOT}/${BASE_LOG_NAME}-${MONITOR_RECORDER} ] && echo true || echo false";);
+        typeset IS_LOGFILE_PRESENT=$(ssh ${MONITORED_HOST} "[ -s ${MONITOR_LOG} ] && echo true || echo false");
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IS_LOGFILE_PRESENT -> ${IS_LOGFILE_PRESENT}";
 
@@ -170,7 +195,7 @@ function executeMonitoringScript
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
         ## validate the input
-        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp remote-copy ${MONITORED_HOST} ${REMOTE_APP_ROOT}/${LOG_ROOT}/${BASE_LOG_NAME}-${MONITOR_RECORDER} ${TMP_DIRECTORY}/${MONITORED_HOST}.${BASE_LOG_NAME}-${MONITOR_RECORDER} ${SSH_USER_NAME} ${SSH_USER_AUTH};
+        scp remote ${MONITORED_HOST} ${MONITOR_LOG} ${TMP_DIRECTORY}/${MONITORED_HOST};
         typeset -i RET_CODE=${?};
 
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -182,19 +207,21 @@ function executeMonitoringScript
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Logfiles obtained. Scanning..";
 
-        echo "${MONITORED_HOST}:\n" >> ${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
+        echo "\n
+            \t\t+-------------------------------------------------------------------+
+            \t\t               ${MONITORED_HOST} - ${DATESYS}
+            \t\t+-------------------------------------------------------------------+
+            \n" >> ${MONITOR_OUTPUT_FILE}
+        cat ${TMP_DIRECTORY}/${MONITORED_HOST} >> ${MONITOR_OUTPUT_FILE};
 
-        sed -n "/${MONITORING_SCRIPT}/p" ${TMP_DIRECTORY}/${MONITORED_HOST}.${BASE_LOG_NAME}-${MONITOR_RECORDER} | \
-            grep "${EXECUTION_DATE}" | cut -d "-" -f 3- | uniq >> ${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
-
-        echo "\n" >> ${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE};
+        [ -f ${TMP_DIRECTORY}/${MONITORED_HOST} ] && rm -rf ${TMP_DIRECTORY}/${MONITORED_HOST};
     done
 
     ## ok, processing complete - rock out and see if we have anything to send
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing completed. Validating..";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ERROR_COUNT -> ${ERROR_COUNT}";
 
-    if [ -s ${TMP_DIRECTORY}/${MONITOR_OUTPUT_FILE} ]
+    if [ -s ${MONITOR_OUTPUT_FILE} ]
     then
         ## we do, run it out
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Alert notifications obtained. Processing..";
@@ -254,7 +281,7 @@ function executeMonitoringScript
 #          NAME:  usage
 #   DESCRIPTION:  Provide information on the function usage of this application
 #    PARAMETERS:  None
-#   RETURNS:  0
+#       RETURNS:  0
 #==============================================================================
 function usage
 {
@@ -267,11 +294,12 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
     echo "${THIS_CNAME} - Executes a selected monitoring process.";
-    echo "Usage: ${THIS_CNAME} [ -m <monitor> ] [ -s <target host> ] [ -u <user account> ] [ -p <authentication data> ] [ -e ] [ -h|? ]
+    echo "Usage: ${THIS_CNAME} [ -p <plugin> ] [ -m <monitor> ] [ -s <target host> ] [ -u <user account> ] [ -a <authentication data> ] [ -e ] [ -h|? ]
+    -p         -> The name of the owning plugin
     -m         -> The monitoring process to execute.
     -s         -> Target server to execute against.
     -u         -> User account, if necessary, to execute the monitor as.
-    -p         -> Authentication data for the provided user account, if necessary.
+    -a         -> Authentication data for the provided user account, if necessary.
     -e         -> Execute the request
     -h|-?      -> Show this help";
 
@@ -284,13 +312,23 @@ function usage
     return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage&& RETURN_CODE=${?};
+[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
 
-while getopts ":m:s:u:p:a:eh:" OPTIONS 2>/dev/null
+while getopts "p:m:s:u:a:eh:" OPTIONS 2>/dev/null
 do
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
     case "${OPTIONS}" in
+        p)
+            ## set the platform
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting PLUGIN_NAME..";
+
+            ## Capture the site root
+            PLUGIN_NAME=${OPTARG};
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PLUGIN_NAME -> ${PLUGIN_NAME}";
+            ;;
         m)
             ## set the platform
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
@@ -321,7 +359,7 @@ do
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "USER_ACCOUNT -> ${USER_ACCOUNT}";
             ;;
-        p)
+        a)
             ## set the platform
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting AUTH_DATA..";
@@ -331,27 +369,54 @@ do
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "AUTH_DATA -> ${AUTH_DATA}";
             ;;
-        a)
-            ## target email address (optional)
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting TARGET_EMAIL..";
-
-            ## Capture the site root
-            typeset -l TARGET_EMAIL="${OPTARG}";
-
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TARGET_EMAIL -> ${TARGET_EMAIL}";
-            ;;
         e)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating request..";
 
-            ## Make sure we have enough information to process
-            ## and execute
-            [ ! -z "${MONITORING_SCRIPT}" ] && executeMonitoringScript && RETURN_CODE=${?} || usage&& RETURN_CODE=${?};
+            if [ -z "${PLUGIN_NAME}" ]
+            then
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No plugin name was provided. Cannot continue.";
+
+                RETURN_CODE=21;
+            elif [ -z "${MONITORING_SCRIPT}" ]
+            then
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No monitoring script was provided. Cannot continue.";
+
+                RETURN_CODE=21;
+            elif [ -z "${TARGET_SYSTEMS}" ]
+            then
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No execution systems were provided. Cannot continue.";
+
+                RETURN_CODE=21;
+            else
+                ## load plugin config
+                [ -s ${PLUGIN_DIR}/${PLUGIN_NAME}/${LIB_DIRECTORY}/plugin ] && . ${PLUGIN_DIR}/${PLUGIN_NAME}/${LIB_DIRECTORY}/plugin;
+
+                if [ -z "${PLUGIN_CONF_ROOT}" ]
+                then
+                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to load plugin configuration. Cannot continue.";
+
+                    RETURN_CODE=21;
+                else
+                    ## load monitor config
+                    [ -f ${PLUGIN_CONF_ROOT}/monitor.properties ] && . ${PLUGIN_CONF_ROOT}/monitor.properties;
+
+                    if [ -z "${MONITORING_SCRIPTS_DIR}" ]
+                    then
+                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to load monitor configuration. Cannot continue.";
+
+                        RETURN_CODE=21;
+                    else
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                        executeMonitoringScript && RETURN_CODE=${?} || usage && RETURN_CODE=${?};
+                    fi
+                fi
+            fi
             ;;
         *)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            usage&& RETURN_CODE=${?};
+            usage && RETURN_CODE=${?};
             ;;
     esac
 done
@@ -359,6 +424,11 @@ done
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
 
+unset PLUGIN_NAME;
+unset MONITORING_SCRIPT;
+unset TARGET_SYSTEMS;
+unset USER_ACCOUNT;
+unset AUTH_DATA;
 unset CNAME;
 unset SCRIPT_ABSOLUTE_PATH;
 unset SCRIPT_ROOT;

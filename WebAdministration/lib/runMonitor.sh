@@ -23,7 +23,7 @@
 ## Application constants
 CNAME="${THIS_CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  executeMonitoringScript
@@ -239,7 +239,7 @@ function executeMonitoringScript
         esac
         NOTIFY_CODE=${?};
 
-        CNAME=$(basename ${0});
+        CNAME=$(/usr/bin/env basename ${0});
     typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
 
@@ -305,7 +305,7 @@ function usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    echo "${CNAME} - Executes a selected monitoring process.";
+    echo "${THIS_CNAME} - Executes a selected monitoring process.";
     echo " -m    -> The monitoring process to execute.";
     echo " -s    -> Target server to execute against. (Optional)";
     echo " -d    -> The expiration date (in unix epoch) (Optional)";

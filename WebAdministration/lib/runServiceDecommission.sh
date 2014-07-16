@@ -23,7 +23,7 @@
 ## Application constants
 CNAME="${THIS_CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  failover_site
@@ -86,8 +86,8 @@ function usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    echo "${CNAME} - Execute a DNS failover request on the master nameserver based on the provided information.";
-    echo "Usage: ${CNAME} [-s <request data>] [-d <request data>] [-e execute] [-?|-h show this help]";
+    echo "${THIS_CNAME} - Execute a DNS failover request on the master nameserver based on the provided information.";
+    echo "Usage: ${THIS_CNAME} [-s <request data>] [-d <request data>] [-e execute] [-?|-h show this help]";
     echo "  -s      Process a site failover based on a comma-delimited information set";
     echo "  -b      Process a business unit failover based on a comma-delimited information set";
     echo "  -d      Process a datacenter failover based on a comma-delimited information set";

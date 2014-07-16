@@ -23,7 +23,7 @@
 ## Application constants
 CNAME="${THIS_CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 function main
 {
@@ -50,7 +50,7 @@ function main
     ## reset METHOD_NAME back to THIS method
 typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
-    CNAME=$(basename ${0});
+    CNAME=$(/usr/bin/env basename ${0});
 
     ## is the application already running a site
     ## failover ?
@@ -117,7 +117,7 @@ typeset RETURN_CODE=0;
                         ## reset METHOD_NAME back to THIS method
                     typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
-                        CNAME=$(basename ${0});
+                        CNAME=$(/usr/bin/env basename ${0});
 
                         reset; clear;
 
@@ -411,7 +411,7 @@ function process_backout_file
                 ## set method_name and cname back to this
             typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
-                CNAME=$(basename ${0});
+                CNAME=$(/usr/bin/env basename ${0});
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing complete. Return code -> ${RET_CODE}";
 
@@ -518,7 +518,7 @@ typeset RETURN_CODE=0;
                                         ## set method_name and cname back to this
                                     typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
-                                        CNAME=$(basename ${0});
+                                        CNAME=$(/usr/bin/env basename ${0});
 
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Return code from run_backout.sh->${RET_CODE}";
 

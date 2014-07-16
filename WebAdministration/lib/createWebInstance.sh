@@ -19,7 +19,7 @@
 ## Application constants
 CNAME="${THIS_CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  create_skeleton_zone
@@ -362,7 +362,7 @@ function createSecuredInstance
                                 -d ${SERVER_ID}-${IUSER_AUDIT}- -c ${PLATFORM_CODE} -t ${CONTACT_NUMBER} -n -e;
                             typeset -i RET_CODE=${?};
 
-                            CNAME=$(basename ${0});
+                            CNAME=$(/usr/bin/env basename ${0});
                         typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
 
@@ -821,8 +821,8 @@ function usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    echo "${CNAME} - Create a skeleton zone file with the necessary components.";
-    echo "Usage: ${CNAME} <build type>";
+    echo "${THIS_CNAME} - Create a skeleton zone file with the necessary components.";
+    echo "Usage: ${THIS_CNAME} <build type>";
     echo "\t\tBuild type can be one of the following:";
     echo "\t\t\tssl";
     echo "\t\t\tnonssl";

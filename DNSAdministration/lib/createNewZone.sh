@@ -22,7 +22,7 @@
 ## Application constants
 CNAME="$(/usr/bin/env basename ${0})";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; /usr/bin/env echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
+SCRIPT_ROOT="$(/usr/bin/env dirname ${SCRIPT_ABSOLUTE_PATH})";
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -624,8 +624,8 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo "${CNAME} - Create a skeleton zone file with the necessary components.\n";
-    echo "Usage: ${CNAME} [ -b <business unit> ] [ -p <project code> ] [ -z <zone name> ] [ -i <partition> ] [ -c <change request> ] [ -n ] [ -e ] [ -h|-? ]
+    echo "${THIS_CNAME} - Create a skeleton zone file with the necessary components.\n";
+    echo "Usage: ${THIS_CNAME} [ -b <business unit> ] [ -p <project code> ] [ -z <zone name> ] [ -i <partition> ] [ -c <change request> ] [ -n ] [ -e ] [ -h|-? ]
     -b         -> The associated business unit
     -p         -> The associated project code
     -z         -> The zone name, eg example.com
@@ -644,7 +644,7 @@ function usage
     return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage&& RETURN_CODE=${?};
+[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
 
 while getopts ":b:p:z:i:c:neh:" OPTIONS 2>/dev/null
 do
@@ -743,15 +743,15 @@ do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                [ ! -z "${BUILD_ZONE}" ] && [ "${BUILD_ZONE}" = "${_TRUE}" ] && buildWorkingZone&& RETURN_CODE=${?};
-                [ ! -z "${PARTITION}" ] && [ "${PARTITION}" = "${INTERNET_TYPE_IDENTIFIER}" ] && [ -z "${BUILD_ZONE}" ] && createInternetSkeletonZone&& RETURN_CODE=${?};
-                [ ! -z "${PARTITION}" ] && [ "${PARTITION}" = "${INTRANET_TYPE_IDENTIFIER}" ] && [ -z "${BUILD_ZONE}" ] && createIntranetSkeletonZone&& RETURN_CODE=${?};
+                [ ! -z "${BUILD_ZONE}" ] && [ "${BUILD_ZONE}" = "${_TRUE}" ] && buildWorkingZone && RETURN_CODE=${?};
+                [ ! -z "${PARTITION}" ] && [ "${PARTITION}" = "${INTERNET_TYPE_IDENTIFIER}" ] && [ -z "${BUILD_ZONE}" ] && createInternetSkeletonZone && RETURN_CODE=${?};
+                [ ! -z "${PARTITION}" ] && [ "${PARTITION}" = "${INTRANET_TYPE_IDENTIFIER}" ] && [ -z "${BUILD_ZONE}" ] && createIntranetSkeletonZone && RETURN_CODE=${?};
             fi
             ;;
         *)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            usage&& RETURN_CODE=${?};
+            usage && RETURN_CODE=${?};
             ;;
     esac
 done

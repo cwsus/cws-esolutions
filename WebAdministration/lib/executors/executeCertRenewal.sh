@@ -18,7 +18,7 @@
 ## Application contants
 CNAME="${THIS_CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  apply_iplanet_keystore
@@ -772,8 +772,8 @@ function usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    echo "${CNAME} - Execute a site failover";
-    echo "Usage: ${CNAME} [ -w web instance ] [ -p platform ] [ -r region ] [ -d database ] [ -n cert nickname ] " \
+    echo "${THIS_CNAME} - Execute a site failover";
+    echo "Usage: ${THIS_CNAME} [ -w web instance ] [ -p platform ] [ -r region ] [ -d database ] [ -n cert nickname ] " \
         "[ -i username ] [ -c change order ] [ -e ] [-h] [-?]";
     echo " -w     The web instance name to operate against";
     echo " -p     The webserver platform type";

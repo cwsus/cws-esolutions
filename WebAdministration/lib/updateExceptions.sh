@@ -23,7 +23,7 @@
 ## Application constants
 CNAME="${THIS_CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  addStartupException
@@ -736,8 +736,8 @@ function usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    echo "${CNAME} - Updates a selected exception list.";
-    echo "Usage: ${CNAME} <exception list>";
+    echo "${THIS_CNAME} - Updates a selected exception list.";
+    echo "Usage: ${THIS_CNAME} <exception list>";
     echo "    Valid exceptions lists:";
     echo "    ${CORE_EXCEPTION_LIST}";
     echo "    ${SSL_EXCEPTION_LIST}";

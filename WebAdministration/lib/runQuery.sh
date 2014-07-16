@@ -23,7 +23,7 @@
 ## Application constants
 CNAME="${THIS_CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  return_query_response
@@ -175,8 +175,8 @@ function usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    echo "${CNAME} - Performs a DNS query against the nameserver specified.";
-    echo "Usage: ${CNAME} [-u url] [-e execute] [-?|-h show this help]";
+    echo "${THIS_CNAME} - Performs a DNS query against the nameserver specified.";
+    echo "Usage: ${THIS_CNAME} [-u url] [-e execute] [-?|-h show this help]";
     echo "  -u      URL/IP address to query";
     echo "  -e      Execute processing";
     echo "  -h|-?   Show this help";

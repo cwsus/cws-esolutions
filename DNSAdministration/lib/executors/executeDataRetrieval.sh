@@ -23,7 +23,7 @@
 ## Application constants
 CNAME="$(/usr/bin/env basename ${0})";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; /usr/bin/env echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname ${SCRIPT_ABSOLUTE_PATH})";
+SCRIPT_ROOT="$(/usr/bin/env dirname ${SCRIPT_ABSOLUTE_PATH})";
 METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -577,8 +577,8 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo "${CNAME} - Obtain information regarding DNS entries\n";
-    echo "Usage: ${CNAME} [ -u <url> ] [ -b <business unit> ] [ -p <project code> ] [ -d ] [ -i <requesting user> ] [ -e ] [ -h|-? ]
+    echo "${THIS_CNAME} - Obtain information regarding DNS entries\n";
+    echo "Usage: ${THIS_CNAME} [ -u <url> ] [ -b <business unit> ] [ -p <project code> ] [ -d ] [ -i <requesting user> ] [ -e ] [ -h|-? ]
     -u         -> Obtains information from the DNS master regarding the supplied URL
     -b         -> Obtains information from the DNS master regarding the supplied Business Unit
     -p         -> Obtains information from the DNS master regarding the supplied project code
@@ -595,7 +595,7 @@ function usage
     return ${RETURN_CODE};
 }
 
-[ ${#} -eq 0 ] && usage&& RETURN_CODE=${?};
+[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
 
 while getopts ":u:b:p:i:deh:" OPTIONS 2>/dev/null
 do
@@ -661,15 +661,15 @@ do
                 case ${SITE_OPTION} in
                     u)
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-                        get_site_by_url&& RETURN_CODE=${?};
+                        get_site_by_url && RETURN_CODE=${?};
                         ;;
                     b)
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-                        get_site_by_bu&& RETURN_CODE=${?};
+                        get_site_by_bu && RETURN_CODE=${?};
                         ;;
                     p)
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-                        get_site_by_prj_code&& RETURN_CODE=${?};
+                        get_site_by_prj_code && RETURN_CODE=${?};
                         ;;
                     *)
                         ## no valid option was found. return an "ERROR"
@@ -685,7 +685,7 @@ do
         *)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            usage&& RETURN_CODE=${?};
+            usage && RETURN_CODE=${?};
             ;;
     esac
 done

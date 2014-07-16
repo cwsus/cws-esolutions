@@ -23,7 +23,7 @@
 ## Application constants
 CNAME="${THIS_CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  generate_iplanet_csr
@@ -123,7 +123,7 @@ function createNewCertificate
                 if [ -z "${SIGNER_NICKNAME}" ]
                 then
                     ## signer nickname couldnt be identified. use the filename instead
-                    SIGNER_NICKNAME=$(basename "${SIGNATORY}" .cer);
+                    SIGNER_NICKNAME=$(/usr/bin/env basename "${SIGNATORY}" .cer);
                 fi
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SIGNER_NICKNAME -> ${SIGNER_NICKNAME}";
@@ -177,7 +177,7 @@ function createNewCertificate
                             -w ${IPLANET_TYPE_IDENTIFIER} -p ${PLATFORM_CODE} -S -e;
                         typeset -i RET_CODE=${?};
 
-                        CNAME=$(basename ${0});
+                        CNAME=$(/usr/bin/env basename ${0});
                     typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
 
@@ -238,7 +238,7 @@ typeset RETURN_CODE=0;
                 . ${MAILER_CLASS} -m ${NOTIFY_CSR_EMAIL} -p ${PROJECT_CODE} -a "${NOTIFY_CSR_ADDRESS}" -t ${NOTIFY_TYPE_NOTIFY} -e;
                 MAILER_CODE=${?};
 
-                CNAME=$(basename ${0});
+                CNAME=$(/usr/bin/env basename ${0});
             typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
 
@@ -399,7 +399,7 @@ function createiPlanetCSR
                 . ${MAILER_CLASS} -m ${NOTIFY_CSR_EMAIL} -p ${WEB_PROJECT_CODE} -a "${NOTIFY_CSR_ADDRESS}" -t ${NOTIFY_TYPE_NOTIFY} -e;
                 MAILER_CODE=${?};
 
-                CNAME=$(basename ${0});
+                CNAME=$(/usr/bin/env basename ${0});
             typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
 
@@ -560,7 +560,7 @@ typeset RETURN_CODE=0;
                         . ${MAILER_CLASS} -m ${NOTIFY_CSR_EMAIL} -p ${WEB_PROJECT_CODE} -a "${NOTIFY_CSR_ADDRESS}" -t ${NOTIFY_TYPE_NOTIFY} -e;
                         MAILER_CODE=${?};
 
-                        CNAME=$(basename ${0});
+                        CNAME=$(/usr/bin/env basename ${0});
                     typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
 
@@ -775,7 +775,7 @@ function createIHSCSR
                         . ${MAILER_CLASS} -m ${NOTIFY_CSR_EMAIL} -p ${WEB_PROJECT_CODE} -a "${NOTIFY_CSR_ADDRESS}" -t ${NOTIFY_TYPE_NOTIFY} -e;
                         MAILER_CODE=${?};
 
-                        CNAME=$(basename ${0});
+                        CNAME=$(/usr/bin/env basename ${0});
                     typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
 
@@ -994,7 +994,7 @@ typeset RETURN_CODE=0;
                                 . ${MAILER_CLASS} -m ${NOTIFY_CSR_EMAIL} -p ${WEB_PROJECT_CODE} -a "${NOTIFY_CSR_ADDRESS}" -t ${NOTIFY_TYPE_NOTIFY} -e;
                                 MAILER_CODE=${?};
 
-                                CNAME=$(basename ${0});
+                                CNAME=$(/usr/bin/env basename ${0});
                             typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
 
@@ -1071,7 +1071,7 @@ function usage
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
-    echo "${CNAME} - Generates a certificate signing request for a provided host.";
+    echo "${THIS_CNAME} - Generates a certificate signing request for a provided host.";
     echo " -s    -> The site domain name to operate against";
     echo " -v    -> The source server to obtain the necessary key databases from";
     echo " -w    -> Platform type to execute against - iplanet or ihs";

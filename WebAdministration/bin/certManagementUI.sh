@@ -23,7 +23,7 @@
 ## Application constants
 CNAME="${THIS_CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(dirname "${SCRIPT_ABSOLUTE_PATH}")";
+SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 function main
 {
@@ -244,7 +244,7 @@ function main
 
                                                 MGMT_OP=$(${APP_ROOT}/${LIB_DIRECTORY}/validators/validate_change_request.sh ${WEBSERVER_PLATFORM} ${CERTDB});
 
-                                                CNAME=$(basename ${0});
+                                                CNAME=$(/usr/bin/env basename ${0});
                                             typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
 
@@ -677,7 +677,7 @@ function createCSR
             ## put methodname and cname back
         typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
-            CNAME=$(basename ${0});
+            CNAME=$(/usr/bin/env basename ${0});
 
             reset; clear; main;
         elif [ ! -z "${CSR_COMPLETE}" ] && [ "${CSR_COMPLETE}" = "${_TRUE}" ]
@@ -687,7 +687,7 @@ typeset RETURN_CODE=0;
             ## put methodname and cname back
         typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
-            CNAME=$(basename ${0});
+            CNAME=$(/usr/bin/env basename ${0});
 
             unset REQUEST_OPTION;
             unset WEB_PROJECT_CODE;
@@ -822,7 +822,7 @@ function applyLocalCertificate
             ## put methodname and cname back
         typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
-            CNAME=$(basename ${0});
+            CNAME=$(/usr/bin/env basename ${0});
 
             reset; clear; main;
         elif [ ! -z "${PREIMP_COMPLETE}" ] && [ "${PREIMP_COMPLETE}" = "${_TRUE}" ]
@@ -832,7 +832,7 @@ typeset RETURN_CODE=0;
             ## put methodname and cname back
         typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
-            CNAME=$(basename ${0});
+            CNAME=$(/usr/bin/env basename ${0});
 
             unset REQUEST_OPTION;
             unset WEB_PROJECT_CODE;
@@ -967,7 +967,7 @@ function implementCertificateChange
             ## put methodname and cname back
         typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
-            CNAME=$(basename ${0});
+            CNAME=$(/usr/bin/env basename ${0});
 
             reset; clear; main;
         elif [ ! -z "${PREIMP_COMPLETE}" ] && [ "${PREIMP_COMPLETE}" = "${_TRUE}" ]]
@@ -977,7 +977,7 @@ typeset RETURN_CODE=0;
             ## put methodname and cname back
         typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
-            CNAME=$(basename ${0});
+            CNAME=$(/usr/bin/env basename ${0});
 
             unset REQUEST_OPTION;
             unset WEB_PROJECT_CODE;

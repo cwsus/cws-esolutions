@@ -250,7 +250,7 @@ function validateRecordTarget
     ## NS records.
     if [ ${#} -ne 3 ]
     then
-        usage&& RETURN_CODE=${?};
+        usage && RETURN_CODE=${?};
 
         RETURN_CODE=3;
 
@@ -677,12 +677,12 @@ typeset METHOD_NAME="${CNAME}#${0}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
 ## make sure we have args
-[ "${1}" = "address" ] && validateIPAddress ${@}&& RETURN_CODE=${?};
-[ "${1}" = "datacenter" ] && validateIPAddress ${@}&& RETURN_CODE=${?};
-[ "${1}" = "type" ] && validateRecordType ${@}&& RETURN_CODE=${?};
-[ "${1}" = "target" ] && validateRecordTarget ${@}&& RETURN_CODE=${?};
-[ "${1}" = "srvtype" ] && validateServiceType ${@}&& RETURN_CODE=${?};
-[ "${1}" = "srvproto" ] && validateServiceProtocol ${@}&& RETURN_CODE=${?};
+[ "${1}" = "address" ] && validateIPAddress ${@} && RETURN_CODE=${?};
+[ "${1}" = "datacenter" ] && validateIPAddress ${@} && RETURN_CODE=${?};
+[ "${1}" = "type" ] && validateRecordType ${@} && RETURN_CODE=${?};
+[ "${1}" = "target" ] && validateRecordTarget ${@} && RETURN_CODE=${?};
+[ "${1}" = "srvtype" ] && validateServiceType ${@} && RETURN_CODE=${?};
+[ "${1}" = "srvproto" ] && validateServiceProtocol ${@} && RETURN_CODE=${?};
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
