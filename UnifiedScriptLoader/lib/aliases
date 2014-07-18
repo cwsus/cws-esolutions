@@ -26,6 +26,7 @@ alias gzip='/usr/bin/env gzip -v';
 alias sudon='/usr/bin/env sudo -u named';
 alias sudor='/usr/bin/env sudo -u root';
 alias echoe='/usr/bin/env echo -ne';
+alias local='typeset';
 
 ## alias java appropriately
 [ ! -z "${SYSTEM_ARCHITECTURE}" ] && [ "${SYSTEM_ARCHITECTURE}" = "64" ] || [ "${SYSTEM_ARCHITECTURE}" = "x86_64" ] && alias java="${JAVA_HOME}/bin/java -d64";

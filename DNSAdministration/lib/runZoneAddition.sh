@@ -470,7 +470,7 @@ function copyZoneToSlave
             [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
             ## validate the input
-            ${PLUGIN_LIB_DIRECTORY}/runQuery.sh -s "${SLAVE_SERVER}" -t A -u ${ZONE_NAME} -o -e;
+            ${APP_ROOT}/${LIB_DIRECTORY}/runQuery.sh -s "${SLAVE_SERVER}" -t A -u ${ZONE_NAME} -o -e;
             typeset -i RET_CODE=${?};
 
             [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -578,7 +578,7 @@ function copyZoneToSlave
             [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
             ## validate the input
-            ${PLUGIN_LIB_DIRECTORY}/runQuery.sh -s "${SLAVE_SERVER}" -t A -u ${ZONE_NAME} -o -e;
+            ${APP_ROOT}/${LIB_DIRECTORY}/runQuery.sh -s "${SLAVE_SERVER}" -t A -u ${ZONE_NAME} -o -e;
             typeset -i RET_CODE=${?};
 
             [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;

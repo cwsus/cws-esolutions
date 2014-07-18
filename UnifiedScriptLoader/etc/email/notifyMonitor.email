@@ -1,0 +1,11 @@
+DNS Team,
+
+The following zone has been decommissioned:
+
+Zone details:
+
+Change Request:   &CHANGE_CONTROL
+Site Hostname:    &ZONE_NAME
+Business Unit:    &BIZ_UNIT
+Project Code:     &PROJ_CODE
+

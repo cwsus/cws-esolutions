@@ -56,6 +56,24 @@ function executeMonitoringScript
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+    if [ ! -s ${PLUGIN_CONF_ROOT}/monitor.properties ]
+    then
+        ${LOGGER} "INFO" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup processing has been disabled.";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        unset METHOD_NAME;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
+    . ${PLUGIN_CONF_ROOT}/monitor.properties;
+
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing monitor on: ${HOSTNAME}";
 
     typeset MONITOR_SCRIPT=$(echo ${MONITORING_SCRIPT} | cut -d "|" -f 1);
@@ -92,15 +110,12 @@ function executeMonitoringScript
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MONITORED_HOST -> ${MONITORED_HOST}";
 
-        if [ ! -z "${SERVER_IGNORE_LIST}" ] && [ -f "${SERVER_IGNORE_LIST}" ]
+        if [ -f ${SERVER_IGNORE_LIST} ]
         then
-            typeset IGNORE_SERVER=$(awk -F "=" "/\<${MONITORED_HOST}\>/{print \$2}" ${SERVER_IGNORE_LIST} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//');
-
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IGNORE_SERVER -> ${IGNORE_SERVER}";
-
-            if [ ! -z "${IGNORE_SERVER}" ]
+            if [ ! -z "$(grep ${MONITORED_HOST} ${SERVER_IGNORE_LIST})" ]
             then
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${MONITORED_HOST} was found in exclusion list. Skippiing.";
+                ## server found in exclusion list
+                ${LOGGER} "INFO" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${TARGET_HOSTNAME} was found in exclusion list. Skipping.";
 
                 continue;
             fi
@@ -397,19 +412,7 @@ do
 
                     RETURN_CODE=21;
                 else
-                    ## load monitor config
-                    [ -f ${PLUGIN_CONF_ROOT}/monitor.properties ] && . ${PLUGIN_CONF_ROOT}/monitor.properties;
-
-                    if [ -z "${MONITORING_SCRIPTS_DIR}" ]
-                    then
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to load monitor configuration. Cannot continue.";
-
-                        RETURN_CODE=21;
-                    else
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-                        executeMonitoringScript && RETURN_CODE=${?} || usage && RETURN_CODE=${?};
-                    fi
+                    executeMonitoringScript && RETURN_CODE=${?} || usage && RETURN_CODE=${?};
                 fi
             fi
             ;;

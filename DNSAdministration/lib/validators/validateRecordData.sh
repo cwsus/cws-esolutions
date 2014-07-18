@@ -365,7 +365,7 @@ function validateRecordTarget
                 ?([+-])+([0-9]|['.']))
                     ## got an IP. for these types of records we should really use a name if available.
                     ## do a reverse lookup to get the name
-                    ${PLUGIN_LIB_DIRECTORY}/runQuery.sh -t ${RR_TYPE} -u ${2} -o -e;
+                    ${APP_ROOT}/${LIB_DIRECTORY}/runQuery.sh -t ${RR_TYPE} -u ${2} -o -e;
                     typeset -i RET_CODE=${?};
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
@@ -422,7 +422,7 @@ function validateRecordTarget
                         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
                         ## validate the input
-                        ${PLUGIN_LIB_DIRECTORY}/runQuery.sh -s ${EXTERNAL_SERVER} -t a -u ${2} -o -e;
+                        ${APP_ROOT}/${LIB_DIRECTORY}/runQuery.sh -s ${EXTERNAL_SERVER} -t a -u ${2} -o -e;
                         typeset -i RET_CODE=${?};
 
                         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -509,7 +509,7 @@ function validateRecordTarget
                         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
                         ## validate the input
-                        ${PLUGIN_LIB_DIRECTORY}/runQuery.sh -s ${EXTERNAL_SERVER} -t a -u ${2} -o -e;
+                        ${APP_ROOT}/${LIB_DIRECTORY}/runQuery.sh -s ${EXTERNAL_SERVER} -t a -u ${2} -o -e;
                         typeset -i RET_CODE=${?};
 
                         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;

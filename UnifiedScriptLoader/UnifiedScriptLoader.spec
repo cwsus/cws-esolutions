@@ -41,7 +41,6 @@ install -m 644 errors.properties %{buildroot}/%{_sysconfdir}%{name}
 install -m 644 resources.properties %{buildroot}/%{_sysconfdir}%{name}
 install -m 644 logging.properties %{buildroot}/%{_sysconfdir}%{name}
 install -m 755 generateEntropy.sh %{buildroot}/%{_libdir}%{name}
-install -m 755 lock.sh %{buildroot}/%{_libdir}%{name}
 install -m 755 logger.sh %{buildroot}/%{_libdir}%{name}
 install -m 755 pushAdmin.sh %{buildroot}/%{_libdir}%{name}
 install -m 755 runMonitor.sh %{buildroot}/%{_libdir}%{name}
@@ -64,7 +63,6 @@ install -m 755 validateTelephoneNumber.sh %{buildroot}/%{_libdir}%{name}/validat
 %attr(0755,root,root) %{_bindir}%{name}/obtainChangeControl.sh
 %attr(0755,root,root) %{_bindir}%{name}/serviceAdministrationUI.sh
 %attr(0755,root,root) %{_libdir}%{name}/generateEntropy.sh
-%attr(0755,root,root) %{_libdir}%{name}/lock.sh
 %attr(0755,root,root) %{_libdir}%{name}/logger.sh
 %attr(0755,root,root) %{_libdir}%{name}/pushAdmin.sh
 %attr(0755,root,root) %{_libdir}%{name}/runMonitor.sh

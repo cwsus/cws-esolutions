@@ -21,62 +21,47 @@
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
 ## Application constants
-CNAME="${THIS_CNAME}";
+CNAME="$(/usr/bin/env basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
+METHOD_NAME="${CNAME}#startup";
+LOCKFILE=$(mktemp);
+
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
-[ -z "${APP_ROOT}" ] && [ -f ${SCRIPT_ROOT}/../lib/constants ] && . ${SCRIPT_ROOT}/../lib/constants;
+[ -z "${PLUGIN_ROOT_DIR}" ] && [ -f ${SCRIPT_ROOT}/../plugin ] && . ${SCRIPT_ROOT}/../plugin;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-[ -z "${APP_ROOT}" ] && echo "Failed to locate configuration data. Cannot continue." && exit 1;
-
-METHOD_NAME="${CNAME}#startup";
+[ -z "${PLUGIN_ROOT_DIR}" ] && echo "Failed to locate configuration data. Cannot continue." && return 1;
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${*}";
 
-#===  FUNCTION  ===============================================================
-#          NAME:  performCleanup
-#   DESCRIPTION:  Searches for and replaces "AUDIT" indicators for the provided
-#                 filename.
-#    PARAMETERS:  Parameters obtained via command-line flags
-#          NAME:  usage for positive result, >1 for non-positive
-#==============================================================================
-function performCleanup
-{
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    typeset METHOD_NAME="${CNAME}#${0}";
-    typeset RETURN_CODE=0;
+THIS_CNAME="${CNAME}";
+unset METHOD_NAME;
+unset CNAME;
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Cleaning up backup directories..";
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-    for FILENAME in $(find ${DIRECTORY} -type f -mtime +${LIFETIME})
-    do
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FILENAME -> ${FILENAME}";
+lockProcess ${LOCKFILE} ${$};
+typeset -i RET_CODE=${?};
 
-        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File ${FILENAME} removed on $(date +"%m-%d-%Y") by ${IUSER_AUDIT}";
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-        [ -f ${FILENAME} ] && rm ${FILENAME};
-    done
+CNAME="${THIS_CNAME}";
+METHOD_NAME="${CNAME}#startup";
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-    unset FILENAME;
+[ ${RET_CODE} -ne 0 ] && echo "Application currently in use." && echo ${RET_CODE} && exit ${RET_CODE};
 
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
-
-    return 0;
-}
+unset RET_CODE;
 
 #===  FUNCTION  ===============================================================
 #          NAME:  performBackup
@@ -84,7 +69,7 @@ function performCleanup
 #         to run both interactively and non-interactively, however, the
 #         non-interactive functionality has not yet been implemented.
 #    PARAMETERS:  ${CLI} - determines if the application should run interactively
-#   RETURNS:  0 for positive result, >1 for non-positive
+#       RETURNS:  0 for positive result, >1 for non-positive
 #==============================================================================
 function performBackup
 {
@@ -97,10 +82,11 @@ function performBackup
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
     ## check if backups are enabled. in a production environment, this should always be true
-    if [ -z "${IS_BACKUP_ENABLED}" ] || [ "${IS_BACKUP_ENABLED}" = "${_FALSE}" ]
+    if [ ! -s ${PLUGIN_CONF_ROOT}/backup.properties ]
     then
-        RETURN_CODE=0;
+        ${LOGGER} "INFO" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup processing has been disabled.";
 
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
         unset METHOD_NAME;
@@ -111,59 +97,98 @@ function performBackup
         return ${RETURN_CODE};
     fi
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Global backups enabled - processing..";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Search and remove backups older than ${BACKUP_RETENTION_TIME} days...";
+    . ${PLUGIN_CONF_ROOT}/backup.properties;
 
-    ## clean up the old backup files per the configured retention period...
-    for BACKUP_FILE in $(find ${APP_ROOT}/${BACKUP_DIRECTORY} -name "*${ZONE_BACKUP_PREFIX}*" -mtime +${BACKUP_RETENTION_TIME} -print)
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Search and remove backups older than ${BACKUP_LIFETIME} days...";
+
+    for FILE in $(find ${PLUGIN_BACKUP_DIR} -type f -mtime +${BACKUP_LIFETIME} -print)
     do
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing backup file ${BACKUP_FILE}..";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FILE -> ${FILE}";
 
-        ## and remove it
-        rm -rf ${BACKUP_FILE};
+        [ -f ${FILE} ] && rm -rf ${FILE};
     done
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Cleanup complete. Continuing..";
 
-    TARFILE_NAME=$(sed -e "s/%TYPE%/${ZONE_BACKUP_PREFIX}/" -e "s/%SERVER_NAME%/$(uname -n)/" -e "s/%DATE%/$(date +"%m-%d-%Y_%H:%M:%S")/" <<< ${BACKUP_FILE_NAME});
+    for DIRECTORY in ${BACKUP_DIRECTORIES[@]}
+    do
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DIRECTORY -> ${DIRECTORY}";
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TARFILE_NAME -> ${TARFILE_NAME}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating backup file..";
+        typeset TAR_BACKUP_FILENAME=$(sed -e "s/%SERVER_NAME%/${SYSTEM_HOSTNAME}/" <<< ${BACKUP_FILE_NAME}).tar;
+        typeset GZIP_BACKUP_FILENAME=${TAR_BACKUP_FILENAME}.gz;
 
-    ## we back up everything. we can check if we're on a master/slave but that doesnt take into
-    ## account systems that are acting as both a master AND slave, or systems that have dynamic
-    ## zones. we exclude any journal files, and tar it up.
-    (cd ${NAMED_ROOT}/${NAMED_ZONE_DIR}; tar cf ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar --exclude='*.jnl' *);
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TAR_BACKUP_FILENAME -> ${TAR_BACKUP_FILENAME}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "GZIP_BACKUP_FILENAME -> ${GZIP_BACKUP_FILENAME}";
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Archive created. gzipping..";
+        (cd ${DIRECTORY}; tar cf ${PLUGIN_BACKUP_DIR}/${BACKUP_FILENAME} *);
 
-    ## then gzip it.
-    gzip ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar;
+        if [ ! -s ${PLUGIN_BACKUP_DIR}/${BACKUP_FILENAME} ]
+        then
+            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup processing FAILED for directory ${DIRECTORY} on host ${SYSTEM_HOSTNAME}.";
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete. Verifying..";
+            echo "Backup processing FAILED for directory ${DIRECTORY} on host ${SYSTEM_HOSTNAME}." >> ${PLUGIN_BACKUP_LOG};
 
-    if [ -s ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz ]
+            (( ERROR_COUNT += 1 ));
+
+            continue;
+        fi
+
+        (cd ${DIRECTORY}; gzip ${PLUGIN_BACKUP_DIR}/${TAR_BACKUP_FILENAME});
+
+        if [ ! -s ${PLUGIN_BACKUP_DIR}/${GZIP_BACKUP_FILENAME} ]
+        then
+            ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to zip backup file.";
+
+            echo "Failed to zip backup file ${TAR_BACKUP_FILENAME}." >> ${PLUGIN_BACKUP_LOG};
+        fi
+
+        ## chmod 644 and chown appropriately
+        chmod ${FILE_PERMISSIONS} ${PLUGIN_BACKUP_DIR}/${TAR_BACKUP_FILENAME} > /dev/null 2>&1;
+        chmod ${FILE_PERMISSIONS} ${PLUGIN_BACKUP_DIR}/${GZIP_BACKUP_FILENAME} > /dev/null 2>&1;
+        chown ${FILE_OWNERSHIP} ${PLUGIN_BACKUP_DIR}/${TAR_BACKUP_FILENAME} > /dev/null 2>&1;
+        chown ${FILE_OWNERSHIP} ${PLUGIN_BACKUP_DIR}/${GZIP_BACKUP_FILENAME} > /dev/null 2>&1;
+    done
+
+    if [ ${ERROR_COUNT} -ne 0 ]
     then
-        ## our backup is complete. set permissions accordingly...
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup successfully verified. Modifying permissions..";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Alert notifications obtained. Processing..";
 
-        ## chmod 644 and chown named:named.
-        chmod 644 ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz;
-        chown ${NAMED_USER}:${NAMED_GROUP} ${APP_ROOT}/${BACKUP_DIRECTORY}/${TARFILE_NAME}.tar.gz;
+        typeset BACKUP_NOTIFICATION_TEMPLATE=${APP_ROOT}/${ETC_DIRECTORY}/email/notifyBackup.email;
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup complete - exiting.";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BACKUP_NOTIFICATION_TEMPLATE -> ${BACKUP_NOTIFICATION_TEMPLATE}";
 
-        RETURN_CODE=0;
-    else
-        ## backup failed. send a fault code
-        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to verify backup tarfile generation.";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+        typeset THIS_CNAME="${CNAME}";
+        unset METHOD_NAME;
+        unset CNAME;
 
-        RETURN_CODE=57;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        ## validate the input
+        ${MAILER_CLASS} -m ${BACKUP_NOTIFICATION_TEMPLATE} -t ${NOTIFICATION_LIST} -a ${PLUGIN_BACKUP_LOG} -e;
+        typeset -i RET_CODE=${?};
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+        CNAME="${THIS_CNAME}";
+        typeset METHOD_NAME="${THIS_CNAME}#${0}";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
     fi
 
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    ERROR_COUNT=0;
+
+    unset FILE;
+    unset DIRECTORY;
+    unset TAR_BACKUP_FILENAME;
+    unset GZIP_BACKUP_FILENAME;
+    unset BACKUP_NOTIFICATION_TEMPLATE;
+    unset RET_CODE;
+    unset METHOD_NAME;
 
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -188,13 +213,9 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
     echo "${THIS_CNAME} - Perform a backup of requested information.";
-    echo "Usage: ${THIS_CNAME} [ -d directory ] [ -l lifetime ] [ -b ] [ -c ] [-e] [ -h|-? ]
-    -d         -> The directory to perform the operation against
-    -l         -> The lifetime for files in the source directory. Files older than this will be removed. (Optional)
-    -b         -> Requests a backup of the directory specified
-    -c         -> Requests a cleanup of the directory specified
-    -e         -> Execute processing
-    -h|-?      -> Show this help";
+    echo "Usage: ${THIS_CNAME} [ -p <plugin> ]
+    -p         -> The name of the owning plugin";
+
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -207,49 +228,24 @@ function usage
 
 [ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
 
-while getopts ":d:l:bc:eh:" OPTIONS 2>/dev/null
+while getopts ":p:eh:" OPTIONS 2>/dev/null
 do
     case "${OPTIONS}" in
-        d)
+        p)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting DIRECTORY..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting PLUGIN_NAME..";
 
             ## Capture the site root
-            DIRECTORY="${OPTARG}";
+            PLUGIN_NAME="${OPTARG}";
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DIRECTORY -> ${DIRECTORY}";
-            ;;
-        l)
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting LIFETIME..";
-
-            ## Capture the site root
-            typeset -i LIFETIME="${OPTARG}";
-
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "LIFETIME -> ${LIFETIME}";
-            ;;
-        b)
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting PERFORM_BACKUP..";
-
-            ## Capture the site root
-            PERFORM_BACKUP="${_TRUE}";
-
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PERFORM_BACKUP -> ${PERFORM_BACKUP}";
-            ;;
-        c)
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting PERFORM_CLEANUP..";
-
-            ## Capture the site root
-            PERFORM_CLEANUP="${_TRUE}";
-
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PERFORM_CLEANUP -> ${PERFORM_CLEANUP}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PLUGIN_NAME -> ${PLUGIN_NAME}";
             ;;
         e)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating request..";
 
             ## Make sure we have enough information to process
             ## and execute
-            if [ -z "${DIRECTORY}" ]
+            if [ -z "${PLUGIN_NAME}" ]
             then
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No business unit was provided. Unable to continue processing.";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -257,11 +253,18 @@ do
                 RETURN_CODE=15;
             else
                 ## We have enough information to process the request, continue
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                [ -s ${PLUGIN_DIR}/${PLUGIN_NAME}/${LIB_DIRECTORY}/plugin ] && . ${PLUGIN_DIR}/${PLUGIN_NAME}/${LIB_DIRECTORY}/plugin;
 
-                [ ! -z "${PERFORM_BACKUP}" ] && [ "${PERFORM_BACKUP}" = "${_TRUE}" ] && performBackup && RETURN_CODE=${?};
-                [ ! -z "${PERFORM_CLEANUP}" ] && [ "${PERFORM_CLEANUP}" = "${_TRUE}" ] && performCleanup && RETURN_CODE=${?};
+                if [ -z "${PLUGIN_CONF_ROOT}" ]
+                then
+                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to load plugin configuration. Cannot continue.";
+
+                    RETURN_CODE=21;
+                else
+                    ## load monitor config
+                    performBackup && RETURN_CODE=${?};
+                fi
+
             fi
             ;;
         *)
@@ -274,6 +277,8 @@ done
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
+
+trap "unlockProcess ${LOCKFILE} ${$}; return ${RETURN_CODE}" INT TERM EXIT;
 
 unset SCRIPT_ABSOLUTE_PATH;
 unset SCRIPT_ROOT;

@@ -450,10 +450,10 @@ function performLookup
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
     ## validate the input
-    [[ -z "${TARGET_NAMESERVER}" && -z "${REVERSE_LOOKUP}" ]] && . ${PLUGIN_LIB_DIRECTORY}/runQuery.sh -t ${RECORD_TYPE} -u ${SITE_HOSTNAME} -e;
-    [[ -z "${TARGET_NAMESERVER}" && "${REVERSE_LOOKUP}" = "${_TRUE}" ]] && . ${PLUGIN_LIB_DIRECTORY}/runQuery.sh -t ${RECORD_TYPE} -u ${SITE_HOSTNAME} -r -e;
-    [[ ! -z "${TARGET_NAMESERVER}" && -z "${REVERSE_LOOKUP}" ]] && . ${PLUGIN_LIB_DIRECTORY}/runQuery.sh -s ${TARGET_NAMESERVER} -t ${RECORD_TYPE} -u ${SITE_HOSTNAME} -e;
-    [[ ! -z "${TARGET_NAMESERVER}" && "${REVERSE_LOOKUP}" = "${_TRUE}" ]] && . ${PLUGIN_LIB_DIRECTORY}/runQuery.sh -s ${TARGET_NAMESERVER} -t ${RECORD_TYPE} -u ${SITE_HOSTNAME} -r -e;
+    [[ -z "${TARGET_NAMESERVER}" && -z "${REVERSE_LOOKUP}" ]] && ${APP_ROOT}/${LIB_DIRECTORY}/runQuery.sh -t ${RECORD_TYPE} -u ${SITE_HOSTNAME} -e;
+    [[ -z "${TARGET_NAMESERVER}" && "${REVERSE_LOOKUP}" = "${_TRUE}" ]] && ${APP_ROOT}/${LIB_DIRECTORY}/runQuery.sh -t ${RECORD_TYPE} -u ${SITE_HOSTNAME} -r -e;
+    [[ ! -z "${TARGET_NAMESERVER}" && -z "${REVERSE_LOOKUP}" ]] && ${APP_ROOT}/${LIB_DIRECTORY}/runQuery.sh -s ${TARGET_NAMESERVER} -t ${RECORD_TYPE} -u ${SITE_HOSTNAME} -e;
+    [[ ! -z "${TARGET_NAMESERVER}" && "${REVERSE_LOOKUP}" = "${_TRUE}" ]] && ${APP_ROOT}/${LIB_DIRECTORY}/runQuery.sh -s ${TARGET_NAMESERVER} -t ${RECORD_TYPE} -u ${SITE_HOSTNAME} -r -e;
     typeset -i RET_CODE=${?};
 
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;

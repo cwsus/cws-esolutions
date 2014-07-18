@@ -246,7 +246,7 @@ function runInternetSiteFailover
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
     ## validate the input
-    ${PLUGIN_LIB_DIRECTORY}/runQuery.sh -s ${NAMED_MASTER} -t A -u ${SITE_HOSTNAME} -o -e;
+    ${APP_ROOT}/${LIB_DIRECTORY}/runQuery.sh -s ${NAMED_MASTER} -t A -u ${SITE_HOSTNAME} -o -e;
     typeset -i RET_CODE=${?};
 
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;

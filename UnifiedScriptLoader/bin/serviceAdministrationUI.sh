@@ -91,7 +91,7 @@ function main
             do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ENTRY -> ${ENTRY}";
 
-                echo "\t${LOADABLE_PLUGIN}/${A} - $(echo "${ENTRY}" | cut -d "=" -f 1 | sed -e '/^ *#/d;s/#.*//' | cut -d "|" -f 2)\n";
+                echo "\t${LOADABLE_PLUGIN}/${A} - $(echo "${ENTRY}" | cut -d "=" -f 1 | sed -e '/^ *#/d;s/#.*//' | cut -d "|" -f 2)";
 
                 (( A += 1 ));
             done

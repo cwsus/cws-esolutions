@@ -16,20 +16,98 @@
 #      REVISION:  ---
 #==============================================================================
 
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+
 ## Application constants
+CNAME="$(/usr/bin/env basename ${0})";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; /usr/bin/env echo "${PWD}"/"${0##*/}")";
+SCRIPT_ROOT="$(/usr/bin/env dirname ${SCRIPT_ABSOLUTE_PATH})";
+METHOD_NAME="${CNAME}#startup";
+LOCKFILE=$(mktemp);
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+[ -z "${PLUGIN_ROOT_DIR}" ] && [ -f ${SCRIPT_ROOT}/../lib/plugin ] && . ${SCRIPT_ROOT}/../lib/plugin;
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+
+[ -z "${PLUGIN_ROOT_DIR}" ] && /usr/bin/env echo "Failed to locate configuration data. Cannot continue." && return 1;
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+
+[ -f ${APP_ROOT}/${LIB_DIRECTORY}/aliases ] && . ${APP_ROOT}/${LIB_DIRECTORY}/aliases;
+[ -f ${APP_ROOT}/${LIB_DIRECTORY}/functions ] && . ${APP_ROOT}/${LIB_DIRECTORY}/functions;
+[ -s ${PLUGIN_LIB_DIRECTORY}/aliases ] && . ${PLUGIN_LIB_DIRECTORY}/aliases;
+[ -s ${PLUGIN_LIB_DIRECTORY}/functions ] && . ${PLUGIN_LIB_DIRECTORY}/functions;
+
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+THIS_CNAME="${CNAME}";
+unset METHOD_NAME;
+unset CNAME;
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+## validate the input
+${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
+typeset -i RET_CODE=${?};
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+
 CNAME="${THIS_CNAME}";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
+typeset METHOD_NAME="${CNAME}#startup";
+
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+then
+    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security violation found while executing ${CNAME} by ${IUSER_AUDIT} on host ${SYSTEM_HOSTNAME}";
+    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Security configuration blocks execution. Please verify security configuration.";
+
+    echo "Security configuration does not allow the requested action.";
+
+    return ${RET_CODE};
+fi
+
+unset RET_CODE;
+unset METHOD_NAME;
+unset CNAME;
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+lockProcess ${LOCKFILE} ${$};
+typeset -i RET_CODE=${?};
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+
+CNAME="${THIS_CNAME}";
+METHOD_NAME="${THIS_CNAME}#startup";
+
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+[ ${RET_CODE} -ne 0 ] && echo "Application currently in use." && echo ${RET_CODE} && return ${RET_CODE};
+
+unset RET_CODE;
 
 #===  FUNCTION  ===============================================================
-#          NAME:  create_skeleton_zone
+#          NAME:  createWebInstance
 #   DESCRIPTION:  Creates the necessary group folder, domain folders and creates
 #                 skeleton zone files. Skeletons are then updated with the
 #                 provided zone name.
 #    PARAMETERS:  Parameters obtained via command-line flags
 #       RETURNS:  0 for positive result, >1 for non-positive
 #==============================================================================
-function createSecuredInstance
+function createWebInstance
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
@@ -37,815 +115,409 @@ function createSecuredInstance
     typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    [ -z "${1}" ] && HYBRID="${_TRUE}";
-
-    SERVER_ID=${IPLANET_CERT_STORE_PREFIX}$(echo ${SITE_HOSTNAME} | cut -d "." -f -2)_${PROJECT_CODE};
-    SERVER_ROOT=$(
-        PLATFORM_TYPE_IDENTIFIER=$(echo ${PLATFORM_CODE} | cut -d "_" -f 3 | tr '[A-Z]' '[a-z]');
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PLATFORM_TYPE_IDENTIFIER -> ${PLATFORM_TYPE_IDENTIFIER}";
-
-        case ${PLATFORM_TYPE_IDENTIFIER} in
-            ${ENV_TYPE_IST})
-                echo "${IPLANET_IST_ROOT}";
-                ;;
-            ${ENV_TYPE_QA})
-                echo "${IPLANET_QA_ROOT}";
-                ;;
-            ${ENV_TYPE_STG}|${ENV_TYPE_TRN}|${ENV_TYPE_PRD})
-                echo "${IPLANET_SERVER_ROOT}";
-                ;;
-            *)
-                echo "${_FALSE}";
-                ;;
-        esac
-    );
-    WEB_LOG_ROOT=${IPLANET_BASE_LOG_ROOT}/${SERVER_ID};
-    WEB_DOC_ROOT=$(echo ${IPLANET_BASE_DOC_ROOT} | sed -e "s/%PROJECT_CODE%/${PROJECT_CODE}/");
-    CERT_NICKNAME=$(echo ${SERVER_ID} | cut -d "-" -f 2);
-    WEB_TMP_DIR=${IPLANET_WEB_TMPDIR}/${SERVER_ID}-$(returnRandomCharacters 6);
-
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVER_ROOT -> ${SERVER_ROOT}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVER_ID -> ${SERVER_ID}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WEB_LOG_ROOT -> ${WEB_LOG_ROOT}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WEB_DOC_ROOT -> ${WEB_DOC_ROOT}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_NICKNAME -> ${CERT_NICKNAME}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WEB_TMP_DIR -> ${WEB_TMP_DIR}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating working copy of template..";
-
-    if [ -z "${SERVER_ROOT}" ] || [ "${SERVER_ROOT}" = "${_FALSE}" ]
+    if [ ! -f ${PLUGIN_CONF_ROOT}/config/${WEBSERVER_TYPE}.properties ]
     then
-        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "The iPlanet installation root could not be determined. Unable to continue.";
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to load build configuration. Cannot continue.";
 
-        RETURN_CODE=90;
-    else
-        ## make sure our build directory exists
-        [ ! -d ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT} ] && mkdir -p ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT};
+        RETURN_CODE=48;
 
-        ## ok, first things first. copy the template
-        ## make some directories
-        [ ! -d ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_ACL_DIR} ] && mkdir ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_ACL_DIR} > /dev/null 2>&1;
-        [ ! -d ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_CERT_DIR} ] && mkdir ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_CERT_DIR} > /dev/null 2>&1;
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        ## copy files
-        if [ ! -z "${HYBRID}" ] && [ "${HYBRID}" = "${_TRUE}" ]
-        then
-            cp -R -p ${APP_ROOT}/${IPLANET_BOTH_TEMPLATE} ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID} > /dev/null 2>&1;
-        else
-            cp -R -p ${APP_ROOT}/${IPLANET_SSL_TEMPLATE} ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID} > /dev/null 2>&1;
-        fi
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-        for SUFFIX in ${IPLANET_CERT_STORE_KEY_SUFFIX} ${IPLANET_CERT_STORE_CERT_SUFFIX}
-        do
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying certificate databases..";
+        [ -f ${TMPFILE} ] && rm -rf ${TMPFILE};
 
-            cp -p ${APP_ROOT}/${IPLANET_CERTDB_TEMPLATE}${SUFFIX} \
-                ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_CERT_DIR}/${SERVER_ID}-${IUSER_AUDIT}-${SUFFIX} > /dev/null 2>&1;
+        unset TMPFILE;
+        unset RET_CODE;
+        unset NONSSL_LISTEN_PORT;
+        unset SSL_LISTEN_PORT;
+        unset WORK_DIRECTORY;
+        unset CONF_ROOT;
+        unset CONTEXT_ROOT;
+        unset SERVER_ROOT;
+        unset METHOD_NAME;
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copy complete. Validating..";
-
-            if [ ! -s ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_CERT_DIR}/${SERVER_ID}-${IUSER_AUDIT}-${SUFFIX} ]
-            then
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred copying ${APP_ROOT}/${IPLANET_CERTDB_TEMPLATE} to ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_CERT_DIR}/${SERVER_ID}-${IUSER_AUDIT}-${SUFFIX}";
-
-                (( ERROR_COUNT += 1 ));
-            fi
-        done
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ERROR_COUNT -> ${ERROR_COUNT}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate databases copied. Copying ACL files..";
-
-        CURR_IFS=${IFS};
-        IFS=${MODIFIED_IFS};
-
-        for ACL in ${IPLANET_ACL_NAMES}
-        do
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${ACL} ..";
-
-            sed -e "s^%SERVER_ROOT%^${SERVER_ROOT}^g" ${APP_ROOT}/${IPLANET_ACL_TEMPLATE} \
-                > ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_ACL_DIR}/$(echo ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^");
-
-            if [ ! -s ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_ACL_DIR}/$(echo ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^") ]
-            then
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred copying ${APP_ROOT}/${IPLANET_ACL_TEMPLATE} to ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_ACL_DIR}/$(echo ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^")";
-
-                (( ERROR_COUNT += 1 ));
-            fi
-        done
-
-        IFS=${CURR_IFS};
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ACL files copied.";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copy created. Validating..";
-
-        if [ ${ERROR_COUNT} -eq 0 ]
-        then
-            if [ -d ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID} ]
-            then
-                ## ok, we've created our directory - lets rock out
-                ## we need to replace some things..
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validation complete. Operating..";
-
-                for REPLACEMENT_ITEM in $(grep "&" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG} | cut -d "&" -f 2)
-                do
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REPLACEMENT_ITEM - ${REPLACEMENT_ITEM} -> $(eval echo \${${REPLACEMENT_ITEM}})";
-
-                    sed -e "s^&${REPLACEMENT_ITEM}&^$(eval echo \${${REPLACEMENT_ITEM}})^g" \
-                        ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG} \
-                        > ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG}.tmp;
-
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating...";
-
-                    if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG}.tmp)" !]
-                    then
-                        ## ok, move it over now..
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
-
-                        mv ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG}.tmp \
-                            ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG} > /dev/null 2>&1;
-
-                        ## and ensure..
-                        if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG})" !]
-                        then
-                            ## good, keep going
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
-
-                            continue;
-                        else
-                            ## ok, its not there. break out - doesnt make sense to continue
-                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
-
-                            (( ERROR_COUNT += 1 ));
-
-                            break;
-                        fi
-                    else
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
-
-                        (( ERROR_COUNT += 1 ));
-
-                        break;
-                    fi
-                done
-
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ERROR_COUNT -> ${ERROR_COUNT}";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${IPLANET_CORE_CONFIG} built. Validating..";
-
-                if [ ${ERROR_COUNT} -eq 0 ]
-                then
-                    ## magnus complete. see if this is websphere-enabled..
-                    if [ ! -z "${ENABLE_WEBSPHERE}" ] && [ "${ENABLE_WEBSPHERE}" = "${_TRUE}" ]
-                    then
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding WebSphere configuration to ${IPLANET_CORE_CONFIG} ..";
-
-                        echo "${IPLANET_WAS_FUNCTION}" >> ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG};
-                        echo "$(echo ${IPLANET_WAS_BOOTSTRAP} | sed -e "s^%SERVER_ROOT%^${SERVER_ROOT}^" \
-                            -e "s^%SERVER_ID%^${SERVER_ID}^g" -e "s/%PROJECT_CODE%/${PROJECT_CODE}/")" >> ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG};
-
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding WebSphere configuration to ${IPLANET_WEB_CONFIG} ..";
-
-                        ## and update the obj files..
-                        for WEB_CONFIG in $(ls ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/ | grep ${IPLANET_WEB_CONFIG})
-                        do
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding WebSphere configuration to ${WEB_CONFIG} ..";
-
-                            sed -e "14a ${IPLANET_WAS_HANDLER}" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${WEB_CONFIG} \
-                                > ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${WEB_CONFIG}.tmp;
-
-                            if [ ! -z "$(grep "${IPLANET_WAS_HANDLER}" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${WEB_CONFIG}.tmp)" !]
-                            then
-                                ## ok, move it over now..
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
-
-                                mv ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${WEB_CONFIG}.tmp \
-                                    ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${WEB_CONFIG} > /dev/null 2>&1;
-
-                                ## and ensure..
-                                if [ ! -z "$(grep "${IPLANET_WAS_HANDLER}" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${WEB_CONFIG})" !]
-                                then
-                                    ## good, keep going
-                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
-
-                                    continue;
-                                else
-                                    ## ok, its not there. break out - doesnt make sense to continue
-                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
-
-                                    (( ERROR_COUNT += 1 ));
-
-                                    break;
-                                fi
-                            else
-                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
-
-                                (( ERROR_COUNT += 1 ));
-
-                                break;
-                            fi
-                        done
-
-                        unset WEB_CONFIG;
-                    fi
-
-                    ## magnus complete, continue with server.xml
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${IPLANET_CORE_CONFIG} validated. Continuing with ${IPLANET_SERVER_CONFIG}...";
-
-                    unset REPLACEMENT_ITEM;
-
-                    for REPLACEMENT_ITEM in $(grep "&" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG} | cut -d "&" -f 2)
-                    do
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REPLACEMENT_ITEM - ${REPLACEMENT_ITEM} -> $(eval echo \${${REPLACEMENT_ITEM}})";
-
-                        sed -e "s^&${REPLACEMENT_ITEM}&^$(eval echo \${${REPLACEMENT_ITEM}})^g" \
-                            ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG} \
-                            > ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG}.tmp;
-
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating...";
-
-                        if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG}.tmp)" !]
-                        then
-                            ## ok, move it over now..
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
-
-                            mv ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG}.tmp \
-                                ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG} > /dev/null 2>&1;
-
-                            ## and ensure..
-                            if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG})" !]
-                            then
-                                ## good, keep going
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
-
-                                continue;
-                            else
-                                ## ok, its not there. break out - doesnt make sense to continue
-                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
-
-                                (( ERROR_COUNT += 1 ));
-
-                                break;
-                            fi
-                        else
-                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
-
-                            (( ERROR_COUNT += 1 ));
-
-                            break;
-                        fi
-                    done
-
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ERROR_COUNT -> ${ERROR_COUNT}";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${IPLANET_SERVER_CONFIG} built. Validating..";
-
-                    if [ ${ERROR_COUNT} -eq 0 ]
-                    then
-                        unset REPLACEMENT_ITEM;
-
-                        ## and finish off with the scripts
-                        for SCRIPT in ${IPLANET_START_SCRIPT} ${IPLANET_STOP_SCRIPT} ${IPLANET_RESTART_SCRIPT} ${IPLANET_ROTATE_SCRIPT} ${IPLANET_RECONFIG_SCRIPT}
-                        do
-                            for REPLACEMENT_ITEM in $(grep "&" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT} | cut -d "&" -f 2)
-                            do
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REPLACEMENT_ITEM - ${REPLACEMENT_ITEM} -> $(eval echo \${${REPLACEMENT_ITEM}})";
-
-                                sed -e "s^&${REPLACEMENT_ITEM}&^$(eval echo \${${REPLACEMENT_ITEM}})^g" \
-                                    ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT} \
-                                    > ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT}.tmp;
-
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating...";
-
-                                if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT}.tmp)" !]
-                                then
-                                    ## ok, move it over now..
-                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
-
-                                    mv ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT}.tmp \
-                                        ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT} > /dev/null 2>&1;
-
-                                    ## and ensure..
-                                    if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT})" !]
-                                    then
-                                        ## good, keep going
-                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
-
-                                        continue;
-                                    else
-                                        ## ok, its not there. break out - doesnt make sense to continue
-                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
-
-                                        (( ERROR_COUNT += 1 ));
-
-                                        break;
-                                    fi
-                                else
-                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
-
-                                    (( ERROR_COUNT += 1 ));
-
-                                    break;
-                                fi
-                            done
-                        done
-
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ERROR_COUNT -> ${ERROR_COUNT}";
-
-                        if [ ${ERROR_COUNT} -eq 0 ]
-                        then
-                            ## this is an ssl-enabled site. generate a temporary, self-signed certificate, and generate a CSR to send off to security
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Generating CSR..";
-
-                            unset METHOD_NAME;
-                            unset CNAME;
-
-                            . ${APP_ROOT}/${LIB_DIRECTORY}/runKeyGeneration.sh -s ${SITE_HOSTNAME} -w ${IPLANET_TYPE_IDENTIFIER} \
-                                -d ${SERVER_ID}-${IUSER_AUDIT}- -c ${PLATFORM_CODE} -t ${CONTACT_NUMBER} -n -e;
-                            typeset -i RET_CODE=${?};
-
-                            CNAME=$(/usr/bin/env basename ${0});
-                        typeset METHOD_NAME="${CNAME}#${0}";
-typeset RETURN_CODE=0;
-
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
-
-                            if [ ! -z "${RET_CODE}" ]
-                            then
-                                if [ ${RET_CODE} -eq 0 ]
-                                then
-                                    ## databases created. build the password file
-                                    ## create the file if it isnt already there
-                                    [ ! -f ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_PASSWORD_FILE} ] && touch \
-                                        ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_PASSWORD_FILE};
-
-                                    CURR_IFS=${IFS};
-                                    IFS=${REPLACEMENT_IFS};
-
-                                    for TOKEN in ${SECURITY_TOKENS}
-                                    do
-                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding security token $(echo ${TOKEN} | cut -d ":" -f 1) ..";
-
-                                        echo "${TOKEN}" >> ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_PASSWORD_FILE};
-
-                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entry added. Validating ..";
-
-                                        if [ $(grep -c "${TOKEN}" \
-                                            ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_PASSWORD_FILE}) -eq 0 ]
-                                        then
-                                            ## "ERROR" occurred adding
-                                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred adding $(echo ${TOKEN} | cut -d ":" -f 1) to ${IPLANET_PASSWORD_FILE}";
-
-                                            (( ERROR_COUNT += 1 ));
-                                        fi
-                                    done
-
-                                    IFS=${CURR_IFS};
-
-                                    if [ ${ERROR_COUNT} -eq 0 ]
-                                    then
-                                        ## build complete
-                                        ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Instance build for ${SITE_HOSTNAME} completed by ${IUSER_AUDIT}.";
-
-                                        RETURN_CODE=0;
-                                    else
-                                        ## one or more errors occurred
-                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Password configuration file could not be generated. Cannot continue.";
-
-                                        RETURN_CODE=48;
-                                    fi
-                                else
-                                    ## failed to create the certificate databases
-                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to generate certificate database information. Cannot continue.";
-
-                                    RETURN_CODE=48;
-                                fi
-                            else
-                                ## return code was blank
-                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No return code was received from runKeyGeneration. Cannot continue.";
-
-                                RETURN_CODE=48;
-                            fi
-                        else
-                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more build operations has failed. ERROR_COUNT -> ${ERROR_COUNT}. Cannot continue.";
-
-                            RETURN_CODE=48;
-                        fi
-                    else
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more build operations has failed. ERROR_COUNT -> ${ERROR_COUNT}. Cannot continue.";
-
-                        RETURN_CODE=48;
-                    fi
-                else
-                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more build operations has failed. ERROR_COUNT -> ${ERROR_COUNT}. Cannot continue.";
-
-                    RETURN_CODE=48;
-                fi
-            else
-                ## no working directory
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to create working copy of template installation. Please try again.";
-
-                RETURN_CODE=47;
-            fi
-        else
-            ## one or more errors were encountered while copying the templates
-            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to create working copy of template installation. Please try again.";
-
-            RETURN_CODE=48;
-        fi
+        return ${RETURN_CODE};
     fi
 
-    ERROR_COUNT=0;
-    unset REPLACEMENT_ITEM;
-    unset PLATFORM_TYPE_IDENTIFIER;
-    unset SERVER_ROOT;
+    . ${PLUGIN_CONF_ROOT}/config/${WEBSERVER_TYPE}.properties;
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-}
+    [ "${WEBSERVER_TYPE}" = "IHS" ] && typeset SERVER_ROOT=${IHS_SERVER_ROOT};
+    [ "${WEBSERVER_TYPE}" = "HTTPD" ] && typeset SERVER_ROOT=${HTTPD_SERVER_ROOT};
+    typeset CONTEXT_ROOT=$(cut -d "." -f 2 <<< ${SITE_HOSTNAME});
+    typeset CONF_ROOT=${SERVER_ROOT}/conf/${CONTEXT_ROOT};
+    typeset WORK_DIRECTORY=${PLUGIN_WORK_DIR}/${CONTEXT_ROOT};
 
-#===  FUNCTION  ===============================================================
-#          NAME:  create_skeleton_zone
-#   DESCRIPTION:  Creates the necessary group folder, domain folders and creates
-#                 skeleton zone files. Skeletons are then updated with the
-#                 provided zone name.
-#    PARAMETERS:  Parameters obtained via command-line flags
-#       RETURNS:  0 for positive result, >1 for non-positive
-#==============================================================================
-function createUnsecuredInstance
-{
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    typeset METHOD_NAME="${CNAME}#${0}";
-    typeset RETURN_CODE=0;
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONTEXT_ROOT -> ${CONTEXT_ROOT}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONF_ROOT -> ${CONF_ROOT}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WORK_DIRECTORY -> ${WORK_DIRECTORY}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PIDFILE_PATH -> ${PIDFILE_PATH}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DOCUMENT_ROOT -> ${DOCUMENT_ROOT}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "LOG_PATH -> ${LOG_PATH}";
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    mkdir ${WORK_DIRECTORY};
 
-    SERVER_ID=${IPLANET_CERT_STORE_PREFIX}$(echo ${SITE_HOSTNAME} | cut -d "." -f -2)_${PROJECT_CODE};
-    SERVER_ROOT=$(
-        PLATFORM_TYPE_IDENTIFIER=$(echo ${PLATFORM_CODE} | cut -d "_" -f 3 | tr '[A-Z]' '[a-z]');
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PLATFORM_TYPE_IDENTIFIER -> ${PLATFORM_TYPE_IDENTIFIER}";
-
-        case ${PLATFORM_TYPE_IDENTIFIER} in
-            ${ENV_TYPE_IST})
-                echo "${IPLANET_IST_ROOT}";
-                ;;
-            ${ENV_TYPE_QA})
-                echo "${IPLANET_QA_ROOT}";
-                ;;
-            ${ENV_TYPE_STG}|${ENV_TYPE_TRN}|${ENV_TYPE_PRD})
-                echo "${IPLANET_SERVER_ROOT}";
-                ;;
-            *)
-                echo "${_FALSE}";
-                ;;
-        esac
-    );
-    WEB_LOG_ROOT=${IPLANET_BASE_LOG_ROOT}/${SERVER_ID};
-    WEB_DOC_ROOT=$(echo ${IPLANET_BASE_DOC_ROOT} | sed -e "s^%SERVER_ID%^${SERVER_ID}^");
-    CERT_NICKNAME=$(echo ${SERVER_ID} | cut -d "-" -f 2);
-    WEB_TMP_DIR=${IPLANET_WEB_TMPDIR}/${SERVER_ID}-$(returnRandomCharacters 6);
-
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVER_ROOT -> ${SERVER_ROOT}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVER_ID -> ${SERVER_ID}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WEB_LOG_ROOT -> ${WEB_LOG_ROOT}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WEB_DOC_ROOT -> ${WEB_DOC_ROOT}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_NICKNAME -> ${CERT_NICKNAME}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WEB_TMP_DIR -> ${WEB_TMP_DIR}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating working copy of template..";
-
-    if [ -z "${SERVER_ROOT}" ] || [ "${SERVER_ROOT}" = "${_FALSE}" ]
+    if [ ! -d ${WORK_DIRECTORY} ]
     then
-        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "The iPlanet installation root could not be determined. Unable to continue.";
+        ## failed to make the configuration root
+        RETURN_CODE=48;
 
-        RETURN_CODE=90;
-    else
-        ## ok, first things first. copy the template
-        ## make some directories
-        mkdir ${APP_ROOT}/${BUILD_TMP_DIR}/${IPLANET_ACL_DIR};
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to create work directory. Cannot continue.";
 
-        ## copy files
-        cp -R -p ${APP_ROOT}/${IPLANET_NOSSL_TEMPLATE} ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID} > /dev/null 2>&1;
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ACL files..";
+        [ -f ${TMPFILE} ] && rm -rf ${TMPFILE};
 
-        CURR_IFS=${IFS};
-        IFS=${MODIFIED_IFS};
+        unset TMPFILE;
+        unset RET_CODE;
+        unset NONSSL_LISTEN_PORT;
+        unset SSL_LISTEN_PORT;
+        unset WORK_DIRECTORY;
+        unset CONF_ROOT;
+        unset CONTEXT_ROOT;
+        unset SERVER_ROOT;
+        unset METHOD_NAME;
 
-        for ACL in ${IPLANET_ACL_NAMES}
-        do
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${ACL} ..";
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-            sed -e "s^%SERVER_ROOT%^${SERVER_ROOT}^g" ${APP_ROOT}/${IPLANET_ACL_TEMPLATE} \
-                > ${APP_ROOT}/${BUILD_TMP_DIR}/${IPLANET_ACL_DIR}$(echo ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^");
-
-            if [ ! -s ${APP_ROOT}/${BUILD_TMP_DIR}/${IPLANET_ACL_DIR}$(echo ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^") ]
-            then
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred copying ${APP_ROOT}/${IPLANET_ACL_TEMPLATE} to ${APP_ROOT}/${BUILD_TMP_DIR}/${IPLANET_ACL_DIR}$(echo ${ACL} | sed -e "s^%SERVER_ID%^${SERVER_ID}^")";
-
-                (( ERROR_COUNT += 1 ));
-            fi
-        done
-
-        IFS=${CURR_IFS};
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ACL files copied.";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copy created. Validating..";
-
-        if [ ${ERROR_COUNT} -eq 0 ]
-        then
-            if [ -d ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID} ]
-            then
-                ## ok, we've created our directory - lets rock out
-                ## we need to replace some things..
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validation complete. Operating..";
-
-                for REPLACEMENT_ITEM in $(grep "&" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG} | cut -d "&" -f 2)
-                do
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REPLACEMENT_ITEM - ${REPLACEMENT_ITEM} -> $(eval echo \${${REPLACEMENT_ITEM}})";
-
-                    sed -e "s^&${REPLACEMENT_ITEM}&^$(eval echo \${${REPLACEMENT_ITEM}})^g" \
-                        ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG} \
-                        > ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG}.tmp;
-
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating...";
-
-                    if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG}.tmp)" !]
-                    then
-                        ## ok, move it over now..
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
-
-                        mv ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG}.tmp \
-                            ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG} > /dev/null 2>&1;
-
-                        ## and ensure..
-                        if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG})" !]
-                        then
-                            ## good, keep going
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
-
-                            continue;
-                        else
-                            ## ok, its not there. break out - doesnt make sense to continue
-                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
-
-                            (( ERROR_COUNT += 1 ));
-
-                            break;
-                        fi
-                    else
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
-
-                        (( ERROR_COUNT += 1 ));
-
-                        break;
-                    fi
-                done
-
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ERROR_COUNT -> ${ERROR_COUNT}";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${IPLANET_CORE_CONFIG} built. Validating..";
-
-                if [ ${ERROR_COUNT} -eq 0 ]
-                then
-                    ## magnus complete. see if this is websphere-enabled..
-                    if [ ! -z "${ENABLE_WEBSPHERE}" ] && [ "${ENABLE_WEBSPHERE}" = "${_TRUE}" ]
-                    then
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding WebSphere configuration to ${IPLANET_CORE_CONFIG} ..";
-
-                        echo "${IPLANET_WAS_FUNCTION}" >> ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG};
-                        echo "$(echo ${IPLANET_WAS_BOOTSTRAP} | sed -e "s^%SERVER_ROOT%^${SERVER_ROOT}^" \
-                            -e "s^%SERVER_ID%^${SERVER_ID}^g" -e "s/%PROJECT_CODE%/${PROJECT_CODE}/")" >> ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG};
-
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding WebSphere configuration to ${IPLANET_WEB_CONFIG} ..";
-
-                        ## and update the obj files..
-                        for WEB_CONFIG in $(ls ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/ | grep ${IPLANET_WEB_CONFIG})
-                        do
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding WebSphere configuration to ${WEB_CONFIG} ..";
-
-                            sed -e "14a ${IPLANET_WAS_HANDLER}" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${WEB_CONFIG} \
-                                > ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${WEB_CONFIG}.tmp;
-
-                            if [ ! -z "$(grep "${IPLANET_WAS_HANDLER}" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${WEB_CONFIG}.tmp)" !]
-                            then
-                                ## ok, move it over now..
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
-
-                                mv ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${WEB_CONFIG}.tmp \
-                                    ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${WEB_CONFIG} > /dev/null 2>&1;
-
-                                ## and ensure..
-                                if [ ! -z "$(grep "${IPLANET_WAS_HANDLER}" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${WEB_CONFIG})" !]
-                                then
-                                    ## good, keep going
-                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
-
-                                    continue;
-                                else
-                                    ## ok, its not there. break out - doesnt make sense to continue
-                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
-
-                                    (( ERROR_COUNT += 1 ));
-
-                                    break;
-                                fi
-                            else
-                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
-
-                                (( ERROR_COUNT += 1 ));
-
-                                break;
-                            fi
-                        done
-
-                        unset WEB_CONFIG;
-                    fi
-
-                    ## magnus complete, continue with server.xml
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${IPLANET_CORE_CONFIG} validated. Continuing with ${IPLANET_SERVER_CONFIG}...";
-
-                    unset REPLACEMENT_ITEM;
-
-                    for REPLACEMENT_ITEM in $(grep "&" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG} | cut -d "&" -f 2)
-                    do
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REPLACEMENT_ITEM - ${REPLACEMENT_ITEM} -> $(eval echo \${${REPLACEMENT_ITEM}})";
-
-                        sed -e "s^&${REPLACEMENT_ITEM}&^$(eval echo \${${REPLACEMENT_ITEM}})^g" \
-                            ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG} \
-                            > ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG}.tmp;
-
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating...";
-
-                        if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG}.tmp)" !]
-                        then
-                            ## ok, move it over now..
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
-
-                            mv ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG}.tmp \
-                                ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG} > /dev/null 2>&1;
-
-                            ## and ensure..
-                            if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG})" !]
-                            then
-                                ## good, keep going
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
-
-                                continue;
-                            else
-                                ## ok, its not there. break out - doesnt make sense to continue
-                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
-
-                                (( ERROR_COUNT += 1 ));
-
-                                break;
-                            fi
-                        else
-                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
-
-                            (( ERROR_COUNT += 1 ));
-
-                            break;
-                        fi
-                    done
-
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ERROR_COUNT -> ${ERROR_COUNT}";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${IPLANET_SERVER_CONFIG} built. Validating..";
-
-                    if [ ${ERROR_COUNT} -eq 0 ]
-                    then
-                        unset REPLACEMENT_ITEM;
-
-                        ## and finish off with the scripts
-                        for SCRIPT in ${IPLANET_START_SCRIPT} ${IPLANET_STOP_SCRIPT} ${IPLANET_RESTART_SCRIPT} ${IPLANET_ROTATE_SCRIPT} ${IPLANET_RECONFIG_SCRIPT}
-                        do
-                            for REPLACEMENT_ITEM in $(grep "&" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT} | cut -d "&" -f 2)
-                            do
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REPLACEMENT_ITEM - ${REPLACEMENT_ITEM} -> $(eval echo \${${REPLACEMENT_ITEM}})";
-
-                                sed -e "s^&${REPLACEMENT_ITEM}&^$(eval echo \${${REPLACEMENT_ITEM}})^g" \
-                                    ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT} \
-                                    > ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT}.tmp;
-
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating...";
-
-                                if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT}.tmp)" !]
-                                then
-                                    ## ok, move it over now..
-                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
-
-                                    mv ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT}.tmp \
-                                        ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT} > /dev/null 2>&1;
-
-                                    ## and ensure..
-                                    if [ ! -z "$(grep "$(eval echo \${${REPLACEMENT_ITEM}})" ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT})" !]
-                                    then
-                                        ## good, keep going
-                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
-
-                                        ## update permissions.. for some reason they arent carrying over
-                                        chmod 754 ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${SERVER_ID}/${SCRIPT} > /dev/null 2>&1;
-
-                                        continue;
-                                    else
-                                        ## ok, its not there. break out - doesnt make sense to continue
-                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
-
-                                        (( ERROR_COUNT += 1 ));
-
-                                        break;
-                                    fi
-                                else
-                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating the server configuration. Please try again.";
-
-                                    (( ERROR_COUNT += 1 ));
-
-                                    break;
-                                fi
-                            done
-                        done
-
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ERROR_COUNT -> ${ERROR_COUNT}";
-
-                        if [ ${ERROR_COUNT} -eq 0 ]
-                        then
-                            ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Instance build for ${SITE_HOSTNAME} completed by ${IUSER_AUDIT}.";
-
-                            RETURN_CODE=0;
-                        else
-                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more build operations has failed. ERROR_COUNT -> ${ERROR_COUNT}. Cannot continue.";
-
-                            RETURN_CODE=48;
-                        fi
-                    else
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more build operations has failed. ERROR_COUNT -> ${ERROR_COUNT}. Cannot continue.";
-
-                        RETURN_CODE=48;
-                    fi
-                else
-                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more build operations has failed. ERROR_COUNT -> ${ERROR_COUNT}. Cannot continue.";
-
-                    RETURN_CODE=48;
-                fi
-            else
-                ## no working directory
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to create working copy of template installation. Please try again.";
-
-                RETURN_CODE=47;
-            fi
-        else
-            ## one or more errors were encountered while copying the templates
-            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to create working copy of template installation. Please try again.";
-
-            RETURN_CODE=48;
-        fi
+        return ${RETURN_CODE};
     fi
 
-    ERROR_COUNT=0;
-    unset REPLACEMENT_ITEM;
-    unset PLATFORM_TYPE_IDENTIFIER;
-    unset SERVER_ROOT;
+    ## copy common
+    cp ${TEMPLATE_DIRECTORY}/redirects.conf ${WORK_DIRECTORY};
+    cp ${TEMPLATE_DIRECTORY}/security.conf ${WORK_DIRECTORY};
 
+    case ${BUILD_TYPE} in
+        ${BUILD_TYPE_SSL}|${BUILD_TYPE_BOTH})
+            typeset -i SSL_LISTEN_PORT=${PORT_NUMBER};
+            typeset -i NONSSL_LISTEN_PORT=$( (( ${PORT_NUMBER} - 1 )) );
+            [ "${BUILD_TYPE}" = "${BUILD_TYPE_SSL}" ] && typeset TEMPLATE=${TEMPLATE_DIRECTORY}/${WEBSERVER_TYPE}/wserver.conf_ssl;
+            [ "${BUILD_TYPE}" = "${BUILD_TYPE_BOTH}" ] && typeset TEMPLATE=${TEMPLATE_DIRECTORY}/${WEBSERVER_TYPE}/wserver.conf_both;
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NONSSL_LISTEN_PORT -> ${NONSSL_LISTEN_PORT}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TEMPLATE -> ${TEMPLATE}";
+
+            sed -e "s/%PIDFILE_PATH%/${PIDFILE_PATH}/g;s/%SITE_HOSTNAME%/${SITE_HOSTNAME}/g;s/%DOCUMENT_ROOT%/${DOCUMENT_ROOT}/g;s/%CONTEXT_ROOT%/${CONTEXT_ROOT}/g; \
+                s/%LOG_PATH%/${LOG_PATH}/g;s/%LISTEN_ADDRESS%/${LISTEN_ADDRESS}/g;s/%NONSSL_LISTEN_PORT%/${NONSSL_LISTEN_PORT}/g;s/%SSL_LISTEN_PORT%/${SSL_LISTEN_PORT}/g" \
+                ${TEMPLATE} > ${WORK_DIRECTORY}/wserver.conf;
+
+            ## generate a temporary key for the site here
+            THIS_CNAME="${CNAME}";
+            unset METHOD_NAME;
+            unset CNAME;
+
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+            ## validate the input
+            ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runKeyGeneration.sh -s ${SITE_HOSTNAME} -w ${WEBSERVER_TYPE} \
+                -d ${SERVER_ID}-${IUSER_AUDIT}- -c ${PLATFORM_CODE} -t ${CONTACT_NUMBER} -n -e;
+            typeset -i RET_CODE=${?};
+
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+            CNAME="${THIS_CNAME}";
+            typeset METHOD_NAME="${CNAME}#${0}";
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+            if [ -z ${RET_CODE} ] || [ ${RET_CODE} -ne 0 ]
+            then
+                ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WARN: The provided address is not an IP. If this is intentional, this warning can be ignored.";
+            fi
+            ;;
+        ${BUILD_TYPE_NOSSL})
+            sed -e "s/%PIDFILE_PATH%/${PIDFILE_PATH}/g;s/%SITE_HOSTNAME%/${SITE_HOSTNAME}/g;s/%DOCUMENT_ROOT%/${DOCUMENT_ROOT}/g;s/%CONTEXT_ROOT%/${CONTEXT_ROOT}/g; \
+                s/%LOG_PATH%/${LOG_PATH}/g;s/%LISTEN_ADDRESS%/${LISTEN_ADDRESS}/g;s/%NONSSL_LISTEN_PORT%/${NONSSL_LISTEN_PORT}/g" \
+                ${TEMPLATE_DIRECTORY}/${WEBSERVER_TYPE}/wserver.conf_ssl > ${WORK_DIRECTORY}/wserver.conf;
+            ;;
+        *)
+            ## no valid build type
+            RETURN_CODE=41;
+
+            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No valid build type was provided. Cannot continue.";
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+            [ -f ${TMPFILE} ] && rm -rf ${TMPFILE};
+
+            unset TMPFILE;
+            unset RET_CODE;
+            unset NONSSL_LISTEN_PORT;
+            unset SSL_LISTEN_PORT;
+            unset WORK_DIRECTORY;
+            unset CONF_ROOT;
+            unset CONTEXT_ROOT;
+            unset SERVER_ROOT;
+            unset METHOD_NAME;
+
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+            return ${RETURN_CODE};
+            ;;
+    esac
+
+    if [ "${APPSERVER_ENABLED}" = "${_TRUE}" ]
+    then
+        typeset TMPFILE=$(mktemp);
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMPFILE -> ${TMPFILE}";
+
+        case ${APPSERVER} in
+            ${APPSERVER_TYPE_WAS})
+                ## configure for websphere
+                typeset WAS_PLUGIN_CONFIG
+                sed -e "s/%CONF_ROOT%/${CONF_ROOT}/g" ${TEMPLATE_DIRECTORY}/was_config.conf > ${WORK_DIRECTORY}/was_config.conf;
+                sed -e "19i\\\n$(sed -e "s/%CONTEXT_ROOT%/${CONTEXT_ROOT}/g" <<< ${WAS_PLUGIN_CONFIG})\n" ${WORK_DIRECTORY}/wserver.conf > ${TMPFILE};
+
+                ## make sure it worked here
+                ;;
+            ${APPSERVER_TYPE_TOMCAT})
+                ## configure for tomcat
+                typeset APPSERVER_HOSTNAME=${5};
+                typeset APPSERVER_PORT=${6};
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "APPSERVER_HOSTNAME -> ${APPSERVER_HOSTNAME}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "APPSERVER_PORT -> ${APPSERVER_PORT}";
+
+                sed -e "s/%CONTEXT_ROOT%/${CONTEXT_ROOT}/g;s/%APPSERVER_HOSTNAME%/${APPSERVER_HOSTNAME}/g;s/%APPSERVER_PORT%/${APPSERVER_PORT}/g" ${TEMPLATE_DIRECTORY}/tomcat_config.conf > ${WORK_DIRECTORY}/tomcat_config.conf;
+                sed -e "19i\\\n$(sed -e "s/%CONTEXT_ROOT%/${CONTEXT_ROOT}/g" <<< ${TOMCAT_PLUGIN_CONFIG})\n" ${WORK_DIRECTORY}/wserver.conf > ${TMPFILE};
+
+                ## make sure it worked here
+                ;;
+        esac
+    fi
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ -f ${TMPFILE} ] && rm -rf ${TMPFILE};
+
+    unset TMPFILE;
+    unset RET_CODE;
+    unset NONSSL_LISTEN_PORT;
+    unset SSL_LISTEN_PORT;
+    unset WORK_DIRECTORY;
+    unset CONF_ROOT;
+    unset CONTEXT_ROOT;
+    unset SERVER_ROOT;
+    unset METHOD_NAME;
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+    return ${RETURN_CODE};
 }
 
 #===  FUNCTION  ===============================================================
 #          NAME:  usage
-#   DESCRIPTION:  Provide information on the usage of this application
+#   DESCRIPTION:  Provide information on the function usage of this application
 #    PARAMETERS:  None
-#       RETURNS:  0
+#          NAME:  usage
 #==============================================================================
 function usage
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     typeset METHOD_NAME="${CNAME}#${0}";
-    typeset RETURN_CODE=0;
+    typeset RETURN_CODE=3;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo "${THIS_CNAME} - Create a skeleton zone file with the necessary components.";
-    echo "Usage: ${THIS_CNAME} <build type>";
-    echo "\t\tBuild type can be one of the following:";
-    echo "\t\t\tssl";
-    echo "\t\t\tnonssl";
-    echo "\t\t\tboth";
+    echo -n "${THIS_CNAME} - Build a new web instance for installation\n";
+    echo -n "Usage: ${THIS_CNAME} [ -w <webserver type> ] [ -b <build type> ] [ -p <port number(s)> ] [ -s <site hostname> ] [ -a ] [ -t <appserver type> ] [ -h <appserver host> ] [ -P <appserver port> ]
+    -w         -> The type of webserver to build out.
+    -b         -> The build type, SSL, Non-SSL, or combined.
+    -p         -> The port numbers associated with the instance. If an SSL instance is requested, the non-ssl port will be the port provided - 1.
+    -s         -> The site hostname for the new instance.
+    -a         -> Appserver enabled
+    -t         -> Appserver type, if this is an appserver-enabled instance.
+    -h         -> Appserver hostname, if this is an appserver-enabled instance.
+    -P         -> Appserver port number, if this is an appserver-enabled instance.
+    -e         -> Execute processing
+    -h|-?      -> Show this help\n";
 
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    return 3;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+    return ${RETURN_CODE};
 }
 
-[ -z "${PLUGIN_ROOT_DIR}" ] && [ -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin ] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin;
-[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
+[ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
 
-[ ${#} -eq 0 ] && usage&& RETURN_CODE=${?};
+while getopts "w:b:p:s:at:h:Peh:" OPTIONS 2>/dev/null
+do
+    case "${OPTIONS}" in
+        w)
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting WEBSERVER_TYPE..";
 
-METHOD_NAME="${CNAME}#startup";
+            typeset -u WEBSERVER_TYPE="${OPTARG}";
 
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WEBSERVER_TYPE -> ${WEBSERVER_TYPE}";
+            ;;
+        b)
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting BUILD_TYPE..";
 
-[ "$1" = "${BUILD_TYPE_SSL}" ] && createSecuredInstance;
-[ "$1" = "${BUILD_TYPE_BOTH}" ] && createSecuredInstance ${_TRUE};
-[ "$1" = "${BUILD_TYPE_NOSSL}" ] && createUnsecuredInstance;
+            typeset -u BUILD_TYPE="${OPTARG}";
 
-return ${RETURN_CODE};
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BUILD_TYPE -> ${BUILD_TYPE}";
+            ;;
+        p)
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting PORT_NUMBER..";
+
+            typeset -i PORT_NUMBER=${OPTARG};
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PORT_NUMBER -> ${PORT_NUMBER}";
+            ;;
+        s)
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting SITE_HOSTNAME..";
+
+            typeset -l SITE_HOSTNAME=${OPTARG};
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_HOSTNAME -> ${SITE_HOSTNAME}";
+            ;;
+        a)
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting APPSERVER_ENABLED..";
+
+            typeset APPSERVER_ENABLED=${_TRUE};
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "APPSERVER_ENABLED -> ${APPSERVER_ENABLED}";
+            ;;
+        t)
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting APPSERVER_TYPE..";
+
+            case "$(tr "[a-z]" "[A-Z]" <<< ${OPTARG})" in
+                ${SUPPORTED_APPSERVERS[${OPTARG}]}) typeset -u APPSERVER_TYPE=${OPTARG}; ;;
+            esac
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "APPSERVER_TYPE -> ${APPSERVER_TYPE}";
+            ;;
+        h)
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting APPSERVER_HOSTNAME..";
+
+            typeset -l APPSERVER_HOSTNAME=${OPTARG};
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "APPSERVER_HOSTNAME -> ${APPSERVER_HOSTNAME}";
+            ;;
+        P)
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting APPSERVER_PORT..";
+
+            typeset -i APPSERVER_PORT=${OPTARG};
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "APPSERVER_PORT -> ${APPSERVER_PORT}";
+            ;;
+        e)
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating request..";
+
+            ## Make sure we have enough information to process
+            ## and execute
+            if [ -z "${WEBSERVER_TYPE}" ]
+            then
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No webserver type was provided. Unable to continue processing.";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                RETURN_CODE=21;
+            elif [ -z "${BUILD_TYPE}" ]
+            then
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No build type was provided. Unable to continue processing.";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                RETURN_CODE=54;
+            elif [ -z "${PORT_NUMBER}" ]
+            then
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No port number was provided. Unable to continue processing.";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                RETURN_CODE=55;
+            elif [ -z "${SITE_HOSTNAME}" ]
+            then
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No site hostname was provided. Unable to continue processing.";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                RETURN_CODE=11;
+            else
+                if [ ! -z "${APPSERVER_ENABLED}" ] && [ "${APPSERVER_ENABLED}" = "${_TRUE}" ]
+                then
+                    if [ -z "${APPSERVER_TYPE}" ]
+                    then
+                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No appserver type was provided. Unable to continue processing.";
+
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                        RETURN_CODE=56;
+                    elif [ -z "${APPSERVER_HOSTNAME}" ]
+                    then
+                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No appserver hostname was provided. Unable to continue processing.";
+
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                        RETURN_CODE=57;
+                    elif [ -z "${APPSERVER_PORT}" ]
+                    then
+                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No appserver port was provided. Unable to continue processing.";
+
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                        RETURN_CODE=58;
+                    else
+                        createWebInstance && RETURN_CODE=${?};
+                    fi
+                else
+                    createWebInstance && RETURN_CODE=${?};
+                fi
+            fi
+            ;;
+        *)
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+            usage && RETURN_CODE=${?};
+            ;;
+    esac
+done
+
+trap "unlockProcess ${LOCKFILE} ${$}; return ${RETURN_CODE}" INT TERM EXIT;
+
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
+
+unset CNAME;
+unset SCRIPT_ABSOLUTE_PATH;
+unset SCRIPT_ROOT;
+unset METHOD_NAME;
+unset RET_CODE;
+unset METHOD_NAME;
+unset WEBSERVER_TYPE;
+unset BUILD_TYPE;
+unset PORT_NUMBER;
+unset SITE_HOSTNAME;
+unset APPSERVER_ENABLED;
+unset APPSERVER_TYPE;
+unset APPSERVER_HOSTNAME;
+unset APPSERVER_PORT;
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+[ -z "${RETURN_CODE}" ] && return 1 || return "${RETURN_CODE}";

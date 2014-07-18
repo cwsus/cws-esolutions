@@ -1,8 +1,8 @@
 #==============================================================================
 #
-#          FILE:  constants.sh
-#         USAGE:  ./constants.sh
-#   DESCRIPTION:  Sets and unsets system variables
+#          FILE:  aliases
+#         USAGE:  . aliases
+#   DESCRIPTION:  Sets plugin-wide aliases
 #
 #       OPTIONS:  ---
 #  REQUIREMENTS:  ---

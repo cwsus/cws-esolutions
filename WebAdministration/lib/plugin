@@ -1,9 +1,9 @@
 #!/usr/bin/env ksh
 #==============================================================================
 #
-#          FILE:  constants.sh
-#         USAGE:  ./constants.sh
-#   DESCRIPTION:  Sets and unsets system variables
+#          FILE:  plugin
+#         USAGE:  . plugin
+#   DESCRIPTION:  Sets and unsets plugin variables
 #
 #       OPTIONS:  ---
 #  REQUIREMENTS:  ---
@@ -43,12 +43,12 @@ fi
 if [ -z "${APP_ROOT}" ]
 then
     case ${SCRIPT_ROOT} in
-        *lib/plugins/*/sys|*lib/plugins/*/monitors|*lib/plugins/*/executors) . ${SCRIPT_ROOT}/../../../../../lib/constants.sh ;;
-        *lib/plugins/*/bin|*lib/plugins/*/lib) . ${SCRIPT_ROOT}/../../../../lib/constants.sh ;;
-        *lib/plugins/*) . ${SCRIPT_ROOT}/../../../lib/constants.sh ;;
-        *lib/plugins) . ${SCRIPT_ROOT}/../../lib/constants.sh ;;
-        *lib|*bin) . ${SCRIPT_ROOT}/../lib/constants.sh ;;
-        *) . ${SCRIPT_ROOT}/lib/constants.sh ;;
+        *lib/plugins/*/sys|*lib/plugins/*/monitors|*lib/plugins/*/executors) . ${SCRIPT_ROOT}/../../../../../lib/constants ;;
+        *lib/plugins/*/bin|*lib/plugins/*/lib) . ${SCRIPT_ROOT}/../../../../lib/constants ;;
+        *lib/plugins/*) . ${SCRIPT_ROOT}/../../../lib/constants ;;
+        *lib/plugins) . ${SCRIPT_ROOT}/../../lib/constants ;;
+        *lib|*bin) . ${SCRIPT_ROOT}/../lib/constants ;;
+        *) . ${SCRIPT_ROOT}/lib/constants ;;
     esac
 fi
 
@@ -68,6 +68,12 @@ typeset -rx PLUGIN_LOADED=true;
 typeset -rx PLUGIN_CONFIG=${PLUGIN_CONF_ROOT}/plugin.properties;
 
 [ -f ${PLUGIN_CONFIG} ] && . ${PLUGIN_CONFIG};
+
+
+for CONFIG_FILE in ${WEB_CONFIG_ROOT}/*
+do
+    [ "$(cut -d "." -f 2 <<< ${CONFIG_FILE})" = "config" ] && . ${CONFIG_FILE};
+done
 
 [ ! -z "${TEMP_DIRECTORY}" ] && [ ! -d ${TEMP_DIRECTORY} ] && mkdir ${TEMP_DIRECTORY} > /dev/null 2>&1;
 [ ! -z "${PLUGIN_DATA_DIRECTORY}" ] && [ ! -d ${PLUGIN_DATA_DIRECTORY} ] && mkdir ${PLUGIN_DATA_DIRECTORY} > /dev/null 2>&1;
@@ -111,17 +117,17 @@ typeset -x CLASSPATH=${CLASSPATH}:${PLUGIN_CLASS_PATH};
 [ -s ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/functions ] && . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/functions;
 
 ## and finally make sure our directories exist
-[ ! -d ${APP_ROOT}/${TMP_DIRECTORY} ] && mkdir -p ${APP_ROOT}/${TMP_DIRECTORY};
-[ ! -d ${APP_ROOT}/${CSRSTORE} ] && mkdir -p ${APP_ROOT}/${CSRSTORE};
-[ ! -d ${APP_ROOT}/${MAILSTORE} ] && mkdir -p ${APP_ROOT}/${MAILSTORE};
-[ ! -d ${APP_ROOT}/${PEMSTORE} ] && mkdir -p ${APP_ROOT}/${PEMSTORE};
-[ ! -d ${APP_ROOT}/${PKCS12STORE} ] && mkdir -p ${APP_ROOT}/${PKCS12STORE};
-[ ! -d ${APP_ROOT}/${CERTSTORE} ] && mkdir -p ${APP_ROOT}/${CERTSTORE};
-[ ! -d ${APP_ROOT}/${BACKUP_DIRECTORY} ] && mkdir -p ${APP_ROOT}/${BACKUP_DIRECTORY};
-[ ! -d ${APP_ROOT}/${DATA_DIRECTORY} ] && mkdir -p ${APP_ROOT}/${DATA_DIRECTORY};
-[ ! -d ${APP_ROOT}/${BUILD_TMP_DIR} ] && mkdir -p ${APP_ROOT}/${BUILD_TMP_DIR};
+[ ! -d ${TMP_DIRECTORY} ] && mkdir -p ${TMP_DIRECTORY};
+[ ! -d ${CSRSTORE} ] && mkdir -p ${CSRSTORE};
+[ ! -d ${MAILSTORE} ] && mkdir -p ${MAILSTORE};
+[ ! -d ${PEMSTORE} ] && mkdir -p ${PEMSTORE};
+[ ! -d ${PKCS12STORE} ] && mkdir -p ${PKCS12STORE};
+[ ! -d ${CERTSTORE} ] && mkdir -p ${CERTSTORE};
+[ ! -d ${BACKUP_DIRECTORY} ] && mkdir -p ${BACKUP_DIRECTORY};
+[ ! -d ${DATA_DIRECTORY} ] && mkdir -p ${DATA_DIRECTORY};
+[ ! -d ${BUILD_TMP_DIR} ] && mkdir -p ${BUILD_TMP_DIR};
 
 ## make sure our exception lists exist
-[ ! -f ${APP_ROOT}/${CORE_EXCEPTION_LIST} ] && touch ${APP_ROOT}/${CORE_EXCEPTION_LIST};
-[ ! -f ${APP_ROOT}/${TMP_EXCEPTION_LIST} ] && touch ${APP_ROOT}/${TMP_EXCEPTION_LIST};
-[ ! -f ${APP_ROOT}/${SSL_EXCEPTION_LIST} ] && touch ${APP_ROOT}/${SSL_EXCEPTION_LIST};
+[ ! -f ${CORE_EXCEPTION_LIST} ] && touch ${CORE_EXCEPTION_LIST};
+[ ! -f ${TMP_EXCEPTION_LIST} ] && touch ${TMP_EXCEPTION_LIST};
+[ ! -f ${SSL_EXCEPTION_LIST} ] && touch ${SSL_EXCEPTION_LIST};
