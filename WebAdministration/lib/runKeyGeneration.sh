@@ -102,6 +102,552 @@ METHOD_NAME="${THIS_CNAME}#startup";
 unset RET_CODE;
 
 #===  FUNCTION  ===============================================================
+#          NAME:  createSelfSignedCertificate
+#   DESCRIPTION:  Generates a self-signed certificate for a new SSL-enabled
+#                 web instance
+#    PARAMETERS:  None
+#==============================================================================
+function createSelfSignedCertificate
+{
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+    typeset OPENSSL_PASSIN=$(mktemp);
+    typeset OPENSSL_PASSOUT=$(mktemp);
+    typeset CERTUTIL_PASSIN=$(mktemp);
+    typeset WORK_DIRECTORY=${PLUGIN_WORK_DIR}/${CONTEXT_ROOT};
+    typeset SITE_KEYFILE="${KEY_DIR}/${CONTEXT_ROOT}.key";
+    typeset SITE_CSRFILE="${CSR_DIR}/${CONTEXT_ROOT}.csr";
+    typeset SITE_CRTFILE="${CERTS_DIR}/${CONTEXT_ROOT}.crt";
+    typeset SITE_PFXFILE="${PKCS12_DIR}/${CONTEXT_ROOT}.p12";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPENSSL_PASSIN -> ${OPENSSL_PASSIN}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPENSSL_PASSOUT -> ${OPENSSL_PASSOUT}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERTUTIL_PASSIN -> ${CERTUTIL_PASSIN}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WORK_DIRECTORY -> ${WORK_DIRECTORY}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_KEYFILE -> ${SITE_KEYFILE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_CSRFILE -> ${SITE_CSRFILE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_CRTFILE -> ${SITE_CRTFILE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_PFXFILE -> ${SITE_PFXFILE}";
+
+    echo "$(returnRandomCharacters ${PASSWORD_LENGTH})" > ${OPENSSL_PASSIN};
+    echo "$(returnRandomCharacters ${PASSWORD_LENGTH})" > ${OPENSSL_PASSOUT};
+    echo "$(returnRandomCharacters ${PASSWORD_LENGTH})" > ${CERTUTIL_PASSIN};
+    chmod 600 ${OPENSSL_PASSIN} ${OPENSSL_PASSOUT} ${CERTUTIL_PASSIN};
+
+    ## generate key
+    /usr/bin/env openssl genrsa -aes256 -out ${SITE_KEYFILE} -${OPENSSL_PASSOUT} file:${OPENSSL_PASSIN} 2048 > /dev/null 2>&1; echo $?
+    typeset RET_CODE=${?};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+    then
+        RETURN_CODE=59;
+
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to generate a keyfile: RET_CODE -> ${RET_CODE}. Please try again.";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${CERTUTIL_PASSIN}" ] && -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+        [ ! -z "${OPENSSL_PASSIN}" ] && -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+        [ ! -z "${OPENSSL_PASSOUT}" ] && -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+        [ ! -z "${SITE_KEYFILE}" ] && -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+        [ ! -z "${SITE_CSRFILE}" ] && -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+        [ ! -z "${SITE_CRTFILE}" ] && -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+        [ ! -z "${SITE_PFXFILE}" ] && -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+
+        unset OPENSSL_PASSIN;
+        unset OPENSSL_PASSOUT;
+        unset CERTUTIL_PASSIN;
+        unset WORK_DIRECTORY;
+        unset SITE_KEYFILE;
+        unset SITE_CSRFILE;
+        unset SITE_CRTFILE;
+        unset SITE_PFXFILE;
+        unset RET_CODE;
+        unset CERTIFICATE_DATASTORE;
+        unset METHOD_NAME;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
+    ## validate rsa key
+    /usr/bin/env openssl rsa -in ${SITE_KEYFILE} -check -${OPENSSL_PASSIN} file:${OPENSSL_PASSIN} > /dev/null 2>&1; echo $?
+    typeset RET_CODE=${?};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+    then
+        RETURN_CODE=59;
+
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to generate a keyfile: RET_CODE -> ${RET_CODE}. Please try again.";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${CERTUTIL_PASSIN}" ] && -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+        [ ! -z "${OPENSSL_PASSIN}" ] && -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+        [ ! -z "${OPENSSL_PASSOUT}" ] && -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+        [ ! -z "${SITE_KEYFILE}" ] && -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+        [ ! -z "${SITE_CSRFILE}" ] && -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+        [ ! -z "${SITE_CRTFILE}" ] && -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+        [ ! -z "${SITE_PFXFILE}" ] && -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+
+        unset OPENSSL_PASSIN;
+        unset OPENSSL_PASSOUT;
+        unset CERTUTIL_PASSIN;
+        unset WORK_DIRECTORY;
+        unset SITE_KEYFILE;
+        unset SITE_CSRFILE;
+        unset SITE_CRTFILE;
+        unset SITE_PFXFILE;
+        unset RET_CODE;
+        unset CERTIFICATE_DATASTORE;
+        unset METHOD_NAME;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
+    ## generate csr
+    /usr/bin/env openssl req -config openssl.cnf -batch -extensions server_ext -new -key ${SITE_KEYFILE} -out ${SITE_CSRFILE} -${OPENSSL_PASSIN} file:${OPENSSL_PASSIN} > /dev/null 2>&1; echo $?
+    typeset RET_CODE=${?};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+    then
+        RETURN_CODE=59;
+
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to generate a keyfile: RET_CODE -> ${RET_CODE}. Please try again.";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${CERTUTIL_PASSIN}" ] && -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+        [ ! -z "${OPENSSL_PASSIN}" ] && -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+        [ ! -z "${OPENSSL_PASSOUT}" ] && -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+        [ ! -z "${SITE_KEYFILE}" ] && -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+        [ ! -z "${SITE_CSRFILE}" ] && -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+        [ ! -z "${SITE_CRTFILE}" ] && -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+        [ ! -z "${SITE_PFXFILE}" ] && -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+
+        unset OPENSSL_PASSIN;
+        unset OPENSSL_PASSOUT;
+        unset CERTUTIL_PASSIN;
+        unset WORK_DIRECTORY;
+        unset SITE_KEYFILE;
+        unset SITE_CSRFILE;
+        unset SITE_CRTFILE;
+        unset SITE_PFXFILE;
+        unset RET_CODE;
+        unset CERTIFICATE_DATASTORE;
+        unset METHOD_NAME;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
+    ## validate csr
+    /usr/bin/env openssl req -text -noout -verify -in ${SITE_CSRFILE} > /dev/null 2>&1; echo $?
+    typeset RET_CODE=${?};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+    then
+        RETURN_CODE=59;
+
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to generate a keyfile: RET_CODE -> ${RET_CODE}. Please try again.";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${CERTUTIL_PASSIN}" ] && -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+        [ ! -z "${OPENSSL_PASSIN}" ] && -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+        [ ! -z "${OPENSSL_PASSOUT}" ] && -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+        [ ! -z "${SITE_KEYFILE}" ] && -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+        [ ! -z "${SITE_CSRFILE}" ] && -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+        [ ! -z "${SITE_CRTFILE}" ] && -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+        [ ! -z "${SITE_PFXFILE}" ] && -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+
+        unset OPENSSL_PASSIN;
+        unset OPENSSL_PASSOUT;
+        unset CERTUTIL_PASSIN;
+        unset WORK_DIRECTORY;
+        unset SITE_KEYFILE;
+        unset SITE_CSRFILE;
+        unset SITE_CRTFILE;
+        unset SITE_PFXFILE;
+        unset RET_CODE;
+        unset CERTIFICATE_DATASTORE;
+        unset METHOD_NAME;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
+    ## generate certificate
+    /usr/bin/env openssl x509 -req -in ${SITE_CSRFILE} -signkey ${SITE_KEYFILE} -out ${SITE_CRTFILE} -${OPENSSL_PASSIN} file:${OPENSSL_PASSIN} > /dev/null 2>&1; echo $?
+    typeset RET_CODE=${?};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+    then
+        RETURN_CODE=59;
+
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to generate a keyfile: RET_CODE -> ${RET_CODE}. Please try again.";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${CERTUTIL_PASSIN}" ] && -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+        [ ! -z "${OPENSSL_PASSIN}" ] && -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+        [ ! -z "${OPENSSL_PASSOUT}" ] && -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+        [ ! -z "${SITE_KEYFILE}" ] && -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+        [ ! -z "${SITE_CSRFILE}" ] && -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+        [ ! -z "${SITE_CRTFILE}" ] && -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+        [ ! -z "${SITE_PFXFILE}" ] && -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+
+        unset OPENSSL_PASSIN;
+        unset OPENSSL_PASSOUT;
+        unset CERTUTIL_PASSIN;
+        unset WORK_DIRECTORY;
+        unset SITE_KEYFILE;
+        unset SITE_CSRFILE;
+        unset SITE_CRTFILE;
+        unset SITE_PFXFILE;
+        unset RET_CODE;
+        unset CERTIFICATE_DATASTORE;
+        unset METHOD_NAME;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
+    ## validate certificate
+    /usr/bin/env openssl x509 -text -noout -in ${SITE_CRTFILE} > /dev/null 2>&1; echo $?
+    typeset RET_CODE=${?};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+    then
+        RETURN_CODE=59;
+
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to generate a keyfile: RET_CODE -> ${RET_CODE}. Please try again.";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${CERTUTIL_PASSIN}" ] && -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+        [ ! -z "${OPENSSL_PASSIN}" ] && -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+        [ ! -z "${OPENSSL_PASSOUT}" ] && -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+        [ ! -z "${SITE_KEYFILE}" ] && -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+        [ ! -z "${SITE_CSRFILE}" ] && -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+        [ ! -z "${SITE_CRTFILE}" ] && -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+        [ ! -z "${SITE_PFXFILE}" ] && -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+
+        unset OPENSSL_PASSIN;
+        unset OPENSSL_PASSOUT;
+        unset CERTUTIL_PASSIN;
+        unset WORK_DIRECTORY;
+        unset SITE_KEYFILE;
+        unset SITE_CSRFILE;
+        unset SITE_CRTFILE;
+        unset SITE_PFXFILE;
+        unset RET_CODE;
+        unset CERTIFICATE_DATASTORE;
+        unset METHOD_NAME;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
+    case ${WS_PLATFORM} in
+        iplanet)
+            typeset CERTIFICATE_DATASTORE="${IPLANET_CERT_STORE_PREFIX}${CONTEXT_ROOT}-";
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERTIFICATE_DATASTORE -> ${CERTIFICATE_DATASTORE}";
+
+            ## convert
+            /usr/bin/env openssl pkcs12 -export -out ${SITE_PFXFILE} -inkey ${SITE_KEYFILE} -in ${SITE_CRTFILE} -certfile ${SITE_CRTFILE} -${OPENSSL_PASSIN} file:${OPENSSL_PASSIN} -${OPENSSL_PASSOUT} file:${OPENSSL_PASSOUT} > /dev/null 2>&1; echo $?
+            typeset RET_CODE=${?};
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+            if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+            then
+                RETURN_CODE=59;
+
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to generate a PKCS12 file: RET_CODE -> ${RET_CODE}. Please try again.";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                [ ! -z "${CERTUTIL_PASSIN}" ] && -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+                [ ! -z "${OPENSSL_PASSIN}" ] && -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+                [ ! -z "${OPENSSL_PASSOUT}" ] && -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+                [ ! -z "${SITE_KEYFILE}" ] && -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+                [ ! -z "${SITE_CSRFILE}" ] && -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+                [ ! -z "${SITE_CRTFILE}" ] && -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+                [ ! -z "${SITE_PFXFILE}" ] && -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+                [ ! -z "${CERTIFICATE_DATASTORE}key3.db" ] && [ -f "${CERTIFICATE_DATASTORE}key3.db" ] && rm -rf ${CERTIFICATE_DATASTORE}key3.db;
+                [ ! -z "${CERTIFICATE_DATASTORE}cert8.db" ] && [ -f "${CERTIFICATE_DATASTORE}cert8.db" ] && rm -rf ${CERTIFICATE_DATASTORE}cert8.db;
+
+                unset OPENSSL_PASSIN;
+                unset OPENSSL_PASSOUT;
+                unset CERTUTIL_PASSIN;
+                unset WORK_DIRECTORY;
+                unset SITE_KEYFILE;
+                unset SITE_CSRFILE;
+                unset SITE_CRTFILE;
+                unset SITE_PFXFILE;
+                unset RET_CODE;
+                unset CERTIFICATE_DATASTORE;
+                unset METHOD_NAME;
+
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+                return ${RETURN_CODE};
+            fi
+
+            ## validate
+            /usr/bin/env openssl pkcs12 -info -noout -in ${SITE_PFXFILE} -${OPENSSL_PASSIN} file:${OPENSSL_PASSIN} > /dev/null 2>&1; echo $?
+            typeset RET_CODE=${?};
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+            if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+            then
+                RETURN_CODE=59;
+
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to validate PKCS12: RET_CODE -> ${RET_CODE}. Please try again.";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                [ ! -z "${CERTUTIL_PASSIN}" ] && -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+                [ ! -z "${OPENSSL_PASSIN}" ] && -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+                [ ! -z "${OPENSSL_PASSOUT}" ] && -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+                [ ! -z "${SITE_KEYFILE}" ] && -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+                [ ! -z "${SITE_CSRFILE}" ] && -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+                [ ! -z "${SITE_CRTFILE}" ] && -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+                [ ! -z "${SITE_PFXFILE}" ] && -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+                [ ! -z "${CERTIFICATE_DATASTORE}key3.db" ] && [ -f "${CERTIFICATE_DATASTORE}key3.db" ] && rm -rf ${CERTIFICATE_DATASTORE}key3.db;
+                [ ! -z "${CERTIFICATE_DATASTORE}cert8.db" ] && [ -f "${CERTIFICATE_DATASTORE}cert8.db" ] && rm -rf ${CERTIFICATE_DATASTORE}cert8.db;
+
+                unset OPENSSL_PASSIN;
+                unset OPENSSL_PASSOUT;
+                unset CERTUTIL_PASSIN;
+                unset WORK_DIRECTORY;
+                unset SITE_KEYFILE;
+                unset SITE_CSRFILE;
+                unset SITE_CRTFILE;
+                unset SITE_PFXFILE;
+                unset RET_CODE;
+                unset CERTIFICATE_DATASTORE;
+                unset METHOD_NAME;
+
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+                return ${RETURN_CODE};
+            fi
+
+            ## import for iplanet
+            ## create database (remember, this is a new site)
+            /usr/bin/env certutil -N -d ${WORK_DIRECTORY} -P ${CERTIFICATE_DATASTORE};
+            typeset RET_CODE=${?};
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+            if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+            then
+                RETURN_CODE=59;
+
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to generate a certificate database: RET_CODE -> ${RET_CODE}. Please try again.";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                [ ! -z "${CERTUTIL_PASSIN}" ] && -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+                [ ! -z "${OPENSSL_PASSIN}" ] && -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+                [ ! -z "${OPENSSL_PASSOUT}" ] && -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+                [ ! -z "${SITE_KEYFILE}" ] && -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+                [ ! -z "${SITE_CSRFILE}" ] && -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+                [ ! -z "${SITE_CRTFILE}" ] && -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+                [ ! -z "${SITE_PFXFILE}" ] && -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+                [ ! -z "${CERTIFICATE_DATASTORE}key3.db" ] && [ -f "${CERTIFICATE_DATASTORE}key3.db" ] && rm -rf ${CERTIFICATE_DATASTORE}key3.db;
+                [ ! -z "${CERTIFICATE_DATASTORE}cert8.db" ] && [ -f "${CERTIFICATE_DATASTORE}cert8.db" ] && rm -rf ${CERTIFICATE_DATASTORE}cert8.db;
+
+                unset OPENSSL_PASSIN;
+                unset OPENSSL_PASSOUT;
+                unset CERTUTIL_PASSIN;
+                unset WORK_DIRECTORY;
+                unset SITE_KEYFILE;
+                unset SITE_CSRFILE;
+                unset SITE_CRTFILE;
+                unset SITE_PFXFILE;
+                unset RET_CODE;
+                unset CERTIFICATE_DATASTORE;
+                unset METHOD_NAME;
+
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+                return ${RETURN_CODE};
+            fi
+
+            ## perform the import into the certdb
+            /usr/bin/env pk12util -i ${SITE_PFXFILE} -d ${WORK_DIRECTORY} -P ${CERTIFICATE_DATASTORE} -k ${CERTUTIL_PASSIN} -w ${OPENSSL_PASSOUT} > /dev/null 2>&1;
+            typeset RET_CODE=${?};
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+            if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+            then
+                RETURN_CODE=59;
+
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to generate a certificate database: RET_CODE -> ${RET_CODE}. Please try again.";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                [ ! -z "${CERTUTIL_PASSIN}" ] && -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+                [ ! -z "${OPENSSL_PASSIN}" ] && -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+                [ ! -z "${OPENSSL_PASSOUT}" ] && -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+                [ ! -z "${SITE_KEYFILE}" ] && -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+                [ ! -z "${SITE_CSRFILE}" ] && -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+                [ ! -z "${SITE_CRTFILE}" ] && -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+                [ ! -z "${SITE_PFXFILE}" ] && -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+                [ ! -z "${CERTIFICATE_DATASTORE}key3.db" ] && [ -f "${CERTIFICATE_DATASTORE}key3.db" ] && rm -rf ${CERTIFICATE_DATASTORE}key3.db;
+                [ ! -z "${CERTIFICATE_DATASTORE}cert8.db" ] && [ -f "${CERTIFICATE_DATASTORE}cert8.db" ] && rm -rf ${CERTIFICATE_DATASTORE}cert8.db;
+
+                unset OPENSSL_PASSIN;
+                unset OPENSSL_PASSOUT;
+                unset CERTUTIL_PASSIN;
+                unset WORK_DIRECTORY;
+                unset SITE_KEYFILE;
+                unset SITE_CSRFILE;
+                unset SITE_CRTFILE;
+                unset SITE_PFXFILE;
+                unset RET_CODE;
+                unset CERTIFICATE_DATASTORE;
+                unset METHOD_NAME;
+
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+                return ${RETURN_CODE};
+            fi
+
+            ## validate
+            certutil -L -d ${WORK_DIRECTORY} -P ${CERTIFICATE_DATASTORE} -n "${CONTEXT_ROOT}" >/dev/null 2>&1; echo $?;
+            typeset RET_CODE=${?};
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+            if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+            then
+                RETURN_CODE=59;
+
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to generate a certificate database: RET_CODE -> ${RET_CODE}. Please try again.";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                [ ! -z "${CERTUTIL_PASSIN}" ] && -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+                [ ! -z "${OPENSSL_PASSIN}" ] && -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+                [ ! -z "${OPENSSL_PASSOUT}" ] && -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+                [ ! -z "${SITE_KEYFILE}" ] && -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+                [ ! -z "${SITE_CSRFILE}" ] && -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+                [ ! -z "${SITE_CRTFILE}" ] && -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+                [ ! -z "${SITE_PFXFILE}" ] && -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+                [ ! -z "${CERTIFICATE_DATASTORE}key3.db" ] && [ -f "${CERTIFICATE_DATASTORE}key3.db" ] && rm -rf ${CERTIFICATE_DATASTORE}key3.db;
+                [ ! -z "${CERTIFICATE_DATASTORE}cert8.db" ] && [ -f "${CERTIFICATE_DATASTORE}cert8.db" ] && rm -rf ${CERTIFICATE_DATASTORE}cert8.db;
+
+                unset OPENSSL_PASSIN;
+                unset OPENSSL_PASSOUT;
+                unset CERTUTIL_PASSIN;
+                unset WORK_DIRECTORY;
+                unset SITE_KEYFILE;
+                unset SITE_CSRFILE;
+                unset SITE_CRTFILE;
+                unset SITE_PFXFILE;
+                unset RET_CODE;
+                unset CERTIFICATE_DATASTORE;
+                unset METHOD_NAME;
+
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+                return ${RETURN_CODE};
+            fi
+
+            ## DONE.
+            ;;
+        httpd)
+            ## no special processing is required here
+            ;;
+        ihs)
+            keyman -cert -receive -db ${APP_ROOT}/${CERTDB_STORE}/${CERTIFICATE_DATABASE}${IHS_DB_CRT_SUFFIX} \
+                -file ${APP_ROOT}/${CERTSTORE}/${CERTIFICATE_NICKNAME}.cer -pw $(cat ${APP_ROOT}/${IHS_CERT_DB_PASSFILE}) \
+                -type ${IHS_KEY_DB_TYPE} -format ascii;
+                ;;
+        *)
+            ## unknown??
+            ;;
+    esac
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ ! -z "${CERTUTIL_PASSIN}" ] && -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+    [ ! -z "${OPENSSL_PASSIN}" ] && -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+    [ ! -z "${OPENSSL_PASSOUT}" ] && -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+
+    unset OPENSSL_PASSIN;
+    unset OPENSSL_PASSOUT;
+    unset CERTUTIL_PASSIN;
+    unset WORK_DIRECTORY;
+    unset SITE_KEYFILE;
+    unset SITE_CSRFILE;
+    unset SITE_CRTFILE;
+    unset SITE_PFXFILE;
+    unset RET_CODE;
+    unset CERTIFICATE_DATASTORE;
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+    return ${RETURN_CODE};
+}
+
+#===  FUNCTION  ===============================================================
 #          NAME:  generate_iplanet_csr
 #   DESCRIPTION:  Generates a certificate signing request (CSR) for an iPlanet
 #                 webserver
@@ -253,9 +799,8 @@ function createNewCertificate
                             -w ${IPLANET_TYPE_IDENTIFIER} -p ${PLATFORM_CODE} -S -e;
                         typeset -i RET_CODE=${?};
 
-                        CNAME=$(/usr/bin/env basename ${0});
-                    typeset METHOD_NAME="${CNAME}#${0}";
-typeset RETURN_CODE=0;
+                        CNAME=${THIS_CNAME};
+                        typeset METHOD_NAME="${CNAME}#${0}";
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -315,8 +860,8 @@ typeset RETURN_CODE=0;
                 MAILER_CODE=${?};
 
                 CNAME=$(/usr/bin/env basename ${0});
-            typeset METHOD_NAME="${CNAME}#${0}";
-typeset RETURN_CODE=0;
+                typeset METHOD_NAME="${CNAME}#${0}";
+                typeset RETURN_CODE=0;
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MAILER_CODE -> ${MAILER_CODE}";
 
@@ -475,9 +1020,8 @@ function createiPlanetCSR
                 . ${MAILER_CLASS} -m ${NOTIFY_CSR_EMAIL} -p ${WEB_PROJECT_CODE} -a "${NOTIFY_CSR_ADDRESS}" -t ${NOTIFY_TYPE_NOTIFY} -e;
                 MAILER_CODE=${?};
 
-                CNAME=$(/usr/bin/env basename ${0});
-            typeset METHOD_NAME="${CNAME}#${0}";
-typeset RETURN_CODE=0;
+                CNAME=${THIS_CNAME};
+                typeset METHOD_NAME="${CNAME}#${0}";
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MAILER_CODE -> ${MAILER_CODE}";
 
@@ -636,9 +1180,8 @@ typeset RETURN_CODE=0;
                         . ${MAILER_CLASS} -m ${NOTIFY_CSR_EMAIL} -p ${WEB_PROJECT_CODE} -a "${NOTIFY_CSR_ADDRESS}" -t ${NOTIFY_TYPE_NOTIFY} -e;
                         MAILER_CODE=${?};
 
-                        CNAME=$(/usr/bin/env basename ${0});
-                    typeset METHOD_NAME="${CNAME}#${0}";
-typeset RETURN_CODE=0;
+                        CNAME=${THIS_CNAME};
+                        typeset METHOD_NAME="${CNAME}#${0}";
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MAILER_CODE -> ${MAILER_CODE}";
 
@@ -851,9 +1394,8 @@ function createIHSCSR
                         . ${MAILER_CLASS} -m ${NOTIFY_CSR_EMAIL} -p ${WEB_PROJECT_CODE} -a "${NOTIFY_CSR_ADDRESS}" -t ${NOTIFY_TYPE_NOTIFY} -e;
                         MAILER_CODE=${?};
 
-                        CNAME=$(/usr/bin/env basename ${0});
-                    typeset METHOD_NAME="${CNAME}#${0}";
-typeset RETURN_CODE=0;
+                        CNAME=${THIS_CNAME};
+                        typeset METHOD_NAME="${CNAME}#${0}";
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MAILER_CODE -> ${MAILER_CODE}";
 
@@ -1070,9 +1612,8 @@ typeset RETURN_CODE=0;
                                 . ${MAILER_CLASS} -m ${NOTIFY_CSR_EMAIL} -p ${WEB_PROJECT_CODE} -a "${NOTIFY_CSR_ADDRESS}" -t ${NOTIFY_TYPE_NOTIFY} -e;
                                 MAILER_CODE=${?};
 
-                                CNAME=$(/usr/bin/env basename ${0});
-                            typeset METHOD_NAME="${CNAME}#${0}";
-typeset RETURN_CODE=0;
+                                CNAME=${THIS_CNAME};
+                                typeset METHOD_NAME="${CNAME}#${0}";
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MAILER_CODE -> ${MAILER_CODE}";
 

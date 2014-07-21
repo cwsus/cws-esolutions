@@ -1,0 +1,65 @@
+#===  FUNCTION  ===============================================================
+#          NAME:  distributePackage
+#   DESCRIPTION:  Creates a backup archive of a desired filesystem via rsync
+#    PARAMETERS:  Target host to obtain keys for
+#       RETURNS:  0 if success, 1 otherwise
+#==============================================================================
+function distributePackage
+{
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset -i RETURN_CODE=0;
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+    if [ ${#} -ne 4 ]
+    then
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+        typeset METHOD_NAME="${CNAME}#${0}";
+        typeset RETURN_CODE=3;
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+        echo -n "${0} - Distribute a provided package to remote systems\n";
+        echo -n "Usage: ${0} [ username ] [ source ] [ hostname ] [ destination ]
+                 -> The username to execute the rsync as.
+                 -> The source file to distribute
+                 -> The target host to distribute the package to
+                 -> The target directory to store the source into\n";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
+    ## create the exclude file if not exists - rsync will choke otherwise
+    [ ! -f ${APP_ROOT}/etc/excludes ] && touch ${APP_ROOT}/etc/excludes;
+
+    [ -z "${THREAD_TIMEOUT}" ] && TIMEOUT_VALUE=30 || TIMEOUT_VALUE=${THREAD_TIMEOUT};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TIMEOUT_VALUE -> ${TIMEOUT_VALUE}";
+
+    getHostKeys ${2};
+
+    /usr/bin/env rsync -vqcarupeAtzhi --timeout ${TIMEOUT_VALUE} --no-motd --safe-links --delete --delete-excluded --progress --exclude-from=${APP_ROOT}/etc/excludes -e "/usr/bin/env ssh -q -t -l ${1}" ${2} ${3}:${4};
+    RETURN_CODE=${?};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    unset METHOD_NAME;
+    unset TIMEOUT_VALUE;
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+    return ${RETURN_CODE};
+}

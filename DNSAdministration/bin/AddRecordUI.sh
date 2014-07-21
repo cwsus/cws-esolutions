@@ -1921,7 +1921,7 @@ function provideDataCenter
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
                 ## validate the input
-                contains ${DATACENTERS[@]} ${SELECTED_DATACENTER};
+                contains ${SELECTED_DATACENTER} ${DATACENTERS[@]};
                 typeset -i RET_CODE=${?};
 
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;

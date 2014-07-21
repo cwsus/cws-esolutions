@@ -30,7 +30,7 @@ LOCKFILE=$(mktemp);
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
-[ -z "${PLUGIN_ROOT_DIR}" ] && [ -f ${SCRIPT_ROOT}/../plugin ] && . ${SCRIPT_ROOT}/../plugin;
+[ -z "${PLUGIN_ROOT_DIR}" ] && [ -f "${SCRIPT_ROOT}"/../plugin ] && . "${SCRIPT_ROOT}"/../plugin;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -105,7 +105,7 @@ function performBackup
     do
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FILE -> ${FILE}";
 
-        [ -f ${FILE} ] && rm -rf ${FILE};
+        [ ! -z "${FILE}" ] && [ -f ${FILE} ] && rm -rf ${FILE};
     done
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Cleanup complete. Continuing..";

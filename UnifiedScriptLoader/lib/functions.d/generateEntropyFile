@@ -1,0 +1,94 @@
+#===  FUNCTION  ===============================================================
+#          NAME:  generateEntropyFile
+#   DESCRIPTION:  Generates an entropy file for use with applications that require it
+#    PARAMETERS:  None
+#===========================================================================
+function generateEntropyFile
+{
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ENTROPY_FILE -> ${ENTROPY_FILE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RANDOM_GENERATOR -> ${RANDOM_GENERATOR}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ENTROPY_FILE_SIZE -> ${ENTROPY_FILE_SIZE}";
+
+    typeset ENTROPY_FILE_NAME=${ENTROPY_FILE##*/};
+    typeset ENTROPY_BACKUP_FILE=${ENTROPY_FILE_NAME}.${DATESYS};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ENTROPY_FILE_PATH -> ${ENTROPY_FILE_PATH}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ENTROPY_BACKUP_FILE -> ${ENTROPY_BACKUP_FILE}";
+
+    [ -s ${ENTROPY_FILE} ] && mv ${ENTROPY_FILE} ${ENTROPY_FILE}.${DATESYS} > /dev/null 2>&1;
+
+    while read -r RANDOM_DATA
+    do
+        while true
+        do
+            echo ${RANDOM_DATA} >> ${ENTROPY_FILE};
+
+            [ $(wc -c ${ENTROPY_FILE} | awk '{print $1}') -ge ${ENTROPY_FILE_SIZE} ] && break;
+        done
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entropy generation complete. Removing backup file..";
+
+        if [ ! -s ${ENTROPY_FILE} ]
+        then
+            if [ ${ERROR_COUNT} -ge ${RETRY_COUNT} ]
+            then
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entropy file generation failed. Retry limit exceeded. Cannot continue.";
+
+                RETURN_CODE=1;
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                ERROR_COUNT=0;
+
+                unset RANDOM_DATA;
+                unset ENTROPY_BACKUP_FILE;
+                unset ENTROPY_FILE_NAME;
+                unset METHOD_NAME;
+
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+                return ${RETURN_CODE};
+            fi
+
+            (( ERROR_COUNT += 1 ));
+
+            continue;
+        fi
+    done < ${RANDOM_GENERATOR};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Entropy file generated. Modifying permissions..";
+
+    chmod 600 ${ENTROPY_FILE};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing backup file...";
+    rm -rf ${ENTROPY_BACKUP_FILE} > /dev/null 2>&1;
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Backup file removed. Process complete.";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    ERROR_COUNT=0;
+
+    unset RANDOM_DATA;
+    unset ENTROPY_BACKUP_FILE;
+    unset ENTROPY_FILE_NAME;
+    unset METHOD_NAME;
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+    return ${RETURN_CODE};
+}

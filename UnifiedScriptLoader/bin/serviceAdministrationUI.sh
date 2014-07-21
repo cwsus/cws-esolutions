@@ -31,7 +31,7 @@ SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
-[ -z "${APP_ROOT}" ] && [ -f ${SCRIPT_ROOT}/../lib/constants ] && . ${SCRIPT_ROOT}/../lib/constants;
+[ -z "${APP_ROOT}" ] && [ -f "${SCRIPT_ROOT}"/../lib/constants ] && . "${SCRIPT_ROOT}"/../lib/constants;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -119,7 +119,7 @@ function main
                 reset; clear; break;
                 ;;
             *)
-                contains ${PLUGIN_LIST[@]} ${PLUGIN_RESPONSE};
+                contains ${PLUGIN_RESPONSE} ${PLUGIN_LIST[@]};
                 typeset RET_CODE=${?};
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";

@@ -1,0 +1,34 @@
+#===  FUNCTION  ===============================================================
+#          NAME:  cancelRequest
+#   DESCRIPTION:  Cancels and restarts processing from the main entry point
+#    PARAMETERS:  LOAD_CLASS - The class to launch post-cancellation
+#       RETURNS:  0 regardless of result.
+#==============================================================================
+function cancelRequest
+{
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset -i RETURN_CODE=0;
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+    reset; clear;
+
+    print "$(cat ${SYSTEM_MESSAGES} | grep system.request.canceled | grep -v "#" | cut -d "=" -f 2)\n";
+
+    ## terminate this thread and return control to main
+    sleep ${MESSAGE_DELAY}; reset; clear;
+    [ -z "${1}" ] && exec ${MAIN_CLASS} || exec ${1};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    unset METHOD_NAME;
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+    return ${RETURN_CODE};
+}

@@ -29,7 +29,7 @@ SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
-[ -z "${APP_ROOT}" ] && [ -f ${SCRIPT_ROOT}/../lib/constants ] && . ${SCRIPT_ROOT}/../lib/constants;
+[ -z "${APP_ROOT}" ] && [ -f "${SCRIPT_ROOT}"/../lib/constants ] && . "${SCRIPT_ROOT}"/../lib/constants;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -70,7 +70,7 @@ function sendNotificationEmail
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TEMPLATE_FILE -> ${TEMPLATE_FILE}";
 
     ## and cleanup a little..
-    [ -f ${MESSAGE_FILE} ] && rm -rf ${MESSAGE_FILE} > /dev/null 2>&1;
+    [ ! -z "${MESSAGE_FILE}" ] && [ -f ${MESSAGE_FILE} ] && rm -rf ${MESSAGE_FILE};
 
     if [ -s ${TEMPLATE_FILE} ]
     then
@@ -223,7 +223,7 @@ function sendNotificationEmail
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [ -f ${MESSAGE_FILE} ] && rm -rf ${MESSAGE_FILE};
+    [ ! -z "${MESSAGE_FILE}" ] && [ -f ${MESSAGE_FILE} ] && rm -rf ${MESSAGE_FILE};
 
     unset MESSAGE_TEMPLATE;
     unset FILE_CONTENT;

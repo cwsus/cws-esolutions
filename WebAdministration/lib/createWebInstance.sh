@@ -117,7 +117,7 @@ function createWebInstance
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    if [ ! -f ${PLUGIN_CONF_ROOT}/config/${WEBSERVER_TYPE}.properties ]
+    if [ ! -f ${PLUGIN_CONF_ROOT}/config/${WEBSERVER_TYPE}.config ]
     then
         ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to load build configuration. Cannot continue.";
 
@@ -144,7 +144,7 @@ function createWebInstance
         return ${RETURN_CODE};
     fi
 
-    . ${PLUGIN_CONF_ROOT}/config/${WEBSERVER_TYPE}.properties;
+    . ${PLUGIN_CONF_ROOT}/config/${WEBSERVER_TYPE}.config;
 
     [ "${WEBSERVER_TYPE}" = "IHS" ] && typeset SERVER_ROOT=${IHS_SERVER_ROOT};
     [ "${WEBSERVER_TYPE}" = "HTTPD" ] && typeset SERVER_ROOT=${HTTPD_SERVER_ROOT};
@@ -203,8 +203,8 @@ function createWebInstance
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NONSSL_LISTEN_PORT -> ${NONSSL_LISTEN_PORT}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TEMPLATE -> ${TEMPLATE}";
 
-            sed -e "s/%PIDFILE_PATH%/${PIDFILE_PATH}/g;s/%SITE_HOSTNAME%/${SITE_HOSTNAME}/g;s/%DOCUMENT_ROOT%/${DOCUMENT_ROOT}/g;s/%CONTEXT_ROOT%/${CONTEXT_ROOT}/g; \
-                s/%LOG_PATH%/${LOG_PATH}/g;s/%LISTEN_ADDRESS%/${LISTEN_ADDRESS}/g;s/%NONSSL_LISTEN_PORT%/${NONSSL_LISTEN_PORT}/g;s/%SSL_LISTEN_PORT%/${SSL_LISTEN_PORT}/g" \
+            sed -e "s^%PIDFILE_PATH%^${PIDFILE_PATH}^g;s^%SITE_HOSTNAME%^${SITE_HOSTNAME}^g;s^%DOCUMENT_ROOT%^${DOCUMENT_ROOT}^g;s^%CONTEXT_ROOT%^${CONTEXT_ROOT}^g; \
+                s^%LOG_PATH%^${LOG_PATH}^g;s^%LISTEN_ADDRESS%^${LISTEN_ADDRESS}^g;s^%NONSSL_LISTEN_PORT%^${NONSSL_LISTEN_PORT}^g;s^%SSL_LISTEN_PORT%^${SSL_LISTEN_PORT}^g" \
                 ${TEMPLATE} > ${WORK_DIRECTORY}/wserver.conf;
 
             ## generate a temporary key for the site here
@@ -234,8 +234,8 @@ function createWebInstance
             fi
             ;;
         ${BUILD_TYPE_NOSSL})
-            sed -e "s/%PIDFILE_PATH%/${PIDFILE_PATH}/g;s/%SITE_HOSTNAME%/${SITE_HOSTNAME}/g;s/%DOCUMENT_ROOT%/${DOCUMENT_ROOT}/g;s/%CONTEXT_ROOT%/${CONTEXT_ROOT}/g; \
-                s/%LOG_PATH%/${LOG_PATH}/g;s/%LISTEN_ADDRESS%/${LISTEN_ADDRESS}/g;s/%NONSSL_LISTEN_PORT%/${NONSSL_LISTEN_PORT}/g" \
+            sed -e "s^%PIDFILE_PATH%^${PIDFILE_PATH}^g;s^%SITE_HOSTNAME%^${SITE_HOSTNAME}^g;s^%DOCUMENT_ROOT%^${DOCUMENT_ROOT}^g;s^%CONTEXT_ROOT%^${CONTEXT_ROOT}^g; \
+                s^%LOG_PATH%^${LOG_PATH}^g;s^%LISTEN_ADDRESS%^${LISTEN_ADDRESS}^g;s^%NONSSL_LISTEN_PORT%^${NONSSL_LISTEN_PORT}^g" \
                 ${TEMPLATE_DIRECTORY}/${WEBSERVER_TYPE}/wserver.conf_ssl > ${WORK_DIRECTORY}/wserver.conf;
             ;;
         *)
@@ -300,7 +300,7 @@ function createWebInstance
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [ -f ${TMPFILE} ] && rm -rf ${TMPFILE};
+    [ ! -z "${TMPFILE}" ] && [ -f ${TMPFILE} ] && rm -rf ${TMPFILE};
 
     unset TMPFILE;
     unset RET_CODE;
@@ -358,7 +358,7 @@ function usage
 
 [ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
 
-while getopts "w:b:p:s:at:h:Peh:" OPTIONS 2>/dev/null
+while getopts "w:b:p:s:at:h:P:eh:" OPTIONS 2>/dev/null
 do
     case "${OPTIONS}" in
         w)
@@ -373,7 +373,7 @@ do
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting BUILD_TYPE..";
 
-            typeset -u BUILD_TYPE="${OPTARG}";
+            typeset -l BUILD_TYPE="${OPTARG}";
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BUILD_TYPE -> ${BUILD_TYPE}";
             ;;
@@ -404,9 +404,15 @@ do
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting APPSERVER_TYPE..";
 
-            case "$(tr "[a-z]" "[A-Z]" <<< ${OPTARG})" in
-                ${SUPPORTED_APPSERVERS[${OPTARG}]}) typeset -u APPSERVER_TYPE=${OPTARG}; ;;
-            esac
+            typeset PROVIDED_APPSERVER="$(tr "[a-z]" "[A-Z]" <<< ${OPTARG})";
+            contains ${PROVIDED_APPSERVER} ${SUPPORTED_APPSERVERS[@]};
+            typeset -i RET_CODE=${?};
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROVIDED_APPSERVER -> ${PROVIDED_APPSERVER}";
+
+            [ ! -z "${RET_CODE}" ] && [ ${RET_CODE} -eq 0 ] && typeset APPSERVER_TYPE=${PROVIDED_APPSERVER};
+
+            unset RET_CODE;
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "APPSERVER_TYPE -> ${APPSERVER_TYPE}";
             ;;

@@ -38,7 +38,7 @@ function cleanLogArchive
 
     for ARCHIVED_FILE in $(find ${ARCHIVE_LOG_ROOT} -type f -name \*.log\* -ctime +${LOG_RETENTION_PERIOD})
     do
-        [ -f ${ARCHIVED_FILE} ] && rm -f ${ARCHIVED_FILE} >/dev/null 2>&1;
+        [ ! -z "${ARCHIVED_FILE}" ] && [ -f ${ARCHIVED_FILE} ] && rm -rf ${ARCHIVED_FILE};
     done
 
     # [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;

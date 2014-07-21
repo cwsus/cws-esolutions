@@ -28,7 +28,7 @@ SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
-[ -z "${APP_ROOT}" ] && [ -f ${SCRIPT_ROOT}/../lib/constants ] && . ${SCRIPT_ROOT}/../lib/constants;
+[ -z "${APP_ROOT}" ] && [ -f "${SCRIPT_ROOT}"/../lib/constants ] && . "${SCRIPT_ROOT}"/../lib/constants;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -229,7 +229,7 @@ function executeMonitoringScript
             \n" >> ${MONITOR_OUTPUT_FILE}
         cat ${TMP_DIRECTORY}/${MONITORED_HOST} >> ${MONITOR_OUTPUT_FILE};
 
-        [ -f ${TMP_DIRECTORY}/${MONITORED_HOST} ] && rm -rf ${TMP_DIRECTORY}/${MONITORED_HOST};
+        [ ! -z "${TMP_DIRECTORY}/${MONITORED_HOST}" ] && [ -f ${TMP_DIRECTORY}/${MONITORED_HOST} ] && rm -rf ${TMP_DIRECTORY}/${MONITORED_HOST};
     done
 
     ## ok, processing complete - rock out and see if we have anything to send
