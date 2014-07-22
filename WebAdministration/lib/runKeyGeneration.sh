@@ -28,8 +28,8 @@ SCRIPT_ROOT="$(/usr/bin/env dirname ${SCRIPT_ABSOLUTE_PATH})";
 METHOD_NAME="${CNAME}#startup";
 LOCKFILE=$(mktemp);
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
 [ -z "${PLUGIN_ROOT_DIR}" ] && [ -f ${SCRIPT_ROOT}/../lib/plugin ] && . ${SCRIPT_ROOT}/../lib/plugin;
 
@@ -54,12 +54,12 @@ THIS_CNAME="${CNAME}";
 unset METHOD_NAME;
 unset CNAME;
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 ## validate the input
 ${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
-typeset -i RET_CODE=${?};
+unset RET_CODE; typeset -i RET_CODE=${?};
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -83,11 +83,11 @@ unset RET_CODE;
 unset METHOD_NAME;
 unset CNAME;
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 lockProcess ${LOCKFILE} ${$};
-typeset -i RET_CODE=${?};
+unset RET_CODE; typeset -i RET_CODE=${?};
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
@@ -117,6 +117,49 @@ function createSelfSignedCertificate
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
+    if [ ! -z "${GENERATE_SELF_SIGNED}" ] && [ "${GENERATE_SELF_SIGNED}" = "${_FALSE}" ]
+    then
+        RETURN_CODE=59;
+
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Self-signed certificates are not currently enabled.";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${OPENSSL_CNF}" ] && [ -f ${OPENSSL_CNF} ] && rm -rf ${OPENSSL_CNF};
+        [ ! -z "${CERTUTIL_PASSIN}" ] && [ -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+        [ ! -z "${OPENSSL_PASSIN}" ] && [ -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+        [ ! -z "${OPENSSL_PASSOUT}" ] && [ -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+        [ ! -z "${SITE_KEYFILE}" ] && [ -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+        [ ! -z "${SITE_CSRFILE}" ] && [ -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+        [ ! -z "${SITE_CRTFILE}" ] && [ -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+        [ ! -z "${SITE_PFXFILE}" ] && [ -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+
+        unset OPENSSL_CNF;
+        unset OPENSSL_PASSIN;
+        unset OPENSSL_PASSOUT;
+        unset CERTUTIL_PASSIN;
+        unset WORK_DIRECTORY;
+        unset SITE_KEYFILE;
+        unset SITE_CSRFILE;
+        unset SITE_CRTFILE;
+        unset SITE_PFXFILE;
+        unset RET_CODE;
+        unset CERTIFICATE_DATASTORE;
+        unset METHOD_NAME;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+
+        return ${RETURN_CODE};
+    fi
+
+    [ -f ${LOG_ROOT}/openssl.${CONTEXT_ROOT} ] && rm -rf ${LOG_ROOT}/openssl.${CONTEXT_ROOT};
+    [ -f ${LOG_ROOT}/certutil.${CONTEXT_ROOT} ] && rm -rf ${LOG_ROOT}/certutil.${CONTEXT_ROOT};
+    [ -f ${LOG_ROOT}/pk12util.${CONTEXT_ROOT} ] && rm -rf ${LOG_ROOT}/pk12util.${CONTEXT_ROOT};
+    [ -f ${LOG_ROOT}/keyman.${CONTEXT_ROOT} ] && rm -rf ${LOG_ROOT}/keyman.${CONTEXT_ROOT};
+
+    typeset OPENSSL_CNF=$(mktemp);
     typeset OPENSSL_PASSIN=$(mktemp);
     typeset OPENSSL_PASSOUT=$(mktemp);
     typeset CERTUTIL_PASSIN=$(mktemp);
@@ -126,6 +169,7 @@ function createSelfSignedCertificate
     typeset SITE_CRTFILE="${CERTS_DIR}/${CONTEXT_ROOT}.crt";
     typeset SITE_PFXFILE="${PKCS12_DIR}/${CONTEXT_ROOT}.p12";
 
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPENSSL_CNF -> ${OPENSSL_CNF}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPENSSL_PASSIN -> ${OPENSSL_PASSIN}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPENSSL_PASSOUT -> ${OPENSSL_PASSOUT}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERTUTIL_PASSIN -> ${CERTUTIL_PASSIN}";
@@ -140,29 +184,31 @@ function createSelfSignedCertificate
     echo "$(returnRandomCharacters ${PASSWORD_LENGTH})" > ${CERTUTIL_PASSIN};
     chmod 600 ${OPENSSL_PASSIN} ${OPENSSL_PASSOUT} ${CERTUTIL_PASSIN};
 
-    ## generate key
-    /usr/bin/env openssl genrsa -aes256 -out ${SITE_KEYFILE} -${OPENSSL_PASSOUT} file:${OPENSSL_PASSIN} 2048 > /dev/null 2>&1; echo $?
-    typeset RET_CODE=${?};
+    ## modify the provided openssl conf to include proper hostname
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Modifying OpenSSL configuration...";
+    sed -e "s/%SITE_HOSTNAME%/${SITE_HOSTNAME}/" ${OPENSSL_CONFIG} > ${OPENSSL_CNF};
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Modification complete. Validating...";
 
-    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+    if [ ! -z "$(grep "%SITE_HOSTNAME%" ${OPENSSL_CNF})" ]
     then
         RETURN_CODE=59;
 
-        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to generate a keyfile: RET_CODE -> ${RET_CODE}. Please try again.";
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to modify OpenSSL configuration file. Please try again.";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${CERTUTIL_PASSIN}" ] && -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
-        [ ! -z "${OPENSSL_PASSIN}" ] && -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
-        [ ! -z "${OPENSSL_PASSOUT}" ] && -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
-        [ ! -z "${SITE_KEYFILE}" ] && -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
-        [ ! -z "${SITE_CSRFILE}" ] && -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
-        [ ! -z "${SITE_CRTFILE}" ] && -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
-        [ ! -z "${SITE_PFXFILE}" ] && -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+        [ ! -z "${OPENSSL_CNF}" ] && [ -f ${OPENSSL_CNF} ] && rm -rf ${OPENSSL_CNF};
+        [ ! -z "${CERTUTIL_PASSIN}" ] && [ -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+        [ ! -z "${OPENSSL_PASSIN}" ] && [ -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+        [ ! -z "${OPENSSL_PASSOUT}" ] && [ -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+        [ ! -z "${SITE_KEYFILE}" ] && [ -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+        [ ! -z "${SITE_CSRFILE}" ] && [ -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+        [ ! -z "${SITE_CRTFILE}" ] && [ -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+        [ ! -z "${SITE_PFXFILE}" ] && [ -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
 
+        unset OPENSSL_CNF;
         unset OPENSSL_PASSIN;
         unset OPENSSL_PASSOUT;
         unset CERTUTIL_PASSIN;
@@ -175,15 +221,60 @@ function createSelfSignedCertificate
         unset CERTIFICATE_DATASTORE;
         unset METHOD_NAME;
 
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+
+        return ${RETURN_CODE};
+    fi
+
+    ## generate key
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && openssl genrsa -out ${SITE_KEYFILE} -passout file:${OPENSSL_PASSIN} >> ${LOG_ROOT}/openssl.${CONTEXT_ROOT} 2>&1;
+    [ -z "${ENABLE_DEBUG}" ] || [ "${ENABLE_DEBUG}" = "${_FALSE}" ] && openssl genrsa -out ${SITE_KEYFILE} -passout file:${OPENSSL_PASSIN} > /dev/null 2>&1;
+    unset RET_CODE; typeset -i RET_CODE=${?};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+    then
+        RETURN_CODE=59;
+
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to generate a keyfile: RET_CODE -> ${RET_CODE}. Please try again.";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${OPENSSL_CNF}" ] && [ -f ${OPENSSL_CNF} ] && rm -rf ${OPENSSL_CNF};
+        [ ! -z "${CERTUTIL_PASSIN}" ] && [ -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+        [ ! -z "${OPENSSL_PASSIN}" ] && [ -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+        [ ! -z "${OPENSSL_PASSOUT}" ] && [ -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+        [ ! -z "${SITE_KEYFILE}" ] && [ -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+        [ ! -z "${SITE_CSRFILE}" ] && [ -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+        [ ! -z "${SITE_CRTFILE}" ] && [ -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+        [ ! -z "${SITE_PFXFILE}" ] && [ -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+
+        unset OPENSSL_CNF;
+        unset OPENSSL_PASSIN;
+        unset OPENSSL_PASSOUT;
+        unset CERTUTIL_PASSIN;
+        unset WORK_DIRECTORY;
+        unset SITE_KEYFILE;
+        unset SITE_CSRFILE;
+        unset SITE_CRTFILE;
+        unset SITE_PFXFILE;
+        unset RET_CODE;
+        unset CERTIFICATE_DATASTORE;
+        unset METHOD_NAME;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
         return ${RETURN_CODE};
     fi
 
     ## validate rsa key
-    /usr/bin/env openssl rsa -in ${SITE_KEYFILE} -check -${OPENSSL_PASSIN} file:${OPENSSL_PASSIN} > /dev/null 2>&1; echo $?
-    typeset RET_CODE=${?};
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && openssl rsa -in ${SITE_KEYFILE} -check -passin file:${OPENSSL_PASSIN} >> ${LOG_ROOT}/openssl.${CONTEXT_ROOT} 2>&1;
+    [ -z "${ENABLE_DEBUG}" ] || [ "${ENABLE_DEBUG}" = "${_FALSE}" ] && openssl rsa -in ${SITE_KEYFILE} -check -passin file:${OPENSSL_PASSIN} > /dev/null 2>&1;
+    unset RET_CODE; typeset -i RET_CODE=${?};
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -196,14 +287,16 @@ function createSelfSignedCertificate
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${CERTUTIL_PASSIN}" ] && -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
-        [ ! -z "${OPENSSL_PASSIN}" ] && -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
-        [ ! -z "${OPENSSL_PASSOUT}" ] && -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
-        [ ! -z "${SITE_KEYFILE}" ] && -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
-        [ ! -z "${SITE_CSRFILE}" ] && -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
-        [ ! -z "${SITE_CRTFILE}" ] && -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
-        [ ! -z "${SITE_PFXFILE}" ] && -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+        [ ! -z "${OPENSSL_CNF}" ] && [ -f ${OPENSSL_CNF} ] && rm -rf ${OPENSSL_CNF};
+        [ ! -z "${CERTUTIL_PASSIN}" ] && [ -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+        [ ! -z "${OPENSSL_PASSIN}" ] && [ -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+        [ ! -z "${OPENSSL_PASSOUT}" ] && [ -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+        [ ! -z "${SITE_KEYFILE}" ] && [ -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+        [ ! -z "${SITE_CSRFILE}" ] && [ -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+        [ ! -z "${SITE_CRTFILE}" ] && [ -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+        [ ! -z "${SITE_PFXFILE}" ] && [ -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
 
+        unset OPENSSL_CNF;
         unset OPENSSL_PASSIN;
         unset OPENSSL_PASSOUT;
         unset CERTUTIL_PASSIN;
@@ -216,15 +309,16 @@ function createSelfSignedCertificate
         unset CERTIFICATE_DATASTORE;
         unset METHOD_NAME;
 
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
         return ${RETURN_CODE};
     fi
 
     ## generate csr
-    /usr/bin/env openssl req -config openssl.cnf -batch -extensions server_ext -new -key ${SITE_KEYFILE} -out ${SITE_CSRFILE} -${OPENSSL_PASSIN} file:${OPENSSL_PASSIN} > /dev/null 2>&1; echo $?
-    typeset RET_CODE=${?};
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && openssl req -config ${OPENSSL_CONFIG} -batch -extensions ${EXTENSIONS} -new -key ${SITE_KEYFILE} -out ${SITE_CSRFILE} -passin file:${OPENSSL_PASSIN} >> ${LOG_ROOT}/openssl.${CONTEXT_ROOT} 2>&1;
+    [ -z "${ENABLE_DEBUG}" ] || [ "${ENABLE_DEBUG}" = "${_FALSE}" ] && openssl req -config ${OPENSSL_CONFIG} -batch -extensions ${EXTENSIONS} -new -key ${SITE_KEYFILE} -out ${SITE_CSRFILE} -passin file:${OPENSSL_PASSIN} > /dev/null 2>&1;
+    unset RET_CODE; typeset -i RET_CODE=${?};
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -237,14 +331,16 @@ function createSelfSignedCertificate
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${CERTUTIL_PASSIN}" ] && -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
-        [ ! -z "${OPENSSL_PASSIN}" ] && -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
-        [ ! -z "${OPENSSL_PASSOUT}" ] && -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
-        [ ! -z "${SITE_KEYFILE}" ] && -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
-        [ ! -z "${SITE_CSRFILE}" ] && -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
-        [ ! -z "${SITE_CRTFILE}" ] && -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
-        [ ! -z "${SITE_PFXFILE}" ] && -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+        [ ! -z "${OPENSSL_CNF}" ] && [ -f ${OPENSSL_CNF} ] && rm -rf ${OPENSSL_CNF};
+        [ ! -z "${CERTUTIL_PASSIN}" ] && [ -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+        [ ! -z "${OPENSSL_PASSIN}" ] && [ -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+        [ ! -z "${OPENSSL_PASSOUT}" ] && [ -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+        [ ! -z "${SITE_KEYFILE}" ] && [ -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+        [ ! -z "${SITE_CSRFILE}" ] && [ -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+        [ ! -z "${SITE_CRTFILE}" ] && [ -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+        [ ! -z "${SITE_PFXFILE}" ] && [ -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
 
+        unset OPENSSL_CNF;
         unset OPENSSL_PASSIN;
         unset OPENSSL_PASSOUT;
         unset CERTUTIL_PASSIN;
@@ -257,15 +353,16 @@ function createSelfSignedCertificate
         unset CERTIFICATE_DATASTORE;
         unset METHOD_NAME;
 
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
         return ${RETURN_CODE};
     fi
 
     ## validate csr
-    /usr/bin/env openssl req -text -noout -verify -in ${SITE_CSRFILE} > /dev/null 2>&1; echo $?
-    typeset RET_CODE=${?};
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && openssl req -text -noout -verify -in ${SITE_CSRFILE} >> ${LOG_ROOT}/openssl.${CONTEXT_ROOT} 2>&1;
+    [ -z "${ENABLE_DEBUG}" ] || [ "${ENABLE_DEBUG}" = "${_FALSE}" ] && openssl req -text -noout -verify -in ${SITE_CSRFILE} > /dev/null 2>&1;
+    unset RET_CODE; typeset -i RET_CODE=${?};
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -278,14 +375,16 @@ function createSelfSignedCertificate
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${CERTUTIL_PASSIN}" ] && -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
-        [ ! -z "${OPENSSL_PASSIN}" ] && -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
-        [ ! -z "${OPENSSL_PASSOUT}" ] && -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
-        [ ! -z "${SITE_KEYFILE}" ] && -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
-        [ ! -z "${SITE_CSRFILE}" ] && -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
-        [ ! -z "${SITE_CRTFILE}" ] && -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
-        [ ! -z "${SITE_PFXFILE}" ] && -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+        [ ! -z "${OPENSSL_CNF}" ] && [ -f ${OPENSSL_CNF} ] && rm -rf ${OPENSSL_CNF};
+        [ ! -z "${CERTUTIL_PASSIN}" ] && [ -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+        [ ! -z "${OPENSSL_PASSIN}" ] && [ -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+        [ ! -z "${OPENSSL_PASSOUT}" ] && [ -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+        [ ! -z "${SITE_KEYFILE}" ] && [ -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+        [ ! -z "${SITE_CSRFILE}" ] && [ -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+        [ ! -z "${SITE_CRTFILE}" ] && [ -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+        [ ! -z "${SITE_PFXFILE}" ] && [ -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
 
+        unset OPENSSL_CNF;
         unset OPENSSL_PASSIN;
         unset OPENSSL_PASSOUT;
         unset CERTUTIL_PASSIN;
@@ -298,15 +397,16 @@ function createSelfSignedCertificate
         unset CERTIFICATE_DATASTORE;
         unset METHOD_NAME;
 
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
         return ${RETURN_CODE};
     fi
 
     ## generate certificate
-    /usr/bin/env openssl x509 -req -in ${SITE_CSRFILE} -signkey ${SITE_KEYFILE} -out ${SITE_CRTFILE} -${OPENSSL_PASSIN} file:${OPENSSL_PASSIN} > /dev/null 2>&1; echo $?
-    typeset RET_CODE=${?};
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && openssl x509 -req -in ${SITE_CSRFILE} -signkey ${SITE_KEYFILE} -out ${SITE_CRTFILE} -passin file:${OPENSSL_PASSIN} >> ${LOG_ROOT}/openssl.${CONTEXT_ROOT} 2>&1;
+    [ -z "${ENABLE_DEBUG}" ] || [ "${ENABLE_DEBUG}" = "${_FALSE}" ] && openssl x509 -req -in ${SITE_CSRFILE} -signkey ${SITE_KEYFILE} -out ${SITE_CRTFILE} -passin file:${OPENSSL_PASSIN} > /dev/null 2>&1;
+    unset RET_CODE; typeset -i RET_CODE=${?};
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -319,14 +419,16 @@ function createSelfSignedCertificate
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${CERTUTIL_PASSIN}" ] && -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
-        [ ! -z "${OPENSSL_PASSIN}" ] && -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
-        [ ! -z "${OPENSSL_PASSOUT}" ] && -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
-        [ ! -z "${SITE_KEYFILE}" ] && -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
-        [ ! -z "${SITE_CSRFILE}" ] && -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
-        [ ! -z "${SITE_CRTFILE}" ] && -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
-        [ ! -z "${SITE_PFXFILE}" ] && -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+        [ ! -z "${OPENSSL_CNF}" ] && [ -f ${OPENSSL_CNF} ] && rm -rf ${OPENSSL_CNF};
+        [ ! -z "${CERTUTIL_PASSIN}" ] && [ -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+        [ ! -z "${OPENSSL_PASSIN}" ] && [ -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+        [ ! -z "${OPENSSL_PASSOUT}" ] && [ -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+        [ ! -z "${SITE_KEYFILE}" ] && [ -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+        [ ! -z "${SITE_CSRFILE}" ] && [ -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+        [ ! -z "${SITE_CRTFILE}" ] && [ -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+        [ ! -z "${SITE_PFXFILE}" ] && [ -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
 
+        unset OPENSSL_CNF;
         unset OPENSSL_PASSIN;
         unset OPENSSL_PASSOUT;
         unset CERTUTIL_PASSIN;
@@ -339,15 +441,16 @@ function createSelfSignedCertificate
         unset CERTIFICATE_DATASTORE;
         unset METHOD_NAME;
 
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
         return ${RETURN_CODE};
     fi
 
     ## validate certificate
-    /usr/bin/env openssl x509 -text -noout -in ${SITE_CRTFILE} > /dev/null 2>&1; echo $?
-    typeset RET_CODE=${?};
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && openssl x509 -text -noout -in ${SITE_CRTFILE} >> ${LOG_ROOT}/openssl.${CONTEXT_ROOT} 2>&1;
+    [ -z "${ENABLE_DEBUG}" ] || [ "${ENABLE_DEBUG}" = "${_FALSE}" ] && openssl x509 -text -noout -in ${SITE_CRTFILE} > /dev/null 2>&1;
+    unset RET_CODE; typeset -i RET_CODE=${?};
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -360,14 +463,16 @@ function createSelfSignedCertificate
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${CERTUTIL_PASSIN}" ] && -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
-        [ ! -z "${OPENSSL_PASSIN}" ] && -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
-        [ ! -z "${OPENSSL_PASSOUT}" ] && -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
-        [ ! -z "${SITE_KEYFILE}" ] && -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
-        [ ! -z "${SITE_CSRFILE}" ] && -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
-        [ ! -z "${SITE_CRTFILE}" ] && -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
-        [ ! -z "${SITE_PFXFILE}" ] && -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+        [ ! -z "${OPENSSL_CNF}" ] && [ -f ${OPENSSL_CNF} ] && rm -rf ${OPENSSL_CNF};
+        [ ! -z "${CERTUTIL_PASSIN}" ] && [ -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+        [ ! -z "${OPENSSL_PASSIN}" ] && [ -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+        [ ! -z "${OPENSSL_PASSOUT}" ] && [ -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+        [ ! -z "${SITE_KEYFILE}" ] && [ -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+        [ ! -z "${SITE_CSRFILE}" ] && [ -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+        [ ! -z "${SITE_CRTFILE}" ] && [ -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+        [ ! -z "${SITE_PFXFILE}" ] && [ -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
 
+        unset OPENSSL_CNF;
         unset OPENSSL_PASSIN;
         unset OPENSSL_PASSOUT;
         unset CERTUTIL_PASSIN;
@@ -380,108 +485,114 @@ function createSelfSignedCertificate
         unset CERTIFICATE_DATASTORE;
         unset METHOD_NAME;
 
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
         return ${RETURN_CODE};
     fi
 
+    ## convert to pkcs12
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && openssl pkcs12 -export -out ${SITE_PFXFILE} -inkey ${SITE_KEYFILE} -in ${SITE_CRTFILE} -certfile ${SITE_CRTFILE} -passin file:${OPENSSL_PASSIN} -passout file:${OPENSSL_PASSOUT} >> ${LOG_ROOT}/openssl.${CONTEXT_ROOT} 2>&1;
+    [ -z "${ENABLE_DEBUG}" ] || [ "${ENABLE_DEBUG}" = "${_FALSE}" ] && openssl pkcs12 -export -out ${SITE_PFXFILE} -inkey ${SITE_KEYFILE} -in ${SITE_CRTFILE} -certfile ${SITE_CRTFILE} -passin file:${OPENSSL_PASSIN} -passout file:${OPENSSL_PASSOUT} > /dev/null 2>&1;
+    unset RET_CODE; typeset -i RET_CODE=${?};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+    then
+        RETURN_CODE=59;
+
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to generate a PKCS12 file: RET_CODE -> ${RET_CODE}. Please try again.";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${OPENSSL_CNF}" ] && [ -f ${OPENSSL_CNF} ] && rm -rf ${OPENSSL_CNF};
+        [ ! -z "${CERTUTIL_PASSIN}" ] && [ -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+        [ ! -z "${OPENSSL_PASSIN}" ] && [ -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+        [ ! -z "${OPENSSL_PASSOUT}" ] && [ -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+        [ ! -z "${SITE_KEYFILE}" ] && [ -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+        [ ! -z "${SITE_CSRFILE}" ] && [ -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+        [ ! -z "${SITE_CRTFILE}" ] && [ -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+        [ ! -z "${SITE_PFXFILE}" ] && [ -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+
+        unset OPENSSL_CNF;
+        unset OPENSSL_PASSIN;
+        unset OPENSSL_PASSOUT;
+        unset CERTUTIL_PASSIN;
+        unset WORK_DIRECTORY;
+        unset SITE_KEYFILE;
+        unset SITE_CSRFILE;
+        unset SITE_CRTFILE;
+        unset SITE_PFXFILE;
+        unset RET_CODE;
+        unset CERTIFICATE_DATASTORE;
+        unset METHOD_NAME;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+
+        return ${RETURN_CODE};
+    fi
+
+    ## validate
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && openssl pkcs12 -info -noout -in ${SITE_PFXFILE} -passin file:${OPENSSL_PASSOUT} >> ${LOG_ROOT}/openssl.${CONTEXT_ROOT} 2>&1;
+    [ -z "${ENABLE_DEBUG}" ] || [ "${ENABLE_DEBUG}" = "${_FALSE}" ] && openssl pkcs12 -info -noout -in ${SITE_PFXFILE} -passin file:${OPENSSL_PASSOUT} > /dev/null 2>&1;
+    unset RET_CODE; typeset -i RET_CODE=${?};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+    then
+        RETURN_CODE=59;
+
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to validate PKCS12: RET_CODE -> ${RET_CODE}. Please try again.";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${OPENSSL_CNF}" ] && [ -f ${OPENSSL_CNF} ] && rm -rf ${OPENSSL_CNF};
+        [ ! -z "${CERTUTIL_PASSIN}" ] && [ -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+        [ ! -z "${OPENSSL_PASSIN}" ] && [ -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+        [ ! -z "${OPENSSL_PASSOUT}" ] && [ -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+        [ ! -z "${SITE_KEYFILE}" ] && [ -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+        [ ! -z "${SITE_CSRFILE}" ] && [ -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+        [ ! -z "${SITE_CRTFILE}" ] && [ -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+        [ ! -z "${SITE_PFXFILE}" ] && [ -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+
+        unset OPENSSL_CNF;
+        unset OPENSSL_PASSIN;
+        unset OPENSSL_PASSOUT;
+        unset CERTUTIL_PASSIN;
+        unset WORK_DIRECTORY;
+        unset SITE_KEYFILE;
+        unset SITE_CSRFILE;
+        unset SITE_CRTFILE;
+        unset SITE_PFXFILE;
+        unset RET_CODE;
+        unset CERTIFICATE_DATASTORE;
+        unset METHOD_NAME;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+
+        return ${RETURN_CODE};
+    fi
+
+    ## i don't like this because it requires code changes
+    ## to add in new platforms, but offhand i can't think
+    ## of a better way... TODO
     case ${WS_PLATFORM} in
-        iplanet)
+        "IPLANET")
             typeset CERTIFICATE_DATASTORE="${IPLANET_CERT_STORE_PREFIX}${CONTEXT_ROOT}-";
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERTIFICATE_DATASTORE -> ${CERTIFICATE_DATASTORE}";
 
-            ## convert
-            /usr/bin/env openssl pkcs12 -export -out ${SITE_PFXFILE} -inkey ${SITE_KEYFILE} -in ${SITE_CRTFILE} -certfile ${SITE_CRTFILE} -${OPENSSL_PASSIN} file:${OPENSSL_PASSIN} -${OPENSSL_PASSOUT} file:${OPENSSL_PASSOUT} > /dev/null 2>&1; echo $?
-            typeset RET_CODE=${?};
-
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
-
-            if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
-            then
-                RETURN_CODE=59;
-
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to generate a PKCS12 file: RET_CODE -> ${RET_CODE}. Please try again.";
-
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-                [ ! -z "${CERTUTIL_PASSIN}" ] && -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
-                [ ! -z "${OPENSSL_PASSIN}" ] && -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
-                [ ! -z "${OPENSSL_PASSOUT}" ] && -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
-                [ ! -z "${SITE_KEYFILE}" ] && -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
-                [ ! -z "${SITE_CSRFILE}" ] && -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
-                [ ! -z "${SITE_CRTFILE}" ] && -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
-                [ ! -z "${SITE_PFXFILE}" ] && -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
-                [ ! -z "${CERTIFICATE_DATASTORE}key3.db" ] && [ -f "${CERTIFICATE_DATASTORE}key3.db" ] && rm -rf ${CERTIFICATE_DATASTORE}key3.db;
-                [ ! -z "${CERTIFICATE_DATASTORE}cert8.db" ] && [ -f "${CERTIFICATE_DATASTORE}cert8.db" ] && rm -rf ${CERTIFICATE_DATASTORE}cert8.db;
-
-                unset OPENSSL_PASSIN;
-                unset OPENSSL_PASSOUT;
-                unset CERTUTIL_PASSIN;
-                unset WORK_DIRECTORY;
-                unset SITE_KEYFILE;
-                unset SITE_CSRFILE;
-                unset SITE_CRTFILE;
-                unset SITE_PFXFILE;
-                unset RET_CODE;
-                unset CERTIFICATE_DATASTORE;
-                unset METHOD_NAME;
-
-                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
-
-                return ${RETURN_CODE};
-            fi
-
-            ## validate
-            /usr/bin/env openssl pkcs12 -info -noout -in ${SITE_PFXFILE} -${OPENSSL_PASSIN} file:${OPENSSL_PASSIN} > /dev/null 2>&1; echo $?
-            typeset RET_CODE=${?};
-
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
-
-            if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
-            then
-                RETURN_CODE=59;
-
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to validate PKCS12: RET_CODE -> ${RET_CODE}. Please try again.";
-
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-                [ ! -z "${CERTUTIL_PASSIN}" ] && -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
-                [ ! -z "${OPENSSL_PASSIN}" ] && -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
-                [ ! -z "${OPENSSL_PASSOUT}" ] && -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
-                [ ! -z "${SITE_KEYFILE}" ] && -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
-                [ ! -z "${SITE_CSRFILE}" ] && -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
-                [ ! -z "${SITE_CRTFILE}" ] && -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
-                [ ! -z "${SITE_PFXFILE}" ] && -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
-                [ ! -z "${CERTIFICATE_DATASTORE}key3.db" ] && [ -f "${CERTIFICATE_DATASTORE}key3.db" ] && rm -rf ${CERTIFICATE_DATASTORE}key3.db;
-                [ ! -z "${CERTIFICATE_DATASTORE}cert8.db" ] && [ -f "${CERTIFICATE_DATASTORE}cert8.db" ] && rm -rf ${CERTIFICATE_DATASTORE}cert8.db;
-
-                unset OPENSSL_PASSIN;
-                unset OPENSSL_PASSOUT;
-                unset CERTUTIL_PASSIN;
-                unset WORK_DIRECTORY;
-                unset SITE_KEYFILE;
-                unset SITE_CSRFILE;
-                unset SITE_CRTFILE;
-                unset SITE_PFXFILE;
-                unset RET_CODE;
-                unset CERTIFICATE_DATASTORE;
-                unset METHOD_NAME;
-
-                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
-
-                return ${RETURN_CODE};
-            fi
-
             ## import for iplanet
             ## create database (remember, this is a new site)
-            /usr/bin/env certutil -N -d ${WORK_DIRECTORY} -P ${CERTIFICATE_DATASTORE};
-            typeset RET_CODE=${?};
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && certutil -N -d ${WORK_DIRECTORY} -P ${CERTIFICATE_DATASTORE} >> ${LOG_ROOT}/certutil.${CONTEXT_ROOT} 2>&1;
+            [ -z "${ENABLE_DEBUG}" ] || [ "${ENABLE_DEBUG}" = "${_FALSE}" ] && certutil -N -d ${WORK_DIRECTORY} -P ${CERTIFICATE_DATASTORE} > /dev/null 2>&1;
+            unset RET_CODE; typeset -i RET_CODE=${?};
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -494,16 +605,18 @@ function createSelfSignedCertificate
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                [ ! -z "${CERTUTIL_PASSIN}" ] && -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
-                [ ! -z "${OPENSSL_PASSIN}" ] && -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
-                [ ! -z "${OPENSSL_PASSOUT}" ] && -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
-                [ ! -z "${SITE_KEYFILE}" ] && -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
-                [ ! -z "${SITE_CSRFILE}" ] && -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
-                [ ! -z "${SITE_CRTFILE}" ] && -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
-                [ ! -z "${SITE_PFXFILE}" ] && -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
-                [ ! -z "${CERTIFICATE_DATASTORE}key3.db" ] && [ -f "${CERTIFICATE_DATASTORE}key3.db" ] && rm -rf ${CERTIFICATE_DATASTORE}key3.db;
-                [ ! -z "${CERTIFICATE_DATASTORE}cert8.db" ] && [ -f "${CERTIFICATE_DATASTORE}cert8.db" ] && rm -rf ${CERTIFICATE_DATASTORE}cert8.db;
+                [ ! -z "${OPENSSL_CNF}" ] && [ -f ${OPENSSL_CNF} ] && rm -rf ${OPENSSL_CNF};
+                [ ! -z "${OPENSSL_PASSIN}" ] && [ -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+                [ ! -z "${OPENSSL_PASSOUT}" ] && [ -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+                [ ! -z "${CERTUTIL_PASSIN}" ] && [ -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+                [ ! -z "${SITE_KEYFILE}" ] && [ -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+                [ ! -z "${SITE_CSRFILE}" ] && [ -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+                [ ! -z "${SITE_CRTFILE}" ] && [ -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+                [ ! -z "${SITE_PFXFILE}" ] && [ -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+                [ ! -z "${IHS_KEYSTORE}" ] && [ -f ${IHS_KEYSTORE} ] && rm -rf ${IHS_KEYSTORE};
+                [ ! -z "${CERTIFICATE_DATASTORE}" ] && [ -f ${IHS_KEYSTORE} ] && rm -rf ${CERTIFICATE_DATASTORE};
 
+                unset OPENSSL_CNF;
                 unset OPENSSL_PASSIN;
                 unset OPENSSL_PASSOUT;
                 unset CERTUTIL_PASSIN;
@@ -514,17 +627,19 @@ function createSelfSignedCertificate
                 unset SITE_PFXFILE;
                 unset RET_CODE;
                 unset CERTIFICATE_DATASTORE;
+                unset IHS_KEYSTORE;
                 unset METHOD_NAME;
 
-                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
                 return ${RETURN_CODE};
             fi
 
             ## perform the import into the certdb
-            /usr/bin/env pk12util -i ${SITE_PFXFILE} -d ${WORK_DIRECTORY} -P ${CERTIFICATE_DATASTORE} -k ${CERTUTIL_PASSIN} -w ${OPENSSL_PASSOUT} > /dev/null 2>&1;
-            typeset RET_CODE=${?};
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && pk12util -i ${SITE_PFXFILE} -d ${WORK_DIRECTORY} -P ${CERTIFICATE_DATASTORE} -k ${CERTUTIL_PASSIN} -w ${OPENSSL_PASSOUT} >> ${LOG_ROOT}/pk12util.${CONTEXT_ROOT} 2>&1;
+            [ -z "${ENABLE_DEBUG}" ] || [ "${ENABLE_DEBUG}" = "${_FALSE}" ] && pk12util -i ${SITE_PFXFILE} -d ${WORK_DIRECTORY} -P ${CERTIFICATE_DATASTORE} -k ${CERTUTIL_PASSIN} -w ${OPENSSL_PASSOUT} > /dev/null 2>&1;
+            unset RET_CODE; typeset -i RET_CODE=${?};
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -537,16 +652,18 @@ function createSelfSignedCertificate
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                [ ! -z "${CERTUTIL_PASSIN}" ] && -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
-                [ ! -z "${OPENSSL_PASSIN}" ] && -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
-                [ ! -z "${OPENSSL_PASSOUT}" ] && -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
-                [ ! -z "${SITE_KEYFILE}" ] && -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
-                [ ! -z "${SITE_CSRFILE}" ] && -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
-                [ ! -z "${SITE_CRTFILE}" ] && -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
-                [ ! -z "${SITE_PFXFILE}" ] && -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
-                [ ! -z "${CERTIFICATE_DATASTORE}key3.db" ] && [ -f "${CERTIFICATE_DATASTORE}key3.db" ] && rm -rf ${CERTIFICATE_DATASTORE}key3.db;
-                [ ! -z "${CERTIFICATE_DATASTORE}cert8.db" ] && [ -f "${CERTIFICATE_DATASTORE}cert8.db" ] && rm -rf ${CERTIFICATE_DATASTORE}cert8.db;
+                [ ! -z "${OPENSSL_CNF}" ] && [ -f ${OPENSSL_CNF} ] && rm -rf ${OPENSSL_CNF};
+                [ ! -z "${OPENSSL_PASSIN}" ] && [ -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+                [ ! -z "${OPENSSL_PASSOUT}" ] && [ -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+                [ ! -z "${CERTUTIL_PASSIN}" ] && [ -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+                [ ! -z "${SITE_KEYFILE}" ] && [ -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+                [ ! -z "${SITE_CSRFILE}" ] && [ -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+                [ ! -z "${SITE_CRTFILE}" ] && [ -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+                [ ! -z "${SITE_PFXFILE}" ] && [ -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+                [ ! -z "${IHS_KEYSTORE}" ] && [ -f ${IHS_KEYSTORE} ] && rm -rf ${IHS_KEYSTORE};
+                [ ! -z "${CERTIFICATE_DATASTORE}" ] && [ -f ${IHS_KEYSTORE} ] && rm -rf ${CERTIFICATE_DATASTORE};
 
+                unset OPENSSL_CNF;
                 unset OPENSSL_PASSIN;
                 unset OPENSSL_PASSOUT;
                 unset CERTUTIL_PASSIN;
@@ -557,17 +674,19 @@ function createSelfSignedCertificate
                 unset SITE_PFXFILE;
                 unset RET_CODE;
                 unset CERTIFICATE_DATASTORE;
+                unset IHS_KEYSTORE;
                 unset METHOD_NAME;
 
-                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
                 return ${RETURN_CODE};
             fi
 
             ## validate
-            certutil -L -d ${WORK_DIRECTORY} -P ${CERTIFICATE_DATASTORE} -n "${CONTEXT_ROOT}" >/dev/null 2>&1; echo $?;
-            typeset RET_CODE=${?};
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && certutil -L -d ${WORK_DIRECTORY} -P ${CERTIFICATE_DATASTORE} -n "${CONTEXT_ROOT}" >> ${LOG_ROOT}/certutil.${CONTEXT_ROOT} 2>&1;
+            [ -z "${ENABLE_DEBUG}" ] || [ "${ENABLE_DEBUG}" = "${_FALSE}" ] && certutil -L -d ${WORK_DIRECTORY} -P ${CERTIFICATE_DATASTORE} -n "${CONTEXT_ROOT}" > /dev/null 2>&1;
+            unset RET_CODE; typeset -i RET_CODE=${?};
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -580,16 +699,18 @@ function createSelfSignedCertificate
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                [ ! -z "${CERTUTIL_PASSIN}" ] && -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
-                [ ! -z "${OPENSSL_PASSIN}" ] && -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
-                [ ! -z "${OPENSSL_PASSOUT}" ] && -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
-                [ ! -z "${SITE_KEYFILE}" ] && -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
-                [ ! -z "${SITE_CSRFILE}" ] && -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
-                [ ! -z "${SITE_CRTFILE}" ] && -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
-                [ ! -z "${SITE_PFXFILE}" ] && -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
-                [ ! -z "${CERTIFICATE_DATASTORE}key3.db" ] && [ -f "${CERTIFICATE_DATASTORE}key3.db" ] && rm -rf ${CERTIFICATE_DATASTORE}key3.db;
-                [ ! -z "${CERTIFICATE_DATASTORE}cert8.db" ] && [ -f "${CERTIFICATE_DATASTORE}cert8.db" ] && rm -rf ${CERTIFICATE_DATASTORE}cert8.db;
+                [ ! -z "${OPENSSL_CNF}" ] && [ -f ${OPENSSL_CNF} ] && rm -rf ${OPENSSL_CNF};
+                [ ! -z "${OPENSSL_PASSIN}" ] && [ -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+                [ ! -z "${OPENSSL_PASSOUT}" ] && [ -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+                [ ! -z "${CERTUTIL_PASSIN}" ] && [ -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+                [ ! -z "${SITE_KEYFILE}" ] && [ -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+                [ ! -z "${SITE_CSRFILE}" ] && [ -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+                [ ! -z "${SITE_CRTFILE}" ] && [ -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+                [ ! -z "${SITE_PFXFILE}" ] && [ -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+                [ ! -z "${IHS_KEYSTORE}" ] && [ -f ${IHS_KEYSTORE} ] && rm -rf ${IHS_KEYSTORE};
+                [ ! -z "${CERTIFICATE_DATASTORE}" ] && [ -f ${IHS_KEYSTORE} ] && rm -rf ${CERTIFICATE_DATASTORE};
 
+                unset OPENSSL_CNF;
                 unset OPENSSL_PASSIN;
                 unset OPENSSL_PASSOUT;
                 unset CERTUTIL_PASSIN;
@@ -600,36 +721,221 @@ function createSelfSignedCertificate
                 unset SITE_PFXFILE;
                 unset RET_CODE;
                 unset CERTIFICATE_DATASTORE;
+                unset IHS_KEYSTORE;
                 unset METHOD_NAME;
 
-                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
                 return ${RETURN_CODE};
             fi
 
             ## DONE.
             ;;
-        httpd)
-            ## no special processing is required here
-            ;;
-        ihs)
-            keyman -cert -receive -db ${APP_ROOT}/${CERTDB_STORE}/${CERTIFICATE_DATABASE}${IHS_DB_CRT_SUFFIX} \
-                -file ${APP_ROOT}/${CERTSTORE}/${CERTIFICATE_NICKNAME}.cer -pw $(cat ${APP_ROOT}/${IHS_CERT_DB_PASSFILE}) \
-                -type ${IHS_KEY_DB_TYPE} -format ascii;
-                ;;
-        *)
-            ## unknown??
+        "IHS")
+            ## create database
+            typeset IHS_KEYSTORE=${IHS_DB_DIR}/${CONTEXT_ROOT}.${IHS_KEY_DB_TYPE};
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IHS_KEYSTORE -> ${IHS_KEYSTORE}";
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && keyman -keydb -create -db ${IHS_KEYSTORE} -type ${IHS_KEY_DB_TYPE} -stash -populate -pw $(<${OPENSSL_PASSOUT}) >> ${LOG_ROOT}/keyman.${CONTEXT_ROOT} 2>&1;
+            [ -z "${ENABLE_DEBUG}" ] || [ "${ENABLE_DEBUG}" = "${_FALSE}" ] && keyman -keydb -create -db ${IHS_KEYSTORE} -type ${IHS_KEY_DB_TYPE} -stash -populate -pw $(<${OPENSSL_PASSOUT}) > /dev/null 2>&1;
+            unset RET_CODE; typeset -i RET_CODE=${?};
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+            if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+            then
+                RETURN_CODE=59;
+
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to generate a keyfile: RET_CODE -> ${RET_CODE}. Please try again.";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                [ ! -z "${OPENSSL_CNF}" ] && [ -f ${OPENSSL_CNF} ] && rm -rf ${OPENSSL_CNF};
+                [ ! -z "${OPENSSL_PASSIN}" ] && [ -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+                [ ! -z "${OPENSSL_PASSOUT}" ] && [ -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+                [ ! -z "${CERTUTIL_PASSIN}" ] && [ -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+                [ ! -z "${SITE_KEYFILE}" ] && [ -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+                [ ! -z "${SITE_CSRFILE}" ] && [ -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+                [ ! -z "${SITE_CRTFILE}" ] && [ -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+                [ ! -z "${SITE_PFXFILE}" ] && [ -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+                [ ! -z "${IHS_KEYSTORE}" ] && [ -f ${IHS_KEYSTORE} ] && rm -rf ${IHS_KEYSTORE};
+                [ ! -z "${CERTIFICATE_DATASTORE}" ] && [ -f ${IHS_KEYSTORE} ] && rm -rf ${CERTIFICATE_DATASTORE};
+
+                unset OPENSSL_CNF;
+                unset OPENSSL_PASSIN;
+                unset OPENSSL_PASSOUT;
+                unset CERTUTIL_PASSIN;
+                unset WORK_DIRECTORY;
+                unset SITE_KEYFILE;
+                unset SITE_CSRFILE;
+                unset SITE_CRTFILE;
+                unset SITE_PFXFILE;
+                unset RET_CODE;
+                unset CERTIFICATE_DATASTORE;
+                unset IHS_KEYSTORE;
+                unset METHOD_NAME;
+
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+
+                return ${RETURN_CODE};
+            fi
+
+            ## stash password
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && keyman -keydb -stashpw -db ${IHS_KEYSTORE} -pw $(<${OPENSSL_PASSOUT}) -type ${IHS_KEY_DB_TYPE} >> ${LOG_ROOT}/keyman.${CONTEXT_ROOT} 2>&1;
+            [ -z "${ENABLE_DEBUG}" ] || [ "${ENABLE_DEBUG}" = "${_FALSE}" ] && keyman -keydb -stashpw -db ${IHS_KEYSTORE} -pw $(<${OPENSSL_PASSOUT}) -type ${IHS_KEY_DB_TYPE} > /dev/null 2>&1;
+            unset RET_CODE; typeset -i RET_CODE=${?};
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+            if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+            then
+                RETURN_CODE=59;
+
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to generate a keyfile: RET_CODE -> ${RET_CODE}. Please try again.";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                [ ! -z "${OPENSSL_CNF}" ] && [ -f ${OPENSSL_CNF} ] && rm -rf ${OPENSSL_CNF};
+                [ ! -z "${OPENSSL_PASSIN}" ] && [ -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+                [ ! -z "${OPENSSL_PASSOUT}" ] && [ -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+                [ ! -z "${CERTUTIL_PASSIN}" ] && [ -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+                [ ! -z "${SITE_KEYFILE}" ] && [ -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+                [ ! -z "${SITE_CSRFILE}" ] && [ -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+                [ ! -z "${SITE_CRTFILE}" ] && [ -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+                [ ! -z "${SITE_PFXFILE}" ] && [ -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+                [ ! -z "${IHS_KEYSTORE}" ] && [ -f ${IHS_KEYSTORE} ] && rm -rf ${IHS_KEYSTORE};
+                [ ! -z "${CERTIFICATE_DATASTORE}" ] && [ -f ${IHS_KEYSTORE} ] && rm -rf ${CERTIFICATE_DATASTORE};
+
+                unset OPENSSL_CNF;
+                unset OPENSSL_PASSIN;
+                unset OPENSSL_PASSOUT;
+                unset CERTUTIL_PASSIN;
+                unset WORK_DIRECTORY;
+                unset SITE_KEYFILE;
+                unset SITE_CSRFILE;
+                unset SITE_CRTFILE;
+                unset SITE_PFXFILE;
+                unset RET_CODE;
+                unset CERTIFICATE_DATASTORE;
+                unset IHS_KEYSTORE;
+                unset METHOD_NAME;
+
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+
+                return ${RETURN_CODE};
+            fi
+
+            ## import
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && keyman -cert -import -file ${SITE_PFXFILE} -pw $(<${OPENSSL_PASSOUT}) -type pkcs12 -target ${IHS_KEYSTORE} -target_pw $(<${OPENSSL_PASSOUT}) -target_type ${IHS_KEY_DB_TYPE} >> ${LOG_ROOT}/keyman.${CONTEXT_ROOT} 2>&1;
+            [ -z "${ENABLE_DEBUG}" ] || [ "${ENABLE_DEBUG}" = "${_FALSE}" ] && keyman -cert -import -file ${SITE_PFXFILE} -pw $(<${OPENSSL_PASSOUT}) -type pkcs12 -target ${IHS_KEYSTORE} -target_pw $(<${OPENSSL_PASSOUT}) -target_type ${IHS_KEY_DB_TYPE} > /dev/null 2>&1;
+            unset RET_CODE; typeset -i RET_CODE=${?};
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+            if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+            then
+                RETURN_CODE=59;
+
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to generate a keyfile: RET_CODE -> ${RET_CODE}. Please try again.";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                [ ! -z "${OPENSSL_CNF}" ] && [ -f ${OPENSSL_CNF} ] && rm -rf ${OPENSSL_CNF};
+                [ ! -z "${OPENSSL_PASSIN}" ] && [ -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+                [ ! -z "${OPENSSL_PASSOUT}" ] && [ -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+                [ ! -z "${CERTUTIL_PASSIN}" ] && [ -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+                [ ! -z "${SITE_KEYFILE}" ] && [ -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+                [ ! -z "${SITE_CSRFILE}" ] && [ -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+                [ ! -z "${SITE_CRTFILE}" ] && [ -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+                [ ! -z "${SITE_PFXFILE}" ] && [ -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+                [ ! -z "${IHS_KEYSTORE}" ] && [ -f ${IHS_KEYSTORE} ] && rm -rf ${IHS_KEYSTORE};
+                [ ! -z "${CERTIFICATE_DATASTORE}" ] && [ -f ${IHS_KEYSTORE} ] && rm -rf ${CERTIFICATE_DATASTORE};
+
+                unset OPENSSL_CNF;
+                unset OPENSSL_PASSIN;
+                unset OPENSSL_PASSOUT;
+                unset CERTUTIL_PASSIN;
+                unset WORK_DIRECTORY;
+                unset SITE_KEYFILE;
+                unset SITE_CSRFILE;
+                unset SITE_CRTFILE;
+                unset SITE_PFXFILE;
+                unset RET_CODE;
+                unset CERTIFICATE_DATASTORE;
+                unset IHS_KEYSTORE;
+                unset METHOD_NAME;
+
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+
+                return ${RETURN_CODE};
+            fi
+
+            ## and verify
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && keyman -cert -details -db ${IHS_KEYSTORE} -label ${CONTEXT_ROOT} -pw $(<${OPENSSL_PASSOUT}) -type ${IHS_KEY_DB_TYPE} >> ${LOG_ROOT}/keyman.${CONTEXT_ROOT} 2>&1;
+            [ -z "${ENABLE_DEBUG}" ] || [ "${ENABLE_DEBUG}" = "${_FALSE}" ] && keyman -cert -details -db ${IHS_KEYSTORE} -label ${CONTEXT_ROOT} -pw $(<${OPENSSL_PASSOUT}) -type ${IHS_KEY_DB_TYPE} > /dev/null 2>&1;
+            unset RET_CODE; typeset -i RET_CODE=${?};
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+            if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+            then
+                RETURN_CODE=59;
+
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to generate a keyfile: RET_CODE -> ${RET_CODE}. Please try again.";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                [ ! -z "${OPENSSL_CNF}" ] && [ -f ${OPENSSL_CNF} ] && rm -rf ${OPENSSL_CNF};
+                [ ! -z "${OPENSSL_PASSIN}" ] && [ -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+                [ ! -z "${OPENSSL_PASSOUT}" ] && [ -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+                [ ! -z "${CERTUTIL_PASSIN}" ] && [ -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+                [ ! -z "${SITE_KEYFILE}" ] && [ -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+                [ ! -z "${SITE_CSRFILE}" ] && [ -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+                [ ! -z "${SITE_CRTFILE}" ] && [ -f ${SITE_CRTFILE} ] && rm -rf ${SITE_CRTFILE};
+                [ ! -z "${SITE_PFXFILE}" ] && [ -f ${SITE_PFXFILE} ] && rm -rf ${SITE_PFXFILE};
+                [ ! -z "${IHS_KEYSTORE}" ] && [ -f ${IHS_KEYSTORE} ] && rm -rf ${IHS_KEYSTORE};
+                [ ! -z "${CERTIFICATE_DATASTORE}" ] && [ -f ${IHS_KEYSTORE} ] && rm -rf ${CERTIFICATE_DATASTORE};
+
+                unset OPENSSL_CNF;
+                unset OPENSSL_PASSIN;
+                unset OPENSSL_PASSOUT;
+                unset CERTUTIL_PASSIN;
+                unset WORK_DIRECTORY;
+                unset SITE_KEYFILE;
+                unset SITE_CSRFILE;
+                unset SITE_CRTFILE;
+                unset SITE_PFXFILE;
+                unset RET_CODE;
+                unset CERTIFICATE_DATASTORE;
+                unset IHS_KEYSTORE;
+                unset METHOD_NAME;
+
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+
+                return ${RETURN_CODE};
+            fi
             ;;
     esac
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [ ! -z "${CERTUTIL_PASSIN}" ] && -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
-    [ ! -z "${OPENSSL_PASSIN}" ] && -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
-    [ ! -z "${OPENSSL_PASSOUT}" ] && -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
+    [ ! -z "${OPENSSL_CNF}" ] && [ -f ${OPENSSL_CNF} ] && rm -rf ${OPENSSL_CNF};
+    [ ! -z "${CERTUTIL_PASSIN}" ] && [ -f ${CERTUTIL_PASSIN} ] && rm -rf ${CERTUTIL_PASSIN};
+    [ ! -z "${OPENSSL_PASSIN}" ] && [ -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+    [ ! -z "${OPENSSL_PASSOUT}" ] && [ -f ${OPENSSL_PASSOUT} ] && rm -rf ${OPENSSL_PASSOUT};
 
+    unset OPENSSL_CNF;
     unset OPENSSL_PASSIN;
     unset OPENSSL_PASSOUT;
     unset CERTUTIL_PASSIN;
@@ -640,19 +946,20 @@ function createSelfSignedCertificate
     unset SITE_PFXFILE;
     unset RET_CODE;
     unset CERTIFICATE_DATASTORE;
+    unset IHS_KEYSTORE;
+    unset METHOD_NAME;
 
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
     return ${RETURN_CODE};
 }
 
 #===  FUNCTION  ===============================================================
-#          NAME:  generate_iplanet_csr
-#   DESCRIPTION:  Generates a certificate signing request (CSR) for an iPlanet
-#                 webserver
+#          NAME:  createNewCertificate
+#   DESCRIPTION:  Generates a certificate request for signing by an authority
+#                 web instance
 #    PARAMETERS:  None
-#       RETURNS:  0
 #==============================================================================
 function createNewCertificate
 {
@@ -662,570 +969,237 @@ function createNewCertificate
     typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERTDB_STORE -> ${CERTDB_STORE}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CSRSTORE -> ${CSRSTORE}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MAILSTORE -> ${MAILSTORE}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NA_CSR_SUBJECT -> ${NA_CSR_SUBJECT}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CA_CSR_SUBJECT -> ${CA_CSR_SUBJECT}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "AU_CSR_SUBJECT -> ${AU_CSR_SUBJECT}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "UK_CSR_SUBJECT -> ${UK_CSR_SUBJECT}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERTIFICATE_DATABASE -> ${CERTIFICATE_DATABASE}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_DOMAIN_NAME -> ${SITE_DOMAIN_NAME}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    SITE_IDENTIFIER=$(echo ${PLATFORM_CODE} | cut -d "_" -f 1);
-    REGION_IDENTIFIER=$(echo ${PLATFORM_CODE} | cut -d "_" -f 2);
+    typeset OPENSSL_CNF=$(mktemp);
+    typeset OPENSSL_PASSIN=$(mktemp);
+    typeset WORK_DIRECTORY=${PLUGIN_WORK_DIR}/${CONTEXT_ROOT};
+    typeset SITE_KEYFILE="${KEY_DIR}/${CONTEXT_ROOT}.key";
+    typeset SITE_CSRFILE="${CSR_DIR}/${CONTEXT_ROOT}.csr";
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_IDENTIFIER -> ${SITE_IDENTIFIER}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REGION_IDENTIFIER -> ${REGION_IDENTIFIER}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPENSSL_CNF -> ${OPENSSL_CNF}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPENSSL_PASSIN -> ${OPENSSL_PASSIN}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WORK_DIRECTORY -> ${WORK_DIRECTORY}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_CSRFILE -> ${SITE_CSRFILE}";
 
-    if [ -s ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_CERT_DIR}/${CERTIFICATE_DATABASE}${IPLANET_CERT_STORE_KEY_SUFFIX} ] \
-        && [ -s ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_CERT_DIR}/${CERTIFICATE_DATABASE}${IPLANET_CERT_STORE_CERT_SUFFIX} ]
+    echo "$(returnRandomCharacters ${PASSWORD_LENGTH})" > ${OPENSSL_PASSIN};
+    chmod 600 ${OPENSSL_PASSIN};
+
+    ## modify the provided openssl conf to include proper hostname
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Modifying OpenSSL configuration...";
+    sed -e "s/%SITE_HOSTNAME%/${SITE_HOSTNAME}/" ${OPENSSL_CONFIG} > ${OPENSSL_CNF};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Modification complete. Validating...";
+
+    if [ ! -z "$(grep "%SITE_HOSTNAME%" ${OPENSSL_CNF})" ]
     then
-        ## ok. we have a cert db and we've been asked to generate a csr. do it.
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Generating CSR for ${SITE_DOMAIN_NAME}..";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Obtaining certificate information..";
+        RETURN_CODE=59;
 
-        ## determine the subject to utilize
-        if [ ! -z "$(grep -w ${SITE_DOMAIN_NAME} ${APP_ROOT}/${SITE_OVERRIDES})" ]
-        then
-            ## site exists in the site overrides file
-            CERT_SIGNER=$(grep -w ${SITE_DOMAIN_NAME} ${APP_ROOT}/${SITE_OVERRIDES} | cut -d ":" -f 2);
-            CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-        else
-            if [ "$(echo ${PLATFORM_CODE} | cut -d "_" -f 2)" = "I" ]
-            then
-                CERT_SIGNER=${INTRANET_CERT_SIGNATORY};
-                CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-            elif [ "$(echo ${PLATFORM_CODE} | cut -d "_" -f 2)" = "X" ]
-            then
-                CERT_SIGNER=${INTERNET_CERT_SIGNATORY};
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to modify OpenSSL configuration file. Please try again.";
 
-                case ${SITE_IDENTIFIER} in
-                    [Pp][Hh]|[Vv][Hh]|[Bb][Rr]|[Aa][Hh]|[Bb][Uu]|[Vv][Oo]|[Vv][Oo][Vv][Hh])
-                        CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-                        ;;
-                    [Nn][Ww]|[Ss][Yy]|[Nn][Ww][Nn]|[Ss][Yy][Gg]|[Ss][Hh]|[Ll][Pp])
-                        if [ ! -z "$(echo ${SITE_DOMAIN_NAME} | grep .ca)" ]
-                        then
-                            CERT_SUBJECT=$(echo ${CA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-                        elif [ ! -z "$(echo ${SITE_DOMAIN_NAME} | grep .au)" ]
-                        then
-                            CERT_SUBJECT=$(echo ${AU_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-                        else
-                            ## default to north america
-                            CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-                        fi
-                        ;;
-                    *)
-                        ## unknown site identifier, default to north america for now
-                        CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-                        ;;
-                esac
-            else
-                ## platform code doesn't specify an I or an X in the second field
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An unknown platform type was encountered. Cannot continue.";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                RETURN_CODE=4;
-            fi
-        fi
+        [ ! -z "${OPENSSL_CNF}" ] && [ -f ${OPENSSL_CNF} ] && rm -rf ${OPENSSL_CNF};
+        [ ! -z "${OPENSSL_PASSIN}" ] && [ -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+        [ ! -z "${SITE_KEYFILE}" ] && [ -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+        [ ! -z "${SITE_CSRFILE}" ] && [ -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
 
-        if [ -z "${RETURN_CODE}" ]
-        then
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_SIGNER -> ${CERT_SIGNER}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_SUBJECT -> ${CERT_SUBJECT}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing certutil -R -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} -s ${CERT_SUBJECT} -o ${APP_ROOT}/${CSRSTORE}/${CERT_NICKNAME}.csr -p ${REQUEST_CONTACT_NUM} -a -f ${APP_ROOT}/${IPLANET_CERT_DB_PASSFILE} -z "${APP_ROOT}"/${ENTROPY_FILE} -g ${CERT_BIT_LENGTH} > ${APP_ROOT}/${LOG_ROOT}/certutil.csr-gen.${SITE_DOMAIN_NAME}.${IUSER_AUDIT} 2>&1";
+        unset OPENSSL_CNF;
+        unset OPENSSL_PASSIN;
+        unset WORK_DIRECTORY;
+        unset SITE_KEYFILE;
+        unset SITE_CSRFILE;
+        unset RET_CODE;
+        unset METHOD_NAME;
 
-            ## add all available root and intermediate certificates to the database
-            for SIGNATORY in $(find ${APP_ROOT}/${ROOT_CERT_STORE} -type f -name \*.cer)
-            do
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SIGNATORY -> ${SIGNATORY}";
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-                SIGNER_NICKNAME=$(openssl x509 -in ${SIGNATORY} -noout -subject | grep CN | sed -e "s/CN=/@/" | cut -d "@" -f 2 | cut -d "/" -f 1);
-
-                if [ -z "${SIGNER_NICKNAME}" ]
-                then
-                    ## signer nickname couldnt be identified. use the filename instead
-                    SIGNER_NICKNAME=$(/usr/bin/env basename "${SIGNATORY}" .cer);
-                fi
-
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SIGNER_NICKNAME -> ${SIGNER_NICKNAME}";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command certutil -d ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_CERT_DIR} -A -i \"${SIGNATORY}\" -n \"${SIGNER_NICKNAME}\" -t \"T,C,c\" -P ${CERTIFICATE_DATABASE}";
-
-                if [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ]
-                then
-                    certutil -d ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_CERT_DIR} -A -i "${SIGNATORY}" \
-                        -n "${SIGNER_NICKNAME}" -t "T,C,c" -P ${CERTIFICATE_DATABASE};
-                else
-                    certutil -d ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_CERT_DIR} -A -i "${SIGNATORY}" \
-                        -n "${SIGNER_NICKNAME}" -t "T,C,c" -P ${CERTIFICATE_DATABASE} > ${APP_ROOT}/${LOG_ROOT}/certutil.add-roots.${SITE_HOSTNAME}.${IUSER_AUDIT} 2>&1;
-                fi
-            done
-
-            if [ ! -z "${REGION_IDENTIFIER}" ] && [ "${REGION_IDENTIFIER}" != "${ENV_TYPE_PRD}" ]
-            then
-                ## if we're configured to self-sign, do so here
-                if [ ! -z "${GENERATE_SELF_SIGNED}" ] && [ "${GENERATE_SELF_SIGNED}" = "${_TRUE}" ]
-                then
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Configured for self-signed certs. Continuing..";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command certutil -R -d ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_CERT_DIR} -P ${CERTIFICATE_DATABASE} -s \"$(echo ${SELF_SIGN_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_HOSTNAME}/")\" -o ${APP_ROOT}/${CSRSTORE}/SS-${CERT_NICKNAME}.csr -p ${REQUEST_CONTACT_NUM} -a -f ${APP_ROOT}/${IPLANET_CERT_DB_PASSFILE} -z "${APP_ROOT}"/${ENTROPY_FILE} -g ${CERT_BIT_LENGTH}";
-
-                    ## this is basically the same as generating a normal csr, except we're going to
-                    ## generate a cert off it too.
-                    if [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ]
-                    then
-                        certutil -R -d ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_CERT_DIR} -P ${CERTIFICATE_DATABASE} \
-                            -s "$(echo ${SELF_SIGN_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_HOSTNAME}/")" \
-                            -o ${APP_ROOT}/${CSRSTORE}/SS-${CERT_NICKNAME}.csr -p ${REQUEST_CONTACT_NUM} -a \
-                            -f ${APP_ROOT}/${IPLANET_CERT_DB_PASSFILE} -z "${APP_ROOT}"/${ENTROPY_FILE} -g ${CERT_BIT_LENGTH};
-                    else
-                        certutil -R -d ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_CERT_DIR} -P ${CERTIFICATE_DATABASE} \
-                            -s "$(echo ${SELF_SIGN_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_HOSTNAME}/")" \
-                            -o ${APP_ROOT}/${CSRSTORE}/SS-${CERT_NICKNAME}.csr -p ${REQUEST_CONTACT_NUM} -a \
-                            -f ${APP_ROOT}/${IPLANET_CERT_DB_PASSFILE} -z "${APP_ROOT}"/${ENTROPY_FILE} -g ${CERT_BIT_LENGTH} > ${APP_ROOT}/${LOG_ROOT}/certutil.csr-gen.${SITE_DOMAIN_NAME}.${IUSER_AUDIT} 2>&1;
-                    fi
-
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Self-signed CSR generated. Continuing..";
-
-                    if [ -s ${APP_ROOT}/${CSRSTORE}/SS-${CERT_NICKNAME}.csr ]
-                    then
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CSR confirmed. Generating certificate..";
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/runCertRenewal.sh -d ${CERTIFICATE_DATABASE} -s ${SITE_HOSTNAME} -w ${IPLANET_TYPE_IDENTIFIER} -p ${PLATFORM_CODE} -S -e..";
-
-                        ## move forward
-                        unset METHOD_NAME;
-                        unset CNAME;
-
-                        . ${APP_ROOT}/${LIB_DIRECTORY}/runCertRenewal.sh -d ${CERTIFICATE_DATABASE} -s ${SITE_HOSTNAME} \
-                            -w ${IPLANET_TYPE_IDENTIFIER} -p ${PLATFORM_CODE} -S -e;
-                        typeset -i RET_CODE=${?};
-
-                        CNAME=${THIS_CNAME};
-                        typeset METHOD_NAME="${CNAME}#${0}";
-
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
-
-                        if [ ! -z "${RET_CODE}" ]
-                        then
-                            if [ ${RET_CODE} -ne 0 ]
-                            then
-                                ## failed to make and apply self-signed cert. this is not a failure.
-                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate generation FAILED. Continuing.";
-
-                                (( ERROR_COUNT += 1 ));
-                            fi
-                        else
-                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate generation FAILED. Continuing.";
-
-                            (( ERROR_COUNT += 1 ));
-                        fi
-                    else
-                        ## no csr, no self-sign
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CSR generation FAILED. Continuing.";
-
-                        (( ERROR_COUNT += 1 ));
-                    fi
-                fi
-            fi
-
-            if [ ${ERROR_COUNT} -ne 0 ]
-            then
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred generating a self-signed certificate for ${SITE_HOSTNAME}.";
-            fi
-
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Generating CSR for ${SITE_HOSTNAME} ..";
-			[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command certutil -R -d ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_CERT_DIR} -P ${CERTIFICATE_DATABASE} -s \"${CERT_SUBJECT}\" -o ${APP_ROOT}/${CSRSTORE}/${CERT_NICKNAME}.csr -p ${REQUEST_CONTACT_NUM} -a -f ${APP_ROOT}/${IPLANET_CERT_DB_PASSFILE} -z "${APP_ROOT}"/${ENTROPY_FILE} -g ${CERT_BIT_LENGTH}";
-
-            if [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ]
-            then
-                certutil -R -d ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_CERT_DIR} -P ${CERTIFICATE_DATABASE} -s "${CERT_SUBJECT}" \
-                    -o ${APP_ROOT}/${CSRSTORE}/${CERT_NICKNAME}.csr -p ${REQUEST_CONTACT_NUM} -a \
-                    -f ${APP_ROOT}/${IPLANET_CERT_DB_PASSFILE} -z "${APP_ROOT}"/${ENTROPY_FILE} -g ${CERT_BIT_LENGTH};
-            else
-                certutil -R -d ${APP_ROOT}/${BUILD_TMP_DIR}/${IUSER_AUDIT}/${IPLANET_CERT_DIR} -P ${CERTIFICATE_DATABASE} -s "${CERT_SUBJECT}" \
-                    -o ${APP_ROOT}/${CSRSTORE}/${CERT_NICKNAME}.csr -p ${REQUEST_CONTACT_NUM} -a \
-                    -f ${APP_ROOT}/${IPLANET_CERT_DB_PASSFILE} -z "${APP_ROOT}"/${ENTROPY_FILE} -g ${CERT_BIT_LENGTH} > ${APP_ROOT}/${LOG_ROOT}/certutil.csr-gen.${SITE_DOMAIN_NAME}.${IUSER_AUDIT} 2>&1;
-            fi
-
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "certutil executed..";
-
-            if [ -s ${APP_ROOT}/${CSRSTORE}/${CERT_NICKNAME}.csr ]
-            then
-                ## cool, we have a csr. mail it out.
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Generation complete. Mailing CSR..";
-
-                unset CNAME;
-                unset METHOD_NAME;
-
-                . ${MAILER_CLASS} -m ${NOTIFY_CSR_EMAIL} -p ${PROJECT_CODE} -a "${NOTIFY_CSR_ADDRESS}" -t ${NOTIFY_TYPE_NOTIFY} -e;
-                MAILER_CODE=${?};
-
-                CNAME=$(/usr/bin/env basename ${0});
-                typeset METHOD_NAME="${CNAME}#${0}";
-                typeset RETURN_CODE=0;
-
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MAILER_CODE -> ${MAILER_CODE}";
-
-                if [ ${MAILER_CODE} -ne 0 ]
-                then
-                    ## notification failed to send. "WARN" but dont "ERROR"
-                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to send notification.";
-
-                    RETURN_CODE=95;
-                else
-                    ## done
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Email sent. Continuing..";
-
-                    RETURN_CODE=0;
-                fi
-            else
-                ## no csr was generated. "ERROR" out
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No CSR was generated. Cannot continue.";
-
-                RETURN_CODE=5;
-            fi
-        fi
-    else
-        ## certificate databases dont exist
-        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to confirm that the necessary certificate databases exist. Cannot continue.";
-
-        RETURN_CODE=24;
+        return ${RETURN_CODE};
     fi
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-}
+    ## generate key
+    openssl genrsa -out ${SITE_KEYFILE} -passout file:${OPENSSL_PASSIN} > /dev/null 2>&1;
+    unset RET_CODE; typeset -i RET_CODE=${?};
 
-#===  FUNCTION  ===============================================================
-#          NAME:  generate_iplanet_csr
-#   DESCRIPTION:  Generates a certificate signing request (CSR) for an iPlanet
-#                 webserver
-#    PARAMETERS:  None
-#       RETURNS:  0
-#==============================================================================
-function createiPlanetCSR
-{
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+    then
+        RETURN_CODE=59;
+
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to generate a keyfile: RET_CODE -> ${RET_CODE}. Please try again.";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${OPENSSL_CNF}" ] && [ -f ${OPENSSL_CNF} ] && rm -rf ${OPENSSL_CNF};
+        [ ! -z "${OPENSSL_PASSIN}" ] && [ -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+        [ ! -z "${SITE_KEYFILE}" ] && [ -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+        [ ! -z "${SITE_CSRFILE}" ] && [ -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+
+        unset OPENSSL_CNF;
+        unset OPENSSL_PASSIN;
+        unset WORK_DIRECTORY;
+        unset SITE_KEYFILE;
+        unset SITE_CSRFILE;
+        unset RET_CODE;
+        unset METHOD_NAME;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+
+        return ${RETURN_CODE};
+    fi
+
+    ## validate rsa key
+    openssl rsa -in ${SITE_KEYFILE} -check -passin file:${OPENSSL_PASSIN} > /dev/null 2>&1;
+    unset RET_CODE; typeset -i RET_CODE=${?};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+    then
+        RETURN_CODE=59;
+
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to generate a keyfile: RET_CODE -> ${RET_CODE}. Please try again.";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${OPENSSL_CNF}" ] && [ -f ${OPENSSL_CNF} ] && rm -rf ${OPENSSL_CNF};
+        [ ! -z "${OPENSSL_PASSIN}" ] && [ -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+        [ ! -z "${SITE_KEYFILE}" ] && [ -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+        [ ! -z "${SITE_CSRFILE}" ] && [ -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+
+        unset OPENSSL_CNF;
+        unset OPENSSL_PASSIN;
+        unset WORK_DIRECTORY;
+        unset SITE_KEYFILE;
+        unset SITE_CSRFILE;
+        unset RET_CODE;
+        unset METHOD_NAME;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+
+        return ${RETURN_CODE};
+    fi
+
+    ## generate csr
+    openssl req -config ${OPENSSL_CONFIG} -batch -extensions ${EXTENSIONS} -new -key ${SITE_KEYFILE} -out ${SITE_CSRFILE} -passin file:${OPENSSL_PASSIN} > /dev/null 2>&1;
+    unset RET_CODE; typeset -i RET_CODE=${?};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+    then
+        RETURN_CODE=59;
+
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to generate a keyfile: RET_CODE -> ${RET_CODE}. Please try again.";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${OPENSSL_CNF}" ] && [ -f ${OPENSSL_CNF} ] && rm -rf ${OPENSSL_CNF};
+        [ ! -z "${OPENSSL_PASSIN}" ] && [ -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+        [ ! -z "${SITE_KEYFILE}" ] && [ -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+        [ ! -z "${SITE_CSRFILE}" ] && [ -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+
+        unset OPENSSL_CNF;
+        unset OPENSSL_PASSIN;
+        unset WORK_DIRECTORY;
+        unset SITE_KEYFILE;
+        unset SITE_CSRFILE;
+        unset RET_CODE;
+        unset METHOD_NAME;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+
+        return ${RETURN_CODE};
+    fi
+
+    ## validate csr
+    openssl req -text -noout -verify -in ${SITE_CSRFILE} > /dev/null 2>&1;
+    unset RET_CODE; typeset -i RET_CODE=${?};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+    then
+        RETURN_CODE=59;
+
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to generate a keyfile: RET_CODE -> ${RET_CODE}. Please try again.";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${OPENSSL_CNF}" ] && [ -f ${OPENSSL_CNF} ] && rm -rf ${OPENSSL_CNF};
+        [ ! -z "${OPENSSL_PASSIN}" ] && [ -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+        [ ! -z "${SITE_KEYFILE}" ] && [ -f ${SITE_KEYFILE} ] && rm -rf ${SITE_KEYFILE};
+        [ ! -z "${SITE_CSRFILE}" ] && [ -f ${SITE_CSRFILE} ] && rm -rf ${SITE_CSRFILE};
+
+        unset OPENSSL_CNF;
+        unset OPENSSL_PASSIN;
+        unset WORK_DIRECTORY;
+        unset SITE_KEYFILE;
+        unset SITE_CSRFILE;
+        unset RET_CODE;
+        unset METHOD_NAME;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+
+        return ${RETURN_CODE};
+    fi
+
+    ## send CSR to authority
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Sending CSR notification...";
+
+    typeset THIS_CNAME="${CNAME}";
+    unset METHOD_NAME;
+    unset CNAME;
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+
+    ## validate the input
+    . ${MAILER_CLASS} -m ${NOTIFY_CSR_EMAIL} -t ${NOTIFY_CSR_ADDRESS} -a ${SITE_CSRFILE} -e
+    unset RET_CODE; typeset -i RET_CODE=${?};
+
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    typeset METHOD_NAME="${CNAME}#${0}";
-    typeset RETURN_CODE=0;
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERTDB_STORE -> ${CERTDB_STORE}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CSRSTORE -> ${CSRSTORE}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MAILSTORE -> ${MAILSTORE}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NA_CSR_SUBJECT -> ${NA_CSR_SUBJECT}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CA_CSR_SUBJECT -> ${CA_CSR_SUBJECT}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "AU_CSR_SUBJECT -> ${AU_CSR_SUBJECT}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "UK_CSR_SUBJECT -> ${UK_CSR_SUBJECT}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERTIFICATE_DATABASE -> ${CERTIFICATE_DATABASE}";
+    CNAME="${THIS_CNAME}";
+    typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
-    SITE_IDENTIFIER=$(echo ${TARGET_PLATFORM_CODE} | cut -d "_" -f 1);
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_IDENTIFIER -> ${SITE_IDENTIFIER}";
-
-    if [ -s ${APP_ROOT}/${CERTDB_STORE}/${CERTIFICATE_DATABASE}${IPLANET_CERT_STORE_KEY_SUFFIX} ] \
-        && [ -s ${APP_ROOT}/${CERTDB_STORE}/${CERTIFICATE_DATABASE}${IPLANET_CERT_STORE_CERT_SUFFIX} ]
+    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
     then
-        ## ok. we have a cert db and we've been asked to generate a csr. do it.
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Generating CSR for ${SITE_DOMAIN_NAME}..";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Obtaining certificate information..";
-
-        CERT_NICKNAME=$(certutil -L -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} | grep "u,u,u" | awk '{print $1}');
-        CERT_HOSTNAME=$(certutil -L -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} -n ${CERT_NICKNAME} \
-            | grep Subject | grep "CN" | sed -e "s/CN=/^/" | cut -d "^" -f 2 | cut -d "," -f 1);
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_NICKNAME -> ${CERT_NICKNAME}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_HOSTNAME -> ${CERT_HOSTNAME}";
-
-        if [ "${CERT_HOSTNAME}" != "${SITE_DOMAIN_NAME}" ]
-        then
-            ## hostname mismatch. use the one in the cert db, but "WARN" of it
-            ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_DOMAIN_NAME does not match CERT_HOSTNAME. SITE_DOMAIN_NAME -> ${SITE_DOMAIN_NAME}, CERT_HOSTNAME -> ${CERT_HOSTNAME}. Using CERT_HOSTNAME.";
-
-            SITE_DOMAIN_NAME=${CERT_HOSTNAME};
-
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_DOMAIN_NAME -> ${SITE_DOMAIN_NAME}";
-        fi
-
-        ## determine the subject to utilize
-        if [ ! -z "$(grep -w ${SITE_DOMAIN_NAME} ${APP_ROOT}/${SITE_OVERRIDES})" ]
-        then
-            ## site exists in the site overrides file
-            CERT_SIGNER=$(grep -w ${SITE_DOMAIN_NAME} ${APP_ROOT}/${SITE_OVERRIDES} | cut -d ":" -f 2);
-            CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-        else
-            if [ "$(echo ${TARGET_PLATFORM_CODE} | cut -d "_" -f 2)" = "I" ]
-            then
-                CERT_SIGNER=${INTRANET_CERT_SIGNATORY};
-                CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-            elif [ "$(echo ${TARGET_PLATFORM_CODE} | cut -d "_" -f 2)" = "X" ]
-            then
-                CERT_SIGNER=${INTERNET_CERT_SIGNATORY};
-
-                case ${SITE_IDENTIFIER} in
-                    [Pp][Hh]|[Vv][Hh]|[Bb][Rr]|[Aa][Hh]|[Bb][Uu]|[Vv][Oo]|[Vv][Oo][Vv][Hh])
-                        CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-                        ;;
-                    [Nn][Ww]|[Ss][Yy]|[Nn][Ww][Nn]|[Ss][Yy][Gg]|[Ss][Hh]|[Ll][Pp])
-                        if [ ! -z "$(echo ${SITE_DOMAIN_NAME} | grep .ca)" ]
-                        then
-                            CERT_SUBJECT=$(echo ${CA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-                        elif [ ! -z "$(echo ${SITE_DOMAIN_NAME} | grep .au)" ]
-                        then
-                            CERT_SUBJECT=$(echo ${AU_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-                        else
-                            ## default to north america
-                            CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-                        fi
-                        ;;
-                    *)
-                        ## unknown site identifier, default to north america for now
-                        CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-                        ;;
-                esac
-            else
-                ## platform code doesn't specify an I or an X in the second field
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An unknown platform type was encountered. Cannot continue.";
-
-                RETURN_CODE=4;
-            fi
-        fi
-
-        if [ -z "${RETURN_CODE}" ]
-        then
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_SIGNER -> ${CERT_SIGNER}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_SUBJECT -> ${CERT_SUBJECT}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing certutil -R -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} -s ${CERT_SUBJECT} -o ${APP_ROOT}/${CSRSTORE}/${CERT_NICKNAME}.csr -p ${REQUEST_CONTACT_NUM} -a -f ${APP_ROOT}/${IPLANET_CERT_DB_PASSFILE} -z "${APP_ROOT}"/${ENTROPY_FILE} -g ${CERT_BIT_LENGTH} > ${APP_ROOT}/${LOG_ROOT}/certutil.csr-gen.${SITE_DOMAIN_NAME}.${IUSER_AUDIT} 2>&1";
-
-            if [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ]
-            then
-                certutil -R -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} -s "${CERT_SUBJECT}" \
-                    -o ${APP_ROOT}/${CSRSTORE}/${CERT_NICKNAME}.csr -p ${REQUEST_CONTACT_NUM} -a \
-                    -f ${APP_ROOT}/${IPLANET_CERT_DB_PASSFILE} -z "${APP_ROOT}"/${ENTROPY_FILE} -g ${CERT_BIT_LENGTH};
-            else
-                certutil -R -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} -s "${CERT_SUBJECT}" \
-                    -o ${APP_ROOT}/${CSRSTORE}/${CERT_NICKNAME}.csr -p ${REQUEST_CONTACT_NUM} -a \
-                    -f ${APP_ROOT}/${IPLANET_CERT_DB_PASSFILE} -z "${APP_ROOT}"/${ENTROPY_FILE} -g ${CERT_BIT_LENGTH} > ${APP_ROOT}/${LOG_ROOT}/certutil.csr-gen.${SITE_DOMAIN_NAME}.${IUSER_AUDIT} 2>&1;
-            fi
-
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "certutil executed..";
-
-            if [ -s ${APP_ROOT}/${CSRSTORE}/${CERT_NICKNAME}.csr ]
-            then
-                ## cool, we have a csr. mail it out.
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Generation complete. Mailing CSR..";
-
-                unset CNAME;
-                unset METHOD_NAME;
-
-                . ${MAILER_CLASS} -m ${NOTIFY_CSR_EMAIL} -p ${WEB_PROJECT_CODE} -a "${NOTIFY_CSR_ADDRESS}" -t ${NOTIFY_TYPE_NOTIFY} -e;
-                MAILER_CODE=${?};
-
-                CNAME=${THIS_CNAME};
-                typeset METHOD_NAME="${CNAME}#${0}";
-
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MAILER_CODE -> ${MAILER_CODE}";
-
-                if [ ${MAILER_CODE} -ne 0 ]
-                then
-                    ## notification failed to send. "WARN" but dont "ERROR"
-
-                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to send notification.";
-
-                    RETURN_CODE=95;
-                fi
-
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Email sent. Continuing..";
-
-                RETURN_CODE=0;
-            else
-                ## no csr was generated. "ERROR" out
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No CSR was generated. Cannot continue.";
-
-                RETURN_CODE=5;
-            fi
-        fi
-    else
-        ## we dont have a cert database, so lets go out and get it
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate database not found for ${SITE_DOMAIN_NAME}. Obtaining..";
-
-        SOURCE_CERT_DATABASE=$(echo ${CERTIFICATE_DATABASE} | sed -e "s/${IUSER_AUDIT}/${SOURCE_WEB_SERVER}/");
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SOURCE_CERT_DATABASE -> ${SOURCE_CERT_DATABASE}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating access to ${SOURCE_WEB_SERVER}..";
-
-        $(ping ${SOURCE_WEB_SERVER} > /dev/null 2>&1);
-
-        PING_RCODE=${?}
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PING_RCODE -> ${PING_RCODE}";
-
-        if [ ${PING_RCODE} -eq 0 ]
-        then
-            ## run_scp_connection...
-            for SUFFIX in ${IPLANET_CERT_STORE_KEY_SUFFIX} ${IPLANET_CERT_STORE_CERT_SUFFIX}
-            do
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp remote-copy ${SOURCE_WEB_SERVER} ${SOURCE_PATH}/${IPLANET_CERT_DIR}/${SOURCE_CERT_DATABASE}${SUFFIX} ${APP_ROOT}/${CERTDB_STORE}/${CERTIFICATE_DATABASE}${SUFFIX} ${IPLANET_OWNING_USER}";
-
-                ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp remote-copy ${SOURCE_WEB_SERVER} \
-                    ${SOURCE_PATH}/${IPLANET_CERT_DIR}/${SOURCE_CERT_DATABASE}${SUFFIX} \
-                    ${APP_ROOT}/${CERTDB_STORE}/${CERTIFICATE_DATABASE}${SUFFIX} ${IPLANET_OWNING_USER};
-
-                if [ -s ${APP_ROOT}/${CERTDB_STORE}/${CERTIFICATE_DATABASE}${SUFFIX} ]
-                then
-                    (( FILE_COUNT += 1 ));
-                fi
-            done
-
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FILE_COUNT -> ${FILE_COUNT}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Databases copied. Validating..";
-
-            ## make sure we got the files..
-            if [ ${FILE_COUNT} -eq 2 ]
-            then
-                ## ok. we have a cert db and we've been asked to generate a csr. do it.
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Generating CSR for ${SITE_DOMAIN_NAME}..";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Obtaining certificate information..";
-
-                CERT_NICKNAME=$(certutil -L -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} | grep "u,u,u" | awk '{print $1}');
-                CERT_HOSTNAME=$(certutil -L -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} -n ${CERT_NICKNAME} \
-                    | grep Subject | grep "CN" | sed -e "s/CN=/^/" | cut -d "^" -f 2 | cut -d "," -f 1);
-
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_NICKNAME -> ${CERT_NICKNAME}";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_HOSTNAME -> ${CERT_HOSTNAME}";
-
-                if [ "${CERT_HOSTNAME}" != "${SITE_DOMAIN_NAME}" ]
-                then
-                    ## hostname mismatch. use the one in the cert db, but "WARN" of it
-                    ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_DOMAIN_NAME does not match CERT_HOSTNAME. SITE_DOMAIN_NAME -> ${SITE_DOMAIN_NAME}, CERT_HOSTNAME -> ${CERT_HOSTNAME}. Using CERT_HOSTNAME.";
-
-                    RETURN_CODE=99;
-
-                    SITE_DOMAIN_NAME=${CERT_HOSTNAME};
-
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_DOMAIN_NAME -> ${SITE_DOMAIN_NAME}";
-                fi
-
-		        ## determine the subject to utilize
-		        if [ ! -z "$(grep -w ${SITE_DOMAIN_NAME} ${APP_ROOT}/${SITE_OVERRIDES})" ]
-		        then
-		            ## site exists in the site overrides file
-		            CERT_SIGNER=$(grep -w ${SITE_DOMAIN_NAME} ${APP_ROOT}/${SITE_OVERRIDES} | cut -d ":" -f 2);
-		            CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-		        else
-		            if [ "$(echo ${TARGET_PLATFORM_CODE} | cut -d "_" -f 2)" = "I" ]
-		            then
-		                CERT_SIGNER=${INTRANET_CERT_SIGNATORY};
-		                CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-		            elif [ "$(echo ${TARGET_PLATFORM_CODE} | cut -d "_" -f 2)" = "X" ]
-		            then
-		                CERT_SIGNER=${INTERNET_CERT_SIGNATORY};
-
-		                case ${SITE_IDENTIFIER} in
-		                    [Pp][Hh]|[Vv][Hh]|[Bb][Rr]|[Aa][Hh]|[Bb][Uu]|[Vv][Oo]|[Vv][Oo][Vv][Hh])
-		                        CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-		                        ;;
-		                    [Nn][Ww]|[Ss][Yy]|[Nn][Ww][Nn]|[Ss][Yy][Gg]|[Ss][Hh]|[Ll][Pp])
-		                        if [ ! -z "$(echo ${SITE_DOMAIN_NAME} | grep .ca)" ]
-		                        then
-		                            CERT_SUBJECT=$(echo ${CA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-		                        elif [ ! -z "$(echo ${SITE_DOMAIN_NAME} | grep .au)" ]
-		                        then
-		                            CERT_SUBJECT=$(echo ${AU_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-		                        else
-		                            ## default to north america
-		                            CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-		                        fi
-		                        ;;
-		                    *)
-		                        ## unknown site identifier, default to north america for now
-		                        CERT_SUBJECT=$(echo ${NA_CSR_SUBJECT} | sed -e "s/{SITE_HOSTNAME}/${SITE_DOMAIN_NAME}/");
-		                        ;;
-		                esac
-		            else
-		                ## platform code doesn't specify an I or an X in the second field
-		                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An unknown platform type was encountered. Cannot continue.";
-
-		                RETURN_CODE=4;
-		            fi
-		        fi
-
-                if [ -z "${RETURN_CODE}" ] || [ ${RETURN_CODE} -eq 99 ]
-                then
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_SIGNER -> ${CERT_SIGNER}";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_SUBJECT -> ${CERT_SUBJECT}";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing certutil -R -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} -s ${CERT_SUBJECT} -o ${APP_ROOT}/${CSRSTORE}/${CERT_NICKNAME}.csr -p ${REQUEST_CONTACT_NUM} -a -f ${APP_ROOT}/${IPLANET_CERT_DB_PASSFILE} -z "${APP_ROOT}"/${ENTROPY_FILE} -g ${CERT_BIT_LENGTH} > ${APP_ROOT}/${LOG_ROOT}/certutil.csr-gen.${SITE_DOMAIN_NAME}.${IUSER_AUDIT} 2>&1";
-
-                    if [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ]
-                    then
-                        certutil -R -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} -s "${CERT_SUBJECT}" \
-                            -o ${APP_ROOT}/${CSRSTORE}/${CERT_NICKNAME}.csr -p ${REQUEST_CONTACT_NUM} -a \
-                            -f ${APP_ROOT}/${IPLANET_CERT_DB_PASSFILE} -z "${APP_ROOT}"/${ENTROPY_FILE} -g ${CERT_BIT_LENGTH};
-                    else
-                        certutil -R -d ${APP_ROOT}/${CERTDB_STORE} -P ${CERTIFICATE_DATABASE} -s "${CERT_SUBJECT}" \
-                            -o ${APP_ROOT}/${CSRSTORE}/${CERT_NICKNAME}.csr -p ${REQUEST_CONTACT_NUM} -a \
-                            -f ${APP_ROOT}/${IPLANET_CERT_DB_PASSFILE} -z "${APP_ROOT}"/${ENTROPY_FILE} \
-                            -g ${CERT_BIT_LENGTH} > ${APP_ROOT}/${LOG_ROOT}/certutil.csr-gen.${SITE_DOMAIN_NAME}.${IUSER_AUDIT} 2>&1;
-                    fi
-
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "certutil executed..";
-
-                    if [ -s ${APP_ROOT}/${CSRSTORE}/${CERT_NICKNAME}.csr ]
-                    then
-                        ## cool, we have a csr. mail it out.
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Generation complete. Mailing CSR..";
-
-                        unset CNAME;
-                        unset METHOD_NAME;
-
-                        . ${MAILER_CLASS} -m ${NOTIFY_CSR_EMAIL} -p ${WEB_PROJECT_CODE} -a "${NOTIFY_CSR_ADDRESS}" -t ${NOTIFY_TYPE_NOTIFY} -e;
-                        MAILER_CODE=${?};
-
-                        CNAME=${THIS_CNAME};
-                        typeset METHOD_NAME="${CNAME}#${0}";
-
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MAILER_CODE -> ${MAILER_CODE}";
-
-                        if [ ${MAILER_CODE} -ne 0 ]
-                        then
-                            ## notification failed to send. "WARN" but dont "ERROR"
-                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to send notification.";
-
-                            RETURN_CODE=95;
-                        else
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Email sent. Continuing..";
-
-                            RETURN_CODE=0;
-                        fi
-                    else
-                        ## no csr was generated. "ERROR" out
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No CSR was generated. Cannot continue.";
-
-                        RETURN_CODE=5;
-                    fi
-                fi
-            else
-                ## failed to obtain the cert db, cant generate a csr
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to obtain the necessary certificate databases. Cannot continue.";
-
-                RETURN_CODE=6;
-            fi
-        else
-            ## source web server appears unavailable, so we cant go get our files
-            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to obtain the necessary certificate databases. Cannot continue.";
-
-            RETURN_CODE=24;
-        fi
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Email notification of certificate requested failed. Please send request manually.";
     fi
 
-    FILE_COUNT=0;
-    unset CERT_HOSTNAME;
-    unset CERT_SIGNER;
-    unset CERT_SUBJECT;
-    unset SUFFIX;
-    unset RET_CODE;
-    unset MAILER_CODE;
-
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ ! -z "${OPENSSL_CNF}" ] && [ -f ${OPENSSL_CNF} ] && rm -rf ${OPENSSL_CNF};
+    [ ! -z "${OPENSSL_PASSIN}" ] && [ -f ${OPENSSL_PASSIN} ] && rm -rf ${OPENSSL_PASSIN};
+
+    unset OPENSSL_CNF;
+    unset OPENSSL_PASSIN;
+    unset WORK_DIRECTORY;
+    unset SITE_KEYFILE;
+    unset SITE_CSRFILE;
+    unset RET_CODE;
+    unset METHOD_NAME;
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+    return ${RETURN_CODE};
 }
 
 function createIHSCSR
@@ -1674,193 +1648,163 @@ function createIHSCSR
 }
 
 #===  FUNCTION  ===============================================================
-#      NAME:  usage
-#   DESCRIPTION:  Provide information on the usage of this application
+#          NAME:  usage
+#   DESCRIPTION:  Provide information on the function usage of this application
 #    PARAMETERS:  None
-#   RETURNS:  0
+#          NAME:  usage
 #==============================================================================
 function usage
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     typeset METHOD_NAME="${CNAME}#${0}";
-    typeset RETURN_CODE=0;
+    typeset RETURN_CODE=3;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    echo "${THIS_CNAME} - Generates a certificate signing request for a provided host.";
-    echo " -s    -> The site domain name to operate against";
-    echo " -v    -> The source server to obtain the necessary key databases from";
-    echo " -w    -> Platform type to execute against - iplanet or ihs";
-    echo " -p    -> The webserver base path (e.g. /opt/IBMIHS70)";
-    echo " -d    -> The certificate database to work against";
-    echo " -c    -> The target platform code.";
-    echo " -t    -> The requestor telephone number";
-    echo " -n    -> Indicates that this is a new SSL request";
-    echo " -e    -> Execute the request";
-    echo " -h|-? -> Show this help";
+    echo "${THIS_CNAME} - Create a skeleton zone file with the necessary components.\n";
+    echo "Usage: ${THIS_CNAME}[ -t <request type> ] [ -c <context root> ] [ -h <site hostname> ] [ -w <webserver> ] [ -o <openssl config> ] [ -n ] [ -r ] [ -s ] [ -e ] [ -h|-? ]
+    -c         -> The context root for the web instance
+    -h         -> The site hostname for the web instance
+    -w         -> The web platform, such as httpd
+    -o         -> The OpenSSL configuration file to utilize
+    -n         -> Create a new certificate request
+    -r         -> Create a certificate renewal request
+    -s         -> Create a self-signed certificate
+    -e         -> Execute processing
+    -h|-?      -> Show this help\n";
 
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    return 3;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+    return ${RETURN_CODE};
 }
-
-[ -z "${PLUGIN_ROOT_DIR}" ] && [ -s ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin ] && . ${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin;
-[ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
-
 [ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
 
-METHOD_NAME="${CNAME}#startup";
-
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-
-while getopts ":s:v:w:p:d:c:t:neh:" OPTIONS 2>/dev/null
+while getopts "c:h:w:o:nrseh:" OPTIONS 2>/dev/null
 do
     case "${OPTIONS}" in
-        s)
-            ## set the platform
+        c)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting SITE_DOMAIN_NAME..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting CONTEXT_ROOT..";
 
             ## Capture the site root
-            typeset -l SITE_DOMAIN_NAME="${OPTARG}";
+            typeset CONTEXT_ROOT=${OPTARG};
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_DOMAIN_NAME -> ${SITE_DOMAIN_NAME}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONTEXT_ROOT -> ${CONTEXT_ROOT}";
             ;;
-        v)
-            ## set the platform
+        h)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting SOURCE_WEB_SERVER..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting SITE_HOSTNAME..";
 
-            ## Capture the site root
-            typeset -l SOURCE_WEB_SERVER="${OPTARG}";
+            ## Capture the change control
+            typeset -l SITE_HOSTNAME="${OPTARG}";
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SOURCE_WEB_SERVER -> ${SOURCE_WEB_SERVER}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_HOSTNAME -> ${SITE_HOSTNAME}";
             ;;
         w)
-            ## set the platform
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting WS_PLATFORM..";
 
-            ## Capture the site root
-            WS_PLATFORM=${OPTARG};
+            ## Capture the change control
+            typeset -u WS_PLATFORM="${OPTARG}";
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WS_PLATFORM -> ${WS_PLATFORM}";
             ;;
-        p)
+        o)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting SOURCE_PATH..";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting OPENSSL_CONFIG..";
 
-            ## Capture the site root
-            SOURCE_PATH=${OPTARG};
+            ## Capture the change control
+            [ -z "${OPTARG}" ] && typeset OPENSSL_CONFIG="${OPENSSL_CONFIG_FILE}" || typeset OPENSSL_CONFIG="${OPTARG}";
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SOURCE_PATH -> ${SOURCE_PATH}";
-            ;;
-        d)
-            ## set the certificate database name
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting CERTIFICATE_DATABASE..";
-
-            ## Capture the site root
-            CERTIFICATE_DATABASE=${OPTARG};
-
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERTIFICATE_DATABASE -> ${CERTIFICATE_DATABASE}";
-            ;;
-        c)
-            ## set the certificate database name
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting TARGET_PLATFORM_CODE..";
-
-            ## Capture the site root
-            typeset -u TARGET_PLATFORM_CODE="${OPTARG}";
-
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TARGET_PLATFORM_CODE -> ${TARGET_PLATFORM_CODE}";
-            ;;
-        t)
-            ## set the certificate database name
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting REQUEST_CONTACT_NUM..";
-
-            ## Capture the site root
-            REQUEST_CONTACT_NUM=${OPTARG};
-
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "REQUEST_CONTACT_NUM -> ${REQUEST_CONTACT_NUM}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPENSSL_CONFIG -> ${OPENSSL_CONFIG}";
             ;;
         n)
-            ## this is a new certificate database
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting NEW_CERTIFICATE..";
 
-            ## Capture the site root
-            NEW_CERTIFICATE=${_TRUE};
+            ## Capture the change control
+            typeset NEW_CERTIFICATE="${_TRUE}";
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NEW_CERTIFICATE -> ${NEW_CERTIFICATE}";
+            ;;
+        r)
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting RENEW_CERTIFICATE..";
+
+            ## Capture the change control
+            typeset RENEW_CERTIFICATE="${_TRUE}";
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RENEW_CERTIFICATE -> ${RENEW_CERTIFICATE}";
+            ;;
+        s)
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting SELF_SIGNED..";
+
+            ## Capture the change control
+            typeset SELF_SIGNED="${_TRUE}";
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SELF_SIGNED -> ${SELF_SIGNED}";
             ;;
         e)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating request..";
 
             ## Make sure we have enough information to process
             ## and execute
-            if [ -z "${RETURN_CODE}" ]
+            if [ -z "${CONTEXT_ROOT}" ]
             then
-                if [ -z "${WS_PLATFORM}" ]
-                then
-                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No webserver platform was provided. Cannot continue.";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No context root was provided. Unable to continue processing.";
 
-                    RETURN_CODE=21;
-                elif [ -z "${CERTIFICATE_DATABASE}" ]
-                then
-                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No certificate database was provided. Cannot continue.";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                    RETURN_CODE=9;
-                elif [ -z "${TARGET_PLATFORM_CODE}" ]
-                then
-                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No target platform code was provided. Cannot continue.";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                RETURN_CODE=15;
+            elif [ -z "${SITE_HOSTNAME}" ]
+            then
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No site hostname was provided. Unable to continue processing.";
 
-                    RETURN_CODE=9;
-                elif [ -z "${REQUEST_CONTACT_NUM}" ]
-                then
-                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No contact telephone number was provided. Cannot continue.";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                    RETURN_CODE=9;
+                RETURN_CODE=18;
+            elif [ -z "${WS_PLATFORM}" ]
+            then
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No webserver platform was provided. Unable to continue processing.";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                RETURN_CODE=37;
+            else
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                if [ ! -s ${BUILD_CONFIG_FILE} ]
+                then
+                    RETURN_CODE=1;
+
+                    ${LOGGER} "INFO" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Build processing has been disabled.";
                 else
-                    ## We have enough information to process the request, continue
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request validated - executing";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                    . ${BUILD_CONFIG_FILE};
 
-                    if [ ! -z "${NEW_CERTIFICATE}" ] && [ "${NEW_CERTIFICATE}" = "${_TRUE}" ]
+                    if [ -z "${BUILD_LOADED}" ]
                     then
-                        createNewCertificate;
+                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to load build configuration. Cannot continue.";
+
+                        RETURN_CODE=21;
                     else
-                        if [ -z "${SOURCE_WEB_SERVER}" ]
+                        if [ ! -f ${PLATFORM_CONFIG_FILES}/${WS_PLATFORM}.config ]
                         then
-                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No source webserver was provided. Cannot continue.";
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to load platform configuration. Cannot continue.";
 
                             RETURN_CODE=21;
-                        elif [ -z "${SOURCE_PATH}" ]
-                        then
-                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No source path was provided. Cannot continue.";
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-                            RETURN_CODE=9;
                         else
-                            if [ "${WS_PLATFORM}" = "${IPLANET_TYPE_IDENTIFIER}" ]
-                            then
-                                createiPlanetCSR;
-                            elif [ "${WS_PLATFORM}" = "${IHS_TYPE_IDENTIFIER}" ]
-                            then
-                                createIHSCSR;
-                            else
-                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No valid webserver platform was provided. Cannot continue.";
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                            . ${PLATFORM_CONFIG_FILES}/${WS_PLATFORM}.config
 
-                                RETURN_CODE=999;
+                            if [ ! -z "${NEW_CERTIFICATE}" ] && [ "${NEW_CERTIFICATE}" = "${_TRUE}" ]
+                            then
+                                [ ! -z "${SELF_SIGNED}" ] && [ "${SELF_SIGNED}" = "${_TRUE}" ] && createSelfSignedCertificate && RETURN_CODE=${?} || createNewCertificate && RETURN_CODE=${?};
+                            else
+                                createCertificateRenewal && RETURN_CODE=${?};
                             fi
                         fi
                     fi
@@ -1880,15 +1824,16 @@ trap "unlockProcess ${LOCKFILE} ${$}; return ${RETURN_CODE}" INT TERM EXIT;
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
 
-unset PARTITION;
-unset BUSINESS_UNIT;
-unset PROJECT_CODE;
-unset ZONE_NAME;
-unset CHANGE_NUM;
-unset BUILD_ZONE;
-unset CNAME;
-unset METHOD_NAME;
 unset RET_CODE;
+unset CONTEXT_ROOT;
+unset SITE_HOSTNAME;
+unset WS_PLATFORM;
+unset OPENSSL_CONFIG;
+unset NEW_CERTIFICATE;
+unset RENEW_CERTIFICATE;
+unset SELF_SIGNED;
+unset METHOD_NAME;
+unset CNAME;
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;

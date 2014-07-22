@@ -34,7 +34,7 @@ cert_opt                       = ca_default
 crl_extensions                 = crl_ext
 default_days                   = 365
 default_crl_days               = 30
-default_md                     = sha1
+default_md                     = aes256
 preserve                       = no
 policy                         = policy_any
 
@@ -48,7 +48,7 @@ emailAddress                   = optional
 
 [ req ]
 default_bits                   = 2048
-default_md                     = sha1
+default_md                     = aes256
 default_keyfile                = privkey.pem
 distinguished_name             = req_distinguished_name
 #attributes                     = req_attributes
@@ -71,6 +71,7 @@ organizationalUnitName         = Organizational Unit Name (eg, section)
 organizationalUnitName_default = Research and Development
 commonName                     = Common Name (eg, your name or your servers hostname)
 commonName_max                 = 64
+commonName_default             = %SITE_HOSTNAME%
 emailAddress                   = Email Address
 emailAddress_max               = 64
 emailAddress_default           = secadm@caspersbox.com

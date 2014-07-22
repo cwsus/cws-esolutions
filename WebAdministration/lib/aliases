@@ -22,7 +22,10 @@ then
 fi
 
 ## common aliases
-alias keyman='java com.ibm.gsk.ikeyman.ikeycmd';
+alias openssl='/usr/bin/env openssl';
+alias certutil='/usr/bin/env certutil';
+alias pk12util='/usr/bin/env pk12util';
+alias keyman='java -cp ${CLASSPATH} com.ibm.gsk.ikeyman.ikeycmd';
 alias getWebInfo='cat ${EINFO_WEBSITE_DEFS}';
 alias getPlatformInfo='cat ${EINFO_PLATFORM_DEFS}';
 alias getMachineInfo='cat ${EINFO_MACHINE_DEFS}';

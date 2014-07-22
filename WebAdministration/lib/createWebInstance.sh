@@ -26,8 +26,8 @@ SCRIPT_ROOT="$(/usr/bin/env dirname ${SCRIPT_ABSOLUTE_PATH})";
 METHOD_NAME="${CNAME}#startup";
 LOCKFILE=$(mktemp);
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
 [ -z "${PLUGIN_ROOT_DIR}" ] && [ -f ${SCRIPT_ROOT}/../lib/plugin ] && . ${SCRIPT_ROOT}/../lib/plugin;
 
@@ -52,8 +52,8 @@ THIS_CNAME="${CNAME}";
 unset METHOD_NAME;
 unset CNAME;
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 ## validate the input
 ${APP_ROOT}/${LIB_DIRECTORY}/validateSecurityAccess.sh -a;
@@ -81,8 +81,8 @@ unset RET_CODE;
 unset METHOD_NAME;
 unset CNAME;
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 
 lockProcess ${LOCKFILE} ${$};
 typeset -i RET_CODE=${?};
@@ -126,8 +126,8 @@ function createWebInstance
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
         [ -f ${TMPFILE} ] && rm -rf ${TMPFILE};
 
@@ -151,6 +151,9 @@ function createWebInstance
     typeset CONTEXT_ROOT=$(cut -d "." -f 2 <<< ${SITE_HOSTNAME});
     typeset CONF_ROOT=${SERVER_ROOT}/conf/${CONTEXT_ROOT};
     typeset WORK_DIRECTORY=${PLUGIN_WORK_DIR}/${CONTEXT_ROOT};
+    typeset PIDFILE_PATH=$(sed -e "s/%WEBSERVER_TYPE%/${WEBSERVER_TYPE}/;s/%CONTEXT_PATH%/${CONTEXT_ROOT}/" <<< ${PIDFILE_PATH});
+    typeset DOCUMENT_ROOT=$(sed -e "s/%WEBSERVER_TYPE%/${WEBSERVER_TYPE}/;s/%CONTEXT_PATH%/${CONTEXT_ROOT}/" <<< ${DOCUMENT_ROOT});
+    typeset LOG_PATH=$(sed -e "s/%WEBSERVER_TYPE%/${WEBSERVER_TYPE}/;s/%CONTEXT_PATH%/${CONTEXT_ROOT}/" <<< ${LOG_PATH});
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONTEXT_ROOT -> ${CONTEXT_ROOT}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONF_ROOT -> ${CONF_ROOT}";
@@ -183,8 +186,8 @@ function createWebInstance
         unset SERVER_ROOT;
         unset METHOD_NAME;
 
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
         return ${RETURN_CODE};
     fi
@@ -212,8 +215,8 @@ function createWebInstance
             unset METHOD_NAME;
             unset CNAME;
 
-            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
             ## validate the input
             ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/runKeyGeneration.sh -s ${SITE_HOSTNAME} -w ${WEBSERVER_TYPE} \
@@ -259,8 +262,8 @@ function createWebInstance
             unset SERVER_ROOT;
             unset METHOD_NAME;
 
-            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
             return ${RETURN_CODE};
             ;;
@@ -313,7 +316,7 @@ function createWebInstance
     unset METHOD_NAME;
 
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
     return ${RETURN_CODE};
 }
@@ -351,7 +354,7 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
     return ${RETURN_CODE};
 }
@@ -464,35 +467,69 @@ do
 
                 RETURN_CODE=11;
             else
-                if [ ! -z "${APPSERVER_ENABLED}" ] && [ "${APPSERVER_ENABLED}" = "${_TRUE}" ]
-                then
-                    if [ -z "${APPSERVER_TYPE}" ]
-                    then
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No appserver type was provided. Unable to continue processing.";
+                case "${APPSERVER_ENABLED}" in
+                    "${_TRUE}")
+                        if [ -z "${APPSERVER_TYPE}" ]
+                        then
+                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No appserver type was provided. Unable to continue processing.";
 
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                        RETURN_CODE=56;
-                    elif [ -z "${APPSERVER_HOSTNAME}" ]
-                    then
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No appserver hostname was provided. Unable to continue processing.";
+                            RETURN_CODE=56;
+                        elif [ -z "${APPSERVER_HOSTNAME}" ]
+                        then
+                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No appserver hostname was provided. Unable to continue processing.";
 
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                        RETURN_CODE=57;
-                    elif [ -z "${APPSERVER_PORT}" ]
-                    then
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No appserver port was provided. Unable to continue processing.";
+                            RETURN_CODE=57;
+                        elif [ -z "${APPSERVER_PORT}" ]
+                        then
+                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No appserver port was provided. Unable to continue processing.";
 
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                        RETURN_CODE=58;
-                    else
-                        createWebInstance && RETURN_CODE=${?};
-                    fi
-                else
-                    createWebInstance && RETURN_CODE=${?};
-                fi
+                            RETURN_CODE=58;
+                        else
+                            if [ ! -s ${BUILD_CONFIG_FILE} ]
+                            then
+                                RETURN_CODE=1;
+
+                                ${LOGGER} "INFO" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Build processing has been disabled.";
+                            else
+                                . ${BUILD_CONFIG_FILE};
+
+                                if [ -z "${BUILD_LOADED}" ]
+                                then
+                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to load build configuration. Cannot continue.";
+
+                                    RETURN_CODE=21;
+                                else
+                                    createWebInstance && RETURN_CODE=${?};
+                                fi
+                            fi
+                        fi
+                        ;;
+                    *)
+                        if [ ! -s ${BUILD_CONFIG_FILE} ]
+                        then
+                            RETURN_CODE=1;
+
+                            ${LOGGER} "INFO" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Build processing has been disabled.";
+                        else
+                            . ${BUILD_CONFIG_FILE};
+
+                            if [ -z "${BUILD_LOADED}" ]
+                            then
+                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to load build configuration. Cannot continue.";
+
+                                RETURN_CODE=21;
+                            else
+                                createWebInstance && RETURN_CODE=${?};
+                            fi
+                        fi
+                        ;;
+                esac
             fi
             ;;
         *)
