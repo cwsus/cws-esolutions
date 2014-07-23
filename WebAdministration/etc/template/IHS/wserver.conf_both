@@ -1,77 +1,109 @@
-# Config file for &SERVER_ID&
+# Config file for %SITE_HOSTNAME%
 #
-# Document Root: &WEB_DOC_ROOT&
-# Server ID: &SERVER_ID&
-# Projet Code: &PROJECT_CODE&
-# Site Hostname: &SITE_HOSTNAME&
-# Web root: &WEB_ROOT&
+# Document Root: %DOCUMENT_ROOT%
+# Server ID: %CONTEXT_ROOT%
+# Site Hostname: %SITE_HOSTNAME%
 #
-PidFile                          &WEB_LOG_ROOT&/&SERVER_ID&.pid
-ServerName                       &SITE_HOSTNAME&
-ServerSignature                  On
-ServerTokens                     Prod
-UseCanonicalName                 Off
-DocumentRoot                     "&WEB_DOC_ROOT&"
-AccessFileName                   .htaccess
-
-<Directory />
-    Options                      +FollowSymLinks -SymLinksIfOwnerMatch -ExecCGI -Indexes
-    AllowOverride                none
-    Order                        allow,deny
-    Allow                        from all
-</Directory>
-
-<Directory &WEB_DOC_ROOT&>
-    Options                      +FollowSymLinks -SymLinksIfOwnerMatch -ExecCGI -Indexes
-    AllowOverride                none
-    Order                        allow,deny
-    Allow                        from all
-</Directory>
+PidFile                             %PIDFILE_PATH%
+ServerName                          %SITE_HOSTNAME%
+ServerSignature                     On
+ServerTokens                        Prod
+UseCanonicalName                    On
+HostnameLookups                     Double
+ContentDigest                       On
+FileETag                            MTime Size
+DocumentRoot                        "%DOCUMENT_ROOT%"
+AccessFileName                      conf/%CONTEXT_ROOT%/.htaccess
 
 <Files ~ "^\.ht">
-    Order allow,deny
-    Deny from all
+    AllowOverride                   none
+    Require                         all denied
 </Files>
 
+<Directory />
+    Options                         +FollowSymLinks -SymLinksIfOwnerMatch -ExecCGI -Indexes
+    AllowOverride                   none
+    Require                         all granted
+    AddOutputFilter                 Includes html
+    AddHandler                      type-map var
+    LanguagePriority                en cs de es fr it ja ko nl pl pt-br ro sv tr
+    ForceLanguagePriority           Prefer Fallback
+</Directory>
+
+<Directory /%CONTEXT_ROOT%/>
+    Options                         +FollowSymLinks -SymLinksIfOwnerMatch -ExecCGI -Indexes
+    AllowOverride                   none
+    Require                         all granted
+    AddOutputFilter                 Includes html
+    AddHandler                      type-map var
+    LanguagePriority                en cs de es fr it ja ko nl pl pt-br ro sv tr
+    ForceLanguagePriority           Prefer Fallback
+</Directory>
+
+<Directory /html/%CONTEXT_ROOT%/>
+    Options                         +FollowSymLinks -SymLinksIfOwnerMatch -ExecCGI -Indexes
+    AllowOverride                   none
+    Require                         all granted
+    AddOutputFilter                 Includes html
+    AddHandler                      type-map var
+    LanguagePriority                en cs de es fr it ja ko nl pl pt-br ro sv tr
+    ForceLanguagePriority           Prefer Fallback
+</Directory>
+
+<Directory /error/%CONTEXT_ROOT%/>
+    Options                         +FollowSymLinks -SymLinksIfOwnerMatch -ExecCGI -Indexes
+    AllowOverride                   none
+    Require                         all granted
+    AddOutputFilter                 Includes html
+    AddHandler                      type-map var
+    LanguagePriority                en cs de es fr it ja ko nl pl pt-br ro sv tr
+    ForceLanguagePriority           Prefer Fallback
+</Directory>
+
+<Location "/%CONTEXT_ROOT%/WEB-INF/*">
+    Require                         all denied
+</Location>
+
+<Location "/%CONTEXT_ROOT%/META-INF/*">
+    Require                         all denied
+</Location>
+
 <IfModule headers_module>
-    Header                       add S {SERVER_HEADER}
+    Header                          add S %SERVER_HOSTNAME%
 </IfModule>
 
-Listen                           {BIND_ADDR}:{NONSEC_PORT_NUM}
-<VirtualHost {BIND_ADDR}:{NONSEC_PORT_NUM}>
-    RewriteEngine                On
-    RewriteLog                   "|&SERVER_ROOT&/bin/rotatelogs '&WEB_LOG_ROOT&/rewrite.%Y%m%d.log' '86400'"
-    RewriteLogLevel              2
-    RewriteCond                  %{REQUEST_METHOD} ^(TRACE|TRACK|PUT|DELETE|OPTIONS) [NC,OR]
-    RewriteCond                  %{ENV:no_access}  yes [NC,OR]
-    RewriteCond                  .*/WEB-INF/.* [NC,OR]
-    RewriteCond                  .*/META-INF/.* [NC,OR]
-    RewriteRule                  .* - [F]
+ErrorDocument                       400 /error/%CONTEXT_ROOT%/errHandler.htm
+ErrorDocument                       401 /error/%CONTEXT_ROOT%/errHandler.htm
+ErrorDocument                       403 /error/%CONTEXT_ROOT%/errHandler.htm
+ErrorDocument                       404 /error/%CONTEXT_ROOT%/errHandler.htm
+ErrorDocument                       405 /error/%CONTEXT_ROOT%/errHandler.htm
+ErrorDocument                       500 /error/%CONTEXT_ROOT%/errHandler.htm
+ErrorDocument                       503 /error/%CONTEXT_ROOT%/errHandler.htm
 
-    Include                      conf/{SERVER_INSTANCE}/redirects.conf
-    Include                      conf/{SERVER_INSTANCE}/security.conf
+Listen                              %LISTEN_ADDRESS%:%NONSSL_LISTEN_PORT% http
+<VirtualHost %LISTEN_ADDRESS%:%NONSSL_LISTEN_PORT%>
+    RewriteOptions                  inherit
 
-    LogLevel                     error
-    ErrorLog                     "|&SERVER_ROOT&/bin/rotatelogs '&WEB_LOG_ROOT&/error.%Y%m%d.log' '86400'"
-    CustomLog                    "|&SERVER_ROOT&/bin/rotatelogs '&WEB_LOG_ROOT&/access.%Y%m%d.log' '3600'" p14
+    RewriteCond                     %{HTTPS} off
+    RewriteRule                     ^/.* https://%{HTTP_HOST}/%CONTEXT_ROOT% [L,R=permanent]
+
+    LogLevel                        error
+    ErrorLog                        "|%SERVER_ROOT%/bin/rotatelogs '%LOG_PATH%/errors.%Y%m%d.log' '86400'"
+    CustomLog                       "|%SERVER_ROOT%/bin/rotatelogs '%LOG_PATH%/access.%Y%m%d.log' '3600'" p14
 </VirtualHost>
 
-Listen                           {SERVER_OP_IP}:{SEC_PORT_NUM}
-<VirtualHost {SERVER_OP_IP}:{SEC_PORT_NUM}>
-    RewriteEngine                On
-    RewriteLog                   "|&SERVER_ROOT&/bin/rotatelogs '&WEB_LOG_ROOT&/rewrite-secure.%Y%m%d.log' '86400'"
-    RewriteLogLevel              2
-    RewriteCond                  %{REQUEST_METHOD} ^(TRACE|TRACK|PUT|DELETE|OPTIONS) [NC,OR]
-    RewriteCond                  %{ENV:no_access}  yes [NC,OR]
-    RewriteCond                  .*/WEB-INF/.* [NC,OR]
-    RewriteCond                  .*/META-INF/.* [NC,OR]
-    RewriteRule                  .* - [F]
+Listen                              %LISTEN_ADDRESS%:%SSL_LISTEN_PORT% https
+<VirtualHost %LISTEN_ADDRESS%:%SSL_LISTEN_PORT%>
+    SSLEngine                       on
+    SSLCertificateFile              ssl.d/crt/%SITE_HOSTNAME%.crt
+    SSLCertificateKeyFile           ssl.d/key/%SITE_HOSTNAME%.key
 
-    Include                      conf/{SERVER_INSTANCE}/redirects.conf
-    Include                      conf/{SERVER_INSTANCE}/security.conf
+    RewriteOptions                  inherit
 
-    LogLevel                     error
-    ErrorLog                     "|&SERVER_ROOT&/bin/rotatelogs '&WEB_LOG_ROOT&/error-secure.%Y%m%d.log' '86400'"
-    CustomLog                    "|&SERVER_ROOT&/bin/rotatelogs '&WEB_LOG_ROOT&/access-secure.%Y%m%d.log' '3600'" p14
+    Include                         conf/%CONTEXT_ROOT%/redirects.conf
+    Include                         conf/%CONTEXT_ROOT%/security.conf
+
+    LogLevel                        error
+    ErrorLog                        "|%SERVER_ROOT%/bin/rotatelogs '%LOG_PATH%/errors.secure.%Y%m%d.log' '86400'"
+    CustomLog                       "|%SERVER_ROOT%/bin/rotatelogs '%LOG_PATH%/access.secure.%Y%m%d.log' '3600'" p14
 </VirtualHost>
-

@@ -199,7 +199,7 @@ function createWebInstance
     case ${BUILD_TYPE} in
         ${BUILD_TYPE_SSL}|${BUILD_TYPE_BOTH})
             typeset -i SSL_LISTEN_PORT=${PORT_NUMBER};
-            typeset -i NONSSL_LISTEN_PORT=$( (( ${PORT_NUMBER} - 1 )) );
+            typeset -i NONSSL_LISTEN_PORT=$(( PORT_NUMBER - 1 ));
             [ "${BUILD_TYPE}" = "${BUILD_TYPE_SSL}" ] && typeset TEMPLATE=${TEMPLATE_DIRECTORY}/${WEBSERVER_TYPE}/wserver.conf_ssl;
             [ "${BUILD_TYPE}" = "${BUILD_TYPE_BOTH}" ] && typeset TEMPLATE=${TEMPLATE_DIRECTORY}/${WEBSERVER_TYPE}/wserver.conf_both;
 
@@ -207,7 +207,7 @@ function createWebInstance
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TEMPLATE -> ${TEMPLATE}";
 
             sed -e "s^%PIDFILE_PATH%^${PIDFILE_PATH}^g;s^%SITE_HOSTNAME%^${SITE_HOSTNAME}^g;s^%DOCUMENT_ROOT%^${DOCUMENT_ROOT}^g;s^%CONTEXT_ROOT%^${CONTEXT_ROOT}^g; \
-                s^%LOG_PATH%^${LOG_PATH}^g;s^%LISTEN_ADDRESS%^${LISTEN_ADDRESS}^g;s^%NONSSL_LISTEN_PORT%^${NONSSL_LISTEN_PORT}^g;s^%SSL_LISTEN_PORT%^${SSL_LISTEN_PORT}^g" \
+                s^%LOG_PATH%^${LOG_PATH}^g;s^%LISTEN_ADDRESS%^${LISTEN_ADDRESS}^g;s^%NONSSL_LISTEN_PORT%^${NONSSL_LISTEN_PORT}^g;s^%SSL_LISTEN_PORT%^${SSL_LISTEN_PORT}^g;s^%SERVER_ROOT%^${SERVER_ROOT}^g" \
                 ${TEMPLATE} > ${WORK_DIRECTORY}/wserver.conf;
 
             ## generate a temporary key for the site here
@@ -238,7 +238,7 @@ function createWebInstance
             ;;
         ${BUILD_TYPE_NOSSL})
             sed -e "s^%PIDFILE_PATH%^${PIDFILE_PATH}^g;s^%SITE_HOSTNAME%^${SITE_HOSTNAME}^g;s^%DOCUMENT_ROOT%^${DOCUMENT_ROOT}^g;s^%CONTEXT_ROOT%^${CONTEXT_ROOT}^g; \
-                s^%LOG_PATH%^${LOG_PATH}^g;s^%LISTEN_ADDRESS%^${LISTEN_ADDRESS}^g;s^%NONSSL_LISTEN_PORT%^${NONSSL_LISTEN_PORT}^g" \
+                s^%LOG_PATH%^${LOG_PATH}^g;s^%LISTEN_ADDRESS%^${LISTEN_ADDRESS}^g;s^%NONSSL_LISTEN_PORT%^${NONSSL_LISTEN_PORT}^g;s^%SERVER_ROOT%^${SERVER_ROOT}^g" \
                 ${TEMPLATE_DIRECTORY}/${WEBSERVER_TYPE}/wserver.conf_ssl > ${WORK_DIRECTORY}/wserver.conf;
             ;;
         *)
@@ -275,14 +275,25 @@ function createWebInstance
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMPFILE -> ${TMPFILE}";
 
-        case ${APPSERVER} in
+        case ${APPSERVER_TYPE} in
             ${APPSERVER_TYPE_WAS})
                 ## configure for websphere
                 typeset WAS_PLUGIN_CONFIG
-                sed -e "s/%CONF_ROOT%/${CONF_ROOT}/g" ${TEMPLATE_DIRECTORY}/was_config.conf > ${WORK_DIRECTORY}/was_config.conf;
-                sed -e "19i\\\n$(sed -e "s/%CONTEXT_ROOT%/${CONTEXT_ROOT}/g" <<< ${WAS_PLUGIN_CONFIG})\n" ${WORK_DIRECTORY}/wserver.conf > ${TMPFILE};
+                sed -e "s^%CONF_ROOT%^${CONF_ROOT}^g" ${TEMPLATE_DIRECTORY}/was_config.conf > ${WORK_DIRECTORY}/was_config.conf;
+                sed -e "19i\\\n$(sed -e "s^%CONTEXT_ROOT%^${CONTEXT_ROOT}^g" <<< ${WAS_PLUGIN_CONFIG})\n" ${WORK_DIRECTORY}/wserver.conf > ${TMPFILE};
 
                 ## make sure it worked here
+                if [ -z "$(grep ${WAS_PLUGIN_CONFIG} ${TMPFILE})" ]
+                then
+                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to add application server configuration to webserver config file. Please add manually.";
+                else
+                    mv ${TMPFILE} ${WORK_DIRECTORY}/wserver.conf;
+
+                    if [ -z "$(grep ${WAS_PLUGIN_CONFIG} ${WORK_DIRECTORY}/wserver.conf)" ]
+                    then
+                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to add application server configuration to webserver config file. Please add manually.";
+                    fi
+                fi
                 ;;
             ${APPSERVER_TYPE_TOMCAT})
                 ## configure for tomcat
@@ -296,6 +307,17 @@ function createWebInstance
                 sed -e "19i\\\n$(sed -e "s/%CONTEXT_ROOT%/${CONTEXT_ROOT}/g" <<< ${TOMCAT_PLUGIN_CONFIG})\n" ${WORK_DIRECTORY}/wserver.conf > ${TMPFILE};
 
                 ## make sure it worked here
+                if [ -z "$(grep ${TOMCAT_PLUGIN_CONFIG} ${TMPFILE})" ]
+                then
+                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to add application server configuration to webserver config file. Please add manually.";
+                else
+                    mv ${TMPFILE} ${WORK_DIRECTORY}/wserver.conf;
+
+                    if [ -z "$(grep ${TOMCAT_PLUGIN_CONFIG} ${WORK_DIRECTORY}/wserver.conf)" ]
+                    then
+                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to add application server configuration to webserver config file. Please add manually.";
+                    fi
+                fi
                 ;;
         esac
     fi
@@ -338,10 +360,11 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
     echo -n "${THIS_CNAME} - Build a new web instance for installation\n";
-    echo -n "Usage: ${THIS_CNAME} [ -w <webserver type> ] [ -b <build type> ] [ -p <port number(s)> ] [ -s <site hostname> ] [ -a ] [ -t <appserver type> ] [ -h <appserver host> ] [ -P <appserver port> ]
+    echo -n "Usage: ${THIS_CNAME} [ -w <webserver type> ] [ -b <build type> ] [ -l <listen address> ] [ -p <port number(s)> ] [ -s <site hostname> ] [ -a ] [ -t <appserver type> ] [ -h <appserver host> ] [ -P <appserver port> ]
     -w         -> The type of webserver to build out.
     -b         -> The build type, SSL, Non-SSL, or combined.
     -p         -> The port numbers associated with the instance. If an SSL instance is requested, the non-ssl port will be the port provided - 1.
+    -l         -> The IP address or hostname to bind the web instance to.
     -s         -> The site hostname for the new instance.
     -a         -> Appserver enabled
     -t         -> Appserver type, if this is an appserver-enabled instance.
@@ -361,7 +384,7 @@ function usage
 
 [ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
 
-while getopts "w:b:p:s:at:h:P:eh:" OPTIONS 2>/dev/null
+while getopts "w:b:l:p:s:at:h:P:eh:" OPTIONS 2>/dev/null
 do
     case "${OPTIONS}" in
         w)
@@ -387,6 +410,14 @@ do
             typeset -i PORT_NUMBER=${OPTARG};
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PORT_NUMBER -> ${PORT_NUMBER}";
+            ;;
+        l)
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Setting LISTEN_ADDRESS..";
+
+            typeset LISTEN_ADDRESS=${OPTARG};
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "LISTEN_ADDRESS -> ${LISTEN_ADDRESS}";
             ;;
         s)
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OPTARG -> ${OPTARG}";
@@ -457,6 +488,12 @@ do
             elif [ -z "${PORT_NUMBER}" ]
             then
                 ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No port number was provided. Unable to continue processing.";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                RETURN_CODE=55;
+            elif [ -z "${LISTEN_ADDRESS}" ]
+            then
+                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No listen address was provided. Unable to continue processing.";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
                 RETURN_CODE=55;

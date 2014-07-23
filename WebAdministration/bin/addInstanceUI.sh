@@ -1,23 +1,3 @@
-#!/usr/bin/env ksh
-#==============================================================================
-#
-#          FILE:  addInstanceUI.sh
-#         USAGE:  ./backout_change_ui.sh [-v] [-b] [-f] [-t] [-p] [-h] [-?]
-#   DESCRIPTION:  Processes a DNS failover by using information previously
-#                 obtained by retrieve_site_info.sh
-#
-#       OPTIONS:  ---
-#  REQUIREMENTS:  ---
-#          BUGS:  ---
-#         NOTES:  ---
-#        AUTHOR:  Kevin Huntly <kmhuntly@gmail.com
-#       COMPANY:  CaspersBox Web Services
-#       VERSION:  1.0
-#       CREATED:  ---
-#      REVISION:  ---
-#==============================================================================
-
-## Application constants
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
@@ -75,17 +55,18 @@ unset RET_CODE;
 trap "echo '$(awk -F "=" '/\<system.trap.signals\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//' -e "s/%SIGNAL%/Ctrl-C/")'; sleep "${MESSAGE_DELAY}"; reset; clear; continue " 1 2 3
 
 #===  FUNCTION  ===============================================================
-#          NAME:  main
-#   DESCRIPTION:  Main entry point for application.
-#    PARAMETERS:  none
-#       RETURNS:  0
+#
+#         NAME:  main
+#  DESCRIPTION:  Main entry point for application.
+#   PARAMETERS:  None
+#      RETURNS:  0
+#
 #==============================================================================
 function main
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
     typeset METHOD_NAME="${CNAME}#${0}";
-    typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
@@ -101,653 +82,115 @@ function main
         ## terminate this thread and return control to main
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+        A=0;
 
-        sleep ${MESSAGE_DELAY}; reset; clear; exec ${MAIN_CLASS};
+        unset RET_CODE;
+        unset PLATFORM;
+        unset WS_PLATFORM;
+        unset TYPE;
+        unset BUILD_TYPE;
+        unset HOSTNAME;
+        unset CONTEXT_ROOT;
+        unset PORT_NUMBER;
+        unset PORT_CONFIRMATION;
+        unset ENABLE_APPSERVER;
+        unset METHOD_NAME;
 
-        return 0;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+        sleep ${MESSAGE_DELAY}; reset; clear; main;
+
+        return ${RETURN_CODE};
     fi
 
     while true
     do
         reset; clear;
 
-        echo "\n";
-        echo "\t\t+-------------------------------------------------------------------+";
-        echo "\t\t               WELCOME TO $(awk -F "=" '/\<plugin.application.title\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
-        echo "\t\t+-------------------------------------------------------------------+";
-        echo "\t\tSystem Type         : ${SYSTEM_HOSTNAME}";
-        echo "\t\tSystem Uptime       : ${SYSTEM_UPTIME}";
-        echo "\t\tUser                : ${IUSER_AUDIT}";
-        echo "\t\t+-------------------------------------------------------------------+";
-        echo "";
-        echo "\t\t$(awk -F "=" '/\<system.available.options\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
-        echo "\t$(${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<createsite.application.title\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
-        echo "\t$(${PLUGIN_SYSTEM_MESSAGES} | awk -F "=" '/\<createsite.provide.hostname\>/{print $2}' | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
-        echo "\t$(awk -F "=" '/\<system.option.cancel\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+        echo "\n
+            \t\t+-------------------------------------------------------------------+
+            \t\t               WELCOME TO $(awk -F "=" '/\<system.application.title\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')
+            \t\t+-------------------------------------------------------------------+
+            \t\tSystem Type         : ${SYSTEM_HOSTNAME}
+            \t\tSystem Uptime       : ${SYSTEM_UPTIME}
+            \t\tUser                : ${IUSER_AUDIT}
+            \t\t+-------------------------------------------------------------------+
+            \n
+            \t$(awk -F "=" '/\<createsite.launch.message\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')
+            \t$(awk -F "=" '/\<system.option.cancel\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
-        read SITE_HOSTNAME;
+        read SELECTION;
 
-        typeset -l SITE_HOSTNAME;
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_HOSTNAME -> ${SITE_HOSTNAME}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SELECTION -> ${SELECTION}";
 
         reset; clear;
 
-        echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+        echo "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
 
-        case ${SITE_HOSTNAME} in
+        case ${SELECTION} in
             [Xx]|[Qq]|[Cc])
-                unset SITE_HOSTNAME;
+                reset; clear;
 
-                ## user opted to cancel, remove the lockfile
-                if [ -f ${APP_ROOT}/${APP_FLAG} ]
-                then
-                    rm -rf ${APP_ROOT}/${APP_FLAG};
-                fi
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requested canceled";
 
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failover process aborted";
-
-                echo "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-
-                ## unset SVC_LIST, we dont need it now
-                unset SVC_LIST;
+                echo "$(awk -F "=" '/\<system.request.canceled\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
                 ## terminate this thread and return control to main
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                ## temporarily unset stuff
+                A=0;
+
+                unset RET_CODE;
+                unset PLATFORM;
+                unset WS_PLATFORM;
+                unset TYPE;
+                unset BUILD_TYPE;
+                unset HOSTNAME;
+                unset CONTEXT_ROOT;
+                unset PORT_NUMBER;
+                unset PORT_CONFIRMATION;
+                unset ENABLE_APPSERVER;
                 unset METHOD_NAME;
-                unset CNAME;
 
-                sleep "${MESSAGE_DELAY}"; reset; clear;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
-                exec ${MAIN_CLASS};
+                sleep ${MESSAGE_DELAY}; reset; clear; exec ${MAIN_CLASS};
 
-                exit 0;
-                ;;
-            *.*)
-                if [ ! -z "${SITE_HOSTNAME}" ]
-                then
-                    ## check to see if this is an in-process build
-                    SERVER_FOUND=0;
-
-                    for SERVER_BUILD in $(find ${APP_ROOT}/${BUILD_TMP_DIR} -type f -name ${IPLANET_SERVER_CONFIG})
-                    do
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Searching for ${SITE_HOSTNAME} in ${SERVER_BUILD} ..";
-
-                        if [ $(grep -c ${SITE_HOSTNAME} ${SERVER_BUILD}) != 0 ]
-                        then
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${SITE_HOSTNAME} found in ${SERVER_BUILD}";
-
-                            SERVER_PATH=${SERVER_BUILD};
-
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVER_PATH -> ${SERVER_PATH}";
-
-                            (( SERVER_FOUND += 1 ));
-                        fi
-                    done
-
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVER_PATH -> ${SERVER_PATH}";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVER_FOUND -> ${SERVER_FOUND}";
-
-                    if [ ${SERVER_FOUND} -ne 0 ]
-                    then
-                        if [ ${SERVER_FOUND} -gt 1 ]
-                        then
-                            ## multiple servers were found with this hostname
-                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Multiple builds were found with urlhost ${SITE_HOSTNAME}. Faulting build - cleaning up.";
-
-                            BUILD_FAULTED=${_TRUE};
-                        else
-                            ## get the information required to install
-                            PROJECT_CODE=$(grep ${PROJECT_CODE_IDENTIFIER} ${SERVER_PATH} | awk '{print $3}' | cut -d "\"" -f 2);
-                            SITE_HOSTNAME=$(grep ${SITE_HOSTNAME_IDENTIFIER} ${SERVER_PATH} | awk '{print $3}' | cut -d "\"" -f 2);
-                            PLATFORM_CODE=$(grep ${PLATFORM_CODE_IDENTIFIER} ${SERVER_PATH} | awk '{print $3}' | cut -d "\"" -f 2);
-                            SERVER_ID=$(grep ${SERVERID_IDENTIFIER} ${SERVER_PATH} | awk '{print $3}' | cut -d "\"" -f 2);
-
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROJECT_CODE -> ${PROJECT_CODE}";
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_HOSTNAME -> ${SITE_HOSTNAME}";
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PLATFORM_CODE -> ${PLATFORM_CODE}";
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVER_ID -> ${SERVER_ID}";
-
-                            if [ ! z ${PROJECT_CODE} ] && [ ! -z "${SITE_HOSTNAME}" ] && [ ! -z "${PLATFORM_CODE}" ] && [ ! -z "${SERVER_ID}" ]
-                            then
-                                while true
-                                do
-                                    ## find out if we want to install
-                                    echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                    echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                    echo "\t$(grep -w createsite.install.server "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-
-                                    read INSTALL_SERVER;
-
-                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INSTALL_SERVER -> ${INSTALL_SERVER}";
-
-                                    echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-
-                                    case ${INSTALL_SERVER} in
-                                        [Yy][Ee][Ss]|[Yy])
-                                            reset; clear;
-
-                                            while true
-                                            do
-                                                echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                echo "\t$(grep -w system.provide.changenum "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-
-                                                read CHANGE_NUM;
-
-                                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_NUM -> ${CHANGE_NUM}";
-
-                                                reset; clear;
-
-                                                echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-
-                                                if [[ ${CHANGE_NUM} == [Ee] ]] || [ $(${APP_ROOT}/${LIB_DIRECTORY}/validators/validate_change_ticket.sh ${CHANGE_NUM}) -ne 0 ]
-                                                then
-                                                    ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A change was attempted with an invalid change order by ${IUSER_AUDIT}. Change request was ${CHANGE_NUM}.";
-                                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An invalid change control was provided. A valid change control number is required to process the request.";
-
-                                                    unset CHANGE_NUM;
-
-                                                    echo "$(grep -w change.control.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-
-                                                    sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                                                else
-                                                    reset; clear;
-
-                                                    echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-
-                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Beginning installation of ${SERVER_ID} ..";
-                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/runAddInstance.sh -s ${SERVER_ID} -p ${PLATFORM_CODE} -P ${PROJECT_CODE} -w ${WS_PLATFORM} -c ${CHANGE_NUM} -e ..";
-
-                                                    ## call out to the installer
-                                                    unset METHOD_NAME;
-                                                    unset CNAME;
-                                                    unset RET_CODE;
-                                                    unset RETURN_CODE;
-
-                                                    . ${APP_ROOT}/${LIB_DIRECTORY}/runAddInstance.sh -s ${SERVER_ID} -p ${PLATFORM_CODE} -P ${PROJECT_CODE} -w ${WS_PLATFORM} -c ${CHANGE_NUM} -e;
-                                                    typeset -i RET_CODE=${?};
-
-                                                    CNAME=$(/usr/bin/env basename ${0});
-                                                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-                                                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-                                                    typeset METHOD_NAME="${CNAME}#${0}";
-
-                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
-
-                                                    if [ ${RET_CODE} -eq 0 ]
-                                                    then
-                                                        ## installation complete.
-                                                        unset RET_CODE;
-                                                        unset VHOST_NAME;
-                                                        unset ENABLE_WEBSPHERE;
-                                                        unset IS_ACTIVE;
-                                                        unset SSL_PORTNUM;
-                                                        unset NOSSL_PORTNUM;
-                                                        unset SITE_BUILD_TYPE;
-                                                        unset SERVER_TYPE;
-                                                        unset WEBSERVER_NAMES;
-                                                        unset PROJECT_CODE;
-                                                        unset PLATFORM_CODE;
-                                                        unset SITE_HOSTNAME;
-                                                        unset PORT_CONFIRMATION;
-                                                        unset CHANGE_NUM;
-                                                        unset INSTALL_SERVER;
-                                                        unset CHANGE_NUM;
-
-                                                        while true
-                                                        do
-                                                            reset; clear;
-
-                                                            echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                            echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                            echo "\t$(grep -w createsite.installation.complete "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                                            echo "\t$(grep -w createsite.perform.more.tasks "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-
-                                                            read RESPONSE;
-
-                                                            echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-
-                                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RESPONSE -> ${RESPONSE}";
-
-                                                            case ${RESPONSE} in
-                                                                [Yy][Ee][Ss]|[Yy])
-                                                                    ## request to continue forward with new stuff
-                                                                    unset RESPONSE;
-                                                                    unset BUILD_COMPLETE;
-
-                                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Renewal process completed. Further processing requested.";
-
-                                                                    sleep "${MESSAGE_DELAY}"; reset; clear; main;
-                                                                    ;;
-                                                                [Nn][Oo]|[Nn])
-                                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Renewal process completed. No further renewal requests performed.";
-                                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-                                                                    ## request if we want to install here
-                                                                    ## temporarily unset stuff
-                                                                    unset METHOD_NAME;
-                                                                    unset CNAME;
-                                                                    unset RESPONSE;
-
-                                                                    sleep "${MESSAGE_DELAY}"; reset; clear; exec ${MAIN_CLASS};
-
-                                                                    exit 0;
-                                                                    ;;
-                                                                *)
-                                                                    unset RESPONSE;
-
-                                                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not provided. Cannot continue.";
-
-                                                                    echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                                                    sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                                                                    ;;
-                                                            esac
-                                                        done
-                                                    else
-                                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred processing installation for ${SERVER_ID}. RET_CODE -> ${RET_CODE}.";
-
-                                                        unset VHOST_NAME;
-                                                        unset ENABLE_WEBSPHERE;
-                                                        unset IS_ACTIVE;
-                                                        unset SSL_PORTNUM;
-                                                        unset NOSSL_PORTNUM;
-                                                        unset SITE_BUILD_TYPE;
-                                                        unset SERVER_TYPE;
-                                                        unset WEBSERVER_NAMES;
-                                                        unset PROJECT_CODE;
-                                                        unset PLATFORM_CODE;
-                                                        unset SITE_HOSTNAME;
-                                                        unset PORT_CONFIRMATION;
-                                                        unset CHANGE_NUM;
-                                                        unset INSTALL_SERVER;
-
-                                                        while true
-                                                        do
-                                                            echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                            echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                            echo "\t$(grep -w ${RET_CODE} "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                                            echo "\t$(grep -w createsite.installation.failed "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                                            echo "\t$(grep -w createsite.perform.more.tasks "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-
-                                                            read RESPONSE;
-
-                                                            unset RET_CODE;
-
-                                                            echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-
-                                                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RESPONSE -> ${RESPONSE}";
-
-                                                            case ${RESPONSE} in
-                                                                [Yy][Ee][Ss]|[Yy])
-                                                                    ## request to continue forward with new stuff
-                                                                    unset RESPONSE;
-                                                                    unset BUILD_COMPLETE;
-
-                                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Renewal process completed. Further processing requested.";
-
-                                                                    sleep "${MESSAGE_DELAY}"; reset; clear; main;
-                                                                    ;;
-                                                                [Nn][Oo]|[Nn])
-                                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Renewal process completed. No further renewal requests performed.";
-                                                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-                                                                    ## request if we want to install here
-                                                                    ## temporarily unset stuff
-                                                                    unset METHOD_NAME;
-                                                                    unset CNAME;
-                                                                    unset RESPONSE;
-
-                                                                    sleep "${MESSAGE_DELAY}"; reset; clear; exec ${MAIN_CLASS};
-
-                                                                    exit 0;
-                                                                    ;;
-                                                                *)
-                                                                    unset RESPONSE;
-
-                                                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not provided. Cannot continue.";
-
-                                                                    echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                                                    sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                                                                    ;;
-                                                            esac
-                                                        done
-                                                    fi
-                                                fi
-                                            done
-                                            ;;
-                                        [Nn][Oo]|[Nn])
-                                            unset RET_CODE;
-                                            unset VHOST_NAME;
-                                            unset ENABLE_WEBSPHERE;
-                                            unset IS_ACTIVE;
-                                            unset SSL_PORTNUM;
-                                            unset NOSSL_PORTNUM;
-                                            unset SITE_BUILD_TYPE;
-                                            unset SERVER_TYPE;
-                                            unset WEBSERVER_NAMES;
-                                            unset PROJECT_CODE;
-                                            unset PLATFORM_CODE;
-                                            unset SITE_HOSTNAME;
-                                            unset PORT_CONFIRMATION;
-
-                                            while true
-                                            do
-                                                echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                echo "\t$(grep -w createsite.perform.more.tasks "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-
-                                                read RESPONSE;
-
-                                                echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-
-                                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RESPONSE -> ${RESPONSE}";
-
-                                                case ${RESPONSE} in
-                                                    [Yy][Ee][Ss]|[Yy])
-                                                        ## request to continue forward with new stuff
-                                                        unset RESPONSE;
-                                                        unset BUILD_COMPLETE;
-
-                                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Renewal process completed. Further processing requested.";
-
-                                                        sleep "${MESSAGE_DELAY}"; reset; clear; main;
-                                                        ;;
-                                                    [Nn][Oo]|[Nn])
-                                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Renewal process completed. No further renewal requests performed.";
-                                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-                                                        ## request if we want to install here
-                                                        ## temporarily unset stuff
-                                                        unset METHOD_NAME;
-                                                        unset CNAME;
-                                                        unset RESPONSE;
-
-                                                        sleep "${MESSAGE_DELAY}"; reset; clear; exec ${MAIN_CLASS};
-
-                                                        exit 0;
-                                                        ;;
-                                                    *)
-                                                        unset RESPONSE;
-
-                                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not provided. Cannot continue.";
-
-                                                        echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                                        sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                                                        ;;
-                                                esac
-                                            done
-                                            ;;
-                                        *)
-                                            unset INSTALL_SERVER;
-
-                                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not provided. Cannot continue.";
-
-                                            echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-
-                                            sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                                            ;;
-                                    esac
-                                done
-                            else
-                                ## one or more identifiers were blank
-                                ## consider the build incomplete and remove it
-                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more identifiers is incomplete. Faulting build - cleaning up.";
-
-                                BUILD_FAULTED=${_TRUE};
-                            fi
-                        fi
-                    fi
-
-                    if [ -z "${BUILD_FAULTED}" ] || [ "${BUILD_FAULTED}" = "${_TRUE}" ]
-                    then
-                        unset BUILD_FAULTED;
-                        unset PROJECT_CODE;
-                        unset PLATFORM_CODE;
-                        unset SERVER_ID;
-                        unset SERVER_FOUND;
-                        unset SERVER_BUILD;
-                        unset SERVER_PATH;
-
-                        ## validate that the hostname provided exists in website_defs. if it
-                        ## doesnt, its not supported with this utility
-                        if [ $(getWebInfo | grep -w ${SITE_HOSTNAME} | wc -l) != 0 ]
-                        then
-                            ## site already exists, "ERROR" out
-                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A site with hostname ${SITE_HOSTNAME} already exists. Cannot continue.";
-
-                            unset SITE_HOSTNAME;
-
-                            echo "$(grep -w site.already.exists "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                            sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                        else
-                            ## get the platform code
-                            while true
-                            do
-                                reset; clear;
-
-                                echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                echo "\t$(grep -w createsite.provide.project.code "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                echo "\t$(grep -w system.option.cancel "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-
-                                read PROJECT_CODE;
-
-                                typeset -u PROJECT_CODE;
-
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROJECT_CODE -> ${PROJECT_CODE}";
-
-                                reset; clear;
-
-                                echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-
-                                case ${PROJECT_CODE} in
-                                    [Xx]|[Qq]|[Cc])
-                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Renewal process aborted";
-
-                                        echo "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-
-                                        ## unset SVC_LIST, we dont need it now
-                                        unset SITE_HOSTNAME;
-                                        unset PROJECT_CODE;
-
-                                        sleep "${MESSAGE_DELAY}"; reset; clear; break;
-                                        ;;
-                                    *)
-                                        ## accept the project code as-is. it is possible that it exists multiple times, and thats ok.
-                                        if [ ! -z "${PROJECT_CODE}" ]
-                                        then
-                                            while true
-                                            do
-                                                reset; clear;
-
-                                                echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                echo "\t$(grep -w createsite.provide.platform.code "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                                echo "\t$(grep -w system.option.cancel "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-
-                                                read PLATFORM_CODE;
-
-                                                typeset -u PLATFORM_CODE;
-
-                                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PLATFORM_CODE -> ${PLATFORM_CODE}";
-
-                                                reset; clear;
-
-                                                echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-
-                                                case ${PLATFORM_CODE} in
-                                                    [Xx]|[Qq]|[Cc])
-                                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Renewal process aborted";
-
-                                                        echo "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-
-                                                        ## unset SVC_LIST, we dont need it now
-                                                        unset SITE_HOSTNAME;
-                                                        unset PLATFORM_CODE;
-                                                        unset PROJECT_CODE;
-
-                                                        sleep "${MESSAGE_DELAY}"; reset; clear; break;
-                                                        ;;
-                                                    *)
-                                                        if [ ! -z "${PLATFORM_CODE}" ]
-                                                        then
-                                                            ## make sure it exists..
-                                                            if [ $(getPlatformInfo | grep -c ${PLATFORM_CODE}) != 0 ]
-                                                            then
-                                                                ## ok good, get webservers
-                                                                WEBSERVER_NAMES=$(getPlatformInfo | grep -w ${PLATFORM_CODE} | grep -v "#" | grep -v "none" | cut -d "|" -f 5 | sort | uniq | sed -e "s/,/ /g");
-
-                                                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WEBSERVER_NAMES -> ${WEBSERVER_NAMES}";
-
-                                                                if [ ! -z "${WEBSERVER_NAMES}" ]
-                                                                then
-                                                                    ## xlnt, we have web names. lets keep going
-                                                                    ## find out what kind of server we're building
-                                                                    ## non-ssl, ssl, or both
-                                                                    while true
-                                                                    do
-                                                                        reset; clear;
-
-                                                                        echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                                        echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                                        echo "\t$(grep -w createsite.provide.server.type "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                                                        echo "$(grep -w createsite.server.type.ssl "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                                                        echo "$(grep -w createsite.server.type.nossl "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                                                        echo "$(grep -w createsite.server.type.both "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                                                        echo "$(grep -w system.option.cancel "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-
-                                                                        read SERVER_TYPE;
-
-                                                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVER_TYPE -> ${SERVER_TYPE}";
-
-                                                                        reset; clear;
-
-                                                                        echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-
-                                                                        case ${SERVER_TYPE} in
-                                                                            [Xx]|[Qq]|[Cc])
-                                                                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Renewal process aborted";
-
-                                                                                echo "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-
-                                                                                ## unset SVC_LIST, we dont need it now
-                                                                                unset SITE_HOSTNAME;
-                                                                                unset PLATFORM_CODE;
-                                                                                unset PROJECT_CODE;
-                                                                                unset SERVER_TYPE;
-                                                                                unset WEBSERVER_NAMES;
-
-                                                                                sleep "${MESSAGE_DELAY}"; reset; clear; break;
-                                                                                ;;
-                                                                            1)
-                                                                                ## build up a new ssl-only website
-                                                                                SITE_BUILD_TYPE=${BUILD_TYPE_SSL};
-
-                                                                                buildServerInstance;
-                                                                                ;;
-                                                                            2)
-                                                                                SITE_BUILD_TYPE=${BUILD_TYPE_NOSSL};
-
-                                                                                buildServerInstance;
-                                                                                ;;
-                                                                            3)
-                                                                                SITE_BUILD_TYPE=${BUILD_TYPE_BOTH};
-
-                                                                                buildServerInstance;
-                                                                                ;;
-                                                                            *)
-                                                                                unset SERVER_TYPE;
-
-                                                                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
-
-                                                                                echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                                                                sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                                                                                ;;
-                                                                        esac
-                                                                    done
-                                                                else
-                                                                    ## no webservers
-                                                                    unset WEBSERVER_NAMES;
-
-                                                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No webservers were found with requested platform code ${PLATFORM_CODE}. continue.";
-
-                                                                    unset PLATFORM_CODE;
-
-                                                                    echo "$(grep -w configuration.not.found.for.host "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                                                    sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                                                                fi
-                                                            else
-                                                                ## no platform information was found
-                                                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No information was found with requested platform code ${PLATFORM_CODE}. continue.";
-
-                                                                unset PLATFORM_CODE;
-
-                                                                echo "$(grep -w configuration.not.found.for.host "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                                                sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                                                            fi
-                                                        else
-                                                            ## platform code blank
-                                                            unset PLATFORM_CODE;
-
-                                                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
-
-                                                            echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                                            sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                                                        fi
-                                                        ;;
-                                                esac
-                                            done
-                                        else
-                                            ## project code blank
-                                            unset PROJECT_CODE;
-
-                                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
-
-                                            echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                            sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                                        fi
-                                        ;;
-                                esac
-                            done
-                        fi
-                    else
-                        ## provided site hostname was blank
-                        unset SITE_HOSTNAME;
-
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No answer was provided. Cannot continue.";
-
-                        echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                        sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                    fi
-                fi
+                return ${RETURN_CODE};
                 ;;
             *)
-                unset SITE_HOSTNAME;
+                reset; clear;
 
-                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Site hostname not properly formatted. Cannot continue.";
+                echo "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
-                echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                sleep "${MESSAGE_DELAY}"; reset; clear; continue;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+                requestSiteConfig;
                 ;;
         esac
     done
 
-    return 0;
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+    return ${RETURN_CODE};
 }
 
 #===  FUNCTION  ===============================================================
-#          NAME:  buildServerInstance
+#          NAME:  requestBuildConfig
 #   DESCRIPTION:  Processes requests to add additional record types to a zone
 #    PARAMETERS:  None
 #       RETURNS:  0
 #==============================================================================
-function buildServerInstance
+function requestBuildConfig
 {
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
@@ -755,405 +198,1238 @@ function buildServerInstance
     typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Processing via csrGenerationUI helper..";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
+    ## get the web type and build type
     while true
     do
-        if [ ! -z "${CANCEL_REQ}" ] && [ "${CANCEL_REQ}" = "${_TRUE}" ]
-        then
-            CNAME=$(/usr/bin/env basename ${0});
-            typeset METHOD_NAME="${CNAME}#${0}";
-            typeset RETURN_CODE=0;
+        reset; clear;
 
-            unset RET_CODE;
-            unset VHOST_NAME;
-            unset ENABLE_WEBSPHERE;
-            unset IS_ACTIVE;
-            unset SSL_PORTNUM;
-            unset NOSSL_PORTNUM;
-            unset SITE_BUILD_TYPE;
-            unset SERVER_TYPE;
-            unset WEBSERVER_NAMES;
-            unset PROJECT_CODE;
-            unset PLATFORM_CODE;
-            unset SITE_HOSTNAME;
-            unset PORT_CONFIRMATION;
+        echo "\n\t$(awk -F "=" '/\<createsite.provide.platform\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
-            ## user chose to cancel out of the subshell
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Received request to break. CANCEL_REQ->${CANCEL_REQ}, ADD_RECORDS->${ADD_RECORDS}, ADD_SUBDOMAINS->${ADD_SUBDOMAINS}. Breaking..";
+        A=0;
 
-            reset; clear; main;
-        elif [ ! -z "${BUILD_COMPLETE}" ] && [ "${BUILD_COMPLETE}" = "${_TRUE}" ]
-        then
-            ## record has been added successfully through the helper
-            ## ask if we want to add additional records to the zone
-            ## put methodname and cname back
-            typeset METHOD_NAME="${CNAME}#${0}";
-            typeset RETURN_CODE=0;
-            CNAME=$(/usr/bin/env basename ${0});
+        for PLATFORM in ${SUPPORTED_WEBSERVERS[@]}
+        do
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PLATFORM -> ${PLATFORM}";
 
-            while true
-            do
-                ## find out if we want to install
-                echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                echo "\t$(grep -w createsite.install.server "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+            echo "\t${A} - ${PLATFORM}";
 
-                read INSTALL_SERVER;
+            (( A += 1 ));
+        done
 
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INSTALL_SERVER -> ${INSTALL_SERVER}";
+        echo "\t$(awk -F "=" '/\<system.option.cancel\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
-                echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+        read WS_PLATFORM;
 
-                case ${INSTALL_SERVER} in
-                    [Yy][Ee][Ss]|[Yy])
-                        reset; clear;
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WS_PLATFORM -> ${WS_PLATFORM}";
 
-                        while true
-                        do
-                            echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                            echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                            echo "\t$(grep -w system.provide.changenum "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+        reset; clear;
 
-                            read CHANGE_NUM;
+        echo "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
 
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CHANGE_NUM -> ${CHANGE_NUM}";
+        case ${WS_PLATFORM} in
+            [Xx]|[Qq]|[Cc])
+                reset; clear;
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requested canceled";
+
+                echo "$(awk -F "=" '/\<system.request.canceled\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                ## terminate this thread and return control to main
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                A=0;
+
+                unset RET_CODE;
+                unset PLATFORM;
+                unset WS_PLATFORM;
+                unset TYPE;
+                unset BUILD_TYPE;
+                unset HOSTNAME;
+                unset CONTEXT_ROOT;
+                unset PORT_NUMBER;
+                unset PORT_CONFIRMATION;
+                unset ENABLE_APPSERVER;
+                unset METHOD_NAME;
+
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+                sleep ${MESSAGE_DELAY}; reset; clear; main;
+
+                return ${RETURN_CODE};
+                ;;
+            *)
+                if [ -z "${SUPPORTED_WEBSERVERS[${A}]}" ]
+                then
+                    unset WS_PLATFORM;
+
+                    echo "$(awk -F "=" '/\<selection.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+
+                    sleep "${MESSAGE_DELAY}"; reset; clear; continue;
+                fi
+
+                typeset WS_PLATFORM=${SUPPORTED_WEBSERVERS[${A}]};
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WS_PLATFORM -> ${WS_PLATFORM}";
+
+                ## get build type
+                while true
+                do
+                    reset; clear;
+
+                    echo "\n\t$(awk -F "=" '/\<createsite.provide.buildtype\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                    A=0;
+
+                    for TYPE in ${SUPPORTED_BUILD_TYPES[@]}
+                    do
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TYPE -> ${TYPE}";
+
+                        echo "\t${A} - ${TYPE}";
+
+                        (( A += 1 ));
+                    done
+
+                    echo "\t$(awk -F "=" '/\<system.option.cancel\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                    read BUILD_TYPE;
+
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONTEXT_ROOT -> ${CONTEXT_ROOT}";
+
+                    reset; clear;
+
+                    echo "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+
+                    case ${BUILD_TYPE} in
+                        [Xx]|[Qq]|[Cc])
+                            reset; clear;
+
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requested canceled";
+
+                            echo "$(awk -F "=" '/\<system.request.canceled\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                            ## terminate this thread and return control to main
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                            A=0;
+
+                            unset RET_CODE;
+                            unset PLATFORM;
+                            unset WS_PLATFORM;
+                            unset TYPE;
+                            unset BUILD_TYPE;
+                            unset HOSTNAME;
+                            unset CONTEXT_ROOT;
+                            unset PORT_NUMBER;
+                            unset PORT_CONFIRMATION;
+                            unset ENABLE_APPSERVER;
+                            unset METHOD_NAME;
+
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+                            sleep ${MESSAGE_DELAY}; reset; clear; main;
+
+                            return ${RETURN_CODE};
+                            ;;
+                        *)
+                            if [ -z "${BUILD_TYPE[${A}]}" ]
+                            then
+                                unset BUILD_TYPE;
+
+                                echo "$(awk -F "=" '/\<selection.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+
+                                sleep "${MESSAGE_DELAY}"; reset; clear; continue;
+                            fi
+
+                            typeset BUILD_TYPE=${SUPPORTED_BUILD_TYPES[${A}]};
+
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BUILD_TYPE -> ${BUILD_TYPE}";
 
                             reset; clear;
 
-                            echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                            echo "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
-                            if [[ ${CHANGE_NUM} == [Ee] ]] || [ $(${APP_ROOT}/${LIB_DIRECTORY}/validators/validate_change_ticket.sh ${CHANGE_NUM}) -ne 0 ]
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+                            requestSiteConfig;
+                            ;;
+                    esac
+                done
+                ;;
+        esac
+    done
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ ! -z "${TMPFILE}" ] && [ -f ${TMPFILE} ] && rm -rf ${TMPFILE};
+
+    unset PORT_NUMBER;
+    unset PORT_CONFIRMATION;
+    unset NONSSL_LISTEN_PORT;
+    unset ENABLE_APPSERVER;
+    unset METHOD_NAME;
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+    return ${RETURN_CODE};
+}
+
+#===  FUNCTION  ===============================================================
+#          NAME:  requestSiteConfig
+#   DESCRIPTION:  Processes requests to add additional record types to a zone
+#    PARAMETERS:  None
+#       RETURNS:  0
+#==============================================================================
+function requestSiteConfig
+{
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+    ## get the hostname, web type, build type, and context root
+    while true
+    do
+        reset; clear;
+
+        echo "\n
+            \t$(awk -F "=" '/\<createsite.provide.hostname\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')
+            \t$(awk -F "=" '/\<system.option.cancel\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+        read HOSTNAME;
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "HOSTNAME -> ${HOSTNAME}";
+
+        reset; clear;
+
+        echo "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+
+        case ${HOSTNAME} in
+            [Xx]|[Qq]|[Cc])
+                reset; clear;
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requested canceled";
+
+                echo "$(awk -F "=" '/\<system.request.canceled\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                ## terminate this thread and return control to main
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                A=0;
+
+                unset RET_CODE;
+                unset PLATFORM;
+                unset WS_PLATFORM;
+                unset TYPE;
+                unset BUILD_TYPE;
+                unset HOSTNAME;
+                unset CONTEXT_ROOT;
+                unset PORT_NUMBER;
+                unset PORT_CONFIRMATION;
+                unset ENABLE_APPSERVER;
+                unset METHOD_NAME;
+
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+                sleep ${MESSAGE_DELAY}; reset; clear; main;
+
+                return ${RETURN_CODE};
+                ;;
+            *)
+                if [ -z "${HOSTNAME}" ]
+                then
+                    unset HOSTNAME;
+
+                    echo "$(awk -F "=" '/\<selection.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+
+                    sleep "${MESSAGE_DELAY}"; reset; clear; continue;
+                fi
+
+                ## check if theres a www or something here, if not, re-define to add
+                [ $(tr -dc "." <<< ${HOSTNAME} | wc -c) -ne 2 ] && typeset HOSTNAME="www.${HOSTNAME}";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "HOSTNAME -> ${HOSTNAME}";
+
+                ## get the context root
+                while true
+                do
+                    reset; clear;
+
+                    echo "\n
+                        \t$(awk -F "=" '/\<createsite.provide.context\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')
+                        \t$(awk -F "=" '/\<system.option.cancel\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                    read CONTEXT_ROOT;
+
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONTEXT_ROOT -> ${CONTEXT_ROOT}";
+
+                    reset; clear;
+
+                    echo "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+
+                    case ${CONTEXT_ROOT} in
+                        [Xx]|[Qq]|[Cc])
+                            reset; clear;
+
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requested canceled";
+
+                            echo "$(awk -F "=" '/\<system.request.canceled\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                            ## terminate this thread and return control to main
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                            A=0;
+
+                            unset RET_CODE;
+                            unset PLATFORM;
+                            unset WS_PLATFORM;
+                            unset TYPE;
+                            unset BUILD_TYPE;
+                            unset HOSTNAME;
+                            unset CONTEXT_ROOT;
+                            unset PORT_NUMBER;
+                            unset PORT_CONFIRMATION;
+                            unset ENABLE_APPSERVER;
+                            unset METHOD_NAME;
+
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+                            sleep ${MESSAGE_DELAY}; reset; clear; main;
+
+                            return ${RETURN_CODE};
+                            ;;
+                        *)
+                            if [ -z "${CONTEXT_ROOT}" ]
                             then
-                                ${LOGGER} "AUDIT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A change was attempted with an invalid change order by ${IUSER_AUDIT}. Change request was ${CHANGE_NUM}.";
-                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An invalid change control was provided. A valid change control number is required to process the request.";
+                                unset CONTEXT_ROOT;
 
-                                unset CHANGE_NUM;
-
-                                echo "$(grep -w change.control.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                                echo "$(awk -F "=" '/\<selection.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
 
                                 sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                            else
-                                reset; clear;
-
-                                echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Beginning installation of ${SERVER_ID} ..";
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${APP_ROOT}/${LIB_DIRECTORY}/runAddInstance.sh -s ${SERVER_ID} -p ${PLATFORM_CODE} -P ${PROJECT_CODE} -w ${WS_PLATFORM} -c ${CHANGE_NUM} -e ..";
-
-                                ## call out to the installer
-                                unset METHOD_NAME;
-                                unset CNAME;
-                                unset RET_CODE;
-                                unset RETURN_CODE;
-
-                                . ${APP_ROOT}/${LIB_DIRECTORY}/runAddInstance.sh -s ${SERVER_ID} -p ${PLATFORM_CODE} -P ${PROJECT_CODE} -w ${WS_PLATFORM} -c ${CHANGE_NUM} -e;
-                                typeset -i RET_CODE=${?};
-
-                                CNAME=$(/usr/bin/env basename ${0});
-                                typeset METHOD_NAME="${CNAME}#${0}";
-                                typeset RETURN_CODE=0;
-
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
-
-                                if [ ${RET_CODE} -eq 0 ]
-                                then
-                                    ## installation complete.
-                                    unset RET_CODE;
-                                    unset VHOST_NAME;
-                                    unset ENABLE_WEBSPHERE;
-                                    unset IS_ACTIVE;
-                                    unset SSL_PORTNUM;
-                                    unset NOSSL_PORTNUM;
-                                    unset SITE_BUILD_TYPE;
-                                    unset SERVER_TYPE;
-                                    unset WEBSERVER_NAMES;
-                                    unset PROJECT_CODE;
-                                    unset PLATFORM_CODE;
-                                    unset SITE_HOSTNAME;
-                                    unset PORT_CONFIRMATION;
-                                    unset CHANGE_NUM;
-                                    unset INSTALL_SERVER;
-                                    unset CHANGE_NUM;
-
-                                    while true
-                                    do
-                                        reset; clear;
-
-                                        echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                        echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                        echo "\t$(grep -w createsite.installation.complete "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                        echo "\t$(grep -w createsite.perform.more.tasks "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-
-                                        read RESPONSE;
-
-                                        echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-
-                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RESPONSE -> ${RESPONSE}";
-
-                                        case ${RESPONSE} in
-                                            [Yy][Ee][Ss]|[Yy])
-                                                ## request to continue forward with new stuff
-                                                unset RESPONSE;
-                                                unset BUILD_COMPLETE;
-
-                                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Renewal process completed. Further processing requested.";
-
-                                                sleep "${MESSAGE_DELAY}"; reset; clear; main;
-                                                ;;
-                                            [Nn][Oo]|[Nn])
-                                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Renewal process completed. No further renewal requests performed.";
-                                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-                                                ## request if we want to install here
-                                                ## temporarily unset stuff
-                                                unset METHOD_NAME;
-                                                unset CNAME;
-                                                unset RESPONSE;
-
-                                                sleep "${MESSAGE_DELAY}"; reset; clear; exec ${MAIN_CLASS};
-
-                                                exit 0;
-                                                ;;
-                                            *)
-                                                unset RESPONSE;
-
-                                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not provided. Cannot continue.";
-
-                                                echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                                sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                                                ;;
-                                        esac
-                                    done
-                                else
-                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An "ERROR" occurred processing installation for ${SERVER_ID}. RET_CODE -> ${RET_CODE}.";
-
-                                    unset VHOST_NAME;
-                                    unset ENABLE_WEBSPHERE;
-                                    unset IS_ACTIVE;
-                                    unset SSL_PORTNUM;
-                                    unset NOSSL_PORTNUM;
-                                    unset SITE_BUILD_TYPE;
-                                    unset SERVER_TYPE;
-                                    unset WEBSERVER_NAMES;
-                                    unset PROJECT_CODE;
-                                    unset PLATFORM_CODE;
-                                    unset SITE_HOSTNAME;
-                                    unset PORT_CONFIRMATION;
-                                    unset CHANGE_NUM;
-                                    unset INSTALL_SERVER;
-
-                                    while true
-                                    do
-                                        echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                        echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                        echo "\t$(grep -w ${RET_CODE} "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                        echo "\t$(grep -w createsite.installation.failed "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                        echo "\t$(grep -w createsite.perform.more.tasks "${PLUGIN_ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-
-                                        read RESPONSE;
-
-                                        unset RET_CODE;
-
-                                        echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-
-                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RESPONSE -> ${RESPONSE}";
-
-                                        case ${RESPONSE} in
-                                            [Yy][Ee][Ss]|[Yy])
-                                                ## request to continue forward with new stuff
-                                                unset RESPONSE;
-                                                unset BUILD_COMPLETE;
-
-                                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Renewal process completed. Further processing requested.";
-
-                                                sleep "${MESSAGE_DELAY}"; reset; clear; main;
-                                                ;;
-                                            [Nn][Oo]|[Nn])
-                                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Renewal process completed. No further renewal requests performed.";
-                                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-                                                ## request if we want to install here
-                                                ## temporarily unset stuff
-                                                unset METHOD_NAME;
-                                                unset CNAME;
-                                                unset RESPONSE;
-
-                                                sleep "${MESSAGE_DELAY}"; reset; clear; exec ${MAIN_CLASS};
-
-                                                exit 0;
-                                                ;;
-                                            *)
-                                                unset RESPONSE;
-
-                                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not provided. Cannot continue.";
-
-                                                echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                                sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                                                ;;
-                                        esac
-                                    done
-                                fi
                             fi
-                        done
-                        ;;
-                    [Nn][Oo]|[Nn])
-                        reset; clear;
 
-                        unset RET_CODE;
-                        unset VHOST_NAME;
-                        unset ENABLE_WEBSPHERE;
-                        unset IS_ACTIVE;
-                        unset SSL_PORTNUM;
-                        unset NOSSL_PORTNUM;
-                        unset SITE_BUILD_TYPE;
-                        unset SERVER_TYPE;
-                        unset WEBSERVER_NAMES;
-                        unset PROJECT_CODE;
-                        unset PLATFORM_CODE;
-                        unset SITE_HOSTNAME;
-                        unset PORT_CONFIRMATION;
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONTEXT_ROOT -> ${CONTEXT_ROOT}";
 
-                        while true
-                        do
-                            echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                            echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                            echo "\t$(grep -w createsite.perform.more.tasks "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+                            reset; clear;
 
-                            read RESPONSE;
+                            echo "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
-                            echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RESPONSE -> ${RESPONSE}";
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
-                            case ${RESPONSE} in
-                                [Yy][Ee][Ss]|[Yy])
-                                    ## request to continue forward with new stuff
-                                    unset RESPONSE;
-                                    unset BUILD_COMPLETE;
+                            requestWebConfig;
+                            ;;
+                    esac
+                done
+                ;;
+        esac
+    done
 
-                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Renewal process completed. Further processing requested.";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                                    sleep "${MESSAGE_DELAY}"; reset; clear; main;
-                                    ;;
-                                [Nn][Oo]|[Nn])
-                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Renewal process completed. No further renewal requests performed.";
-                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${TMPFILE}" ] && [ -f ${TMPFILE} ] && rm -rf ${TMPFILE};
 
-                                    ## request if we want to install here
-                                    ## temporarily unset stuff
-                                    unset METHOD_NAME;
-                                    unset CNAME;
-                                    unset RESPONSE;
+    unset PORT_NUMBER;
+    unset PORT_CONFIRMATION;
+    unset NONSSL_LISTEN_PORT;
+    unset ENABLE_APPSERVER;
+    unset METHOD_NAME;
 
-                                    sleep "${MESSAGE_DELAY}"; reset; clear; exec ${MAIN_CLASS};
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
-                                    exit 0;
-                                    ;;
-                                *)
-                                    unset RESPONSE;
+    return ${RETURN_CODE};
+}
 
-                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not provided. Cannot continue.";
+#===  FUNCTION  ===============================================================
+#          NAME:  requestWebConfig
+#   DESCRIPTION:  Processes requests to add additional record types to a zone
+#    PARAMETERS:  None
+#       RETURNS:  0
+#==============================================================================
+function requestWebConfig
+{
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
 
-                                    echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                    sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                                    ;;
-                            esac
-                        done
-                        ;;
-                    *)
-                        unset INSTALL_SERVER;
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "A valid response was not provided. Cannot continue.";
+    ## get the listen address and port #
+    while true
+    do
+        reset; clear;
 
-                        echo "$(grep -w selection.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+        echo "\n
+            \t$(awk -F "=" '/\<createsite.provide.listenaddress\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')
+            \t$(awk -F "=" '/\<system.option.cancel\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
-                        sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                        ;;
-                esac
-            done
-        else
-            ## we hardcode to go to add_a_record, although this probably isnt right.
-            ## we could also go to ns. we go to A because if we use NS, then the
-            ## nameserver this zone gets applied to really doesnt need it there,
-            ## because another nameserver already has it and can do it on its own.
-            ## for this reason, we dont ask.
-            case ${SITE_BUILD_TYPE} in
-                ${BUILD_TYPE_SSL}|${BUILD_TYPE_BOTH})
-                    while true
-                    do
-                        if [ ! -z "${BUILD_COMPLETE}" ] && [ "${BUILD_COMPLETE}" = "${_TRUE}" ]
-                        then
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Received request to break out. ADD_RECORDS->${ADD_RECORDS}, CANCEL_REQ->${CANCEL_REQ}.";
+        read LISTEN_ADDRESS;
 
-                            break;
-                        fi
-                        reset; clear;
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "LISTEN_ADDRESS -> ${LISTEN_ADDRESS}";
 
-                        echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                        echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                        echo "\t$(grep -w cert.mgmt.provide.contact.number "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
+        reset; clear;
 
-                        read CONTACT_NUMBER;
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONTACT_NUMBER -> ${CONTACT_NUMBER}";
+        echo "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
 
-                        reset; clear;
+        case ${LISTEN_ADDRESS} in
+            [Xx]|[Qq]|[Cc])
+                reset; clear;
 
-                        echo "$(grep -w system.pending.message "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requested canceled";
 
-                        ## validate it
-                        case ${CONTACT_NUMBER} in
-                            [Xx]|[Qq]|[Cc])
-                                reset; clear;
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Request to cancel.";
+                echo "$(awk -F "=" '/\<system.request.canceled\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
-                                unset CONTACT_NUMBER;
+                ## terminate this thread and return control to main
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                                echo "\t\t\t$(grep -w system.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                echo "\t\t\t$(grep -w createsite.application.title "${PLUGIN_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
-                                echo "$(grep -w system.request.canceled "${SYSTEM_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                CANCEL_REQ=${_TRUE};
+                A=0;
+
+                unset RET_CODE;
+                unset PLATFORM;
+                unset WS_PLATFORM;
+                unset TYPE;
+                unset BUILD_TYPE;
+                unset HOSTNAME;
+                unset CONTEXT_ROOT;
+                unset PORT_NUMBER;
+                unset PORT_CONFIRMATION;
+                unset ENABLE_APPSERVER;
+                unset METHOD_NAME;
+
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+                sleep ${MESSAGE_DELAY}; reset; clear; main;
+
+                return ${RETURN_CODE};
+                ;;
+            *)
+                if [ -z "${LISTEN_ADDRESS}" ]
+                then
+                    unset LISTEN_ADDRESS;
+
+                    echo "$(awk -F "=" '/\<selection.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+
+                    sleep "${MESSAGE_DELAY}"; reset; clear; continue;
+                fi
+
+                typeset THIS_CNAME="${CNAME}";
+                unset METHOD_NAME;
+                unset CNAME;
+
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+                ## validate the input
+                validateServerAvailability ${LISTEN_ADDRESS};
+
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+                CNAME="${THIS_CNAME}";
+                typeset METHOD_NAME="${THIS_CNAME}#${0}";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+                if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+                then
+                    ## not a number
+                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Host is not currently available.";
+
+                    echo "$(awk -F "=" '/\<host.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                    ## unset SVC_LIST, we dont need it now
+                    unset LISTEN_ADDRESS;
+
+                    sleep "${MESSAGE_DELAY}"; reset; clear; break;
+                fi
+
+                ## get the port #
+                while true
+                do
+                    reset; clear;
+
+                    echo "\n
+                        \t$(awk -F "=" '/\<createsite.provide.port\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')
+                        \t$(awk -F "=" '/\<system.option.cancel\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                    read PORT_NUMBER;
+
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PORT_NUMBER -> ${PORT_NUMBER}";
+
+                    reset; clear;
+
+                    echo "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+
+                    case ${PORT_NUMBER} in
+                        [Xx]|[Qq]|[Cc])
+                            reset; clear;
+
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requested canceled";
+
+                            echo "$(awk -F "=" '/\<system.request.canceled\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                            ## terminate this thread and return control to main
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                            A=0;
+
+                            unset RET_CODE;
+                            unset PLATFORM;
+                            unset WS_PLATFORM;
+                            unset TYPE;
+                            unset BUILD_TYPE;
+                            unset HOSTNAME;
+                            unset CONTEXT_ROOT;
+                            unset PORT_NUMBER;
+                            unset PORT_CONFIRMATION;
+                            unset ENABLE_APPSERVER;
+                            unset METHOD_NAME;
+
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+                            sleep ${MESSAGE_DELAY}; reset; clear; main;
+
+                            return ${RETURN_CODE};
+                            ;;
+                        *)
+                            if [ -z "${PORT_NUMBER}" ]
+                            then
+                                unset PORT_NUMBER;
+
+                                echo "$(awk -F "=" '/\<selection.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+
+                                sleep "${MESSAGE_DELAY}"; reset; clear; continue;
+                            fi
+
+                            typeset THIS_CNAME="${CNAME}";
+                            unset METHOD_NAME;
+                            unset CNAME;
+
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+                            ## validate the input
+                            isNaN ${PORT_NUMBER};
+
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+                            CNAME="${THIS_CNAME}";
+                            typeset METHOD_NAME="${THIS_CNAME}#${0}";
+
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+                            if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+                            then
+                                ## not a number
+                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An invalid port number was provided.";
+
+                                echo "$(awk -F "=" '/\<host.invalid\>/{print $2}' ${PLUGIN_ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                                ## unset SVC_LIST, we dont need it now
+                                unset LISTEN_ADDRESS;
 
                                 sleep "${MESSAGE_DELAY}"; reset; clear; break;
-                                ;;
-                            *)
-                                if [ $(${APP_ROOT}/${LIB_DIRECTORY}/validators/validate_tel_num.sh ${CONTACT_NUMBER}) -ne 0 ]
-                                then
+                            fi
+
+                            ## privileged port... confirm
+                            if [ ${PORT_NUMBER} -le ${HIGH_PRIVILEGED_PORT} ]
+                            then
+                                ## user is requesting a privileged port - confirm
+                                while true
+                                do
                                     reset; clear;
-                                    ## number provided was invalid
-                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An invalid telephone number was provided. A valid telephone number is required to process the request.";
 
-                                    unset CONTACT_NUMBER;
-                                    unset RET_CODE;
-                                    unset RETURN_CODE;
+                                    echo "\n
+                                        \t$(awk -F "=" '/\<createsite.privileged.port\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
 
-                                    echo "$(grep -w contact.number.invalid "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)";
-                                    sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                                else
-                                    unset CNAME;
-                                    unset METHOD_NAME;
+                                    read PORT_CONFIRMATION;
 
-                                    if [ "${SITE_BUILD_TYPE}" = "${BUILD_TYPE_SSL}" ]
-                                    then
-                                        . ${APP_ROOT}/${LIB_DIRECTORY}/helpers/ui/buildSSLSiteUI.sh;
-                                    elif [ "${SITE_BUILD_TYPE}" = "${BUILD_TYPE_BOTH}" ]
-                                    then
-                                        . ${APP_ROOT}/${LIB_DIRECTORY}/helpers/ui/buildHybridSiteUI.sh;
-                                    fi
-                                fi
-                                ;;
-                        esac
-                    done
-                    ;;
-                ${BUILD_TYPE_NOSSL})
-                    unset METHOD_NAME;
-                    unset CNAME;
+                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PORT_CONFIRMATION -> ${PORT_CONFIRMATION}";
 
-                    . ${APP_ROOT}/${LIB_DIRECTORY}/helpers/ui/buildNoSSLSiteUI.sh;
-                    ;;
-            esac
-        fi
+                                    reset; clear;
+
+                                    echo "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+
+                                    case ${PORT_CONFIRMATION} in
+                                        [Yy][Ee][Ss]|[Yy])
+                                            reset; clear; break;
+                                            ;;
+                                        [Nn][Oo]|[Nn])
+                                            reset; clear;
+
+                                            unset PORT_CONFIRMATION;
+                                            unset PORT_NUMBER;
+
+                                            IS_PORT_VALID=${_FALSE};
+
+                                            reset; clear; break;
+                                            ;;
+                                        *)
+                                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An invalid response was provided.";
+
+                                            echo "$(awk -F "=" '/\<selection.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                                            ## unset SVC_LIST, we dont need it now
+                                            unset PORT_CONFIRMATION;
+
+                                            sleep "${MESSAGE_DELAY}"; reset; clear; continue;
+                                            ;;
+                                    esac
+                                done
+                            fi
+
+                            typeset THIS_CNAME="${CNAME}";
+                            unset METHOD_NAME;
+                            unset CNAME;
+
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+                            ## validate the input
+                            ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validatePortNumber.sh ${PORT_NUMBER};
+                            typeset -i RET_CODE=${?};
+
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+                            CNAME="${THIS_CNAME}";
+                            typeset METHOD_NAME="${THIS_CNAME}#${0}";
+
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+                            if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+                            then
+                                ## not a number
+                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Port number provided is already in use.";
+
+                                echo "$(awk -F "=" '/\<provided.port.already.used\>/{print $2}' ${PLUGIN_ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                                ## unset SVC_LIST, we dont need it now
+                                unset PORT_NUMBER;
+
+                                sleep "${MESSAGE_DELAY}"; reset; clear; continue;
+                            fi
+
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NONSSL_LISTEN_PORT -> ${NONSSL_LISTEN_PORT}";
+
+                            reset; clear;
+
+                            echo "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+                            requestAppConfig;
+                            ;;
+                    esac
+                done
+                ;;
+        esac
     done
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ ! -z "${TMPFILE}" ] && [ -f ${TMPFILE} ] && rm -rf ${TMPFILE};
+
+    unset PORT_NUMBER;
+    unset PORT_CONFIRMATION;
+    unset NONSSL_LISTEN_PORT;
+    unset ENABLE_APPSERVER;
+    unset METHOD_NAME;
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+    return ${RETURN_CODE};
+}
+
+#===  FUNCTION  ===============================================================
+#          NAME:  requestAppConfig
+#   DESCRIPTION:  Processes requests to add additional record types to a zone
+#    PARAMETERS:  None
+#       RETURNS:  0
+#==============================================================================
+function requestAppConfig
+{
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+    while true
+    do
+        reset; clear;
+
+        echo "\n\t$(awk -F "=" '/\<createsite.provide.app.server\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+        A=0;
+
+        for PLATFORM in ${SUPPORTED_APPSERVERS[@]}
+        do
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PLATFORM -> ${PLATFORM}";
+
+            echo "\t${A} - ${PLATFORM}";
+
+            (( A += 1 ));
+        done
+
+        echo "\t$(awk -F "=" '/\<createsite.no.appserver\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+        echo "\t$(awk -F "=" '/\<system.option.cancel\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+        read APPSERVER;
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ENABLE_APPSERVER -> ${ENABLE_APPSERVER}";
+
+        reset; clear;
+
+        echo "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+
+        case ${APPSERVER} in
+            [Xx]|[Qq]|[Cc])
+                reset; clear;
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requested canceled";
+
+                echo "$(awk -F "=" '/\<system.request.canceled\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                ## terminate this thread and return control to main
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                A=0;
+
+                unset APPSERVER;
+                unset RET_CODE;
+                unset PLATFORM;
+                unset WS_PLATFORM;
+                unset TYPE;
+                unset BUILD_TYPE;
+                unset HOSTNAME;
+                unset CONTEXT_ROOT;
+                unset APP_PORT_NUMBER;
+                unset PORT_CONFIRMATION;
+                unset ENABLE_APPSERVER;
+                unset METHOD_NAME;
+
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+                sleep ${MESSAGE_DELAY}; reset; clear; main;
+
+                return ${RETURN_CODE};
+                ;;
+            [Nn][Oo][Nn][Ee])
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No application server integration has been requested.";
+
+                reset; clear;
+
+                echo "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+                buildWebInstance;
+                ;;
+            *)
+                if [ -z "${SUPPORTED_APPSERVERS[${A}]}" ]
+                then
+                    unset WS_PLATFORM;
+
+                    echo "$(awk -F "=" '/\<selection.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+
+                    sleep "${MESSAGE_DELAY}"; reset; clear; continue;
+                fi
+
+                typeset APP_PLATFORM=${SUPPORTED_APPSERVERS[${A}]};
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "APP_PLATFORM -> ${APP_PLATFORM}";
+
+                ## get app hostname
+                while true
+                do
+                    reset; clear;
+
+                    echo "\n
+                        \t$(awk -F "=" '/\<createsite.provide.app.hostname\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')
+                        \t$(awk -F "=" '/\<system.option.cancel\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                    read APP_HOSTNAME;
+
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "APP_HOSTNAME -> ${APP_HOSTNAME}";
+
+                    reset; clear;
+
+                    echo "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+
+                    case ${APP_HOSTNAME} in
+                        [Xx]|[Qq]|[Cc])
+                            reset; clear;
+
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requested canceled";
+
+                            echo "$(awk -F "=" '/\<system.request.canceled\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                            ## terminate this thread and return control to main
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                            A=0;
+
+                            unset RET_CODE;
+                            unset PLATFORM;
+                            unset WS_PLATFORM;
+                            unset TYPE;
+                            unset BUILD_TYPE;
+                            unset HOSTNAME;
+                            unset CONTEXT_ROOT;
+                            unset APP_PORT_NUMBER;
+                            unset PORT_CONFIRMATION;
+                            unset ENABLE_APPSERVER;
+                            unset METHOD_NAME;
+
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+                            sleep ${MESSAGE_DELAY}; reset; clear; main;
+
+                            return ${RETURN_CODE};
+                            ;;
+                        *)
+                            if [ -z "${APP_HOSTNAME}" ]
+                            then
+                                unset APP_HOSTNAME;
+
+                                echo "$(awk -F "=" '/\<selection.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+
+                                sleep "${MESSAGE_DELAY}"; reset; clear; continue;
+                            fi
+
+                            typeset THIS_CNAME="${CNAME}";
+                            unset METHOD_NAME;
+                            unset CNAME;
+
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+                            ## validate the input
+                            validateServerAvailability ${APP_HOSTNAME};
+
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+                            CNAME="${THIS_CNAME}";
+                            typeset METHOD_NAME="${THIS_CNAME}#${0}";
+
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+                            if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+                            then
+                                ## not a number
+                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Host is not currently available.";
+
+                                echo "$(awk -F "=" '/\<host.invalid\>/{print $2}' ${PLUGIN_ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                                ## unset SVC_LIST, we dont need it now
+                                unset LISTEN_ADDRESS;
+
+                                sleep "${MESSAGE_DELAY}"; reset; clear; break;
+                            fi
+
+                            ## get the port #
+                            while true
+                            do
+                                reset; clear;
+
+                                echo "\n
+                                    \t$(awk -F "=" '/\<createsite.provide.port\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')
+                                    \t$(awk -F "=" '/\<system.option.cancel\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                                read APP_APP_PORT_NUMBER;
+
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "APP_APP_PORT_NUMBER -> ${APP_APP_PORT_NUMBER}";
+
+                                reset; clear;
+
+                                echo "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+
+                                case ${APP_APP_PORT_NUMBER} in
+                                    [Xx]|[Qq]|[Cc])
+                                        reset; clear;
+
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Requested canceled";
+
+                                        echo "$(awk -F "=" '/\<system.request.canceled\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                                        ## terminate this thread and return control to main
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                                        A=0;
+
+                                        unset RET_CODE;
+                                        unset PLATFORM;
+                                        unset WS_PLATFORM;
+                                        unset TYPE;
+                                        unset BUILD_TYPE;
+                                        unset HOSTNAME;
+                                        unset CONTEXT_ROOT;
+                                        unset APP_PORT_NUMBER;
+                                        unset PORT_CONFIRMATION;
+                                        unset ENABLE_APPSERVER;
+                                        unset METHOD_NAME;
+
+                                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+                                        sleep ${MESSAGE_DELAY}; reset; clear; main;
+
+                                        return ${RETURN_CODE};
+                                        ;;
+                                    *)
+                                        if [ -z "${APP_PORT_NUMBER}" ]
+                                        then
+                                            unset APP_PORT_NUMBER;
+
+                                            echo "$(awk -F "=" '/\<selection.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+
+                                            sleep "${MESSAGE_DELAY}"; reset; clear; continue;
+                                        fi
+
+                                        typeset THIS_CNAME="${CNAME}";
+                                        unset METHOD_NAME;
+                                        unset CNAME;
+
+                                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+                                        ## validate the input
+                                        isNaN ${APP_PORT_NUMBER};
+
+                                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+                                        CNAME="${THIS_CNAME}";
+                                        typeset METHOD_NAME="${THIS_CNAME}#${0}";
+
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+                                        if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+                                        then
+                                            ## not a number
+                                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An invalid port number was provided.";
+
+                                            echo "$(awk -F "=" '/\<selection.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                                            ## unset SVC_LIST, we dont need it now
+                                            unset LISTEN_ADDRESS;
+
+                                            sleep "${MESSAGE_DELAY}"; reset; clear; break;
+                                        fi
+
+                                        ## privileged port... confirm
+                                        if [ ${APP_PORT_NUMBER} -le ${HIGH_PRIVILEGED_PORT} ]
+                                        then
+                                            ## user is requesting a privileged port - confirm
+                                            while true
+                                            do
+                                                reset; clear;
+
+                                                echo "\n
+                                                    \t$(awk -F "=" '/\<createsite.privileged.port\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                                                read PORT_CONFIRMATION;
+
+                                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PORT_CONFIRMATION -> ${PORT_CONFIRMATION}";
+
+                                                reset; clear;
+
+                                                echo "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+
+                                                case ${PORT_CONFIRMATION} in
+                                                    [Yy][Ee][Ss]|[Yy])
+                                                        reset; clear; break;
+                                                        ;;
+                                                    [Nn][Oo]|[Nn])
+                                                        reset; clear;
+
+                                                        unset APP_PORT_NUMBER;
+
+                                                        reset; clear; break;
+                                                        ;;
+                                                    *)
+                                                        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An invalid response was provided.";
+
+                                                        echo "$(awk -F "=" '/\<selection.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                                                        ## unset SVC_LIST, we dont need it now
+                                                        unset PORT_CONFIRMATION;
+
+                                                        sleep "${MESSAGE_DELAY}"; reset; clear; continue;
+                                                        ;;
+                                                esac
+                                            done
+                                        fi
+
+                                        typeset THIS_CNAME="${CNAME}";
+                                        unset METHOD_NAME;
+                                        unset CNAME;
+
+                                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+                                        ## validate the input
+                                        ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/validators/validatePortNumber.sh ${APP_PORT_NUMBER};
+                                        typeset -i RET_CODE=${?};
+
+                                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+                                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+                                        CNAME="${THIS_CNAME}";
+                                        typeset METHOD_NAME="${THIS_CNAME}#${0}";
+
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+                                        if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+                                        then
+                                            ## not a number
+                                            ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Port number provided is already in use.";
+
+                                            echo "$(awk -F "=" '/\<provided.port.already.used\>/{print $2}' ${PLUGIN_ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                                            ## unset SVC_LIST, we dont need it now
+                                            unset APP_PORT_NUMBER;
+
+                                            sleep "${MESSAGE_DELAY}"; reset; clear; continue;
+                                        fi
+
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "NONSSL_LISTEN_PORT -> ${NONSSL_LISTEN_PORT}";
+
+                                        reset; clear;
+
+                                        echo "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+                                        buildWebInstance;
+                                        ;;
+                                esac
+                            done
+                            ;;
+                    esac
+                done
+                ;;
+        esac
+    done
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ ! -z "${TMPFILE}" ] && [ -f ${TMPFILE} ] && rm -rf ${TMPFILE};
+
+    unset PORT_NUMBER;
+    unset PORT_CONFIRMATION;
+    unset NONSSL_LISTEN_PORT;
+    unset ENABLE_APPSERVER;
+    unset METHOD_NAME;
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+    return ${RETURN_CODE};
+}
+
+#===  FUNCTION  ===============================================================
+#          NAME:  buildWebInstance
+#   DESCRIPTION:  Processes requests to add additional record types to a zone
+#    PARAMETERS:  None
+#       RETURNS:  0
+#==============================================================================
+function buildWebInstance
+{
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset RETURN_CODE=0;
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+    typeset THIS_CNAME="${CNAME}";
+    unset METHOD_NAME;
+    unset CNAME;
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+    [ ! -z "${APPSERVER_TYPE}" ] && ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/createWebInstance.sh -w ${WS_PLATFORM} -b ${BUILD_TYPE} -l ${HOST_ADDRESS} -p ${PORT_NUMBER} -a -t ${APPSERVER_TYPE} -h ${APPSERVER_HOST} -P ${APPSERVER_PORT} -e;
+    [ -z "${APPSERVER_TYPE}" ] && ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/createWebInstance.sh -w ${WS_PLATFORM} -b ${BUILD_TYPE} -l ${HOST_ADDRESS} -p ${PORT_NUMBER} -e;
+    typeset -i RET_CODE=${?};
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+    CNAME="${THIS_CNAME}";
+    typeset METHOD_NAME="${THIS_CNAME}#${0}";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+    then
+        reset; clear;
+
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred during the build. Please review logs for any issues.";
+
+        [ -z "${RET_CODE}" ] && echo "\t$(awk -F "=" '/\<99\>/{print $2}' ${PLUGIN_ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+        [ ! -z "${RET_CODE}" ] && echo "\t$(awk -F "=" '/\<\${RET_CODE}\>/{print $2}' ${PLUGIN_ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+        sleep ${MESSAGE_DELAY};
+    fi
+
+    while true
+    do
+        reset; clear;
+
+        echo "\n
+            \t$(awk -F "=" '/\<createsite.build.complete\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')
+            \t$(awk -F "=" '/\<createsite.install.server\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+        read SELECTION;
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SELECTION -> ${SELECTION}";
+
+        reset; clear;
+
+        echo "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+
+        case ${SELECTION} in
+            [Yy][Ee][Ss]|[Yy])
+                reset; clear;
+
+                echo "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+                performSiteInstallation;
+
+                return ${RETURN_CODE};
+                ;;
+            *)
+                reset; clear;
+
+                echo "\n\t$(awk -F "=" '/\<createsite.perform.more.tasks\>/{print $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                read SELECTION;
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SELECTION -> ${SELECTION}";
+
+                reset; clear;
+
+                echo "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+
+                case ${SELECTION} in
+                    [Yy][Ee][Ss]|[Yy])
+                        reset; clear;
+
+                        echo "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+                        main;
+
+                        return ${RETURN_CODE};
+                        ;;
+                    *)
+                        reset; clear;
+
+                        echo "$(awk -F "=" '/\<system.pending.message\>/{print $2}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')\n";
+
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+                        reset; clear; exec ${MAIN_CLASS};
+
+                        return ${RETURN_CODE};
+                        ;;
+                esac
+        esac
+    done
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    A=0;
+
+    unset RET_CODE;
+    unset PLATFORM;
+    unset WS_PLATFORM;
+    unset TYPE;
+    unset BUILD_TYPE;
+    unset HOSTNAME;
+    unset CONTEXT_ROOT;
+    unset PORT_NUMBER;
+    unset PORT_CONFIRMATION;
+    unset ENABLE_APPSERVER;
+    unset METHOD_NAME;
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+
+    return ${RETURN_CODE};
 }
 
 reset; clear;
@@ -1177,7 +1453,7 @@ unset RET_CODE;
 unset CNAME;
 unset METHOD_NAME;
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 
-return 0;
+return ${RETURN_CODE};
