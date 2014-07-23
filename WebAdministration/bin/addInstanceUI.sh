@@ -517,14 +517,7 @@ function requestSiteConfig
                             return ${RETURN_CODE};
                             ;;
                         *)
-                            if [ -z "${CONTEXT_ROOT}" ]
-                            then
-                                unset CONTEXT_ROOT;
-
-                                echo "$(awk -F "=" '/\<selection.invalid\>/{print $2}' ${ERROR_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
-
-                                sleep "${MESSAGE_DELAY}"; reset; clear; continue;
-                            fi
+                            [ -z "${CONTEXT_ROOT}" ] && typeset CONTEXT_ROOT=$(cut -d ":" -f 2- <<< ${HOSTNAME});
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONTEXT_ROOT -> ${CONTEXT_ROOT}";
 
