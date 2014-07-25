@@ -1,0 +1,14 @@
+DNS Team,
+
+A new zone/record has been added to &SERVER by &USER_NAME.
+
+Zone details:
+
+Change Request:   &CHANGE_CONTROL
+Site Hostname:    &ZONE_NAME
+Business Unit:    &BIZ_UNIT
+Project Code:     &PROJ_CODE
+
+Zone content -
+
+

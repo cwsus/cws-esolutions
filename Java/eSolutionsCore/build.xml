@@ -1,0 +1,30 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<project name="eSolutionsCore" default="build" basedir="."
+    xmlns:artifact="antlib:org.apache.maven.artifact.ant"
+    xmlns:antcontrib="antlib:net.sf.antcontrib">
+    <description>eSolutionsCore buildfile</description>
+
+    <property environment="env" />
+
+    <taskdef uri="antlib:net.sf.antcontrib" resource="net/sf/antcontrib/antlib.xml" classpath="${env.ANT_HOME}/lib/ant-contrib.jar"/>
+    <taskdef uri="antlib:org.apache.maven.artifact.ant" resource="org/apache/maven/artifact/ant/antlib.xml" classpath="${env.ANT_HOME}/lib/maven-ant-tasks-2.1.3.jar" reverseLoader="true" />
+    
+    <artifact:pom id="pom" file="${basedir}/pom.xml" />
+
+    <target name="build">
+        <tstamp>
+            <format property = "TODAY" pattern = "yyyy-MM-dd HH:mm:ss" />
+        </tstamp>
+
+        <exec executable="git" outputproperty="git.revision" failifexecutionfails="false" errorproperty="">
+            <arg value="describe"/>
+            <arg value="--tags"/>
+            <arg value="--always"/>
+            <arg value="HEAD"/>
+        </exec>
+
+        <touch file="${basedir}/target/classes/${{pom.artifactId}-${pom.version}.version" />
+
+        <echo message="${pom.artifactId} commit version ${git.revision} built ${TODAY}" output="${basedir}/target/classes/${pom.artifactId}-${pom.version}.version" append="false" />
+    </target>
+</project>

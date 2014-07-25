@@ -1,0 +1,7 @@
+<resources>
+    <string name="dnsServiceTitle">eSolutions - DNS Services</string>
+    <string name="tvHostName">Hostname: </string>
+    <string name="tvHostHint">ex. www.google.com</string>
+    <string name="tvDNSServer">DNS Server: </string>
+    <string name="tvServerHint">ex. 8.8.4.4</string>
+</resources>

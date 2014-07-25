@@ -1,0 +1,178 @@
+#===  FUNCTION  ===============================================================
+#          NAME:  executeSqlRequest
+#   DESCRIPTION:  Processes and implements a DNS site failover
+#    PARAMETERS:  Parameters obtained via command-line flags
+#       RETURNS:  0 for positive result, >1 for non-positive
+#==============================================================================
+function executeSqlRequest
+{
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+    typeset METHOD_NAME="${CNAME}#executeSqlRequest";
+    typeset RETURN_CODE=0;
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+    if [ ${#} -ne 5 ]
+    then
+        RETURN_CODE=3;
+
+        echo -n "executeSqlRequest - Execute a sql request with a provided SQL script\n";
+        echo -n "Usage: executeSqlRequest [ <username> ] [ <password> ] [ <schema> ] [ <SQL script> ] [ <spool file> ]
+                 -> The username to connect to the SQL database with
+                 -> The password for the associated username
+                 -> The schema to connect to
+                 -> The SQL script to execute
+                 -> The file to spool output to\n";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ -f ${TMPFILE} ] && rm -rf ${TMPFILE};
+
+        unset TMPFILE;
+        unset SQL_USERNAME;
+        unset SQL_PASSWORD;
+        unset SQL_SCHEMA;
+        unset SQL_SCRIPT;
+        unset SPOOL_FILE;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
+    typeset TMPFILE=$(mktemp);
+    typeset SQL_USERNAME="${1}";
+    typeset SQL_PASSWORD="${2}";
+    typeset SQL_SCHEMA="${3}";
+    typeset SQL_SCRIPT="${4}";
+    typeset SPOOL_FILE="${5}";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMPFILE -> ${TMPFILE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SQL_USERNAME -> ${SQL_USERNAME}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SQL_PASSWORD -> ${SQL_PASSWORD}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SQL_SCHEMA -> ${SQL_SCHEMA}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SQL_SCRIPT -> ${SQL_SCRIPT}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SPOOL_FILE -> ${SPOOL_FILE}";
+
+    if [ ! -r ${SQL_SCRIPT} ]
+    then
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "The provided SQL script either does not exist or cannot be read. Cannot continue.";
+
+        RETURN_CODE=1;
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ -f ${TMPFILE} ] && rm -rf ${TMPFILE};
+
+        unset TMPFILE;
+        unset SQL_USERNAME;
+        unset SQL_PASSWORD;
+        unset SQL_SCHEMA;
+        unset SQL_SCRIPT;
+        unset SPOOL_FILE;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
+    sed -e "s^%SPOOL_FILE%^${SPOOL_FILE}^" ${SQL_SCRIPT} > ${TMPFILE};
+
+    if [ ! -z "$(grep "%SPOOL_FILE%" ${TMPFILE})" ]
+    then
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to modify SQL spool command. Cannot continue.";
+
+        RETURN_CODE=1;
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ -f ${TMPFILE} ] && rm -rf ${TMPFILE};
+
+        unset TMPFILE;
+        unset SQL_USERNAME;
+        unset SQL_PASSWORD;
+        unset SQL_SCHEMA;
+        unset SQL_SCRIPT;
+        unset SPOOL_FILE;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
+    /usr/bin/env sqlplus ${SQL_USERNAME}/${SQL_PASSWORD}@${SQL_SCHEMA} < ${TMPFILE} > ${LOG_ROOT}/sqlplus.log 2>&1;
+    typeset -i RET_CODE=${?};
+
+    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+    then
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred executing the provided script. Please inspect logs.";
+
+        RETURN_CODE=1;
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ -f ${TMPFILE} ] && rm -rf ${TMPFILE};
+
+        unset TMPFILE;
+        unset SQL_USERNAME;
+        unset SQL_PASSWORD;
+        unset SQL_SCHEMA;
+        unset SQL_SCRIPT;
+        unset SPOOL_FILE;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
+    if [ ! -s "${SPOOL_FILE}" ]
+    then
+        ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred executing the provided script. Please inspect logs.";
+
+        RETURN_CODE=1;
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ -f ${TMPFILE} ] && rm -rf ${TMPFILE};
+
+        unset TMPFILE;
+        unset SQL_USERNAME;
+        unset SQL_PASSWORD;
+        unset SQL_SCHEMA;
+        unset SQL_SCRIPT;
+        unset SPOOL_FILE;
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ -f ${TMPFILE} ] && rm -rf ${TMPFILE};
+
+    unset TMPFILE;
+    unset SQL_USERNAME;
+    unset SQL_PASSWORD;
+    unset SQL_SCHEMA;
+    unset SQL_SCRIPT;
+    unset SPOOL_FILE;
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+    return ${RETURN_CODE};
+}

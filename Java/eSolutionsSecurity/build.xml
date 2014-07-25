@@ -1,0 +1,10 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<project name="eSolutionsSecurity" default="build" basedir="."
+    xmlns:artifact="antlib:org.apache.maven.artifact.ant"
+    xmlns:antcontrib="antlib:net.sf.antcontrib">
+    <description>eSolutionsSecurity buildfile</description>
+
+    <target name="build">
+        <echo message="hello" />
+    </target>
+</project>

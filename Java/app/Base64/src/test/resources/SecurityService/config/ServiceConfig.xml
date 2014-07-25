@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <security-config>
+        <email-address>secadm@caspersbox.com</email-address>
+        <otpVariance>3</otpVariance> <!-- maximum drift for otp authentication -->
+        <maxAttempts>3</maxAttempts> <!-- maximum number of failed authentication attempts -->
+        <iterations>65535</iterations> <!-- number of times to hash over the password -->
+        <passwordExpiration>90</passwordExpiration> <!-- how long before a password MUST be changed -->
+        <passwordMinLength>8</passwordMinLength> <!--  minimum allowed password length -->
+        <passwordMaxLength>64</passwordMaxLength> <!--  maximum allowed password length (0 or null -> no limit)-->
+        <authAlgorithm>SHA-512</authAlgorithm> <!-- MessageDigest: http://docs.oracle.com/javase/6/docs/technotes/guides/security/StandardNames.html#MessageDigest -->
+        <otpAlgorithm>HmacSHA1</otpAlgorithm> <!-- otp hash algorithm -->
+        <saltLength>64</saltLength> <!-- salt string length (bigger is better) -->
+        <performAudit>true</performAudit> <!-- should we audit stuff ? (default true) -->
+        <resetIdLength>64</resetIdLength> <!-- reset id length (bigger is better) -->
+        <smsResetEnabled>false</smsResetEnabled> <!-- do we send the reset email AND an sms ? -->
+        <smsCodeLength>8</smsCodeLength> <!-- how long should the sms reset id be ? -->
+        <resetTimeout>30</resetTimeout> <!-- reset timeout length (minutes) -->
+        <authConfig>/opt/cws/eSolutions/etc/repository.properties</authConfig>
+        <authManager>com.cws.esolutions.security.dao.userauth.impl.SQLAuthenticator</authManager>
+        <userManager>com.cws.esolutions.security.dao.usermgmt.impl.SQLUserManager</userManager>
+    </security-config>
+
+    <!-- this should correlate back to the data obtained from -->
+    <!-- the authentication repository. the objects below -->
+    <!-- are the *minimum* required to populate the user object -->
+    <auth-data>
+        <baseObjectClass>inetOrgPerson</baseObjectClass>
+		<repositoryBaseDN>dc=caspersbox,dc=com</repositoryBaseDN>
+		<repositoryUserBase>organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com</repositoryUserBase> 
+		<repositoryRoleBase>organizationalUnitName=Groups,organizationName=CWS US,dc=caspersbox,dc=com</repositoryRoleBase> 
+        <userId>uid</userId> <!-- need this -->
+        <userPassword>userPassword</userPassword> <!-- this is ONLY used during authentication. it is NOT kept in memory -->
+        <userRole>cwsrole</userRole> <!-- we need this (although we dont need it for an ldap repo -->
+        <lockCount>cwsfailedpwdcount</lockCount> <!-- need this -->
+        <lastLogin>cwslastlogin</lastLogin> <!-- need this -->
+        <surname>sn</surname> <!-- need this -->
+        <givenName>givenName</givenName> <!-- need this -->
+        <expiryDate>cwsexpirydate</expiryDate> <!-- need this -->
+        <secQuestionOne>cwssecq1</secQuestionOne> <!-- only used for authentication (specifically, an online reset) -->
+        <secQuestionTwo>cwssecq2</secQuestionTwo> <!-- only used for authentication (specifically, an online reset) -->
+        <secAnswerOne>cwssecans1</secAnswerOne> <!-- only used for authentication (specifically, an online reset) -->
+        <secAnswerTwo>cwssecans2</secAnswerTwo> <!-- only used for authentication (specifically, an online reset) -->
+        <emailAddr>email</emailAddr> <!-- need this -->
+        <isSuspended>cwsissuspended</isSuspended> <!-- need this -->
+        <commonName>cn</commonName> <!-- need this -->
+        <olrSetupReq>cwsisolrsetup</olrSetupReq> <!-- only used for authentication (specifically, an online reset) -->
+        <olrLocked>cwsisolrlocked</olrLocked> <!-- only used for authentication (specifically, an online reset) -->
+        <displayName>displayName</displayName> <!--  we could remove this and just use the surname, but what if someone wants a different display ? -->
+        <publicKey>cwspublickey</publicKey> <!-- only used during file signature operations. not used any other time and not stored during auth -->
+        <pagerNumber>pager</pagerNumber> <!-- need this -->
+        <telephoneNumber>telephoneNumber</telephoneNumber> <!-- need this -->
+        <secret>cwssecretkey</secret>
+        <memberOf>memberOf</memberOf>
+    </auth-data>
+
+    <!-- only required if file-based signing is used. the keys arent used for anything else. -->
+    <key-config>
+        <keyAlgorithm>RSA</keyAlgorithm> <!-- keygen algorithm -->
+        <keySize>4096</keySize> <!-- if algorithm is DSA, this MUST be 1024: http://docs.oracle.com/javase/6/docs/technotes/guides/security/SunProviders.html -->
+        <keyDirectory>/opt/cws/eSolutions/keys</keyDirectory> <!-- this is ONLY required if you're using a file-based keymanager -->
+        <keyManager>com.cws.esolutions.security.dao.keymgmt.impl.SQLKeyManager</keyManager>
+    </key-config>
+
+    <!-- only required if file-based signing is used. if this is configured then key-config MUST be configured. -->
+    <file-security-config>
+        <signatureAlgorithm>SHA1withRSA</signatureAlgorithm> <!-- file signature algorithm -->
+        <encryptionAlgorithm>RSA</encryptionAlgorithm> <!-- file encryption algorithm -->
+    </file-security-config>
+
+    <exception-config>
+        <sendExceptionNotifications>false</sendExceptionNotifications> <!-- if true, configure mail props -->
+    </exception-config>
+
+    <resource-config>
+        <DataSourceManager>
+            <dsName>SecurityDataSource</dsName>
+            <datasource>jdbc:mysql://127.0.0.1/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
+            <driver>com.mysql.jdbc.Driver</driver>
+            <dsUser>appuser</dsUser>
+            <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
+            <salt>OITltocOUZjW</salt>
+        </DataSourceManager>
+        <DataSourceManager>
+            <dsName>AuditDataSource</dsName>
+            <datasource>jdbc:mysql://127.0.0.1/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
+            <driver>com.mysql.jdbc.Driver</driver>
+            <dsUser>appuser</dsUser>
+            <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
+            <salt>OITltocOUZjW</salt>
+        </DataSourceManager>
+    </resource-config>
+</configuration>

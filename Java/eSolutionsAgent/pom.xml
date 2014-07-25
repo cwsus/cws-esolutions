@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>com.cws</groupId>
+        <artifactId>cws</artifactId>
+        <version>4.3</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>eSolutionsAgent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>${project.artifactId}</name>
+    <description>eSolutions Agent software - listener on target nodes for action</description>
+
+    <scm>
+        <url>https://github.com/cwsus/cws-esolutions/tree/master/eSolutionsAgent</url>
+    </scm>
+
+    <properties>
+        <activemq.version>5.8.0</activemq.version>
+        <jms-api.version>1.1-rev-1</jms-api.version>
+        <websphere.version>7.0</websphere.version>
+        <weblogic.version>12.1</weblogic.version>
+        <quartz.version>2.1.6</quartz.version>
+        <moxy.version>2.4.0</moxy.version>
+        <eclipselink.version>2.4.0</eclipselink.version>
+        <commons-daemon.version>1.0.10</commons-daemon.version>
+        <commons-exec.version>1.1</commons-exec.version>
+    </properties>
+
+    <dependencies>
+        <!-- Third-party jars -->
+        <!-- activemq -->
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-all</artifactId>
+            <version>${activemq.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- jms -->
+        <dependency>
+            <groupId>javax.jms</groupId>
+            <artifactId>jms-api</artifactId>
+            <version>${jms-api.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <!-- weblogic jar -->
+        <dependency>
+            <groupId>oracle</groupId>
+            <artifactId>wlfullclient</artifactId>
+            <version>${weblogic.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <!-- websphere -->
+        <dependency>
+            <groupId>com.ibm</groupId>
+            <artifactId>admin-core</artifactId>
+            <version>${websphere.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm</groupId>
+            <artifactId>admin-client</artifactId>
+            <version>${websphere.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm</groupId>
+            <artifactId>wsexception</artifactId>
+            <version>${websphere.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm</groupId>
+            <artifactId>runtime</artifactId>
+            <version>${websphere.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm</groupId>
+            <artifactId>bootstrap</artifactId>
+            <version>${websphere.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm</groupId>
+            <artifactId>ws-emf</artifactId>
+            <version>${websphere.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm</groupId>
+            <artifactId>ecore</artifactId>
+            <version>${websphere.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm</groupId>
+            <artifactId>emf-common</artifactId>
+            <version>${websphere.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm</groupId>
+            <artifactId>ffdc</artifactId>
+            <version>${websphere.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm</groupId>
+            <artifactId>jgssprovider</artifactId>
+            <version>${websphere.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-daemon</groupId>
+            <artifactId>commons-daemon</artifactId>
+            <version>${commons-daemon.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>org.eclipse.persistence.moxy</artifactId>
+            <version>${moxy.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>eclipselink</artifactId>
+            <version>${eclipselink.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-exec</artifactId>
+            <version>${commons-exec.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!--
+        exclude everything out of src/main/resources
+        applications CALLING this library MUST provide
+        their own configuration (everyone might not fit
+        into the same model). the server portion does NOT
+        load its config from the jar, its loaded on the fs
+        -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>**/*</exclude>
+                </excludes>
+            </resource>
+        </resources>
+    </build>
+</project>

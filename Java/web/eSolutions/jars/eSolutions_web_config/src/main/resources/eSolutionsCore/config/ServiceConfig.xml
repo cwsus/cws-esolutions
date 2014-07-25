@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <application-config>
+        <appName>eSolutionsCore</appName>
+        <serviceRootDirectory>/opt/cws/eSolutions</serviceRootDirectory>
+        <archiveRootDirectory>/opt/cws/eSolutions/archive</archiveRootDirectory>
+        <fileRepositoryRoot>/opt/cws/eSolutions/repository</fileRepositoryRoot>
+        <dateFormat>MM/dd/yyyy hh:mm</dateFormat>
+        <connectTimeout>15000</connectTimeout>
+        <scriptTimeout>30000</scriptTimeout>
+        <messageIdLength>16</messageIdLength>
+        <virtualManagerClass>com.cws.esolutions.core.processors.impl.OracleVBoxManager</virtualManagerClass>
+        <agentBundleSource>/nas/installs/eSolutionsAgent/eSolutionsAgent.tar.gz</agentBundleSource>
+    </application-config>
+
+    <agent-config>
+        <connectionName>jms/mqConnectionFactory</connectionName>
+        <clientId>5ab9f480-d357-47e0-9473-90f58a8b8e37</clientId>
+        <requestQueue>jms/requestQueue</requestQueue>
+        <responseQueue>jms/responseQueue</responseQueue>
+        <username>cwsmq</username>
+        <password>OXjrFNJCkWg6KIgv3XioKDyas9bhkyGnsB3Se55nJ1a+em8CdViU/ZuTw4LYS08wMHi+V1i7rsvlrAkeCH58VNXAYCjIXErmm2wXK0EzSYm152/Cg/bKcW27pM48Oovgp2r7lv+HaHrRrR/w/FaGSA==</password>
+        <salt>Hjq7slET1m8haapqkZqKAnLvT9DxhJPc9hfGlfpjzNZ8pSSbcSgX8Ji7G1L6Q9rw</salt>
+        <timeout>10000</timeout>
+    </agent-config>
+
+    <proxy-config>
+        <proxyServiceRequired>false</proxyServiceRequired>
+        <proxyServerName />
+        <proxyServerPort />
+        <proxyAuthRequired />
+        <proxyAuthType />
+        <proxyAuthDomain />
+        <proxyServerRealm />
+        <proxyUserId />
+        <proxyPwdSalt />
+        <proxyPassword />
+    </proxy-config>
+
+    <http-config>
+        <soTimeout>30</soTimeout>
+        <socketLinger>1</socketLinger>
+        <connTimeout>30</connTimeout>
+        <socketTimeout>30</socketTimeout>
+        <connMgrTimeout>30</connMgrTimeout>
+        <httpVersion>HTTP/1.0</httpVersion>
+        <staleCheck>true</staleCheck>
+        <keyStoreType />
+        <keyStoreFile />
+        <keyStorePass />
+        <keyStoreSalt />
+        <trustStoreType />
+        <trustStoreFile />
+        <trustStorePass />
+        <trustStoreSalt />
+    </http-config>
+
+    <dns-config>
+        <namedRootDir>/var/named</namedRootDir>
+        <zoneRootDir>/namedb</zoneRootDir> 
+        <refreshInterval>900</refreshInterval>
+        <retryInterval>3600</retryInterval>
+        <expirationInterval>604800</expirationInterval>
+        <cacheInterval>3600</cacheInterval>
+        <ttlInterval>900</ttlInterval>
+        <adminName>dnsadmins.</adminName>
+        <domainName>caspersbox.com.</domainName>
+        <searchServiceHost>http://webtools.live2support.com/nt_digajax.php?queryType=dig&amp;target={0}&amp;record={1}</searchServiceHost>
+    </dns-config>
+
+    <mail-config>
+        <dataSourceName>mail/MailSession</dataSourceName>
+    </mail-config>
+
+    <ssh-config>
+        <timeout>15</timeout> <!-- connect timeout in seconds (defaults to 10 if not set here) -->
+        <sshProperties /> <!-- full path to properties file containing ssh props (like StrictHostKeyChecking, etc) -->
+        <sshAccount /> <!-- username to use for authentication -->
+        <sshKey /> <!-- path to the ssh private key -->
+        <sshSalt />
+        <sshPassword />
+    </ssh-config>
+
+    <ftp-config>
+        <timeout>15</timeout> <!-- connect timeout in seconds (defaults to 10 if not set here) -->
+        <ftpAccount /> <!-- username to use for authentication -->
+        <ftpSalt />
+        <ftpPassword />
+    </ftp-config>
+
+    <exception-config>
+        <sendExceptionNotifications>false</sendExceptionNotifications>
+    </exception-config>
+
+    <resource-config>
+        <DataSourceManager>
+            <dsName>ApplicationDataSource</dsName>
+            <datasource>jdbc/esolutionssvc</datasource>
+        </DataSourceManager>
+    </resource-config>
+</configuration>

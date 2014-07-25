@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>com.cws</groupId>
+        <artifactId>cws</artifactId>
+        <version>4.3</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>UnifiedScriptLoader</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>rpm</packaging>
+    <name>${project.artifactId}</name>
+    <description>eSolutions Unified Script Loader</description>
+
+    <scm>
+        <url>https://github.com/cwsus/cws-esolutions/tree/master/eSolutionsAgent</url>
+    </scm>
+
+    <properties />
+
+    <dependencies />
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>rpm-maven-plugin</artifactId>
+                <configuration>
+                    <license>GPLv2+</license>
+                    <distribution>UnifiedScriptLoader</distribution>
+                    <group>Applications/System</group>
+                    <packager>CWS</packager>
+                    <requires>
+                        <require>ksh</require>
+                        <require>perl</require>
+                        <require>pcre</require>
+                    </requires>
+                    <changelogFile>src/changelog</changelogFile>
+                    <defineStatements>
+                       <defineStatement>_unpackaged_files_terminate_build 0</defineStatement>
+                    </defineStatements>
+                    <mappings>
+                        <mapping>
+                            <directory>/usr/bin/${project.artifactId}</directory>
+                            <documentation>false</documentation>
+                            <filemode>755</filemode>
+                            <username>root</username>
+                            <groupname>root</groupname>
+                            <sources>
+                                <source>
+                                    <location>bin</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directory>/usr/lib/${project.artifactId}</directory>
+                            <documentation>false</documentation>
+                            <filemode>755</filemode>
+                            <username>root</username>
+                            <groupname>root</groupname>
+                            <sources>
+                                <source>
+                                    <location>lib</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directory>/etc/${project.artifactId}</directory>
+                            <filemode>644</filemode>
+                            <username>root</username>
+                            <groupname>root</groupname>
+                            <sources>
+                                <source>
+                                    <location>etc</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directory>/var/log/${project.artifactId}</directory>
+                            <filemode>755</filemode>
+                            <username>root</username>
+                            <groupname>root</groupname>
+                        </mapping>
+                    </mappings>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+

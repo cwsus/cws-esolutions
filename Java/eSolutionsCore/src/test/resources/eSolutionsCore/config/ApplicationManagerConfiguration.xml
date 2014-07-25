@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <service-config>
+        <connectTimeout>15000</connectTimeout>
+        <scriptTimeout>30000</scriptTimeout>
+    </service-config>
+
+    <service-authorization>
+        <groups>
+            <groupName />
+        </groups>
+    </service-authorization>
+</configuration>

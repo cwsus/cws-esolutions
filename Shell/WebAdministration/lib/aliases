@@ -1,0 +1,36 @@
+#==============================================================================
+#
+#          FILE:  aliases
+#         USAGE:  . aliases
+#   DESCRIPTION:  Sets plugin-wide aliases
+#
+#       OPTIONS:  ---
+#  REQUIREMENTS:  ---
+#          BUGS:  ---
+#         NOTES:  ---
+#        AUTHOR:  Kevin Huntly <kmhuntly@gmail.com>
+#       COMPANY:  CaspersBox Web Services
+#       VERSION:  1.0
+#       CREATED:  ---
+#      REVISION:  ---
+#==============================================================================
+
+## Load system-wide aliases
+[ -f ${APP_ROOT}/${LIB_DIRECTORY}/aliases ] && . ${APP_ROOT}/${LIB_DIRECTORY}/aliases;
+
+if [ -s /usr/sbin/cryptoadm ]
+then
+    alias getTokenName='/usr/sbin/cryptoadm list metaslot | grep -w token | cut -d ":" -f 2 | sed -e "s/^ *//g"';
+    alias getKeyStoreDir='/usr/sbin/svccfg -s scakiod listprop | grep -w ${KEYSTORE_DIR_IDENTIFIER}';
+fi
+
+## common aliases
+alias openssl='/usr/bin/env openssl';
+alias certutil='/usr/bin/env certutil';
+alias pk12util='/usr/bin/env pk12util';
+alias keyman='java -cp ${CLASSPATH} com.ibm.gsk.ikeyman.ikeycmd';
+alias getWebInfo='cat ${EINFO_WEBSITE_DEFS}';
+alias getPlatformInfo='cat ${EINFO_PLATFORM_DEFS}';
+alias getMachineInfo='cat ${EINFO_MACHINE_DEFS}';
+alias getContactInfo='cat ${EINFO_CONTACT_DEFS}';
+alias getSMEName='echo $(grep -w ${IUSER_AUDIT} /etc/passwd | cut -d ":" -f 5);'

@@ -1,0 +1,66 @@
+#===  FUNCTION  ===============================================================
+#          NAME:  stringCrypt
+#   DESCRIPTION:  Encrypt/decrypt a provided string
+#    PARAMETERS:  Operation type, String to encrypt/decrypt, salt to
+#                 encrypt/decrypt with
+#       RETURNS:  0 if success, 1 otherwise
+#==============================================================================
+function stringCrypt
+{
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset -i RETURN_CODE=0;
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+
+    if [ ${#} -ne 3 ]
+    then
+        typeset RETURN_CODE=3;
+
+        echo -n "${0} - Generates and returns an encrypted or decrypted string\n";
+        echo -n "Usage: ${0} [ <method> ] [ <string> ] ( <password> )
+                 -> The operation to perform. One of encrypt or decrypt.
+                 -> The string to operate against.
+                 -> The password, or password file, to utilize for the operation.
+                    If a file is utilized, the parameter must be file:/path/to/file
+                    If a password is utilized, the parameter must be pass:the-password\n";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+        return ${RETURN_CODE};
+    fi
+
+    case ${1} in
+        [Ee][Nn][Cc][Rr][Yy][Pp][Tt]|e)
+            echo "${2}" | /usr/bin/env openssl enc -aes-256-cbc -a -salt -pass ${3};
+
+            return ${?};
+            ;;
+        [Dd][Ee][Cc][Rr][Yy][Pp][Tt]|d)
+            echo "${2}" | /usr/bin/env openssl enc -aes-256-cbc -a -d -salt -pass ${3};
+
+            RETURN_CODE=${?};
+            ;;
+        *)
+            echo "Invalid method argument";
+
+            RETURN_CODE=1;
+            ;;
+    esac
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    unset METHOD_NAME;
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+    return ${RETURN_CODE};
+}

@@ -1,0 +1,69 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id = "@+id/home"
+        android:title = "@string/home"
+        android:titleCondensed = "@string/home"
+        android:orderInCategory = "1"
+        android:visible = "true" />
+    <item
+        android:id = "@+id/applicationManagement"
+        android:title = "@string/applicationManagement"
+        android:titleCondensed = "@string/applicationManagement"
+        android:orderInCategory = "2"
+        android:visible = "true" />
+    <item
+        android:id = "@+id/dnsService"
+        android:title = "@string/dnsService"
+        android:titleCondensed = "@string/dnsService"
+        android:orderInCategory = "3"
+        android:visible = "true" />
+    <item
+        android:id = "@+id/serviceManagement"
+        android:title = "@string/serviceManagement"
+        android:titleCondensed = "@string/serviceManagement"
+        android:orderInCategory="4"
+        android:visible = "true" />
+    <item
+        android:id = "@+id/serviceMessaging"
+        android:title = "@string/serviceMessaging"
+        android:titleCondensed = "@string/serviceMessaging"
+        android:orderInCategory="5"
+        android:visible = "true" />
+    <item
+        android:id = "@+id/systemManagement"
+        android:title = "@string/systemManagement"
+        android:titleCondensed = "@string/systemManagement"
+        android:orderInCategory="6"
+        android:visible = "true" />
+    <item
+        android:id = "@+id/virtualManager"
+        android:title = "@string/virtualManager"
+        android:titleCondensed = "@string/virtualManager"
+        android:orderInCategory="7"
+        android:visible = "true" />
+    <item
+        android:id = "@+id/userAccount"
+        android:title = "@string/userAccount"
+        android:titleCondensed = "@string/userAccount"
+        android:orderInCategory="8"
+        android:visible = "true" />
+    <item
+        android:id = "@+id/userManagement"
+        android:title = "@string/userManagement"
+        android:titleCondensed = "@string/userManagement"
+        android:orderInCategory="9"
+        android:visible = "true" />
+    <item
+        android:id = "@+id/settings"
+        android:title = "@string/settings"
+        android:titleCondensed = "@string/settings"
+        android:orderInCategory="10"
+        android:visible = "true" />
+    <item
+        android:id = "@+id/signout"
+        android:title = "@string/signout"
+        android:titleCondensed = "@string/signout"
+        android:orderInCategory="11"
+        android:visible = "true" />
+</menu>
+
