@@ -1,7 +1,0 @@
-DHCP Administrators,
-
-The DHCP update key has been modified. Please contact
-the DNS Administration team to obtain the new keys.
-
-New key: &DHCPD_UPDATE_KEY
-

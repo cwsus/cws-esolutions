@@ -97,6 +97,9 @@ METHOD_NAME="${THIS_CNAME}#startup";
 
 unset RET_CODE;
 
+## source build props
+[ -z "${BUILD_LOADED}" ] && [ -s ${BUILD_CONFIG_FILE} ] && . ${BUILD_CONFIG_FILE};
+
 #===  FUNCTION  ===============================================================
 #          NAME:  createWebInstance
 #   DESCRIPTION:  Creates the necessary group folder, domain folders and creates
@@ -382,6 +385,36 @@ function usage
 
 [ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
 
+if [ -z "${BUILD_LOADED}" ]
+then
+    RETURN_CODE=1;
+
+    ${LOGGER} "INFO" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Build processing has been disabled.";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} -> exit";
+
+    unset CNAME;
+    unset SCRIPT_ABSOLUTE_PATH;
+    unset SCRIPT_ROOT;
+    unset METHOD_NAME;
+    unset RET_CODE;
+    unset METHOD_NAME;
+    unset WEBSERVER_TYPE;
+    unset BUILD_TYPE;
+    unset PORT_NUMBER;
+    unset SITE_HOSTNAME;
+    unset APPSERVER_ENABLED;
+    unset APPSERVER_TYPE;
+    unset APPSERVER_HOSTNAME;
+    unset APPSERVER_PORT;
+
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+
+    [ -z "${RETURN_CODE}" ] && return 1 || return "${RETURN_CODE}";
+fi
+
 while getopts "w:b:l:p:s:at:h:P:eh:" OPTIONS 2>/dev/null
 do
     case "${OPTIONS}" in
@@ -526,43 +559,11 @@ do
 
                             RETURN_CODE=58;
                         else
-                            if [ ! -s ${BUILD_CONFIG_FILE} ]
-                            then
-                                RETURN_CODE=1;
-
-                                ${LOGGER} "INFO" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Build processing has been disabled.";
-                            else
-                                . ${BUILD_CONFIG_FILE};
-
-                                if [ -z "${BUILD_LOADED}" ]
-                                then
-                                    ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to load build configuration. Cannot continue.";
-
-                                    RETURN_CODE=21;
-                                else
-                                    createWebInstance && RETURN_CODE=${?};
-                                fi
-                            fi
+                            createWebInstance && RETURN_CODE=${?};
                         fi
                         ;;
                     *)
-                        if [ ! -s ${BUILD_CONFIG_FILE} ]
-                        then
-                            RETURN_CODE=1;
-
-                            ${LOGGER} "INFO" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Build processing has been disabled.";
-                        else
-                            . ${BUILD_CONFIG_FILE};
-
-                            if [ -z "${BUILD_LOADED}" ]
-                            then
-                                ${LOGGER} "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to load build configuration. Cannot continue.";
-
-                                RETURN_CODE=21;
-                            else
-                                createWebInstance && RETURN_CODE=${?};
-                            fi
-                        fi
+                        createWebInstance && RETURN_CODE=${?};
                         ;;
                 esac
             fi
