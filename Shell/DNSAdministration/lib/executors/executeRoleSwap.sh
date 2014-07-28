@@ -222,7 +222,7 @@ function switch_to_slave
 
                 ERROR_COUNT=0;
 
-                for ZONE_CONFIG in $(ls -ltr ${NAMED_ROOT}/${NAMED_CONF_DIR} | awk '{print $9}')
+                for ZONE_CONFIG in $(ls -ltr ${NAMED_ROOT}/${NAMED_CONF_DIR} | awk '{print $NF}')
                 do
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating on ${ZONE_CONFIG}";
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating working copy..";
@@ -702,7 +702,7 @@ function switch_to_master
 
                     ERROR_COUNT=0;
 
-                    for ZONE_CONFIG in $(ls -ltr ${NAMED_ROOT}/${NAMED_CONF_DIR} | awk '{print $9}')
+                    for ZONE_CONFIG in $(ls -ltr ${NAMED_ROOT}/${NAMED_CONF_DIR} | awk '{print $NF}')
                     do
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating on ${ZONE_CONFIG}";
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creating working copy..";

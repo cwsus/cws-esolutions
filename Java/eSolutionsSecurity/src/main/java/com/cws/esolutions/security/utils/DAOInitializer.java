@@ -32,34 +32,43 @@ import java.util.Properties;
 import javax.naming.Context;
 import java.sql.SQLException;
 import org.slf4j.LoggerFactory;
+import javax.net.ssl.SSLContext;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.io.FileNotFoundException;
 import com.unboundid.util.ssl.SSLUtil;
 import javax.net.ssl.SSLSocketFactory;
+import com.unboundid.ldap.sdk.BindResult;
 import com.unboundid.ldap.sdk.ResultCode;
+import com.unboundid.ldap.sdk.BindRequest;
 import com.unboundid.ldap.sdk.LDAPException;
+import com.unboundid.ldap.sdk.ExtendedResult;
 import com.unboundid.ldap.sdk.LDAPConnection;
 import java.security.GeneralSecurityException;
 import org.apache.commons.dbcp.BasicDataSource;
+import com.unboundid.ldap.sdk.SimpleBindRequest;
 import com.unboundid.ldap.sdk.LDAPConnectionPool;
 import com.unboundid.ldap.sdk.LDAPConnectionOptions;
 import com.unboundid.util.ssl.TrustStoreTrustManager;
+import com.unboundid.ldap.sdk.StartTLSPostConnectProcessor;
+import com.unboundid.ldap.sdk.extensions.StartTLSExtendedRequest;
 
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.enums.AuthRepositoryType;
 import com.cws.esolutions.security.exception.SecurityServiceException;
+import com.cws.esolutions.security.config.enums.RepositoryConnectionType;
 /**
  * @author khuntly
  * @version 1.0
  */
 public final class DAOInitializer
 {
+    private static final String CONN_TYPE = "connType";
     private static final String REPO_TYPE = "repoType";
-    private static final String IS_SECURE = "isSecure";
     private static final String TRUST_FILE= "trustStoreFile";
+    private static final String TRUST_SALT = "trustStoreSalt";
     private static final String TRUST_PASS = "trustStorePass";
     private static final String TRUST_TYPE = "trustStoreType";
     private static final String DS_CONTEXT = "java:comp/env/";
@@ -109,77 +118,169 @@ public final class DAOInitializer
             }
 
             AuthRepositoryType repoType = AuthRepositoryType.valueOf(connProps.getProperty(DAOInitializer.REPO_TYPE));
+            RepositoryConnectionType connType = RepositoryConnectionType.valueOf(connProps.getProperty(DAOInitializer.CONN_TYPE));
 
             if (DEBUG)
             {
                 DEBUGGER.debug("AuthRepositoryType: {}", repoType);
+                DEBUGGER.debug("RepositoryConnectionType: {}", connType);
             }
 
             switch (repoType)
             {
                 case LDAP:
+                    SSLUtil sslUtil = null;
                     LDAPConnection ldapConn = null;
+                    LDAPConnectionPool connPool = null;
                     LDAPConnectionOptions connOpts = new LDAPConnectionOptions();
-
+            
                     connOpts.setAutoReconnect(true);
                     connOpts.setAbandonOnTimeout(true);
                     connOpts.setBindWithDNRequiresPassword(true);
                     connOpts.setConnectTimeoutMillis(Integer.parseInt(connProps.getProperty(DAOInitializer.CONN_TIMEOUT)));
                     connOpts.setResponseTimeoutMillis(Integer.parseInt(connProps.getProperty(DAOInitializer.READ_TIMEOUT)));
-
+            
                     if (DEBUG)
                     {
                         DEBUGGER.debug("LDAPConnectionOptions: {}", connOpts);
                     }
 
-                    if (Boolean.valueOf(connProps.getProperty(DAOInitializer.IS_SECURE)))
+                    switch (connType)
                     {
-                        SSLUtil sslUtil = new SSLUtil(new TrustStoreTrustManager(
+                        case CONNECTION_TYPE_INSECURE:
+                            ldapConn = new LDAPConnection(connOpts, connProps.getProperty(DAOInitializer.REPOSITORY_HOST),
+                                    Integer.parseInt(connProps.getProperty(DAOInitializer.REPOSITORY_PORT)));
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+                            }
+
+                            if (!(ldapConn.isConnected()))
+                            {
+                                throw new LDAPException(ResultCode.CONNECT_ERROR, "Failed to establish an LDAP connection");
+                            }
+
+                            connPool = new LDAPConnectionPool(ldapConn,
+                                    Integer.parseInt(connProps.getProperty(DAOInitializer.MIN_CONNECTIONS)),
+                                    Integer.parseInt(connProps.getProperty(DAOInitializer.MAX_CONNECTIONS)));
+
+                            break;
+                        case CONNECTION_TYPE_SSL:
+                            sslUtil = new SSLUtil(new TrustStoreTrustManager(
+                                    connProps.getProperty(DAOInitializer.TRUST_FILE),
+                                    PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.TRUST_PASS),
+                                            connProps.getProperty(DAOInitializer.TRUST_SALT).length()).toCharArray(),
+                                    connProps.getProperty(DAOInitializer.TRUST_TYPE),
+                                    true));
+            
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("SSLUtil: {}", sslUtil);
+                            }
+            
+                            SSLSocketFactory sslSocketFactory = sslUtil.createSSLSocketFactory();
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("SSLSocketFactory: {}", sslSocketFactory);
+                            }
+
+                            ldapConn = new LDAPConnection(sslSocketFactory, connOpts, connProps.getProperty(DAOInitializer.REPOSITORY_HOST),
+                                    Integer.parseInt(connProps.getProperty(DAOInitializer.REPOSITORY_PORT)));
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+                            }
+
+                            if (!(ldapConn.isConnected()))
+                            {
+                                throw new LDAPException(ResultCode.CONNECT_ERROR, "Failed to establish an LDAP connection");
+                            }
+                            
+                            connPool = new LDAPConnectionPool(ldapConn,
+                                    Integer.parseInt(connProps.getProperty(DAOInitializer.MIN_CONNECTIONS)),
+                                    Integer.parseInt(connProps.getProperty(DAOInitializer.MAX_CONNECTIONS)));
+
+                            break;
+                        case CONNECTION_TYPE_TLS:
+                            ldapConn = new LDAPConnection(connOpts, connProps.getProperty(DAOInitializer.REPOSITORY_HOST),
+                                    Integer.parseInt(connProps.getProperty(DAOInitializer.REPOSITORY_PORT)));
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+                            }
+
+                            if (!(ldapConn.isConnected()))
+                            {
+                                throw new LDAPException(ResultCode.CONNECT_ERROR, "Failed to establish an LDAP connection");
+                            }
+
+                            sslUtil = new SSLUtil(new TrustStoreTrustManager(
                                 connProps.getProperty(DAOInitializer.TRUST_FILE),
-                                connProps.getProperty(DAOInitializer.TRUST_PASS).toCharArray(),
+                                PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.TRUST_PASS),
+                                    connProps.getProperty(DAOInitializer.TRUST_SALT).length()).toCharArray(),
                                 connProps.getProperty(DAOInitializer.TRUST_TYPE),
                                 true));
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("SSLUtil: {}", sslUtil);
-                        }
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("SSLUtil: {}", sslUtil);
+                            }
 
-                        SSLSocketFactory sslSocketFactory = sslUtil.createSSLSocketFactory();
+                            SSLContext sslContext = sslUtil.createSSLContext();
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("SSLSocketFactory: {}", sslSocketFactory);
-                        }
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("SSLContext: {}", sslContext);
+                            }
 
-                        ldapConn = new LDAPConnection(sslSocketFactory, connOpts, connProps.getProperty(DAOInitializer.REPOSITORY_HOST),
-                                Integer.parseInt(connProps.getProperty(DAOInitializer.REPOSITORY_PORT)),
-                                connProps.getProperty(DAOInitializer.REPOSITORY_USER),
+                            StartTLSExtendedRequest startTLS = new StartTLSExtendedRequest(sslContext);
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("StartTLSExtendedRequest: {}", startTLS);
+                            }
+
+                            ExtendedResult extendedResult = ldapConn.processExtendedOperation(startTLS);
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("ExtendedResult: {}", extendedResult);
+                            }
+                            
+                            BindRequest bindRequest = new SimpleBindRequest(connProps.getProperty(DAOInitializer.REPOSITORY_USER),
                                 PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.REPOSITORY_PASS),
-                                        connProps.getProperty(DAOInitializer.REPOSITORY_SALT).length()));
-                    }
-                    else
-                    {
-                        ldapConn = new LDAPConnection(connOpts, connProps.getProperty(DAOInitializer.REPOSITORY_HOST),
-                                Integer.parseInt(connProps.getProperty(DAOInitializer.REPOSITORY_PORT)),
-                                connProps.getProperty(DAOInitializer.REPOSITORY_USER),
-                                PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.REPOSITORY_PASS),
-                                        connProps.getProperty(DAOInitializer.REPOSITORY_SALT).length()));
-                    }
+                                    connProps.getProperty(DAOInitializer.REPOSITORY_SALT).length()));
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("LDAPConnection: {}", ldapConn);
-                    }
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("BindRequest: {}", bindRequest);
+                            }
 
-                    if (!(ldapConn.isConnected()))
-                    {
-                        throw new LDAPException(ResultCode.CONNECT_ERROR, "Failed to establish an LDAP connection");
-                    }
+                            BindResult bindResult = ldapConn.bind(bindRequest);
 
-                    LDAPConnectionPool connPool = new LDAPConnectionPool(ldapConn,
-                            Integer.parseInt(connProps.getProperty(DAOInitializer.MIN_CONNECTIONS)),
-                            Integer.parseInt(connProps.getProperty(DAOInitializer.MAX_CONNECTIONS)));
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("BindResult: {}", bindResult);
+                            }
+
+                            StartTLSPostConnectProcessor tlsProcessor = new StartTLSPostConnectProcessor(sslContext);
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("StartTLSPostConnectProcessor: {}", tlsProcessor);
+                            }
+
+                            connPool = new LDAPConnectionPool(ldapConn,
+                                    Integer.parseInt(connProps.getProperty(DAOInitializer.MIN_CONNECTIONS)),
+                                    Integer.parseInt(connProps.getProperty(DAOInitializer.MAX_CONNECTIONS)),
+                                    tlsProcessor);
+
+                            break;
+                    }
 
                     if (DEBUG)
                     {
@@ -192,7 +293,6 @@ public final class DAOInitializer
                     }
 
                     bean.setAuthDataSource(connPool);
-
                     break;
                 case SQL:
                     // the isContainer only matters here

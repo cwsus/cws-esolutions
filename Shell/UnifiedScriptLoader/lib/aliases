@@ -16,6 +16,9 @@
 #
 #==============================================================================
 
+## PERMANENT ALIAS - DONT EVER REMOVE THIS!!
+alias ksh="$(/usr/bin/env which ksh)";
+
 ## common aliases
 alias mktemp='/usr/bin/env mktemp --tmpdir=${TMP_DIRECTORY}';
 alias netstat='/usr/bin/env netstat -an';
@@ -23,19 +26,23 @@ alias dig='/usr/bin/env dig +noedns';
 alias mkdir='/usr/bin/env mkdir -p';
 alias tar='/usr/bin/env tar -v';
 alias gzip='/usr/bin/env gzip -v';
-alias sudon='/usr/bin/env sudo -u named';
 alias sudor='/usr/bin/env sudo -u root';
 alias echoe='/usr/bin/env echo -ne';
 alias local='typeset';
 
 ## alias java appropriately
-[ ! -z "${SYSTEM_ARCHITECTURE}" ] && [ "${SYSTEM_ARCHITECTURE}" = "64" ] || [ "${SYSTEM_ARCHITECTURE}" = "x86_64" ] && alias java="${JAVA_HOME}/bin/java -d64";
-[ ! -z "${SYSTEM_ARCHITECTURE}" ] && [ "${SYSTEM_ARCHITECTURE}" = "32" ] || [ "${SYSTEM_ARCHITECTURE}" != "x86_64" ] && alias java="${JAVA_HOME}/bin/java";
+[ ! -z "${SYSTEM_ARCHITECTURE}" ] && [ "${SYSTEM_ARCHITECTURE}" = "64" ] || [ "${SYSTEM_ARCHITECTURE}" = "x86_64" ] && alias java="${JAVA_HOME}/bin/java -d64 -classpath \"${CLASSPATH}\"";
+[ ! -z "${SYSTEM_ARCHITECTURE}" ] && [ "${SYSTEM_ARCHITECTURE}" = "32" ] || [ "${SYSTEM_ARCHITECTURE}" != "x86_64" ] && alias java="${JAVA_HOME}/bin/java -classpath \"${CLASSPATH}\"";
 
+## safety
 alias rm='/usr/bin/env rm --preserve-root'
 alias chown='/usr/bin/env chown --preserve-root';
 alias chmod='/usr/bin/env chmod --preserve-root';
 alias chgrp='/usr/bin/env chgrp --preserve-root';
+
+## less annoyance
+alias reset='/usr/bin/env reset > /dev/null 2>&1';
+alias clear='/usr/bin/env clear > /dev/null 2>&1';
 
 case $(uname) in
     SunOS)

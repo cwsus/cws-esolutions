@@ -30,9 +30,12 @@ import java.util.Arrays;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.Connection;
+
 import javax.sql.DataSource;
+
 import java.sql.SQLException;
 import java.sql.CallableStatement;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
@@ -99,24 +102,18 @@ public class SQLAuthenticator implements Authenticator
             if (resultSet.next())
             {
                 resultSet.first();
-                userAccount = new ArrayList<Object>(
-                        Arrays.asList(
-                            resultSet.getString(authData.getCommonName()),
-                            resultSet.getString(authData.getUserId()),
-                            resultSet.getString(authData.getSecret()),
-                            resultSet.getInt(authData.getLockCount()),
-                            resultSet.getTimestamp(authData.getLastLogin()),
-                            resultSet.getTimestamp(authData.getExpiryDate()),
-                            resultSet.getString(authData.getSurname()),
-                            resultSet.getString(authData.getGivenName()),
-                            resultSet.getString(authData.getDisplayName()),
-                            resultSet.getString(authData.getEmailAddr()),
-                            resultSet.getString(authData.getPagerNumber()),
-                            resultSet.getString(authData.getTelephoneNumber()),
-                            resultSet.getString(authData.getMemberOf()),
-                            resultSet.getBoolean(authData.getIsSuspended()),
-                            resultSet.getBoolean(authData.getOlrSetupReq()),
-                            resultSet.getBoolean(authData.getOlrLocked())));
+
+                userAccount = new ArrayList<Object>();
+
+                for (String returningAttribute : userAttributes.getReturningAttributes())
+                {
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("returningAttribute: {}", returningAttribute);
+                    }
+
+                    userAccount.add(resultSet.getString(returningAttribute));
+                }
 
                 if (DEBUG)
                 {

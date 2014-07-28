@@ -72,7 +72,7 @@ function validateFreePort
     ## check typeset config first
     if [ ! -z "${PLUGIN_WORK_DIR}" ] && [ -d ${PLUGIN_WORK_DIR} ]
     then
-        for SITE_BUILD in $(ls -ltr ${PLUGIN_WORK_DIR} | grep ^d)
+        for SITE_BUILD in $(ls -ltr ${PLUGIN_WORK_DIR} | grep ^d | awk '{print $NF}')
         do
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_BUILD -> ${SITE_BUILD}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Validating port number ${1} on server ${SITE_BUILD} ..";

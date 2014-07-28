@@ -51,33 +51,42 @@ public class AccessControlServiceImpl implements IAccessControlService
             DEBUGGER.debug("serviceGuid: {}", serviceGuid);
         }
 
-        for (String group : userAccount.getGroups())
+        boolean isAuthorized = false;
+
+        if (secConfig.securityEnabled())
         {
-            if (DEBUG)
+            for (String group : userAccount.getGroups())
             {
-                DEBUGGER.debug("UserGroup: {}", group);
-            }
-
-            try
-            {
-                List<String> services = ref.listServicesForGroup(group);
-
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("List<String>: {}", services);
+                    DEBUGGER.debug("UserGroup: {}", group);
                 }
-
-                if (services.contains(serviceGuid))
+    
+                try
                 {
-                    return true;
+                    List<String> services = ref.listServicesForGroup(group);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("List<String>: {}", services);
+                    }
+    
+                    if (services.contains(serviceGuid))
+                    {
+                        isAuthorized=true;
+                    }
                 }
+                catch (SQLException sqx)
+                {
+                    ERROR_RECORDER.error(sqx.getMessage(), sqx);
+    			}
             }
-            catch (SQLException sqx)
-            {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
-			}
+        }
+        else
+        {
+            isAuthorized=true;
         }
 
-        return false;
+        return isAuthorized;
     }
 }

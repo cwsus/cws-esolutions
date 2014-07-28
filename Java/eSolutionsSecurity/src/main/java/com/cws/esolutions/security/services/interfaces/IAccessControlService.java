@@ -29,7 +29,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
@@ -44,6 +46,8 @@ public interface IAccessControlService
 {
     static final String CNAME = IAccessControlService.class.getName();
     static final ISecurityReferenceDAO ref = new SecurityReferenceDAOImpl();
+    static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
+    static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

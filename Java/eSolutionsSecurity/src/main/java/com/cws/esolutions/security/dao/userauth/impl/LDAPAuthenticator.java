@@ -95,8 +95,8 @@ public class LDAPAuthenticator implements Authenticator
                 throw new ConnectException("Failed to create LDAP connection using the specified information");
             }
 
-            Filter searchFilter = Filter.create("(&(objectClass=" + authData.getBaseObject() + ")" +
-                "(&(uid=" + username+ ")))");
+            Filter searchFilter = Filter.create("(&(objectClass=" + repoConfig.getBaseObject() + ")" +
+                "(&(" + userAttributes.getUserId() + "=" + username+ ")))");
 
             if (DEBUG)
             {
@@ -104,7 +104,7 @@ public class LDAPAuthenticator implements Authenticator
             }
 
             SearchRequest searchRequest = new SearchRequest(
-                authData.getRepositoryUserBase(),
+                repoConfig.getRepositoryUserBase() + "," + repoConfig.getRepositoryBaseDN(),
                 SearchScope.SUB,
                 searchFilter);
 
@@ -146,24 +146,22 @@ public class LDAPAuthenticator implements Authenticator
                 DEBUGGER.debug("BindResult: {}", bindResult);
             }
 
-            userAccount = new ArrayList<Object>(
-                Arrays.asList(
-                    entry.getAttributeValue(authData.getCommonName()),
-                    entry.getAttributeValue(authData.getUserId()),
-                    entry.getAttributeValue(authData.getSecret()),
-                    entry.getAttributeValueAsInteger(authData.getLockCount()),
-                    entry.getAttributeValueAsDate(authData.getLastLogin()),
-                    entry.getAttributeValueAsDate(authData.getExpiryDate()),
-                    entry.getAttributeValue(authData.getSurname()),
-                    entry.getAttributeValue(authData.getGivenName()),
-                    entry.getAttributeValue(authData.getDisplayName()),
-                    entry.getAttributeValue(authData.getEmailAddr()),
-                    entry.getAttributeValue(authData.getPagerNumber()),
-                    entry.getAttributeValue(authData.getTelephoneNumber()),
-                    entry.getAttributeValue(authData.getMemberOf()),
-                    entry.getAttributeValueAsBoolean(authData.getIsSuspended()),
-                    entry.getAttributeValueAsBoolean(authData.getOlrSetupReq()),
-                    entry.getAttributeValueAsBoolean(authData.getOlrLocked())));
+            userAccount = new ArrayList<Object>();
+
+            for (String returningAttribute : userAttributes.getReturningAttributes())
+            {
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("returningAttribute: {}", returningAttribute);
+                }
+
+                userAccount.add(entry.getAttributeValue(returningAttribute));
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("userAccount: {}", userAccount);
+            }
 
             Filter roleFilter = Filter.create("(&(objectClass=groupOfUniqueNames)" +
                     "(&(uniqueMember=" + entry.getDN() + ")))");
@@ -174,10 +172,10 @@ public class LDAPAuthenticator implements Authenticator
             }
 
             SearchRequest roleSearch = new SearchRequest(
-                authData.getRepositoryRoleBase(),
+                repoConfig.getRepositoryRoleBase(),
                 SearchScope.SUB,
                 roleFilter,
-                "cn");
+                userAttributes.getCommonName());
 
             if (DEBUG)
             {
@@ -290,9 +288,9 @@ public class LDAPAuthenticator implements Authenticator
                 throw new ConnectException("Failed to create LDAP connection using the specified information");
             }
 
-            Filter searchFilter = Filter.create("(&(objectClass=" + authData.getBaseObject() + ")" +
-                "(&(cn=" + userGuid + "))" +
-                "(&(uid=" + userId + ")))");
+            Filter searchFilter = Filter.create("(&(objectClass=" + repoConfig.getBaseObject() + ")" +
+                "(&(" + userAttributes.getCommonName() + "=" + userGuid + "))" +
+                "(&(" + userAttributes.getUserId() + "=" + userId + ")))");
 
             if (DEBUG)
             {
@@ -300,7 +298,7 @@ public class LDAPAuthenticator implements Authenticator
             }
 
             SearchRequest searchRequest = new SearchRequest(
-                authData.getRepositoryUserBase(),
+                repoConfig.getRepositoryUserBase() + "," + repoConfig.getRepositoryBaseDN(),
                 SearchScope.SUB,
                 searchFilter);
 
@@ -320,8 +318,8 @@ public class LDAPAuthenticator implements Authenticator
 
             userSecurity = new ArrayList<>(
                 Arrays.asList(
-                    entry.getAttributeValue(authData.getSecQuestionOne()),
-                    entry.getAttributeValue(authData.getSecQuestionTwo())));
+                    entry.getAttributeValue(securityAttributes.getSecQuestionOne()),
+                    entry.getAttributeValue(securityAttributes.getSecQuestionTwo())));
 
             if (DEBUG)
             {
@@ -393,9 +391,9 @@ public class LDAPAuthenticator implements Authenticator
                 throw new ConnectException("Failed to create LDAP connection using the specified information");
             }
 
-            Filter searchFilter = Filter.create("(&(objectClass=" + authData.getBaseObject() + ")" +
-                "(&(uid=" + userId + "))" +
-                "(&(cn=" + userGuid + ")))");
+            Filter searchFilter = Filter.create("(&(objectClass=" + repoConfig.getBaseObject() + ")" +
+                    "(&(" + userAttributes.getCommonName() + "=" + userGuid + "))" +
+                    "(&(" + userAttributes.getUserId() + "=" + userId + ")))");
 
             if (DEBUG)
             {
@@ -403,10 +401,10 @@ public class LDAPAuthenticator implements Authenticator
             }
 
             SearchRequest searchRequest = new SearchRequest(
-                authData.getRepositoryUserBase(),
+                repoConfig.getRepositoryUserBase() + "," + repoConfig.getRepositoryBaseDN(),
                 SearchScope.SUB,
                 searchFilter,
-                authData.getSecret());
+                securityAttributes.getSecret());
 
             if (DEBUG)
             {
@@ -420,7 +418,7 @@ public class LDAPAuthenticator implements Authenticator
                 throw new AuthenticatorException("No user was found for the provided user information");
             }
 
-            otpSecret = searchResult.getSearchEntries().get(0).getAttributeValue(authData.getSecret());
+            otpSecret = searchResult.getSearchEntries().get(0).getAttributeValue(securityAttributes.getSecret());
         }
         catch (LDAPException lx)
         {
@@ -488,14 +486,14 @@ public class LDAPAuthenticator implements Authenticator
             }
 
             // validate the question
-            Filter searchFilter = Filter.create("(&(objectClass=" + authData.getBaseObject() + ")" +
-                "(&(cn=" + userGuid + "))" +
-                "(&(uid=" + userId + "))" +
-                "(&(" + authData.getSecAnswerOne() + "=" + values.get(0) + "))" +
-                "(&(" + authData.getSecAnswerTwo() + "=" + values.get(1) + ")))");
+            Filter searchFilter = Filter.create("(&(objectClass=" + repoConfig.getBaseObject() + ")" +
+                "(&(" + userAttributes.getCommonName() + "=" + userGuid + "))" +
+                "(&(" + userAttributes.getUserId() + "=" + userId + "))" +
+                "(&(" + securityAttributes.getSecAnswerOne() + "=" + values.get(0) + "))" +
+                "(&(" + securityAttributes.getSecAnswerTwo() + "=" + values.get(1) + ")))");
 
             SearchRequest searchReq = new SearchRequest(
-                authData.getRepositoryUserBase(),
+                repoConfig.getRepositoryUserBase() + "," + repoConfig.getRepositoryBaseDN(),
                 SearchScope.SUB,
                 searchFilter);
 

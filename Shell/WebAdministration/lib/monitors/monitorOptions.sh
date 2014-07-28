@@ -71,7 +71,7 @@ function monitorEnabledOptions
         if [ "${WS_PLATFORM}" = "${IPLANET_TYPE_IDENTIFIER}" ]
         then
             ## ok, we know we're on an iPlanet server. poll for the list of servers to validate
-            set -A VALIDATE_SERVER_LIST $(ls -ltr ${IPLANET_ROOT} | grep ${IPLANET_CERT_STORE_PREFIX} | awk '{print $9}');
+            set -A VALIDATE_SERVER_LIST $(ls -ltr ${IPLANET_ROOT} | grep ${IPLANET_CERT_STORE_PREFIX} | awk '{print $NF}');
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST -> ${VALIDATE_SERVER_LIST}";
 
@@ -128,7 +128,7 @@ function monitorEnabledOptions
         elif [ "${WS_PLATFORM}" = "${IHS_TYPE_IDENTIFIER}" ]
         then
             ## IHS host.
-            set -A VALIDATE_SERVER_LIST $(ls -ltr ${IHS_ROOT} | grep ${IHS_WEB_IDENTIFIER} | awk '{print $9}');
+            set -A VALIDATE_SERVER_LIST $(ls -ltr ${IHS_ROOT} | grep ${IHS_WEB_IDENTIFIER} | awk '{print $NF}');
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST -> ${VALIDATE_SERVER_LIST[@]}";
 

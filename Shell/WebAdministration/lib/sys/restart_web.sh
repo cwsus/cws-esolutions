@@ -58,13 +58,13 @@ then
 
         export SOFTTOKEN_DIR; SOFTTOKEN_DIR=/opt/enterpriseIST_61/.sunw;
         SUN_INSTALL_ROOT=/opt/enterpriseIST_61;
-        SUN_INSTANCE_LIST=`ls -ltr ${SUN_INSTALL_ROOT} | grep ${SITE_PREFIX} | grep -v "acl" | grep -v ${SITE_PREFIX}admserv | grep -v ${SITE_PREFIX}${SYSTEM_HOSTNAME} | awk '{print $9}'`
+        SUN_INSTANCE_LIST=`ls -ltr ${SUN_INSTALL_ROOT} | grep ${SITE_PREFIX} | grep -v "acl" | grep -v ${SITE_PREFIX}admserv | grep -v ${SITE_PREFIX}${SYSTEM_HOSTNAME} | awk '{print $NF}'`
     else
         WEB_SYSDOWN_SUBJECT="ALERT 0017: Web instance down - PRD";
 
         export SOFTTOKEN_DIR; SOFTTOKEN_DIR=/opt/enterprise_61/.sunw;
         SUN_INSTALL_ROOT=/opt/enterprise_61;
-        SUN_INSTANCE_LIST=`ls -ltr ${SUN_INSTALL_ROOT} | grep ${SITE_PREFIX} | grep -v "acl" | grep -v ${SITE_PREFIX}admserv | grep -v ${SITE_PREFIX}${SYSTEM_HOSTNAME} | awk '{print $9}'`
+        SUN_INSTANCE_LIST=`ls -ltr ${SUN_INSTALL_ROOT} | grep ${SITE_PREFIX} | grep -v "acl" | grep -v ${SITE_PREFIX}admserv | grep -v ${SITE_PREFIX}${SYSTEM_HOSTNAME} | awk '{print $NF}'`
     fi
 elif [ -d /opt/enterpriseQA_61 ]
 then
@@ -72,14 +72,14 @@ then
 
     export SOFTTOKEN_DIR; SOFTTOKEN_DIR=/opt/enterpriseQA_61/.sunw;
     SUN_INSTALL_ROOT=/opt/enterpriseQA_61;
-    SUN_INSTANCE_LIST=`ls -ltr ${SUN_INSTALL_ROOT} | grep ${SITE_PREFIX} | grep -v "acl" | grep -v ${SITE_PREFIX}admserv | grep -v ${SITE_PREFIX}${SYSTEM_HOSTNAME} | awk '{print $9}'`
+    SUN_INSTANCE_LIST=`ls -ltr ${SUN_INSTALL_ROOT} | grep ${SITE_PREFIX} | grep -v "acl" | grep -v ${SITE_PREFIX}admserv | grep -v ${SITE_PREFIX}${SYSTEM_HOSTNAME} | awk '{print $NF}'`
 elif [ -d /opt/enterpriseIST_61 ]
 then
     WEB_SYSDOWN_SUBJECT="ALERT 0017: Web instance down - DEV";
 
     export SOFTTOKEN_DIR; SOFTTOKEN_DIR=/opt/enterpriseIST_61/.sunw;
     SUN_INSTALL_ROOT=/opt/enterpriseIST_61;
-    SUN_INSTANCE_LIST=`ls -ltr ${SUN_INSTALL_ROOT} | grep ${SITE_PREFIX} | grep -v "acl" | grep -v ${SITE_PREFIX}admserv | grep -v ${SITE_PREFIX}${SYSTEM_HOSTNAME} | awk '{print $9}'`
+    SUN_INSTANCE_LIST=`ls -ltr ${SUN_INSTALL_ROOT} | grep ${SITE_PREFIX} | grep -v "acl" | grep -v ${SITE_PREFIX}admserv | grep -v ${SITE_PREFIX}${SYSTEM_HOSTNAME} | awk '{print $NF}'`
 else
     exit 1;
 fi
@@ -447,7 +447,7 @@ case ${ACTION} in
 
         echo "Listing server startup scripts...";
 
-        for NODE in `ls -ltr ${TMP_PATH} | grep ${START_SCRIPT_FILE_NAME} | awk '{print $9}'`
+        for NODE in `ls -ltr ${TMP_PATH} | grep ${START_SCRIPT_FILE_NAME} | awk '{print $NF}'`
         do
             echo ${TMP_PATH}/${NODE};
         done
@@ -495,7 +495,7 @@ case ${ACTION} in
 
         echo "Listing server shutdown scripts..."
 
-        for NODE in `ls -ltr ${TMP_PATH} | grep ${STOP_SCRIPT_FILE_NAME} | awk '{print $9}'`
+        for NODE in `ls -ltr ${TMP_PATH} | grep ${STOP_SCRIPT_FILE_NAME} | awk '{print $NF}'`
         do
             echo ${TMP_PATH}/${NODE}
         done

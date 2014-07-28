@@ -133,7 +133,7 @@ public class SecurityServiceInitializer
                 DEBUGGER.debug("dsMap: {}", dsMap);
             }
 
-            if (!(configData.getResourceConfig().getDsManager().isEmpty()))
+            if (configData.getResourceConfig() != null)
             {
                 if (dsMap == null)
                 {

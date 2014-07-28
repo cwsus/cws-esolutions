@@ -166,7 +166,7 @@ typeset RETURN_CODE=0;
         elif [ "${WS_PLATFORM}" = "${IHS_TYPE_IDENTIFIER}" ]
         then
             ## ihs host
-            set -A VALIDATE_SERVER_LIST $(ls -ltr ${IHS_CERT_DIR} | grep ${IHS_DB_CRT_SUFFIX} | awk '{print $9}');
+            set -A VALIDATE_SERVER_LIST $(ls -ltr ${IHS_CERT_DIR} | grep ${IHS_DB_CRT_SUFFIX} | awk '{print $NF}');
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST -> ${VALIDATE_SERVER_LIST}";
 

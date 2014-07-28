@@ -1128,20 +1128,17 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     UserAccount loadAccount = new UserAccount();
                     loadAccount.setGuid((String) userData.get(0));
                     loadAccount.setUsername((String) userData.get(1));
-                    loadAccount.setFailedCount(((userData.get(2) == null) ? 0 : (Integer) userData.get(2)));
-                    loadAccount.setLastLogin(((userData.get(3) == null) ? new Date(1L) : new Date((Long) userData.get(3))));
-                    loadAccount.setExpiryDate(((userData.get(4) == null) ? new Date(System.currentTimeMillis()) : (Date) userData.get(4)));
-                    loadAccount.setSurname((String) userData.get(5));
-                    loadAccount.setGivenName((String) userData.get(6));
-                    loadAccount.setDisplayName((String) userData.get(7));
-                    loadAccount.setEmailAddr((String) userData.get(8));
-                    loadAccount.setPagerNumber((userData.get(9) == null) ? SecurityServiceConstants.NOT_SET : (String) userData.get(9));
-                    loadAccount.setTelephoneNumber((userData.get(10) == null) ? SecurityServiceConstants.NOT_SET : (String) userData.get(10));
-                    loadAccount.setGroups(new String[] { (String) userData.get(11) });
-                    loadAccount.setSuspended(((userData.get(12) == null) ? Boolean.FALSE : (Boolean) userData.get(12)));
-                    loadAccount.setOlrSetup(((userData.get(13) == null) ? Boolean.FALSE : (Boolean) userData.get(13)));
-                    loadAccount.setOlrLocked(((userData.get(14) == null) ? Boolean.FALSE : (Boolean) userData.get(14)));
+                    loadAccount.setSurname((String) userData.get(2));
+                    loadAccount.setGivenName((String) userData.get(3));
+                    loadAccount.setEmailAddr((String) userData.get(4));
+                    loadAccount.setDisplayName((String) userData.get(5));
+                    loadAccount.setTelephoneNumber((userData.get(6) == null) ? SecurityServiceConstants.NOT_SET : (String) userData.get(6));
 
+                    if (userData.size() > 7)
+                    {
+                        loadAccount.setManagerGuid((String) userData.get(7));
+                        loadAccount.setManagerName((String) userData.get(8));
+                    }
                     if (DEBUG)
                     {
                         DEBUGGER.debug("UserAccount: {}", loadAccount);

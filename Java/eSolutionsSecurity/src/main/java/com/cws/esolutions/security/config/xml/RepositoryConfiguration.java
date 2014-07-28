@@ -17,7 +17,7 @@ package com.cws.esolutions.security.config.xml;
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security.config.xml
- * File: SecurityConfigurationData.java
+ * File: RepositoryConfiguration.java
  *
  * History
  *
@@ -29,9 +29,9 @@ import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
@@ -40,66 +40,27 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  * @version 1.0
  * @see java.io.Serializable
  */
-@XmlRootElement(name = "configuration")
+@XmlType(name = "repositoryConfiguration")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class SecurityConfigurationData implements Serializable
+public final class RepositoryConfiguration implements Serializable
 {
-    private KeyConfig keyConfig = null;
-    private SecurityConfig securityConfig = null;
-    private ResourceConfig resourceConfig = null;
-    private ExceptionConfig exceptionConfig = null;
-    private RepositoryConfiguration repoConfig = null;
-    private FileSecurityConfig fileSecurityConfig = null;
+    private String baseObject = null;
+    private String repositoryBaseDN = null;
+    private String repositoryUserBase = null;
+    private String repositoryRoleBase = null;
+    private UserReturningAttributes userAttributes = null;
+    private SecurityReturningAttributes securityAttributes = null;
 
-    private static final long serialVersionUID = -795898942156658458L;
-    private static final String CNAME = SecurityConfigurationData.class.getName();
+    private static final long serialVersionUID = -4767557511096921048L;
+    private static final String CNAME = RepositoryConfiguration.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
 
-    public final void setSecurityConfig(final SecurityConfig value)
+    public final void setBaseObject(final String value)
     {
-        final String methodName = SecurityConfigurationData.CNAME + "#setHostName(final SecurityConfig value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-        
-        this.securityConfig = value;
-    }
-
-    public final void setRepoConfig(final RepositoryConfiguration value)
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#setRepoConfig(final RepositoryConfiguration value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-        
-        this.repoConfig = value;
-    }
-
-    public final void setResourceConfig(final ResourceConfig value)
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#setHostName(final ResourceConfig value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-        
-        this.resourceConfig = value;
-    }
-
-    public final void setKeyConfig(final KeyConfig value)
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#setKeyConfig(final KeyConfig value)";
+        final String methodName = RepositoryConfiguration.CNAME + "#setBaseObject(final String value)";
 
         if (DEBUG)
         {
@@ -107,12 +68,12 @@ public final class SecurityConfigurationData implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.keyConfig = value;
+        this.baseObject = value;
     }
 
-    public final void setExceptionConfig(final ExceptionConfig value)
+    public final void setRepositoryBaseDN(final String value)
     {
-        final String methodName = SecurityConfigurationData.CNAME + "#setExceptionConfig(final ExceptionConfig value)";
+        final String methodName = RepositoryConfiguration.CNAME + "#setRepositoryBaseDN(final String value)";
 
         if (DEBUG)
         {
@@ -120,12 +81,12 @@ public final class SecurityConfigurationData implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.exceptionConfig = value;
+        this.repositoryBaseDN = value;
     }
 
-    public final void setFileSecurityConfig(final FileSecurityConfig value)
+    public final void setRepositoryUserBase(final String value)
     {
-        final String methodName = SecurityConfigurationData.CNAME + "#setFileSecurityConfig(final ExceptionConfig value)";
+        final String methodName = RepositoryConfiguration.CNAME + "#setRepositoryUserBase(final String value)";
 
         if (DEBUG)
         {
@@ -133,97 +94,136 @@ public final class SecurityConfigurationData implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.fileSecurityConfig = value;
+        this.repositoryUserBase = value;
     }
 
-    @XmlElement(name = "security-config")
-    public final SecurityConfig getSecurityConfig()
+    public final void setRepositoryRoleBase(final String value)
     {
-        final String methodName = SecurityConfigurationData.CNAME + "#getSecurityConfig()";
+        final String methodName = RepositoryConfiguration.CNAME + "#setRepositoryRoleBase(final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.securityConfig);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.repositoryRoleBase = value;
+    }
+
+    public final void setSecurityAttributes(final SecurityReturningAttributes value)
+    {
+        final String methodName = RepositoryConfiguration.CNAME + "#setSecurityAttributes(final SecurityReturningAttributes value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.securityAttributes = value;
+    }
+
+    public final void setUserAttributes(final UserReturningAttributes value)
+    {
+        final String methodName = RepositoryConfiguration.CNAME + "#setUserAttributes(final UserReturningAttributes value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.userAttributes = value;
+    }
+
+    @XmlElement(name = "baseObjectClass")
+    public final String getBaseObject()
+    {
+        final String methodName = RepositoryConfiguration.CNAME + "#getBaseObject()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.baseObject);
+        }
+
+        return this.baseObject;
+    }
+
+    @XmlElement(name = "repositoryBaseDN")
+    public final String getRepositoryBaseDN()
+    {
+        final String methodName = RepositoryConfiguration.CNAME + "#getRepositoryBaseDN()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.repositoryBaseDN);
+        }
+
+        return this.repositoryBaseDN;
+    }
+
+    @XmlElement(name = "repositoryUserBase")
+    public final String getRepositoryUserBase()
+    {
+        final String methodName = RepositoryConfiguration.CNAME + "#getRepositoryUserBase(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.repositoryRoleBase);
+        }
+
+        return this.repositoryUserBase;
+    }
+
+    @XmlElement(name = "repositoryRoleBase")
+    public final String getRepositoryRoleBase()
+    {
+        final String methodName = RepositoryConfiguration.CNAME + "#getRepositoryRoleBase()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.repositoryRoleBase);
+        }
+
+        return this.repositoryRoleBase;
+    }
+
+    @XmlElement(name = "userReturningAttributes")
+    public final UserReturningAttributes getUserAttributes()
+    {
+        final String methodName = RepositoryConfiguration.CNAME + "#getUserAttributes()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.userAttributes);
         }
         
-        return this.securityConfig;
+        return this.userAttributes;
     }
 
-    @XmlElement(name = "repositoryConfiguration")
-    public final RepositoryConfiguration getRepoConfig()
+    @XmlElement(name = "securityReturningAttributes")
+    public final SecurityReturningAttributes getSecurityAttributes()
     {
-        final String methodName = SecurityConfigurationData.CNAME + "#getRepoConfig()";
+        final String methodName = RepositoryConfiguration.CNAME + "#getSecurityAttributes()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.repoConfig);
+            DEBUGGER.debug("Value: {}", this.securityAttributes);
         }
         
-        return this.repoConfig;
-    }
-
-    @XmlElement(name = "resource-config")
-    public final ResourceConfig getResourceConfig()
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#getResourceConfig()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.resourceConfig);
-        }
-        
-        return this.resourceConfig;
-    }
-
-    @XmlElement(name = "key-config")
-    public final KeyConfig getKeyConfig()
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#getKeyConfig()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.keyConfig);
-        }
-        
-        return this.keyConfig;
-    }
-
-    @XmlElement(name = "exception-config")
-    public final ExceptionConfig getExceptionConfig()
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#getExceptionConfig()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.exceptionConfig);
-        }
-        
-        return this.exceptionConfig;
-    }
-
-    @XmlElement(name = "file-security-config")
-    public final FileSecurityConfig getFileSecurityConfig()
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#getFileSecurityConfig()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.fileSecurityConfig);
-        }
-
-        return this.fileSecurityConfig;
+        return this.securityAttributes;
     }
 
     @Override
     public final String toString()
     {
-        final String methodName = SecurityConfigurationData.CNAME + "#toString()";
+        final String methodName = RepositoryConfiguration.CNAME + "#toString()";
 
         if (DEBUG)
         {

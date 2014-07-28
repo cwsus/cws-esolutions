@@ -30,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.config.xml.AuthData;
 import com.cws.esolutions.security.config.xml.KeyConfig;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
@@ -64,7 +63,6 @@ public interface IAccountChangeProcessor
     static final String KEY_URI_FORMAT = "otpauth://totp/%s?secret=%s&issuer=%s&algorithm=%s"; // https://code.google.com/p/google-authenticator/wiki/KeyUriFormat
 
     static final IAuditProcessor auditor = new AuditProcessorImpl();
-    static final AuthData authData = secBean.getConfigData().getAuthData();
     static final KeyConfig keyConfig = secBean.getConfigData().getKeyConfig();
     static final ISecurityReferenceDAO secRef = new SecurityReferenceDAOImpl();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();

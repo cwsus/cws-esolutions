@@ -108,7 +108,7 @@ function main
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 
-        sleep ${MESSAGE_DELAY}; reset; clear; /usr/bin/env -i ${MAIN_CLASS};
+        sleep ${MESSAGE_DELAY}; reset; clear; /usr/bin/env -i ksh ${MAIN_CLASS};
 
         return 0;
     fi
@@ -187,7 +187,7 @@ function main
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-                sleep ${MESSAGE_DELAY}; reset; clear; /usr/bin/env -i ${MAIN_CLASS};
+                sleep ${MESSAGE_DELAY}; reset; clear; /usr/bin/env -i ksh ${MAIN_CLASS};
 
                 return 0;
                 ;;

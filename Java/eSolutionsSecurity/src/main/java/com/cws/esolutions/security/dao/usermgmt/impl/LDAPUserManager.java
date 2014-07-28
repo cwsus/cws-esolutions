@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.ArrayList;
 import java.net.ConnectException;
+import org.apache.commons.lang.StringUtils;
 import com.unboundid.ldap.sdk.Filter;
 import com.unboundid.ldap.sdk.Attribute;
 import com.unboundid.ldap.sdk.ResultCode;
@@ -102,7 +103,7 @@ public class LDAPUserManager implements UserManager
                 throw new ConnectException("Failed to create LDAP connection using the specified information");
             }
 
-            Filter searchFilter = Filter.create("(&(objectClass=" + authData.getBaseObject() + ")" +
+            Filter searchFilter = Filter.create("(&(objectClass=" + repoConfig.getBaseObject() + ")" +
                     "(|(cn=" + userGuid + ")" +
                     "(uid=" + userId + ")))");
 
@@ -112,7 +113,7 @@ public class LDAPUserManager implements UserManager
             }
 
             SearchRequest searchRequest = new SearchRequest(
-                    authData.getRepositoryBaseDN(),
+                    repoConfig.getRepositoryBaseDN(),
                     SearchScope.SUB,
                     searchFilter,
                     "cn");
@@ -176,8 +177,8 @@ public class LDAPUserManager implements UserManager
         try
         {
             final StringBuilder userDN = new StringBuilder()
-                .append("uid" + "=" + userAccount.get(0) + ",")
-                .append(authData.getRepositoryUserBase());
+                .append(userAttributes.getUserId() + "=" + userAccount.get(0) + ",")
+                .append(repoConfig.getRepositoryUserBase() + "," + repoConfig.getRepositoryBaseDN());
 
             if (DEBUG)
             {
@@ -211,16 +212,16 @@ public class LDAPUserManager implements UserManager
             // have a connection, create the user
             List<Attribute> newAttributes = new ArrayList<>(
                 Arrays.asList(
-                    new Attribute("objectClass", authData.getBaseObject()),
-                    new Attribute(authData.getCommonName(), userAccount.get(0)),
-                    new Attribute(authData.getUserId(), userAccount.get(1)),
-                    new Attribute(authData.getEmailAddr(), userAccount.get(2)),
-                    new Attribute(authData.getGivenName(), userAccount.get(3)),
-                    new Attribute(authData.getSurname(), userAccount.get(4)),
-                    new Attribute(authData.getDisplayName(), userAccount.get(3) + " " + userAccount.get(4)),
-                    new Attribute(authData.getIsSuspended(), userAccount.get(5)),
-                    new Attribute(authData.getLockCount(), "0"),
-                    new Attribute(authData.getExpiryDate(), new Date().toString())));
+                    new Attribute("objectClass", repoConfig.getBaseObject()),
+                    new Attribute(userAttributes.getCommonName(), userAccount.get(0)),
+                    new Attribute(userAttributes.getUserId(), userAccount.get(1)),
+                    new Attribute(userAttributes.getEmailAddr(), userAccount.get(2)),
+                    new Attribute(userAttributes.getGivenName(), userAccount.get(3)),
+                    new Attribute(userAttributes.getSurname(), userAccount.get(4)),
+                    new Attribute(userAttributes.getDisplayName(), userAccount.get(3) + " " + userAccount.get(4)),
+                    new Attribute(securityAttributes.getIsSuspended(), userAccount.get(5)),
+                    new Attribute(securityAttributes.getLockCount(), "0"),
+                    new Attribute(securityAttributes.getExpiryDate(), new Date().toString())));
 
             if (DEBUG)
             {
@@ -247,7 +248,7 @@ public class LDAPUserManager implements UserManager
 
                     StringBuilder roleDN = new StringBuilder()
                         .append("cn=" + role)
-                        .append(authData.getRepositoryRoleBase());
+                        .append(repoConfig.getRepositoryRoleBase());
 
                     if (DEBUG)
                     {
@@ -346,8 +347,8 @@ public class LDAPUserManager implements UserManager
             }
 
             DeleteRequest deleteRequest = new DeleteRequest(new StringBuilder()
-                .append("uid" + "=" + userId + ",")
-                .append(authData.getRepositoryUserBase()).toString());
+                .append(userAttributes.getUserId() + "=" + userId + ",")
+                .append(repoConfig.getRepositoryUserBase() + "," + repoConfig.getRepositoryBaseDN()).toString());
 
             if (DEBUG)
             {
@@ -430,13 +431,13 @@ public class LDAPUserManager implements UserManager
                 throw new ConnectException("Failed to create LDAP connection using the specified information");
             }
 
-            Filter searchFilter = Filter.create("(&(objectClass=" + authData.getBaseObject() + ")" +
-                "(|(" + authData.getCommonName() + "=" + searchData +")" +
-                "(" + authData.getUserId() + "=" + searchData +")" +
-                "(" + authData.getEmailAddr() + "=" + searchData +")" +
-                "(" + authData.getGivenName() + "=" + searchData +")" +
-                "(" + authData.getSurname() + "=" + searchData +")" +
-                "(" + authData.getDisplayName() + "=" + searchData +")))");
+            Filter searchFilter = Filter.create("(&(objectClass=" + repoConfig.getBaseObject() + ")" +
+                "(|(" + userAttributes.getCommonName() + "=" + searchData +")" +
+                "(" + userAttributes.getUserId() + "=" + searchData +")" +
+                "(" + userAttributes.getEmailAddr() + "=" + searchData +")" +
+                "(" + userAttributes.getGivenName() + "=" + searchData +")" +
+                "(" + userAttributes.getSurname() + "=" + searchData +")" +
+                "(" + userAttributes.getDisplayName() + "=" + searchData +")))");
 
             if (DEBUG)
             {
@@ -444,11 +445,11 @@ public class LDAPUserManager implements UserManager
             }
 
             SearchRequest searchReq = new SearchRequest(
-                authData.getRepositoryUserBase(),
-                SearchScope.SUB,
-                searchFilter,
-                "cn",
-                "uid");
+                    repoConfig.getRepositoryUserBase() + "," + repoConfig.getRepositoryBaseDN(),
+                    SearchScope.SUB,
+                    searchFilter,
+                    userAttributes.getCommonName(),
+                    userAttributes.getUserId());
 
             if (DEBUG)
             {
@@ -469,8 +470,8 @@ public class LDAPUserManager implements UserManager
                 for (SearchResultEntry entry : searchResult.getSearchEntries())
                 {
                     String[] userData = new String[] {
-                            entry.getAttributeValue("cn"),
-                            entry.getAttributeValue("uid")
+                            entry.getAttributeValue(userAttributes.getCommonName()),
+                            entry.getAttributeValue(userAttributes.getUserId())
                     };
 
                     if (DEBUG)
@@ -550,8 +551,8 @@ public class LDAPUserManager implements UserManager
                 throw new ConnectException("Failed to create LDAP connection using the specified information");
             }
 
-            Filter searchFilter = Filter.create("(&(objectClass=" + authData.getBaseObject() + ")" +
-                    "(&(cn=" + userGuid + ")))");
+            Filter searchFilter = Filter.create("(&(objectClass=" + repoConfig.getBaseObject() + ")" +
+                    "(&(" + userAttributes.getCommonName() + "=" + userGuid + ")))");
 
             if (DEBUG)
             {
@@ -559,7 +560,7 @@ public class LDAPUserManager implements UserManager
             }
 
             SearchRequest searchRequest = new SearchRequest(
-                    authData.getRepositoryUserBase(),
+                    repoConfig.getRepositoryUserBase() + "," + repoConfig.getRepositoryBaseDN(),
                     SearchScope.SUB,
                     searchFilter);
 
@@ -586,66 +587,70 @@ public class LDAPUserManager implements UserManager
                         DEBUGGER.debug("SearchResultEntry: {}", entry);
                     }
 
-                    // valid user, load the information
-                    userAccount = new ArrayList<Object>(
-                        Arrays.asList(
-                            entry.getAttributeValue(authData.getCommonName()),
-                            entry.getAttributeValue(authData.getUserId()),
-                            entry.getAttributeValueAsInteger(authData.getLockCount()),
-                            entry.getAttributeValueAsDate(authData.getLastLogin()),
-                            entry.getAttributeValueAsDate(authData.getExpiryDate()),
-                            entry.getAttributeValue(authData.getSurname()),
-                            entry.getAttributeValue(authData.getGivenName()),
-                            entry.getAttributeValue(authData.getDisplayName()),
-                            entry.getAttributeValue(authData.getEmailAddr()),
-                            entry.getAttributeValue(authData.getPagerNumber()),
-                            entry.getAttributeValue(authData.getTelephoneNumber()),
-                            entry.getAttributeValue(authData.getMemberOf()),
-                            entry.getAttributeValueAsBoolean(authData.getIsSuspended()),
-                            entry.getAttributeValueAsBoolean(authData.getOlrSetupReq()),
-                            entry.getAttributeValueAsBoolean(authData.getOlrLocked())));
+                    userAccount = new ArrayList<Object>();
 
-                    Filter roleFilter = Filter.create("(&(objectClass=groupOfUniqueNames)" +
-                            "(&(uniqueMember=" + entry.getDN() + ")))");
-
-                    if (DEBUG)
+                    for (String returningAttribute : userAttributes.getReturningAttributes())
                     {
-                        DEBUGGER.debug("SearchFilter: {}", roleFilter);
-                    }
-
-                    SearchRequest roleSearch = new SearchRequest(
-                        authData.getRepositoryRoleBase(),
-                        SearchScope.SUB,
-                        roleFilter,
-                        "cn");
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("SearchRequest: {}", roleSearch);
-                    }
-
-                    SearchResult roleResult = ldapConn.search(roleSearch);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("searchResult: {}", roleResult);
-                    }
-
-                    if ((roleResult.getResultCode() == ResultCode.SUCCESS) && (roleResult.getEntryCount() != 0))
-                    {
-                        List<String> roles = new ArrayList<>();
-
-                        for (SearchResultEntry role : roleResult.getSearchEntries())
+                        if (DEBUG)
                         {
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("SearchResultEntry: {}", role);
-                            }
-
-                            roles.add(role.getAttributeValue("cn"));
+                            DEBUGGER.debug("returningAttribute: {}", returningAttribute);
                         }
 
-                        userAccount.add(roles);
+                        if (entry.hasAttribute(returningAttribute))
+                        {
+                            userAccount.add(entry.getAttributeValue(returningAttribute));
+                        }
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("userAccount: {}", userAccount);
+                    }
+
+                    if (StringUtils.isNotBlank(userAttributes.getMemberOf()))
+                    {
+                        Filter roleFilter = Filter.create("(&(objectClass=groupOfUniqueNames)" +
+                                "(&(uniqueMember=" + entry.getDN() + ")))");
+    
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("SearchFilter: {}", roleFilter);
+                        }
+    
+                        SearchRequest roleSearch = new SearchRequest(
+                                repoConfig.getRepositoryRoleBase(),
+                            SearchScope.SUB,
+                            roleFilter,
+                            userAttributes.getCommonName());
+    
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("SearchRequest: {}", roleSearch);
+                        }
+    
+                        SearchResult roleResult = ldapConn.search(roleSearch);
+    
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("searchResult: {}", roleResult);
+                        }
+    
+                        if ((roleResult.getResultCode() == ResultCode.SUCCESS) && (roleResult.getEntryCount() != 0))
+                        {
+                            List<String> roles = new ArrayList<>();
+    
+                            for (SearchResultEntry role : roleResult.getSearchEntries())
+                            {
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("SearchResultEntry: {}", role);
+                                }
+    
+                                roles.add(role.getAttributeValue(userAttributes.getCommonName()));
+                            }
+    
+                            userAccount.add(roles);
+                        }
                     }
 
                     if (DEBUG)
@@ -727,9 +732,9 @@ public class LDAPUserManager implements UserManager
             }
 
             SearchRequest searchReq = new SearchRequest(
-                authData.getRepositoryUserBase(),
+                    repoConfig.getRepositoryUserBase() + "," + repoConfig.getRepositoryBaseDN(),
                 SearchScope.SUB,
-                Filter.create("(&(objectClass=" + authData.getBaseObject() + "))"));
+                Filter.create("(&(objectClass=" + repoConfig.getBaseObject() + "))"));
 
             if (DEBUG)
             {
@@ -750,8 +755,8 @@ public class LDAPUserManager implements UserManager
                 for (SearchResultEntry entry : searchResult.getSearchEntries())
                 {
                     String[] userData = new String[] {
-                            entry.getAttributeValue("cn"),
-                            entry.getAttributeValue("uid")
+                            entry.getAttributeValue(userAttributes.getCommonName()),
+                            entry.getAttributeValue(userAttributes.getUserId())
                     };
 
                     if (DEBUG)
@@ -837,11 +842,11 @@ public class LDAPUserManager implements UserManager
 
             List<Modification> modifyList = new ArrayList<>(
                     Arrays.asList(
-                        new Modification(ModificationType.REPLACE, authData.getEmailAddr(), value)));
+                        new Modification(ModificationType.REPLACE, userAttributes.getEmailAddr(), value)));
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
-                .append("uid" + "=" + userId + ",")
-                .append(authData.getRepositoryUserBase()).toString(), modifyList));
+                .append(userAttributes.getUserId() + "=" + userId + ",")
+                .append(repoConfig.getRepositoryUserBase() + "," + repoConfig.getRepositoryBaseDN()).toString(), modifyList));
 
             if (DEBUG)
             {
@@ -922,12 +927,11 @@ public class LDAPUserManager implements UserManager
 
             List<Modification> modifyList = new ArrayList<>(
                     Arrays.asList(
-                        new Modification(ModificationType.REPLACE, authData.getTelephoneNumber(), values.get(0)),
-                        new Modification(ModificationType.REPLACE, authData.getPagerNumber(), values.get(1))));
+                        new Modification(ModificationType.REPLACE, userAttributes.getTelephoneNumber(), values.get(0))));
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
-                .append("uid" + "=" + userId + ",")
-                .append(authData.getRepositoryUserBase()).toString(), modifyList));
+                .append(userAttributes.getUserId() + "=" + userId + ",")
+                .append(repoConfig.getRepositoryUserBase() + "," + repoConfig.getRepositoryBaseDN()).toString(), modifyList));
 
             if (DEBUG)
             {
@@ -1010,7 +1014,7 @@ public class LDAPUserManager implements UserManager
             (
                 Arrays.asList
                 (
-                    new Modification(ModificationType.REPLACE, authData.getIsSuspended(), String.valueOf(isSuspended))
+                    new Modification(ModificationType.REPLACE, securityAttributes.getIsSuspended(), String.valueOf(isSuspended))
                 )
             );
 
@@ -1020,8 +1024,8 @@ public class LDAPUserManager implements UserManager
             }
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
-                .append("uid" + "=" + userId + ",")
-                .append(authData.getRepositoryUserBase()).toString(), modifyList));
+                .append(userAttributes.getUserId() + "=" + userId + ",")
+                .append(repoConfig.getRepositoryUserBase() + "," + repoConfig.getRepositoryBaseDN()).toString(), modifyList));
 
             if (DEBUG)
             {
@@ -1073,8 +1077,8 @@ public class LDAPUserManager implements UserManager
         LDAPConnectionPool ldapPool = null;
 
         final StringBuilder userDN = new StringBuilder()
-            .append("uid" + "=" + userId + ",")
-            .append(authData.getRepositoryUserBase());
+            .append(userAttributes.getUserId() + "=" + userId + ",")
+            .append(repoConfig.getRepositoryUserBase() + "," + repoConfig.getRepositoryBaseDN());
 
         try
         {
@@ -1110,8 +1114,8 @@ public class LDAPUserManager implements UserManager
                 }
 
                 StringBuilder roleDN = new StringBuilder()
-                    .append("cn=" + (String) group)
-                    .append(authData.getRepositoryRoleBase());
+                    .append(userAttributes.getCommonName() + "=" + (String) group)
+                    .append(repoConfig.getRepositoryRoleBase());
 
                 if (DEBUG)
                 {
@@ -1205,11 +1209,11 @@ public class LDAPUserManager implements UserManager
 
             List<Modification> modifyList = new ArrayList<>(
                     Arrays.asList(
-                        new Modification(ModificationType.REPLACE, authData.getOlrLocked(), String.valueOf(isLocked))));
+                        new Modification(ModificationType.REPLACE, securityAttributes.getOlrLocked(), String.valueOf(isLocked))));
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
-                .append("uid" + "=" + userId + ",")
-                .append(authData.getRepositoryUserBase()).toString(), modifyList));
+                .append(userAttributes.getUserId() + "=" + userId + ",")
+                .append(repoConfig.getRepositoryUserBase() + "," + repoConfig.getRepositoryBaseDN()).toString(), modifyList));
 
             if (DEBUG)
             {
@@ -1293,16 +1297,16 @@ public class LDAPUserManager implements UserManager
 
             if (isLocked)
             {
-                modifyList.add(new Modification(ModificationType.REPLACE, authData.getLockCount(), "3"));
+                modifyList.add(new Modification(ModificationType.REPLACE, securityAttributes.getLockCount(), "3"));
             }
             else
             {
-                modifyList.add(new Modification(ModificationType.REPLACE, authData.getLockCount(), String.valueOf(increment)));
+                modifyList.add(new Modification(ModificationType.REPLACE, securityAttributes.getLockCount(), String.valueOf(increment)));
             }
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
-                .append("uid" + "=" + userId + ",")
-                .append(authData.getRepositoryUserBase()).toString(), modifyList));
+                .append(userAttributes.getUserId() + "=" + userId + ",")
+                .append(repoConfig.getRepositoryUserBase() + "," + repoConfig.getRepositoryBaseDN()).toString(), modifyList));
 
             if (DEBUG)
             {
@@ -1385,12 +1389,12 @@ public class LDAPUserManager implements UserManager
 
             List<Modification> modifyList = new ArrayList<>(
                 Arrays.asList(
-                    new Modification(ModificationType.REPLACE, authData.getUserPassword(), newPass),
-                    new Modification(ModificationType.REPLACE, authData.getExpiryDate(), String.valueOf(cal.getTime()))));
+                    new Modification(ModificationType.REPLACE, securityAttributes.getUserPassword(), newPass),
+                    new Modification(ModificationType.REPLACE, securityAttributes.getExpiryDate(), String.valueOf(cal.getTime()))));
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
-                .append("uid" + "=" + userId + ",")
-                .append(authData.getRepositoryUserBase()).toString(), modifyList));
+                .append(userAttributes.getUserId() + "=" + userId + ",")
+                .append(repoConfig.getRepositoryUserBase() + "," + repoConfig.getRepositoryBaseDN()).toString(), modifyList));
 
             if (DEBUG)
             {
@@ -1473,11 +1477,11 @@ public class LDAPUserManager implements UserManager
 
             if (addSecret)
             {
-                modifyList.add(new Modification(ModificationType.REPLACE, authData.getSecret(), secret));
+                modifyList.add(new Modification(ModificationType.REPLACE, securityAttributes.getSecret(), secret));
             }
             else
             {
-                modifyList.add(new Modification(ModificationType.DELETE, authData.getSecret()));
+                modifyList.add(new Modification(ModificationType.DELETE, securityAttributes.getSecret()));
             }
 
             if (DEBUG)
@@ -1486,8 +1490,8 @@ public class LDAPUserManager implements UserManager
             }
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
-                .append("uid" + "=" + userId + ",")
-                .append(authData.getRepositoryUserBase()).toString(), modifyList));
+                .append(userAttributes.getUserId() + "=" + userId + ",")
+                .append(repoConfig.getRepositoryUserBase() + "," + repoConfig.getRepositoryBaseDN()).toString(), modifyList));
 
             if (DEBUG)
             {
@@ -1567,10 +1571,10 @@ public class LDAPUserManager implements UserManager
 
             List<Modification> modifyList = new ArrayList<>(
                 Arrays.asList(
-                    new Modification(ModificationType.REPLACE, authData.getSecQuestionOne(), values.get(0)),
-                    new Modification(ModificationType.REPLACE, authData.getSecQuestionTwo(), values.get(1)),
-                    new Modification(ModificationType.REPLACE, authData.getSecAnswerOne(), values.get(2)),
-                    new Modification(ModificationType.REPLACE, authData.getSecAnswerTwo(), values.get(3))));
+                    new Modification(ModificationType.REPLACE, securityAttributes.getSecQuestionOne(), values.get(0)),
+                    new Modification(ModificationType.REPLACE, securityAttributes.getSecQuestionTwo(), values.get(1)),
+                    new Modification(ModificationType.REPLACE, securityAttributes.getSecAnswerOne(), values.get(2)),
+                    new Modification(ModificationType.REPLACE, securityAttributes.getSecAnswerTwo(), values.get(3))));
 
             if (DEBUG)
             {
@@ -1578,8 +1582,8 @@ public class LDAPUserManager implements UserManager
             }
 
             LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
-                .append("uid" + "=" + userId + ",")
-                .append(authData.getRepositoryUserBase()).toString(), modifyList));
+                .append(userAttributes.getUserId() + "=" + userId + ",")
+                .append(repoConfig.getRepositoryUserBase() + "," + repoConfig.getRepositoryBaseDN()).toString(), modifyList));
 
             if (DEBUG)
             {

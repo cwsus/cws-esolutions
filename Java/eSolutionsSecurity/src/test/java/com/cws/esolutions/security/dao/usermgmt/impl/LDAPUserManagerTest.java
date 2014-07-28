@@ -110,7 +110,7 @@ public class LDAPUserManagerTest
     {
         try
         {
-            Assert.assertNotNull(manager.searchUsers("35033355"));
+            Assert.assertFalse(manager.searchUsers("35033355@HSBC").isEmpty());
         }
         catch (UserManagementException umx)
         {
@@ -122,7 +122,7 @@ public class LDAPUserManagerTest
     {
         try
         {
-            Assert.assertNotNull(manager.loadUserAccount(LDAPUserManagerTest.GUID));
+            Assert.assertFalse(manager.loadUserAccount("35033355").isEmpty());
         }
         catch (UserManagementException umx)
         {

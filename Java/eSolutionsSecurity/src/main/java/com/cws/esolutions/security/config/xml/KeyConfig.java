@@ -48,6 +48,7 @@ public final class KeyConfig implements Serializable
     private String keyManager = null;
     private String keyAlgorithm = null;
     private String keyDirectory = null;
+    private String publicKeyAttribute = null;
 
     private static final String CNAME = KeyConfig.class.getName();
     private static final long serialVersionUID = -8561778865375243181L;
@@ -108,6 +109,19 @@ public final class KeyConfig implements Serializable
         this.keySize = value;
     }
 
+    public final void setPublicKeyAttribute(final String value)
+    {
+        final String methodName = KeyConfig.CNAME + "#setPublicKeyAttribute(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.publicKeyAttribute = value;
+    }
+
     @XmlElement(name = "keyManager")
     public final String getKeyManager()
     {
@@ -162,6 +176,20 @@ public final class KeyConfig implements Serializable
         }
 
         return this.keySize;
+    }
+
+    @XmlElement(name = "publicKeyAttribute")
+    public final String getPublicKeyAttribute()
+    {
+        final String methodName = KeyConfig.CNAME + "#getPublicKeyAttribute()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.publicKeyAttribute);
+        }
+
+        return this.publicKeyAttribute;
     }
 
     @Override

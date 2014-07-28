@@ -30,9 +30,7 @@ import java.util.Arrays;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.Connection;
-
 import javax.sql.DataSource;
-
 import java.sql.SQLException;
 import java.security.KeyPair;
 import java.security.PublicKey;
@@ -41,11 +39,8 @@ import java.security.PrivateKey;
 import java.net.ConnectException;
 import java.sql.CallableStatement;
 import java.security.SecureRandom;
-
 import com.unboundid.ldap.sdk.Filter;
-
 import java.security.KeyPairGenerator;
-
 import com.unboundid.ldap.sdk.ResultCode;
 import com.unboundid.ldap.sdk.LDAPResult;
 import com.unboundid.ldap.sdk.SearchScope;
@@ -55,14 +50,11 @@ import com.unboundid.ldap.sdk.ModifyRequest;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.SearchRequest;
 import com.unboundid.ldap.sdk.LDAPConnection;
-
 import java.security.spec.X509EncodedKeySpec;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.PKCS8EncodedKeySpec;
-
 import com.unboundid.ldap.sdk.ModificationType;
 import com.unboundid.ldap.sdk.LDAPConnectionPool;
-
 import java.security.spec.InvalidKeySpecException;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
@@ -157,7 +149,7 @@ public class LDAPKeyManager implements KeyManager
             }
 
             // need to get the DN
-            Filter searchFilter = Filter.create("(&(objectClass=" + authData.getBaseObject() + ")" +
+            Filter searchFilter = Filter.create("(&(objectClass=" + repoConfig.getBaseObject() + ")" +
                     "(&(cn=" + guid + ")))");
 
             if (DEBUG)
@@ -166,7 +158,7 @@ public class LDAPKeyManager implements KeyManager
             }
 
             SearchRequest searchReq = new SearchRequest(
-                    authData.getRepositoryUserBase(),
+                    repoConfig.getRepositoryUserBase() + "," + repoConfig.getRepositoryBaseDN(),
                     SearchScope.SUB,
                     searchFilter);
 
@@ -189,7 +181,7 @@ public class LDAPKeyManager implements KeyManager
 
             List<Modification> modifyList = new ArrayList<>(
                     Arrays.asList(
-                            new Modification(ModificationType.ADD, authData.getPublicKey(), keyPair.getPublic().getEncoded())));
+                            new Modification(ModificationType.ADD, keyConfig.getPublicKeyAttribute(), keyPair.getPublic().getEncoded())));
 
             if (DEBUG)
             {
@@ -370,7 +362,7 @@ public class LDAPKeyManager implements KeyManager
             }
 
             // need to get the DN
-            Filter searchFilter = Filter.create("(&(objectClass=" + authData.getBaseObject() + ")" +
+            Filter searchFilter = Filter.create("(&(objectClass=" + repoConfig.getBaseObject() + ")" +
                     "(&(cn=" + guid + ")))");
 
             if (DEBUG)
@@ -379,10 +371,10 @@ public class LDAPKeyManager implements KeyManager
             }
 
             SearchRequest searchReq = new SearchRequest(
-                    authData.getRepositoryUserBase(),
+                    repoConfig.getRepositoryUserBase() + "," + repoConfig.getRepositoryBaseDN(),
                     SearchScope.SUB,
                     searchFilter,
-                    authData.getPublicKey());
+                    keyConfig.getPublicKeyAttribute());
 
             if (DEBUG)
             {
@@ -401,7 +393,7 @@ public class LDAPKeyManager implements KeyManager
                 throw new KeyManagementException("No users were located with the search data provided");
             }
 
-            byte[] pubKeyBytes = searchResult.getSearchEntries().get(0).getAttributeValueBytes(authData.getPublicKey());
+            byte[] pubKeyBytes = searchResult.getSearchEntries().get(0).getAttributeValueBytes(keyConfig.getPublicKeyAttribute());
 
             if (pubKeyBytes == null)
             {
@@ -519,7 +511,7 @@ public class LDAPKeyManager implements KeyManager
             }
 
             // need to get the DN
-            Filter searchFilter = Filter.create("(&(objectClass=" + authData.getBaseObject() + ")" +
+            Filter searchFilter = Filter.create("(&(objectClass=" + repoConfig.getBaseObject() + ")" +
                     "(&(cn=" + guid + ")))");
 
             if (DEBUG)
@@ -528,7 +520,7 @@ public class LDAPKeyManager implements KeyManager
             }
 
             SearchRequest searchReq = new SearchRequest(
-                    authData.getRepositoryUserBase(),
+                    repoConfig.getRepositoryUserBase() + "," + repoConfig.getRepositoryBaseDN(),
                     SearchScope.SUB,
                     searchFilter);
 
@@ -557,7 +549,7 @@ public class LDAPKeyManager implements KeyManager
             {
                 List<Modification> modifyList = new ArrayList<>(
                         Arrays.asList(
-                                new Modification(ModificationType.DELETE, authData.getPublicKey())));
+                                new Modification(ModificationType.DELETE, keyConfig.getPublicKeyAttribute())));
 
                 if (DEBUG)
                 {

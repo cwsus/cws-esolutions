@@ -16,7 +16,7 @@
 #==============================================================================
 
 ## Load system-wide aliases
-[ -f ${APP_ROOT}/${LIB_DIRECTORY}/aliases ] && . ${APP_ROOT}/${LIB_DIRECTORY}/aliases;
+[ -f ${APP_ROOT}/${LIB_DIRECTORY}/aliases ] && . ${APP_ROOT}/${LIB_DIRECTORY}/aliases || echo "not loading system aliases";
 
 if [ -s /usr/sbin/cryptoadm ]
 then

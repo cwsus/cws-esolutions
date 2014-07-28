@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
+import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityServiceConstants;
 /**
  * @author khuntly
@@ -59,7 +60,11 @@ public final class SecurityConfig implements Serializable
     private int passwordMaxLength = 128; // default of 32 characters
     private int passwordExpiration = 45; // 90 day lifetime
     private String authAlgorithm = null;
+    private String applicationId = null; // only required if its not already fed
     private boolean performAudit = true; // default true to perform audit
+    private boolean enableSecurity = true;
+    private String applicationName = null; // only required if its not already fed
+    private UserAccount svcAccount = null; // service account, if necessary
     private boolean smsResetEnabled = false;
 
     private static final long serialVersionUID = -338675198961732554L;
@@ -68,6 +73,32 @@ public final class SecurityConfig implements Serializable
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
+
+    public final void setApplicationId(final String value)
+    {
+        final String methodName = SecurityConfig.CNAME + "#setApplicationId(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.applicationId = value;
+    }
+
+    public final void setApplicationName(final String value)
+    {
+        final String methodName = SecurityConfig.CNAME + "#setApplicationName(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.applicationName = value;
+    }
 
     public final void setMaxAttempts(final int value)
     {
@@ -303,6 +334,87 @@ public final class SecurityConfig implements Serializable
         }
 
         this.otpVariance = value;
+    }
+
+    public final void setSvcAccount(final UserAccount value)
+    {
+        final String methodName = SecurityConfig.CNAME + "#setSvcAccount(final UserAccount value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.svcAccount = value;
+    }
+
+    public final void setEnableSecurity(final boolean value)
+    {
+        final String methodName = SecurityConfig.CNAME + "#setEnableSecurity(final boolean value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.enableSecurity = value;
+    }
+
+    @XmlElement(name = "applicationId")
+    public final String getApplicationId()
+    {
+        final String methodName = SecurityConfig.CNAME + "#getApplicationId()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.applicationId);
+        }
+
+        return this.applicationId;
+    }
+
+    @XmlElement(name = "applicationName")
+    public final String getApplicationName()
+    {
+        final String methodName = SecurityConfig.CNAME + "#getApplicationName()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.applicationName);
+        }
+
+        return this.applicationName;
+    }
+
+    @XmlElement(name = "enableSecurity")
+    public final boolean getEnableSecurity()
+    {
+        final String methodName = SecurityConfig.CNAME + "#getEnableSecurity()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.enableSecurity);
+        }
+
+        return this.enableSecurity;
+    }
+
+    public final boolean securityEnabled()
+    {
+        final String methodName = SecurityConfig.CNAME + "#securityEnabled()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.enableSecurity);
+        }
+
+        return this.enableSecurity;
     }
 
     @XmlElement(name = "maxAttempts")
@@ -541,6 +653,20 @@ public final class SecurityConfig implements Serializable
         }
         
         return this.otpVariance;
+    }
+
+    @XmlElement(name = "serviceAccount")
+    public final UserAccount getSvcAccount()
+    {
+        final String methodName = SecurityConfig.CNAME + "#getSvcAccount()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.svcAccount);
+        }
+
+        return this.svcAccount;
     }
 
     @Override

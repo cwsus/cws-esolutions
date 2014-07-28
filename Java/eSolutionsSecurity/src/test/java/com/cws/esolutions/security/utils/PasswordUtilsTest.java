@@ -58,7 +58,7 @@ public class PasswordUtilsTest
     {
         String salt = RandomStringUtils.randomAlphanumeric(64);
         System.out.println(salt);
-        System.out.println(PasswordUtils.encryptText("8FSQakuUJB\\VZNLewr&Jz,fD*5j2htVC~=G^=qR^@M`%&f58aS9.=bbh4CW$UtWM", salt));
+        System.out.println(PasswordUtils.encryptText("a?.Zd`5ExI%$wm@g/v;L$oq6yqFM$iFAmjVqx72pB|KwG65sd3,ukUDPo;H,|o.O", salt));
     }
 
     @Test public void encryptText()

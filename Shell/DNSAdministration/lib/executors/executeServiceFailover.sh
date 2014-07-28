@@ -388,7 +388,7 @@ function failoverDatacenter
 
     ## we want to take pretty much everything
     ## in the db directory.
-    for UNIT in $(ls -ltr ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT} | awk '{print $9}' | grep -v '^$')
+    for UNIT in $(ls -ltr ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT} | awk '{print $NF}' | grep -v '^$')
     do
         if [ $(grep -c ${UNIT} <<< ${IGNORE_LIST}) -eq 1 ]
         then
@@ -421,7 +421,7 @@ function failoverDatacenter
             mkdir ${PLUGIN_WORK_DIRECTORY}/${UNIT};
 
             ## loop through the zone files
-            for FILENAME in $(ls -ltr ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${UNIT} | awk '{print $9}' | cut -d ":" -f 1-1 | grep -v "[PV]H" | uniq | sed -e '/ *#/d; /^ *$/d');
+            for FILENAME in $(ls -ltr ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${UNIT} | awk '{print $NF}' | cut -d ":" -f 1-1 | grep -v "[PV]H" | uniq | sed -e '/ *#/d; /^ *$/d');
             do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating on ${UNIT}/${FILENAME}..";
 
@@ -512,12 +512,12 @@ function failoverDatacenter
             ## shouldn't need to do more than that
             ERROR_COUNT=0;
 
-            for UNIT in $(ls -ltr ${PLUGIN_WORK_DIRECTORY} | awk '{print $9}' | grep -v '^$')
+            for UNIT in $(ls -ltr ${PLUGIN_WORK_DIRECTORY} | awk '{print $NF}' | grep -v '^$')
             do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating on ${UNIT}..";
 
                 ## loop through the zone files
-                for FILENAME in $(ls -ltr ${PLUGIN_WORK_DIRECTORY}/${UNIT} | awk '{print $9}' | cut -d ":" -f 1-1 | uniq | sed -e '/ *#/d; /^ *$/d');
+                for FILENAME in $(ls -ltr ${PLUGIN_WORK_DIRECTORY}/${UNIT} | awk '{print $NF}' | cut -d ":" -f 1-1 | uniq | sed -e '/ *#/d; /^ *$/d');
                 do
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${PLUGIN_WORK_DIRECTORY}/${UNIT}/${FILENAME} to ${NAMED_ROOT}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME}";
 
@@ -533,12 +533,12 @@ function failoverDatacenter
 
             ## files should be in place, change should be complete
             ## perform a checksum to make sure
-            for UNIT in $(ls -ltr ${PLUGIN_WORK_DIRECTORY} | awk '{print $9}' | grep -v '^$')
+            for UNIT in $(ls -ltr ${PLUGIN_WORK_DIRECTORY} | awk '{print $NF}' | grep -v '^$')
             do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating on ${UNIT}..";
 
                 ## loop through the zone files
-                for FILENAME in $(ls -ltr ${PLUGIN_WORK_DIRECTORY}/${UNIT} | awk '{print $9}' | cut -d ":" -f 1-1 | uniq | sed -e '/ *#/d; /^ *$/d');
+                for FILENAME in $(ls -ltr ${PLUGIN_WORK_DIRECTORY}/${UNIT} | awk '{print $NF}' | cut -d ":" -f 1-1 | uniq | sed -e '/ *#/d; /^ *$/d');
                 do
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Checksum ${PLUGIN_WORK_DIRECTORY}/${UNIT}/${FILENAME} <-> ${NAMED_ROOT}/${NAMED_MASTER_ROOT}/${UNIT}/${FILENAME}";
                     TMP_CHECKSUM=$(cksum ${PLUGIN_WORK_DIRECTORY}/${UNIT}/${FILENAME} | awk '{print $1}');
@@ -664,7 +664,7 @@ function failoverBusinessUnit
             unset BACKUP_FILE;
 
             ## NOTE: this looks good, leave it alone
-            for FILENAME in $(ls -ltr ${SITE_ROOT} | awk '{print $9}' | cut -d ":" -f 1 | grep -v "[PV]H" | uniq | sed -e '/ *#/d' -e '/^ *$/d')
+            for FILENAME in $(ls -ltr ${SITE_ROOT} | awk '{print $NF}' | cut -d ":" -f 1 | grep -v "[PV]H" | uniq | sed -e '/ *#/d' -e '/^ *$/d')
             do
                 SPLIT=$(tr -dc '.' <<< ${FILENAME}| wc -c);
                 DC_FILE=$(cut -d "." -f 0-$(echo ${SPLIT}) <<< ${FILENAME});
@@ -731,7 +731,7 @@ function failoverBusinessUnit
 
             ## All our preliminary processing has been completed,
             ## so lets move the updated zone file into place
-            for FILENAME in $(ls -ltr ${PLUGIN_WORK_DIRECTORY} | awk '{print $9}' | cut -d ":" -f 1-1 | grep -v "[PV]H" | uniq | sed -e '/ *#/d; /^ *$/d')
+            for FILENAME in $(ls -ltr ${PLUGIN_WORK_DIRECTORY} | awk '{print $NF}' | cut -d ":" -f 1-1 | grep -v "[PV]H" | uniq | sed -e '/ *#/d; /^ *$/d')
             do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${FILENAME} to ${SITE_ROOT}..";
 
@@ -881,7 +881,7 @@ function failoverProject
             unset BACKUP_FILE;
 
             ## NOTE: this looks good, leave it alone
-            for FILENAME in $(ls -ltr ${SITE_ROOT} | grep ${PROJECT_CODE} | awk '{print $9}' | cut -d ":" -f 1 | grep -v "[PV]H" | uniq | sed -e '/ *#/d' -e '/^ *$/d')
+            for FILENAME in $(ls -ltr ${SITE_ROOT} | grep ${PROJECT_CODE} | awk '{print $NF}' | cut -d ":" -f 1 | grep -v "[PV]H" | uniq | sed -e '/ *#/d' -e '/^ *$/d')
             do
                 SPLIT=$(tr -dc '.' <<< ${FILENAME} | wc -c);
                 DC_FILE=$(cut -d "." -f 0-$(echo ${SPLIT}) <<< ${FILENAME});
@@ -948,7 +948,7 @@ function failoverProject
 
             ## All our preliminary processing has been completed,
             ## so lets move the updated zone file into place
-            for FILENAME in $(ls -ltr ${PLUGIN_WORK_DIRECTORY} | awk '{print $9}' | cut -d ":" -f 1-1 | grep -v "[PV]H" | uniq | sed -e '/ *#/d; /^ *$/d')
+            for FILENAME in $(ls -ltr ${PLUGIN_WORK_DIRECTORY} | awk '{print $NF}' | cut -d ":" -f 1-1 | grep -v "[PV]H" | uniq | sed -e '/ *#/d; /^ *$/d')
             do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copying ${FILENAME} to ${SITE_ROOT}..";
 

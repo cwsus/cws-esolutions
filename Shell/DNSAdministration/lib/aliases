@@ -19,6 +19,9 @@
 ## Load system-wide aliases
 [ -f ${APP_ROOT}/${LIB_DIRECTORY}/aliases ] && . ${APP_ROOT}/${LIB_DIRECTORY}/aliases;
 
+## sudo aliases
+alias sudon='/usr/bin/env sudo -u named';
+
 ## common aliases
 alias rndc='/usr/bin/env rndc -c ${NAMED_ROOT}/${RNDC_CONF_FILE}';
 alias dnssec-keygen='/usr/bin/env dnssec-keygen';

@@ -161,7 +161,7 @@ function main
 
                     sleep "${MESSAGE_DELAY}"; reset; clear;
 
-                    sleep ${MESSAGE_DELAY}; reset; clear; /usr/bin/env -i ${MAIN_CLASS};
+                    sleep ${MESSAGE_DELAY}; reset; clear; /usr/bin/env -i ksh ${MAIN_CLASS};
 
                     return 0;
                     ;;
@@ -674,7 +674,7 @@ typeset RETURN_CODE=0;
 
         echo "$(grep -w request.not.authorized "${ERROR_MESSAGES}" | grep -v "#" | cut -d "=" -f 2)\n";
 
-        sleep ${MESSAGE_DELAY}; reset; clear; /usr/bin/env -i ${MAIN_CLASS};
+        sleep ${MESSAGE_DELAY}; reset; clear; /usr/bin/env -i ksh ${MAIN_CLASS};
 
         return 0;
     fi

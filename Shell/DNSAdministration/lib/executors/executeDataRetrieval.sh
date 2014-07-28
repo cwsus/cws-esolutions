@@ -273,7 +273,7 @@ function get_site_by_bu
 
         ## set the RETRIEVAL array to the zone files
         ## contained within ${SITE_ROOT} for processing
-        set -A RETRIEVAL_LIST $(ls -ltr ${SITE_ROOT} | awk '{print $9}' | cut -d ":" -f 1-1 | grep -v "[PV]H" | uniq | sed -e '/ *#/d; /^ *$/d');
+        set -A RETRIEVAL_LIST $(ls -ltr ${SITE_ROOT} | awk '{print $NF}' | cut -d ":" -f 1-1 | grep -v "[PV]H" | uniq | sed -e '/ *#/d; /^ *$/d');
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETRIEVAL_LIST set - continue processing..";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Completed command execution.. processing..";

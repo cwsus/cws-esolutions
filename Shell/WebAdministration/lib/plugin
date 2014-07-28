@@ -15,7 +15,7 @@
 #       CREATED:  ---
 #      REVISION:  ---
 #==============================================================================
-
+echo "loading plugin"
 [[ "$(/usr/bin/env uname)" = CYGWIN_NT* ]] && [ -z "$(set | /usr/bin/env grep CYGWIN)" ] && typeset -rx CYGWIN="error_start=C:/cygwin/bin/gdb.exe -nw %1 %2";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;

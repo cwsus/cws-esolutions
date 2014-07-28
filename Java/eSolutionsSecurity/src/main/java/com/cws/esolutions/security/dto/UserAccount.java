@@ -49,6 +49,8 @@ public class UserAccount implements Serializable
     private String emailAddr = null;
     private String givenName = null;
     private boolean olrSetup = false;
+    private String managerName = null;
+    private String managerGuid = null;
     private String displayName = null;
     private boolean olrLocked = false;
     private boolean suspended = false;
@@ -321,6 +323,38 @@ public class UserAccount implements Serializable
     }
 
     /**
+     * @param value The telephone number associated with the account
+     */
+    public final void setManagerGuid(final String value)
+    {
+        final String methodName = UserAccount.CNAME + "#setManagerGuid(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.managerGuid = value;
+    }
+
+    /**
+     * @param value The telephone number associated with the account
+     */
+    public final void setManagerName(final String value)
+    {
+        final String methodName = UserAccount.CNAME + "#setManagerName(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.managerName = value;
+    }
+
+    /**
      * @return The {@link com.cws.esolutions.security.processors.enums.LoginStatus} for the account
      */
     public final LoginStatus getStatus()
@@ -590,6 +624,38 @@ public class UserAccount implements Serializable
         }
 
         return this.telephoneNumber;
+    }
+
+    /**
+     * @param value The telephone number associated with the account
+     */
+    public final String getManagerGuid()
+    {
+        final String methodName = UserAccount.CNAME + "#getManagerGuid()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.managerGuid);
+        }
+
+        return this.managerGuid;
+    }
+
+    /**
+     * @param value The telephone number associated with the account
+     */
+    public final String getManagerName()
+    {
+        final String methodName = UserAccount.CNAME + "#getManagerName()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.managerName);
+        }
+
+        return this.managerName;
     }
 
     /**

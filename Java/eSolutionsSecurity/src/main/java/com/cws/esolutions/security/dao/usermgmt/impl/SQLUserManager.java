@@ -457,23 +457,23 @@ public class SQLUserManager implements UserManager
                     }
 
                     resultSet.first();
+
                     userAccount = new ArrayList<Object>(
-                        Arrays.asList(
-                            resultSet.getString(authData.getCommonName()),
-                            resultSet.getString(authData.getUserId()),
-                            resultSet.getInt(authData.getLockCount()),
-                            resultSet.getTimestamp(authData.getLastLogin()),
-                            resultSet.getTimestamp(authData.getExpiryDate()),
-                            resultSet.getString(authData.getSurname()),
-                            resultSet.getString(authData.getGivenName()),
-                            resultSet.getString(authData.getDisplayName()),
-                            resultSet.getString(authData.getEmailAddr()),
-                            resultSet.getString(authData.getPagerNumber()),
-                            resultSet.getString(authData.getTelephoneNumber()),
-                            resultSet.getString(authData.getMemberOf()),
-                            resultSet.getBoolean(authData.getIsSuspended()),
-                            resultSet.getBoolean(authData.getOlrSetupReq()),
-                            resultSet.getBoolean(authData.getOlrLocked())));
+                            Arrays.asList(
+                                resultSet.getString(userAttributes.getCommonName()),
+                                resultSet.getString(userAttributes.getUserId()),
+                                resultSet.getString(securityAttributes.getLockCount()),
+                                resultSet.getString(securityAttributes.getLastLogin()),
+                                resultSet.getString(securityAttributes.getExpiryDate()),
+                                resultSet.getString(userAttributes.getSurname()),
+                                resultSet.getString(userAttributes.getGivenName()),
+                                resultSet.getString(userAttributes.getDisplayName()),
+                                resultSet.getString(userAttributes.getEmailAddr()),
+                                resultSet.getString(userAttributes.getTelephoneNumber()),
+                                resultSet.getString(userAttributes.getMemberOf()),
+                                resultSet.getString(securityAttributes.getIsSuspended()),
+                                resultSet.getString(securityAttributes.getOlrSetupReq()),
+                                resultSet.getString(securityAttributes.getOlrLocked())));
 
                     if (DEBUG)
                     {

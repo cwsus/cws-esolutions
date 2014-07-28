@@ -17,7 +17,7 @@
 #==============================================================================
 
 ## Load system-wide functions
-[ -f ${APP_ROOT}/${LIB_DIRECTORY}/functions ] && . ${APP_ROOT}/${LIB_DIRECTORY}/functions;
+[ -f ${APP_ROOT}/${LIB_DIRECTORY}/functions ] && . ${APP_ROOT}/${LIB_DIRECTORY}/functions || echo "not loading system functions";
 
 [ ! -d ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/functions.d ] && return 0;
 

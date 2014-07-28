@@ -29,10 +29,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.security.config.xml.AuthData;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
+import com.cws.esolutions.security.config.xml.UserReturningAttributes;
+import com.cws.esolutions.security.config.xml.RepositoryConfiguration;
+import com.cws.esolutions.security.config.xml.SecurityReturningAttributes;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 /**
  * API allowing user user management tasks. Used in conjunction with the
@@ -45,8 +47,10 @@ import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementExceptio
 public interface UserManager
 {
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
-    static final AuthData authData = svcBean.getConfigData().getAuthData();
     static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
+    static final RepositoryConfiguration repoConfig = svcBean.getConfigData().getRepoConfig();
+    static final UserReturningAttributes userAttributes = repoConfig.getUserAttributes();
+    static final SecurityReturningAttributes securityAttributes = repoConfig.getSecurityAttributes();
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
