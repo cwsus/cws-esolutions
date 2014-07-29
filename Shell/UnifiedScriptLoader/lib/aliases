@@ -31,8 +31,8 @@ alias echoe='/usr/bin/env echo -ne';
 alias local='typeset';
 
 ## alias java appropriately
-[ ! -z "${SYSTEM_ARCHITECTURE}" ] && [ "${SYSTEM_ARCHITECTURE}" = "64" ] || [ "${SYSTEM_ARCHITECTURE}" = "x86_64" ] && alias java="${JAVA_HOME}/bin/java -d64 -classpath \"${CLASSPATH}\"";
-[ ! -z "${SYSTEM_ARCHITECTURE}" ] && [ "${SYSTEM_ARCHITECTURE}" = "32" ] || [ "${SYSTEM_ARCHITECTURE}" != "x86_64" ] && alias java="${JAVA_HOME}/bin/java -classpath \"${CLASSPATH}\"";
+[ ! -z "${SYSTEM_ARCHITECTURE}" ] && [ "${SYSTEM_ARCHITECTURE}" = "64" ] || [ "${SYSTEM_ARCHITECTURE}" = "x86_64" ] && alias java="${JAVA_HOME}/bin/java -d64 ${JAVA_OPTS} -classpath \"${CLASSPATH}\"";
+[ ! -z "${SYSTEM_ARCHITECTURE}" ] && [ "${SYSTEM_ARCHITECTURE}" = "32" ] || [ "${SYSTEM_ARCHITECTURE}" != "x86_64" ] && alias java="${JAVA_HOME}/bin/java -server ${JAVA_OPTS} -classpath \"${CLASSPATH}\"";
 
 ## safety
 alias rm='/usr/bin/env rm --preserve-root'

@@ -14,17 +14,18 @@ function executeSqlRequest
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
 
-    if [ ${#} -ne 5 ]
+    if [ ${#} -lt 5 ]
     then
         RETURN_CODE=3;
 
         echo -n "executeSqlRequest - Execute a sql request with a provided SQL script\n";
-        echo -n "Usage: executeSqlRequest [ <username> ] [ <password> ] [ <schema> ] [ <SQL script> ] [ <spool file> ]
+        echo -n "Usage: executeSqlRequest [ <username> ] [ <password> ] [ <schema> ] [ <SQL script> ] [ <spool file> ] [ <script arguments> ]
                  -> The username to connect to the SQL database with
                  -> The password for the associated username
                  -> The schema to connect to
                  -> The SQL script to execute
-                 -> The file to spool output to\n";
+                 -> The file to spool output to
+                 -> Any arguments necessary to pass to the SQL script. These will be passed as-is to the script.\n";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -50,6 +51,7 @@ function executeSqlRequest
     typeset SQL_SCHEMA="${3}";
     typeset SQL_SCRIPT="${4}";
     typeset SPOOL_FILE="${5}";
+    typeset SCRIPT_ARGUMENTS="${6}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TMPFILE -> ${TMPFILE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SQL_USERNAME -> ${SQL_USERNAME}";
@@ -57,6 +59,7 @@ function executeSqlRequest
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SQL_SCHEMA -> ${SQL_SCHEMA}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SQL_SCRIPT -> ${SQL_SCRIPT}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SPOOL_FILE -> ${SPOOL_FILE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SCRIPT_ARGUMENTS -> ${SCRIPT_ARGUMENTS}";
 
     if [ ! -r ${SQL_SCRIPT} ]
     then
@@ -75,6 +78,8 @@ function executeSqlRequest
         unset SQL_SCHEMA;
         unset SQL_SCRIPT;
         unset SPOOL_FILE;
+        unset SCRIPT_ARGUMENTS;
+        unset METHOD_NAME;
 
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -101,6 +106,8 @@ function executeSqlRequest
         unset SQL_SCHEMA;
         unset SQL_SCRIPT;
         unset SPOOL_FILE;
+        unset SCRIPT_ARGUMENTS;
+        unset METHOD_NAME;
 
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -108,7 +115,8 @@ function executeSqlRequest
         return ${RETURN_CODE};
     fi
 
-    /usr/bin/env sqlplus ${SQL_USERNAME}/${SQL_PASSWORD}@${SQL_SCHEMA} < ${TMPFILE} > ${LOG_ROOT}/sqlplus.log 2>&1;
+    [ ! -z "${SCRIPT_ARGUMENTS}" ] && echo "exit" | /usr/bin/env sqlplus ${SQL_USERNAME}/${SQL_PASSWORD}@${SQL_SCHEMA} @${TMPFILE} "${SCRIPT_ARGUMENTS}" > ${LOG_ROOT}/sqlplus.log 2>&1;
+    [ -z "${SCRIPT_ARGUMENTS}" ] && echo "exit" | /usr/bin/env sqlplus ${SQL_USERNAME}/${SQL_PASSWORD}@${SQL_SCHEMA} @${TMPFILE} > ${LOG_ROOT}/sqlplus.log 2>&1;
     typeset -i RET_CODE=${?};
 
     if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
@@ -128,6 +136,8 @@ function executeSqlRequest
         unset SQL_SCHEMA;
         unset SQL_SCRIPT;
         unset SPOOL_FILE;
+        unset SCRIPT_ARGUMENTS;
+        unset METHOD_NAME;
 
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -152,6 +162,8 @@ function executeSqlRequest
         unset SQL_SCHEMA;
         unset SQL_SCRIPT;
         unset SPOOL_FILE;
+        unset SCRIPT_ARGUMENTS;
+        unset METHOD_NAME;
 
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
@@ -170,6 +182,8 @@ function executeSqlRequest
     unset SQL_SCHEMA;
     unset SQL_SCRIPT;
     unset SPOOL_FILE;
+    unset SCRIPT_ARGUMENTS;
+    unset METHOD_NAME;
 
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;

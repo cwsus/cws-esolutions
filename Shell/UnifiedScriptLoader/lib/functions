@@ -16,10 +16,32 @@
 #
 #==============================================================================
 
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+
+trap "set +x" INT TERM EXIT;
+
 [ ! -d ${APP_ROOT}/${LIB_DIRECTORY}/functions.d ] && return 0;
 
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Loading system-wide functions..";
+
 ## load functions
-for FUNCTION in ${APP_ROOT}/${LIB_DIRECTORY}/functions.d/*
+for FUNCTION in ${APP_ROOT}/${LIB_DIRECTORY}/functions.d/F*
 do
-    [ -x ${FUNCTION} ] && . ${FUNCTION};
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FUNCTION -> ${FUNCTION}";
+
+    typeset -i INPUT=$((10#$(echo $(basename ${FUNCTION}) | cut -d "-" -f 1 | awk '{print substr($0, length($0) - 1, length($0))}')));
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INPUT -> ${INPUT}";
+
+    case ${INPUT} in
+        +([0-9])*(.)*([0-9]) )
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Loading function ${FUNCTION}";
+
+            . ${FUNCTION};
+            ;;
+    esac
 done
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
