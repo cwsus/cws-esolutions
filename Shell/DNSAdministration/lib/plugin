@@ -16,10 +16,12 @@
 #      REVISION:  ---
 #==============================================================================
 
-[[ "$(/usr/bin/env uname)" = CYGWIN_NT* ]] && [ -z "$(set | /usr/bin/env grep CYGWIN)" ] && typeset -rx CYGWIN="error_start=C:/cygwin/bin/gdb.exe -nw %1 %2";
-
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+
+trap "set +x" INT TERM EXIT;
+
+[[ "$(/usr/bin/env uname)" = CYGWIN_NT* ]] && [ -z "$(set | /usr/bin/env grep CYGWIN)" ] && typeset -rx CYGWIN="error_start=C:/cygwin/bin/gdb.exe -nw %1 %2";
 
 CNAME="$(/usr/bin/env basename "${0}")";
 THIS_CNAME="${CNAME}";
@@ -42,7 +44,7 @@ fi
 ## load application-wide constants if not already done
 if [ -z "${APP_ROOT}" ]
 then
-    case ${SCRIPT_ROOT} in
+    case "${SCRIPT_ROOT}" in
         *lib/plugins/*/sys|*lib/plugins/*/monitors|*lib/plugins/*/executors) . ${SCRIPT_ROOT}/../../../../../lib/constants ;;
         *lib/plugins/*/bin|*lib/plugins/*/lib) . ${SCRIPT_ROOT}/../../../../lib/constants ;;
         *lib/plugins/*) . ${SCRIPT_ROOT}/../../../lib/constants ;;
@@ -52,28 +54,38 @@ then
     esac
 fi
 
-typeset -rx PLUGIN_ROOT_DIR=${PLUGIN_DIR}/${PLUGIN_NAME};
-typeset -rx PLUGIN_CONF_BASE=${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY};
+typeset -rx PLUGIN_ROOT_DIR="${PLUGIN_DIR}/${PLUGIN_NAME}";
+typeset -rx PLUGIN_CONF_BASE="${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}";
 
-case ${EXPORT_ENVIRONMENT} in
-    [Ss][Tt][Gg]|[Ss][Tt][Aa][Gg][Ee]) PLUGIN_CONF_ROOT=${PLUGIN_CONF_BASE}/stg ;;
-    [Uu][Aa][Tt]|[Qq][Aa]) PLUGIN_CONF_ROOT=${PLUGIN_CONF_BASE}/qa ;;
-    [Ii][Ss][Tt]|[Dd][Ee][Vv]|[Dd][Ee][Vv][Ee][Ll][Oo][Pp][Mm][Ee][Nn][Tt]) PLUGIN_CONF_ROOT=${PLUGIN_CONF_BASE}/dev ;;
-    *) PLUGIN_CONF_ROOT=${PLUGIN_CONF_BASE} ;; ## default to production
+case "${EXPORT_ENVIRONMENT}" in
+    [Ss][Tt][Gg]|[Ss][Tt][Aa][Gg][Ee]) typeset -rx PLUGIN_CONF_ROOT="${PLUGIN_CONF_BASE}/stg" ;;
+    [Uu][Aa][Tt]|[Qq][Aa]) typeset -rx PLUGIN_CONF_ROOT="${PLUGIN_CONF_BASE}/qa" ;;
+    [Ii][Ss][Tt]|[Dd][Ee][Vv]|[Dd][Ee][Vv][Ee][Ll][Oo][Pp][Mm][Ee][Nn][Tt]) typeset -rx PLUGIN_CONF_ROOT="${PLUGIN_CONF_BASE}/dev" ;;
+    *) typeset -rx PLUGIN_CONF_ROOT="${PLUGIN_CONF_BASE}" ;; ## default to production
 esac
 
-[ -z "${PLUGIN_CONF_ROOT}" ] || [ ! -s ${PLUGIN_CONF_ROOT}/plugin.properties ] && return 1;
+[ -z "${PLUGIN_CONF_ROOT}" ] || [ ! -s "${PLUGIN_CONF_ROOT}/plugin.properties" ] && return 1;
 
 typeset -rx PLUGIN_LOADED=true;
-typeset -rx PLUGIN_CONFIG=${PLUGIN_CONF_ROOT}/plugin.properties;
+typeset -rx PLUGIN_CONFIG="${PLUGIN_CONF_ROOT}/plugin.properties";
 
 [ -f ${PLUGIN_CONFIG} ] && . ${PLUGIN_CONFIG};
 
 typeset -i AUTHORIZATION_COUNT; AUTHORIZATION_COUNT=0;
 
 ## common aliases
-[ -s ${PLUGIN_LIB_DIRECTORY}/aliases ] && . ${PLUGIN_LIB_DIRECTORY}/aliases;
-[ -s ${PLUGIN_LIB_DIRECTORY}/functions ] && . ${PLUGIN_LIB_DIRECTORY}/functions;
+[ -s "${PLUGIN_LIB_DIRECTORY}/aliases" ] && . "${PLUGIN_LIB_DIRECTORY}/aliases";
+[ -s "${PLUGIN_LIB_DIRECTORY}/functions" ] && . "${PLUGIN_LIB_DIRECTORY}/functions";
+
+## create directories
+[ ! -d "${TMP_DIRECTORY}" ] && mkdir ${TMP_DIRECTORY};
+[ ! -d "${PLUGIN_DATA_DIRECTORY}" ] && mkdir ${PLUGIN_DATA_DIRECTORY};
+[ ! -d "${PLUGIN_WORK_DIRECTORY}" ] && mkdir ${PLUGIN_WORK_DIRECTORY};
+[ ! -d "${TMP_DIRECTORY}" ] && mkdir ${TMP_DIRECTORY};
+[ ! -d "${EXCEPTIONS_DIRECTORY}" ] && mkdir ${EXCEPTIONS_DIRECTORY};
+
+## touch files
+[ ! -f "${SERVER_EXCEPTION_LIST}" ] && touch ${SERVER_EXCEPTION_LIST};
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;

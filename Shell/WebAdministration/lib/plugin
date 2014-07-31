@@ -15,7 +15,7 @@
 #       CREATED:  ---
 #      REVISION:  ---
 #==============================================================================
-echo "loading plugin"
+
 [[ "$(/usr/bin/env uname)" = CYGWIN_NT* ]] && [ -z "$(set | /usr/bin/env grep CYGWIN)" ] && typeset -rx CYGWIN="error_start=C:/cygwin/bin/gdb.exe -nw %1 %2";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
@@ -42,30 +42,30 @@ fi
 ## load application-wide constants if not already done
 if [ -z "${APP_ROOT}" ]
 then
-    case ${SCRIPT_ROOT} in
-        *lib/plugins/*/sys|*lib/plugins/*/monitors|*lib/plugins/*/executors) . ${SCRIPT_ROOT}/../../../../../lib/constants ;;
-        *lib/plugins/*/bin|*lib/plugins/*/lib) . ${SCRIPT_ROOT}/../../../../lib/constants ;;
-        *lib/plugins/*) . ${SCRIPT_ROOT}/../../../lib/constants ;;
-        *lib/plugins) . ${SCRIPT_ROOT}/../../lib/constants ;;
-        *lib|*bin) . ${SCRIPT_ROOT}/../lib/constants ;;
-        *) . ${SCRIPT_ROOT}/lib/constants ;;
+    case "${SCRIPT_ROOT}" in
+        *lib/plugins/*/sys|*lib/plugins/*/monitors|*lib/plugins/*/executors) . "${SCRIPT_ROOT}/../../../../../lib/constants" ;;
+        *lib/plugins/*/bin|*lib/plugins/*/lib) . "${SCRIPT_ROOT}/../../../../lib/constants" ;;
+        *lib/plugins/*) . "${SCRIPT_ROOT}/../../../lib/constants" ;;
+        *lib/plugins) . "${SCRIPT_ROOT}/../../lib/constants" ;;
+        *lib|*bin) . "${SCRIPT_ROOT}/../lib/constants" ;;
+        *) . "${SCRIPT_ROOT}/lib/constants" ;;
     esac
 fi
 
-typeset -rx PLUGIN_ROOT_DIR=${PLUGIN_DIR}/${PLUGIN_NAME};
-typeset -rx PLUGIN_CONF_BASE=${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY};
+typeset -rx PLUGIN_ROOT_DIR="${PLUGIN_DIR}/${PLUGIN_NAME}";
+typeset -rx PLUGIN_CONF_BASE="${PLUGIN_ROOT_DIR}/${ETC_DIRECTORY}";
 
-case ${EXPORT_ENVIRONMENT} in
-    [Ss][Tt][Gg]|[Ss][Tt][Aa][Gg][Ee]) PLUGIN_CONF_ROOT=${PLUGIN_CONF_BASE}/stg ;;
-    [Uu][Aa][Tt]|[Qq][Aa]) PLUGIN_CONF_ROOT=${PLUGIN_CONF_BASE}/qa ;;
-    [Ii][Ss][Tt]|[Dd][Ee][Vv]|[Dd][Ee][Vv][Ee][Ll][Oo][Pp][Mm][Ee][Nn][Tt]) PLUGIN_CONF_ROOT=${PLUGIN_CONF_BASE}/dev ;;
-    *) PLUGIN_CONF_ROOT=${PLUGIN_CONF_BASE} ;; ## default to production
+case "${EXPORT_ENVIRONMENT}" in
+    [Ss][Tt][Gg]|[Ss][Tt][Aa][Gg][Ee]) typeset -rx PLUGIN_CONF_ROOT="${PLUGIN_CONF_BASE}/stg" ;;
+    [Uu][Aa][Tt]|[Qq][Aa]) typeset -rx PLUGIN_CONF_ROOT="${PLUGIN_CONF_BASE}/qa" ;;
+    [Ii][Ss][Tt]|[Dd][Ee][Vv]|[Dd][Ee][Vv][Ee][Ll][Oo][Pp][Mm][Ee][Nn][Tt]) typeset -rx PLUGIN_CONF_ROOT="${PLUGIN_CONF_BASE}/dev" ;;
+    *) typeset -rx PLUGIN_CONF_ROOT="${PLUGIN_CONF_BASE}" ;; ## default to production
 esac
 
-[ -z "${PLUGIN_CONF_ROOT}" ] || [ ! -s ${PLUGIN_CONF_ROOT}/plugin.properties ] && return 1;
+[ -z "${PLUGIN_CONF_ROOT}" ] || [ ! -s "${PLUGIN_CONF_ROOT}/plugin.properties" ] && return 1;
 
 typeset -rx PLUGIN_LOADED=true;
-typeset -rx PLUGIN_CONFIG=${PLUGIN_CONF_ROOT}/plugin.properties;
+typeset -rx PLUGIN_CONFIG="${PLUGIN_CONF_ROOT}/plugin.properties";
 
 [ -f ${PLUGIN_CONFIG} ] && . ${PLUGIN_CONFIG};
 
@@ -107,24 +107,24 @@ typeset -x PATH=${PATH}:${PLUGIN_PATH}:${IPLANET_PATH}:${IHS_PATH};
 typeset -x LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${PLUGIN_LIBRARY_PATH};
 typeset -x CLASSPATH=${CLASSPATH}:${PLUGIN_CLASS_PATH};
 
-[ -s ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/aliases ] && . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/aliases;
-[ -s ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/functions ] && . ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/functions;
+[ -s "${PLUGIN_LIB_DIRECTORY}/aliases" ] && . "${PLUGIN_LIB_DIRECTORY}/aliases";
+[ -s "${PLUGIN_LIB_DIRECTORY}/functions" ] && . "${PLUGIN_LIB_DIRECTORY}/functions";
 
 ## and finally make sure our directories exist
-[ ! -d ${TMP_DIRECTORY} ] && mkdir -p ${TMP_DIRECTORY};
-[ ! -d ${CSRSTORE} ] && mkdir -p ${CSRSTORE};
-[ ! -d ${MAILSTORE} ] && mkdir -p ${MAILSTORE};
-[ ! -d ${PEMSTORE} ] && mkdir -p ${PEMSTORE};
-[ ! -d ${PKCS12STORE} ] && mkdir -p ${PKCS12STORE};
-[ ! -d ${CERTSTORE} ] && mkdir -p ${CERTSTORE};
-[ ! -d ${BACKUP_DIRECTORY} ] && mkdir -p ${BACKUP_DIRECTORY};
-[ ! -d ${DATA_DIRECTORY} ] && mkdir -p ${DATA_DIRECTORY};
-[ ! -d ${BUILD_TMP_DIR} ] && mkdir -p ${BUILD_TMP_DIR};
+[ ! -d ${PKCS12_DIR} ] && mkdir ${PKCS12_DIR};
+[ ! -d ${CERTS_DIR} ] && mkdir ${CERTS_DIR};
+[ ! -d ${CSR_DIR} ] && mkdir ${CSR_DIR};
+[ ! -d ${PEM_DIR} ] && mkdir ${PEM_DIR};
+[ ! -d ${KEY_DIR} ] && mkdir ${KEY_DIR};
+[ ! -d ${EXCEPTIONS_DIRECTORY} ] && mkdir ${EXCEPTIONS_DIRECTORY};
+[ ! -d ${TMP_DIRECTORY} ] && mkdir ${TMP_DIRECTORY};
+[ ! -d ${PLUGIN_DATA_DIR} ] && mkdir ${PLUGIN_DATA_DIR};
 
 ## make sure our exception lists exist
 [ ! -f ${CORE_EXCEPTION_LIST} ] && touch ${CORE_EXCEPTION_LIST};
-[ ! -f ${TMP_EXCEPTION_LIST} ] && touch ${TMP_EXCEPTION_LIST};
 [ ! -f ${SSL_EXCEPTION_LIST} ] && touch ${SSL_EXCEPTION_LIST};
+[ ! -f ${SERVER_EXCEPTION_LIST} ] && touch ${SERVER_EXCEPTION_LIST};
+[ ! -f ${TMP_EXCEPTION_LIST} ] && touch ${TMP_EXCEPTION_LIST};
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;

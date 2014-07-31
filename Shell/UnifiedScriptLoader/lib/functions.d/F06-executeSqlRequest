@@ -18,8 +18,8 @@ function executeSqlRequest
     then
         RETURN_CODE=3;
 
-        echo -n "executeSqlRequest - Execute a sql request with a provided SQL script\n";
-        echo -n "Usage: executeSqlRequest [ <username> ] [ <password> ] [ <schema> ] [ <SQL script> ] [ <spool file> ] [ <script arguments> ]
+        echo "executeSqlRequest - Execute a sql request with a provided SQL script\n";
+        echo "Usage: executeSqlRequest [ <username> ] [ <password> ] [ <schema> ] [ <SQL script> ] [ <spool file> ] [ <script arguments> ]
                  -> The username to connect to the SQL database with
                  -> The password for the associated username
                  -> The schema to connect to

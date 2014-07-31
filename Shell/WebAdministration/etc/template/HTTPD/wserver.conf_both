@@ -70,6 +70,7 @@ AccessFileName                      conf/%CONTEXT_ROOT%/.htaccess
 
 <IfModule headers_module>
     Header                          add S %SERVER_HOSTNAME%
+    Header                          set Cache-Control "max-age=0, no-store"
 </IfModule>
 
 ErrorDocument                       400 /error/%CONTEXT_ROOT%/errHandler.htm
@@ -78,7 +79,7 @@ ErrorDocument                       403 /error/%CONTEXT_ROOT%/errHandler.htm
 ErrorDocument                       404 /error/%CONTEXT_ROOT%/errHandler.htm
 ErrorDocument                       405 /error/%CONTEXT_ROOT%/errHandler.htm
 ErrorDocument                       500 /error/%CONTEXT_ROOT%/errHandler.htm
-ErrorDocument                       503 /error/%CONTEXT_ROOT%/errHandler.htm
+ErrorDocument                       503 /error/%CONTEXT_ROOT%/maintenance.htm
 
 Listen                              %LISTEN_ADDRESS%:%NONSSL_LISTEN_PORT% http
 <VirtualHost %LISTEN_ADDRESS%:%NONSSL_LISTEN_PORT%>

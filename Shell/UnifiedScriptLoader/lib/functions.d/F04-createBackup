@@ -18,11 +18,8 @@ function createBackup
     then
         typeset RETURN_CODE=3;
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-
-        echo -n "${0} - Perform an rsync backup of a filesystem\n";
-        echo -n "Usage: ${0} [ username ] [ source ] [ hostname ] [ destination ]
+        echo "${0} - Perform an rsync backup of a filesystem\n";
+        echo "Usage: ${0} [ username ] [ source ] [ hostname ] [ destination ]
                  -> The username to execute the rsync as.
                  -> The source file/directory to obtain
                  -> The target host to obtain the source from

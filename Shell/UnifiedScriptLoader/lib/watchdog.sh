@@ -34,8 +34,8 @@ function usage
     typeset METHOD_NAME="${CNAME}#${0}";
     typeset RETURN_CODE=3;
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${*}";
 
     echo "${THIS_CNAME} - Watchdog for process execution\n";
     echo "Usage: ${THIS_CNAME} [ -t <timeout> ] [ -i <interval> ] [ -d <delay> ] <command> [-?|-h show this help]
@@ -44,8 +44,8 @@ function usage
     -d         -> Delay between posting the SIGTERM signal and destroying the process by SIGKILL. Default value: ${THREAD_DELAY} seconds.
     -h|-?      -> Show this help\n";
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
@@ -57,8 +57,8 @@ function usage
 ## then load our constants and continue
 [ ${#} -eq 0 ] && usage && RETURN_CODE=${?};
 
-[ -f ${APP_ROOT}/${LIB_DIRECTORY}/functions ] && . ${APP_ROOT}/${LIB_DIRECTORY}/functions;
-[ -f ${APP_ROOT}/${LIB_DIRECTORY}/aliases ] && . ${APP_ROOT}/${LIB_DIRECTORY}/aliases;
+[ -f "${APP_ROOT}/${LIB_DIRECTORY}/functions" ] && . "${APP_ROOT}/${LIB_DIRECTORY}/functions";
+[ -f "${APP_ROOT}/${LIB_DIRECTORY}/aliases" ] && . "${APP_ROOT}/${LIB_DIRECTORY}/aliases";
 
 while getopts ":t:i:d:" OPTIONS 2>/dev/null
 do
@@ -79,7 +79,7 @@ shift $((OPTIND - 1))
         sleep ${INTERVAL};
         kill -0 ${$} || exit 0;
 
-        (( t -= ${INTERVAL} ));
+        (( t -= INTERVAL ));
     done
 
     echo "Terminating process - timeout threshold exceeded";

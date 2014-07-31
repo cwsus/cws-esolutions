@@ -16,8 +16,13 @@
 #
 #==============================================================================
 
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+
+trap "set +x" INT TERM EXIT;
+
 ## Load system-wide aliases
-[ -f ${APP_ROOT}/${LIB_DIRECTORY}/aliases ] && . ${APP_ROOT}/${LIB_DIRECTORY}/aliases;
+[ -f "${APP_ROOT}/${LIB_DIRECTORY}/aliases" ] && . "${APP_ROOT}/${LIB_DIRECTORY}/aliases";
 
 ## sudo aliases
 alias sudon='/usr/bin/env sudo -u named';
@@ -29,3 +34,6 @@ alias dnssec-signzone='/usr/bin/env dnssec-signzone';
 alias rndc-confgen='/usr/bin/env rndc-confgen';
 alias dig='/usr/bin/env dig +noedns'
 alias gdctl='/usr/bin/env gdctl';
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;

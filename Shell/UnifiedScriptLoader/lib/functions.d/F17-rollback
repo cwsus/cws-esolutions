@@ -17,11 +17,8 @@ function rollback
     then
         RETURN_CODE=3;
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-
-        echo -n "${0} - Rolls back a performed modification if an error occurs\n";
-        echo -n "Usage: ${0} [ <backup directory> ] [ <backup file> ] [ <original directory> ] [ <original file> ]
+        echo "${0} - Rolls back a performed modification if an error occurs\n";
+        echo "Usage: ${0} [ <backup directory> ] [ <backup file> ] [ <original directory> ] [ <original file> ]
                  -> The directory that houses the backup files
                  -> The name of the backup file to restore
                  -> The original directory to restore the backup file into
@@ -152,7 +149,7 @@ function rollback
                 ;;
             gz)
                 typeset DECOMPRESS_COMMAND=$(echo ${BACKUP_DIRECTORY}/${BACKUP_FILENAME} | cut -d "." -f $(( $(echo ${BACKUP_DIRECTORY}/${BACKUP_FILENAME} | tr -dc "." | wc -c) + 1 )));
-                
+
                 gzip -dc ${BACKUP_DIRECTORY}/${BACKUP_FILENAME} | (cd ${TEMPDIR}; tar xf -);
                 ;;
             tar)

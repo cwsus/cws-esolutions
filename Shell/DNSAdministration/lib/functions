@@ -24,18 +24,18 @@ trap "set +x" INT TERM EXIT;
 ## Load system-wide functions
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding system-wide functions..";
 
-[ -f ${APP_ROOT}/${LIB_DIRECTORY}/functions ] && . ${APP_ROOT}/${LIB_DIRECTORY}/functions;
-
-[ ! -d ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/functions.d ] && return 0;
+[[ -f "${APP_ROOT}/${LIB_DIRECTORY}/functions" && -z "${FUNCTIONS_LOADED}" ]] && . "${APP_ROOT}/${LIB_DIRECTORY}/functions";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Loading plugin-defined functions..";
 
 ## load functions
-for FUNCTION in ${PLUGIN_ROOT_DIR}/${LIB_DIRECTORY}/functions.d/F*
+for FUNCTION in ${PLUGIN_LIB_DIRECTORY}/functions.d/F*
 do
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FUNCTION -> ${FUNCTION}";
 
-    typeset -i INPUT=$((10#$(cut -d "-" -f 1 <<< $(basename ${FUNCTION}) | awk '{print substr($0, length($0) - 1, length($0))}')));
+    [ ! -f "${FUNCTION}" ] && continue;
+
+    typeset -i INPUT=$(echo $(basename "${FUNCTION}") | awk '{print substr($0, 2, 2)}');
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "INPUT -> ${INPUT}";
 

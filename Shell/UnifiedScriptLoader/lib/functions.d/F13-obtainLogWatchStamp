@@ -16,7 +16,7 @@ function obtainLogWatchStamp
 
     /usr/bin/env perl -e '
         @d=typesettime time() - $ENV{"LOG_FILE_DELAY"};
-        printf "%02d:%02d:%02d\n", $d[2],$d[1],$d[0];';
+        echo "%02d:%02d:%02d\n", $d[2],$d[1],$d[0];';
 
     [ ! -z ${ENABLE_TRACE} ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
 

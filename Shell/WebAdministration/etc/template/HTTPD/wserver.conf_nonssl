@@ -70,6 +70,7 @@ AccessFileName                      conf/%CONTEXT_ROOT%/.htaccess
 
 <IfModule headers_module>
     Header                          add S %SERVER_HOSTNAME%
+    Header                          set Cache-Control "max-age=0, no-store"
 </IfModule>
 
 ErrorDocument                       400 /error/%CONTEXT_ROOT%/errHandler.htm

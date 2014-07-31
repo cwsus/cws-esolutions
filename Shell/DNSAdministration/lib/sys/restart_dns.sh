@@ -42,7 +42,7 @@ KRB5_KTNAME=${KEYTAB_FILE:-/etc/named.keytab};
 [ -r /etc/sysconfig/named ] && . /etc/sysconfig/named;
 [ -r /etc/sysconfig/network ] && . /etc/sysconfig/network;
 
-ACTION=${1};
+ACTION="${1}";
 
 [ -f ${NAMED_BIN} ] || exit 1;
 [ -f ${NAMED_CONF} ] || exit 1;
@@ -76,7 +76,7 @@ case "${ACTION}" in
             /usr/bin/env echo "An error exists in the named configuration:\n\n
             ${named_err}";
 
-            [ -x /usr/bin/logger ] && /usr/bin/env echo "${named_err}" | /usr/bin/logger -pdaemon."ERROR" -tnamed;
+            [ -x /usr/bin/logger ] && /usr/bin/env echo "${named_err}" | /usr/bin/logger -pdaemon.error -tnamed;
 
             exit 2;
         fi
@@ -127,8 +127,8 @@ case "${ACTION}" in
         exit ${?}
         ;;
     restart)
-        ${0} stop;
-        ${0} start;
+        "${0}" stop;
+        "${0}" start;
 
         exit ${?};
         ;;

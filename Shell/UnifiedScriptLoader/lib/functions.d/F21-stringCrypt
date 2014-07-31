@@ -19,8 +19,8 @@ function stringCrypt
     then
         typeset RETURN_CODE=3;
 
-        echo -n "${0} - Generates and returns an encrypted or decrypted string\n";
-        echo -n "Usage: ${0} [ <method> ] [ <string> ] ( <password> )
+        echo "${0} - Generates and returns an encrypted or decrypted string\n";
+        echo "Usage: ${0} [ <method> ] [ <string> ] ( <password> )
                  -> The operation to perform. One of encrypt or decrypt.
                  -> The string to operate against.
                  -> The password, or password file, to utilize for the operation.

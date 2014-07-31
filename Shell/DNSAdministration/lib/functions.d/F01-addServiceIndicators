@@ -54,12 +54,12 @@ function addServiceIndicators
         ## take a copy of the target dc file, otherwise none of this works.
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FAILOVER is ${FAILOVER}. Copying file..";
 
-        cp ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${ZONE_ROOT}/${TARGET_DC}/$(cut -d "." -f 1-2 <<< ${FILENAME}) ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME};
+        cp ${NAMED_ROOT}/${NAMED_ZONE_DIR}/${NAMED_MASTER_ROOT}/${ZONE_ROOT}/${TARGET_DC}/$(cut -d "." -f 1-2 <<< ${FILENAME}) ${TMP_DIRECTORY}/${FILENAME};
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Copy complete.";
     fi
 
-    if [ -s ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME} ]
+    if [ -s ${TMP_DIRECTORY}/${FILENAME} ]
     then
         for INDICATOR in LAST_SERIAL DATACENTER DATE USER_NAME REQUEST_NUMBER SERIAL_NUM
         do
@@ -67,11 +67,11 @@ function addServiceIndicators
 
             if [ "${FAILOVER}" = "${_FALSE}" ]
             then
-                sed -e "s/%${INDICATOR}%/${CHG_ARRAY[${A}]}/" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME} > ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME}.tmp;
-                mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME}.tmp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME};
+                sed -e "s/%${INDICATOR}%/${CHG_ARRAY[${A}]}/" ${TMP_DIRECTORY}/${FILENAME} > ${TMP_DIRECTORY}/${FILENAME}.tmp;
+                mv ${TMP_DIRECTORY}/${FILENAME}.tmp ${TMP_DIRECTORY}/${FILENAME};
             else
-                sed -e "s/%${INDICATOR}%/${CHG_ARRAY[${A}]}/" ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME} > ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME}.tmp;
-                mv ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME}.tmp ${PLUGIN_ROOT_DIR}/${TMP_DIRECTORY}/${FILENAME};
+                sed -e "s/%${INDICATOR}%/${CHG_ARRAY[${A}]}/" ${TMP_DIRECTORY}/${FILENAME} > ${TMP_DIRECTORY}/${FILENAME}.tmp;
+                mv ${TMP_DIRECTORY}/${FILENAME}.tmp ${TMP_DIRECTORY}/${FILENAME};
             fi
 
             (( A += 1 ));

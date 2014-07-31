@@ -18,8 +18,8 @@ function addExceptionEntry
     then
         RETURN_CODE=3;
 
-        echo -n "${0} - Adds an entry to the provided exception list\n";
-        echo -n "Usage: ${0} [ <exception list> ] [ <entry> ]
+        echo "${0} - Adds an entry to the provided exception list\n";
+        echo "Usage: ${0} [ <exception list> ] [ <entry> ]
                  -> The exception list to add the entry to
                  -> The entry to add to the list\n";
 

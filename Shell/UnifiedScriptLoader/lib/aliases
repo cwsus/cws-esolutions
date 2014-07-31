@@ -16,8 +16,10 @@
 #
 #==============================================================================
 
-## PERMANENT ALIAS - DONT EVER REMOVE THIS!!
-alias ksh="$(/usr/bin/env which ksh)";
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+
+trap 'set +x' INT TERM EXIT;
 
 ## common aliases
 alias mktemp='/usr/bin/env mktemp --tmpdir=${TMP_DIRECTORY}';
@@ -27,12 +29,12 @@ alias mkdir='/usr/bin/env mkdir -p';
 alias tar='/usr/bin/env tar -v';
 alias gzip='/usr/bin/env gzip -v';
 alias sudor='/usr/bin/env sudo -u root';
-alias echoe='/usr/bin/env echo -ne';
+alias echoe='/usr/bin/env echo';
 alias local='typeset';
 
 ## alias java appropriately
-[ ! -z "${SYSTEM_ARCHITECTURE}" ] && [ "${SYSTEM_ARCHITECTURE}" = "64" ] || [ "${SYSTEM_ARCHITECTURE}" = "x86_64" ] && alias java="${JAVA_HOME}/bin/java -d64 ${JAVA_OPTS} -classpath \"${CLASSPATH}\"";
-[ ! -z "${SYSTEM_ARCHITECTURE}" ] && [ "${SYSTEM_ARCHITECTURE}" = "32" ] || [ "${SYSTEM_ARCHITECTURE}" != "x86_64" ] && alias java="${JAVA_HOME}/bin/java -server ${JAVA_OPTS} -classpath \"${CLASSPATH}\"";
+[ ! -z "${SYSTEM_ARCHITECTURE}" ] && [ "${SYSTEM_ARCHITECTURE}" = "64" ] || [ "${SYSTEM_ARCHITECTURE}" = "x86_64" ] && alias java="${JAVA_HOME}/bin/java -d64 ${JAVA_OPTS}";
+[ ! -z "${SYSTEM_ARCHITECTURE}" ] && [ "${SYSTEM_ARCHITECTURE}" = "32" ] || [ "${SYSTEM_ARCHITECTURE}" != "x86_64" ] && alias java="${JAVA_HOME}/bin/java -server ${JAVA_OPTS}";
 
 ## safety
 alias rm='/usr/bin/env rm --preserve-root'
@@ -71,3 +73,6 @@ case $(uname) in
         alias ping="/usr/bin/env ping -c 1 -n -q -s 512 -w ${TIMEOUT}";
         ;;
 esac
+
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;

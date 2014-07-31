@@ -17,8 +17,8 @@ function lockProcess
     then
         RETURN_CODE=3;
 
-        echo -n "${0} - Create and assign a lockfile\n";
-        echo -n "Usage: ${0} [ file ] [ pid ]
+        echo "${0} - Create and assign a lockfile\n";
+        echo "Usage: ${0} [ file ] [ pid ]
                  -> The lockfile to utilize
                  -> The process to create the lockfile for\n";
 

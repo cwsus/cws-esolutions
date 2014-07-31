@@ -17,30 +17,23 @@
 #
 #==============================================================================
 
-[[ "$(/usr/bin/env uname)" = CYGWIN_NT* ]] && [ -z "$(set | /usr/bin/env grep CYGWIN)" ] && typeset -rx CYGWIN="winsymlinks:lnk error_start=C:\cygwin\bin\gdb.exe -nw %1 %2";
-
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
 
-case ${SCRIPT_ROOT} in
-    *lib/plugins/*/sys|*lib/plugins/*/monitors|*lib/plugins/*/executors) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../../../../../etc" ;;
-    *lib/plugins/*/bin|*lib/plugins/*/lib) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../../../../etc" ;;
-    *lib/plugins/*) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../../../etc" ;;
-    *lib/plugins) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../../etc" ;;
-    *lib|*bin) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/../etc" ;;
-    *) LOAD_CONFIG_DIR="${SCRIPT_ROOT}/etc" ;;
+[ ! -z "${APPLICATION_LOADED}" ] && [ "${APPLICATION_LOADED}" = "${_TRUE}" ] && return 0;
+
+trap 'set +x' INT TERM EXIT;
+
+[[ "$(/usr/bin/env uname)" == CYGWIN_NT* ]] && [ -z "$(set | /usr/bin/env grep CYGWIN)" ] && typeset -rx CYGWIN="winsymlinks:lnk error_start=C:\cygwin\bin\gdb.exe -nw %1 %2";
+
+case "${SCRIPT_ROOT}" in
+    *lib/plugins/*/sys|*lib/plugins/*/monitors|*lib/plugins/*/executors) typeset -rx APP_SYS_CONFIG="${SCRIPT_ROOT}/../../../../../etc/application.properties" ;;
+    *lib/plugins/*/bin|*lib/plugins/*/lib) typeset -rx APP_SYS_CONFIG="${SCRIPT_ROOT}/../../../../etc/application.properties" ;;
+    *lib/plugins/*) typeset -rx APP_SYS_CONFIG="${SCRIPT_ROOT}/../../../etc/application.properties" ;;
+    *lib/plugins) typeset -rx APP_SYS_CONFIG="${SCRIPT_ROOT}/../../etc/application.properties" ;;
+    *lib|*bin) typeset -rx APP_SYS_CONFIG="${SCRIPT_ROOT}/../etc/application.properties" ;;
+    *) typeset -rx APP_SYS_CONFIG="${SCRIPT_ROOT}/etc/application.properties" ;;
 esac
-
-typeset -r LOAD_CONFIG_DIR;
-
-case ${EXPORT_ENVIRONMENT} in
-    [Ss][Tt][Gg]|[Ss][Tt][Aa][Gg][Ee]) APP_SYS_CONFIG=${LOAD_CONFIG_DIR}/stg/application.properties ;;
-    [Uu][Aa][Tt]|[Qq][Aa]) APP_SYS_CONFIG=${LOAD_CONFIG_DIR}/qa/application.properties ;;
-    [Ii][Ss][Tt]|[Dd][Ee][Vv]|[Dd][Ee][Vv][Ee][Ll][Oo][Pp][Mm][Ee][Nn][Tt]) APP_SYS_CONFIG=${LOAD_CONFIG_DIR}/dev/application.properties ;;
-    *) APP_SYS_CONFIG=${LOAD_CONFIG_DIR}/application.properties ;;
-esac
-
-typeset -r APP_SYS_CONFIG;
 
 if [ ! -s ${APP_SYS_CONFIG} ]
 then
@@ -98,11 +91,20 @@ typeset -x -i ERROR_COUNT=0;
 typeset -x -i RETRY_COUNT=0;
 typeset -x -i STATUS=0;
 
-[ ! -d ${TEMP_DIRECTORY} ] && /usr/bin/env mkdir -p ${TEMP_DIRECTORY} > /dev/null 2>&1;
-
 ## source aliases/functions ..
-[ -f ${APP_ROOT}/${LIB_DIRECTORY}/aliases ] && . ${APP_ROOT}/${LIB_DIRECTORY}/aliases;
-[ -f ${APP_ROOT}/${LIB_DIRECTORY}/functions ] && . ${APP_ROOT}/${LIB_DIRECTORY}/functions;
+[ -f "${APP_ROOT}/${LIB_DIRECTORY}/aliases" ] && . "${APP_ROOT}/${LIB_DIRECTORY}/aliases";
+[ -f "${APP_ROOT}/${LIB_DIRECTORY}/functions" ] && . "${APP_ROOT}/${LIB_DIRECTORY}/functions";
+
+## create directories
+[ ! -d ${TMP_DIRECTORY} ] && mkdir ${TMP_DIRECTORY} > /dev/null 2>&1;
+
+## build classpath...
+for JARFILE in ${LOAD_CLASSES_FROM}/*.jar
+do
+    typeset -x CLASSPATH="${CLASSPATH}${PATHSEP}${JARFILE}";
+done
+
+typeset -rx APPLICATION_LOADED="${_TRUE}";
 
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;

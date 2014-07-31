@@ -18,8 +18,8 @@ function validateFreePort
     then
         RETURN_CODE=3;
 
-        echo -n "validateFreePort - Validates that a provided port number if free for use.\n";
-        echo -n "Usage: validateFreePort [ <port number> ]
+        echo "validateFreePort - Validates that a provided port number if free for use.\n";
+        echo "Usage: validateFreePort [ <port number> ]
                  -> The port number to validate\n";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
