@@ -6,8 +6,8 @@
 #==============================================================================
 function executeJavaProgram
 {
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -vx;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -vx;
     typeset METHOD_NAME="${CNAME}#executeJavaProgram";
     typeset RETURN_CODE=0;
 
@@ -42,8 +42,8 @@ function executeJavaProgram
         unset SCRIPT_ARGUMENTS;
         unset METHOD_NAME;
 
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +vx;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +vx;
 
         return ${RETURN_CODE};
     fi
@@ -57,9 +57,10 @@ function executeJavaProgram
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "JAVA_NAME -> ${JAVA_NAME}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "JAVA_OPTIONS -> ${JAVA_OPTIONS}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SCRIPT_ARGUMENTS -> ${SCRIPT_ARGUMENTS}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RUN COMMAND: java -classpath ${CLASSPATH} -cp ${CLASSPATH} ${JAVA_OPTIONS} ${JAVA_NAME} ${SCRIPT_ARGUMENTS}";
 
-    [ "${JAVA_TYPE}" = "${JAVA_TYPE_CLASS}" ] && java -classpath "${CLASSPATH}" -cp "${CLASSPATH}" "${JAVA_OPTIONS}" ${JAVA_NAME} "${SCRIPT_ARGUMENTS}";
-    [ "${JAVA_TYPE}" = "${JAVA_TYPE_JAR}" ] && java -classpath "${CLASSPATH}" -cp "${CLASSPATH}" "${JAVA_OPTIONS}" -jar ${JAVA_NAME} "${SCRIPT_ARGUMENTS}";
+    [ "${JAVA_TYPE}" = "${JAVA_TYPE_CLASS}" ] && java -classpath "${CLASSPATH}" -cp "${CLASSPATH}" ${JAVA_OPTIONS} ${JAVA_NAME} "${SCRIPT_ARGUMENTS}";
+    [ "${JAVA_TYPE}" = "${JAVA_TYPE_JAR}" ] && java -classpath "${CLASSPATH}" -cp "${CLASSPATH}" ${JAVA_OPTIONS} -jar ${JAVA_NAME} "${SCRIPT_ARGUMENTS}";
     typeset -i RET_CODE=${?};
 
     if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
@@ -79,8 +80,8 @@ function executeJavaProgram
         unset SCRIPT_ARGUMENTS;
         unset METHOD_NAME;
 
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +vx;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +vx;
 
         return ${RETURN_CODE};
     fi
@@ -96,8 +97,8 @@ function executeJavaProgram
     unset SCRIPT_ARGUMENTS;
     unset METHOD_NAME;
 
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +vx;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +vx;
 
     return ${RETURN_CODE};
 }

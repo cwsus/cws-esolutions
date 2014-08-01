@@ -17,8 +17,8 @@
 #
 #==============================================================================
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+[ ! -z "${TRACE_LOGGER}" ] && [ "${TRACE_LOGGER}" = "true" ] && set -vx;
+[ ! -z "${TRACE_LOGGER}" ] && [ "${TRACE_LOGGER}" = "${_TRUE}" ] && set -vx;
 
 #===  FUNCTION  ===============================================================
 #          NAME:  cleanLogArchive
@@ -28,8 +28,8 @@
 #==============================================================================
 function cleanLogArchive
 {
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${TRACE_LOGGER}" ] && [ "${TRACE_LOGGER}" = "true" ] && set -vx;
+    [ ! -z "${TRACE_LOGGER}" ] && [ "${TRACE_LOGGER}" = "${_TRUE}" ] && set -vx;
 
     [ ! -d "${ARCHIVE_LOG_ROOT}" ] && return 0;
 
@@ -38,8 +38,8 @@ function cleanLogArchive
         [ ! -z "${ARCHIVED_FILE}" ] && [ -f "${ARCHIVED_FILE}" ] && rm -rf "${ARCHIVED_FILE}";
     done
 
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${TRACE_LOGGER}" ] && [ "${TRACE_LOGGER}" = "${_TRUE}" ] && set +vx;
+    [ ! -z "${TRACE_LOGGER}" ] && [ "${TRACE_LOGGER}" = "${_TRUE}" ] && set +vx;
 
     return 0;
 }
@@ -52,8 +52,8 @@ function cleanLogArchive
 #==============================================================================
 function rotateLogs
 {
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${TRACE_LOGGER}" ] && [ "${TRACE_LOGGER}" = "true" ] && set -vx;
+    [ ! -z "${TRACE_LOGGER}" ] && [ "${TRACE_LOGGER}" = "${_TRUE}" ] && set -vx;
 
     [ ! -f "${LOG_ROOT}/${1}" ] && return 0;
 
@@ -99,8 +99,8 @@ function rotateLogs
         touch "${LOG_ROOT}/${1}";
     fi
 
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${TRACE_LOGGER}" ] && [ "${TRACE_LOGGER}" = "${_TRUE}" ] && set +vx;
+    [ ! -z "${TRACE_LOGGER}" ] && [ "${TRACE_LOGGER}" = "${_TRUE}" ] && set +vx;
 
     return 0;
 }
@@ -113,8 +113,8 @@ function rotateLogs
 #==============================================================================
 function writeLogEntry
 {
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${TRACE_LOGGER}" ] && [ "${TRACE_LOGGER}" = "true" ] && set -vx;
+    [ ! -z "${TRACE_LOGGER}" ] && [ "${TRACE_LOGGER}" = "${_TRUE}" ] && set -vx;
 
     ## always do the timestamp first
     typeset TIMESTAMP_OPTS=$(echo "${CONVERSION_PATTERN}" | cut -d "[" -f 2 | cut -d "]" -f 1 | cut -d ":" -f 2- | sed -e '/^ *#/d;s/#.*//')
@@ -152,8 +152,8 @@ function writeLogEntry
     unset RECORDER;
     unset LOG_FILE;
 
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${TRACE_LOGGER}" ] && [ "${TRACE_LOGGER}" = "${_TRUE}" ] && set +vx;
+    [ ! -z "${TRACE_LOGGER}" ] && [ "${TRACE_LOGGER}" = "${_TRUE}" ] && set +vx;
 
     return 0;
 }
@@ -163,7 +163,7 @@ function writeLogEntry
 
 [ ${#} -ne 0 ] && writeLogEntry "${@}";
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${TRACE_LOGGER}" ] && [ "${TRACE_LOGGER}" = "${_TRUE}" ] && set +vx;
+[ ! -z "${TRACE_LOGGER}" ] && [ "${TRACE_LOGGER}" = "${_TRUE}" ] && set +vx;
 
 return 0;

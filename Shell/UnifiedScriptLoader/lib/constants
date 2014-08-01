@@ -17,12 +17,14 @@
 #
 #==============================================================================
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -x;
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x;
+[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
 
 [ ! -z "${APPLICATION_LOADED}" ] && [ "${APPLICATION_LOADED}" = "${_TRUE}" ] && return 0;
 
-trap 'set +x' INT TERM EXIT;
+trap 'set +vx' INT TERM EXIT;
 
 [[ "$(/usr/bin/env uname)" == CYGWIN_NT* ]] && [ -z "$(set | /usr/bin/env grep CYGWIN)" ] && typeset -rx CYGWIN="winsymlinks:lnk error_start=C:\cygwin\bin\gdb.exe -nw %1 %2";
 
@@ -101,10 +103,14 @@ typeset -x -i STATUS=0;
 ## build classpath...
 for JARFILE in ${LOAD_CLASSES_FROM}/*.jar
 do
+    [ ! -f "${JARFILE}" ] && continue;
+
     typeset -x CLASSPATH="${CLASSPATH}${PATHSEP}${JARFILE}";
 done
 
 typeset -rx APPLICATION_LOADED="${_TRUE}";
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +x;
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set +x;
+[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +v;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;

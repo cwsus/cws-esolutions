@@ -17,6 +17,7 @@ local.properties
 .checkstyle
 target/
 META-INF/
+*.jar
 
 # Android
 gen/
