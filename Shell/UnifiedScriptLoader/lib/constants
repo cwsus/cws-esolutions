@@ -17,6 +17,8 @@
 #
 #==============================================================================
 
+trap 'set +v; set +x' INT TERM EXIT;
+
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
@@ -24,24 +26,33 @@
 
 [ ! -z "${APPLICATION_LOADED}" ] && [ "${APPLICATION_LOADED}" = "${_TRUE}" ] && return 0;
 
-trap 'set +vx' INT TERM EXIT;
-
 [[ "$(/usr/bin/env uname)" == CYGWIN_NT* ]] && [ -z "$(set | /usr/bin/env grep CYGWIN)" ] && typeset -rx CYGWIN="winsymlinks:lnk error_start=C:\cygwin\bin\gdb.exe -nw %1 %2";
 
-case "${SCRIPT_ROOT}" in
-    *lib/plugins/*/sys|*lib/plugins/*/monitors|*lib/plugins/*/executors) typeset -rx APP_SYS_CONFIG="${SCRIPT_ROOT}/../../../../../etc/application.properties" ;;
-    *lib/plugins/*/bin|*lib/plugins/*/lib) typeset -rx APP_SYS_CONFIG="${SCRIPT_ROOT}/../../../../etc/application.properties" ;;
-    *lib/plugins/*) typeset -rx APP_SYS_CONFIG="${SCRIPT_ROOT}/../../../etc/application.properties" ;;
-    *lib/plugins) typeset -rx APP_SYS_CONFIG="${SCRIPT_ROOT}/../../etc/application.properties" ;;
-    *lib|*bin) typeset -rx APP_SYS_CONFIG="${SCRIPT_ROOT}/../etc/application.properties" ;;
-    *) typeset -rx APP_SYS_CONFIG="${SCRIPT_ROOT}/etc/application.properties" ;;
-esac
+if [ -z "${APP_ROOT}" ]
+then
+    if [ -z "${BASE_APPLICATION_DIRECTORY}" ]
+    then
+        case "${SCRIPT_ROOT}" in
+            *lib/plugins/*/sys|*lib/plugins/*/monitors|*lib/plugins/*/executors) typeset -rx APP_SYS_CONFIG="${SCRIPT_ROOT}/../../../../../etc/application.properties" ;;
+            *lib/plugins/*/bin|*lib/plugins/*/lib) typeset -rx APP_SYS_CONFIG="${SCRIPT_ROOT}/../../../../etc/application.properties" ;;
+            *lib/plugins/*) typeset -rx APP_SYS_CONFIG="${SCRIPT_ROOT}/../../../etc/application.properties" ;;
+            *lib/plugins) typeset -rx APP_SYS_CONFIG="${SCRIPT_ROOT}/../../etc/application.properties" ;;
+            *lib|*bin) typeset -rx APP_SYS_CONFIG="${SCRIPT_ROOT}/../etc/application.properties" ;;
+            *) typeset -rx APP_SYS_CONFIG="${SCRIPT_ROOT}/etc/application.properties" ;;
+        esac
+    else
+        typeset -rx APP_SYS_CONFIG="${BASE_APPLICATION_DIRECTORY}/etc/application.properties";
+    fi
+fi
 
 if [ ! -s ${APP_SYS_CONFIG} ]
 then
     /usr/bin/env echo "Failed to locate configuration data. Cannot continue.";
 
-    /usr/bin/env echo 1; exit 1;
+    case $- in
+        *i*) return 1 ;;
+        *) exit 1 ;;
+    esac
 fi
 
 case $(uname) in
@@ -114,3 +125,4 @@ typeset -rx APPLICATION_LOADED="${_TRUE}";
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +v;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+

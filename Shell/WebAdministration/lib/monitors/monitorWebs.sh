@@ -29,8 +29,10 @@ SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}/${0##*/}")";
 SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 METHOD_NAME="${CNAME}#startup";
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +vx;
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +vx;
+[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set +x;
+[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +v;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
 [ -z "${PLUGIN_ROOT_DIR}" ] && [ -f "${SCRIPT_ROOT}/../lib/plugin" ] && . "${SCRIPT_ROOT}/../lib/plugin";
 
@@ -54,9 +56,9 @@ METHOD_NAME="${CNAME}#startup";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
 
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${*}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${*}";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  monitorWebInstances
@@ -66,18 +68,20 @@ METHOD_NAME="${CNAME}#startup";
 #==============================================================================
 function monitorWebInstances
 {
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -vx;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -vx;
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set -x;
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
     typeset METHOD_NAME="${CNAME}#${0}";
     typeset RETURN_CODE=0;
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing monitor on: ${HOSTNAME}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing monitor on: ${HOSTNAME}";
 
     ## ok, lets sort out where we are and what to look for
     if [ ! -z "${WS_PLATFORM}" ]
     then
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WS_PLATFORM -> ${WS_PLATFORM}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WS_PLATFORM -> ${WS_PLATFORM}";
 
         if [ "${WS_PLATFORM}" = "${IPLANET_TYPE_IDENTIFIER}" ]
         then
@@ -91,17 +95,17 @@ function monitorWebInstances
         typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST -> ${VALIDATE_SERVER_LIST}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST -> ${VALIDATE_SERVER_LIST}";
 
             if [ -z "${VALIDATE_SERVER_LIST}" ] || [ "$(echo ${VALIDATE_SERVER_LIST[*]})" = "${_FALSE}" ]
             then
                 ## no websites were found to monitor
-                "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No websites were found to monitor. Please ensure that the IPLANET_ROOT variable exists in the executing users profile and that it points to a valid location.";
+                writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No websites were found to monitor. Please ensure that the IPLANET_ROOT variable exists in the executing users profile and that it points to a valid location.";
             else
                 ## ok, validate it
                 for WEBSERVER in ${VALIDATE_SERVER_LIST[*]}
                 do
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WEBSERVER -> ${WEBSERVER}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WEBSERVER -> ${WEBSERVER}";
 
                     if [ $(grep -c ${WEBSERVER} "${APP_ROOT}"/${CORE_EXCEPTION_LIST}) -eq 0 ] \
                         && [ $(grep -c ${WEBSERVER} "${APP_ROOT}"/${TMP_EXCEPTION_LIST}) -eq 0 ] \
@@ -113,13 +117,13 @@ typeset RETURN_CODE=0;
                             sed -e "s/${IPLANET_PORT_IDENTIFIER}=/@/" | \
                             cut -d "@" -f 2 | awk '{print $1}' | sed -e "s/\"//g");
 
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_PORT_NUMBER -> ${SITE_PORT_NUMBER[*]}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SITE_PORT_NUMBER -> ${SITE_PORT_NUMBER[*]}";
 
                         A=0;
 
                         for PORT in ${SITE_PORT_NUMBER[*]}
                         do
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PORT -> ${PORT}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PORT -> ${PORT}";
 
                             if [ ${PORT} -lt ${HIGH_PRIVILEGED_PORT} ]
                             then
@@ -139,7 +143,7 @@ typeset RETURN_CODE=0;
 
                         A=0;
 
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IS_PRIVILEGED -> ${IS_PRIVILEGED}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IS_PRIVILEGED -> ${IS_PRIVILEGED}";
 
                         ## ok, we can run it. its not in an exception list
                         PID_LOG_FILE=$(grep -w ${IPLANET_PID_IDENTIFIER} ${IPLANET_ROOT}/${WEBSERVER}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG} | awk '{print $2}');
@@ -148,26 +152,26 @@ typeset RETURN_CODE=0;
                         then
                             SERVICE_PID=$(cat ${PID_LOG_FILE});
 
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LOG_FILE -> ${PID_LOG_FILE}";
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_PID -> ${SERVICE_PID}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LOG_FILE -> ${PID_LOG_FILE}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_PID -> ${SERVICE_PID}";
 
                             PROCESS_OUTPUT=$(ps -auxww | grep -w ${SERVICE_PID} | grep -v grep);
 
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
 
                             if [ ! -z "${PROCESS_OUTPUT}" ]
                             then
                                 ## server is running, check to see who its running as
                                 PROCESS_OWNER=$(echo ${PROCESS_OUTPUT} | awk '{print $1}');
 
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OWNER -> ${PROCESS_OWNER}";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OWNER -> ${PROCESS_OWNER}";
 
                                 if [ "${PROCESS_OWNER}" != "${IPLANET_PROCESS_USER}" ]
                                 then
                                     if [ ! -z "${IS_PRIVILEGED}" ] && [ "${IS_PRIVILEGED}" = "${_FALSE}" ]
                                     then
                                         ## TODO: build in a restart process to make it run as the user we want
-                                        "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} appears to be running as a user other than the configured process owner: Current owner: ${PROCESS_OWNER}, expected owner: ${IPLANET_PROCESS_USER}";
+                                        writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} appears to be running as a user other than the configured process owner: Current owner: ${PROCESS_OWNER}, expected owner: ${IPLANET_PROCESS_USER}";
                                     fi
                                 fi
                             else
@@ -177,11 +181,14 @@ typeset RETURN_CODE=0;
                                 unset SERVICE_PID;
                                 unset PROCESS_OUTPUT;
 
-                                "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} does not appear to be running. Restarting..";
+                                writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} does not appear to be running. Restarting..";
 
                                 ## temporarily turn off trace. the way we're doing things here,
                                 ## it breaks the variable output
-                                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -vx;
+                                [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set +x;
+                                [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +v;
+                                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
                                 if [ ! -z "${IS_PRIVILEGED}" ] && [ "${IS_PRIVILEGED}" = "${_FALSE}" ]
                                 then
@@ -191,7 +198,7 @@ typeset RETURN_CODE=0;
                                     STARTUP_OUTPUT=$( { sudo ${IPLANET_SUDO_START_WEB} ${IPLANET_ROOT} ${WEBSERVER}; } 2>&1 )
                                 fi
 
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "STARTUP_OUTPUT -> ${STARTUP_OUTPUT}";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "STARTUP_OUTPUT -> ${STARTUP_OUTPUT}";
 
                                 PID_LOG_FILE=$(grep -w ${IPLANET_PID_IDENTIFIER} ${IPLANET_ROOT}/${WEBSERVER}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG} | awk '{print $2}');
 
@@ -199,27 +206,30 @@ typeset RETURN_CODE=0;
                                 then
                                     SERVICE_PID=$(cat ${PID_LOG_FILE});
 
-                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LOG_FILE -> ${PID_LOG_FILE}";
-                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_PID -> ${SERVICE_PID}";
+                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LOG_FILE -> ${PID_LOG_FILE}";
+                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_PID -> ${SERVICE_PID}";
 
                                     PROCESS_OUTPUT=$(ps -auxwww | grep -w ${SERVICE_PID} | grep -v grep);
 
-                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
+                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
 
                                     if [ -z "${PROCESS_OUTPUT}" ]
                                     then
                                         ## server failed to properly start
-                                        "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} appears to be down. Restart attempt has failed: ${STARTUP_OUTPUT}";
+                                        writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} appears to be down. Restart attempt has failed: ${STARTUP_OUTPUT}";
                                     fi
                                 else
                                     ## server failed to start
-                                    "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} startup attempt has failed: ${PID_LOG_FILE} does not exist.";
+                                    writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} startup attempt has failed: ${PID_LOG_FILE} does not exist.";
                                 fi
                             fi
                         else
-                            "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} does not appear to be running. Restarting..";
+                            writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} does not appear to be running. Restarting..";
 
-                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -vx;
+                            [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set -x;
+                            [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
 
                             if [ ! -z "${IS_PRIVILEGED}" ] && [ "${IS_PRIVILEGED}" = "${_FALSE}" ]
                             then
@@ -229,7 +239,7 @@ typeset RETURN_CODE=0;
                                 STARTUP_OUTPUT=$( { sudo ${IPLANET_SUDO_START_WEB} ${IPLANET_ROOT} ${WEBSERVER}; } 2>&1 )
                             fi
 
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "STARTUP_OUTPUT -> ${STARTUP_OUTPUT}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "STARTUP_OUTPUT -> ${STARTUP_OUTPUT}";
 
                             PID_LOG_FILE=$(grep -w ${IPLANET_PID_IDENTIFIER} ${IPLANET_ROOT}/${WEBSERVER}/${IPLANET_CONFIG_PATH}/${IPLANET_CORE_CONFIG} | awk '{print $2}');
 
@@ -237,21 +247,21 @@ typeset RETURN_CODE=0;
                             then
                                 SERVICE_PID=$(cat ${PID_LOG_FILE});
 
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LOG_FILE -> ${PID_LOG_FILE}";
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_PID -> ${SERVICE_PID}";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LOG_FILE -> ${PID_LOG_FILE}";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_PID -> ${SERVICE_PID}";
 
                                 PROCESS_OUTPUT=$(ps -auxwww | grep -w ${SERVICE_PID} | grep -v grep);
 
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
 
                                 if [ -z "${PROCESS_OUTPUT}" ]
                                 then
                                     ## server failed to properly start
-                                    "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} appears to be down. Restart attempt has failed: ${STARTUP_OUTPUT}";
+                                    writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} appears to be down. Restart attempt has failed: ${STARTUP_OUTPUT}";
                                 fi
                             else
                                 ## server failed to start
-                                "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} startup attempt has failed: ${PID_LOG_FILE} does not exist.";
+                                writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} startup attempt has failed: ${PID_LOG_FILE} does not exist.";
                             fi
                         fi
                     fi
@@ -269,14 +279,14 @@ typeset RETURN_CODE=0;
             ## IHS host.
             set -A VALIDATE_SERVER_LIST $(ls -ltr ${IHS_ROOT} | grep ${IHS_WEB_IDENTIFIER} | awk '{print $NF}');
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST -> ${VALIDATE_SERVER_LIST[*]}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST -> ${VALIDATE_SERVER_LIST[*]}";
 
             if [ ! -z "${VALIDATE_SERVER_LIST}" ]
             then
                 ## ok, validate it
                 for WEBSERVER in ${VALIDATE_SERVER_LIST[*]}
                 do
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WEBSERVER -> ${WEBSERVER}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WEBSERVER -> ${WEBSERVER}";
 
                     if [ $(grep -c ${WEBSERVER} "${APP_ROOT}"/${CORE_EXCEPTION_LIST}) -eq 0 ] \
                         && [ $(grep -c ${WEBSERVER} "${APP_ROOT}"/${TMP_EXCEPTION_LIST}) -eq 0 ] \
@@ -285,31 +295,31 @@ typeset RETURN_CODE=0;
                         ## ok, we can run it. its not in an exception list
                         PID_LOG_FILE=$(grep -w ${IHS_PID_IDENTIFIER} ${IHS_ROOT}/${IHS_CONFIG_PATH}/${WEBSERVER}/${IHS_SERVER_CONFIG} | awk '{print $2}');
 
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LOG_FILE -> ${PID_LOG_FILE}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LOG_FILE -> ${PID_LOG_FILE}";
 
                         if [ -s ${PID_LOG_FILE} ]
                         then
                             SERVICE_PID=$(cat ${PID_LOG_FILE});
 
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_PID -> ${SERVICE_PID}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_PID -> ${SERVICE_PID}";
 
                             PROCESS_OUTPUT=$(ps -axww | grep -w ${SERVICE_PID} | grep -v grep);
 
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
 
                             if [ ! -z "${PROCESS_OUTPUT}" ]
                             then
                                 ## server is running, check to see who its running as
                                 PROCESS_OWNER=$(echo ${PROCESS_OUTPUT} | awk '{print $1}');
 
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OWNER -> ${PROCESS_OWNER}";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OWNER -> ${PROCESS_OWNER}";
 
                                 if [ "${PROCESS_OWNER}" != "${IHS_PROCESS_USER}" ]
                                 then
                                     ## process is running as a user other than what we expect.
                                     ## provide notification
                                     ## TODO: build in a restart process to make it run as the user we want
-                                    "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} appears to be running as a user other than the configured process owner: Current owner: ${PROCESS_OWNER}, expected owner: ${IHS_PROCESS_USER}";
+                                    writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} appears to be running as a user other than the configured process owner: Current owner: ${PROCESS_OWNER}, expected owner: ${IHS_PROCESS_USER}";
                                 fi
                             else
                                 ## process doesnt appear to be running. make an attempt to start it
@@ -318,35 +328,35 @@ typeset RETURN_CODE=0;
                                 unset SERVICE_PID;
                                 unset PROCESS_OUTPUT;
 
-                                "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} does not appear to be running. Restarting..";
+                                writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} does not appear to be running. Restarting..";
 
                                 startIHS ${WEBSERVER};
                                 typeset -i RET_CODE=${?};
 
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
                                 PID_LOG_FILE=$(grep -w ${IHS_PID_IDENTIFIER} ${IHS_ROOT}/${IHS_CONFIG_PATH}/${WEBSERVER}/${IHS_SERVER_CONFIG} | awk '{print $2}');
 
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LOG_FILE -> ${PID_LOG_FILE}";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LOG_FILE -> ${PID_LOG_FILE}";
 
                                 if [ -s ${PID_LOG_FILE} ]
                                 then
                                     SERVICE_PID=$(cat ${PID_LOG_FILE});
 
-                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_PID -> ${SERVICE_PID}";
+                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_PID -> ${SERVICE_PID}";
 
                                     PROCESS_OUTPUT=$(ps -auxwww | grep -w ${SERVICE_PID} | grep -v grep);
 
-                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
+                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
 
                                     if [ -z "${PROCESS_OUTPUT}" ]
                                     then
                                         ## server failed to properly start
-                                        "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} appears to be down. Restart attempt has failed: ${STARTUP_OUTPUT}";
+                                        writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} appears to be down. Restart attempt has failed: ${STARTUP_OUTPUT}";
                                     fi
                                 else
                                     ## tried restart and failed
-                                    "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} appears to be down. Restart attempt has failed.";
+                                    writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} appears to be down. Restart attempt has failed.";
                                 fi
                             fi
                         else
@@ -355,35 +365,35 @@ typeset RETURN_CODE=0;
                             unset SERVICE_PID;
                             unset PROCESS_OUTPUT;
 
-                            "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} does not appear to be running. Restarting..";
+                            writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} does not appear to be running. Restarting..";
 
                             startIHS ${WEBSERVER};
                             typeset -i RET_CODE=${?};
 
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
                             PID_LOG_FILE=$(grep -w ${IHS_PID_IDENTIFIER} ${IHS_ROOT}/${IHS_CONFIG_PATH}/${WEBSERVER}/${IHS_SERVER_CONFIG} | awk '{print $2}');
 
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LOG_FILE -> ${PID_LOG_FILE}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LOG_FILE -> ${PID_LOG_FILE}";
 
                             if [ -s ${PID_LOG_FILE} ]
                             then
                                 SERVICE_PID=$(cat ${PID_LOG_FILE});
 
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_PID -> ${SERVICE_PID}";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SERVICE_PID -> ${SERVICE_PID}";
 
                                 PROCESS_OUTPUT=$(ps -auxwww | grep -w ${SERVICE_PID} | grep -v grep);
 
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROCESS_OUTPUT -> ${PROCESS_OUTPUT}";
 
                                 if [ -z "${PROCESS_OUTPUT}" ]
                                 then
                                     ## server failed to properly start
-                                    "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} appears to be down. Restart attempt has failed: ${STARTUP_OUTPUT}";
+                                    writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} appears to be down. Restart attempt has failed: ${STARTUP_OUTPUT}";
                                 fi
                             else
                                 ## tried restart and failed
-                                "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} appears to be down. Restart attempt has failed.";
+                                writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${WEBSERVER} appears to be down. Restart attempt has failed.";
                             fi
                         fi
                     fi
@@ -397,15 +407,15 @@ typeset RETURN_CODE=0;
                 done
             else
                 ## no websites were found to monitor
-                "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No websites were found to monitor. Please ensure that the IPLANET_ROOT variable exists in the executing users profile and that it points to a valid location.";
+                writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No websites were found to monitor. Please ensure that the IPLANET_ROOT variable exists in the executing users profile and that it points to a valid location.";
             fi
         else
             ## unknown host type
-            "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An unknown server platform was determined. Please verify that the executing user has an exported variable named WS_PLATFORM and that the variable points to an valid webserver platform type.";
+            writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An unknown server platform was determined. Please verify that the executing user has an exported variable named WS_PLATFORM and that the variable points to an valid webserver platform type.";
         fi
     else
         ## unable to determine platform type to verify, cannot continue
-        "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No server platform was determined. Please verify that the executing user has an exported variable named WS_PLATFORM and that the variable points to an valid webserver platform type.";
+        writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No server platform was determined. Please verify that the executing user has an exported variable named WS_PLATFORM and that the variable points to an valid webserver platform type.";
     fi
 
     unset VALIDATE_SERVER_LIST;
@@ -425,9 +435,9 @@ typeset RETURN_CODE=0;
 
 METHOD_NAME="${CNAME}#startup";
 
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${*}";
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${*}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
 monitorWebInstances;
 

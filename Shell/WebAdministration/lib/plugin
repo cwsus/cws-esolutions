@@ -16,18 +16,21 @@
 #      REVISION:  ---
 #==============================================================================
 
-[[ "$(/usr/bin/env uname)" = CYGWIN_NT* ]] && [ -z "$(set | /usr/bin/env grep CYGWIN)" ] && typeset -rx CYGWIN="error_start=C:/cygwin/bin/gdb.exe -nw %1 %2";
+trap 'set +v; set +x' INT TERM EXIT;
 
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
 
+[[ "$(/usr/bin/env uname)" = CYGWIN_NT* ]] && [ -z "$(set | /usr/bin/env grep CYGWIN)" ] && typeset -rx CYGWIN="error_start=C:/cygwin/bin/gdb.exe -nw %1 %2";
+
 CNAME="$(/usr/bin/env basename "${0}")";
 THIS_CNAME="${CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; /usr/bin/env echo "${PWD}"/"${0##*/}")";
 SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
-typeset -rx PLUGIN_NAME="WebAdministration";
+typeset -rx PLUGIN_NAME="DNSAdministration";
+typeset -rx BASE_APPLICATION_DIRECTORY="/home/35033355/workspace/cws-esolutions/Shell/UnifiedScriptLoader"; ## this MUST be set if this plugin doesnt live under the app
 
 ###############################################################################
 #       check if is running on a eSupport DR Node, exit if it is not.
@@ -44,14 +47,19 @@ fi
 ## load application-wide constants if not already done
 if [ -z "${APP_ROOT}" ]
 then
-    case "${SCRIPT_ROOT}" in
-        *lib/plugins/*/sys|*lib/plugins/*/monitors|*lib/plugins/*/executors) . "${SCRIPT_ROOT}/../../../../../lib/constants" ;;
-        *lib/plugins/*/bin|*lib/plugins/*/lib) . "${SCRIPT_ROOT}/../../../../lib/constants" ;;
-        *lib/plugins/*) . "${SCRIPT_ROOT}/../../../lib/constants" ;;
-        *lib/plugins) . "${SCRIPT_ROOT}/../../lib/constants" ;;
-        *lib|*bin) . "${SCRIPT_ROOT}/../lib/constants" ;;
-        *) . "${SCRIPT_ROOT}/lib/constants" ;;
-    esac
+    if [ -z "${BASE_APPLICATION_DIRECTORY}" ]
+    then
+        case "${SCRIPT_ROOT}" in
+            *lib/plugins/*/sys|*lib/plugins/*/monitors|*lib/plugins/*/executors) . "${SCRIPT_ROOT}/../../../../../lib/constants" ;;
+            *lib/plugins/*/bin|*lib/plugins/*/lib) . "${SCRIPT_ROOT}/../../../../lib/constants" ;;
+            *lib/plugins/*) . "${SCRIPT_ROOT}/../../../lib/constants" ;;
+            *lib/plugins) . "${SCRIPT_ROOT}/../../lib/constants" ;;
+            *lib|*bin) . "${SCRIPT_ROOT}/../lib/constants" ;;
+            *) . "${SCRIPT_ROOT}/lib/constants" ;;
+        esac
+    else
+        . "${BASE_APPLICATION_DIRECTORY}/lib/constants";
+    fi
 fi
 
 typeset -rx PLUGIN_ROOT_DIR="${PLUGIN_DIR}/${PLUGIN_NAME}";

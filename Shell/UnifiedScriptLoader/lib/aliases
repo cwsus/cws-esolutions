@@ -16,15 +16,14 @@
 #
 #==============================================================================
 
+trap 'set +v; set +x' INT TERM EXIT;
+
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set -x;
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
 
-trap 'set +vx' INT TERM EXIT;
-
 ## common aliases
-alias mktemp='/usr/bin/env mktemp --tmpdir=${TMP_DIRECTORY}';
 alias netstat='/usr/bin/env netstat -an';
 alias dig='/usr/bin/env dig +noedns';
 alias mkdir='/usr/bin/env mkdir -p';
@@ -33,6 +32,7 @@ alias gzip='/usr/bin/env gzip -v';
 alias sudor='/usr/bin/env sudo -u root';
 alias echoe='/usr/bin/env echo';
 alias local='typeset';
+alias nc="/usr/bin/env nc -w ${THREAD_TIMEOUT}";
 
 ## alias java appropriately
 [ ! -z "${SYSTEM_ARCHITECTURE}" ] && [ "${SYSTEM_ARCHITECTURE}" = "64" ] || [ "${SYSTEM_ARCHITECTURE}" = "x86_64" ] && alias java="${JAVA_HOME}/bin/java -d64 ${JAVA_OPTS}";

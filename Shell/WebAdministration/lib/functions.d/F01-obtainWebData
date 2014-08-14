@@ -7,12 +7,14 @@
 #==============================================================================
 function obtainWebData
 {
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -vx;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -vx;
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set -x;
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
     typeset METHOD_NAME="${THIS_CNAME}#${0}";
     typeset RETURN_CODE=0;
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${THIS_CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${THIS_CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
     if [ $(getWebInfo | grep -w ${SITE_HOSTNAME} | wc -l) != 0 ]
     then
@@ -43,7 +45,7 @@ function obtainWebData
             unset CONTACT_CODE;
             unset OWNER_DIST;
 
-            ${LOGGER} "ERROR" "${METHOD_NAME}" "${THIS_CNAME}" "${LINENO}" "Unsupported platform detected - Renewal process aborted";
+            writeLogEntry "ERROR" "${METHOD_NAME}" "${THIS_CNAME}" "${LINENO}" "Unsupported platform detected - Renewal process aborted";
 
             DATA_CODE=41;
         else
@@ -69,8 +71,8 @@ function obtainWebData
 
                 typeset METHOD_NAME="${THIS_CNAME}#${0}";
 
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${THIS_CNAME}" "${LINENO}" "ACTIVE_DATACENTER -> ${ACTIVE_DATACENTER}";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${THIS_CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${THIS_CNAME}" "${LINENO}" "ACTIVE_DATACENTER -> ${ACTIVE_DATACENTER}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${THIS_CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
                 typeset DATA_CODE=0;
 
@@ -83,14 +85,14 @@ function obtainWebData
                     typeset PRI_PLATFORM_CODE=$(getWebInfo | grep "${SITE_HOSTNAME}" | grep -v "#" | grep -v ${ACTIVE_DATACENTER} | cut -d "|" -f 2 | sort | uniq); ## get the platform code, if multiples spit with space
                     typeset SEC_PLATFORM_CODE=$(getWebInfo | grep "${SITE_HOSTNAME}" | grep -v "#" | grep ${ACTIVE_DATACENTER} | cut -d "|" -f 2 | sort | uniq); ## get the platform code, if multiples spit with space
 
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${THIS_CNAME}" "${LINENO}" "PRI_PLATFORM_CODE -> ${PRI_PLATFORM_CODE}";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${THIS_CNAME}" "${LINENO}" "SEC_PLATFORM_CODE -> ${SEC_PLATFORM_CODE}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${THIS_CNAME}" "${LINENO}" "PRI_PLATFORM_CODE -> ${PRI_PLATFORM_CODE}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${THIS_CNAME}" "${LINENO}" "SEC_PLATFORM_CODE -> ${SEC_PLATFORM_CODE}";
 
                     typeset DATA_CODE=0;
                 else
                     ## unable to accurately determine current datacenter
                     ## return a warning
-                    ${LOGGER} "WARN" "${METHOD_NAME}" "${THIS_CNAME}" "${LINENO}" "Active datacenter could not be established.";
+                    writeLogEntry "WARN" "${METHOD_NAME}" "${THIS_CNAME}" "${LINENO}" "Active datacenter could not be established.";
 
                     typeset DATA_CODE=91;
                 fi
@@ -98,15 +100,17 @@ function obtainWebData
         fi
     else
         ## unable to find data
-        ${LOGGER} "ERROR" "${METHOD_NAME}" "${THIS_CNAME}" "${LINENO}" "Failed to locate configuration data in ${EINFO_WEBSITE_DEFS}. Cannot continue.";
+        writeLogEntry "ERROR" "${METHOD_NAME}" "${THIS_CNAME}" "${LINENO}" "Failed to locate configuration data in ${EINFO_WEBSITE_DEFS}. Cannot continue.";
 
         typeset DATA_CODE=42;
     fi
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${THIS_CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${THIS_CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +vx;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +vx;
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set +x;
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +v;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
     return ${RETURN_CODE};
 }

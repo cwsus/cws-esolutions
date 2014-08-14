@@ -6,223 +6,278 @@
 #==============================================================================
 function getHostKeys
 {
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -vx;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -vx;
-    typeset METHOD_NAME="${CNAME}#${0}";
-    typeset -i RETURN_CODE=0;
+    trap 'set +v; set +x' INT TERM EXIT;
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+    trap '[ -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}"; set +v; set +x' INT TERM EXIT;
+
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set -x;
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
+    typeset METHOD_NAME="${CNAME}#getHostKeys";
+    typeset -i RETURN_CODE=0;
 
     if [ ${#} -eq 0 ]
     then
         typeset RETURN_CODE=3;
 
-        echo "${0} - Obtain SSH host keys for a provided server.\n";
-        echo "Usage: ${0} [ <host> ]
+        echo -n "getHostKeys - Obtain SSH host keys for a provided server.\n";
+        echo -n "Usage: getHostKeys [ <host> ]
                  -> The hostname to obtain SSH host keys for.\n";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+        IFS=${CURR_IFS};
+        [ -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
 
-        [ -f ${TEMPFILE} ] && rm -rf ${TEMPFILE};
-
-        unset MATCH_COUNT;
+        unset VALIDATE_REPLACE;
         unset TEMPFILE;
-        unset KEY_COUNT;
+        unset MOVED_ENTRIES;
+        unset TEMP_ENTRIES;
         unset LINES;
-        unset CURR_IFS;
-        unset ENTRY;
         unset KEYTYPE;
-        unset CURRENT_HOST_KEY;
+        unset HOST_KEY;
+        unset ENTRY;
+        unset KEY_COUNT;
+        unset CURRENT_ENTRIES;
+        unset HOST_DSA_KEY;
+        unset HOST_RSA_KEY;
+        unset CURR_IFS;
         unset METHOD_NAME;
 
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && trace;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && trace;
+        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set +x;
+        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +v;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
         return ${RETURN_CODE};
     fi
 
-    if [ -z "$(dig +short -t a ${1})" ]
+    validateServerAvailability "${TARGET_HOST}" 22;
+    typeset -i RET_CODE=${?};
+
+    typeset METHOD_NAME="${CNAME}#setupNewServer";
+
+    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
     then
         RETURN_CODE=1;
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
+        echo "Target host does not appear to be available." >&2;
 
-        echo "Host ${1} was not found in DNS.";
+        IFS=${CURR_IFS};
+        [ -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-        [ -f ${TEMPFILE} ] && rm -rf ${TEMPFILE};
-
-        unset MATCH_COUNT;
+        unset VALIDATE_REPLACE;
         unset TEMPFILE;
-        unset KEY_COUNT;
+        unset MOVED_ENTRIES;
+        unset TEMP_ENTRIES;
         unset LINES;
-        unset CURR_IFS;
-        unset ENTRY;
         unset KEYTYPE;
-        unset CURRENT_HOST_KEY;
+        unset HOST_KEY;
+        unset ENTRY;
+        unset KEY_COUNT;
+        unset CURRENT_ENTRIES;
+        unset HOST_DSA_KEY;
+        unset HOST_RSA_KEY;
+        unset CURR_IFS;
         unset METHOD_NAME;
 
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && trace;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && trace;
+        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set +x;
+        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +v;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
         return ${RETURN_CODE};
     fi
 
-    typeset -i MATCH_COUNT=0;
-    [ -f ${SSH_KNOWN_HOSTS} ] && KNOWN_HOSTS_FILE="${SSH_KNOWN_HOSTS}" || KNOWN_HOSTS_FILE="${KNOWN_HOSTS_FILE}";
+    [ ! -f ${HOME}/.ssh/known_hosts ] && touch ${HOME}/.ssh/known_hosts;
+    typeset CURR_IFS="${IFS}"
+    typeset HOST_ENTRY="$(ssh-keyscan ${1} 2>&1 | head -1)";
+    typeset HOST_RSA_KEY="$(ssh-keyscan -t rsa ${1} 2>/dev/null)";
+    typeset HOST_DSA_KEY="$(ssh-keyscan -t dsa ${1} 2>/dev/null)";
+    typeset HOST_ECDSA_KEY="$(ssh-keyscan -t ecdsa ${1} 2>/dev/null)";
+    typeset CURRENT_ENTRIES=$(ssh-keygen -H -F ${1} | sed -e "/Host ${1}/c\^");
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MATCH_COUNT -> ${MATCH_COUNT}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "KNOWN_HOSTS_FILE -> ${KNOWN_HOSTS_FILE}";
-
-    if [ ! -z "$(/usr/bin/env ssh-keygen -F ${1})" ]
+    if [ -z "${HOST_RSA_KEY}" ] && [ -z "${HOST_DSA_KEY}" ] && [ -z "${HOST_ECDSA_KEY}" ]
     then
+        RETURN_CODE=1;
+
+        echo "Host ${1} does not appear to house an RSA, DSA, or ECDSA key. Cannot continue.";
+
+        IFS=${CURR_IFS};
+        [ -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
+
+        unset VALIDATE_REPLACE;
+        unset TEMPFILE;
+        unset MOVED_ENTRIES;
+        unset TEMP_ENTRIES;
+        unset LINES;
+        unset KEYTYPE;
+        unset HOST_KEY;
+        unset ENTRY;
+        unset KEY_COUNT;
+        unset CURRENT_ENTRIES;
+        unset HOST_DSA_KEY;
+        unset HOST_RSA_KEY;
+        unset CURR_IFS;
+        unset METHOD_NAME;
+
+        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set +x;
+        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +v;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+        return ${RETURN_CODE};
+    fi
+
+    if [ -z "${CURRENT_ENTRIES}" ]
+    then
+        ## add them in here
+        echo "${HOST_ENTRY}" >> ${HOME}/.ssh/known_hosts;
+        [ ! -z "${HOST_RSA_KEY}" ] && echo "${HOST_RSA_KEY}" >> ${HOME}/.ssh/known_hosts || echo "WARN: No RSA key was found for host ${1}";
+        [ ! -z "${HOST_DSA_KEY}" ] && echo "${HOST_DSA_KEY}" >> ${HOME}/.ssh/known_hosts || echo "WARN: No DSA key was found for host ${1}";
+        [ ! -z "${HOST_ECDSA_KEY}" ] && echo "${HOST_ECDSA_KEY}" >> ${HOME}/.ssh/known_hosts || echo "WARN: No ECDSA key was found for host ${1}";
+    else
         typeset TEMPFILE=$(mktemp);
-        typeset KEY_COUNT=$(/usr/bin/env ssh-keygen -F ${1} | wc -l);
+        typeset KEY_COUNT="$(ssh-keygen -H -F ${1} | wc -l)";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "KEY_COUNT -> ${KEY_COUNT}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "TEMPFILE -> ${TEMPFILE}";
+        case ${KEY_COUNT} in
+            1|2)
+                ## make sure they match, if they dont, remove them
+                typeset IFS="^";
 
-        if [ ${KEY_COUNT} -gt 4 ]
-        then
-            ## remove all keys and start over with this host
-            typeset LINES=$(/usr/bin/env ssh-keygen -H -F ${1} | grep "#" | cut -d ":" -f 2 | awk '{print $2}' | tr "\n" " " | sed -e "s/ /d;/g");
+                for ENTRY in ${CURRENT_ENTRIES}
+                do
+                    [ -z "${ENTRY}" ] && continue;
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "LINES -> ${LINES}";
+                    typeset HOST_KEY=$(tr '\n' ' ' <<< ${ENTRY} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//');
+                    typeset KEYTYPE=$(tr '\n' ' ' <<< ${ENTRY} | awk '{print $2}' | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//');
 
-            sed -e "/${1}/d;${LINES}" ${KNOWN_HOSTS_FILE} > ${TEMPFILE};
+                    case ${KEYTYPE} in
+                        ssh-rsa)
+                            [ "${HOST_KEY}" = "${HOST_RSA_KEY}" ] && continue;
 
-            if [ ! -z "$(grep ${1} ${TEMPFILE})" ]
-            then
-                ## error occurred removing keys
-                RETURN_CODE=1;
+                            sed -e "s^${HOST_KEY}^${HOST_RSA_KEY}^" ${HOME}/.ssh/known_hosts > ${TEMPFILE};
 
-                ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred removing the hostkeys from the known_hosts file. SSH connections may continue, but may not work properly.";
+                            typeset VALIDATE_REPLACE=$(ssh-keygen -f ${TEMPFILE} -F ${1} | grep "ssh-rsa");
 
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                            if [ ! -z "${VALIDATE_REPLACE}" ]
+                            then
+                                echo "An error occurred replacing the hostkeys for host ${1} from the known_hosts file. SSH connections may continue, but may not work properly.";
 
-                [ -f ${TEMPFILE} ] && rm -rf ${TEMPFILE};
+                                continue;
+                            else
+                                mv ${TEMPFILE} ${HOME}/.ssh/known_hosts;
 
-                unset MATCH_COUNT;
-                unset TEMPFILE;
-                unset KEY_COUNT;
-                unset LINES;
-                unset CURR_IFS;
-                unset ENTRY;
-                unset KEYTYPE;
-                unset CURRENT_HOST_KEY;
-                unset METHOD_NAME;
+                                typeset MOVED_ENTRIES=$(ssh-keygen -F ${1} | grep "ssh-rsa");
 
-                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && trace;
-                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && trace;
+                                if [ ! -z "${MOVED_ENTRIES}" ]
+                                then
+                                    echo "An error occurred replacing the hostkeys for host ${1} from the known_hosts file. SSH connections may continue, but may not work properly.";
+                                fi
+                            fi
+                            ;;
+                        ssh-dss)
+                            [ "${HOST_KEY}" = "${HOST_DSA_KEY}" ] && continue;
 
-                return ${RETURN_CODE};
-            fi
+                            sed -e "s^${HOST_KEY}^${HOST_DSA_KEY}^" ${HOME}/.ssh/known_hosts > ${TEMPFILE};
 
-            mv ${TEMPFILE} ${KNOWN_HOSTS_FILE};
+                            typeset VALIDATE_REPLACE=$(ssh-keygen -f ${TEMPFILE} -F ${1} | grep "ssh-dss");
 
-            if [ ! -z "$(ssh-keygen -H -F ${1})" ]
-            then
-                ## error occurred removing keys
-                RETURN_CODE=1;
+                            if [ ! -z "${VALIDATE_REPLACE}" ]
+                            then
+                                echo "An error occurred replacing the hostkeys for host ${1} from the known_hosts file. SSH connections may continue, but may not work properly.";
 
-                ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred removing the hostkeys from the known_hosts file. SSH connections may continue, but may not work properly.";
+                                continue;
+                            else
+                                mv ${TEMPFILE} ${HOME}/.ssh/known_hosts;
 
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+                                typeset MOVED_ENTRIES=$(ssh-keygen -F ${1} | grep "ssh-rsa");
 
-                [ -f ${TEMPFILE} ] && rm -rf ${TEMPFILE};
+                                if [ ! -z "${MOVED_ENTRIES}" ]
+                                then
+                                    echo "An error occurred replacing the hostkeys for host ${1} from the known_hosts file. SSH connections may continue, but may not work properly.";
+                                fi
+                            fi
+                            ;;
+                        ecdsa*)
+                            [ "${HOST_KEY}" = "${HOST_ECDSA_KEY}" ] && continue;
 
-                unset MATCH_COUNT;
-                unset TEMPFILE;
-                unset KEY_COUNT;
-                unset LINES;
-                unset CURR_IFS;
-                unset ENTRY;
-                unset KEYTYPE;
-                unset CURRENT_HOST_KEY;
-                unset METHOD_NAME;
+                            sed -e "s^${HOST_KEY}^${HOST_ECDSA_KEY}^" ${HOME}/.ssh/known_hosts > ${TEMPFILE};
 
-                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && trace;
-                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && trace;
+                            typeset VALIDATE_REPLACE=$(ssh-keygen -f ${TEMPFILE} -F ${1} | grep "ecdsa");
 
-                return ${RETURN_CODE};
-            fi
-        else
-            typeset CURR_IFS="${IFS}";
-            typeset IFS="${MODIFIED_IFS}";
+                            if [ ! -z "${VALIDATE_REPLACE}" ]
+                            then
+                                echo "An error occurred replacing the hostkeys for host ${1} from the known_hosts file. SSH connections may continue, but may not work properly.";
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CURR_IFS -> ${CURR_IFS}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "IFS -> ${IFS}";
+                                continue;
+                            else
+                                mv ${TEMPFILE} ${HOME}/.ssh/known_hosts;
 
-            for ENTRY in $(ssh-keygen -H -F ${1} | sed -e "/Host ${1}/c\^")
-            do
-                [ -z "${ENTRY}" ] && continue;
+                                typeset MOVED_ENTRIES=$(ssh-keygen -F ${1} | grep "ssh-rsa");
 
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ENTRY -> ${ENTRY}";
+                                if [ ! -z "${MOVED_ENTRIES}" ]
+                                then
+                                    echo "An error occurred replacing the hostkeys for host ${1} from the known_hosts file. SSH connections may continue, but may not work properly.";
+                                fi
+                            fi
+                            ;;
+                    esac
+                done
+                ;;
+            *)
+                typeset LINES=$(ssh-keygen -H -F ${1} | grep "#" | cut -d ":" -f 2 | awk '{print $2}' | tr "\n" " " | sed -e "s/ /d;/g");
 
-                typeset ENTRY=$(echo ${ENTRY} | tr '\n' ' ' | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//');
-                typeset KEYTYPE=$(echo ${ENTRY} | tr '\n' ' ' | awk '{print $2}' | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//');
-                [ "${KEYTYPE}" = "ssh-dss" ] && typeset HOST_KEY_TYPE="dsa" || typeset HOST_KEY_TYPE="rsa";
-                typeset CURRENT_HOST_KEY=$(ssh-keyscan -t ${HOST_KEY_TYPE} ${1} 2>/dev/null);
+                ## remove the comment and all associated keys
+                sed -e "/# ${1}/d;/${1}/d;${LINES}" ${HOME}/.ssh/known_hosts > ${TEMPFILE};
 
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ENTRY -> ${ENTRY}";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "KEYTYPE -> ${KEYTYPE}";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "HOST_KEY_TYPE -> ${HOST_KEY_TYPE}";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CURRENT_HOST_KEY -> ${CURRENT_HOST_KEY}";
+                typeset TEMP_ENTRIES=$(ssh-keygen -f ${TEMPFILE} -F ${1});
 
-                if [ "${ENTRY}" != "${CURRENT_HOST_KEY}" ]
+                if [ ! -z "${TEMP_ENTRIES}" ]
                 then
-                    ## replace the existing key with the new
-                    sed -e "s^${ENTRY}^${CURRENT_HOST_KEY}^" ${KNOWN_HOSTS_FILE} > ${TEMPFILE};
+                    echo "An error occurred removing the hostkeys for host ${1} from the known_hosts file. SSH connections may continue, but may not work properly.";
 
-                    if [ ! -z "$(grep ${ENTRY} ${TEMPFILE})" ]
+                    continue;
+                else
+                    mv ${TEMPFILE} ${HOME}/.ssh/known_hosts;
+
+                    typeset MOVED_ENTRIES=$(ssh-keygen -H -F ${1});
+
+                    if [ ! -z "${MOVED_ENTRIES}" ]
                     then
-                        ${LOGGER} "WARN" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An error occurred removing the hostkeys from the known_hosts file. SSH connections may continue, but may not work properly.";
-
-                        continue;
+                        echo "An error occurred removing the hostkeys for host ${1} from the known_hosts file. SSH connections may continue, but may not work properly.";
+                    else
+                        echo "${HOST_ENTRY}" >> ${HOME}/.ssh/known_hosts;
+                        [ ! -z "${HOST_RSA_KEY}" ] && echo "${HOST_RSA_KEY}" >> ${HOME}/.ssh/known_hosts || echo "WARN: No RSA key was found for host ${1}";
+                        [ ! -z "${HOST_DSA_KEY}" ] && echo "${HOST_DSA_KEY}" >> ${HOME}/.ssh/known_hosts || echo "WARN: No DSA key was found for host ${1}";
+                        [ ! -z "${HOST_ECDSA_KEY}" ] && echo "${HOST_ECDSA_KEY}" >> ${HOME}/.ssh/known_hosts || echo "WARN: No ECDSA key was found for host ${1}";
                     fi
-
-                    mv ${TEMPFILE} ${KNOWN_HOSTS_FILE};
-
-                    (( MATCH_COUNT += 1 ));
                 fi
-
-                (( MATCH_COUNT += 1 ));
-            done
-        fi
+                ;;
+        esac
     fi
-
-    if [ ${MATCH_COUNT} -eq 0 ]
-    then
-        ssh-keyscan -H -T ${SSH_THREAD_TIMEOUT} -t rsa ${1} 1>>${KNOWN_HOSTS_FILE} 2>>${KNOWN_HOSTS_FILE};
-        ssh-keyscan -H -T ${SSH_THREAD_TIMEOUT} -t dsa ${1} 1>>${KNOWN_HOSTS_FILE} 2>/dev/null;
-    fi
-
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && ${LOGGER} "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     IFS=${CURR_IFS};
+    [ -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
 
-    [ -f ${TEMPFILE} ] && rm -rf ${TEMPFILE};
-
-    unset MATCH_COUNT;
+    unset VALIDATE_REPLACE;
     unset TEMPFILE;
-    unset KEY_COUNT;
+    unset MOVED_ENTRIES;
+    unset TEMP_ENTRIES;
     unset LINES;
-    unset CURR_IFS;
-    unset ENTRY;
     unset KEYTYPE;
-    unset CURRENT_HOST_KEY;
+    unset HOST_KEY;
+    unset ENTRY;
+    unset KEY_COUNT;
+    unset CURRENT_ENTRIES;
+    unset HOST_DSA_KEY;
+    unset HOST_RSA_KEY;
+    unset CURR_IFS;
     unset METHOD_NAME;
 
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && trace;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && trace;
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set +x;
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +v;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
     return ${RETURN_CODE};
 }

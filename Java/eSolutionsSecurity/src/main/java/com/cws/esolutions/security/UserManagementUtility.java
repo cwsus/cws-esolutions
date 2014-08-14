@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2009 - 2014 CaspersBox Web Services
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -54,7 +54,7 @@ import com.cws.esolutions.security.processors.interfaces.IAccountControlProcesso
 public class UserManagementUtility
 {
     private static Options options = null;
-    
+
     private static OptionGroup ldapOptions = null;
     private static SecurityConfig secConfig = null;
     private static SecurityServiceBean bean = null;
@@ -63,6 +63,7 @@ public class UserManagementUtility
     private static final IAccountControlProcessor processor = new AccountControlProcessorImpl();
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
 
     static
     {
@@ -101,6 +102,31 @@ public class UserManagementUtility
     {
         final String methodName = UserManagementUtility.CNAME + "#main(final String[] args)";
 
+        try
+        {
+            SecurityServiceInitializer.initializeService(System.getProperty("serviceConfig"), System.getProperty("logConfig"));
+        }
+        catch (SecurityException sx)
+        {
+            ERROR_RECORDER.error(sx.getMessage(), sx);
+
+            System.err.println("An error occurred loading configuration: " + sx.getMessage());
+
+            sx.printStackTrace();
+
+            System.exit(1);
+        }
+        catch (SecurityServiceException ssx)
+        {
+            ERROR_RECORDER.error(ssx.getMessage(), ssx);
+
+            System.err.println("An error occurred loading configuration: " + ssx.getMessage());
+
+            ssx.printStackTrace();
+
+            System.exit(1);
+        }
+
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
@@ -112,13 +138,13 @@ public class UserManagementUtility
             HelpFormatter usage = new HelpFormatter();
             usage.printHelp(UserManagementUtility.CNAME, UserManagementUtility.options, true);
 
-            return;
+            System.exit(3);
         }
+
+        int RETURN_CODE=1;
 
         try
         {
-            SecurityServiceInitializer.initializeService(System.getProperty("serviceConfig"), System.getProperty("logConfig"));
-
             UserManagementUtility.bean = SecurityServiceBean.getInstance();
             UserManagementUtility.secConfig = bean.getConfigData().getSecurityConfig();
 
@@ -185,7 +211,11 @@ public class UserManagementUtility
                     {
                         System.out.println(account);
                     }
+
+                    RETURN_CODE=0;
                 }
+
+                RETURN_CODE=1;
             }
             else if (commandLine.hasOption("load"))
             {
@@ -226,26 +256,47 @@ public class UserManagementUtility
                     }
 
                     System.out.println(account);
+
+                    RETURN_CODE=0;
                 }
+
+                RETURN_CODE=1;
             }
         }
         catch (ParseException px)
         {
+            ERROR_RECORDER.error(px.getMessage(), px);
+
             px.printStackTrace();
+
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp(UserManagementUtility.CNAME, UserManagementUtility.options, true);
+
+            RETURN_CODE=1;
         }
         catch (SecurityException sx)
         {
+            ERROR_RECORDER.error(sx.getMessage(), sx);
+
             sx.printStackTrace();
+
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp(UserManagementUtility.CNAME, UserManagementUtility.options, true);
+
+            RETURN_CODE=1;
         }
         catch (SecurityServiceException ssx)
         {
+            ERROR_RECORDER.error(ssx.getMessage(), ssx);
+
             ssx.printStackTrace();
+
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp(UserManagementUtility.CNAME, UserManagementUtility.options, true);
+
+            RETURN_CODE=1;
         }
+
+        System.exit(RETURN_CODE);
     }
 }

@@ -29,8 +29,10 @@ SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}/${0##*/}")";
 SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 METHOD_NAME="${CNAME}#startup";
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +vx;
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +vx;
+[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set +x;
+[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +v;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
 [ -z "${PLUGIN_ROOT_DIR}" ] && [ -f "${SCRIPT_ROOT}/../lib/plugin" ] && . "${SCRIPT_ROOT}/../lib/plugin";
 
@@ -54,9 +56,9 @@ METHOD_NAME="${CNAME}#startup";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
 
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${*}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${*}";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  monitorCertDatabases
@@ -66,13 +68,15 @@ METHOD_NAME="${CNAME}#startup";
 #==============================================================================
 function monitorCertDatabases
 {
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -vx;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -vx;
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set -x;
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
     typeset METHOD_NAME="${CNAME}#${0}";
     typeset RETURN_CODE=0;
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing monitor on: ${HOSTNAME}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing monitor on: ${HOSTNAME}";
 
     if [ ! -z "${1}" ]
     then
@@ -81,12 +85,12 @@ function monitorCertDatabases
         EXPIRY_EPOCH=$(returnEpochTime $(date +"%Y %m %d") ${VALIDATION_PERIOD});
     fi
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXPIRY_EPOCH -> ${EXPIRY_EPOCH}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXPIRY_EPOCH -> ${EXPIRY_EPOCH}";
 
     ## ok, lets sort out where we are and what to look for
     if [ ! -z "${WS_PLATFORM}" ]
     then
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WS_PLATFORM -> ${WS_PLATFORM}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "WS_PLATFORM -> ${WS_PLATFORM}";
 
         if [ "${WS_PLATFORM}" = "${IPLANET_TYPE_IDENTIFIER}" ]
         then
@@ -100,7 +104,7 @@ function monitorCertDatabases
         typeset METHOD_NAME="${CNAME}#${0}";
 typeset RETURN_CODE=0;
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST -> ${VALIDATE_SERVER_LIST}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST -> ${VALIDATE_SERVER_LIST}";
 
             if [ ! -z "${VALIDATE_SERVER_LIST}" ]
             then
@@ -109,14 +113,14 @@ typeset RETURN_CODE=0;
                     ## ok, validate it
                     for VALIDATE_SITE in ${VALIDATE_SERVER_LIST[*]}
                     do
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SITE -> ${VALIDATE_SITE}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SITE -> ${VALIDATE_SITE}";
 
                         CERT_DATABASE="${VALIDATE_SITE}-${HOSTNAME}-";
                         EXP_CERT_NICKNAME=$(grep ${IPLANET_NICKNAME_IDENTIFIER} ${IPLANET_ROOT}/${VALIDATE_SITE}/${IPLANET_CONFIG_PATH}/${IPLANET_SERVER_CONFIG} | \
                             sed -e "s/${IPLANET_NICKNAME_IDENTIFIER}=\"/%/" | cut -d "%" -f 2 | cut -d "\"" -f 1 | cut -d ":" -f 2| sort | uniq);
 
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_DATABASE -> ${CERT_DATABASE}";
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXP_CERT_NICKNAME -> ${EXP_CERT_NICKNAME}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_DATABASE -> ${CERT_DATABASE}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXP_CERT_NICKNAME -> ${EXP_CERT_NICKNAME}";
 
                         if [ -O ${IPLANET_ROOT}/${IPLANET_CERT_DIR}/${CERT_DATABASE}${IPLANET_CERT_STORE_KEY_SUFFIX} ] &&
                             [ -O ${IPLANET_ROOT}/${IPLANET_CERT_DIR}/${CERT_DATABASE}${IPLANET_CERT_STORE_CERT_SUFFIX} ] ||
@@ -134,35 +138,35 @@ typeset RETURN_CODE=0;
                                 CERT_EXPIRY=$(echo ${CERT_DETAIL} | cut -d "%" -f 3 | awk '{print $5, $2, $3}');
                                 EXPIRY_MONTH=$(echo ${CERT_EXPIRY} | awk '{print $2}');
 
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_NICKNAME -> ${CERT_NICKNAME}";
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_HOSTNAME -> ${CERT_HOSTNAME}";
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_EXPIRY -> ${CERT_EXPIRY}";
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXPIRY_MONTH -> ${EXPIRY_MONTH}";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_NICKNAME -> ${CERT_NICKNAME}";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_HOSTNAME -> ${CERT_HOSTNAME}";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_EXPIRY -> ${CERT_EXPIRY}";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXPIRY_MONTH -> ${EXPIRY_MONTH}";
 
                                 if [ ! -z "${CERT_EXPIRY}" ]
                                 then
                                     ## ok, we have a nickname and an expiration date. convert it
                                     EPOCH_EXPIRY=$(returnEpochTime $(echo ${CERT_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval echo \${${EXPIRY_MONTH}})/"));
 
-                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EPOCH_EXPIRY -> ${EPOCH_EXPIRY}";
+                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EPOCH_EXPIRY -> ${EPOCH_EXPIRY}";
 
                                     if [ ${EPOCH_EXPIRY} -le ${EXPIRY_EPOCH} ]
                                     then
                                         ## this certificate expires within the epoch, notify
-                                        "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate ${CERT_NICKNAME} for host ${CERT_HOSTNAME} expires on ${CERT_EXPIRY}";
+                                        writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate ${CERT_NICKNAME} for host ${CERT_HOSTNAME} expires on ${CERT_EXPIRY}";
                                     fi
                                 else
                                     ## didnt get an expiration date
-                                    "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate ${CERT_NICKNAME} produced no expiration date.";
+                                    writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate ${CERT_NICKNAME} produced no expiration date.";
                                 fi
                             else
                                 ## didnt get a nickname
-                                "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate database ${VALIDATE_SITE} produced no certificate nickname.";
+                                writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate database ${VALIDATE_SITE} produced no certificate nickname.";
                             fi
                         else
                             ## i cant read the file, error out
-                            "${LOGGER}" "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate database ${CERT_DATABASE} cannot be read by the executing user. Cannot provide data.";
-                            "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate database ${CERT_DATABASE} cannot be read by the executing user. Cannot provide data.";
+                            writeLogEntry "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate database ${CERT_DATABASE} cannot be read by the executing user. Cannot provide data.";
+                            writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate database ${CERT_DATABASE} cannot be read by the executing user. Cannot provide data.";
                         fi
                     done
                 fi
@@ -170,7 +174,7 @@ typeset RETURN_CODE=0;
                 RETURN_CODE=0;
             else
                 ## no certificate databases to validate
-                "${LOGGER}" "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST was found to be empty. Cannot continue.";
+                writeLogEntry "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST was found to be empty. Cannot continue.";
 
                 RETURN_CODE=29;
             fi
@@ -179,14 +183,14 @@ typeset RETURN_CODE=0;
             ## ihs host
             set -A VALIDATE_SERVER_LIST $(ls -ltr ${IHS_CERT_DIR} | grep ${IHS_DB_CRT_SUFFIX} | awk '{print $NF}');
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST -> ${VALIDATE_SERVER_LIST}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST -> ${VALIDATE_SERVER_LIST}";
 
             if [ ! -z "${VALIDATE_SERVER_LIST}" ]
             then
                 ## ok, validate it
                 for VALIDATE_SITE in ${VALIDATE_SERVER_LIST[*]}
                 do
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SITE -> ${VALIDATE_SITE}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SITE -> ${VALIDATE_SITE}";
 
                     if [ -O ${IHS_CERT_DIR}/${VALIDATE_SITE}${IHS_DB_CRT_SUFFIX} ] &&
                         [ -O ${IHS_CERT_DIR}/${VALIDATE_SITE}${IHS_DB_CRT_SUFFIX} ]
@@ -195,7 +199,7 @@ typeset RETURN_CODE=0;
                         CERT_NICKNAME=$(keyman -cert -list personal -db ${IHS_CERT_DIR}/${VALIDATE_SITE}${IHS_DB_CRT_SUFFIX} \
                             -pw $(cat "${APP_ROOT}"/${IHS_CERT_DB_PASSFILE}) -type ${IHS_KEY_DB_TYPE} | grep -v ${VALIDATE_SITE}${IHS_DB_CRT_SUFFIX} | sed -e "s/^ *//g");
 
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_NICKNAME -> ${CERT_NICKNAME}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_NICKNAME -> ${CERT_NICKNAME}";
 
                         if [ ! -z "${CERT_NICKNAME}" ]
                         then
@@ -206,29 +210,29 @@ typeset RETURN_CODE=0;
                             CERT_EXPIRY=$(echo ${CERT_DETAIL} | cut -d "@" -f 3 | awk '{print $4, $2, $3}' | sed -e "s/,//");
                             EXPIRY_MONTH=$(echo ${CERT_EXPIRY} | awk '{print $2}' | cut -c 1-3);
 
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_HOSTNAME -> ${CERT_HOSTNAME}";
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_EXPIRY -> ${CERT_EXPIRY}";
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXPIRY_MONTH -> ${EXPIRY_MONTH}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_HOSTNAME -> ${CERT_HOSTNAME}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_EXPIRY -> ${CERT_EXPIRY}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXPIRY_MONTH -> ${EXPIRY_MONTH}";
 
                             if [ ! -z "${CERT_EXPIRY}" ]
                             then
                                 ## ok, we have a nickname and an expiration date. convert it
                                 EPOCH_EXPIRY=$(returnEpochTime $(echo ${CERT_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval echo \${${EXPIRY_MONTH}})/"));
 
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EPOCH_EXPIRY -> ${EPOCH_EXPIRY}";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EPOCH_EXPIRY -> ${EPOCH_EXPIRY}";
 
                                 if [ ${EPOCH_EXPIRY} -le ${EXPIRY_EPOCH} ]
                                 then
                                     ## this certificate expires within the epoch, notify
-                                    "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate ${CERT_NICKNAME} for host ${CERT_HOSTNAME} expires on ${CERT_EXPIRY}";
+                                    writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate ${CERT_NICKNAME} for host ${CERT_HOSTNAME} expires on ${CERT_EXPIRY}";
                                 fi
                             else
                                 ## didnt get an expiration date
-                                "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate ${CERT_NICKNAME} produced no expiration date.";
+                                writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate ${CERT_NICKNAME} produced no expiration date.";
                             fi
                         else
                             ## didnt get a nickname
-                            "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate database ${VALIDATE_SITE} produced no certificate nickname.";
+                            writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate database ${VALIDATE_SITE} produced no certificate nickname.";
                         fi
                     elif [ -r ${IHS_CERT_DIR}/${VALIDATE_SITE}${IHS_DB_CRT_SUFFIX} ] &&
                         [ -r ${IHS_CERT_DIR}/${VALIDATE_SITE}${IHS_DB_CRT_SUFFIX} ]
@@ -237,7 +241,7 @@ typeset RETURN_CODE=0;
                         CERT_NICKNAME=$(keyman -cert -list personal -db ${IHS_CERT_DIR}/${VALIDATE_SITE}${IHS_DB_CRT_SUFFIX} \
                             -pw $(cat "${APP_ROOT}"/${IHS_CERT_DB_PASSFILE}) -type ${IHS_KEY_DB_TYPE} | grep -v ${VALIDATE_SITE}${IHS_DB_CRT_SUFFIX} | sed -e "s/^ *//g");
 
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_NICKNAME -> ${CERT_NICKNAME}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_NICKNAME -> ${CERT_NICKNAME}";
 
                         if [ ! -z "${CERT_NICKNAME}" ]
                         then
@@ -248,48 +252,48 @@ typeset RETURN_CODE=0;
                             CERT_EXPIRY=$(echo ${CERT_DETAIL} | cut -d "@" -f 3 | awk '{print $4, $2, $3}' | sed -e "s/,//");
                             EXPIRY_MONTH=$(echo ${CERT_EXPIRY} | awk '{print $2}' | cut -c 1-3);
 
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_HOSTNAME -> ${CERT_HOSTNAME}";
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_EXPIRY -> ${CERT_EXPIRY}";
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXPIRY_MONTH -> ${EXPIRY_MONTH}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_HOSTNAME -> ${CERT_HOSTNAME}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CERT_EXPIRY -> ${CERT_EXPIRY}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EXPIRY_MONTH -> ${EXPIRY_MONTH}";
 
                             if [ ! -z "${CERT_EXPIRY}" ]
                             then
                                 ## ok, we have a nickname and an expiration date. convert it
                                 EPOCH_EXPIRY=$(returnEpochTime $(echo ${CERT_EXPIRY} | sed -e "s/${EXPIRY_MONTH}/$(eval echo \${${EXPIRY_MONTH}})/"));
 
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EPOCH_EXPIRY -> ${EPOCH_EXPIRY}";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "EPOCH_EXPIRY -> ${EPOCH_EXPIRY}";
 
                                 if [ ${EPOCH_EXPIRY} -le ${EXPIRY_EPOCH} ]
                                 then
                                     ## this certificate expires within the epoch, notify
-                                    "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate ${CERT_NICKNAME} for host ${CERT_HOSTNAME} expires on ${CERT_EXPIRY}";
+                                    writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate ${CERT_NICKNAME} for host ${CERT_HOSTNAME} expires on ${CERT_EXPIRY}";
                                 fi
                             else
                                 ## didnt get an expiration date
-                                "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate ${CERT_NICKNAME} produced no expiration date.";
+                                writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate ${CERT_NICKNAME} produced no expiration date.";
                             fi
                         else
                             ## didnt get a nickname
-                            "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate database ${VALIDATE_SITE} produced no certificate nickname.";
+                            writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate database ${VALIDATE_SITE} produced no certificate nickname.";
                         fi
                     else
                         ## i cant read the file, error out
-                        "${LOGGER}" "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate database ${CERT_DATABASE} cannot be read by the executing user. Cannot provide data.";
-                        "${LOGGER}" MONITOR "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate database ${CERT_DATABASE} cannot be read by the executing user. Cannot provide data.";
+                        writeLogEntry "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate database ${CERT_DATABASE} cannot be read by the executing user. Cannot provide data.";
+                        writeLogEntry "MONITOR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Certificate database ${CERT_DATABASE} cannot be read by the executing user. Cannot provide data.";
                     fi
                 done
 
                 RETURN_CODE=0;
             else
                 ## no certificate databases to validate
-                "${LOGGER}" "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST was found to be empty. Cannot continue.";
+                writeLogEntry "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "VALIDATE_SERVER_LIST was found to be empty. Cannot continue.";
 
                 RETURN_CODE=29;
             fi
         fi
     else
         ## unknown platform type
-        "${LOGGER}" "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An unknown platform type was encountered. Cannot continue.";
+        writeLogEntry "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "An unknown platform type was encountered. Cannot continue.";
 
         RETURN_CODE=29;
     fi
@@ -303,10 +307,12 @@ typeset RETURN_CODE=0;
     unset VALIDATE_SERVER_LIST;
     unset EXPIRY_EPOCH;
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +vx;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +vx;
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set +x;
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +v;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
     return ${RETURN_CODE};
 }
@@ -318,15 +324,17 @@ typeset RETURN_CODE=0;
 
 METHOD_NAME="${CNAME}#startup";
 
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${*}";
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && "${LOGGER}" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${*}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
 
 monitorCertDatabases ${@};
 
 echo ${RETURN_CODE};
 
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -vx;
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -vx;
+[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set -x;
+[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
 
 exit ${RETURN_CODE};
