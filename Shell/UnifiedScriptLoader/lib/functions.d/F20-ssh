@@ -74,7 +74,7 @@ function ssh
     then
         ${APP_ROOT}/${LIB_DIRECTORY}/watchdog.sh -t ${SSH_THREAD_TIMEOUT} ${SSH_CMD} -l ${SSH_USER_NAME} ${HOSTNAME} "${COMMAND}";
     else
-        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSSHConnection.exp ${HOSTNAME} "${COMMAND}" ${SSH_USER_NAME} ${SSH_USER_AUTH} ${SSH_THREAD_TIMEOUT};
+        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/ssh ${HOSTNAME} "${COMMAND}" ${SSH_USER_NAME} ${SSH_USER_AUTH} ${SSH_THREAD_TIMEOUT};
     fi
     RETURN_CODE=${?};
 

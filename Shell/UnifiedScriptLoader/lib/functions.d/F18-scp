@@ -80,7 +80,7 @@ function scp
 
     if [ ! -z "${IS_EXPECT_INSTALLED}" ]
     then
-        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/runSCPConnection.exp ${TRANSFER_TYPE} ${SOURCE_COPY} ${TARGET_COPY} ${HOSTNAME} ${SSH_USER_NAME} ${SSH_USER_AUTH};
+        ${APP_ROOT}/${LIB_DIRECTORY}/tcl/scp ${TRANSFER_TYPE} ${SOURCE_COPY} ${TARGET_COPY} ${HOSTNAME} ${SSH_USER_NAME} ${SSH_USER_AUTH};
     else
         case ${TRANSFER_TYPE} in
             [Ll][Oo][Cc][Aa][Ll])

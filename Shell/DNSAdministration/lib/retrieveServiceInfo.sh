@@ -671,8 +671,8 @@ function retrieveZoneFiles
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
         ## validate the input
-        [ ! -z "${IS_SOURCE_MASTER}" ] && [ "${IS_SOURCE_MASTER}" = "${_TRUE}" ] && "${APP_ROOT}/${LIB_DIRECTORY}"/tcl/runSCPConnection.exp remote-copy ${NAMED_MASTER_DIR}/${GROUP_ID}${BUSINESS_UNIT} "${PLUGIN_WORK_DIRECTORY}"/${GROUP_ID}${BUSINESS_UNIT} ${TARGET_SERVER} ${SSH_USER_NAME} ${SSH_USER_AUTH};
-        [ -z "${IS_SOURCE_MASTER}" ] && "${APP_ROOT}/${LIB_DIRECTORY}"/tcl/runSCPConnection.exp remote-copy ${NAMED_SLAVE_DIR}/${GROUP_ID}${BUSINESS_UNIT} "${PLUGIN_WORK_DIRECTORY}"/${GROUP_ID}${BUSINESS_UNIT} ${TARGET_SERVER} ${SSH_USER_NAME} ${SSH_USER_AUTH};
+        [ ! -z "${IS_SOURCE_MASTER}" ] && [ "${IS_SOURCE_MASTER}" = "${_TRUE}" ] && scp remote-copy ${NAMED_MASTER_DIR}/${GROUP_ID}${BUSINESS_UNIT} "${PLUGIN_WORK_DIRECTORY}"/${GROUP_ID}${BUSINESS_UNIT} ${TARGET_SERVER} ${SSH_USER_NAME} ${SSH_USER_AUTH};
+        [ -z "${IS_SOURCE_MASTER}" ] && scp remote-copy "${NAMED_SLAVE_DIR}/${GROUP_ID}${BUSINESS_UNIT}" "${PLUGIN_WORK_DIRECTORY}/${GROUP_ID}${BUSINESS_UNIT}" "${TARGET_SERVER}" "${SSH_USER_NAME}" "${SSH_USER_AUTH}";
         typeset -i RET_CODE=${?};
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set -x;

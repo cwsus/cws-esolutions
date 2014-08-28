@@ -217,16 +217,16 @@ function generateRNDCKeys
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Now operating on ${AVAILABLE_MASTER} .. ";
 
                 ## we have an available master. get keys and copy to it.
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${PLUGIN_LIB_DIRECTORY}/tcl/runSCPConnection.exp remote-copy ${AVAILABLE_MASTER_SERVERS} "${NAMED_ROOT}"/${RNDC_KEY_FILE} "${PLUGIN_WORK_DIRECTORY}"/$(cut -d "/" -f 3 <<< ${RNDC_KEY_FILE}).MASTER";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command scp remote-copy ${AVAILABLE_MASTER_SERVERS} ${NAMED_ROOT}/${RNDC_KEY_FILE} ${PLUGIN_WORK_DIRECTORY}"$(cut -d "/" -f 3 <<< ${RNDC_KEY_FILE}).MASTER";
 
-                "${APP_ROOT}/${LIB_DIRECTORY}"/tcl/runSCPConnection.exp remote-copy ${AVAILABLE_MASTER_SERVERS} "${NAMED_ROOT}"/${RNDC_KEY_FILE} "${PLUGIN_WORK_DIRECTORY}"/$(cut -d "/" -f 3 <<< ${RNDC_KEY_FILE}).MASTER ${SSH_USER_NAME} ${SSH_USER_AUTH};
+                scp remote-copy ${AVAILABLE_MASTER_SERVERS} "${NAMED_ROOT}"/${RNDC_KEY_FILE} "${PLUGIN_WORK_DIRECTORY}"/$(cut -d "/" -f 3 <<< ${RNDC_KEY_FILE}).MASTER ${SSH_USER_NAME} ${SSH_USER_AUTH};
 
                 ## make sure we got it
                 if [ -s "${PLUGIN_WORK_DIRECTORY}"/$(cut -d "/" -f 3 <<< ${RNDC_KEY_FILE}).MASTER ]
                 then
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command "${APP_ROOT}/${LIB_DIRECTORY}"/tcl/runSCPConnection.exp remote-copy ${AVAILABLE_MASTER_SERVERS} "${NAMED_ROOT}"/${RNDC_KEY_FILE} "${PLUGIN_WORK_DIRECTORY}"/$(cut -d "/" -f 3 <<< ${RNDC_CONF_FILE}).MASTER";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command scp remote-copy ${AVAILABLE_MASTER_SERVERS} ${NAMED_ROOT}/${RNDC_KEY_FILE} ${PLUGIN_WORK_DIRECTORY}/$(cut -d "/" -f 3 <<< ${RNDC_CONF_FILE}).MASTER";
 
-                    "${APP_ROOT}/${LIB_DIRECTORY}"/tcl/runSCPConnection.exp remote-copy ${AVAILABLE_MASTER_SERVERS} "${NAMED_ROOT}"/${RNDC_CONF_FILE} "${PLUGIN_WORK_DIRECTORY}"/$(cut -d "/" -f 3 <<< ${RNDC_CONF_FILE}).MASTER ${SSH_USER_NAME} ${SSH_USER_AUTH};
+                    scp remote-copy ${AVAILABLE_MASTER_SERVERS} "${NAMED_ROOT}"/${RNDC_CONF_FILE} "${PLUGIN_WORK_DIRECTORY}"/$(cut -d "/" -f 3 <<< ${RNDC_CONF_FILE}).MASTER ${SSH_USER_NAME} ${SSH_USER_AUTH};
 
                     ## make sure we got it
                     if [ -s "${PLUGIN_WORK_DIRECTORY}"/$(cut -d "/" -f 3 <<< ${RNDC_CONF_FILE}).MASTER ]
@@ -242,15 +242,15 @@ function generateRNDCKeys
                             OP_FILE_CKSUM=$(cksum "${PLUGIN_WORK_DIRECTORY}"/${KEYFILE} | awk '{print $1}');
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OP_FILE_CKSUM -> ${OP_FILE_CKSUM}";
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command "${APP_ROOT}/${LIB_DIRECTORY}"/tcl/runSCPConnection.exp local-copy ${AVAILABLE_MASTER} "${PLUGIN_WORK_DIRECTORY}"/${KEYFILE} "${NAMED_ROOT}"/etc/dnssec-keys/${KEYFILE}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command scp local-copy ${AVAILABLE_MASTER} ${PLUGIN_WORK_DIRECTORY}/${KEYFILE} ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE}";
 
-                            "${APP_ROOT}/${LIB_DIRECTORY}"/tcl/runSCPConnection.exp local-copy ${AVAILABLE_MASTER} "${PLUGIN_WORK_DIRECTORY}"/${KEYFILE} "${NAMED_ROOT}"/etc/dnssec-keys/${KEYFILE} ${SSH_USER_NAME} ${SSH_USER_AUTH};
+                            scp local-copy ${AVAILABLE_MASTER} ${PLUGIN_WORK_DIRECTORY}/${KEYFILE} ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE} ${SSH_USER_NAME} ${SSH_USER_AUTH};
 
                             ## file copied. validate -
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File copied. Validating..";
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ssh ${AVAILABLE_MASTER} \"cksum "${NAMED_ROOT}"/etc/dnssec-keys/${KEYFILE}\"";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ssh ${AVAILABLE_MASTER} \"cksum ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE}\"";
 
-                            ssh ${AVAILABLE_MASTER} "cksum "${NAMED_ROOT}"/etc/dnssec-keys/${KEYFILE} | awk '{print $1}'";
+                            ssh ${AVAILABLE_MASTER} "cksum ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE} | awk '{print $1}'";
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DST_FILE_CKSUM -> ${DST_FILE_CKSUM}";
 
@@ -342,15 +342,15 @@ function generateRNDCKeys
                         OP_FILE_CKSUM=$(cksum "${PLUGIN_WORK_DIRECTORY}"/${KEYFILE} | awk '{print $1}');
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OP_FILE_CKSUM -> ${OP_FILE_CKSUM}";
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command "${APP_ROOT}/${LIB_DIRECTORY}"/tcl/runSCPConnection.exp local-copy ${DNS_SLAVES[${A}]} "${PLUGIN_WORK_DIRECTORY}"/${KEYFILE} "${NAMED_ROOT}"/etc/dnssec-keys/${KEYFILE}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command scp local-copy ${DNS_SLAVES[${A}]} "${PLUGIN_WORK_DIRECTORY}"/${KEYFILE} ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE}";
 
-                        "${APP_ROOT}/${LIB_DIRECTORY}"/tcl/runSCPConnection.exp local-copy ${DNS_SLAVES[${A}]} "${PLUGIN_WORK_DIRECTORY}"/${KEYFILE} "${NAMED_ROOT}"/etc/dnssec-keys/${KEYFILE} ${SSH_USER_NAME} ${SSH_USER_AUTH};
+                        scp local-copy ${DNS_SLAVES[${A}]} "${PLUGIN_WORK_DIRECTORY}"/${KEYFILE} ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE} ${SSH_USER_NAME} ${SSH_USER_AUTH};
 
                         ## file copied. validate -
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File copied. Validating..";
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ssh ${DNS_SLAVES[${A}]} \"cksum "${NAMED_ROOT}"/etc/dnssec-keys/${KEYFILE}\"";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ssh ${DNS_SLAVES[${A}]} \"cksum ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE}\"";
 
-                        DST_FILE_CKSUM=$(ssh ${DNS_SLAVES[${A}]} "cksum "${NAMED_ROOT}"/etc/dnssec-keys/${KEYFILE}" | awk '{print $1}');
+                        DST_FILE_CKSUM=$(ssh ${DNS_SLAVES[${A}]} "cksum ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE}" | awk '{print $1}');
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DST_FILE_CKSUM -> ${DST_FILE_CKSUM}";
 
@@ -425,15 +425,15 @@ function generateRNDCKeys
                         OP_FILE_CKSUM=$(cksum "${PLUGIN_WORK_DIRECTORY}"/${KEYFILE} | awk '{print $1}');
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OP_FILE_CKSUM -> ${OP_FILE_CKSUM}";
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command "${APP_ROOT}/${LIB_DIRECTORY}"/tcl/runSCPConnection.exp local-copy ${EXT_SLAVES[${A}]} "${PLUGIN_WORK_DIRECTORY}"/${KEYFILE} "${NAMED_ROOT}"/etc/dnssec-keys/${KEYFILE}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command scp local-copy ${EXT_SLAVES[${A}]} "${PLUGIN_WORK_DIRECTORY}"/${KEYFILE} ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE}";
 
-                        "${APP_ROOT}/${LIB_DIRECTORY}"/tcl/runSCPConnection.exp local-copy ${EXT_SLAVES[${A}]} "${PLUGIN_WORK_DIRECTORY}"/${KEYFILE} "${NAMED_ROOT}"/etc/dnssec-keys/${KEYFILE} ${SSH_USER_NAME} ${SSH_USER_AUTH};
+                        scp local-copy ${EXT_SLAVES[${A}]} "${PLUGIN_WORK_DIRECTORY}"/${KEYFILE} ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE} ${SSH_USER_NAME} ${SSH_USER_AUTH};
 
                         ## file copied. validate -
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File copied. Validating..";
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ssh ${EXT_SLAVES[${A}]} \"cksum "${NAMED_ROOT}"/etc/dnssec-keys/${KEYFILE}\"";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ssh ${EXT_SLAVES[${A}]} \"cksum ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE}\"";
 
-                        DST_FILE_CKSUM=$(ssh ${EXT_SLAVES[${A}]} "cksum "${NAMED_ROOT}"/etc/dnssec-keys/${KEYFILE}" | awk '{print $1}');
+                        DST_FILE_CKSUM=$(ssh ${EXT_SLAVES[${A}]} "cksum ${NAMED_ROOT}/etc/dnssec-keys/${KEYFILE}" | awk '{print $1}');
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DST_FILE_CKSUM -> ${DST_FILE_CKSUM}";
 
@@ -649,7 +649,7 @@ function generateTSIGKeys
             OP_FILE_CKSUM=$(cksum "${PLUGIN_WORK_DIRECTORY}"/$(cut -d "/" -f 3 <<< ${TRANSFER_KEY_FILE}) | awk '{print $1}');
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "OP_FILE_CKSUM -> ${OP_FILE_CKSUM}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command "${APP_ROOT}/${LIB_DIRECTORY}"/tcl/runSCPConnection.exp local-copy ${DNS_SLAVES[${A}]} "${PLUGIN_WORK_DIRECTORY}"/$(cut -d \"/\" -f 3 <<< ${TRANSFER_KEY_FILE}) "${NAMED_ROOT}"/${TRANSFER_KEY_FILE}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command scp local-copy ${DNS_SLAVES[${A}]} "${PLUGIN_WORK_DIRECTORY}"/$(cut -d \"/\" -f 3 <<< ${TRANSFER_KEY_FILE}) ${NAMED_ROOT}/${TRANSFER_KEY_FILE}";
 
             THIS_CNAME="${CNAME}";
             unset METHOD_NAME;
@@ -661,7 +661,7 @@ function generateTSIGKeys
             [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
             ## validate the input
-            "${APP_ROOT}/${LIB_DIRECTORY}"/tcl/runSCPConnection.exp local-copy ${DNS_SLAVES[${A}]} "${PLUGIN_WORK_DIRECTORY}"/$(cut -d "/" -f 3 <<< ${TRANSFER_KEY_FILE}) "${NAMED_ROOT}"/${TRANSFER_KEY_FILE} ${SSH_USER_NAME} ${SSH_USER_AUTH};
+            scp local-copy ${DNS_SLAVES[${A}]} "${PLUGIN_WORK_DIRECTORY}"/$(cut -d "/" -f 3 <<< ${TRANSFER_KEY_FILE}) ${NAMED_ROOT}/${TRANSFER_KEY_FILE} ${SSH_USER_NAME} ${SSH_USER_AUTH};
             typeset -i RET_CODE=${?};
 
             [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set -x;
@@ -676,9 +676,9 @@ function generateTSIGKeys
 
             ## file copied. validate -
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File copied. Validating..";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ssh ${DNS_SLAVES[${A}]} \"cksum "${NAMED_ROOT}"/${TRANSFER_KEY_FILE} | awk '{print $1}'\"";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ssh ${DNS_SLAVES[${A}]} \"cksum ${NAMED_ROOT}/${TRANSFER_KEY_FILE} | awk '{print $1}'\"";
 
-            DST_FILE_CKSUM=$(ssh ${NAMED_MASTER} "cksum "${NAMED_ROOT}"/${TRANSFER_KEY_FILE} | awk '{print $1}'");
+            DST_FILE_CKSUM=$(ssh ${NAMED_MASTER} "cksum ${NAMED_ROOT}/${TRANSFER_KEY_FILE} | awk '{print $1}'");
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DST_FILE_CKSUM -> ${DST_FILE_CKSUM}";
 

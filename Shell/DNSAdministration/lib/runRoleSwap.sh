@@ -146,7 +146,7 @@ function run_role_swap
         then
             cp "${NAMED_ROOT}/${PLUGIN_WORK_DIRECTORY}"/${TARFILE_NAME} "${PLUGIN_WORK_DIRECTORY}"/${TARFILE_NAME};
         else
-            "${APP_ROOT}/${LIB_DIRECTORY}"/tcl/runSCPConnection.exp remote-copy ${NAMED_MASTER} "${NAMED_ROOT}"/${NAMED_TMP_DIRECTORY}/${TARFILE_NAME} "${PLUGIN_WORK_DIRECTORY}"/${TARFILE_NAME} ${SSH_USER_NAME} ${SSH_USER_AUTH};
+            scp remote-copy ${NAMED_MASTER} "${NAMED_ROOT}"/${NAMED_TMP_DIRECTORY}/${TARFILE_NAME} "${PLUGIN_WORK_DIRECTORY}"/${TARFILE_NAME} ${SSH_USER_NAME} ${SSH_USER_AUTH};
         fi
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File transfer complete. Verifying..";
@@ -173,7 +173,7 @@ function run_role_swap
                 else
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Transferring ${PLUGIN_WORK_DIRECTORY}/${TARFILE_NAME} to ${REMOTE_APP_ROOT}/${PLUGIN_WORK_DIRECTORY}/${TARFILE_NAME}";
 
-                    "${APP_ROOT}/${LIB_DIRECTORY}"/tcl/runSCPConnection.exp local-copy ${MASTER_TARGET} "${NAMED_ROOT}"/${NAMED_TMP_DIRECTORY}/${TARFILE_NAME} "${PLUGIN_WORK_DIRECTORY}"/${TARFILE_NAME} ${SSH_USER_NAME} ${SSH_USER_AUTH};
+                    scp local-copy ${MASTER_TARGET} "${NAMED_ROOT}"/${NAMED_TMP_DIRECTORY}/${TARFILE_NAME} "${PLUGIN_WORK_DIRECTORY}"/${TARFILE_NAME} ${SSH_USER_NAME} ${SSH_USER_AUTH};
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Transfer complete. Executing execute_role_swap.sh -p ${REMOTE_APP_ROOT}/${PLUGIN_WORK_DIRECTORY}/${TARFILE_NAME} -i ${IUSER_AUDIT} -c ${CHANGE_NUM} -e ..";
 
