@@ -100,7 +100,7 @@ public class CoreServiceInitializer
                     }
                     catch (NullPointerException npx)
                     {
-                        System.err.println("Unable to load logging configuration. No logging enabled!")
+                        System.err.println("Unable to load logging configuration. No logging enabled!");
                     }
                 }
             }

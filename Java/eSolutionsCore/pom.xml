@@ -163,7 +163,6 @@
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
-        -->
         <dependency>
             <groupId>com.cws</groupId>
             <artifactId>eSolutionsSecurity</artifactId>
@@ -177,5 +176,6 @@
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
+        -->
     </dependencies>
 </project>

@@ -587,7 +587,7 @@ public class LDAPUserManager implements UserManager
                         DEBUGGER.debug("SearchResultEntry: {}", entry);
                     }
 
-                    userAccount = new ArrayList<Object>();
+                    userAccount = new ArrayList<>();
 
                     for (String returningAttribute : userAttributes.getReturningAttributes())
                     {

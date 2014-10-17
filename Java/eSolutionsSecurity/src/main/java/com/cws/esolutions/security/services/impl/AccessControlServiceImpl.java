@@ -30,7 +30,6 @@ import java.sql.SQLException;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
-import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /**
  * @see com.cws.esolutions.security.services.interfaces.IAccessControlService
  */
@@ -40,9 +39,9 @@ public class AccessControlServiceImpl implements IAccessControlService
      * @see com.cws.esolutions.security.services.interfaces.IAccessControlService#isUserAuthorized(com.cws.esolutions.security.dto.UserAccount, java.lang.String)
      */
     @Override
-    public boolean isUserAuthorized(final UserAccount userAccount, final String serviceGuid) throws AccessControlServiceException
+    public boolean isUserAuthorized(final UserAccount userAccount, final String serviceGuid)
     {
-        final String methodName = IAccessControlService.CNAME + "#isUserAuthorized(final UserAccount userAccount, final String serviceGuid) throws AccessControlServiceException";
+        final String methodName = IAccessControlService.CNAME + "#isUserAuthorized(final UserAccount userAccount, final String serviceGuid)";
 
         if (DEBUG)
         {

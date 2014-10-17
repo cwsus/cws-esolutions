@@ -103,7 +103,7 @@ public class SQLAuthenticator implements Authenticator
             {
                 resultSet.first();
 
-                userAccount = new ArrayList<Object>();
+                userAccount = new ArrayList<>();
 
                 for (String returningAttribute : userAttributes.getReturningAttributes())
                 {

@@ -354,9 +354,9 @@ public final class DAOInitializer
      * @throws SecurityServiceException {@link com.cws.esolutions.security.exception.SecurityServiceException}
      * if an exception occurs opening the connection
      */
-    public synchronized static void closeAuthConnection(final InputStream properties, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException
+    public synchronized static void closeAuthConnection(final InputStream properties, final boolean isContainer, final SecurityServiceBean bean)
     {
-        String methodName = DAOInitializer.CNAME + "#closeAuthConnection(final InputStream properties, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException";
+        String methodName = DAOInitializer.CNAME + "#closeAuthConnection(final InputStream properties, final boolean isContainer, final SecurityServiceBean bean)";
 
         if (DEBUG)
         {
