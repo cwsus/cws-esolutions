@@ -287,7 +287,7 @@ public final class DAOInitializer
                         DEBUGGER.debug("LDAPConnectionPool: {}", connPool);
                     }
 
-                    if (connPool.isClosed())
+                    if ((connPool == null) || (connPool.isClosed()))
                     {
                         throw new LDAPException(ResultCode.CONNECT_ERROR, "Failed to establish an LDAP connection");
                     }
@@ -351,8 +351,6 @@ public final class DAOInitializer
      * @param properties - The <code>AuthRepo</code> object containing connection information
      * @param isContainer - A <code>boolean</code> flag indicating if this is in a container
      * @param bean - The {@link com.cws.esolutions.security.SecurityServiceBean} <code>SecurityServiceBean</code> that holds the connection
-     * @throws SecurityServiceException {@link com.cws.esolutions.security.exception.SecurityServiceException}
-     * if an exception occurs opening the connection
      */
     public synchronized static void closeAuthConnection(final InputStream properties, final boolean isContainer, final SecurityServiceBean bean)
     {

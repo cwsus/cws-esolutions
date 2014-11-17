@@ -65,7 +65,7 @@ public interface UserManager
      * @param userId - The chosen username for the new account
      * @param userGuid - The generated UUID for the new user account
      * @return <code>true</code> if the account already exists, <code>false</code> otherwise
-     * @throws UserManagementException {@link com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException} if an exception occurs during processing
+     * @throws UserManagementException if an exception occurs during processing
      */
     boolean validateUserAccount(final String userId, final String userGuid) throws UserManagementException;
 
@@ -75,11 +75,11 @@ public interface UserManager
      * credentials - these will be configured by the user on their first
      * logon.
      *
-     * @param userAccount - An <code>ArrayList<String></code> containing the actual user information,
+     * @param userAccount - An <code>ArrayList</code> containing the actual user information,
      * such as username, first name, etc.
-     * @param roles - An <code>ArrayList<String></code> containing the actual user information,
+     * @param roles - An <code>ArrayList</code> containing the actual user information,
      * @return boolean - <code>true</code> if user creation was successful, <code>false</code> otherwise
-     * @throws UserManagementException {@link com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException} if an exception occurs during processing
+     * @throws UserManagementException if an exception occurs during processing
      */
     boolean addUserAccount(final List<String> userAccount, final List<String> roles) throws UserManagementException;
 
@@ -90,7 +90,7 @@ public interface UserManager
      *
      * @param userId - The username to perform the modification against
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
-     * @throws UserManagementException {@link com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException} if an exception occurs during processing
+     * @throws UserManagementException if an exception occurs during processing
      */
     boolean removeUserAccount(final String userId) throws UserManagementException;
 
@@ -111,10 +111,9 @@ public interface UserManager
      *
      * @param searchData - The search string to utilize within the <code>Filter</code>
      * that correlates to the provided <code>SearchRequestType</code>
-     * @return List<String[]> - An <code>ArrayList</code> containing a string array of
+     * @return List - An <code>ArrayList</code> containing a string array of
      * all possible responses
-     * @throws UserManagementException {@link com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException} if an exception occurs during processing or if an invalid
-     * <code>SearchRequestType</code> value is provided.
+     * @throws UserManagementException if an exception occurs during processing
      */
     List<String[]> searchUsers(final String searchData) throws UserManagementException;
 
@@ -125,20 +124,20 @@ public interface UserManager
      * the requestor.
      *
      * @param userId - The Globally Unique IDentifier of the desired user
-     * @return List<Object> - The associated user account data
-     * @throws UserManagementException {@link com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException} if an exception occurs during processing if an error occurs during the search process
+     * @return <code>ArrayList</code> - The associated user account data
+     * @throws UserManagementException if an exception occurs during processing
      */
     List<Object> loadUserAccount(final String userId) throws UserManagementException;
 
     /**
      * Returns a list of ALL user accounts stored in the authentication datastore. This is
-     * ONLY to be used with the reapers - currently, the <link>com.cws.esolutions.security.quartz.IdleAccountLocker</link>
-     * and <link>com.cws.esolutions.security.quartz.PasswordExpirationNotifier</link>.
+     * ONLY to be used with the reapers - currently, the {@link com.cws.esolutions.security.quartz.IdleAccountLocker}
+     * and {@link com.cws.esolutions.security.quartz.PasswordExpirationNotifier}.
      *
      * <strong>THIS SHOULD NOT BE USED IN ANY OTHER CLASSES UNLESS ABSOLUTELY NECESSARY.</strong>
      *
-     * @return List<String[]> - A list of all user accounts currently housed in the repository
-     * @throws UserManagementException {@link com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException} if an exception occurs during processing
+     * @return <code>ArrayList</code> - A list of all user accounts currently housed in the repository
+     * @throws UserManagementException if an exception occurs during processing
      */
     List<String[]> listUserAccounts() throws UserManagementException;
 
@@ -149,7 +148,7 @@ public interface UserManager
      * @param userId - The username to perform the modification against
      * @param value - The new email address to apply
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
-     * @throws UserManagementException {@link com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException} if an exception occurs during processing
+     * @throws UserManagementException if an exception occurs during processing
      */
     boolean modifyUserEmail(final String userId, final String value) throws UserManagementException;
 
@@ -158,9 +157,9 @@ public interface UserManager
      * account by updating the data within the configured authorization datastore.
      *
      * @param userId - The username to perform the modification against
-     * @param value
+     * @param value - The list of modification items to make
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
-     * @throws UserManagementException {@link com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException} if an exception occurs during processing
+     * @throws UserManagementException if an exception occurs during processing
      */
     boolean modifyUserContact(final String userId, final List<String> value) throws UserManagementException;
 
@@ -172,7 +171,7 @@ public interface UserManager
      * @param userId - The username to perform the modification against
      * @param isSuspended - <code>true</code> to suspend the account, <code>false</code> to unsuspend
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
-     * @throws UserManagementException {@link com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException} if an exception occurs during processing
+     * @throws UserManagementException if an exception occurs during processing
      */
     boolean modifyUserSuspension(final String userId, final boolean isSuspended) throws UserManagementException;
 
@@ -184,7 +183,7 @@ public interface UserManager
      * @param userId - The username to perform the modification against
      * @param value - The group associated to add to or remove from
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
-     * @throws UserManagementException {@link com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException} if an exception occurs during processing
+     * @throws UserManagementException if an exception occurs during processing
      */
     boolean modifyUserGroups(final String userId, final Object[] value) throws UserManagementException;
 
@@ -195,7 +194,7 @@ public interface UserManager
      * @param userId - The username to perform the modification against
      * @param isLocked - <code>true</code> if lock, <code>false</code> if unlock
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
-     * @throws UserManagementException {@link com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException} if an exception occurs during processing
+     * @throws UserManagementException if an exception occurs during processing
      */
     boolean modifyOlrLock(final String userId, final boolean isLocked) throws UserManagementException;
 
@@ -204,9 +203,9 @@ public interface UserManager
      *
      * @param userId - The username to perform the modification against
      * @param isLocked - <code>true</code> if locked, <code>false</code> if unlocked
-     * @param increment
+     * @param increment - The count to increment by
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
-     * @throws UserManagementException {@link com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException} if an exception occurs during processing
+     * @throws UserManagementException if an exception occurs during processing
      */
     boolean modifyUserLock(final String userId, final boolean isLocked, final int increment) throws UserManagementException;
 
@@ -217,7 +216,7 @@ public interface UserManager
      * @param userId - The username to perform the modification against
      * @param newPass - The new password associated for the user account
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
-     * @throws UserManagementException {@link com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException} if an exception occurs during processing
+     * @throws UserManagementException if an exception occurs during processing
      */
     boolean modifyUserPassword(final String userId, final String newPass) throws UserManagementException;
 
@@ -229,7 +228,7 @@ public interface UserManager
      * @param userId - The username to perform the modification against
      * @param values - The values associated for the new security questions/answers
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
-     * @throws UserManagementException {@link com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException} if an exception occurs during processing
+     * @throws UserManagementException if an exception occurs during processing
      */
     boolean modifyUserSecurity(final String userId, final List<String> values) throws UserManagementException;
 
@@ -241,7 +240,7 @@ public interface UserManager
      * @param addSecret - <code>true</code> to add a new secret, <code>false</code> to replace an existing secret
      * @param secret - The secret itself
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
-     * @throws UserManagementException {@link com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException} if an exception occurs during processing
+     * @throws UserManagementException if an exception occurs during processing
      */
     boolean modifyOtpSecret(final String userId, final boolean addSecret, final String secret) throws UserManagementException;
 }

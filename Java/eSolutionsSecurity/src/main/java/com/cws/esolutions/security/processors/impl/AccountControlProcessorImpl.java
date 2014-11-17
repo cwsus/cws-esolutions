@@ -174,7 +174,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     }
 
                     boolean isUserCreated = userManager.addUserAccount(accountData,
-                            new ArrayList<>(Arrays.asList(userAccount.getGroups().toString())));
+                            new ArrayList<>(Arrays.asList(Arrays.toString(userAccount.getGroups()))));
 
                     if (DEBUG)
                     {

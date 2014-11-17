@@ -54,7 +54,7 @@ public interface IAuditDAO
     /**
      * Inserts audit-related data into the audit datastore
      *
-     * @param auditRequest - A <code>List<String></code> of the audit data to insert
+     * @param auditRequest - A <code>List</code> of the audit data to insert
      * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
      */
     void auditRequestedOperation(final List<String> auditRequest) throws SQLException;
@@ -65,7 +65,7 @@ public interface IAuditDAO
      * @param username - The username to obtain data for
      * @param startRow - A limit of rows to obtain, if there are more than this limit the remainder
      * will be paged
-     * @return A <code>List<Object></code> of the associated audit data for the account 
+     * @return A <code>List</code> of the associated audit data for the account 
      * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
      */
     List<Object> getAuditInterval(final String username, final int startRow) throws SQLException;

@@ -438,7 +438,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
                 {
                     resultSet.first();
 
-                    resetData = new ArrayList<>(
+                    resetData = new ArrayList<Object>(
                             Arrays.asList(
                                     resultSet.getString(1),
                                     resultSet.getTimestamp(2)));

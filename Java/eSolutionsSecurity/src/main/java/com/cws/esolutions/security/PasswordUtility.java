@@ -15,19 +15,31 @@
  */
 package com.cws.esolutions.security;
 
+import java.io.File;
 import org.slf4j.Logger;
+import java.io.IOException;
 import org.slf4j.LoggerFactory;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.PosixParser;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.lang.RandomStringUtils;
 
+import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.utils.PasswordUtils;
+import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.config.xml.SecurityConfig;
+import com.cws.esolutions.security.exception.SecurityServiceException;
+import com.cws.esolutions.security.config.xml.RepositoryConfiguration;
+import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
+import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security
@@ -43,83 +55,120 @@ import com.cws.esolutions.security.utils.PasswordUtils;
 public class PasswordUtility
 {
     private static Options options = null;
-    private static OptionGroup cryptoOptions = null;
 
     private static final String CNAME = PasswordUtility.class.getName();
+    private static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
+    private static final String LOG_CONFIG = System.getProperty("user.home") + "/etc/logging.xml";
+    private static final String SEC_CONFIG = System.getProperty("user.home") + "/etc/ServiceConfig.xml";
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-
-    /**
-     * TODO: Add in the method description/comments
-     *
-     */
-    public PasswordUtility()
-    {
-        final String methodName = PasswordUtility.CNAME
-                + "#PasswordUtility()#Constructor";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-    }
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
     static
     {
-        OptionGroup commandOptions = new OptionGroup();
-        commandOptions.addOption(OptionBuilder.withLongOpt("encrypt")
+        Option configOption = OptionBuilder.withLongOpt("configFile")
+            .withArgName("configFile")
+            .withDescription("Provide location of configuration file")
+            .isRequired(false)
+            .hasArg(true)
+            .create();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Option configOption: {}", configOption);
+        }
+
+        OptionGroup configOptions = new OptionGroup().addOption(configOption);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("OptionGroup configOptions: {}", configOptions);
+        }
+
+        Option entryNameOption = OptionBuilder.withLongOpt("entry")
+            .hasArg(true)
+            .withArgName("entry")
+            .withDescription("Name for the entry")
+            .isRequired(false)
+            .create();
+
+        Option usernameOption = OptionBuilder.withLongOpt("username")
+            .hasArg(true)
+            .withArgName("username")
+            .withDescription("Username for the entry")
+            .isRequired(false)
+            .create();
+
+        Option passwordOption = OptionBuilder.withLongOpt("password")
+            .hasArg(true)
+            .withArgName("password")
+            .withDescription("Username for the entry")
+            .isRequired(false)
+            .create();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Option entryNameOption: {}", entryNameOption);
+            DEBUGGER.debug("Option usernameOption: {}", usernameOption);
+            DEBUGGER.debug("Option passwordOption: {}", passwordOption);
+        }
+
+        Option encryptOption = OptionBuilder.withLongOpt("encrypt")
+            .hasArg(false)
+            .withArgName("entry")
+            .withArgName("username")
+            .withArgName("password")
             .withDescription("Encrypt the provided string")
             .isRequired(false)
-            .create());
-        commandOptions.addOption(OptionBuilder.withLongOpt("decrypt")
+            .create();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Option encryptOption: {}", encryptOption);
+        }
+
+        OptionGroup encryptOptionsGroup = new OptionGroup()
+            .addOption(encryptOption)
+            .addOption(entryNameOption)
+            .addOption(usernameOption)
+            .addOption(passwordOption);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("OptionGroup encryptOptionsGroup: {}", encryptOptionsGroup);
+        }
+
+        Option decryptOption = OptionBuilder.withLongOpt("decrypt")
+            .hasArg(false)
             .withDescription("Decrypt the provided string")
             .isRequired(false)
-            .create());
-        commandOptions.addOption(OptionBuilder.withLongOpt("encode")
-            .withDescription("Base64-encode the provided string")
-            .isRequired(false)
-            .create());
-        commandOptions.addOption(OptionBuilder.withLongOpt("decode")
-            .withDescription("Base64-decode the provided string")
-            .isRequired(false)
-            .create());
+            .create();
 
-        cryptoOptions = new OptionGroup();
-        cryptoOptions.addOption(OptionBuilder.withLongOpt("length")
-            .withDescription("The length of the salt to utilize. Only valid with the \"encrypt\" option.")
-            .hasArg(true)
-            .withArgName("LENGTH")
-            .withType(Integer.class)
-            .isRequired(true)
-            .create());
-        cryptoOptions.addOption(OptionBuilder.withLongOpt("reversible")
-            .withDescription("Perform a two-way (reversible) encryption against the string provided")
-            .isRequired(false)
-            .create());
-        cryptoOptions.addOption(OptionBuilder.withLongOpt("salt")
-            .withDescription("The salt value the string was originally encrypted with. Required if option 'decrypt' is selected.")
-            .withArgName("SALT")
-            .withType(String.class)
-            .isRequired(false)
-            .create());
-        cryptoOptions.addOption(OptionBuilder.withLongOpt("algorithm")
-            .withDescription("Algorithm to utilize for encryption. Required unless reversible encryption is requested.")
-            .withArgName("ALGORITHM")
-            .withType(String.class)
-            .isRequired(false)
-            .create());
-        cryptoOptions.addOption(OptionBuilder.withLongOpt("iterations")
-            .withDescription("Number of iterations to pass for encryption. Required unless reversible encryption is requested.")
-            .withArgName("ITERATIONS")
-            .withType(Integer.class)
-            .isRequired(false)
-            .create());
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Option decryptOption: {}", decryptOption);
+        }
+
+        OptionGroup decryptOptionsGroup = new OptionGroup()
+            .addOption(decryptOption)
+            .addOption(entryNameOption);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("OptionGroup decryptOptionsGroup: {}", decryptOptionsGroup);
+        }
 
         options = new Options();
-        options.addOptionGroup(commandOptions);
-        options.addOptionGroup(cryptoOptions);
+        options.addOptionGroup(configOptions);
+        options.addOptionGroup(encryptOptionsGroup);
+        options.addOptionGroup(decryptOptionsGroup);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Options options: {}", options);
+        }
+
     }
 
     public static final void main(final String[] args)
@@ -145,35 +194,89 @@ public class PasswordUtility
             CommandLineParser parser = new PosixParser();
             CommandLine commandLine = parser.parse(options, args);
 
+            if (DEBUG)
+            {
+                DEBUGGER.debug("CommandLineParser parser: {}", parser);
+                DEBUGGER.debug("CommandLine commandLine: {}", commandLine);
+                DEBUGGER.debug("CommandLine commandLine.getOptions(): {}", commandLine.getOptions());
+                DEBUGGER.debug("CommandLine commandLine.getArgList(): {}", commandLine.getArgList());
+            }
+
+            if ((commandLine.hasOption("configFile")) && (!(StringUtils.isBlank(commandLine.getOptionValue("configFile")))))
+            {
+                SecurityServiceInitializer.initializeService(commandLine.getOptionValue("configFile"), PasswordUtility.LOG_CONFIG, false);
+            }
+            else
+            {
+                SecurityServiceInitializer.initializeService(PasswordUtility.SEC_CONFIG, PasswordUtility.LOG_CONFIG, false);
+            }
+
+            final SecurityConfigurationData secConfigData = PasswordUtility.svcBean.getConfigData();
+            final SecurityConfig secConfig = secConfigData.getSecurityConfig();
+            final RepositoryConfiguration repoConfig = secConfigData.getRepoConfig();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("SecurityConfigurationData secConfig: {}", secConfigData);
+                DEBUGGER.debug("SecurityConfig secConfig: {}", secConfig);
+                DEBUGGER.debug("RepositoryConfiguration secConfig: {}", repoConfig);
+            }
+
             if (commandLine.hasOption("encrypt"))
             {
-                if (commandLine.hasOption("reversible"))
+                String entryName = (String) commandLine.getOptionValue("entry");
+                String username = (String) commandLine.getOptionValue("username");
+                String password = (String) commandLine.getOptionValue("password");
+                int length = (commandLine.hasOption("iterations")) ? Integer.parseInt(commandLine.getOptionValue("length")) : secConfig.getSaltLength();
+
+                if (DEBUG)
                 {
-                    final String salt = RandomStringUtils.randomAlphanumeric(Integer.parseInt(commandLine.getOptionValue("length", "64")));
-                    final String encrypted = PasswordUtils.encryptText((String) commandLine.getArgList().get(0), salt);
-                    
-                    System.out.println("Plain: " + commandLine.getArgList().get(0) + " - Salt: " + salt + ", Encrypted: " + encrypted);
+                    DEBUGGER.debug("String entryName: {}", entryName);
+                    DEBUGGER.debug("String username: {}", username);
+                    DEBUGGER.debug("String password: {}", password);
+                    DEBUGGER.debug("String length: {}", length);
                 }
-                else
+
+                final String salt = RandomStringUtils.randomAlphanumeric(length);
+                final String encrypted = PasswordUtils.encryptText(password, salt);
+
+                if (DEBUG)
                 {
-                    if (!(commandLine.hasOption("algorithm")) || (!(commandLine.hasOption("iterations"))))
+                    DEBUGGER.debug("String salt: {}", salt);
+                    DEBUGGER.debug("String encrypted: {}", encrypted);
+                }
+
+                if (StringUtils.isNotBlank(repoConfig.getPasswordFile()))
+                {
+                    try
                     {
-                        HelpFormatter formatter = new HelpFormatter();
-                        formatter.printHelp(PasswordUtility.CNAME, options, true);
+                        File passwordFile = FileUtils.getFile(repoConfig.getPasswordFile());
+                        File saltFile = FileUtils.getFile(repoConfig.getSaltFile());
 
-                        return;
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("File passwordFile: {}", passwordFile);
+                            DEBUGGER.debug("File saltFile: {}", saltFile);
+                        }
+
+                        new File(passwordFile.getPath()).mkdirs();
+                        new File(saltFile.getPath()).mkdirs();
+                        passwordFile.createNewFile();
+                        saltFile.createNewFile();
                     }
-
-                    final String salt = RandomStringUtils.randomAlphanumeric(Integer.parseInt(commandLine.getOptionValue("length", "64")));
-                    final String encrypted = PasswordUtils.encryptText((String) commandLine.getArgList().get(0), salt,
-                        commandLine.getOptionValue("algorithm"),
-                        Integer.parseInt(commandLine.getOptionValue("iterations", "65535")));
-
-                    System.out.println("Plain: " + commandLine.getArgList().get(0) + " - Salt: " + salt + ", Encrypted: " + encrypted);
+                    catch (IOException iox)
+                    {
+                        ERROR_RECORDER.error(iox.getMessage(), iox);
+                    }
                 }
+
+                System.out.println("Entry Name: " + entryName + "; Username: " + username + "; Plain Text: " + password + "; Salt: " + salt + "; Encrypted: " + encrypted);
             }
             else if (commandLine.hasOption("decrypt"))
             {
+                String encrypted = (String) commandLine.getArgList().get(0);
+                int length = encrypted.length();
+
                 if (!(commandLine.hasOption("length")))
                 {
                     HelpFormatter formatter = new HelpFormatter();
@@ -183,8 +286,7 @@ public class PasswordUtility
                 }
 
                 System.out.println("Encrypted: " + commandLine.getArgList().get(0) + ", Decrypted: " +
-                        PasswordUtils.decryptText((String) commandLine.getArgList().get(0),
-                            Integer.parseInt(commandLine.getOptionValue("length", "64"))));
+                        PasswordUtils.decryptText((String) commandLine.getArgList().get(0), length));
             }
             else if (commandLine.hasOption("encode"))
             {
@@ -197,13 +299,21 @@ public class PasswordUtility
         }
         catch (ParseException px)
         {
-            HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp(PasswordUtility.CNAME, options, true);
+            ERROR_RECORDER.error(px.getMessage(), px);
+
+            System.err.println("An error occurred during processing: " + px.getMessage());
         }
-        catch (SecurityException ssx)
+        catch (SecurityException sx)
         {
-            HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp(PasswordUtility.CNAME, options, true);
+            ERROR_RECORDER.error(sx.getMessage(), sx);
+
+            System.err.println("An error occurred during processing: " + sx.getMessage());
+        }
+        catch (SecurityServiceException ssx)
+        {
+            ERROR_RECORDER.error(ssx.getMessage(), ssx);
+
+            System.err.println("An error occurred during processing: " + ssx.getMessage());
         }
     }
 }

@@ -70,14 +70,14 @@ public class PasswordUtilsTest
 
     @Test public void testTwoWayHash()
     {
-        Assert.assertEquals("bXUNMHkQsn0XYqKYQIqb5/rBcjqgP+iI9oaRqsFwZg6ksO6VXygs7Z1Dw08BaaecTteff8Knx8gnR+l6YoE41l2jLG4ZkFL4y4M6/pqP7fU=",
-                PasswordUtils.encryptText("TestTwoWayHash", "PWQKRN8J60s9gg7Qg3eM6o19ggPsLiIDfjCXohJ9qgfMMILnDmPl79ipeZ56TEJI"));
+        Assert.assertEquals("41hvglQql38+cr8Et//rFFmrJk3Zfg8Xh5b4SLwtRZd0PGuC1a2Wq83iA/YY5mrOS8eh8ZElOJK4Ba43hiijGzbHo2skKg4UpLNf7zhpCowmJKYUcIeBmaUy7ivro8fEsxaHXW6WYeDmcAbmuENOjWft3q31KHtuGmZhluUk+b2navuW/4doetGtH/D8VoZI",
+                PasswordUtils.encryptText("a?.Zd`5ExI%$wm@g/v;L$oq6yqFM$iFAmjVqx72pB|KwG65sd3,ukUDPo;H,|o.O", "wHqqSZI63Et38DRwksM4WanElRHJoZvQkydokLsAo8YkF3NurF5BoTXllwpCd2Ub"));
     }
 
     @Test public void decryptText()
     {
-        Assert.assertEquals("TUX_t3st", PasswordUtils.decryptText("pLuWwtkdjjqB53CNSskt/Rlkrycbbf4Ds00m9Jm5ywNUXtZ6AeZPfQl5ecJ5A33dMJAXhwhzljtDXSprBzZYatRHUGO84JNenAS0VhyyMTo=",
-                "5wIHMByf3qu9hYQ0WpSoQT1f8oWUjhQIrY9h6lCBWXteCHIS3Ch4De3P6t8EQ55H".length()));
+        Assert.assertEquals("myconfig", PasswordUtils.decryptText("5De+3W5rQz4J0TmKvWfmHfmHh9+7y93uIbk8JIG2ewk7Rnss5snuHxqKM1TagzBkIvQVOVO86zGY083yxwgpjVVrKF6QtRbkIr4u6JDfgb4=",
+                "RdvejAfQ9RZL3ibfkMLhu1EHvGUMmXKZGmVEobwVWqXF6FIVD7JqrayHXPBlpLp2".length()));
     }
 
     @Test public void validateOtpValue()
@@ -89,6 +89,6 @@ public class PasswordUtilsTest
 
     @After public void tearDown()
     {
-        SecurityServiceInitializer.shutdown();
+        // SecurityServiceInitializer.shutdown();
     }
 }

@@ -58,7 +58,7 @@ public interface ISecurityReferenceDAO
      * a true response is returned back to the frontend signalling that further
      * authentication processing, if required, can take place.
      *
-     * @return List<String> - A list of all approved servers within the authorization datastore
+     * @return List - A list of all approved servers within the authorization datastore
      * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
      */
     List<String> obtainApprovedServers() throws SQLException;
@@ -68,7 +68,7 @@ public interface ISecurityReferenceDAO
      * a true response is returned back to the frontend signalling that further
      * authentication processing, if required, can take place.
      *
-     * @return List<String> - A list of all approved servers within the authorization datastore
+     * @return List - A list of all approved servers within the authorization datastore
      * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
      */
     List<String> obtainSecurityQuestionList() throws SQLException;
@@ -78,7 +78,7 @@ public interface ISecurityReferenceDAO
      * a true response is returned back to the frontend signalling that further
      * authentication processing, if required, can take place.
      *
-     * @return List<String> - A list of all approved servers within the authorization datastore
+     * @return List - A list of all approved servers within the authorization datastore
      * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
      */
     Map<String, String> listAvailableServices() throws SQLException;
@@ -89,7 +89,7 @@ public interface ISecurityReferenceDAO
      * authentication processing, if required, can take place.
      *
      * @param group - The group to obtain available services for
-     * @return List<String> - A list of all approved servers within the authorization datastore
+     * @return List - A list of all approved servers within the authorization datastore
      * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
      */
     List<String> listServicesForGroup(final String group) throws SQLException;

@@ -34,6 +34,7 @@ public class AccountChangeException extends SecurityServiceException
     private static final long serialVersionUID = 6795415506253745774L;
 
     /**
+     * @param message - The thrown exception message
      * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.String)
      */
     public AccountChangeException(final String message)
@@ -42,6 +43,7 @@ public class AccountChangeException extends SecurityServiceException
     }
 
     /**
+     * @param throwable - The thrown exception
      * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.Throwable)
      */
     public AccountChangeException(final Throwable throwable)
@@ -50,6 +52,8 @@ public class AccountChangeException extends SecurityServiceException
     }
 
     /**
+     * @param message - The thrown exception message
+     * @param throwable - The thrown exception
      * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.String, java.lang.Throwable)
      */
     public AccountChangeException(final String message, final Throwable throwable)

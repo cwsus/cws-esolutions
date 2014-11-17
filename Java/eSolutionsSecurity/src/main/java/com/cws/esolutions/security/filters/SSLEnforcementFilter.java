@@ -27,14 +27,22 @@ package com.cws.esolutions.security.filters;
  */
 import java.util.Set;
 import java.util.Arrays;
+
 import org.slf4j.Logger;
+
 import java.util.HashSet;
 import java.io.IOException;
+import java.net.URLEncoder;
+
 import javax.servlet.Filter;
+
 import java.util.Collections;
 import java.util.Enumeration;
+
 import org.slf4j.LoggerFactory;
+
 import java.util.ResourceBundle;
+
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletRequest;
@@ -42,8 +50,11 @@ import javax.servlet.ServletResponse;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 import javax.servlet.UnavailableException;
+
 import java.util.MissingResourceException;
+
 import org.apache.commons.lang.StringUtils;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -97,11 +108,11 @@ public class SSLEnforcementFilter implements Filter
             }
 
             this.ignoreHosts = (
-                    StringUtils.isNotEmpty(rBundle.getString(SSLEnforcementFilter.IGNORE_HOST_LIST))) ?
-                            rBundle.getString(SSLEnforcementFilter.IGNORE_HOST_LIST).trim().split(","): null;
+                    StringUtils.isNotEmpty(rBundle.getString(SSLEnforcementFilter.IGNORE_HOST_LIST)))
+                    ? rBundle.getString(SSLEnforcementFilter.IGNORE_HOST_LIST).trim().split(",") : null;
             this.ignoreURIs = (
-                    StringUtils.isNotEmpty(rBundle.getString(SSLEnforcementFilter.IGNORE_URI_LIST))) ?
-                            rBundle.getString(SSLEnforcementFilter.IGNORE_HOST_LIST).trim().split(","): null;
+                    StringUtils.isNotEmpty(rBundle.getString(SSLEnforcementFilter.IGNORE_URI_LIST)))
+                    ? rBundle.getString(SSLEnforcementFilter.IGNORE_HOST_LIST).trim().split(",") : null;
 
             if (DEBUG)
             {
@@ -309,7 +320,7 @@ public class SSLEnforcementFilter implements Filter
             DEBUGGER.debug("redirectURL: {}", redirectURL);
         }
 
-        hResponse.sendRedirect(redirectURL.toString());
+        hResponse.sendRedirect(URLEncoder.encode(redirectURL.toString(), "UTF-8"));
 
         return;
     }

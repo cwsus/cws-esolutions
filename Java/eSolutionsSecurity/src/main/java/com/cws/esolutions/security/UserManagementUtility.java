@@ -104,7 +104,7 @@ public class UserManagementUtility
 
         try
         {
-            SecurityServiceInitializer.initializeService(System.getProperty("serviceConfig"), System.getProperty("logConfig"));
+            SecurityServiceInitializer.initializeService(System.getProperty("serviceConfig"), System.getProperty("logConfig"), false);
         }
         catch (SecurityException sx)
         {

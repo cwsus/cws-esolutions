@@ -34,6 +34,7 @@ public class AuditServiceException extends SecurityServiceException
     private static final long serialVersionUID = -4989476871384420297L;
 
     /**
+     * @param message - The thrown exception message
      * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.String)
      */
     public AuditServiceException(final String message)
@@ -42,6 +43,7 @@ public class AuditServiceException extends SecurityServiceException
     }
 
     /**
+     * @param throwable - The thrown exception
      * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.Throwable)
      */
     public AuditServiceException(final Throwable throwable)
@@ -50,6 +52,8 @@ public class AuditServiceException extends SecurityServiceException
     }
 
     /**
+     * @param message - The thrown exception message
+     * @param throwable - The thrown exception
      * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.String, java.lang.Throwable)
      */
     public AuditServiceException(final String message, final Throwable throwable)

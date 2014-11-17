@@ -50,6 +50,8 @@ public final class RepositoryConfiguration implements Serializable
     private String repositoryRoleBase = null;
     private UserReturningAttributes userAttributes = null;
     private SecurityReturningAttributes securityAttributes = null;
+    private String saltFile = System.getProperty("user.home") + "/etc/secret.properties";
+    private String passwordFile = System.getProperty("user.home") + "/etc/repository.properties";
 
     private static final long serialVersionUID = -4767557511096921048L;
     private static final String CNAME = RepositoryConfiguration.class.getName();
@@ -57,6 +59,32 @@ public final class RepositoryConfiguration implements Serializable
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
+
+    public final void setSaltFile(final String value)
+    {
+        final String methodName = RepositoryConfiguration.CNAME + "#setSaltFile(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.saltFile = value;
+    }
+
+    public final void setPasswordFile(final String value)
+    {
+        final String methodName = RepositoryConfiguration.CNAME + "#setPasswordFile(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.passwordFile = value;
+    }
 
     public final void setBaseObject(final String value)
     {
@@ -134,6 +162,34 @@ public final class RepositoryConfiguration implements Serializable
         }
 
         this.userAttributes = value;
+    }
+
+    @XmlElement(name = "passwordFile")
+    public final String getPasswordFile()
+    {
+        final String methodName = RepositoryConfiguration.CNAME + "#getPasswordFile()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.passwordFile);
+        }
+
+        return this.passwordFile;
+    }
+
+    @XmlElement(name = "saltFile")
+    public final String getSaltFile()
+    {
+        final String methodName = RepositoryConfiguration.CNAME + "#getSaltFile()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.saltFile);
+        }
+
+        return this.saltFile;
     }
 
     @XmlElement(name = "baseObjectClass")

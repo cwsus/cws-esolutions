@@ -157,31 +157,37 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
 
-            UserAccount resAccount = new UserAccount();
-            resAccount.setGuid(securityData.get(0));
-            resAccount.setUsername(securityData.get(1));
-
-            if (DEBUG)
+            if (securityData != null)
             {
-                DEBUGGER.debug("UserAccount: {}", resAccount);
-            }
+                if (StringUtils.isNotBlank(securityData.get(0)))
+                {
+                    UserAccount resAccount = new UserAccount();
+                    resAccount.setGuid(securityData.get(0));
+                    resAccount.setUsername(securityData.get(1));
 
-            AuthenticationData userSecurity = new AuthenticationData();
-            userSecurity.setSecQuestionOne(securityData.get(0));
-            userSecurity.setSecQuestionTwo(securityData.get(1));
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("UserAccount: {}", resAccount);
+                    }
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AuthenticationData: {}", userSecurity);
-            }
+                    AuthenticationData userSecurity = new AuthenticationData();
+                    userSecurity.setSecQuestionOne(securityData.get(0));
+                    userSecurity.setSecQuestionTwo(securityData.get(1));
 
-            response.setUserAccount(resAccount);
-            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-            response.setUserSecurity(userSecurity);
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuthenticationData: {}", userSecurity);
+                    }
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccountResetResponse: {}", response);
+                    response.setUserAccount(resAccount);
+                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                    response.setUserSecurity(userSecurity);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AccountResetResponse: {}", response);
+                    }
+                }
             }
         }
         catch (AuthenticatorException ax)

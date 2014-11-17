@@ -33,6 +33,7 @@ public class SecurityServiceException extends Exception
     private static final long serialVersionUID = -5953286132656674063L;
 
     /**
+     * @param message - The thrown exception message
      * @see java.lang.Exception#Exception(java.lang.String)
      */
     public SecurityServiceException(final String message)
@@ -41,6 +42,7 @@ public class SecurityServiceException extends Exception
     }
 
     /**
+     * @param throwable - The thrown exception
      * @see java.lang.Exception#Exception(java.lang.Throwable)
      */
     public SecurityServiceException(final Throwable throwable)
@@ -49,6 +51,8 @@ public class SecurityServiceException extends Exception
     }
 
     /**
+     * @param message - The thrown exception message
+     * @param throwable - The thrown exception
      * @see java.lang.Exception#Exception(java.lang.String, java.lang.Throwable)
      */
     public SecurityServiceException(final String message, final Throwable throwable)
@@ -56,6 +60,11 @@ public class SecurityServiceException extends Exception
         super(message, throwable);
     }
 
+    /**
+     * @param code - The <code>ResultCode</code> of the operation
+     * @param message - The thrown exception message
+     * @param throwable - The thrown exception
+     */
     public SecurityServiceException(final ResultCode code, final String message, final Throwable throwable)
     {
         super(message + " : " + code, throwable);

@@ -104,7 +104,7 @@ public interface IUserSecurityInformationDAO
     /**
      * Lists reset requests housed in the security datastore.
      *
-     * @return A <code>List<String></code> of all associated reset requests housed.
+     * @return A <code>List</code> of all associated reset requests housed.
      * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
      */
     List<String[]> listActiveResets() throws SQLException;

@@ -880,7 +880,7 @@ public class SQLUserManager implements UserManager
             // then make sure the new password doesnt match the existing password
             stmt = sqlConn.prepareCall("{ CALL updateUserGroups(?, ?,}");
             stmt.setString(1, userId);
-            stmt.setString(2, values.toString());
+            stmt.setString(2, Arrays.toString(values));
 
             if (DEBUG)
             {

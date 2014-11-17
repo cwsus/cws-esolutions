@@ -67,7 +67,7 @@ public interface Authenticator
      *
      * @param userId - the username to validate data against
      * @param password - the password to validate data against
-     * @return List<Object> - The account information for the authenticated user
+     * @return List - The account information for the authenticated user
      * @throws AuthenticatorException {@link com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException} if an exception occurs during processing
      */
     List<Object> performLogon(final String userId, final String password) throws AuthenticatorException;
@@ -83,7 +83,7 @@ public interface Authenticator
      *
      * @param userId - the username to validate data against
      * @param guid - the GUID to validate data against
-     * @return List<String> - The security data housed for the given user
+     * @return List - The security data housed for the given user
      * @throws AuthenticatorException {@link com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException} if an exception occurs during processing
      */
     List<String> obtainSecurityData(final String userId, final String guid) throws AuthenticatorException;

@@ -36,17 +36,24 @@ public class AuthenticatorException extends SecurityServiceException
 
     private static final long serialVersionUID = -8824085932178422693L;
 
+    /**
+     * @param value - The <code>ResultCode</code> value
+     */
     public final void setResultCode(final ResultCode value)
     {
         this.resultCode = value;
     }
 
+    /**
+     * @return ResultCode - The <code>ResultCode</code> value
+     */
     public final ResultCode getResultCode()
     {
         return this.resultCode;
     }
 
     /**
+     * @param message - The thrown exception message
      * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.String)
      */
     public AuthenticatorException(final String message)
@@ -55,6 +62,7 @@ public class AuthenticatorException extends SecurityServiceException
     }
 
     /**
+     * @param throwable - The thrown exception
      * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.Throwable)
      */
     public AuthenticatorException(final Throwable throwable)
@@ -63,6 +71,8 @@ public class AuthenticatorException extends SecurityServiceException
     }
 
     /**
+     * @param message - The thrown exception message
+     * @param throwable - The thrown exception
      * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.String, java.lang.Throwable)
      */
     public AuthenticatorException(final String message, final Throwable throwable)
@@ -71,6 +81,9 @@ public class AuthenticatorException extends SecurityServiceException
     }
 
     /**
+     * @param code - The <code>ResultCode</code> value
+     * @param message - The thrown exception message
+     * @param throwable - The thrown exception
      * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(com.unboundid.ldap.sdk.ResultCode, java.lang.String, java.lang.Throwable)
      */
     public AuthenticatorException(final ResultCode code, final String message, final Throwable throwable)

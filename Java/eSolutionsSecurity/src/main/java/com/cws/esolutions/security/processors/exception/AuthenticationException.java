@@ -34,6 +34,7 @@ public class AuthenticationException extends SecurityServiceException
     private static final long serialVersionUID = -947727636776339138L;
 
     /**
+     * @param message - The thrown exception message
      * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.String)
      */
     public AuthenticationException(final String message)
@@ -42,6 +43,7 @@ public class AuthenticationException extends SecurityServiceException
     }
 
     /**
+     * @param throwable - The thrown exception
      * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.Throwable)
      */
     public AuthenticationException(final Throwable throwable)
@@ -50,6 +52,8 @@ public class AuthenticationException extends SecurityServiceException
     }
 
     /**
+     * @param message - The thrown exception message
+     * @param throwable - The thrown exception
      * @see com.cws.esolutions.security.exception.SecurityServiceException#SecurityServiceException(java.lang.String, java.lang.Throwable)
      */
     public AuthenticationException(final String message, final Throwable throwable)

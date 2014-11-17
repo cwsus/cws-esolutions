@@ -71,10 +71,11 @@ public class SecurityServiceInitializer
      *
      * @param secConfig - The security configuration file to utilize
      * @param logConfig - The logging configuration file to utilize
+     * @param startConnections - Configure, load and start repository connections
      * @throws SecurityServiceException @{link com.cws.esolutions.security.exception.SecurityServiceException}
      * if an exception occurs during initialization
      */
-    public static void initializeService(final String secConfig, final String logConfig) throws SecurityServiceException
+    public static void initializeService(final String secConfig, final String logConfig, final boolean startConnections) throws SecurityServiceException
     {
         URL xmlURL = null;
         JAXBContext context = null;
@@ -123,60 +124,63 @@ public class SecurityServiceInitializer
 
             SecurityServiceInitializer.svcBean.setConfigData(configData);
 
-            DAOInitializer.configureAndCreateAuthConnection(new FileInputStream(FileUtils.getFile(configData.getSecurityConfig().getAuthConfig())),
-                    false, SecurityServiceInitializer.svcBean);
-
-            Map<String, DataSource> dsMap = SecurityServiceInitializer.svcBean.getDataSources();
-
-            if (DEBUG)
+            if (startConnections)
             {
-                DEBUGGER.debug("dsMap: {}", dsMap);
-            }
+                DAOInitializer.configureAndCreateAuthConnection(new FileInputStream(FileUtils.getFile(configData.getSecurityConfig().getAuthConfig())),
+                        false, SecurityServiceInitializer.svcBean);
 
-            if (configData.getResourceConfig() != null)
-            {
-                if (dsMap == null)
-                {
-                    dsMap = new HashMap<>();
-                }
-
-                for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())
-                {
-                    if (!(dsMap.containsKey(mgr.getDsName())))
-                    {
-                        StringBuilder sBuilder = new StringBuilder()
-                            .append("connectTimeout=" + mgr.getConnectTimeout() + ";")
-                            .append("socketTimeout=" + mgr.getConnectTimeout() + ";")
-                            .append("autoReconnect=" + mgr.getAutoReconnect() + ";")
-                            .append("zeroDateTimeBehavior=convertToNull");
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("StringBuilder: {}", sBuilder);
-                        }
-
-                        BasicDataSource dataSource = new BasicDataSource();
-                        dataSource.setDriverClassName(mgr.getDriver());
-                        dataSource.setUrl(mgr.getDataSource());
-                        dataSource.setUsername(mgr.getDsUser());
-                        dataSource.setConnectionProperties(sBuilder.toString());
-                        dataSource.setPassword(PasswordUtils.decryptText(mgr.getDsPass(), mgr.getSalt().length()));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("BasicDataSource: {}", dataSource);
-                        }
-
-                        dsMap.put(mgr.getDsName(), dataSource);
-                    }
-                }
+                Map<String, DataSource> dsMap = SecurityServiceInitializer.svcBean.getDataSources();
 
                 if (DEBUG)
                 {
                     DEBUGGER.debug("dsMap: {}", dsMap);
                 }
 
-                SecurityServiceInitializer.svcBean.setDataSources(dsMap);
+                if (configData.getResourceConfig() != null)
+                {
+                    if (dsMap == null)
+                    {
+                        dsMap = new HashMap<>();
+                    }
+
+                    for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())
+                    {
+                        if (!(dsMap.containsKey(mgr.getDsName())))
+                        {
+                            StringBuilder sBuilder = new StringBuilder()
+                                .append("connectTimeout=" + mgr.getConnectTimeout() + ";")
+                                .append("socketTimeout=" + mgr.getConnectTimeout() + ";")
+                                .append("autoReconnect=" + mgr.getAutoReconnect() + ";")
+                                .append("zeroDateTimeBehavior=convertToNull");
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("StringBuilder: {}", sBuilder);
+                            }
+
+                            BasicDataSource dataSource = new BasicDataSource();
+                            dataSource.setDriverClassName(mgr.getDriver());
+                            dataSource.setUrl(mgr.getDataSource());
+                            dataSource.setUsername(mgr.getDsUser());
+                            dataSource.setConnectionProperties(sBuilder.toString());
+                            dataSource.setPassword(PasswordUtils.decryptText(mgr.getDsPass(), mgr.getSalt().length()));
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("BasicDataSource: {}", dataSource);
+                            }
+
+                            dsMap.put(mgr.getDsName(), dataSource);
+                        }
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("dsMap: {}", dsMap);
+                    }
+
+                    SecurityServiceInitializer.svcBean.setDataSources(dsMap);
+                }
             }
         }
         catch (JAXBException jx)

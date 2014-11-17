@@ -67,7 +67,7 @@ public class UserAccount implements Serializable
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
 
     /**
-     * @param value The {@link com.cws.esolutions.security.processors.enums.LoginStatus} for the account
+     * @param value - The {@link com.cws.esolutions.security.processors.enums.LoginStatus} for the account
      */
     public final void setStatus(final LoginStatus value)
     {
@@ -83,7 +83,7 @@ public class UserAccount implements Serializable
     }
 
     /**
-     * @param value The GUID associated with the account
+     * @param value - The GUID associated with the account
      */
     public final void setGuid(final String value)
     {
@@ -99,7 +99,7 @@ public class UserAccount implements Serializable
     }
 
     /**
-     * @param value The surname associated with the account
+     * @param value - The surname associated with the account
      */
     public final void setSurname(final String value)
     {
@@ -115,7 +115,7 @@ public class UserAccount implements Serializable
     }
 
     /**
-     * @param value The expiration date associated with the account
+     * @param value - The expiration date associated with the account
      */
     public final void setExpiryDate(final Date value)
     {
@@ -131,7 +131,7 @@ public class UserAccount implements Serializable
     }
 
     /**
-     * @param value The failed password count associated with the account
+     * @param value - The failed password count associated with the account
      */
     public final void setFailedCount(final Integer value)
     {
@@ -147,7 +147,7 @@ public class UserAccount implements Serializable
     }
 
     /**
-     * @param value The OLR lockout flag associated with the account
+     * @param value - The OLR lockout flag associated with the account
      */
     public final void setOlrLocked(final boolean value)
     {
@@ -163,7 +163,7 @@ public class UserAccount implements Serializable
     }
 
     /**
-     * @param value The OLR setup flag associated with the account
+     * @param value - The OLR setup flag associated with the account
      */
     public final void setOlrSetup(final boolean value)
     {
@@ -179,7 +179,7 @@ public class UserAccount implements Serializable
     }
 
     /**
-     * @param value The suspension flag associated with the account
+     * @param value - The suspension flag associated with the account
      */
     public final void setSuspended(final boolean value)
     {
@@ -195,7 +195,7 @@ public class UserAccount implements Serializable
     }
 
     /**
-     * @param value The last login timestamp associated with the account
+     * @param value - The last login timestamp associated with the account
      */
     public final void setLastLogin(final Date value)
     {
@@ -211,7 +211,7 @@ public class UserAccount implements Serializable
     }
 
     /**
-     * @param value The groups associated with the account
+     * @param value - The groups associated with the account
      */
     public final void setGroups(final String[] value)
     {
@@ -227,7 +227,7 @@ public class UserAccount implements Serializable
     }
 
     /**
-     * @param value The display name associated with the account
+     * @param value - The display name associated with the account
      */
     public final void setDisplayName(final String value)
     {
@@ -243,7 +243,7 @@ public class UserAccount implements Serializable
     }
 
     /**
-     * @param value The email address associated with the account
+     * @param value - The email address associated with the account
      */
     public final void setEmailAddr(final String value)
     {
@@ -259,7 +259,7 @@ public class UserAccount implements Serializable
     }
 
     /**
-     * @param value The given name associated with the account
+     * @param value - The given name associated with the account
      */
     public final void setGivenName(final String value)
     {
@@ -275,7 +275,7 @@ public class UserAccount implements Serializable
     }
 
     /**
-     * @param value The username associated with the account
+     * @param value - The username associated with the account
      */
     public final void setUsername(final String value)
     {
@@ -291,7 +291,7 @@ public class UserAccount implements Serializable
     }
 
     /**
-     * @param value The pager number associated with the account
+     * @param value - The pager number associated with the account
      */
     public final void setPagerNumber(final String value)
     {
@@ -307,7 +307,7 @@ public class UserAccount implements Serializable
     }
 
     /**
-     * @param value The telephone number associated with the account
+     * @param value - The telephone number associated with the account
      */
     public final void setTelephoneNumber(final String value)
     {
@@ -323,7 +323,7 @@ public class UserAccount implements Serializable
     }
 
     /**
-     * @param value The telephone number associated with the account
+     * @param value - The telephone number associated with the account
      */
     public final void setManagerGuid(final String value)
     {
@@ -339,7 +339,7 @@ public class UserAccount implements Serializable
     }
 
     /**
-     * @param value The telephone number associated with the account
+     * @param value - The telephone number associated with the account
      */
     public final void setManagerName(final String value)
     {
@@ -627,7 +627,7 @@ public class UserAccount implements Serializable
     }
 
     /**
-     * @param value The telephone number associated with the account
+     * @return String
      */
     public final String getManagerGuid()
     {
@@ -643,7 +643,7 @@ public class UserAccount implements Serializable
     }
 
     /**
-     * @param value The telephone number associated with the account
+     * @return String
      */
     public final String getManagerName()
     {
