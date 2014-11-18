@@ -41,9 +41,9 @@ public class PasswordUtilsTest
 
     @Before public void setUp()
     {
-        /*try
+        try
         {
-            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml");
+            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", false);
         }
         catch (Exception e)
         {
@@ -51,44 +51,58 @@ public class PasswordUtilsTest
             Assert.fail(e.getMessage());
 
             System.exit(1);
-        }*/
+        }
     }
 
     @Test public void test()
     {
-        String salt = RandomStringUtils.randomAlphanumeric(64);
-        System.out.println(salt);
-        System.out.println(PasswordUtils.encryptText("a?.Zd`5ExI%$wm@g/v;L$oq6yqFM$iFAmjVqx72pB|KwG65sd3,ukUDPo;H,|o.O", salt));
+        System.out.println(PasswordUtils.encryptText("MyTextValue", "OwTVX8+4u5!EF$l~eUep$kprFiPNGdU0Of4IS!M(lHgjDC3bK5lTemVPoYIQLTbF",
+                bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                bean.getConfigData().getSystemConfig().getEncoding()));
     }
 
     @Test public void encryptText()
     {
         Assert.assertEquals("xdwcvNbTtdBkcxvtn3g5BTHz1naNiq3tZAn255ai1hZtRUPiA0TyoLPs3fP6lC9YcvyNcreuFqEuse10nnyHAg==",
                 PasswordUtils.encryptText("TestPasswordValue", "zHnDJVgtiJy3FNFDfSe9ZK1KW97zd1oDmA8awAoW7QnDR6i2wd9AfV2NmXOOVYJO",
-                        bean.getConfigData().getSecurityConfig().getAuthAlgorithm(), bean.getConfigData().getSecurityConfig().getIterations()));
+                        bean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
+                        bean.getConfigData().getSecurityConfig().getIterations(),
+                        bean.getConfigData().getSystemConfig().getEncoding()));
     }
 
     @Test public void testTwoWayHash()
     {
         Assert.assertEquals("41hvglQql38+cr8Et//rFFmrJk3Zfg8Xh5b4SLwtRZd0PGuC1a2Wq83iA/YY5mrOS8eh8ZElOJK4Ba43hiijGzbHo2skKg4UpLNf7zhpCowmJKYUcIeBmaUy7ivro8fEsxaHXW6WYeDmcAbmuENOjWft3q31KHtuGmZhluUk+b2navuW/4doetGtH/D8VoZI",
-                PasswordUtils.encryptText("a?.Zd`5ExI%$wm@g/v;L$oq6yqFM$iFAmjVqx72pB|KwG65sd3,ukUDPo;H,|o.O", "wHqqSZI63Et38DRwksM4WanElRHJoZvQkydokLsAo8YkF3NurF5BoTXllwpCd2Ub"));
+                PasswordUtils.encryptText("a?.Zd`5ExI%$wm@g/v;L$oq6yqFM$iFAmjVqx72pB|KwG65sd3,ukUDPo;H,|o.O",
+                        "wHqqSZI63Et38DRwksM4WanElRHJoZvQkydokLsAo8YkF3NurF5BoTXllwpCd2Ub",
+                        bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                        bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                        bean.getConfigData().getSystemConfig().getEncoding()));
     }
 
     @Test public void decryptText()
     {
-        Assert.assertEquals("myconfig", PasswordUtils.decryptText("5De+3W5rQz4J0TmKvWfmHfmHh9+7y93uIbk8JIG2ewk7Rnss5snuHxqKM1TagzBkIvQVOVO86zGY083yxwgpjVVrKF6QtRbkIr4u6JDfgb4=",
-                "RdvejAfQ9RZL3ibfkMLhu1EHvGUMmXKZGmVEobwVWqXF6FIVD7JqrayHXPBlpLp2".length()));
+        String returned = PasswordUtils.decryptText("G1ZTp/d9pufJ9JfW0tJBBCbyOQ3d8RcNyPcVfQdQ4eQ0qd15g7N04Mb1TzOJORMIU03D/480YgHVl6kiqq4u1tt8xD2qqxyNqEGX7dwMsgg=",
+                64,
+                bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                bean.getConfigData().getSystemConfig().getEncoding());
+
+        System.out.println(returned);
+        Assert.assertEquals("MyTextValue", returned);
     }
 
     @Test public void validateOtpValue()
     {
         Assert.assertEquals("number", PasswordUtils.validateOtpValue(bean.getConfigData().getSecurityConfig().getOtpVariance(),
                 bean.getConfigData().getSecurityConfig().getOtpAlgorithm(),
+                bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
                 "the secret", 0));
     }
 
     @After public void tearDown()
     {
-        // SecurityServiceInitializer.shutdown();
+        SecurityServiceInitializer.shutdown();
     }
 }

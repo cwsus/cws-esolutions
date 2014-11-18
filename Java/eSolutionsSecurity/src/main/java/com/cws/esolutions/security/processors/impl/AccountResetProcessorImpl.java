@@ -268,9 +268,11 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                     new ArrayList<>(
                         Arrays.asList(
                             PasswordUtils.encryptText(userSecurity.getSecAnswerOne(), userSalt,
-                                secConfig.getAuthAlgorithm(), secConfig.getIterations()),
+                                secConfig.getAuthAlgorithm(), secConfig.getIterations(),
+                                secBean.getConfigData().getSystemConfig().getEncoding()),
                             PasswordUtils.encryptText(userSecurity.getSecAnswerTwo(), userSalt,
-                                secConfig.getAuthAlgorithm(), secConfig.getIterations()))));
+                                secConfig.getAuthAlgorithm(), secConfig.getIterations(),
+                                secBean.getConfigData().getSystemConfig().getEncoding()))));
 
                 if (DEBUG)
                 {
@@ -451,7 +453,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
         catch (SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
-            
+
             throw new AccountResetException(sqx.getMessage(), sqx);
         }
         catch (UserManagementException umx)
@@ -514,13 +516,13 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
         final Calendar cal = Calendar.getInstance();
         final RequestHostInfo reqInfo = request.getHostInfo();
-                
+
         if (DEBUG)
         {
             DEBUGGER.debug("Calendar: {}", cal);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
         }
-        
+
         try
         {
             cal.add(Calendar.MINUTE, secConfig.getResetTimeout());

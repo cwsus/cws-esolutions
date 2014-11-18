@@ -46,16 +46,18 @@ import com.unboundid.ldap.sdk.ExtendedResult;
 import com.unboundid.ldap.sdk.LDAPConnection;
 import java.security.GeneralSecurityException;
 import org.apache.commons.dbcp.BasicDataSource;
+
 import com.unboundid.ldap.sdk.SimpleBindRequest;
 import com.unboundid.ldap.sdk.LDAPConnectionPool;
 import com.unboundid.ldap.sdk.LDAPConnectionOptions;
 import com.unboundid.util.ssl.TrustStoreTrustManager;
-import com.unboundid.ldap.sdk.StartTLSPostConnectProcessor;
-import com.unboundid.ldap.sdk.extensions.StartTLSExtendedRequest;
-
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.utils.PasswordUtils;
+import com.cws.esolutions.security.config.xml.SystemConfig;
+import com.unboundid.ldap.sdk.StartTLSPostConnectProcessor;
 import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.config.xml.SecurityConfig;
+import com.unboundid.ldap.sdk.extensions.StartTLSExtendedRequest;
 import com.cws.esolutions.security.config.enums.AuthRepositoryType;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.config.enums.RepositoryConnectionType;
@@ -83,6 +85,10 @@ public final class DAOInitializer
     private static final String CONN_TIMEOUT = "repositoryConnTimeout";
     private static final String READ_TIMEOUT = "repositoryReadTimeout";
     private static final String CNAME = DAOInitializer.class.getName();
+
+    private static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
+    private static final SystemConfig systemConfig = svcBean.getConfigData().getSystemConfig();
+    private static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -133,13 +139,13 @@ public final class DAOInitializer
                     LDAPConnection ldapConn = null;
                     LDAPConnectionPool connPool = null;
                     LDAPConnectionOptions connOpts = new LDAPConnectionOptions();
-            
+
                     connOpts.setAutoReconnect(true);
                     connOpts.setAbandonOnTimeout(true);
                     connOpts.setBindWithDNRequiresPassword(true);
                     connOpts.setConnectTimeoutMillis(Integer.parseInt(connProps.getProperty(DAOInitializer.CONN_TIMEOUT)));
                     connOpts.setResponseTimeoutMillis(Integer.parseInt(connProps.getProperty(DAOInitializer.READ_TIMEOUT)));
-            
+
                     if (DEBUG)
                     {
                         DEBUGGER.debug("LDAPConnectionOptions: {}", connOpts);
@@ -170,15 +176,17 @@ public final class DAOInitializer
                             sslUtil = new SSLUtil(new TrustStoreTrustManager(
                                     connProps.getProperty(DAOInitializer.TRUST_FILE),
                                     PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.TRUST_PASS),
-                                            connProps.getProperty(DAOInitializer.TRUST_SALT).length()).toCharArray(),
+                                            connProps.getProperty(DAOInitializer.TRUST_SALT).length(),
+                                            secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), 
+                                            systemConfig.getEncoding()).toCharArray(),
                                     connProps.getProperty(DAOInitializer.TRUST_TYPE),
                                     true));
-            
+
                             if (DEBUG)
                             {
                                 DEBUGGER.debug("SSLUtil: {}", sslUtil);
                             }
-            
+
                             SSLSocketFactory sslSocketFactory = sslUtil.createSSLSocketFactory();
 
                             if (DEBUG)
@@ -198,7 +206,7 @@ public final class DAOInitializer
                             {
                                 throw new LDAPException(ResultCode.CONNECT_ERROR, "Failed to establish an LDAP connection");
                             }
-                            
+
                             connPool = new LDAPConnectionPool(ldapConn,
                                     Integer.parseInt(connProps.getProperty(DAOInitializer.MIN_CONNECTIONS)),
                                     Integer.parseInt(connProps.getProperty(DAOInitializer.MAX_CONNECTIONS)));
@@ -221,7 +229,9 @@ public final class DAOInitializer
                             sslUtil = new SSLUtil(new TrustStoreTrustManager(
                                 connProps.getProperty(DAOInitializer.TRUST_FILE),
                                 PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.TRUST_PASS),
-                                    connProps.getProperty(DAOInitializer.TRUST_SALT).length()).toCharArray(),
+                                        connProps.getProperty(DAOInitializer.TRUST_SALT).length(),
+                                        secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
+                                        systemConfig.getEncoding()).toCharArray(),
                                 connProps.getProperty(DAOInitializer.TRUST_TYPE),
                                 true));
 
@@ -250,10 +260,12 @@ public final class DAOInitializer
                             {
                                 DEBUGGER.debug("ExtendedResult: {}", extendedResult);
                             }
-                            
+
                             BindRequest bindRequest = new SimpleBindRequest(connProps.getProperty(DAOInitializer.REPOSITORY_USER),
                                 PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.REPOSITORY_PASS),
-                                    connProps.getProperty(DAOInitializer.REPOSITORY_SALT).length()));
+                                    connProps.getProperty(DAOInitializer.REPOSITORY_SALT).length(),
+                                    secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
+                                    systemConfig.getEncoding()));
 
                             if (DEBUG)
                             {
@@ -313,7 +325,10 @@ public final class DAOInitializer
                         dataSource.setUsername(connProps.getProperty(DAOInitializer.REPOSITORY_USER));
                         dataSource.setPassword(PasswordUtils.decryptText(
                                 connProps.getProperty(DAOInitializer.REPOSITORY_PASS),
-                                connProps.getProperty(DAOInitializer.REPOSITORY_SALT).length()));
+                                connProps.getProperty(DAOInitializer.REPOSITORY_SALT).length(),
+                                secConfig.getEncryptionAlgorithm(),
+                                secConfig.getEncryptionInstance(),
+                                systemConfig.getEncoding()));
 
                         bean.setAuthDataSource(dataSource);
                     }

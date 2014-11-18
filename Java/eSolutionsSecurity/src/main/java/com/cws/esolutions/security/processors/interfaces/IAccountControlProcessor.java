@@ -55,12 +55,12 @@ import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInforma
 public interface IAccountControlProcessor
 {
     static final String CNAME = IAccountControlProcessor.class.getName();
-    static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
+    static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
 
     static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final ISecurityReferenceDAO secRef = new SecurityReferenceDAOImpl();
     static final IAccessControlService accessControl = new AccessControlServiceImpl();
-    static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
+    static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
     static final IUserSecurityInformationDAO userSec = new UserSecurityInformationDAOImpl();
     static final UserManager userManager = UserManagerFactory.getUserManager(secConfig.getUserManager());
     

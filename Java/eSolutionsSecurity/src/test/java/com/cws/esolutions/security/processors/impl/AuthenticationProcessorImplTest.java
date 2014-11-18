@@ -50,7 +50,7 @@ public class AuthenticationProcessorImplTest
     {
         try
         {
-            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml");
+            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
 
             hostInfo = new RequestHostInfo();
             hostInfo.setHostAddress("junit");

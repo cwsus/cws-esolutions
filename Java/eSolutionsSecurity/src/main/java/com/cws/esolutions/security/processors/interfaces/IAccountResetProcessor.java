@@ -57,12 +57,12 @@ public interface IAccountResetProcessor
     static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final String CNAME = IAccountResetProcessor.class.getName();
     static final ISecurityReferenceDAO secRef = new SecurityReferenceDAOImpl();
-    static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
+    static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final IAccessControlService accessControl = new AccessControlServiceImpl();
-    static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
+    static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
     static final IUserSecurityInformationDAO userSec = new UserSecurityInformationDAOImpl();
     static final Authenticator authenticator = AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());
-    static final UserManager userManager = UserManagerFactory.getUserManager(svcBean.getConfigData().getSecurityConfig().getUserManager());
+    static final UserManager userManager = UserManagerFactory.getUserManager(secBean.getConfigData().getSecurityConfig().getUserManager());
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

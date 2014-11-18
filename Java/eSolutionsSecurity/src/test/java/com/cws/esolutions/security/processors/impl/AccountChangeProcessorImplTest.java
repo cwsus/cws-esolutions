@@ -62,7 +62,7 @@ public final class AccountChangeProcessorImplTest
 
             userSecurity.setPassword("junit");
 
-            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml");
+            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
         catch (Exception ex)
         {

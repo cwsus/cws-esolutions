@@ -155,7 +155,8 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 if (isSaltInserted)
                 {
                     String newPassword = PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()), newUserSalt,
-                            secConfig.getAuthAlgorithm(), secConfig.getIterations());
+                            secConfig.getAuthAlgorithm(), secConfig.getIterations(),
+                            secBean.getConfigData().getSystemConfig().getEncoding());
 
                     List<String> accountData = new ArrayList<>(
                         Arrays.asList(
@@ -304,7 +305,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if (isUserAuthorized)
             {
-                
                 // delete userAccount
                 boolean isComplete = userManager.removeUserAccount(userAccount.getGuid());
 
@@ -710,8 +710,10 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 // first, change the existing password
                 // 128 character values - its possible that the reset is
                 // coming as a result of a possible compromise
-                String tmpPassword = PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()), RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength()),
-                        secConfig.getAuthAlgorithm(), secConfig.getIterations());
+                String tmpPassword = PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()),
+                        RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength()),
+                        secConfig.getAuthAlgorithm(), secConfig.getIterations(),
+                        secBean.getConfigData().getSystemConfig().getEncoding());
                 String tmpSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
 
                 if ((StringUtils.isNotEmpty(tmpPassword)) && (StringUtils.isNotEmpty(tmpSalt)))

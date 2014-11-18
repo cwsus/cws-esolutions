@@ -33,7 +33,7 @@ import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.config.xml.UserReturningAttributes;
-import com.cws.esolutions.security.config.xml.RepositoryConfiguration;
+import com.cws.esolutions.security.config.xml.RepositoryConfig;
 import com.cws.esolutions.security.config.xml.SecurityReturningAttributes;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 /**
@@ -48,7 +48,7 @@ public interface UserManager
 {
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
     static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
-    static final RepositoryConfiguration repoConfig = svcBean.getConfigData().getRepoConfig();
+    static final RepositoryConfig repoConfig = svcBean.getConfigData().getRepoConfig();
     static final UserReturningAttributes userAttributes = repoConfig.getUserAttributes();
     static final SecurityReturningAttributes securityAttributes = repoConfig.getSecurityAttributes();
 

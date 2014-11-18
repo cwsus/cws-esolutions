@@ -1,23 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <system-config>
+        <encoding>UTF-8</encoding>
+    </system-config>
+
     <security-config>
         <email-address>secadm@caspersbox.com</email-address>
-        <otpVariance />
-        <maxAttempts />
-        <iterations />
-        <passwordExpiration />
-        <passwordMinLength />
-        <passwordMaxLength />
-        <authAlgorithm />
-        <otpAlgorithm />
+        <otpVariance>3</otpVariance> <!-- maximum drift for otp authentication -->
+        <maxAttempts>3</maxAttempts> <!-- maximum number of failed authentication attempts -->
+        <iterations>65535</iterations> <!-- number of times to hash over the password -->
+        <passwordExpiration>90</passwordExpiration> <!-- how long before a password MUST be changed -->
+        <passwordMinLength>8</passwordMinLength> <!--  minimum allowed password length -->
+        <passwordMaxLength>64</passwordMaxLength> <!--  maximum allowed password length (0 or null -> no limit)-->
+        <authAlgorithm>SHA-512</authAlgorithm>
+        <otpAlgorithm>HmacSHA1</otpAlgorithm>
+        <encryptionAlgorithm>AES</encryptionAlgorithm>
+        <encryptionInstance>AES/CBC/PKCS5Padding</encryptionInstance>
         <saltLength>64</saltLength> <!-- salt string length (bigger is better) -->
         <performAudit>true</performAudit> <!-- should we audit stuff ? (default true) -->
-        <resetIdLength />
-        <smsResetEnabled />
-        <smsCodeLength />
-        <resetTimeout />
+        <resetIdLength>64</resetIdLength> <!-- reset id length (bigger is better) -->
+        <smsResetEnabled>false</smsResetEnabled> <!-- do we send the reset email AND an sms ? -->
+        <smsCodeLength>8</smsCodeLength> <!-- how long should the sms reset id be ? -->
+        <resetTimeout>30</resetTimeout> <!-- reset timeout length (minutes) -->
         <authConfig>/opt/cws/eSolutions/etc/repository.properties</authConfig>
-        <authManager />
+        <authManager>com.cws.esolutions.security.dao.userauth.impl.LDAPAuthenticator</authManager>
         <userManager>com.cws.esolutions.security.dao.usermgmt.impl.LDAPUserManager</userManager>
     </security-config>
 
@@ -25,10 +31,10 @@
     <!-- the authentication repository. the objects below -->
     <!-- are the *minimum* required to populate the user object -->
     <repositoryConfiguration>
-        <baseObjectClass>inetOrgPerson</baseObjectClass>
-        <repositoryBaseDN>dc=caspersbox,dc=com</repositoryBaseDN>
-        <repositoryUserBase>organizationalUnitName=Users,organizationName=CWS US</repositoryUserBase>
-        <repositoryRoleBase>organizationalUnitName=Groups,organizationName=CWS US</repositoryRoleBase>
+        <baseObjectClass>userProxy</baseObjectClass>
+        <repositoryBaseDN>OU=HSBCPeople,DC=InfoDir,DC=Prod,DC=HSBC</repositoryBaseDN>
+        <repositoryUserBase>OU=HSBCPeople,DC=InfoDir,DC=Prod,DC=HSBC</repositoryUserBase>
+        <repositoryRoleBase>organizationalUnitName=Groups,organizationName=CWS US,dc=caspersbox,dc=com</repositoryRoleBase>
         <userReturningAttributes>
             <commonName>cn</commonName>
             <userId>userPrincipalName</userId>
@@ -45,17 +51,55 @@
                 <attributeName>mail</attributeName>
                 <attributeName>displayName</attributeName>
                 <attributeName>telephoneNumber</attributeName>
+                <attributeName>hsbc-ad-managerEmplid</attributeName>
+                <attributeName>hsbc-ad-LineManagerName</attributeName>
             </returningAttributes>
         </userReturningAttributes>
 
-        <securityReturningAttributes />
+        <securityReturningAttributes>
+            <userPassword>userPassword</userPassword>
+            <secret>secret</secret>
+            <secQuestionOne>secQuestionOne</secQuestionOne>
+            <secQuestionTwo>secQuestionTwo</secQuestionTwo>
+            <secAnswerOne>secAnswerOne</secAnswerOne>
+            <secAnswerTwo>secAnswerTwo</secAnswerTwo>
+        </securityReturningAttributes>
     </repositoryConfiguration>
 
     <!-- only required if file-based signing is used. the keys arent used for anything else. -->
-    <key-config />
+    <key-config>
+        <keyAlgorithm>RSA</keyAlgorithm> <!-- keygen algorithm -->
+        <keySize>4096</keySize> <!-- if algorithm is DSA, this MUST be 1024: http://docs.oracle.com/javase/6/docs/technotes/guides/security/SunProviders.html -->
+        <keyDirectory>/opt/cws/eSolutions/keys</keyDirectory> <!-- this is ONLY required if you're using a file-based keymanager -->
+        <keyManager>com.cws.esolutions.security.dao.keymgmt.impl.SQLKeyManager</keyManager>
+    </key-config>
 
     <!-- only required if file-based signing is used. if this is configured then key-config MUST be configured. -->
-    <file-security-config />
+    <file-security-config>
+        <signatureAlgorithm>SHA1withRSA</signatureAlgorithm> <!-- file signature algorithm -->
+        <encryptionAlgorithm>RSA</encryptionAlgorithm> <!-- file encryption algorithm -->
+    </file-security-config>
 
-    <exception-config />
+    <exception-config>
+        <sendExceptionNotifications>false</sendExceptionNotifications> <!-- if true, configure mail props -->
+    </exception-config>
+
+    <resource-config>
+        <DataSourceManager>
+            <dsName>SecurityDataSource</dsName>
+            <datasource>jdbc:mysql://127.0.0.1/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
+            <driver>com.mysql.jdbc.Driver</driver>
+            <dsUser>appuser</dsUser>
+            <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
+            <salt>OITltocOUZjW</salt>
+        </DataSourceManager>
+        <DataSourceManager>
+            <dsName>AuditDataSource</dsName>
+            <datasource>jdbc:mysql://127.0.0.1/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
+            <driver>com.mysql.jdbc.Driver</driver>
+            <dsUser>appuser</dsUser>
+            <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
+            <salt>OITltocOUZjW</salt>
+        </DataSourceManager>
+    </resource-config>
 </configuration>

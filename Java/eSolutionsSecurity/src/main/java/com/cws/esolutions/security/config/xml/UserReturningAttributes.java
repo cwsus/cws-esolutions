@@ -17,7 +17,7 @@ package com.cws.esolutions.security.config.xml;
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security.config.xml
- * File: RepositoryConfiguration.java
+ * File: RepositoryConfig.java
  *
  * History
  *

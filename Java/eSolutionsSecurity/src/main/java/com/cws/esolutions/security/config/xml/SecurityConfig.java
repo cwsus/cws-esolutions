@@ -66,6 +66,8 @@ public final class SecurityConfig implements Serializable
     private String applicationName = null; // only required if its not already fed
     private UserAccount svcAccount = null; // service account, if necessary
     private boolean smsResetEnabled = false;
+    private String encryptionInstance = "AES";
+    private String encryptionAlgorithm = "AES";
 
     private static final long serialVersionUID = -338675198961732554L;
     private static final String CNAME = SecurityConfig.class.getName();
@@ -201,6 +203,32 @@ public final class SecurityConfig implements Serializable
         }
 
         this.otpAlgorithm = value;
+    }
+
+    public final void setEncryptionAlgorithm(final String value)
+    {
+        final String methodName = SecurityConfig.CNAME + "#setEncryptionAlgorithm(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.encryptionAlgorithm = value;
+    }
+
+    public final void setEncryptionInstance(final String value)
+    {
+        final String methodName = SecurityConfig.CNAME + "#setEncryptionInstance(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.encryptionInstance = value;
     }
 
     public final void setSaltLength(final int value)
@@ -471,6 +499,34 @@ public final class SecurityConfig implements Serializable
         }
 
         return this.otpAlgorithm;
+    }
+
+    @XmlElement(name = "encryptionAlgorithm")
+    public final String getEncryptionAlgorithm()
+    {
+        final String methodName = SecurityConfig.CNAME + "#getEncryptionAlgorithm()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.encryptionAlgorithm);
+        }
+
+        return this.encryptionAlgorithm;
+    }
+
+    @XmlElement(name = "encryptionInstance")
+    public final String getEncryptionInstance()
+    {
+        final String methodName = SecurityConfig.CNAME + "#getEncryptionInstance()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.encryptionInstance);
+        }
+
+        return this.encryptionInstance;
     }
 
     @XmlElement(name = "passwordExpiration")

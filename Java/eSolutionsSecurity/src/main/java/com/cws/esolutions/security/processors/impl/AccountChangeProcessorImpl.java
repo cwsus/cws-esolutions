@@ -117,7 +117,8 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                             reqSecurity.getPassword(),
                             userSalt,
                             secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
-                            secBean.getConfigData().getSecurityConfig().getIterations()));
+                            secBean.getConfigData().getSecurityConfig().getIterations(),
+                            secBean.getConfigData().getSystemConfig().getEncoding()));
 
                 boolean isComplete = userManager.modifyUserEmail(userAccount.getUsername(), userAccount.getEmailAddr());
 
@@ -142,7 +143,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         catch (SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
-            
+
             throw new AccountChangeException(sqx.getMessage(), sqx);
         }
         catch (AuthenticatorException ax)
@@ -247,7 +248,8 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                             reqSecurity.getPassword(),
                             userSalt,
                             secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
-                            secBean.getConfigData().getSecurityConfig().getIterations()));
+                            secBean.getConfigData().getSecurityConfig().getIterations(),
+                            secBean.getConfigData().getSystemConfig().getEncoding()));
 
                 boolean isComplete = userManager.modifyUserContact(userAccount.getUsername(),
                         new ArrayList<>(
@@ -277,7 +279,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         catch (SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
-            
+
             throw new AccountChangeException(sqx.getMessage(), sqx);
         }
         catch (AuthenticatorException ax)
@@ -405,7 +407,8 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                     reqSecurity.getPassword(),
                                     userSalt,
                                     secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
-                                    secBean.getConfigData().getSecurityConfig().getIterations()));
+                                    secBean.getConfigData().getSecurityConfig().getIterations(),
+                                    secBean.getConfigData().getSystemConfig().getEncoding()));
                     }
                 }
 
@@ -431,7 +434,8 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                             // make the modification in the user repository
                             userManager.modifyUserPassword(userAccount.getGuid(),
                                     PasswordUtils.encryptText(reqSecurity.getNewPassword(), newUserSalt,
-                                            secConfig.getAuthAlgorithm(), secConfig.getIterations()));
+                                            secConfig.getAuthAlgorithm(), secConfig.getIterations(),
+                                            secBean.getConfigData().getSystemConfig().getEncoding()));
 
                             if (DEBUG)
                             {
@@ -487,7 +491,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         catch (SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
-            
+
             throw new AccountChangeException(sqx.getMessage(), sqx);
         }
         catch (UserManagementException umx)
@@ -612,7 +616,8 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                 reqSecurity.getPassword(),
                                 userSalt,
                                 secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
-                                secBean.getConfigData().getSecurityConfig().getIterations()));
+                                secBean.getConfigData().getSecurityConfig().getIterations(),
+                                secBean.getConfigData().getSystemConfig().getEncoding()));
 
                     // ok, thats out of the way. lets keep moving.
                     String newUserSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
@@ -636,9 +641,11 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                             reqSecurity.getSecQuestionOne(),
                                             reqSecurity.getSecQuestionTwo(),
                                             PasswordUtils.encryptText(reqSecurity.getSecAnswerOne(), newUserSalt,
-                                                secConfig.getAuthAlgorithm(), secConfig.getIterations()),
+                                                secConfig.getAuthAlgorithm(), secConfig.getIterations(),
+                                                secBean.getConfigData().getSystemConfig().getEncoding()),
                                             PasswordUtils.encryptText(reqSecurity.getSecAnswerTwo(), newUserSalt,
-                                                secConfig.getAuthAlgorithm(), secConfig.getIterations()))));
+                                                secConfig.getAuthAlgorithm(), secConfig.getIterations(),
+                                                secBean.getConfigData().getSystemConfig().getEncoding()))));
 
                             if (DEBUG)
                             {
@@ -718,19 +725,19 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         catch (SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
-            
+
             throw new AccountChangeException(sqx.getMessage(), sqx);
         }
         catch (UserManagementException umx)
         {
             ERROR_RECORDER.error(umx.getMessage(), umx);
-            
+
             throw new AccountChangeException(umx.getMessage(), umx);
         }
         catch (AuthenticatorException ax)
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
-            
+
             throw new AccountChangeException(ax.getMessage(), ax);
         }
         finally
@@ -934,7 +941,8 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                             reqSecurity.getPassword(),
                             userSalt,
                             secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
-                            secBean.getConfigData().getSecurityConfig().getIterations()));
+                            secBean.getConfigData().getSecurityConfig().getIterations(),
+                            secBean.getConfigData().getSystemConfig().getEncoding()));
 
                 String secret = new String(new Base32().encode(RandomStringUtils.randomAlphanumeric(10).getBytes()));
 
@@ -962,7 +970,10 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                     }
 
                     boolean isComplete = userManager.modifyOtpSecret(userAccount.getUsername(), true,
-                        PasswordUtils.encryptText(secret, otpSalt));
+                        PasswordUtils.encryptText(secret, otpSalt,
+                                secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                                secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                                secBean.getConfigData().getSystemConfig().getEncoding()));
 
                     if (DEBUG)
                     {
@@ -1120,7 +1131,8 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                             reqSecurity.getPassword(),
                             userSalt,
                             secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
-                            secBean.getConfigData().getSecurityConfig().getIterations()));
+                            secBean.getConfigData().getSecurityConfig().getIterations(),
+                            secBean.getConfigData().getSystemConfig().getEncoding()));
 
                 // delete entries here
                 boolean isSecretRemoved = userManager.modifyOtpSecret(userAccount.getGuid(), false, null);

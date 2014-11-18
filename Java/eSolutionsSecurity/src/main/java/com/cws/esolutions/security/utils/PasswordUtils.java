@@ -26,18 +26,31 @@ package com.cws.esolutions.security.utils;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import javax.crypto.Mac;
+
 import org.slf4j.Logger;
+
 import javax.crypto.Cipher;
+
 import org.slf4j.LoggerFactory;
+
 import java.security.MessageDigest;
+
 import javax.crypto.spec.SecretKeySpec;
 import javax.crypto.BadPaddingException;
+
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.AlgorithmParameters;
+
 import javax.crypto.NoSuchPaddingException;
+
 import java.io.UnsupportedEncodingException;
+
 import javax.crypto.IllegalBlockSizeException;
+
 import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.codec.binary.Base64;
+
 import java.security.NoSuchAlgorithmException;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
@@ -64,13 +77,18 @@ public final class PasswordUtils
      * @return The encrypted string in a reversible format
      * @throws SecurityException {@link java.lang.SecurityException} if an exception occurs during processing
      */
-    public static final String encryptText(final String plainText, final String salt) throws SecurityException
+    public static final String encryptText(final String plainText, final String salt, final String algorithm, final String instance, final String encoding) throws SecurityException
     {
-        final String methodName = PasswordUtils.CNAME + "#encryptText(final String plainText, final String salt) throws SecurityException";
+        final String methodName = PasswordUtils.CNAME + "#encryptText(final String plainText, final String salt, final String algorithm, final String instance, final String encoding) throws SecurityException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", plainText);
+            DEBUGGER.debug("Value: {}", salt);
+            DEBUGGER.debug("Value: {}", algorithm);
+            DEBUGGER.debug("Value: {}", instance);
+            DEBUGGER.debug("Value: {}", encoding);
         }
 
         String encPass = null;
@@ -79,11 +97,11 @@ public final class PasswordUtils
 
         try
         {
-            SecretKeySpec sks = new SecretKeySpec(SECRET_KEY, "AES");
-            Cipher cipher = Cipher.getInstance("AES");
+            SecretKeySpec sks = new SecretKeySpec(SECRET_KEY, algorithm);
+            Cipher cipher = Cipher.getInstance(instance);
             cipher.init(Cipher.ENCRYPT_MODE, sks);
 
-            encPass = new String(Base64.encodeBase64(cipher.doFinal(new String(salt + plainText).getBytes("UTF-8"))));
+            encPass = new String(Base64.encodeBase64(cipher.doFinal(new String(salt + plainText).getBytes(encoding))));
         }
         catch (InvalidKeyException ikx)
         {
@@ -123,23 +141,28 @@ public final class PasswordUtils
      * @return The encrypted string
      * @throws SecurityException {@link java.lang.SecurityException} if an exception occurs during processing
      */
-    public static final String encryptText(final String plainText, final String salt, final String algorithm, final int iterations) throws SecurityException
+    public static final String encryptText(final String plainText, final String salt, final String instance, final int iterations, final String encoding) throws SecurityException
     {
-        final String methodName = PasswordUtils.CNAME + "#encryptText(final String plainText, final String salt, final String algorithm, final int iterations) throws SecurityException";
+        final String methodName = PasswordUtils.CNAME + "#encryptText(final String plainText, final String salt, final String algorithm, final String instance, final int iterations, final String encoding) throws SecurityException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", plainText);
+            DEBUGGER.debug("Value: {}", salt);
+            DEBUGGER.debug("Value: {}", instance);
+            DEBUGGER.debug("Value: {}", iterations);
+            DEBUGGER.debug("Value: {}", encoding);
         }
 
         String response = null;
 
         try
         {
-            MessageDigest md = MessageDigest.getInstance(algorithm);
+            MessageDigest md = MessageDigest.getInstance(instance);
             md.reset();
-            md.update(salt.getBytes("UTF-8"));
-            byte[] input = md.digest(plainText.getBytes("UTF-8"));
+            md.update(salt.getBytes(encoding));
+            byte[] input = md.digest(plainText.getBytes(encoding));
 
             for (int x = 0; x < iterations; x++)
             {
@@ -169,13 +192,18 @@ public final class PasswordUtils
      * @return The decrypted string
      * @throws SecurityException {@link java.lang.SecurityException} if an exception occurs during processing
      */
-    public static final String decryptText(final String encrypted, final int saltLength) throws SecurityException
+    public static final String decryptText(final String encrypted, final int saltLength, final String algorithm, final String instance, final String encoding) throws SecurityException
     {
-        final String methodName = PasswordUtils.CNAME + "#decryptText(final String encrypted, final int saltLength) throws SecurityException";
+        final String methodName = PasswordUtils.CNAME + "#decryptText(final String encrypted, final int saltLength, final String algorithm, final String instance, final String encoding) throws SecurityException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", encrypted);
+            DEBUGGER.debug("Value: {}", saltLength);
+            DEBUGGER.debug("Value: {}", algorithm);
+            DEBUGGER.debug("Value: {}", instance);
+            DEBUGGER.debug("Value: {}", encoding);
         }
 
         String decPass = null;
@@ -184,11 +212,12 @@ public final class PasswordUtils
 
         try
         {
-            SecretKeySpec sks = new SecretKeySpec(SECRET_KEY, "AES");
-            Cipher cipher = Cipher.getInstance("AES");
-            cipher.init(Cipher.DECRYPT_MODE, sks);
+            SecretKeySpec sks = new SecretKeySpec(SECRET_KEY, algorithm);
+            Cipher cipher = Cipher.getInstance(instance);
+            AlgorithmParameters params = cipher.getParameters();
+            cipher.init(Cipher.DECRYPT_MODE, sks, params);
 
-            decPass = new String(cipher.doFinal(Base64.decodeBase64(encrypted.getBytes("UTF-8")))).substring(saltLength);
+            decPass = new String(cipher.doFinal(Base64.decodeBase64(encrypted.getBytes(encoding)))).substring(saltLength);
         }
         catch (InvalidKeyException ikx)
         {
@@ -214,6 +243,10 @@ public final class PasswordUtils
         {
             throw new SecurityException(uex.getMessage(), uex);
         }
+        catch (InvalidAlgorithmParameterException iapx)
+        {
+            throw new SecurityException(iapx.getMessage(), iapx);
+        }
 
         return decPass;
     }
@@ -225,20 +258,22 @@ public final class PasswordUtils
      * @return The base64-encoded string
      * @throws SecurityException {@link java.lang.SecurityException} if an exception occurs during processing
      */
-    public static final String base64Encode(final String text) throws SecurityException
+    public static final String base64Encode(final String text, final String encoding) throws SecurityException
     {
-        final String methodName = PasswordUtils.CNAME + "#base64Encode(final String text) throws SecurityException";
+        final String methodName = PasswordUtils.CNAME + "#base64Encode(final String text, final String encoding) throws SecurityException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", text);
+            DEBUGGER.debug("Value: {}", encoding);
         }
 
         String response = null;
 
         try
         {
-            response = Base64.encodeBase64String(text.getBytes("UTF-8"));
+            response = Base64.encodeBase64String(text.getBytes(encoding));
         }
         catch (UnsupportedEncodingException uex)
         {
@@ -255,20 +290,22 @@ public final class PasswordUtils
      * @return The base64-decoded string
      * @throws SecurityException {@link java.lang.SecurityException} if an exception occurs during processing
      */
-    public static final String base64Decode(final String text) throws SecurityException
+    public static final String base64Decode(final String text, final String encoding) throws SecurityException
     {
-        final String methodName = PasswordUtils.CNAME + "#base64Decode(final String text) throws SecurityException";
+        final String methodName = PasswordUtils.CNAME + "#base64Decode(final String text, final String encoding) throws SecurityException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", text);
+            DEBUGGER.debug("Value: {}", encoding);
         }
 
         String response = null;
 
         try
         {
-            response = new String(Base64.decodeBase64(text.getBytes("UTF-8")));
+            response = new String(Base64.decodeBase64(text.getBytes(encoding)));
         }
         catch (UnsupportedEncodingException uex)
         {
@@ -288,15 +325,18 @@ public final class PasswordUtils
      * @return <code>true</code> if successful, <code>false</code> otherwise
      * @throws SecurityException {@link java.lang.SecurityException} if an exception occurs during processing
      */
-    public static final boolean validateOtpValue(final int variance, final String algorithm, final String secret, final int code) throws SecurityException
+    public static final boolean validateOtpValue(final int variance, final String algorithm, final String instance, final String secret, final int code) throws SecurityException
     {
-        final String methodName = PasswordUtils.CNAME + "#validateOtpValue(final int variance, final String algorithm, final String secret, final int code) throws SecurityException";
+        final String methodName = PasswordUtils.CNAME + "#validateOtpValue(final int variance, final String algorithm, final String instance, final String secret, final int code) throws SecurityException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("int: {}", variance);
-            DEBUGGER.debug("String: {}", algorithm);
+            DEBUGGER.debug("Value: {}", variance);
+            DEBUGGER.debug("Value: {}", algorithm);
+            DEBUGGER.debug("Value: {}", instance);
+            DEBUGGER.debug("Value: {}", secret);
+            DEBUGGER.debug("Value: {}", code);
         }
 
         long truncatedHash = 0;
@@ -319,7 +359,7 @@ public final class PasswordUtils
                 data[i] = (byte) timeIndex;
             }
 
-            Mac mac = Mac.getInstance(algorithm);
+            Mac mac = Mac.getInstance(instance);
             mac.init(signKey);
             byte[] hash = mac.doFinal(data);
             int offset = hash[20 - 1] & 0xF;

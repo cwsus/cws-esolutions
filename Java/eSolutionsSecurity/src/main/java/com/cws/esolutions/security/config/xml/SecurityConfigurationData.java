@@ -45,10 +45,12 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 public final class SecurityConfigurationData implements Serializable
 {
     private KeyConfig keyConfig = null;
+    private SystemConfig systemConfig = null;
+    private RepositoryConfig repoConfig = null;
     private SecurityConfig securityConfig = null;
     private ResourceConfig resourceConfig = null;
     private ExceptionConfig exceptionConfig = null;
-    private RepositoryConfiguration repoConfig = null;
+    private PasswordRepositoryConfig passwordRepo = null;
     private FileSecurityConfig fileSecurityConfig = null;
 
     private static final long serialVersionUID = -795898942156658458L;
@@ -58,9 +60,9 @@ public final class SecurityConfigurationData implements Serializable
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
 
-    public final void setSecurityConfig(final SecurityConfig value)
+    public final void setSystemConfig(final SystemConfig value)
     {
-        final String methodName = SecurityConfigurationData.CNAME + "#setHostName(final SecurityConfig value)";
+        final String methodName = SecurityConfigurationData.CNAME + "#setSystemConfig(final SystemConfig value)";
 
         if (DEBUG)
         {
@@ -68,32 +70,45 @@ public final class SecurityConfigurationData implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
         
+        this.systemConfig = value;
+    }
+
+    public final void setSecurityConfig(final SecurityConfig value)
+    {
+        final String methodName = SecurityConfigurationData.CNAME + "#setSecurityConfig(final SecurityConfig value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
         this.securityConfig = value;
     }
 
-    public final void setRepoConfig(final RepositoryConfiguration value)
+    public final void setRepoConfig(final RepositoryConfig value)
     {
-        final String methodName = SecurityConfigurationData.CNAME + "#setRepoConfig(final RepositoryConfiguration value)";
+        final String methodName = SecurityConfigurationData.CNAME + "#setRepoConfig(final RepositoryConfig value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", value);
         }
-        
+
         this.repoConfig = value;
     }
 
     public final void setResourceConfig(final ResourceConfig value)
     {
-        final String methodName = SecurityConfigurationData.CNAME + "#setHostName(final ResourceConfig value)";
+        final String methodName = SecurityConfigurationData.CNAME + "#setResourceConfig(final ResourceConfig value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", value);
         }
-        
+
         this.resourceConfig = value;
     }
 
@@ -123,6 +138,19 @@ public final class SecurityConfigurationData implements Serializable
         this.exceptionConfig = value;
     }
 
+    public final void setPasswordRepo(final PasswordRepositoryConfig value)
+    {
+        final String methodName = SecurityConfigurationData.CNAME + "#setPasswordRepo(final PasswordRepositoryConfig value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.passwordRepo = value;
+    }
+
     public final void setFileSecurityConfig(final FileSecurityConfig value)
     {
         final String methodName = SecurityConfigurationData.CNAME + "#setFileSecurityConfig(final ExceptionConfig value)";
@@ -136,6 +164,20 @@ public final class SecurityConfigurationData implements Serializable
         this.fileSecurityConfig = value;
     }
 
+    @XmlElement(name = "system-config")
+    public final SystemConfig getSystemConfig()
+    {
+        final String methodName = SecurityConfigurationData.CNAME + "#getSystemConfig()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.systemConfig);
+        }
+
+        return this.systemConfig;
+    }
+
     @XmlElement(name = "security-config")
     public final SecurityConfig getSecurityConfig()
     {
@@ -146,12 +188,12 @@ public final class SecurityConfigurationData implements Serializable
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", this.securityConfig);
         }
-        
+
         return this.securityConfig;
     }
 
     @XmlElement(name = "repositoryConfiguration")
-    public final RepositoryConfiguration getRepoConfig()
+    public final RepositoryConfig getRepoConfig()
     {
         final String methodName = SecurityConfigurationData.CNAME + "#getRepoConfig()";
 
@@ -160,7 +202,7 @@ public final class SecurityConfigurationData implements Serializable
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", this.repoConfig);
         }
-        
+
         return this.repoConfig;
     }
 
@@ -174,7 +216,7 @@ public final class SecurityConfigurationData implements Serializable
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", this.resourceConfig);
         }
-        
+
         return this.resourceConfig;
     }
 
@@ -188,7 +230,7 @@ public final class SecurityConfigurationData implements Serializable
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", this.keyConfig);
         }
-        
+
         return this.keyConfig;
     }
 
@@ -202,7 +244,7 @@ public final class SecurityConfigurationData implements Serializable
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", this.exceptionConfig);
         }
-        
+
         return this.exceptionConfig;
     }
 
@@ -218,6 +260,20 @@ public final class SecurityConfigurationData implements Serializable
         }
 
         return this.fileSecurityConfig;
+    }
+
+    @XmlElement(name = "password-repository")
+    public final PasswordRepositoryConfig getPasswordRepo()
+    {
+        final String methodName = SecurityConfigurationData.CNAME + "#getPasswordRepo()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.passwordRepo);
+        }
+
+        return this.passwordRepo;
     }
 
     @Override

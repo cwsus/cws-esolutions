@@ -17,7 +17,7 @@ package com.cws.esolutions.security.config.xml;
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security.config.xml
- * File: RepositoryConfiguration.java
+ * File: RepositoryConfig.java
  *
  * History
  *
@@ -42,7 +42,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 @XmlType(name = "repositoryConfiguration")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class RepositoryConfiguration implements Serializable
+public final class RepositoryConfig implements Serializable
 {
     private String baseObject = null;
     private String repositoryBaseDN = null;
@@ -54,7 +54,7 @@ public final class RepositoryConfiguration implements Serializable
     private String passwordFile = System.getProperty("user.home") + "/etc/repository.properties";
 
     private static final long serialVersionUID = -4767557511096921048L;
-    private static final String CNAME = RepositoryConfiguration.class.getName();
+    private static final String CNAME = RepositoryConfig.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -62,7 +62,7 @@ public final class RepositoryConfiguration implements Serializable
 
     public final void setSaltFile(final String value)
     {
-        final String methodName = RepositoryConfiguration.CNAME + "#setSaltFile(final String value)";
+        final String methodName = RepositoryConfig.CNAME + "#setSaltFile(final String value)";
 
         if (DEBUG)
         {
@@ -75,7 +75,7 @@ public final class RepositoryConfiguration implements Serializable
 
     public final void setPasswordFile(final String value)
     {
-        final String methodName = RepositoryConfiguration.CNAME + "#setPasswordFile(final String value)";
+        final String methodName = RepositoryConfig.CNAME + "#setPasswordFile(final String value)";
 
         if (DEBUG)
         {
@@ -88,7 +88,7 @@ public final class RepositoryConfiguration implements Serializable
 
     public final void setBaseObject(final String value)
     {
-        final String methodName = RepositoryConfiguration.CNAME + "#setBaseObject(final String value)";
+        final String methodName = RepositoryConfig.CNAME + "#setBaseObject(final String value)";
 
         if (DEBUG)
         {
@@ -101,7 +101,7 @@ public final class RepositoryConfiguration implements Serializable
 
     public final void setRepositoryBaseDN(final String value)
     {
-        final String methodName = RepositoryConfiguration.CNAME + "#setRepositoryBaseDN(final String value)";
+        final String methodName = RepositoryConfig.CNAME + "#setRepositoryBaseDN(final String value)";
 
         if (DEBUG)
         {
@@ -114,7 +114,7 @@ public final class RepositoryConfiguration implements Serializable
 
     public final void setRepositoryUserBase(final String value)
     {
-        final String methodName = RepositoryConfiguration.CNAME + "#setRepositoryUserBase(final String value)";
+        final String methodName = RepositoryConfig.CNAME + "#setRepositoryUserBase(final String value)";
 
         if (DEBUG)
         {
@@ -127,7 +127,7 @@ public final class RepositoryConfiguration implements Serializable
 
     public final void setRepositoryRoleBase(final String value)
     {
-        final String methodName = RepositoryConfiguration.CNAME + "#setRepositoryRoleBase(final String value)";
+        final String methodName = RepositoryConfig.CNAME + "#setRepositoryRoleBase(final String value)";
 
         if (DEBUG)
         {
@@ -140,7 +140,7 @@ public final class RepositoryConfiguration implements Serializable
 
     public final void setSecurityAttributes(final SecurityReturningAttributes value)
     {
-        final String methodName = RepositoryConfiguration.CNAME + "#setSecurityAttributes(final SecurityReturningAttributes value)";
+        final String methodName = RepositoryConfig.CNAME + "#setSecurityAttributes(final SecurityReturningAttributes value)";
 
         if (DEBUG)
         {
@@ -153,7 +153,7 @@ public final class RepositoryConfiguration implements Serializable
 
     public final void setUserAttributes(final UserReturningAttributes value)
     {
-        final String methodName = RepositoryConfiguration.CNAME + "#setUserAttributes(final UserReturningAttributes value)";
+        final String methodName = RepositoryConfig.CNAME + "#setUserAttributes(final UserReturningAttributes value)";
 
         if (DEBUG)
         {
@@ -167,7 +167,7 @@ public final class RepositoryConfiguration implements Serializable
     @XmlElement(name = "passwordFile")
     public final String getPasswordFile()
     {
-        final String methodName = RepositoryConfiguration.CNAME + "#getPasswordFile()";
+        final String methodName = RepositoryConfig.CNAME + "#getPasswordFile()";
 
         if (DEBUG)
         {
@@ -181,7 +181,7 @@ public final class RepositoryConfiguration implements Serializable
     @XmlElement(name = "saltFile")
     public final String getSaltFile()
     {
-        final String methodName = RepositoryConfiguration.CNAME + "#getSaltFile()";
+        final String methodName = RepositoryConfig.CNAME + "#getSaltFile()";
 
         if (DEBUG)
         {
@@ -195,7 +195,7 @@ public final class RepositoryConfiguration implements Serializable
     @XmlElement(name = "baseObjectClass")
     public final String getBaseObject()
     {
-        final String methodName = RepositoryConfiguration.CNAME + "#getBaseObject()";
+        final String methodName = RepositoryConfig.CNAME + "#getBaseObject()";
 
         if (DEBUG)
         {
@@ -209,7 +209,7 @@ public final class RepositoryConfiguration implements Serializable
     @XmlElement(name = "repositoryBaseDN")
     public final String getRepositoryBaseDN()
     {
-        final String methodName = RepositoryConfiguration.CNAME + "#getRepositoryBaseDN()";
+        final String methodName = RepositoryConfig.CNAME + "#getRepositoryBaseDN()";
 
         if (DEBUG)
         {
@@ -223,7 +223,7 @@ public final class RepositoryConfiguration implements Serializable
     @XmlElement(name = "repositoryUserBase")
     public final String getRepositoryUserBase()
     {
-        final String methodName = RepositoryConfiguration.CNAME + "#getRepositoryUserBase(final String value)";
+        final String methodName = RepositoryConfig.CNAME + "#getRepositoryUserBase(final String value)";
 
         if (DEBUG)
         {
@@ -237,7 +237,7 @@ public final class RepositoryConfiguration implements Serializable
     @XmlElement(name = "repositoryRoleBase")
     public final String getRepositoryRoleBase()
     {
-        final String methodName = RepositoryConfiguration.CNAME + "#getRepositoryRoleBase()";
+        final String methodName = RepositoryConfig.CNAME + "#getRepositoryRoleBase()";
 
         if (DEBUG)
         {
@@ -251,7 +251,7 @@ public final class RepositoryConfiguration implements Serializable
     @XmlElement(name = "userReturningAttributes")
     public final UserReturningAttributes getUserAttributes()
     {
-        final String methodName = RepositoryConfiguration.CNAME + "#getUserAttributes()";
+        final String methodName = RepositoryConfig.CNAME + "#getUserAttributes()";
 
         if (DEBUG)
         {
@@ -265,7 +265,7 @@ public final class RepositoryConfiguration implements Serializable
     @XmlElement(name = "securityReturningAttributes")
     public final SecurityReturningAttributes getSecurityAttributes()
     {
-        final String methodName = RepositoryConfiguration.CNAME + "#getSecurityAttributes()";
+        final String methodName = RepositoryConfig.CNAME + "#getSecurityAttributes()";
 
         if (DEBUG)
         {
@@ -279,7 +279,7 @@ public final class RepositoryConfiguration implements Serializable
     @Override
     public final String toString()
     {
-        final String methodName = RepositoryConfiguration.CNAME + "#toString()";
+        final String methodName = RepositoryConfig.CNAME + "#toString()";
 
         if (DEBUG)
         {

@@ -67,7 +67,7 @@ public class AccountControlProcessorImplTest
             testAccount.setEmailAddr("junit@test.com");
             testAccount.setGroups(new String[] { "DNS Operator" });
 
-            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml");
+            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
         catch (Exception ex)
         {

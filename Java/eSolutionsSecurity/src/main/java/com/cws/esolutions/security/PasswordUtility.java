@@ -16,6 +16,8 @@
 package com.cws.esolutions.security;
 
 import java.io.File;
+import java.util.List;
+import java.util.Arrays;
 import org.slf4j.Logger;
 import java.io.IOException;
 import org.slf4j.LoggerFactory;
@@ -32,12 +34,11 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.lang.RandomStringUtils;
 
-import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.utils.PasswordUtils;
-import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.config.xml.SystemConfig;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.exception.SecurityServiceException;
-import com.cws.esolutions.security.config.xml.RepositoryConfiguration;
+import com.cws.esolutions.security.config.xml.PasswordRepositoryConfig;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 /*
@@ -107,11 +108,18 @@ public class PasswordUtility
             .isRequired(false)
             .create();
 
+        Option writeToFile = OptionBuilder.withLongOpt("store")
+                .hasArg(false)
+                .withDescription("Store the entry in the data files")
+                .isRequired(false)
+                .create();
+
         if (DEBUG)
         {
             DEBUGGER.debug("Option entryNameOption: {}", entryNameOption);
             DEBUGGER.debug("Option usernameOption: {}", usernameOption);
             DEBUGGER.debug("Option passwordOption: {}", passwordOption);
+            DEBUGGER.debug("Option writeToFile: {}", writeToFile);
         }
 
         Option encryptOption = OptionBuilder.withLongOpt("encrypt")
@@ -119,6 +127,7 @@ public class PasswordUtility
             .withArgName("entry")
             .withArgName("username")
             .withArgName("password")
+            .withArgName("store")
             .withDescription("Encrypt the provided string")
             .isRequired(false)
             .create();
@@ -132,7 +141,8 @@ public class PasswordUtility
             .addOption(encryptOption)
             .addOption(entryNameOption)
             .addOption(usernameOption)
-            .addOption(passwordOption);
+            .addOption(passwordOption)
+            .addOption(writeToFile);
 
         if (DEBUG)
         {
@@ -141,6 +151,8 @@ public class PasswordUtility
 
         Option decryptOption = OptionBuilder.withLongOpt("decrypt")
             .hasArg(false)
+            .withArgName("entry")
+            .withArgName("username")
             .withDescription("Decrypt the provided string")
             .isRequired(false)
             .create();
@@ -152,7 +164,8 @@ public class PasswordUtility
 
         OptionGroup decryptOptionsGroup = new OptionGroup()
             .addOption(decryptOption)
-            .addOption(entryNameOption);
+            .addOption(entryNameOption)
+            .addOption(usernameOption);
 
         if (DEBUG)
         {
@@ -198,7 +211,7 @@ public class PasswordUtility
             {
                 DEBUGGER.debug("CommandLineParser parser: {}", parser);
                 DEBUGGER.debug("CommandLine commandLine: {}", commandLine);
-                DEBUGGER.debug("CommandLine commandLine.getOptions(): {}", commandLine.getOptions());
+                DEBUGGER.debug("CommandLine commandLine.getOptions(): {}", (Object[]) commandLine.getOptions());
                 DEBUGGER.debug("CommandLine commandLine.getArgList(): {}", commandLine.getArgList());
             }
 
@@ -213,20 +226,22 @@ public class PasswordUtility
 
             final SecurityConfigurationData secConfigData = PasswordUtility.svcBean.getConfigData();
             final SecurityConfig secConfig = secConfigData.getSecurityConfig();
-            final RepositoryConfiguration repoConfig = secConfigData.getRepoConfig();
+            final PasswordRepositoryConfig repoConfig = secConfigData.getPasswordRepo();
+            final SystemConfig systemConfig = secConfigData.getSystemConfig();
 
             if (DEBUG)
             {
                 DEBUGGER.debug("SecurityConfigurationData secConfig: {}", secConfigData);
                 DEBUGGER.debug("SecurityConfig secConfig: {}", secConfig);
-                DEBUGGER.debug("RepositoryConfiguration secConfig: {}", repoConfig);
+                DEBUGGER.debug("RepositoryConfig secConfig: {}", repoConfig);
+                DEBUGGER.debug("SystemConfig systemConfig: {}", systemConfig);
             }
 
             if (commandLine.hasOption("encrypt"))
             {
-                String entryName = (String) commandLine.getOptionValue("entry");
-                String username = (String) commandLine.getOptionValue("username");
-                String password = (String) commandLine.getOptionValue("password");
+                String entryName = commandLine.getOptionValue("entry");
+                String username = commandLine.getOptionValue("username");
+                String password = commandLine.getOptionValue("password");
                 int length = (commandLine.hasOption("iterations")) ? Integer.parseInt(commandLine.getOptionValue("length")) : secConfig.getSaltLength();
 
                 if (DEBUG)
@@ -238,64 +253,245 @@ public class PasswordUtility
                 }
 
                 final String salt = RandomStringUtils.randomAlphanumeric(length);
-                final String encrypted = PasswordUtils.encryptText(password, salt);
+                final String encodedUserName = PasswordUtils.base64Encode(username, systemConfig.getEncoding());
+                final String encrypted = PasswordUtils.encryptText(password, salt, secConfig.getEncryptionAlgorithm(),
+                        secConfig.getEncryptionInstance(), systemConfig.getEncoding());
 
                 if (DEBUG)
                 {
                     DEBUGGER.debug("String salt: {}", salt);
+                    DEBUGGER.debug("String encodedUserName: {}", encodedUserName);
                     DEBUGGER.debug("String encrypted: {}", encrypted);
                 }
 
-                if (StringUtils.isNotBlank(repoConfig.getPasswordFile()))
+                if (commandLine.hasOption("store"))
                 {
-                    try
+                    if (StringUtils.isNotBlank(repoConfig.getPasswordFile()))
                     {
-                        File passwordFile = FileUtils.getFile(repoConfig.getPasswordFile());
-                        File saltFile = FileUtils.getFile(repoConfig.getSaltFile());
-
-                        if (DEBUG)
+                        try
                         {
-                            DEBUGGER.debug("File passwordFile: {}", passwordFile);
-                            DEBUGGER.debug("File saltFile: {}", saltFile);
-                        }
+                            File passwordFile = FileUtils.getFile(repoConfig.getPasswordFile());
+                            File saltFile = FileUtils.getFile(repoConfig.getSaltFile());
 
-                        new File(passwordFile.getPath()).mkdirs();
-                        new File(saltFile.getPath()).mkdirs();
-                        passwordFile.createNewFile();
-                        saltFile.createNewFile();
-                    }
-                    catch (IOException iox)
-                    {
-                        ERROR_RECORDER.error(iox.getMessage(), iox);
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("File passwordFile: {}", passwordFile);
+                                DEBUGGER.debug("File saltFile: {}", saltFile);
+                            }
+
+                            new File(passwordFile.getParent()).mkdirs();
+                            new File(saltFile.getParent()).mkdirs();
+
+                            boolean saltFileExists = (saltFile.exists()) ? true : saltFile.createNewFile();
+
+                            // write the salt out first
+                            if (!(saltFileExists))
+                            {
+                                throw new IOException("Unable to create salt file");
+                            }
+
+                            boolean passwordFileExists = (passwordFile.exists()) ? true : passwordFile.createNewFile();
+
+                            if (!(passwordFileExists))
+                            {
+                                throw new IOException("Unable to create password file");                            
+                            }
+
+                            FileUtils.writeStringToFile(saltFile, entryName + "," + encodedUserName + "," + salt + System.getProperty("line.separator"), true);
+                            FileUtils.writeStringToFile(passwordFile, entryName + "," + encodedUserName + "," + encrypted + System.getProperty("line.separator"), true);
+                        }
+                        catch (IOException iox)
+                        {
+                            ERROR_RECORDER.error(iox.getMessage(), iox);
+                        }
                     }
                 }
 
                 System.out.println("Entry Name: " + entryName + "; Username: " + username + "; Plain Text: " + password + "; Salt: " + salt + "; Encrypted: " + encrypted);
             }
-            else if (commandLine.hasOption("decrypt"))
+
+            if (commandLine.hasOption("decrypt"))
             {
-                String encrypted = (String) commandLine.getArgList().get(0);
-                int length = encrypted.length();
+                String saltEntryName = null;
+                String passwordEntryName = null;
+                String saltEntryUsername = null;
+                String saltEntryPassword = null;
+                String passwordEntryUsername = null;
+                String passwordEntryPassword = null;
 
-                if (!(commandLine.hasOption("length")))
+                if (StringUtils.isEmpty(commandLine.getOptionValue("entry")))
                 {
-                    HelpFormatter formatter = new HelpFormatter();
-                    formatter.printHelp(PasswordUtility.CNAME, options, true);
-
-                    return;
+                    throw new ParseException("no entry provided to decrypt");
                 }
 
-                System.out.println("Encrypted: " + commandLine.getArgList().get(0) + ", Decrypted: " +
-                        PasswordUtils.decryptText((String) commandLine.getArgList().get(0), length));
+                if (StringUtils.isEmpty(commandLine.getOptionValue("username")))
+                {
+                    throw new ParseException("no entry provided to decrypt");
+                }
+
+                String entryName = commandLine.getOptionValue("entry");
+                String username = commandLine.getOptionValue("username");
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("String entryName: {}", entryName);
+                    DEBUGGER.debug("String username: {}", username);
+                }
+
+                File passwordFile = FileUtils.getFile(repoConfig.getPasswordFile());
+                File saltFile = FileUtils.getFile(repoConfig.getSaltFile());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("File passwordFile: {}", passwordFile);
+                    DEBUGGER.debug("File saltFile: {}", saltFile);
+                }
+
+                if (!(saltFile.canRead()))
+                {
+                    throw new IOException("Unable to read configured salt file");
+                }
+
+                if (!(passwordFile.canRead()))
+                {
+                    throw new IOException("Unable to read configured password file");
+                }
+
+                List<String> saltArray = FileUtils.readLines(saltFile, systemConfig.getEncoding());
+                List<String> passwordArray = FileUtils.readLines(passwordFile, systemConfig.getEncoding());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("List<String> saltArray: {}", saltArray);
+                    DEBUGGER.debug("List<String> passwordArray: {}", passwordArray);
+                }
+
+                if (saltArray.isEmpty())
+                {
+                    throw new SecurityException("No entries were loaded from the configured password file");
+                }
+
+                if (passwordArray.isEmpty())
+                {
+                    throw new SecurityException("No entries were loaded from the configured salt file");
+                }
+
+                for (String saltEntry : saltArray)
+                {
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("String saltEntry: {}", saltEntry);
+                    }
+
+                    List<String> saltEntryData = Arrays.asList(saltEntry.split(","));
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("List<String> saltEntryData: {}", saltEntryData);
+                    }
+
+                    if (saltEntryData.contains(entryName))
+                    {
+                        // pull out the entry
+                        saltEntryName = saltEntryData.get(0).trim();
+                        String encodedSaltEntryUsername = saltEntryData.get(1).trim();
+                        saltEntryPassword = saltEntryData.get(2).trim();
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("String saltEntryName: {}", saltEntryName);
+                            DEBUGGER.debug("String encodedSaltEntryUsername: {}", encodedSaltEntryUsername);
+                            DEBUGGER.debug("String saltEntryPassword: {}", saltEntryPassword);
+                        }
+
+                        saltEntryUsername = PasswordUtils.base64Decode(encodedSaltEntryUsername, systemConfig.getEncoding());
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("String saltEntryName: {}", saltEntryName);
+                            DEBUGGER.debug("String saltEntryUsername: {}", saltEntryUsername);
+                            DEBUGGER.debug("String saltEntryPassword: {}", saltEntryPassword);
+                        }
+
+                        break;
+                    }
+                }
+
+                for (String passwordEntry : passwordArray)
+                {
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("String passwordEntry: {}", passwordEntry);
+                    }
+
+                    List<String> passwordEntryData = Arrays.asList(passwordEntry.split(","));
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("List<String> passwordEntryData: {}", passwordEntryData);
+                    }
+
+                    if (passwordEntryData.contains(entryName))
+                    {
+                        passwordEntryName = passwordEntryData.get(0).trim();
+                        String encodedPasswordEntryUsername = passwordEntryData.get(1).trim();
+                        passwordEntryPassword = passwordEntryData.get(2).trim();
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("String saltEntryName: {}", saltEntryName);
+                            DEBUGGER.debug("String encodedPasswordEntryUsername: {}", encodedPasswordEntryUsername);
+                            DEBUGGER.debug("String passwordEntryPassword: {}", passwordEntryPassword);
+                        }
+
+                        passwordEntryUsername = PasswordUtils.base64Decode(encodedPasswordEntryUsername, systemConfig.getEncoding());
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("String passwordEntryName: {}", passwordEntryName);
+                            DEBUGGER.debug("String passwordEntryUsername: {}", passwordEntryUsername);
+                            DEBUGGER.debug("String passwordEntryPassword: {}", passwordEntryPassword);
+                        }
+
+                        break;
+                    }
+                }
+
+                if ((StringUtils.isEmpty(saltEntryName)) || (StringUtils.isEmpty(passwordEntryName)))
+                {
+                    throw new SecurityException("No entries were found that matched the provided information");
+                }
+
+                if ((!(StringUtils.equals(saltEntryName, passwordEntryName))) ||
+                        (!(StringUtils.equals(saltEntryUsername, passwordEntryUsername))))
+                {
+                    throw new SecurityException("Salt entry does not match password entry");
+                }
+
+                String decrypted = PasswordUtils.decryptText(passwordEntryPassword, saltEntryPassword.length(),
+                        secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), systemConfig.getEncoding());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("String decrypted: {}", decrypted);
+                }
+
+                System.out.println("Entry Name: " + entryName + "; Username: " + username + "; Plain Text: " + decrypted + "; Salt: " + saltEntryPassword + "; Encrypted: " + passwordEntryPassword);
             }
             else if (commandLine.hasOption("encode"))
             {
-                System.out.println(PasswordUtils.base64Encode((String) commandLine.getArgList().get(0)));
+                System.out.println(PasswordUtils.base64Encode((String) commandLine.getArgList().get(0), systemConfig.getEncoding()));
             }
             else if (commandLine.hasOption("decode"))
             {
-                System.out.println(PasswordUtils.base64Decode((String) commandLine.getArgList().get(0)));
+                System.out.println(PasswordUtils.base64Decode((String) commandLine.getArgList().get(0), systemConfig.getEncoding()));
             }
+        }
+        catch (IOException iox)
+        {
+            ERROR_RECORDER.error(iox.getMessage(), iox);
+
+            System.err.println("An error occurred during processing: " + iox.getMessage());
         }
         catch (ParseException px)
         {

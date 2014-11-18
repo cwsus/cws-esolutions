@@ -39,7 +39,9 @@ import org.apache.commons.mail.DefaultAuthenticator;
 
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.security.config.xml.SystemConfig;
 import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 import com.cws.esolutions.security.dao.usermgmt.factory.UserManagerFactory;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
@@ -50,6 +52,8 @@ public class PasswordExpirationNotifier implements Job
 {
     private static final String CNAME = PasswordExpirationNotifier.class.getName();
     private static final SecurityServiceBean bean = SecurityServiceBean.getInstance();
+    private static final SystemConfig systemConfig = bean.getConfigData().getSystemConfig();
+    private static final SecurityConfig secConfig = bean.getConfigData().getSecurityConfig();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -135,7 +139,12 @@ public class PasswordExpirationNotifier implements Job
                     if ((boolean) jobData.get("isAuthenticated"))
                     {
                         email.setAuthenticator(new DefaultAuthenticator((String) jobData.get("username"),
-                                PasswordUtils.decryptText((String) jobData.get("password"), ((String) jobData.get("salt")).length())));
+                                PasswordUtils.decryptText(
+                                        (String) jobData.get("password"),
+                                        ((String) jobData.get("salt")).length(),
+                                        secConfig.getEncryptionAlgorithm(),
+                                        secConfig.getEncryptionInstance(),
+                                        systemConfig.getEncoding())));
                     }
 
                     email.setFrom((String) jobData.get("emailAddr"));

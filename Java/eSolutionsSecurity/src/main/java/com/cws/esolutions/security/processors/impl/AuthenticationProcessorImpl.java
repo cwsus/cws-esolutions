@@ -108,8 +108,9 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     PasswordUtils.encryptText(
                             authSec.getPassword(),
                         userSalt,
-                        bean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
-                        bean.getConfigData().getSecurityConfig().getIterations()));
+                        secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
+                        secBean.getConfigData().getSecurityConfig().getIterations(),
+                        secBean.getConfigData().getSystemConfig().getEncoding()));
 
             if (DEBUG)
             {
@@ -304,7 +305,11 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             }
 
             boolean isAuthorized = PasswordUtils.validateOtpValue(secConfig.getOtpVariance(), secConfig.getOtpAlgorithm(),
-                    PasswordUtils.decryptText(otpSecret, otpSalt.length()),
+                    PasswordUtils.decryptText(otpSecret, otpSalt.length(),
+                            secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                            secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                            secBean.getConfigData().getSystemConfig().getEncoding()),
+                    secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
                     authSec.getOtpValue());
 
             if (DEBUG)

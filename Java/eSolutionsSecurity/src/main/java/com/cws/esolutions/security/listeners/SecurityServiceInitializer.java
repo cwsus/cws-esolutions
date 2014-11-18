@@ -163,7 +163,11 @@ public class SecurityServiceInitializer
                             dataSource.setUrl(mgr.getDataSource());
                             dataSource.setUsername(mgr.getDsUser());
                             dataSource.setConnectionProperties(sBuilder.toString());
-                            dataSource.setPassword(PasswordUtils.decryptText(mgr.getDsPass(), mgr.getSalt().length()));
+                            dataSource.setPassword(PasswordUtils.decryptText(
+                                    mgr.getDsPass(), mgr.getSalt().length(),
+                                    configData.getSecurityConfig().getEncryptionAlgorithm(),
+                                    configData.getSecurityConfig().getEncryptionInstance(),
+                                    configData.getSystemConfig().getEncoding()));
 
                             if (DEBUG)
                             {
