@@ -66,6 +66,11 @@
         </securityReturningAttributes>
     </repositoryConfiguration>
 
+    <password-repository>
+        <passwordFile>/opt/cws/eSolutions/etc/password.properties</passwordFile>
+        <saltFile>/opt/cws/eSolutions/etc/salt.properties</saltFile>
+    </password-repository>
+
     <!-- only required if file-based signing is used. the keys arent used for anything else. -->
     <key-config>
         <keyAlgorithm>RSA</keyAlgorithm> <!-- keygen algorithm -->
