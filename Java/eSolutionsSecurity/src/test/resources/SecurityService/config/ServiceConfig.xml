@@ -32,12 +32,12 @@
     <!-- are the *minimum* required to populate the user object -->
     <repositoryConfiguration>
         <baseObjectClass>userProxy</baseObjectClass>
-        <repositoryBaseDN>OU=HSBCPeople,DC=InfoDir,DC=Prod,DC=HSBC</repositoryBaseDN>
-        <repositoryUserBase>OU=HSBCPeople,DC=InfoDir,DC=Prod,DC=HSBC</repositoryUserBase>
+        <repositoryBaseDN>organizationName=CWS US,dc=caspersbox,dc=com</repositoryBaseDN>
+        <repositoryUserBase>organizationName=CWS US,dc=caspersbox,dc=com</repositoryUserBase>
         <repositoryRoleBase>organizationalUnitName=Groups,organizationName=CWS US,dc=caspersbox,dc=com</repositoryRoleBase>
         <userReturningAttributes>
             <commonName>cn</commonName>
-            <userId>userPrincipalName</userId>
+            <userId>uid</userId>
             <surname>sn</surname>
             <givenName>givenName</givenName>
             <emailAddr>mail</emailAddr>
@@ -45,14 +45,19 @@
             <telephoneNumber>telephoneNumber</telephoneNumber>
             <returningAttributes>
                 <attributeName>cn</attributeName>
-                <attributeName>userPrincipalName</attributeName>
+                <attributeName>uid</attributeName>
                 <attributeName>sn</attributeName>
                 <attributeName>givenName</attributeName>
-                <attributeName>mail</attributeName>
                 <attributeName>displayName</attributeName>
+                <attributeName>cwsrole</attributeName>
+                <attributeName>cwsfailedpwdcount</attributeName>
+                <attributeName>cwslastlogin</attributeName>
+                <attributeName>cwsexpirydate</attributeName>
+                <attributeName>cwsissuspended</attributeName>
+                <attributeName>cwsisolrsetup</attributeName>
+                <attributeName>cwsisolrlocked</attributeName>
                 <attributeName>telephoneNumber</attributeName>
-                <attributeName>hsbc-ad-managerEmplid</attributeName>
-                <attributeName>hsbc-ad-LineManagerName</attributeName>
+                <attributeName>pager</attributeName>
             </returningAttributes>
         </userReturningAttributes>
 
