@@ -29,7 +29,7 @@ package com.cws.esolutions.security;
  * @author khuntly
  * @version 1.0
  */
-public class SecurityServiceConstants
+public final class SecurityServiceConstants
 {
     public static final String DEBUGGER = "SECURITY_DEBUGGER";
     public static final String ERROR_LOGGER = "ERROR_RECORDER.";

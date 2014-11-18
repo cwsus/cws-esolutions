@@ -25,14 +25,20 @@ package com.cws.esolutions.security.utils;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+
 import org.junit.Test;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Assert;
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.utils.PasswordUtils;
+import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 
 public class PasswordUtilsTest
@@ -56,10 +62,54 @@ public class PasswordUtilsTest
 
     @Test public void test()
     {
-        System.out.println(PasswordUtils.encryptText("MyTextValue", "OwTVX8+4u5!EF$l~eUep$kprFiPNGdU0Of4IS!M(lHgjDC3bK5lTemVPoYIQLTbF",
-                bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                bean.getConfigData().getSystemConfig().getEncoding()));
+        String var = "rootDirectory = ${user.home}";
+
+        System.out.println(expandEnvVars(var));
+
+        //System.out.println(PasswordUtils.encryptText("MyTextValue", "OwTVX8+4u5!EF$l~eUep$kprFiPNGdU0Of4IS!M(lHgjDC3bK5lTemVPoYIQLTbF",
+        //        bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+        //        bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+        //        bean.getConfigData().getSystemConfig().getEncoding()));
+    }
+
+    public static final String expandEnvVars(final String value)
+    {
+        String returnValue = null;
+
+        if (!(StringUtils.contains(value, "$")))
+        {
+            return null;
+        }
+
+        final Properties sysProps = System.getProperties();
+        final Map<String, String> envMap = System.getenv();
+        final String text = StringUtils.replaceEachRepeatedly(value.split("=")[1].trim(), new String[] {"${", "}" }, new String[] { "", "" });
+
+        for (Entry<Object, Object> property : sysProps.entrySet())
+        {
+            String key = (String) property.getKey();
+
+            if (StringUtils.equals(key.trim(), text.trim()))
+            {
+                returnValue = sysProps.getProperty(key.trim());
+
+                break;
+            }
+        }
+
+        for (Entry<String, String> entry : envMap.entrySet())
+        {
+            String key = entry.getKey();
+
+            if (StringUtils.equals(key.trim(), text.trim()))
+            {
+                returnValue = entry.getValue();
+
+                break;
+            }
+        }
+
+        return returnValue;
     }
 
     @Test public void encryptText()

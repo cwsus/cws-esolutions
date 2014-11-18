@@ -338,6 +338,7 @@ public class PasswordUtility
                     DEBUGGER.debug("String username: {}", username);
                 }
 
+                System.out.println(repoConfig.getPasswordFile());
                 File passwordFile = FileUtils.getFile(repoConfig.getPasswordFile());
                 File saltFile = FileUtils.getFile(repoConfig.getSaltFile());
 

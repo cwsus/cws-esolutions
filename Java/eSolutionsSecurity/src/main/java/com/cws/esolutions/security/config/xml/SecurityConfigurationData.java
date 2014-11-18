@@ -25,10 +25,18 @@ package com.cws.esolutions.security.config.xml;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import java.util.Map;
+import java.util.Properties;
+
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+
+import java.util.Map.Entry;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+
 import org.slf4j.LoggerFactory;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -274,6 +282,86 @@ public final class SecurityConfigurationData implements Serializable
         }
 
         return this.passwordRepo;
+    }
+
+    public static final String expandEnvVars(final String value)
+    {
+        final String methodName = SecurityConfigurationData.CNAME + "#expandEnvVars(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        String returnValue = null;
+
+        if (!(StringUtils.contains(value, "$")))
+        {
+            return null;
+        }
+
+        final Properties sysProps = System.getProperties();
+        final Map<String, String> envMap = System.getenv();
+        final String text = StringUtils.replaceEachRepeatedly(value.split("=")[1].trim(), new String[] {"${", "}" }, new String[] { "", "" }).trim();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Properties sysProps: {}", sysProps);
+            DEBUGGER.debug("Map<String, String> envMap: {}", envMap);
+            DEBUGGER.debug("String text: {}", text);
+        }
+
+        for (Entry<Object, Object> property : sysProps.entrySet())
+        {
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Entry<Object, Object> property: {}", property);
+            }
+
+            String key = (String) property.getKey();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("String key: {}", key);
+            }
+
+            if (StringUtils.equals(key.trim(), text))
+            {
+                returnValue = sysProps.getProperty(key.trim());
+
+                break;
+            }
+        }
+
+        for (Entry<String, String> entry : envMap.entrySet())
+        {
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Entry<String, String> entry: {}", entry);
+            }
+
+            String key = entry.getKey();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("String key: {}", key);
+            }
+
+            if (StringUtils.equals(key.trim(), text))
+            {
+                returnValue = entry.getValue();
+
+                break;
+            }
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("String returnValue: {}", returnValue);
+        }
+
+        return returnValue;
     }
 
     @Override
