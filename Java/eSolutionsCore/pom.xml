@@ -149,7 +149,6 @@
             <scope>compile</scope>
         </dependency>
         <!-- agent -->
-        <!--
         <dependency>
             <groupId>com.cws</groupId>
             <artifactId>eSolutionsAgent</artifactId>
@@ -163,7 +162,6 @@
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
-        -->
         <dependency>
             <groupId>com.cws</groupId>
             <artifactId>eSolutionsSecurity</artifactId>

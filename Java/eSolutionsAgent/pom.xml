@@ -24,8 +24,8 @@
         <websphere.version>8.5.5.2</websphere.version>
         <weblogic.version>12.1</weblogic.version>
         <quartz.version>2.1.6</quartz.version>
-        <moxy.version>2.4.0</moxy.version>
-        <eclipselink.version>2.4.0</eclipselink.version>
+        <moxy.version>2.6.0-M3</moxy.version>
+        <eclipselink.version>2.6.0-M3</eclipselink.version>
         <commons-daemon.version>1.0.10</commons-daemon.version>
         <commons-exec.version>1.1</commons-exec.version>
     </properties>
@@ -129,7 +129,7 @@
         </dependency>
         <dependency>
             <groupId>com.ibm</groupId>
-            <artifactId>emf-common</artifactId>
+            <artifactId>org.eclipse.emf.common</artifactId>
             <version>${websphere.version}</version>
             <type>jar</type>
             <scope>compile</scope>
@@ -137,13 +137,6 @@
         <dependency>
             <groupId>com.ibm</groupId>
             <artifactId>ffdc</artifactId>
-            <version>${websphere.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.ibm</groupId>
-            <artifactId>jgssprovider</artifactId>
             <version>${websphere.version}</version>
             <type>jar</type>
             <scope>compile</scope>
