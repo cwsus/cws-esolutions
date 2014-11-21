@@ -47,8 +47,11 @@ import com.cws.esolutions.core.CoreServiceConstants;
 public final class ApplicationConfig implements Serializable
 {
     private String appName = null;
+    private String instance = null;
+    private String encoding = null;
     private int connectTimeout = 0;
     private int messageIdLength = 0;
+    private String algorithm = null;
     private String dateFormat = null;
     private String proxyConfig = null;
     private String nlsFileName = null;
@@ -194,6 +197,45 @@ public final class ApplicationConfig implements Serializable
         this.serviceAccount = value;
     }
 
+    public final void setAlgorithm(final String value)
+    {
+        final String methodName = ApplicationConfig.CNAME + "#setAlgorithm(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.algorithm = value;
+    }
+
+    public final void setInstance(final String value)
+    {
+        final String methodName = ApplicationConfig.CNAME + "#setInstance(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.instance = value;
+    }
+
+    public final void setEncoding(final String value)
+    {
+        final String methodName = ApplicationConfig.CNAME + "#setEncoding(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.encoding = value;
+    }
+
     @XmlElement(name = "appName")
     public final String getAppName()
     {
@@ -333,6 +375,48 @@ public final class ApplicationConfig implements Serializable
         }
 
         return this.serviceAccount;
+    }
+
+    @XmlElement(name = "algorithm")
+    public final String getAlgorithm()
+    {
+        final String methodName = ApplicationConfig.CNAME + "#getAlgorithm()";
+        
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.algorithm);
+        }
+        
+        return this.algorithm;
+    }
+
+    @XmlElement(name = "instance")
+    public final String getInstance()
+    {
+        final String methodName = ApplicationConfig.CNAME + "#getInstance()";
+        
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.instance);
+        }
+        
+        return this.instance;
+    }
+
+    @XmlElement(name = "encoding")
+    public final String getEncoding()
+    {
+        final String methodName = ApplicationConfig.CNAME + "#getEncoding()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.encoding);
+        }
+
+        return this.encoding;
     }
 
     @Override

@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.security;
+package com.cws.esolutions.security.main;
 
 import java.io.File;
 import java.util.List;
 import java.util.Arrays;
+
 import org.slf4j.Logger;
+
 import java.io.IOException;
+
 import org.slf4j.LoggerFactory;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -34,6 +37,8 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.lang.RandomStringUtils;
 
+import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.config.xml.SystemConfig;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
@@ -109,10 +114,10 @@ public class PasswordUtility
             .create();
 
         Option writeToFile = OptionBuilder.withLongOpt("store")
-                .hasArg(false)
-                .withDescription("Store the entry in the data files")
-                .isRequired(false)
-                .create();
+            .hasArg(false)
+            .withDescription("Store the entry in the data files")
+            .isRequired(false)
+            .create();
 
         if (DEBUG)
         {

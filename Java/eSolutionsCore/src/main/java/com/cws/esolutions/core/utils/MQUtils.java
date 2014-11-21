@@ -138,7 +138,9 @@ public final class MQUtils
             }
 
             // Create a Connection
-            conn = connFactory.createConnection(authData.get(0), PasswordUtils.decryptText(authData.get(1), authData.get(2).length()));
+            conn = connFactory.createConnection(authData.get(0),
+                    PasswordUtils.decryptText(authData.get(1), authData.get(2).length(), authData.get(3),
+                            authData.get(4), authData.get(5)));
             conn.start();
 
             if (DEBUG)
@@ -295,7 +297,9 @@ public final class MQUtils
             }
 
             // Create a Connection
-            conn = connFactory.createConnection(authData.get(0), PasswordUtils.decryptText(authData.get(1), authData.get(2).length()));
+            conn = connFactory.createConnection(authData.get(0),
+                    PasswordUtils.decryptText(authData.get(1), authData.get(2).length(), authData.get(3),
+                            authData.get(4), authData.get(5)));
             conn.start();
 
             if (DEBUG)

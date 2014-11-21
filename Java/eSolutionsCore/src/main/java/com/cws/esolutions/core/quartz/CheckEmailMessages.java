@@ -103,12 +103,17 @@ public class CheckEmailMessages implements Job
 
             String name = (String) props.get("userAccount");
             String pass = (String) props.get("userPass");
+            String salt = (String) props.get("salt");
+            String algorithm = (String) props.get("algorithm");
+            String instance = (String) props.get("instance");
+            String encoding = (String) props.get("encoding");
 
             messageList = EmailUtils.readEmailMessages(props, true,
                     new ArrayList<>(
                             Arrays.asList(
                                     name,
-                                    PasswordUtils.decryptText(pass, pass.length()))));
+                                    PasswordUtils.decryptText(pass, salt.length(),
+                                            algorithm, instance, encoding))));
 
             if (DEBUG)
             {

@@ -145,7 +145,7 @@ public class PasswordUtilsTest
 
     @Test public void validateOtpValue()
     {
-        Assert.assertEquals("number", PasswordUtils.validateOtpValue(bean.getConfigData().getSecurityConfig().getOtpVariance(),
+        Assert.assertTrue(PasswordUtils.validateOtpValue(bean.getConfigData().getSecurityConfig().getOtpVariance(),
                 bean.getConfigData().getSecurityConfig().getOtpAlgorithm(),
                 bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
                 "the secret", 0));

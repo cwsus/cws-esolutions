@@ -94,12 +94,16 @@ public class CoreServiceInitializer
                 }
                 catch (NullPointerException npx)
                 {
+                    ERROR_RECORDER.error(npx.getMessage(), npx);
+
                     try
                     {
                         DOMConfigurator.configure(FileUtils.getFile(logConfig).toURI().toURL());
                     }
-                    catch (NullPointerException npx)
+                    catch (NullPointerException npx1)
                     {
+                        ERROR_RECORDER.error(npx1.getMessage(), npx1);
+
                         System.err.println("Unable to load logging configuration. No logging enabled!");
                     }
                 }
@@ -151,7 +155,9 @@ public class CoreServiceInitializer
                     dataSource.setUrl(mgr.getDataSource());
                     dataSource.setUsername(mgr.getDsUser());
                     dataSource.setConnectionProperties(sBuilder.toString());
-                    dataSource.setPassword(PasswordUtils.decryptText(mgr.getDsPass(), mgr.getSalt().length()));
+                    dataSource.setPassword(PasswordUtils.decryptText(mgr.getDsPass(), mgr.getSalt().length(),
+                            configData.getAppConfig().getAlgorithm(), configData.getAppConfig().getInstance(),
+                            configData.getAppConfig().getEncoding()));
 
                     if (DEBUG)
                     {

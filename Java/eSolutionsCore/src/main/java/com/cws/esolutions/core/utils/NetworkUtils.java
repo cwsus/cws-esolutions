@@ -94,7 +94,6 @@ import com.cws.esolutions.core.config.xml.HTTPConfig;
 import com.cws.esolutions.core.config.xml.ProxyConfig;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.core.exception.CoreServiceException;
-import com.cws.esolutions.core.jsch.wrapper.JSchCommonsLogger;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.core.utils.exception.UtilityException;
 import com.cws.esolutions.security.exception.SecurityServiceException;
@@ -303,7 +302,7 @@ public final class NetworkUtils
         try
         {
             SecurityServiceInitializer.initializeService("C:/opt/cws/eSolutions/etc/SecurityService/config/ServiceConfig.xml",
-                "C:/opt/cws/eSolutions/etc/SecurityService/logging/logging.xml");
+                "C:/opt/cws/eSolutions/etc/SecurityService/logging/logging.xml", false);
         }
         catch (SecurityServiceException ssx)
         {
@@ -539,7 +538,9 @@ public final class NetworkUtils
 
                         break;
                     default:
-                        sshPrivateKeyFile.toPrivateKey(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length()));
+                        sshPrivateKeyFile.toPrivateKey(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length(),
+                                appBean.getConfigData().getAppConfig().getAlgorithm(), appBean.getConfigData().getAppConfig().getInstance(),
+                                appBean.getConfigData().getAppConfig().getEncoding()));
 
                         break;
                 }
@@ -557,7 +558,9 @@ public final class NetworkUtils
             {
                 passAuth = new PasswordAuthenticationClient();
                 passAuth.setUsername((StringUtils.isNotEmpty(sshConfig.getSshAccount())) ? sshConfig.getSshAccount() : System.getProperty("user.name"));
-                passAuth.setPassword(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length()));
+                passAuth.setPassword(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length(),
+                        appBean.getConfigData().getAppConfig().getAlgorithm(), appBean.getConfigData().getAppConfig().getInstance(),
+                        appBean.getConfigData().getAppConfig().getEncoding()));
 
                 if (DEBUG)
                 {
@@ -744,8 +747,9 @@ public final class NetworkUtils
 
                             break;
                         default:
-                            sshPrivateKeyFile.toPrivateKey(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length()));
-
+                            sshPrivateKeyFile.toPrivateKey(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length(),
+                                    appBean.getConfigData().getAppConfig().getAlgorithm(), appBean.getConfigData().getAppConfig().getInstance(),
+                                    appBean.getConfigData().getAppConfig().getEncoding()));
                             break;
                     }
 
@@ -762,7 +766,9 @@ public final class NetworkUtils
                 {
                     passAuth = new PasswordAuthenticationClient();
                     passAuth.setUsername((StringUtils.isNotEmpty(sshConfig.getSshAccount())) ? sshConfig.getSshAccount() : System.getProperty("user.name"));
-                    passAuth.setPassword(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length()));
+                    passAuth.setPassword(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length(),
+                            appBean.getConfigData().getAppConfig().getAlgorithm(), appBean.getConfigData().getAppConfig().getInstance(),
+                            appBean.getConfigData().getAppConfig().getEncoding()));
 
                     if (DEBUG)
                     {
@@ -919,7 +925,6 @@ public final class NetworkUtils
             }
 
             JSch jsch = new JSch();
-            JSch.setLogger(new JSchCommonsLogger("com.jcraft.jsch"));
             jsch.setConfigRepository(configRepository);
 
             if (DEBUG)
@@ -950,14 +955,18 @@ public final class NetworkUtils
                         break;
                     default:
                         jsch.addIdentity(FileUtils.getFile(sshConfig.getSshKey()).toString(),
-                            PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length()));
+                            PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length(),
+                                appBean.getConfigData().getAppConfig().getAlgorithm(), appBean.getConfigData().getAppConfig().getInstance(),
+                                appBean.getConfigData().getAppConfig().getEncoding()));
 
                         break;
                 }
             }
             else
             {
-                session.setPassword(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length()));
+                session.setPassword(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length(),
+                        appBean.getConfigData().getAppConfig().getAlgorithm(), appBean.getConfigData().getAppConfig().getInstance(),
+                        appBean.getConfigData().getAppConfig().getEncoding()));
             }
 
             session.connect((int) TimeUnit.SECONDS.toMillis(appBean.getConfigData().getSshConfig().getTimeout()));
@@ -1099,7 +1108,9 @@ public final class NetworkUtils
                 if (StringUtils.isNotBlank(ftpConfig.getFtpAccount()))
                 {
                     isAuthenticated = client.login((StringUtils.isNotEmpty(ftpConfig.getFtpAccount())) ? ftpConfig.getFtpAccount() : System.getProperty("user.name"),
-                            PasswordUtils.decryptText(ftpConfig.getFtpPassword(), ftpConfig.getFtpSalt().length()));
+                            PasswordUtils.decryptText(ftpConfig.getFtpPassword(), ftpConfig.getFtpSalt().length(),
+                            appBean.getConfigData().getAppConfig().getAlgorithm(), appBean.getConfigData().getAppConfig().getInstance(),
+                            appBean.getConfigData().getAppConfig().getEncoding()));
                 }
                 else
                 {
@@ -1309,7 +1320,9 @@ public final class NetworkUtils
                         (StringUtils.isNotEmpty(httpConfig.getTrustStoreType()) ? httpConfig.getTrustStoreType() : "jks"));
                 System.setProperty("javax.net.ssl.trustStore", httpConfig.getTrustStoreFile());
                 System.setProperty("javax.net.ssl.trustStorePassword",
-                        PasswordUtils.decryptText(httpConfig.getTrustStorePass(), httpConfig.getTrustStoreSalt().length()));
+                        PasswordUtils.decryptText(httpConfig.getTrustStorePass(), httpConfig.getTrustStoreSalt().length(),
+                                appBean.getConfigData().getAppConfig().getAlgorithm(), appBean.getConfigData().getAppConfig().getInstance(),
+                                appBean.getConfigData().getAppConfig().getEncoding()));
             }
 
             if (StringUtils.isNotEmpty(httpConfig.getKeyStoreFile()))
@@ -1318,7 +1331,9 @@ public final class NetworkUtils
                         (StringUtils.isNotEmpty(httpConfig.getKeyStoreType()) ? httpConfig.getKeyStoreType() : "jks"));
                 System.setProperty("javax.net.ssl.keyStore", httpConfig.getKeyStoreFile());
                 System.setProperty("javax.net.ssl.keyStorePassword",
-                        PasswordUtils.decryptText(httpConfig.getKeyStorePass(), httpConfig.getKeyStoreSalt().length()));
+                        PasswordUtils.decryptText(httpConfig.getKeyStorePass(), httpConfig.getKeyStoreSalt().length(),
+                                appBean.getConfigData().getAppConfig().getAlgorithm(), appBean.getConfigData().getAppConfig().getInstance(),
+                                appBean.getConfigData().getAppConfig().getEncoding()));
             }
 
             httpParams.setSoTimeout(httpConfig.getSoTimeout());
@@ -1365,7 +1380,10 @@ public final class NetworkUtils
                             DEBUGGER.debug("httpParams: {}", httpParams);
                         }
 
-                        String proxyPwd = PasswordUtils.decryptText(proxyConfig.getProxyPassword(), proxyConfig.getProxyPwdSalt().length());
+                        String proxyPwd = PasswordUtils.decryptText(proxyConfig.getProxyPassword(), proxyConfig.getProxyPwdSalt().length(),
+                                appBean.getConfigData().getAppConfig().getAlgorithm(),
+                                appBean.getConfigData().getAppConfig().getInstance(),
+                                appBean.getConfigData().getAppConfig().getEncoding());
 
                         if (DEBUG)
                         {
