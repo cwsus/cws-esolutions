@@ -27,15 +27,23 @@ package com.cws.esolutions.core.listeners;
  */
 import java.net.URL;
 import java.util.Map;
+
 import org.slf4j.Logger;
+
 import java.util.HashMap;
+
 import javax.sql.DataSource;
+
 import java.sql.SQLException;
+
 import org.slf4j.LoggerFactory;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.JAXBException;
+
 import java.net.MalformedURLException;
+
 import org.apache.log4j.helpers.Loader;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -70,7 +78,7 @@ public class CoreServiceInitializer
      * @throws CoreServiceException @{link com.cws.esolutions.core.exception.CoreServiceException}
      * if an exception occurs during initialization
      */
-    public static void initializeService(final String coreConfig, final String logConfig) throws CoreServiceException
+    public static void initializeService(final String coreConfig, final String logConfig, final boolean startConnections) throws CoreServiceException
     {
         URL xmlURL = null;
         JAXBContext context = null;
@@ -78,38 +86,35 @@ public class CoreServiceInitializer
         CoreConfigurationData configData = null;
 
         final ClassLoader classLoader = CoreServiceInitializer.class.getClassLoader();
+        final String serviceConfig = (StringUtils.isBlank(coreConfig)) ? System.getProperty("coreConfigFile") : coreConfig;
+        final String loggingConfig = (StringUtils.isBlank(logConfig)) ? System.getProperty("coreLogConfig") : logConfig;
 
         try
         {
-            if (StringUtils.isEmpty(logConfig))
+            if (FileUtils.getFile(loggingConfig).exists())
             {
-                System.err.println("Logging configuration not found. No logging enabled !");
-            }
-            else
-            {
-                // Load logging
                 try
                 {
-                    DOMConfigurator.configure(Loader.getResource(logConfig));
+                    DOMConfigurator.configure(Loader.getResource(loggingConfig));
                 }
                 catch (NullPointerException npx)
                 {
-                    ERROR_RECORDER.error(npx.getMessage(), npx);
-
                     try
                     {
-                        DOMConfigurator.configure(FileUtils.getFile(logConfig).toURI().toURL());
+                        DOMConfigurator.configure(FileUtils.getFile(loggingConfig).toURI().toURL());
                     }
                     catch (NullPointerException npx1)
                     {
-                        ERROR_RECORDER.error(npx1.getMessage(), npx1);
-
                         System.err.println("Unable to load logging configuration. No logging enabled!");
                     }
                 }
             }
+            else
+            {
+                System.err.println("Unable to load logging configuration. No logging enabled!");
+            }
 
-            xmlURL = classLoader.getResource(coreConfig);
+            xmlURL = classLoader.getResource(serviceConfig);
 
             if (xmlURL == null)
             {
@@ -123,57 +128,60 @@ public class CoreServiceInitializer
 
             CoreServiceInitializer.appBean.setConfigData(configData);
 
-            Map<String, DataSource> dsMap = CoreServiceInitializer.appBean.getDataSources();
-
-            if (DEBUG)
+            if (startConnections)
             {
-                DEBUGGER.debug("dsMap: {}", dsMap);
-            }
+                Map<String, DataSource> dsMap = CoreServiceInitializer.appBean.getDataSources();
 
-            if (dsMap == null)
-            {
-                dsMap = new HashMap<>();
-            }
-
-            for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())
-            {
-                if (!(dsMap.containsKey(mgr.getDsName())))
+                if (DEBUG)
                 {
-                    StringBuilder sBuilder = new StringBuilder()
-                        .append("connectTimeout=" + mgr.getConnectTimeout() + ";")
-                        .append("socketTimeout=" + mgr.getConnectTimeout() + ";")
-                        .append("autoReconnect=" + mgr.getAutoReconnect() + ";")
-                        .append("zeroDateTimeBehavior=convertToNull");
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("StringBuilder: {}", sBuilder);
-                    }
-
-                    BasicDataSource dataSource = new BasicDataSource();
-                    dataSource.setDriverClassName(mgr.getDriver());
-                    dataSource.setUrl(mgr.getDataSource());
-                    dataSource.setUsername(mgr.getDsUser());
-                    dataSource.setConnectionProperties(sBuilder.toString());
-                    dataSource.setPassword(PasswordUtils.decryptText(mgr.getDsPass(), mgr.getSalt().length(),
-                            configData.getAppConfig().getAlgorithm(), configData.getAppConfig().getInstance(),
-                            configData.getAppConfig().getEncoding()));
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("BasicDataSource: {}", dataSource);
-                    }
-
-                    dsMap.put(mgr.getDsName(), dataSource);
+                    DEBUGGER.debug("dsMap: {}", dsMap);
                 }
-            }
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("dsMap: {}", dsMap);
-            }
+                if (dsMap == null)
+                {
+                    dsMap = new HashMap<>();
+                }
 
-            CoreServiceInitializer.appBean.setDataSources(dsMap);
+                for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())
+                {
+                    if (!(dsMap.containsKey(mgr.getDsName())))
+                    {
+                        StringBuilder sBuilder = new StringBuilder()
+                            .append("connectTimeout=" + mgr.getConnectTimeout() + ";")
+                            .append("socketTimeout=" + mgr.getConnectTimeout() + ";")
+                            .append("autoReconnect=" + mgr.getAutoReconnect() + ";")
+                            .append("zeroDateTimeBehavior=convertToNull");
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("StringBuilder: {}", sBuilder);
+                        }
+
+                        BasicDataSource dataSource = new BasicDataSource();
+                        dataSource.setDriverClassName(mgr.getDriver());
+                        dataSource.setUrl(mgr.getDataSource());
+                        dataSource.setUsername(mgr.getDsUser());
+                        dataSource.setConnectionProperties(sBuilder.toString());
+                        dataSource.setPassword(PasswordUtils.decryptText(mgr.getDsPass(), mgr.getSalt().length(),
+                                configData.getAppConfig().getAlgorithm(), configData.getAppConfig().getInstance(),
+                                configData.getAppConfig().getEncoding()));
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("BasicDataSource: {}", dataSource);
+                        }
+
+                        dsMap.put(mgr.getDsName(), dataSource);
+                    }
+                }
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("dsMap: {}", dsMap);
+                }
+
+                CoreServiceInitializer.appBean.setDataSources(dsMap);
+            }
         }
         catch (JAXBException jx)
         {

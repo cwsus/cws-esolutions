@@ -24,11 +24,10 @@ package com.cws.esolutions.core.utils;
  * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
  */
-import java.io.File;
 import java.util.List;
 import java.net.Socket;
-import java.util.Arrays;
 import org.slf4j.Logger;
+import java.util.Hashtable;
 import java.util.ArrayList;
 import java.io.PrintWriter;
 import java.io.IOException;
@@ -46,26 +45,16 @@ import java.io.ObjectInputStream;
 import java.net.ConnectException;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
+import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.ChannelExec;
-import com.sshtools.j2ssh.ScpClient;
-import com.sshtools.j2ssh.SshClient;
+import java.io.BufferedInputStream;
 import java.util.concurrent.TimeUnit;
-import com.sshtools.j2ssh.SftpClient;
-import com.jcraft.jsch.OpenSSHConfig;
 import java.net.UnknownHostException;
 import com.jcraft.jsch.JSchException;
-import org.apache.commons.cli.Options;
+import com.jcraft.jsch.SftpException;
 import org.apache.commons.io.FileUtils;
-import com.jcraft.jsch.ConfigRepository;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.OptionGroup;
-import org.apache.commons.cli.PosixParser;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpVersion;
@@ -75,16 +64,8 @@ import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.auth.AuthPolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
-import com.sshtools.j2ssh.transport.publickey.SshPrivateKey;
 import org.apache.commons.httpclient.params.HttpClientParams;
-import com.sshtools.j2ssh.transport.IgnoreHostKeyVerification;
-import com.sshtools.j2ssh.configuration.SshConnectionProperties;
-import com.sshtools.j2ssh.transport.publickey.SshPrivateKeyFile;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import com.sshtools.j2ssh.authentication.AuthenticationProtocolState;
-import com.sshtools.j2ssh.authentication.PasswordAuthenticationClient;
-import com.sshtools.j2ssh.authentication.PublicKeyAuthenticationClient;
-import com.sshtools.j2ssh.authentication.AuthenticationProtocolException;
 
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.CoreServiceConstants;
@@ -92,12 +73,9 @@ import com.cws.esolutions.core.config.xml.FTPConfig;
 import com.cws.esolutions.core.config.xml.SSHConfig;
 import com.cws.esolutions.core.config.xml.HTTPConfig;
 import com.cws.esolutions.core.config.xml.ProxyConfig;
+import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.utils.PasswordUtils;
-import com.cws.esolutions.core.exception.CoreServiceException;
-import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.core.utils.exception.UtilityException;
-import com.cws.esolutions.security.exception.SecurityServiceException;
-import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -106,362 +84,19 @@ import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
  * @author khuntly
  * @version 1.0
  */
-@SuppressWarnings("static-access")
 public final class NetworkUtils
 {
-    private static Options options = null;
-    private static OptionGroup sshOptions = null;
-    private static OptionGroup scpOptions = null;
-    private static OptionGroup tcpOptions = null;
-    private static OptionGroup httpOptions = null;
-    private static OptionGroup telnetOptions = null;
-
     private static final String CRLF = "\r\n";
     private static final String TERMINATE_TELNET = "^]";
     private static final String PROXY_AUTH_TYPE_NTLM = "NTLM";
     private static final String PROXY_AUTH_TYPE_BASIC = "basic";
     private static final String CNAME = NetworkUtils.class.getName();
     private static final CoreServiceBean appBean = CoreServiceBean.getInstance();
+    private static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
-
-    static
-    {
-        OptionGroup commandOptions = new OptionGroup();
-        commandOptions.addOption(OptionBuilder.withLongOpt("ssh")
-            .withDescription("Perform an SSH connection to a target host")
-            .isRequired(true)
-            .create());
-        commandOptions.addOption(OptionBuilder.withLongOpt("scp")
-            .withDescription("Perform an SCP connection to a target host")
-            .isRequired(true)
-            .create());
-        commandOptions.addOption(OptionBuilder.withLongOpt("telnet")
-            .withDescription("Perform an telnet connection to a target host")
-            .isRequired(true)
-            .create());
-        commandOptions.addOption(OptionBuilder.withLongOpt("tcp")
-            .withDescription("Perform an TCP connection to a target host and put data on the request")
-            .isRequired(true)
-            .create());
-        commandOptions.addOption(OptionBuilder.withLongOpt("http")
-            .withDescription("Perform an HTTP request to a target host")
-            .isRequired(true)
-            .create());
-
-        options = new Options();
-        options.addOptionGroup(commandOptions);
-
-        sshOptions = new OptionGroup();
-        sshOptions.addOption(OptionBuilder.withLongOpt("targetHost")
-            .withDescription("The hostname of the server to connect to")
-            .hasArg(true)
-            .withArgName("HOSTNAME")
-            .withType(String.class)
-            .isRequired(true)
-            .create());
-        sshOptions.addOption(OptionBuilder.withLongOpt("commandList")
-            .withDescription("A comma separated list of commands to execute on the host")
-            .hasArg(true)
-            .withArgName("COMMANDS")
-            .withType(String.class)
-            .isRequired(false)
-            .create());
-
-        scpOptions = new OptionGroup();
-        scpOptions.addOption(OptionBuilder.withLongOpt("sourceFile")
-            .withDescription("The source file to copy to/from the host")
-            .hasArg(true)
-            .withArgName("SOURCE")
-            .withType(String.class)
-            .isRequired(true)
-            .create());
-        scpOptions.addOption(OptionBuilder.withLongOpt("targetFile")
-            .withDescription("The target file to copy to/from the host")
-            .hasArg(true)
-            .withArgName("TARGET")
-            .withType(String.class)
-            .isRequired(true)
-            .create());
-        scpOptions.addOption(OptionBuilder.withLongOpt("targetHost")
-            .withDescription("The hostname of the server to connect to")
-            .hasArg(true)
-            .withArgName("HOSTNAME")
-            .withType(String.class)
-            .isRequired(true)
-            .create());
-        scpOptions.addOption(OptionBuilder.withLongOpt("isUpload")
-            .withDescription("Determines if this is a local -> remote transfer. True if yes, false otherwise")
-            .hasArg(true)
-            .withArgName("UPLOAD")
-            .withType(Boolean.class)
-            .isRequired(true)
-            .create());
-
-        telnetOptions = new OptionGroup();
-        telnetOptions.addOption(OptionBuilder.withLongOpt("targetHost")
-            .withDescription("The hostname of the server to connect to")
-            .hasArg(true)
-            .withArgName("HOSTNAME")
-            .withType(String.class)
-            .isRequired(true)
-            .create());
-        telnetOptions.addOption(OptionBuilder.withLongOpt("port")
-            .withDescription("The port number to connect to the server on")
-            .hasArg(true)
-            .withArgName("PORT")
-            .withType(Integer.class)
-            .isRequired(true)
-            .create());
-        telnetOptions.addOption(OptionBuilder.withLongOpt("timeout")
-            .withDescription("The length of time to wait for the connection to complete. Defaults to 10 seconds if not specified.")
-            .hasArg(true)
-            .withArgName("TIMEOUT")
-            .withType(Integer.class)
-            .isRequired(false)
-            .create());
-
-        tcpOptions = new OptionGroup();
-        tcpOptions.addOption(OptionBuilder.withLongOpt("targetHost")
-            .withDescription("The hostname of the server to connect to")
-            .hasArg(true)
-            .withArgName("HOSTNAME")
-            .withType(String.class)
-            .isRequired(true)
-            .create());
-        tcpOptions.addOption(OptionBuilder.withLongOpt("port")
-            .withDescription("The port number to connect to the server on")
-            .hasArg(true)
-            .withArgName("PORT")
-            .withType(Integer.class)
-            .isRequired(true)
-            .create());
-        tcpOptions.addOption(OptionBuilder.withLongOpt("timeout")
-            .withDescription("The length of time to wait for the connection to complete. Defaults to 10 seconds if not specified.")
-            .hasArg(true)
-            .withArgName("TIMEOUT")
-            .withType(Integer.class)
-            .isRequired(false)
-            .create());
-        tcpOptions.addOption(OptionBuilder.withLongOpt("data")
-            .withDescription("The data to place on the telnet request for response.")
-            .hasArg(true)
-            .withArgName("OBJECT")
-            .isRequired(false)
-            .create());
-
-        httpOptions = new OptionGroup();
-        httpOptions.addOption(OptionBuilder.withLongOpt("targetHost")
-            .withDescription("The hostname of the server to connect to")
-            .hasArg(true)
-            .withArgName("HOSTNAME")
-            .withType(String.class)
-            .isRequired(true)
-            .create());
-        httpOptions.addOption(OptionBuilder.withLongOpt("method")
-            .withDescription("The data to place on the telnet request for response.")
-            .hasArg(true)
-            .withArgName("HTTP-METHOD")
-            .withType(String.class)
-            .isRequired(true)
-            .create());
-    }
-
-    public static final void main(final String[] args)
-    {
-        final String methodName = NetworkUtils.CNAME + "#main(final String[] args)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", (Object) args);
-        }
-
-        if (args.length == 0)
-        {
-            HelpFormatter usage = new HelpFormatter();
-            usage.printHelp(NetworkUtils.CNAME, options, true);
-
-            return;
-        }
-
-        try
-        {
-            CoreServiceInitializer.initializeService("C:/opt/cws/eSolutions/etc/eSolutionsCore/config/ServiceConfig.xml",
-                "C:/opt/cws/eSolutions/etc/eSolutionsCore/logging/logging.xml");
-        }
-        catch (CoreServiceException csx)
-        {
-            System.err.println("An error occurred while loading configuration data: " + csx.getCause().getMessage());
-
-            System.exit(1);
-        }
-
-        try
-        {
-            SecurityServiceInitializer.initializeService("C:/opt/cws/eSolutions/etc/SecurityService/config/ServiceConfig.xml",
-                "C:/opt/cws/eSolutions/etc/SecurityService/logging/logging.xml", false);
-        }
-        catch (SecurityServiceException ssx)
-        {
-            System.err.println("An error occurred while loading configuration data: " + ssx.getCause().getMessage());
-
-            System.exit(1);
-        }
-
-        Options options = new Options();
-        CommandLineParser parser = new PosixParser();
-
-        try
-        {
-            if (StringUtils.equals(args[0], "ssh"))
-            {
-                options.addOptionGroup(sshOptions);
-
-                CommandLine commandLine = parser.parse(options, args);
-
-                if (commandLine.getOptions().length >= 1)
-                {
-                    try
-                    {
-                        NetworkUtils.executeSshConnection(commandLine.getOptionValue("targetHost"),
-                                (commandLine.hasOption("commandList") ? commandLine.getOptionValue("commandList") : null));
-                    }
-                    catch (UtilityException ux)
-                    {
-                        System.err.println("An error occurred while executing the request: " + ux.getMessage());
-                    }
-                }
-                else
-                {
-                    HelpFormatter formatter = new HelpFormatter();
-                    formatter.printHelp(NetworkUtils.CNAME + " ssh", options, true);
-                }
-            }
-
-            if (StringUtils.equals(args[0], "scp"))
-            {
-                options.addOptionGroup(scpOptions);
-
-                CommandLine commandLine = parser.parse(options, args);
-
-                if (commandLine.getOptions().length == 4)
-                {
-                    List<String> sourceList = new ArrayList<>(
-                        Arrays.asList(commandLine.getOptionValue(commandLine.getOptionValue("sourceFile"))));
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("List<String>: {}", sourceList);
-                    }
-
-                    try
-                    {
-                        NetworkUtils.executeSCPTransfer(sourceList,
-                                commandLine.getOptionValue("targetFile"),
-                                commandLine.getOptionValue("targetHost"),
-                                Boolean.valueOf(commandLine.getOptionValue("isUpload")));
-                    }
-                    catch (UtilityException ux)
-                    {
-                        System.err.println("An error occurred while executing the request: " + ux.getMessage());
-                    }
-                }
-                else
-                {
-                    HelpFormatter formatter = new HelpFormatter();
-                    formatter.printHelp(NetworkUtils.CNAME + " scp", options, true);
-                }
-            }
-
-            if (StringUtils.equals(args[0], "telnet"))
-            {
-                options.addOptionGroup(telnetOptions);
-
-                CommandLine commandLine = parser.parse(options, args);
-
-                if (commandLine.getOptions().length >= 2)
-                {
-                    try
-                    {
-                        NetworkUtils.executeTelnetRequest(commandLine.getOptionValue("targetHost"),
-                                Integer.valueOf(commandLine.getOptionValue("port")),
-                                (commandLine.hasOption("timeout") ? Integer.parseInt(commandLine.getOptionValue("timeout"))
-                                        : appBean.getConfigData().getSshConfig().getTimeout()));
-                    }
-                    catch (UtilityException ux)
-                    {
-                        System.err.println("An error occurred while executing the request: " + ux.getMessage());
-                    }
-                }
-                else
-                {
-                    HelpFormatter formatter = new HelpFormatter();
-                    formatter.printHelp(NetworkUtils.CNAME + " telnet", options, true);
-                }
-            }
-
-            if (StringUtils.equals(args[0], "tcp"))
-            {
-                options.addOptionGroup(tcpOptions);
-
-                CommandLine commandLine = parser.parse(options, args);
-
-                if (commandLine.getOptions().length == 4)
-                {
-                    try
-                    {
-                        NetworkUtils.executeTcpRequest(commandLine.getOptionValue("targetHost"),
-                                Integer.valueOf(commandLine.getOptionValue("port")),
-                                (commandLine.hasOption("timeout") ? Integer.parseInt(commandLine.getOptionValue("timeout"))
-                                        : appBean.getConfigData().getSshConfig().getTimeout()),
-                                commandLine.getParsedOptionValue("data"));
-                    }
-                    catch (UtilityException ux)
-                    {
-                        System.err.println("An error occurred while executing the request: " + ux.getMessage());
-                    }
-                }
-                else
-                {
-                    HelpFormatter formatter = new HelpFormatter();
-                    formatter.printHelp(NetworkUtils.CNAME + " telnet", options, true);
-                }
-            }
-
-            if (StringUtils.equals(args[0], "http"))
-            {
-                options.addOptionGroup(httpOptions);
-
-                CommandLine commandLine = parser.parse(options, args);
-
-                if (commandLine.getOptions().length >= 2)
-                {
-                    try
-                    {
-                        NetworkUtils.executeHttpConnection(commandLine.getOptionValue("targetHost"),
-                                commandLine.getOptionValue("method"));
-                    }
-                    catch (UtilityException ux)
-                    {
-                        System.err.println("An error occurred while executing the request: " + ux.getMessage());
-                    }
-                }
-                else
-                {
-                    HelpFormatter formatter = new HelpFormatter();
-                    formatter.printHelp(NetworkUtils.CNAME + " http", options, true);
-                }
-            }
-        }
-        catch (ParseException px)
-        {
-            HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp(NetworkUtils.CNAME, options, true);
-        }
-    }
 
     /**
      * Creates an SSH connection to a target host and then executes an SCP
@@ -489,9 +124,9 @@ public final class NetworkUtils
      *            is a download 
      * @throws UtilityException {@link com.cws.esolutions.core.utils.exception.UtilityException} if an error occurs processing
      */
-    public static final synchronized void executeSCPTransfer(final List<String> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
+/*    public static final synchronized void executeSCPTransfer(final String sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
     {
-        final String methodName = NetworkUtils.CNAME + "#executeSCPTransfer(final List<String> authList, final String targetFile, final String targetHost, final String passphrase) throws UtilityException";
+        final String methodName = NetworkUtils.CNAME + "#executeSCPTransfer(final String authList, final String targetFile, final String targetHost, final String passphrase) throws UtilityException";
 
         if (DEBUG)
         {
@@ -539,8 +174,9 @@ public final class NetworkUtils
                         break;
                     default:
                         sshPrivateKeyFile.toPrivateKey(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length(),
-                                appBean.getConfigData().getAppConfig().getAlgorithm(), appBean.getConfigData().getAppConfig().getInstance(),
-                                appBean.getConfigData().getAppConfig().getEncoding()));
+                            secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                            secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                            appBean.getConfigData().getSystemConfig().getEncoding()));
 
                         break;
                 }
@@ -559,8 +195,9 @@ public final class NetworkUtils
                 passAuth = new PasswordAuthenticationClient();
                 passAuth.setUsername((StringUtils.isNotEmpty(sshConfig.getSshAccount())) ? sshConfig.getSshAccount() : System.getProperty("user.name"));
                 passAuth.setPassword(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length(),
-                        appBean.getConfigData().getAppConfig().getAlgorithm(), appBean.getConfigData().getAppConfig().getInstance(),
-                        appBean.getConfigData().getAppConfig().getEncoding()));
+                    secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                    secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                    appBean.getConfigData().getSystemConfig().getEncoding()));
 
                 if (DEBUG)
                 {
@@ -605,36 +242,18 @@ public final class NetworkUtils
                             DEBUGGER.debug("ScpClient: {}", client);
                         }
 
-                        for (String str : sourceFile)
+                        if (!(FileUtils.getFile(sourceFile).canRead()))
                         {
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("File: {}", str);
-                            }
+                            throw new IOException("File " + sourceFile + " does not exist or cannot be read. Skipping");
+                        }
 
-                            if (isUpload)
-                            {
-                                File srcFile = FileUtils.getFile(str);
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("File: {}", srcFile);
-                                }
-
-                                if (!(srcFile.canRead()))
-                                {
-                                    ERROR_RECORDER.error("File {} does not exist or cannot be read. Skipping!", srcFile);
-                                }
-
-                                if (srcFile.canRead())
-                                {
-                                    client.put(srcFile.getAbsoluteFile().toString(), targetFile, false);
-                                }
-                            }
-                            else
-                            {
-                                client.get(targetFile, str, false);
-                            }
+                        if (isUpload)
+                        {
+                            client.put(sourceFile, targetFile, false);
+                        }
+                        else
+                        {
+                            client.get(targetFile, sourceFile, false);
                         }
                     }
                     else
@@ -667,7 +286,7 @@ public final class NetworkUtils
                 sshClient.disconnect();
             }
         }
-    }
+    }*/
 
     /**
      * Creates an SSH connection to a target host and then executes an SCP
@@ -695,9 +314,9 @@ public final class NetworkUtils
      *            is a download 
      * @throws UtilityException - If an error occurs processing SSH keys or file transfer operations
      */
-    public static final synchronized void executeSftpTransfer(final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
+    public static final synchronized void executeSftpTransfer(final String sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
     {
-        final String methodName = NetworkUtils.CNAME + "#executeSftpTransfer(final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException";
+        final String methodName = NetworkUtils.CNAME + "#executeSftpTransfer(final String sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException";
 
         if (DEBUG)
         {
@@ -708,163 +327,155 @@ public final class NetworkUtils
             DEBUGGER.debug("Value: {}", isUpload);
         }
 
-        final SshClient sshClient = new SshClient();
+        int readLines = 0;
+        Session session = null;
+        Channel channel = null;
+
+        final byte[] buffer = new byte[1024];
         final SSHConfig sshConfig = appBean.getConfigData().getSshConfig();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("SshClient: {}", sshClient);
-            DEBUGGER.debug("SSHConfig: {}", sshConfig);
+            DEBUGGER.debug("SSHConfig sshConfig: {}", sshConfig);
         }
 
         try
         {
-            if ((sourceFile != null) && (sourceFile.size() != 0))
+            Hashtable<String, String> sshProperties = new Hashtable<>();
+            sshProperties.put("StrictHostKeyChecking", "no");
+
+            if (DEBUG)
             {
-                SshConnectionProperties connProps = new SshConnectionProperties();
-                connProps.setHost(targetHost); // set as obtained from db
-                
-                if (DEBUG)
+                DEBUGGER.debug("Hashtable<String, String> sshProperties: {}", sshProperties);
+            }
+
+            JSch jsch = new JSch();
+            JSch.setConfig(sshProperties);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("JSch jsch: {}", jsch);
+            }
+
+            session = jsch.getSession((StringUtils.isNotEmpty(sshConfig.getSshAccount())) ? sshConfig.getSshAccount() : System.getProperty("user.name"),
+                targetHost, 22);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Session session: {}", session);
+            }
+
+            if (StringUtils.isNotEmpty(sshConfig.getSshKey()))
+            {
+                if (!(FileUtils.getFile(sshConfig.getSshKey()).canRead()))
                 {
-                    DEBUGGER.debug("SshConnectionProperties: {}", connProps);
+                    throw new UtilityException("Provided keyfile cannot be accessed.");
                 }
 
-                boolean isKeyAuthentication = false;
-                PasswordAuthenticationClient passAuth = null;
-                PublicKeyAuthenticationClient keyAuth = null;
-
-                if (StringUtils.isNotEmpty(sshConfig.getSshKey()))
+                switch (sshConfig.getSshPassword().length())
                 {
-                    isKeyAuthentication = true;
+                    case 0:
+                        jsch.addIdentity(FileUtils.getFile(sshConfig.getSshKey()).toString());
 
-                    SshPrivateKeyFile sshPrivateKeyFile = SshPrivateKeyFile.parse(FileUtils.getFile(sshConfig.getSshKey()));
-                    SshPrivateKey sshPrivateKey = null;
+                        break;
+                    default:
+                        jsch.addIdentity(FileUtils.getFile(sshConfig.getSshKey()).toString(),
+                            PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length(),
+                                secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                                secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                                appBean.getConfigData().getSystemConfig().getEncoding()));
 
-                    switch (sshConfig.getSshPassword().length())
-                    {
-                        case 0:
-                            sshPrivateKeyFile.toPrivateKey(null);
-
-                            break;
-                        default:
-                            sshPrivateKeyFile.toPrivateKey(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length(),
-                                    appBean.getConfigData().getAppConfig().getAlgorithm(), appBean.getConfigData().getAppConfig().getInstance(),
-                                    appBean.getConfigData().getAppConfig().getEncoding()));
-                            break;
-                    }
-
-                    keyAuth = new PublicKeyAuthenticationClient();
-                    keyAuth.setKey(sshPrivateKey);
-                    keyAuth.setUsername((StringUtils.isNotEmpty(sshConfig.getSshAccount())) ? sshConfig.getSshAccount() : System.getProperty("user.name"));
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("PublicKeyAuthenticationClient: {}", keyAuth);
-                    }
-                }
-                else
-                {
-                    passAuth = new PasswordAuthenticationClient();
-                    passAuth.setUsername((StringUtils.isNotEmpty(sshConfig.getSshAccount())) ? sshConfig.getSshAccount() : System.getProperty("user.name"));
-                    passAuth.setPassword(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length(),
-                            appBean.getConfigData().getAppConfig().getAlgorithm(), appBean.getConfigData().getAppConfig().getInstance(),
-                            appBean.getConfigData().getAppConfig().getEncoding()));
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("PasswordAuthenticationClient: {}", passAuth);
-                    }
-                }
-
-                sshClient.connect(connProps, new IgnoreHostKeyVerification());
-
-                if (sshClient.isConnected())
-                {
-                    int authResult = -1;
-
-                    if (isKeyAuthentication)
-                    {
-                        authResult = sshClient.authenticate(keyAuth);
-                    }
-                    else
-                    {
-                        authResult = sshClient.authenticate(passAuth);
-                    }
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Authentication Result: {}", authResult);
-                    }
-
-                    if (authResult == AuthenticationProtocolState.COMPLETE)
-                    {
-                        // do stuff...
-                        if (sshClient.isAuthenticated())
-                        {
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("SSH client connected and authenticated");
-                            }
-
-                            SftpClient client = sshClient.openSftpClient();
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("SftpClient: {}", client);
-                            }
-
-                            for (File file : sourceFile)
-                            {
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("File: {}", file);
-                                }
-
-                                if (isUpload)
-                                {
-                                    client.put(file.getAbsoluteFile().toString(), targetFile);
-                                }
-                                else
-                                {
-                                    client.get(targetFile, file.getAbsoluteFile().toString());
-                                }
-                            }
-
-                            client.quit();
-                        }
-                        else
-                        {
-                            throw new AuthenticationProtocolException("Failed to authenticate to remote host.");
-                        }
-                    }
-                    else
-                    {
-                        throw new AuthenticationProtocolException("Failed to authenticate to remote host.");
-                    }
-                }
-                else
-                {
-                    throw new ConnectException("Failed to connect to remote host");
+                        break;
                 }
             }
             else
             {
-                throw new IOException("Requested source file: " + sourceFile + " does not exist");
+                session.setPassword(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length(),
+                    secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                    secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                    appBean.getConfigData().getSystemConfig().getEncoding()));
             }
-        }
-        catch (AuthenticationProtocolException apx)
-        {
-            throw new UtilityException(apx.getMessage());
+
+            session.connect((int) TimeUnit.SECONDS.toMillis(appBean.getConfigData().getSshConfig().getTimeout()));
+
+            if (!(session.isConnected()))
+            {
+                throw new UtilityException("Failed to connect to the target host");
+            }
+
+            channel = session.openChannel("sftp");
+            channel.connect();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Channel channel: {}", channel);
+            }
+
+            ChannelSftp sftpChannel = (ChannelSftp) channel;
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ChannelSftp sftpChannel: {}", sftpChannel);
+            }
+
+            if (isUpload)
+            {
+                
+                sftpChannel.put(sourceFile, targetFile, ChannelSftp.OVERWRITE);
+
+                int returnCode = sftpChannel.getExitStatus();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("int returnCode: {}", returnCode);
+                }
+            }
+            else
+            {
+                FileOutputStream outStream = new FileOutputStream(FileUtils.getFile(targetFile));
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("BufferedInputStream outStream: {}", outStream);
+                }
+
+                sftpChannel.get(sourceFile, outStream);
+
+                int returnCode = sftpChannel.getExitStatus();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("int returnCode: {}", returnCode);
+                }
+
+                outStream.flush();
+                outStream.close();
+            }
+
+            channel.disconnect();
         }
         catch (IOException iox)
         {
             throw new UtilityException(iox.getMessage(), iox);
         }
+        catch (SftpException sx)
+        {
+            throw new UtilityException(sx.getMessage(), sx);
+        }
+        catch (JSchException jx)
+        {
+            throw new UtilityException(jx.getMessage(), jx);
+        }
         finally
         {
-            if (sshClient.isConnected())
+            if ((channel != null) && (channel.isConnected()))
             {
-                sshClient.disconnect();
+                channel.disconnect();
+            }
+
+            if ((session != null) && (session.isConnected()))
+            {
+                session.disconnect();
             }
         }
     }
@@ -917,15 +528,16 @@ public final class NetworkUtils
 
         try
         {
-            ConfigRepository configRepository = OpenSSHConfig.parseFile(sshConfig.getSshProperties());
+            Hashtable<String, String> sshProperties = new Hashtable<>();
+            sshProperties.put("StrictHostKeyChecking", "yes");
 
             if (DEBUG)
             {
-                DEBUGGER.debug("ConfigRepository: {}", configRepository);
+                DEBUGGER.debug("Hashtable<String, String> sshProperties: {}", sshProperties);
             }
 
             JSch jsch = new JSch();
-            jsch.setConfigRepository(configRepository);
+            JSch.setConfig(sshProperties);
 
             if (DEBUG)
             {
@@ -956,8 +568,9 @@ public final class NetworkUtils
                     default:
                         jsch.addIdentity(FileUtils.getFile(sshConfig.getSshKey()).toString(),
                             PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length(),
-                                appBean.getConfigData().getAppConfig().getAlgorithm(), appBean.getConfigData().getAppConfig().getInstance(),
-                                appBean.getConfigData().getAppConfig().getEncoding()));
+                                secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                                secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                                appBean.getConfigData().getSystemConfig().getEncoding()));
 
                         break;
                 }
@@ -965,8 +578,9 @@ public final class NetworkUtils
             else
             {
                 session.setPassword(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length(),
-                        appBean.getConfigData().getAppConfig().getAlgorithm(), appBean.getConfigData().getAppConfig().getInstance(),
-                        appBean.getConfigData().getAppConfig().getEncoding()));
+                    secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                    secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                    appBean.getConfigData().getSystemConfig().getEncoding()));
             }
 
             session.connect((int) TimeUnit.SECONDS.toMillis(appBean.getConfigData().getSshConfig().getTimeout()));
@@ -1070,9 +684,9 @@ public final class NetworkUtils
      *            is a download 
      * @throws UtilityException {@link com.cws.esolutions.core.utils.exception.UtilityException} if an error occurs processing
      */
-    public static final synchronized void executeFtpConnection(final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
+    public static final synchronized void executeFtpConnection(final String sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
     {
-        final String methodName = NetworkUtils.CNAME + "#executeFtpConnection(final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException";
+        final String methodName = NetworkUtils.CNAME + "#executeFtpConnection(final String sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException";
 
         if (DEBUG)
         {
@@ -1108,9 +722,10 @@ public final class NetworkUtils
                 if (StringUtils.isNotBlank(ftpConfig.getFtpAccount()))
                 {
                     isAuthenticated = client.login((StringUtils.isNotEmpty(ftpConfig.getFtpAccount())) ? ftpConfig.getFtpAccount() : System.getProperty("user.name"),
-                            PasswordUtils.decryptText(ftpConfig.getFtpPassword(), ftpConfig.getFtpSalt().length(),
-                            appBean.getConfigData().getAppConfig().getAlgorithm(), appBean.getConfigData().getAppConfig().getInstance(),
-                            appBean.getConfigData().getAppConfig().getEncoding()));
+                        PasswordUtils.decryptText(ftpConfig.getFtpPassword(), ftpConfig.getFtpSalt().length(),
+                            secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                            secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                            appBean.getConfigData().getSystemConfig().getEncoding()));
                 }
                 else
                 {
@@ -1126,27 +741,24 @@ public final class NetworkUtils
                 {
                     client.enterLocalPassiveMode();
 
-                    for (File file : sourceFile)
+                    if (!(FileUtils.getFile(sourceFile).exists()))
                     {
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("File: {}", file);
-                        }
+                        throw new IOException("File " + sourceFile + " does not exist. Skipping");
+                    }
 
-                        if (isUpload)
-                        {
-                            client.storeFile(targetFile, new FileInputStream(file));
-                        }
-                        else
-                        {
-                            client.retrieveFile(file.getAbsolutePath(), new FileOutputStream(targetFile));
-                        }
+                    if (isUpload)
+                    {
+                        client.storeFile(targetFile, new FileInputStream(FileUtils.getFile(sourceFile)));
+                    }
+                    else
+                    {
+                        client.retrieveFile(sourceFile, new FileOutputStream(targetFile));
+                    }
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Reply: {}", client.getReplyCode());
-                            DEBUGGER.debug("Reply: {}", client.getReplyString());
-                        }
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Reply: {}", client.getReplyCode());
+                        DEBUGGER.debug("Reply: {}", client.getReplyString());
                     }
                 }
                 else
@@ -1320,20 +932,22 @@ public final class NetworkUtils
                         (StringUtils.isNotEmpty(httpConfig.getTrustStoreType()) ? httpConfig.getTrustStoreType() : "jks"));
                 System.setProperty("javax.net.ssl.trustStore", httpConfig.getTrustStoreFile());
                 System.setProperty("javax.net.ssl.trustStorePassword",
-                        PasswordUtils.decryptText(httpConfig.getTrustStorePass(), httpConfig.getTrustStoreSalt().length(),
-                                appBean.getConfigData().getAppConfig().getAlgorithm(), appBean.getConfigData().getAppConfig().getInstance(),
-                                appBean.getConfigData().getAppConfig().getEncoding()));
+                    PasswordUtils.decryptText(httpConfig.getTrustStorePass(), httpConfig.getTrustStoreSalt().length(),
+                        secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                        secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                        appBean.getConfigData().getSystemConfig().getEncoding()));
             }
 
             if (StringUtils.isNotEmpty(httpConfig.getKeyStoreFile()))
             {
                 System.setProperty("javax.net.ssl.keyStoreType",
-                        (StringUtils.isNotEmpty(httpConfig.getKeyStoreType()) ? httpConfig.getKeyStoreType() : "jks"));
+                    (StringUtils.isNotEmpty(httpConfig.getKeyStoreType()) ? httpConfig.getKeyStoreType() : "jks"));
                 System.setProperty("javax.net.ssl.keyStore", httpConfig.getKeyStoreFile());
                 System.setProperty("javax.net.ssl.keyStorePassword",
-                        PasswordUtils.decryptText(httpConfig.getKeyStorePass(), httpConfig.getKeyStoreSalt().length(),
-                                appBean.getConfigData().getAppConfig().getAlgorithm(), appBean.getConfigData().getAppConfig().getInstance(),
-                                appBean.getConfigData().getAppConfig().getEncoding()));
+                    PasswordUtils.decryptText(httpConfig.getKeyStorePass(), httpConfig.getKeyStoreSalt().length(),
+                        secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                        secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                        appBean.getConfigData().getSystemConfig().getEncoding()));
             }
 
             httpParams.setSoTimeout(httpConfig.getSoTimeout());
@@ -1381,9 +995,9 @@ public final class NetworkUtils
                         }
 
                         String proxyPwd = PasswordUtils.decryptText(proxyConfig.getProxyPassword(), proxyConfig.getProxyPwdSalt().length(),
-                                appBean.getConfigData().getAppConfig().getAlgorithm(),
-                                appBean.getConfigData().getAppConfig().getInstance(),
-                                appBean.getConfigData().getAppConfig().getEncoding());
+                            secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                            secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                            appBean.getConfigData().getSystemConfig().getEncoding());
 
                         if (DEBUG)
                         {

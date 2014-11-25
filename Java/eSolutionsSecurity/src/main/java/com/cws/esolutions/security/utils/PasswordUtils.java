@@ -74,6 +74,9 @@ public final class PasswordUtils
      *
      * @param plainText - The plain text data to encrypt
      * @param salt - The salt value to utilize for the request
+     * @param algorithm - The algorithm to encrypt the data with
+     * @param instance - The security instance to utilize
+     * @param encoding - The text encoding
      * @return The encrypted string in a reversible format
      * @throws SecurityException {@link java.lang.SecurityException} if an exception occurs during processing
      */
@@ -136,8 +139,9 @@ public final class PasswordUtils
      *
      * @param plainText - The plain text data to encrypt
      * @param salt - The salt value to utilize for the request
-     * @param algorithm - The encryption algorithm (e.g. SHA-256) to utilize
+     * @param instance - The security instance to utilize
      * @param iterations - The number of times the value should be re-encrypted
+     * @param encoding - The text encoding
      * @return The encrypted string
      * @throws SecurityException {@link java.lang.SecurityException} if an exception occurs during processing
      */
@@ -189,6 +193,9 @@ public final class PasswordUtils
      *
      * @param encrypted - The encrypted data to decrypt
      * @param saltLength - The length of the salt used to encrypt the data
+     * @param algorithm - The algorithm to encrypt the data with
+     * @param instance - The security instance to utilize
+     * @param encoding - The text encoding
      * @return The decrypted string
      * @throws SecurityException {@link java.lang.SecurityException} if an exception occurs during processing
      */
@@ -255,6 +262,7 @@ public final class PasswordUtils
      * Base64 encodes a given string
      *
      * @param text - The text to base64 encode
+     * @param encoding - The text encoding
      * @return The base64-encoded string
      * @throws SecurityException {@link java.lang.SecurityException} if an exception occurs during processing
      */
@@ -287,6 +295,7 @@ public final class PasswordUtils
      * Base64 decodes a given string
      *
      * @param text - The text to base64 decode
+     * @param encoding - The text encoding
      * @return The base64-decoded string
      * @throws SecurityException {@link java.lang.SecurityException} if an exception occurs during processing
      */
@@ -319,7 +328,8 @@ public final class PasswordUtils
      * Base64 decodes a given string
      *
      * @param variance - The allowed differences in OTP values
-     * @param algorithm - The algorithm used for the OTP hash
+     * @param algorithm - The algorithm to encrypt the data with
+     * @param instance - The security instance to utilize
      * @param secret - The OTP secret
      * @param code - The OTP code
      * @return <code>true</code> if successful, <code>false</code> otherwise

@@ -52,6 +52,7 @@ public final class CoreConfigurationData implements Serializable
     private ProxyConfig proxyConfig = null;
     private AgentConfig agentConfig = null;
     private ScriptConfig scriptConfig = null;
+    private SystemConfig systemConfig = null;
     private ApplicationConfig appConfig = null;
     private ResourceConfig resourceConfig = null;
     private ExceptionConfig exceptionConfig = null;
@@ -220,6 +221,19 @@ public final class CoreConfigurationData implements Serializable
         this.mailConfig = value;
     }
 
+    public final void setSystemConfig(final SystemConfig value)
+    {
+        final String methodName = CoreConfigurationData.CNAME + "#setSystemConfig(final SystemConfig value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.systemConfig = value;
+    }
+
     @XmlElement(name = "application-config")
     public final ApplicationConfig getAppConfig()
     {
@@ -386,6 +400,20 @@ public final class CoreConfigurationData implements Serializable
         }
 
         return this.mailConfig;
+    }
+
+    @XmlElement(name = "system-config")
+    public final SystemConfig getSystemConfig()
+    {
+        final String methodName = CoreConfigurationData.CNAME + "#getSystemConfig()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.systemConfig);
+        }
+
+        return this.systemConfig;
     }
 
     @Override

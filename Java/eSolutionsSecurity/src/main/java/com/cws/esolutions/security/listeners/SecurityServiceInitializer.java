@@ -28,17 +28,26 @@ package com.cws.esolutions.security.listeners;
 
 import java.net.URL;
 import java.util.Map;
+
 import org.slf4j.Logger;
+
 import java.util.HashMap;
+
 import javax.sql.DataSource;
+
 import java.sql.SQLException;
+
 import org.slf4j.LoggerFactory;
+
 import java.io.FileInputStream;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.JAXBException;
+
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
+
 import org.apache.log4j.helpers.Loader;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -83,25 +92,22 @@ public class SecurityServiceInitializer
         SecurityConfigurationData configData = null;
 
         final ClassLoader classLoader = SecurityServiceInitializer.class.getClassLoader();
+        final String serviceConfig = (StringUtils.isBlank(secConfig)) ? System.getProperty("secConfigFile") : secConfig;
+        final String loggingConfig = (StringUtils.isBlank(logConfig)) ? System.getProperty("secLogConfig") : logConfig;
 
         try
         {
-            if (StringUtils.isBlank(logConfig))
+            if (FileUtils.getFile(loggingConfig).exists())
             {
-                System.err.println("Logging configuration not found. No logging enabled !");
-            }
-            else
-            {
-                // Load logging
                 try
                 {
-                    DOMConfigurator.configure(Loader.getResource(logConfig));
+                    DOMConfigurator.configure(Loader.getResource(loggingConfig));
                 }
                 catch (NullPointerException npx)
                 {
                     try
                     {
-                        DOMConfigurator.configure(FileUtils.getFile(logConfig).toURI().toURL());
+                        DOMConfigurator.configure(FileUtils.getFile(loggingConfig).toURI().toURL());
                     }
                     catch (NullPointerException npx1)
                     {
@@ -109,13 +115,17 @@ public class SecurityServiceInitializer
                     }
                 }
             }
+            else
+            {
+                System.err.println("Unable to load logging configuration. No logging enabled!");
+            }
 
-            xmlURL = classLoader.getResource(secConfig);
+            xmlURL = classLoader.getResource(serviceConfig);
 
             if (xmlURL == null)
             {
                 // try loading from the filesystem
-                xmlURL = FileUtils.getFile(secConfig).toURI().toURL();
+                xmlURL = FileUtils.getFile(serviceConfig).toURI().toURL();
             }
 
             context = JAXBContext.newInstance(SecurityConfigurationData.class);

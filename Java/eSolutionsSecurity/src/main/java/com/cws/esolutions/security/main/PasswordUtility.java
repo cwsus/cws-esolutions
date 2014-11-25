@@ -64,8 +64,8 @@ public class PasswordUtility
 
     private static final String CNAME = PasswordUtility.class.getName();
     private static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
-    private static final String LOG_CONFIG = System.getProperty("user.home") + "/etc/logging.xml";
-    private static final String SEC_CONFIG = System.getProperty("user.home") + "/etc/ServiceConfig.xml";
+    private static final String LOG_CONFIG = System.getProperty("user.home") + "/etc/SecurityService/logging/logging.xml";
+    private static final String SEC_CONFIG = System.getProperty("user.home") + "/etc/SecurityService/config/ServiceConfig.xml";
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -73,29 +73,11 @@ public class PasswordUtility
 
     static
     {
-        Option configOption = OptionBuilder.withLongOpt("configFile")
-            .withArgName("configFile")
-            .withDescription("Provide location of configuration file")
-            .isRequired(false)
-            .hasArg(true)
-            .create();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("Option configOption: {}", configOption);
-        }
-
-        OptionGroup configOptions = new OptionGroup().addOption(configOption);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("OptionGroup configOptions: {}", configOptions);
-        }
-
         Option entryNameOption = OptionBuilder.withLongOpt("entry")
             .hasArg(true)
             .withArgName("entry")
             .withDescription("Name for the entry")
+            .withType(String.class)
             .isRequired(false)
             .create();
 
@@ -103,6 +85,7 @@ public class PasswordUtility
             .hasArg(true)
             .withArgName("username")
             .withDescription("Username for the entry")
+            .withType(String.class)
             .isRequired(false)
             .create();
 
@@ -110,6 +93,7 @@ public class PasswordUtility
             .hasArg(true)
             .withArgName("password")
             .withDescription("Username for the entry")
+            .withType(String.class)
             .isRequired(false)
             .create();
 
@@ -117,6 +101,7 @@ public class PasswordUtility
             .hasArg(false)
             .withDescription("Store the entry in the data files")
             .isRequired(false)
+            .withType(String.class)
             .create();
 
         if (DEBUG)
@@ -159,6 +144,7 @@ public class PasswordUtility
             .withArgName("entry")
             .withArgName("username")
             .withDescription("Decrypt the provided string")
+            .withType(String.class)
             .isRequired(false)
             .create();
 
@@ -178,7 +164,6 @@ public class PasswordUtility
         }
 
         options = new Options();
-        options.addOptionGroup(configOptions);
         options.addOptionGroup(encryptOptionsGroup);
         options.addOptionGroup(decryptOptionsGroup);
 
@@ -186,7 +171,6 @@ public class PasswordUtility
         {
             DEBUGGER.debug("Options options: {}", options);
         }
-
     }
 
     public static final void main(final String[] args)
@@ -220,14 +204,7 @@ public class PasswordUtility
                 DEBUGGER.debug("CommandLine commandLine.getArgList(): {}", commandLine.getArgList());
             }
 
-            if ((commandLine.hasOption("configFile")) && (!(StringUtils.isBlank(commandLine.getOptionValue("configFile")))))
-            {
-                SecurityServiceInitializer.initializeService(commandLine.getOptionValue("configFile"), PasswordUtility.LOG_CONFIG, false);
-            }
-            else
-            {
-                SecurityServiceInitializer.initializeService(PasswordUtility.SEC_CONFIG, PasswordUtility.LOG_CONFIG, false);
-            }
+            SecurityServiceInitializer.initializeService(PasswordUtility.SEC_CONFIG, PasswordUtility.LOG_CONFIG, false);
 
             final SecurityConfigurationData secConfigData = PasswordUtility.svcBean.getConfigData();
             final SecurityConfig secConfig = secConfigData.getSecurityConfig();
@@ -260,7 +237,7 @@ public class PasswordUtility
                 final String salt = RandomStringUtils.randomAlphanumeric(length);
                 final String encodedUserName = PasswordUtils.base64Encode(username, systemConfig.getEncoding());
                 final String encrypted = PasswordUtils.encryptText(password, salt, secConfig.getEncryptionAlgorithm(),
-                        secConfig.getEncryptionInstance(), systemConfig.getEncoding());
+                    secConfig.getEncryptionInstance(), systemConfig.getEncoding());
 
                 if (DEBUG)
                 {
