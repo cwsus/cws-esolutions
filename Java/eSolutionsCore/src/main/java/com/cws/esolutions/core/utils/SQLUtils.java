@@ -126,7 +126,7 @@ public class SQLUtils
         try
         {
             CoreServiceInitializer.initializeService("C:/opt/cws/eSolutions/etc/eSolutionsCore/config/ServiceConfig.xml",
-                "C:/opt/cws/eSolutions/etc/eSolutionsCore/logging/logging.xml");
+                "C:/opt/cws/eSolutions/etc/eSolutionsCore/logging/logging.xml", false);
         }
         catch (CoreServiceException csx)
         {

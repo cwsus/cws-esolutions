@@ -27,6 +27,7 @@ package com.cws.esolutions.core.processors.impl;
  */
 import java.util.List;
 import java.util.ArrayList;
+
 import org.virtualbox_4_2.IConsole;
 import org.virtualbox_4_2.IMachine;
 import org.virtualbox_4_2.ISession;
@@ -98,7 +99,10 @@ public class OracleVBoxManager implements VirtualServiceManager
         }
 
         vboxMgr.connect(server.getMgrUrl(), userAccount.getUsername(),
-                PasswordUtils.decryptText(userSecurity.getPassword(), userSecurity.getUserSalt().length()));
+                PasswordUtils.decryptText(userSecurity.getPassword(), userSecurity.getUserSalt().length(),
+                        appBean.getConfigData().getAppConfig().getAlgorithm(),
+                        appBean.getConfigData().getAppConfig().getInstance(),
+                        appBean.getConfigData().getAppConfig().getEncoding()));
 
         if (DEBUG)
         {
@@ -199,7 +203,10 @@ public class OracleVBoxManager implements VirtualServiceManager
         }
 
         vboxMgr.connect(server.getMgrUrl(), userAccount.getUsername(),
-            PasswordUtils.decryptText(userSecurity.getPassword(), userSecurity.getUserSalt().length()));
+                PasswordUtils.decryptText(userSecurity.getPassword(), userSecurity.getUserSalt().length(),
+                        appBean.getConfigData().getAppConfig().getAlgorithm(),
+                        appBean.getConfigData().getAppConfig().getInstance(),
+                        appBean.getConfigData().getAppConfig().getEncoding()));
 
         if (DEBUG)
         {
@@ -305,7 +312,10 @@ public class OracleVBoxManager implements VirtualServiceManager
             }
 
             vboxMgr.connect(server.getMgrUrl(), userAccount.getUsername(),
-                    PasswordUtils.decryptText(userSecurity.getPassword(), userSecurity.getUserSalt().length()));
+                    PasswordUtils.decryptText(userSecurity.getPassword(), userSecurity.getUserSalt().length(),
+                            appBean.getConfigData().getAppConfig().getAlgorithm(),
+                            appBean.getConfigData().getAppConfig().getInstance(),
+                            appBean.getConfigData().getAppConfig().getEncoding()));
 
             if (DEBUG)
             {
@@ -446,7 +456,10 @@ public class OracleVBoxManager implements VirtualServiceManager
             }
 
             vboxMgr.connect(server.getMgrUrl(), userAccount.getUsername(),
-                    PasswordUtils.decryptText(userSecurity.getPassword(), userSecurity.getUserSalt().length()));
+                    PasswordUtils.decryptText(userSecurity.getPassword(), userSecurity.getUserSalt().length(),
+                            appBean.getConfigData().getAppConfig().getAlgorithm(),
+                            appBean.getConfigData().getAppConfig().getInstance(),
+                            appBean.getConfigData().getAppConfig().getEncoding()));
 
             if (DEBUG)
             {

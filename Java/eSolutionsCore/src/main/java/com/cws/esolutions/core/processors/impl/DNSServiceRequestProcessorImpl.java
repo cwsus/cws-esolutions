@@ -656,8 +656,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
                         if ((dnsServers != null) && (dnsServers.size() != 0))
                         {
-                            NetworkUtils.executeSCPTransfer(new ArrayList<>(Arrays.asList(zoneFile.toString())),
-                                    zoneFile.getAbsolutePath(), (String) dnsServers.get(0)[18], true);
+                            NetworkUtils.executeSftpTransfer(zoneFile.toString(), zoneFile.getAbsolutePath(), (String) dnsServers.get(0)[18], true);
 
                             List<Object[]> slaveServers = dao.getServersByAttribute(ServerType.DNSSLAVE.name() + " " + request.getServiceRegion().name(), 0);
 
@@ -674,8 +673,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                                 {
                                     try
                                     {
-                                        NetworkUtils.executeSCPTransfer(new ArrayList<>(Arrays.asList(zoneFile.toString())),
-                                                zoneFile.getAbsolutePath(), (String) server[18], true);
+                                        NetworkUtils.executeSftpTransfer(zoneFile.toString(), zoneFile.getAbsolutePath(), (String) server[18], true);
                                     }
                                     catch (UtilityException ux)
                                     {

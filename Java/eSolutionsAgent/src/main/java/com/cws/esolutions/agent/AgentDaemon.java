@@ -49,9 +49,9 @@ import org.apache.commons.daemon.DaemonInitException;
 
 import com.cws.esolutions.agent.AgentConstants;
 import com.cws.esolutions.agent.mq.MQMessageHandler;
-import com.cws.esolutions.agent.utils.PasswordUtils;
 import com.cws.esolutions.agent.config.enums.OSType;
 import com.cws.esolutions.agent.mq.MQExceptionHandler;
+import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.agent.config.xml.ConfigurationData;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -228,7 +228,11 @@ public class AgentDaemon implements Daemon
 
             this.conn = this.connFactory.createConnection(AgentDaemon.agentBean.getConfigData().getServerConfig().getUsername(),
                     PasswordUtils.decryptText(AgentDaemon.agentBean.getConfigData().getServerConfig().getPassword(),
-                            AgentDaemon.agentBean.getConfigData().getServerConfig().getSalt().length()));
+                            AgentDaemon.agentBean.getConfigData().getServerConfig().getSalt().length(),
+                            AgentDaemon.agentBean.getConfigData().getServerConfig().getEncryptionAlgorithm(),
+                            AgentDaemon.agentBean.getConfigData().getServerConfig().getEncryptionInstance(),
+                            AgentDaemon.agentBean.getConfigData().getServerConfig().getEncoding()));
+            
             this.conn.setExceptionListener(new MQExceptionHandler());
             this.conn.setClientID(AgentDaemon.agentBean.getConfigData().getServerConfig().getClientId());
             this.conn.start();

@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.agent.utils;
+package com.cws.esolutions.agent.connectors.impl;
 /*
  * Project: eSolutionsAgent
- * Package: com.cws.esolutions.agent.utils
+ * Package: com.cws.esolutions.agent.connectors
  * File: WebLogicJMXConnector.java
  *
  * History
@@ -39,10 +39,12 @@ import javax.management.remote.JMXConnectorFactory;
 
 import com.cws.esolutions.agent.AgentConstants;
 import com.cws.esolutions.agent.config.xml.JMXConfig;
+import com.cws.esolutions.agent.connectors.interfaces.AgentConnector;
+import com.cws.esolutions.agent.connectors.exception.AgentConnectorException;
 /**
  * @see com.cws.esolutions.agent.jmx.interfaces.JMXConnection
  */
-public final class WebLogicJMXConnector
+public final class WebLogicJMXConnector implements AgentConnector
 {
     private static final String JNDI_ROOT= "/jndi/";
     private static final String CNAME = WebLogicJMXConnector.class.getName();
@@ -52,9 +54,9 @@ public final class WebLogicJMXConnector
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(AgentConstants.ERROR_LOGGER + CNAME);
 
-    public static final JMXConnector getJMXConnector(final String mbeanName, final JMXConfig jmxConfig) throws IOException, MalformedURLException
+    public Object getJMXConnector(final String mbeanName, final JMXConfig jmxConfig) throws AgentConnectorException
     {
-        final String methodName = WebLogicJMXConnector.CNAME + "#getJMXConnector(final String mbeanName, final JMXConfig jmxConfig) throws IOException, MalformedURLException";
+        final String methodName = WebLogicJMXConnector.CNAME + "#getJMXConnector(final String mbeanName, final JMXConfig jmxConfig) throws AgentConnectorException";
 
         if (DEBUG)
         {
@@ -115,13 +117,13 @@ public final class WebLogicJMXConnector
         {
             ERROR_RECORDER.error(mx.getMessage(), mx);
 
-            throw new MalformedURLException(mx.getMessage());
+            throw new AgentConnectorException(mx.getMessage());
         }
         catch (IOException iox)
         {
             ERROR_RECORDER.error(iox.getMessage(), iox);
 
-            throw new IOException(iox.getMessage(), iox);
+            throw new AgentConnectorException(iox.getMessage(), iox);
         }
 
         return jmxConnector;

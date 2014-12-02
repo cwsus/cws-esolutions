@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.agent.utils;
+package com.cws.esolutions.agent.connectors.impl;
 /*
  * Project: eSolutionsAgent
- * Package: com.cws.esolutions.agent.utils
+ * Package: com.cws.esolutions.agent.connectors
  * File: WebSphereJMXConnector.java
  *
  * History
@@ -26,18 +26,22 @@ package com.cws.esolutions.agent.utils;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
+import java.io.IOException;
 import java.util.Properties;
 import org.slf4j.LoggerFactory;
-import com.ibm.websphere.management.AdminClient;
-import com.ibm.websphere.management.AdminClientFactory;
-import com.ibm.websphere.management.exception.ConnectorException;
+import java.net.MalformedURLException;
 
 import com.cws.esolutions.agent.AgentConstants;
+import com.ibm.websphere.management.AdminClient;
 import com.cws.esolutions.agent.config.xml.JMXConfig;
+import com.ibm.websphere.management.AdminClientFactory;
+import com.ibm.websphere.management.exception.ConnectorException;
+import com.cws.esolutions.agent.connectors.interfaces.AgentConnector;
+import com.cws.esolutions.agent.connectors.exception.AgentConnectorException;
 /**
  * @see com.cws.esolutions.agent.jmx.interfaces.JMXConnection
  */
-public final class WebSphereJMXConnector
+public final class WebSphereJMXConnector implements AgentConnector
 {
     private static final String CNAME = WebSphereJMXConnector.class.getName();
 
@@ -45,9 +49,9 @@ public final class WebSphereJMXConnector
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(AgentConstants.ERROR_LOGGER + CNAME);
 
-    public static final AdminClient getJMXConnector(final JMXConfig jmxConfig) throws ConnectorException
+    public Object getJMXConnector(final String mbeanName, final JMXConfig jmxConfig) throws AgentConnectorException
     {
-        final String methodName = WebSphereJMXConnector.CNAME + "#getJMXConnector(final JMXConfig jmxConfig) throws ConnectorException";
+        final String methodName = WebSphereJMXConnector.CNAME + "#getJMXConnector(final JMXConfig jmxConfig) throws AgentConnectorException";
 
         if (DEBUG)
         {
@@ -106,7 +110,7 @@ public final class WebSphereJMXConnector
         {
             ERROR_RECORDER.error(cx.getMessage(), cx);
 
-            throw new ConnectorException(cx.getMessage(), cx);
+            throw new AgentConnectorException(cx.getMessage(), cx);
         }
 
         return adminClient;

@@ -115,7 +115,7 @@ public class SQLUtils
         try
         {
             CoreServiceInitializer.initializeService("C:/opt/cws/eSolutions/etc/eSolutionsCore/config/ServiceConfig.xml",
-                "C:/opt/cws/eSolutions/etc/eSolutionsCore/logging/logging.xml");
+                "C:/opt/cws/eSolutions/etc/eSolutionsCore/logging/logging.xml", false);
         }
         catch (CoreServiceException csx)
         {
@@ -137,15 +137,6 @@ public class SQLUtils
 
                 if (commandLine.getOptions().length >= 1)
                 {
-                    try
-                    {
-                        NetworkUtils.executeSshConnection(commandLine.getOptionValue("targetHost"),
-                                (commandLine.hasOption("commandList") ? commandLine.getOptionValue("commandList") : null));
-                    }
-                    catch (UtilityException ux)
-                    {
-                        System.err.println("An error occurred while executing the request: " + ux.getMessage());
-                    }
                 }
                 else
                 {

@@ -26,8 +26,10 @@ package com.cws.esolutions.agent.config.xml;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
+
 import java.io.Serializable;
 import java.lang.reflect.Field;
+
 import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -53,9 +55,12 @@ public final class ServerConfig implements Serializable
     private int connectTimeout = 0;
     private String username = null;
     private String password = null;
+    private String encoding = "UTF-8";
     private String requestQueue = null;
     private String responseQueue = null;
     private String connectionName = null;
+    private String encryptionInstance = "AES";
+    private String encryptionAlgorithm = "AES";
 
     private static final String CNAME = ServerConfig.class.getName();
     private static final long serialVersionUID = 9144720470986353417L;
@@ -149,6 +154,7 @@ public final class ServerConfig implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         this.password = value;
@@ -161,9 +167,49 @@ public final class ServerConfig implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         this.salt = value;
+    }
+
+    public final void setEncoding(final String value)
+    {
+        final String methodName = ServerConfig.CNAME + "#setEncoding(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.encoding = value;
+    }
+
+    public final void setEncryptionInstance(final String value)
+    {
+        final String methodName = ServerConfig.CNAME + "#setEncryptionInstance(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.encryptionInstance = value;
+    }
+
+    public final void setEncryptionAlgorithm(final String value)
+    {
+        final String methodName = ServerConfig.CNAME + "#setEncryptionAlgorithm(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.encryptionAlgorithm = value;
     }
 
     @XmlElement(name = "connectionName")
@@ -258,6 +304,7 @@ public final class ServerConfig implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.password);
         }
 
         return this.password;
@@ -271,9 +318,52 @@ public final class ServerConfig implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.salt);
         }
 
         return this.salt;
+    }
+
+    @XmlElement(name = "encoding")
+    public final String getEncoding()
+    {
+        final String methodName = ServerConfig.CNAME + "#getEncoding()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.encoding);
+        }
+
+        return this.encoding;
+    }
+
+    @XmlElement(name = "encryptionAlgorithm")
+    public final String getEncryptionAlgorithm()
+    {
+        final String methodName = ServerConfig.CNAME + "#getEncryptionAlgorithm()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.encryptionAlgorithm);
+        }
+
+        return this.encryptionAlgorithm;
+    }
+
+    @XmlElement(name = "encryptionInstance")
+    public final String getEncryptionInstance()
+    {
+        final String methodName = ServerConfig.CNAME + "#getEncryptionInstance()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.encryptionInstance);
+        }
+
+        return this.encryptionInstance;
     }
 
     @Override
