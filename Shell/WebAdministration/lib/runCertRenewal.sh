@@ -317,8 +317,8 @@ function renewiPlanetCert
 
                                                 OPTIND=${RR_OPTIND};
                                                 CNAME=$(/usr/bin/env basename "${0}");
-                                            typeset METHOD_NAME="${CNAME}#${0}";
-typeset RETURN_CODE=0;
+                                                typeset METHOD_NAME="${CNAME}#${0}";
+                                                typeset RETURN_CODE=0;
 
                                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MAILER_CODE->${MAILER_CODE}";
 
@@ -544,8 +544,8 @@ function renewIHSCert
                                         MAILER_CODE=${?};
 
                                         CNAME=$(/usr/bin/env basename "${0}");
-                                    typeset METHOD_NAME="${CNAME}#${0}";
-typeset RETURN_CODE=0;
+                                        typeset METHOD_NAME="${CNAME}#${0}";
+                                        typeset RETURN_CODE=0;
 
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MAILER_CODE->${MAILER_CODE}";
 
