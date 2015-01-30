@@ -22,10 +22,10 @@
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
 
 ## Application constants
-CNAME="$(/usr/bin/env basename "${0}")";
+typeset CNAME="$(/usr/bin/env basename "${0}")";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
-METHOD_NAME="${CNAME}#startup";
+typeset SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
+typeset typeset METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
@@ -77,7 +77,7 @@ typeset -i RET_CODE=${?};
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
 
 CNAME="${THIS_CNAME}";
-typeset METHOD_NAME="${CNAME}#startup";
+typeset typeset METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -102,7 +102,7 @@ function main
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
-    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
     typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -330,7 +330,7 @@ function main
                                             MGMT_OP=$("${APP_ROOT}"/"${LIB_DIRECTORY}"/validators/validate_change_request.sh ${WEBSERVER_PLATFORM} ${CERTDB});
 
                                             CNAME=$(/usr/bin/env basename "${0}");
-                                            typeset METHOD_NAME="${CNAME}#${0}";
+                                            typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
                                             typeset RETURN_CODE=0;
 
                                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "MGMT_OP -> ${MGMT_OP}";
@@ -715,7 +715,7 @@ function createCSR
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
-    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
     typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -753,7 +753,7 @@ function createCSR
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Received request to break. CANCEL_REQ->${CANCEL_REQ}, ADD_RECORDS->${ADD_RECORDS}, ADD_SUBDOMAINS->${ADD_SUBDOMAINS}. Breaking..";
 
             ## put methodname and cname back
-            typeset METHOD_NAME="${CNAME}#${0}";
+            typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
             typeset RETURN_CODE=0;
             CNAME=$(/usr/bin/env basename "${0}");
 
@@ -763,7 +763,7 @@ function createCSR
             ## record has been added successfully through the helper
             ## ask if we want to add additional records to the zone
             ## put methodname and cname back
-            typeset METHOD_NAME="${CNAME}#${0}";
+            typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
             typeset RETURN_CODE=0;
             CNAME=$(/usr/bin/env basename "${0}");
 
@@ -862,7 +862,7 @@ function applyLocalCertificate
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
-    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
     typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -900,7 +900,7 @@ function applyLocalCertificate
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Received request to break. CANCEL_REQ->${CANCEL_REQ}, ADD_RECORDS->${ADD_RECORDS}, ADD_SUBDOMAINS->${ADD_SUBDOMAINS}. Breaking..";
 
             ## put methodname and cname back
-            typeset METHOD_NAME="${CNAME}#${0}";
+            typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
             typeset RETURN_CODE=0;
             CNAME=$(/usr/bin/env basename "${0}");
 
@@ -910,7 +910,7 @@ function applyLocalCertificate
             ## record has been added successfully through the helper
             ## ask if we want to add additional records to the zone
             ## put methodname and cname back
-            typeset METHOD_NAME="${CNAME}#${0}";
+            typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
             typeset RETURN_CODE=0;
             CNAME=$(/usr/bin/env basename "${0}");
 
@@ -1009,7 +1009,7 @@ function implementCertificateChange
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
-    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
     typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -1047,7 +1047,7 @@ function implementCertificateChange
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Received request to break. CANCEL_REQ->${CANCEL_REQ}, ADD_RECORDS->${ADD_RECORDS}, ADD_SUBDOMAINS->${ADD_SUBDOMAINS}. Breaking..";
 
             ## put methodname and cname back
-            typeset METHOD_NAME="${CNAME}#${0}";
+            typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
             typeset RETURN_CODE=0;
             CNAME=$(/usr/bin/env basename "${0}");
 
@@ -1057,7 +1057,7 @@ function implementCertificateChange
             ## record has been added successfully through the helper
             ## ask if we want to add additional records to the zone
             ## put methodname and cname back
-            typeset METHOD_NAME="${CNAME}#${0}";
+            typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
             typeset RETURN_CODE=0;
             CNAME=$(/usr/bin/env basename "${0}");
 
@@ -1159,7 +1159,7 @@ function updateCertificate
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
-    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
     typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -1247,7 +1247,7 @@ function updateCertificate
 
         OPTIND=${CURR_OPTIND};
         CNAME=$(/usr/bin/env basename "${0}");
-        typeset METHOD_NAME="${CNAME}#${0}";
+        typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
         typeset RETURN_CODE=0;
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
@@ -1374,7 +1374,7 @@ function updateCertificate
                                     typeset -i RET_CODE=${?};
 
                                     CNAME=$(/usr/bin/env basename "${0}");
-                                    typeset METHOD_NAME="${CNAME}#${0}";
+                                    typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
                                     typeset RETURN_CODE=0;
 
                                     PREIMP_COMPLETE=${_TRUE};
@@ -1468,7 +1468,7 @@ function generateCSR
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
-    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
     typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -1558,7 +1558,7 @@ function generateCSR
                         RET_CODE=${?}
 
                         CNAME=$(/usr/bin/env basename "${0}");
-                        typeset METHOD_NAME="${CNAME}#${0}";
+                        typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
                         typeset RETURN_CODE=0;
                         CSR_COMPLETE=${_TRUE};
 
@@ -1637,7 +1637,7 @@ function implementCertificate
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
-    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
     typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -1703,7 +1703,7 @@ function implementCertificate
                         RET_CODE=${?}
 
                         CNAME=$(/usr/bin/env basename "${0}");
-                        typeset METHOD_NAME="${CNAME}#${0}";
+                        typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
                         typeset RETURN_CODE=0;
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ACTIVE_DATACENTER -> ${ACTIVE_DATACENTER}";
@@ -1819,7 +1819,7 @@ function implementCertificate
                             typeset -i RET_CODE=${?};
 
                             CNAME=$(/usr/bin/env basename "${0}");
-                            typeset METHOD_NAME="${CNAME}#${0}";
+                            typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
                             typeset RETURN_CODE=0;
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
@@ -1881,7 +1881,7 @@ function implementCertificate
                         typeset -i RET_CODE=${?};
 
                         CNAME=$(/usr/bin/env basename "${0}");
-                        typeset METHOD_NAME="${CNAME}#${0}";
+                        typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
                         typeset RETURN_CODE=0;
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
@@ -2136,7 +2136,7 @@ function implementCertificate
 [ -z "${PLUGIN_ROOT_DIR}" ] && [ -s "${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin" ] && . "${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin";
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
-METHOD_NAME="${CNAME}#startup";
+typeset typeset METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${*}";

@@ -25,7 +25,7 @@
 ## Application constants
 CNAME="${THIS_CNAME}";
 SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}"/"${0##*/}")";
-SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
+typeset SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 
 #===  FUNCTION  ===============================================================
 #          NAME:  implementCertificate
@@ -39,7 +39,7 @@ function implementCertificate
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
-    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
     typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -105,7 +105,7 @@ function implementCertificate
                         RET_CODE=${?}
 
                         CNAME=$(/usr/bin/env basename "${0}");
-                    typeset METHOD_NAME="${CNAME}#${0}";
+                    typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
 typeset RETURN_CODE=0;
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ACTIVE_DATACENTER -> ${ACTIVE_DATACENTER}";
@@ -221,7 +221,7 @@ typeset RETURN_CODE=0;
                             typeset -i RET_CODE=${?};
 
                             CNAME=$(/usr/bin/env basename "${0}");
-                        typeset METHOD_NAME="${CNAME}#${0}";
+                        typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
 typeset RETURN_CODE=0;
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
@@ -283,7 +283,7 @@ typeset RETURN_CODE=0;
                         typeset -i RET_CODE=${?};
 
                         CNAME=$(/usr/bin/env basename "${0}");
-                    typeset METHOD_NAME="${CNAME}#${0}";
+                    typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
 typeset RETURN_CODE=0;
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
@@ -538,7 +538,7 @@ typeset RETURN_CODE=0;
 [ -z "${PLUGIN_ROOT_DIR}" ] && [ -s "${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin" ] && . "${SCRIPT_ROOT}/../${LIB_DIRECTORY}/plugin";
 [ -z "${PLUGIN_ROOT_DIR}" ] && exit 1
 
-METHOD_NAME="${CNAME}#startup";
+typeset typeset METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${*}";

@@ -23,10 +23,10 @@
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
 
 ## Application constants
-CNAME="$(/usr/bin/env basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}/${0##*/}")";
-SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
-METHOD_NAME="${CNAME}#startup";
+typeset CNAME="$(/usr/bin/env basename "${0}")";
+typeset SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}/${0##*/}")";
+typeset SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
+typeset typeset METHOD_NAME="${CNAME}#startup";
 LOCKFILE=$(mktemp);
 
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set +x;
@@ -79,7 +79,7 @@ typeset -i RET_CODE=${?};
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
 
 CNAME="${THIS_CNAME}";
-typeset METHOD_NAME="${CNAME}#startup";
+typeset typeset METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -111,7 +111,7 @@ typeset -i RET_CODE=${?};
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
 
 CNAME="${THIS_CNAME}";
-METHOD_NAME="${THIS_CNAME}#startup";
+METHOD_NAME="${THIS_CNAME}#{FUNCNAME[0]}";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -132,7 +132,7 @@ function decom_master_bu
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
-    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
     typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -214,7 +214,7 @@ function decom_master_bu
                         if [ ! -z "${ZONE_LISTING}" ] && [ ! -z "${FILE_LISTING}" ]
                         then
                             ## we have data, check it
-                            if [ ${#ZONE_LISTING[*]} -ne ${#FILE_LISTING[*]} ]
+                            if [ ${#{FUNCNAME[0]}[*]} -ne ${#{FUNCNAME[0]}[*]} ]
                             then
                                 ## we have a mismatch. there should be an equal number of files to zones, this indicates a problem.
                                 ## we should fail out here, and this should be done before any other processing gets done
@@ -242,7 +242,7 @@ function decom_master_bu
                                     ## it is. good.
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creation complete. Proceeding..";
 
-                                    while [ ${D} -ne ${#ZONE_LISTING[*]} ]
+                                    while [ ${D} -ne ${#{FUNCNAME[0]}[*]} ]
                                     do
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding configuration entry for ${ZONE_LISTING[${D}]}";
 
@@ -501,7 +501,7 @@ function decom_master_bu
                     if [ ! -z "${ZONE_LISTING}" ] && [ ! -z "${FILE_LISTING}" ]
                     then
                         ## we have data, check it
-                        if [ ${#ZONE_LISTING[*]} -ne ${#FILE_LISTING[*]} ]
+                        if [ ${#{FUNCNAME[0]}[*]} -ne ${#{FUNCNAME[0]}[*]} ]
                         then
                             ## we have a mismatch. there should be an equal number of files to zones, this indicates a problem.
                             ## we should fail out here, and this should be done before any other processing gets done
@@ -530,7 +530,7 @@ function decom_master_bu
                                 ## it is. good.
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creation complete. Proceeding..";
 
-                                while [ ${D} -ne ${#ZONE_LISTING[*]} ]
+                                while [ ${D} -ne ${#{FUNCNAME[0]}[*]} ]
                                 do
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding configuration entry for ${ZONE_LISTING[${D}]}";
 
@@ -802,7 +802,7 @@ function decom_slave_bu
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
-    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
     typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -884,7 +884,7 @@ function decom_slave_bu
                         if [ ! -z "${ZONE_LISTING}" ] && [ ! -z "${FILE_LISTING}" ]
                         then
                             ## we have data, check it
-                            if [ ${#ZONE_LISTING[*]} -ne ${#FILE_LISTING[*]} ]
+                            if [ ${#{FUNCNAME[0]}[*]} -ne ${#{FUNCNAME[0]}[*]} ]
                             then
                                 ## we have a mismatch. there should be an equal number of files to zones, this indicates a problem.
                                 ## we should fail out here, and this should be done before any other processing gets done
@@ -912,7 +912,7 @@ function decom_slave_bu
                                     ## it is. good.
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creation complete. Proceeding..";
 
-                                    while [ ${D} -ne ${#ZONE_LISTING[*]} ]
+                                    while [ ${D} -ne ${#{FUNCNAME[0]}[*]} ]
                                     do
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding configuration entry for ${ZONE_LISTING[${D}]}";
 
@@ -1171,7 +1171,7 @@ function decom_slave_bu
                     if [ ! -z "${ZONE_LISTING}" ] && [ ! -z "${FILE_LISTING}" ]
                     then
                         ## we have data, check it
-                        if [ ${#ZONE_LISTING[*]} -ne ${#FILE_LISTING[*]} ]
+                        if [ ${#{FUNCNAME[0]}[*]} -ne ${#{FUNCNAME[0]}[*]} ]
                         then
                             ## we have a mismatch. there should be an equal number of files to zones, this indicates a problem.
                             ## we should fail out here, and this should be done before any other processing gets done
@@ -1200,7 +1200,7 @@ function decom_slave_bu
                                 ## it is. good.
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Creation complete. Proceeding..";
 
-                                while [ ${D} -ne ${#ZONE_LISTING[*]} ]
+                                while [ ${D} -ne ${#{FUNCNAME[0]}[*]} ]
                                 do
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Adding configuration entry for ${ZONE_LISTING[${D}]}";
 
@@ -1472,7 +1472,7 @@ function decom_master_zone
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
-    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
     typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -2093,7 +2093,7 @@ function decom_slave_zone
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
-    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
     typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -2706,7 +2706,7 @@ usage
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
-    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
     typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -2732,7 +2732,7 @@ usage
 
 [ ${#} -eq 0 ] && usage&& RETURN_CODE=${?};
 
-METHOD_NAME="${CNAME}#startup";
+typeset typeset METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${*}";

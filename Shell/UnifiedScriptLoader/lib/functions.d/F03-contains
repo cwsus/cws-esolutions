@@ -12,7 +12,7 @@ function contains
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
-    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -39,7 +39,7 @@ function contains
     fi
 
     typeset SEARCH_STRING="${1}"; shift;
-    set -A SEARCH_ARRAY "${@}"; #typeset SEARCH_ARRAY;
+    set -A SEARCH_ARRAY "${@}"; #{FUNCNAME[0]} SEARCH_ARRAY;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SEARCH_STRING -> ${SEARCH_STRING}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SEARCH_ARRAY -> ${SEARCH_ARRAY[@]}";

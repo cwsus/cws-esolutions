@@ -24,10 +24,10 @@ trap 'set +v; set +x' INT TERM EXIT;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
 
 ## Application constants
-CNAME="$(/usr/bin/env basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}/${0##*/}")";
-SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
-METHOD_NAME="${CNAME}#startup";
+typeset CNAME="$(/usr/bin/env basename "${0}")";
+typeset SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}/${0##*/}")";
+typeset SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
+typeset typeset METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
@@ -79,7 +79,7 @@ typeset -i RET_CODE=${?};
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
 
 CNAME="${THIS_CNAME}";
-typeset METHOD_NAME="${CNAME}#startup";
+typeset typeset METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -105,7 +105,7 @@ function retrieve_file_list
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
-    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
     typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -123,7 +123,7 @@ function retrieve_file_list
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Search complete. Processing..";
 
-        if [ ${#FILE_LIST[*]} -eq 0 ]
+        if [ ${#{FUNCNAME[0]}[*]} -eq 0 ]
         then
             writeLogEntry "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No backup files were found. Please try again.";
 
@@ -137,7 +137,7 @@ function retrieve_file_list
             ## found more than 1 backup file. we need to get clarification
             ## before we can continue - so we'll write out the list to a
             ## to a file to send back to the UI
-            while [ ${A} -ne ${#FILE_LIST[*]} ]
+            while [ ${A} -ne ${#{FUNCNAME[0]}[*]} ]
             do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FILE_LIST->${FILE_LIST[${A}]}";
 
@@ -181,7 +181,7 @@ function backout_change
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
-    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
     typeset RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -205,20 +205,20 @@ function backout_change
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Search complete. Processing..";
 
-            if [ ${#FILE_LIST[*]} -eq 0 ]
+            if [ ${#{FUNCNAME[0]}[*]} -eq 0 ]
             then
                 writeLogEntry "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "No backup files were found based on the provided criteria. Please try again.";
 
                 RETURN_CODE=12;
             else
-                if [ ${#FILE_LIST[*]} -gt 1 ]
+                if [ ${#{FUNCNAME[0]}[*]} -gt 1 ]
                 then
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Multiple backout files located.. listing.";
 
                     ## found more than 1 backup file. we need to get clarification
                     ## before we can continue - so we'll write out the list to a
                     ## to a file to send back to the UI
-                    while [ ${A} -ne ${#FILE_LIST[*]} ]
+                    while [ ${A} -ne ${#{FUNCNAME[0]}[*]} ]
                     do
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FILE_LIST->${FILE_LIST[${A}]}";
 
@@ -534,7 +534,7 @@ function backout_change
 
                                     ## ok, so the zone config file shouldve been built. lets see if we have the same number of
                                     ## zone entries as we do in the tar file
-                                    if [ $(grep -c "zone" "${NAMED_ROOT}/${NAMED_CONF_DIR}"/${ZONE_CONF_NAME}) -eq ${#ZONE_LIST[*]} ]
+                                    if [ $(grep -c "zone" "${NAMED_ROOT}/${NAMED_CONF_DIR}"/${ZONE_CONF_NAME}) -eq ${#{FUNCNAME[0]}[*]} ]
                                     then
                                         ## we do. write out the $include entry
                                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Decompression and zone configuration successfully built. Adding into primary config file..";
@@ -630,7 +630,7 @@ function usage
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
-    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
     typeset RETURN_CODE=3;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";

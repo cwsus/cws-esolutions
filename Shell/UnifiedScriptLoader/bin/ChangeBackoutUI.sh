@@ -22,10 +22,10 @@
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
 
 ## Application constants
-CNAME="$(/usr/bin/env basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}/${0##*/}")";
-SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
-METHOD_NAME="${CNAME}#startup";
+typeset CNAME="$(/usr/bin/env basename "${0}")";
+typeset SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}/${0##*/}")";
+typeset SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
+typeset typeset METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
@@ -55,7 +55,7 @@ METHOD_NAME="${CNAME}#startup";
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
 
 CNAME=${THIS_CNAME};
-METHOD_NAME="${CNAME}#startup";
+typeset typeset METHOD_NAME="${CNAME}#startup";
 
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${*}";
@@ -78,7 +78,7 @@ function main
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
-    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${*}";
@@ -172,7 +172,7 @@ function main
                     ## display max, we show a pageable list. otherwise, just show the results
                     unset RET_CODE;
 
-                    if [ ${#FILE_LIST[*]} -gt ${LIST_DISPLAY_MAX} ]
+                    if [ ${#{FUNCNAME[0]}[*]} -gt ${LIST_DISPLAY_MAX} ]
                     then
                         while true
                         do
@@ -180,7 +180,7 @@ function main
 
                             while [ ${A} -ne ${LIST_DISPLAY_MAX} ]
                             do
-                                if [ ! ${B} -eq ${#FILE_LIST[*]} ]
+                                if [ ! ${B} -eq ${#{FUNCNAME[0]}[*]} ]
                                 then
                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${B} - $(printf ${FILE_LIST[${B}]} | cut -d "/" -f 7)";
 
@@ -190,7 +190,7 @@ function main
                                     (( A += 1 ));
                                     (( B += 1 ));
                                 else
-                                    B=${#FILE_LIST[*]};
+                                    B=${#{FUNCNAME[0]}[*]};
                                     A=${LIST_DISPLAY_MAX};
                                 fi
                             done
@@ -215,7 +215,7 @@ function main
                                     clear;
                                     unset SELECTION;
 
-                                    if [ ${B} -ge ${#FILE_LIST[*]} ]
+                                    if [ ${B} -ge ${#{FUNCNAME[0]}[*]} ]
                                     then
                                         writeLogEntry "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Cannot shift past end of data.";
 
@@ -295,7 +295,7 @@ function main
                         do
                             awk -F "=" '/\<system.list.available\>/{print "\t" $2 "\n"}' ${SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//';
 
-                            while [ ${A} -ne ${#FILE_LIST[*]} ]
+                            while [ ${A} -ne ${#{FUNCNAME[0]}[*]} ]
                             do
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${A} - $(printf ${FILE_LIST[${A}]} | cut -d "/" -f 7)";
 
@@ -383,12 +383,12 @@ function process_backout_file
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
-    typeset METHOD_NAME="${CNAME}#${0}";
+    typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${*}";
 
-    if [ ${#FILE_LIST[*]} -eq 0 ]
+    if [ ${#{FUNCNAME[0]}[*]} -eq 0 ]
     then
         ## set up our messaging replacementes
         BU=$(printf ${SVC_LIST} | cut -d "," -f 1);
@@ -437,7 +437,7 @@ function process_backout_file
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
                 ## validate the input
-                [ ${#FILE_LIST[*]} -eq 0 ] && ${PLUGIN_LIB_DIRECTORY}/run_backout.sh -b ${BU} -d ${CHANGE_DT} -c ${CHANGE_REQ} -e || ${PLUGIN_LIB_DIRECTORY}/run_backout.sh -f $(printf ${FILE_LIST[${SELECTION}]} | cut -d "/" -f 7 | sed -e "s/^M//g");
+                [ ${#{FUNCNAME[0]}[*]} -eq 0 ] && ${PLUGIN_LIB_DIRECTORY}/run_backout.sh -b ${BU} -d ${CHANGE_DT} -c ${CHANGE_REQ} -e || ${PLUGIN_LIB_DIRECTORY}/run_backout.sh -f $(printf ${FILE_LIST[${SELECTION}]} | cut -d "/" -f 7 | sed -e "s/^M//g");
                 typeset -i RET_CODE=${?};
 
                 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set -x;
@@ -521,7 +521,7 @@ function process_backout_file
                     do
                         awk -F "=" '/\<backout.select.file\>/{print "\t" $2}' ${PLUGIN_SYSTEM_MESSAGES} | sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//';
 
-                        while [ ${A} -ne ${#FILE_LIST[*]} ]
+                        while [ ${A} -ne ${#{FUNCNAME[0]}[*]} ]
                         do
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "File ${A} -> ${FILE_LIST[${A}]}";
 
