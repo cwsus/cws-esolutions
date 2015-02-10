@@ -18,11 +18,8 @@ package com.cws.esolutions.security.main;
 import java.io.File;
 import java.util.List;
 import java.util.Arrays;
-
 import org.slf4j.Logger;
-
 import java.io.IOException;
-
 import org.slf4j.LoggerFactory;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
