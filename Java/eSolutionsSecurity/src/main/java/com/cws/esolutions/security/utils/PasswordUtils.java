@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2009 - 2014 CaspersBox Web Services
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,32 +26,21 @@ package com.cws.esolutions.security.utils;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import javax.crypto.Mac;
-
 import org.slf4j.Logger;
-
 import javax.crypto.Cipher;
-
 import org.slf4j.LoggerFactory;
-
 import java.security.MessageDigest;
-
 import javax.crypto.spec.SecretKeySpec;
 import javax.crypto.BadPaddingException;
-
-import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.AlgorithmParameters;
-
 import javax.crypto.NoSuchPaddingException;
-
 import java.io.UnsupportedEncodingException;
-
 import javax.crypto.IllegalBlockSizeException;
-
 import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.codec.binary.Base64;
-
 import java.security.NoSuchAlgorithmException;
+import java.security.InvalidAlgorithmParameterException;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
 /**
@@ -373,7 +362,7 @@ public final class PasswordUtils
             mac.init(signKey);
             byte[] hash = mac.doFinal(data);
             int offset = hash[20 - 1] & 0xF;
-            
+
             for (int i = 0; i < 4; i++)
             {
                 truncatedHash <<= 8;

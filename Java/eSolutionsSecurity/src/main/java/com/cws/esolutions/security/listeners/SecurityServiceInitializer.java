@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2009 - 2014 CaspersBox Web Services
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -28,26 +28,17 @@ package com.cws.esolutions.security.listeners;
 
 import java.net.URL;
 import java.util.Map;
-
 import org.slf4j.Logger;
-
 import java.util.HashMap;
-
 import javax.sql.DataSource;
-
 import java.sql.SQLException;
-
 import org.slf4j.LoggerFactory;
-
 import java.io.FileInputStream;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.JAXBException;
-
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
-
 import org.apache.log4j.helpers.Loader;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -112,11 +103,14 @@ public class SecurityServiceInitializer
                     catch (NullPointerException npx1)
                     {
                         System.err.println("Unable to load logging configuration. No logging enabled!");
+                        System.err.println("");
+                        npx1.printStackTrace();
                     }
                 }
             }
             else
             {
+                System.err.println("Logging configuration file " + loggingConfig + " does not exist. No logging enabled!");
                 System.err.println("Unable to load logging configuration. No logging enabled!");
             }
 
@@ -199,14 +193,17 @@ public class SecurityServiceInitializer
         }
         catch (JAXBException jx)
         {
+            jx.printStackTrace();
             throw new SecurityServiceException(jx.getMessage(), jx);
         }
         catch (FileNotFoundException fnfx)
         {
+            fnfx.printStackTrace();
             throw new SecurityServiceException(fnfx.getMessage(), fnfx);
         }
         catch (MalformedURLException mux)
         {
+            mux.printStackTrace();
             throw new SecurityServiceException(mux.getMessage(), mux);
         }
     }

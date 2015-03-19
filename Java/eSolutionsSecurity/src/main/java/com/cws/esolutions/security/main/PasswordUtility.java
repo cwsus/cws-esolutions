@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2009 - 2014 CaspersBox Web Services
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -35,9 +35,9 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.config.xml.SystemConfig;
+import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.config.xml.PasswordRepositoryConfig;
@@ -61,8 +61,8 @@ public class PasswordUtility
 
     private static final String CNAME = PasswordUtility.class.getName();
     private static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
-    private static final String LOG_CONFIG = System.getProperty("user.home") + "/etc/SecurityService/logging/logging.xml";
-    private static final String SEC_CONFIG = System.getProperty("user.home") + "/etc/SecurityService/config/ServiceConfig.xml";
+    private static final String LOG_CONFIG = System.getProperty("user.home") + "/.etc/SecurityService/logging/logging.xml";
+    private static final String SEC_CONFIG = System.getProperty("user.home") + "/.etc/SecurityService/config/ServiceConfig.xml";
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -170,26 +170,33 @@ public class PasswordUtility
         }
     }
 
-    public static final void main(final String[] args)
+    public static void main(final String[] args)
     {
         final String methodName = PasswordUtility.CNAME + "#main(final String[] args)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", (Object) args);
-        }
 
         if (args.length == 0)
         {
             HelpFormatter usage = new HelpFormatter();
             usage.printHelp(PasswordUtility.CNAME, options, true);
 
-            return;
+            System.exit(1);
         }
 
         try
         {
+            // load service config first !!
+            SecurityServiceInitializer.initializeService(PasswordUtility.SEC_CONFIG, PasswordUtility.LOG_CONFIG, false);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug(methodName);
+
+                for (String arg : args)
+                {
+                    DEBUGGER.debug("Value: {}", arg);
+                }
+            }
+
             CommandLineParser parser = new PosixParser();
             CommandLine commandLine = parser.parse(options, args);
 
@@ -200,8 +207,6 @@ public class PasswordUtility
                 DEBUGGER.debug("CommandLine commandLine.getOptions(): {}", (Object[]) commandLine.getOptions());
                 DEBUGGER.debug("CommandLine commandLine.getArgList(): {}", commandLine.getArgList());
             }
-
-            SecurityServiceInitializer.initializeService(PasswordUtility.SEC_CONFIG, PasswordUtility.LOG_CONFIG, false);
 
             final SecurityConfigurationData secConfigData = PasswordUtility.svcBean.getConfigData();
             final SecurityConfig secConfig = secConfigData.getSecurityConfig();
@@ -218,6 +223,20 @@ public class PasswordUtility
 
             if (commandLine.hasOption("encrypt"))
             {
+                if ((StringUtils.isBlank(repoConfig.getPasswordFile())) || (StringUtils.isBlank(repoConfig.getSaltFile())))
+                {
+                    System.err.println("The password/salt files are not configured. Entries will not be stored!");
+                }
+
+                File passwordFile = FileUtils.getFile(repoConfig.getPasswordFile());
+                File saltFile = FileUtils.getFile(repoConfig.getSaltFile());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("String entryName: {}", passwordFile);
+                    DEBUGGER.debug("String username: {}", saltFile);
+                }
+
                 String entryName = commandLine.getOptionValue("entry");
                 String username = commandLine.getOptionValue("username");
                 String password = commandLine.getOptionValue("password");
@@ -233,60 +252,47 @@ public class PasswordUtility
 
                 final String salt = RandomStringUtils.randomAlphanumeric(length);
                 final String encodedUserName = PasswordUtils.base64Encode(username, systemConfig.getEncoding());
-                final String encrypted = PasswordUtils.encryptText(password, salt, secConfig.getEncryptionAlgorithm(),
-                    secConfig.getEncryptionInstance(), systemConfig.getEncoding());
+                final String encodedPassword = PasswordUtils.encryptText(password, salt, secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), systemConfig.getEncoding());
 
                 if (DEBUG)
                 {
                     DEBUGGER.debug("String salt: {}", salt);
                     DEBUGGER.debug("String encodedUserName: {}", encodedUserName);
-                    DEBUGGER.debug("String encrypted: {}", encrypted);
+                    DEBUGGER.debug("String encodedPassword: {}", encodedPassword);
                 }
 
                 if (commandLine.hasOption("store"))
                 {
-                    if (StringUtils.isNotBlank(repoConfig.getPasswordFile()))
+                    try
                     {
-                        try
+                        new File(passwordFile.getParent()).mkdirs();
+                        new File(saltFile.getParent()).mkdirs();
+
+                        boolean saltFileExists = (saltFile.exists()) ? true : saltFile.createNewFile();
+
+                        // write the salt out first
+                        if (!(saltFileExists))
                         {
-                            File passwordFile = FileUtils.getFile(repoConfig.getPasswordFile());
-                            File saltFile = FileUtils.getFile(repoConfig.getSaltFile());
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("File passwordFile: {}", passwordFile);
-                                DEBUGGER.debug("File saltFile: {}", saltFile);
-                            }
-
-                            new File(passwordFile.getParent()).mkdirs();
-                            new File(saltFile.getParent()).mkdirs();
-
-                            boolean saltFileExists = (saltFile.exists()) ? true : saltFile.createNewFile();
-
-                            // write the salt out first
-                            if (!(saltFileExists))
-                            {
-                                throw new IOException("Unable to create salt file");
-                            }
-
-                            boolean passwordFileExists = (passwordFile.exists()) ? true : passwordFile.createNewFile();
-
-                            if (!(passwordFileExists))
-                            {
-                                throw new IOException("Unable to create password file");                            
-                            }
-
-                            FileUtils.writeStringToFile(saltFile, entryName + "," + encodedUserName + "," + salt + System.getProperty("line.separator"), true);
-                            FileUtils.writeStringToFile(passwordFile, entryName + "," + encodedUserName + "," + encrypted + System.getProperty("line.separator"), true);
+                            throw new IOException("Unable to create salt file");
                         }
-                        catch (IOException iox)
+
+                        boolean passwordFileExists = (passwordFile.exists()) ? true : passwordFile.createNewFile();
+
+                        if (!(passwordFileExists))
                         {
-                            ERROR_RECORDER.error(iox.getMessage(), iox);
+                            throw new IOException("Unable to create password file");
                         }
+
+                        FileUtils.writeStringToFile(saltFile, entryName + "," + encodedUserName + "," + salt + System.getProperty("line.separator"), true);
+                        FileUtils.writeStringToFile(passwordFile, entryName + "," + encodedUserName + "," + encodedPassword + System.getProperty("line.separator"), true);
+                    }
+                    catch (IOException iox)
+                    {
+                        ERROR_RECORDER.error(iox.getMessage(), iox);
                     }
                 }
 
-                System.out.println("Entry Name: " + entryName + "; Username: " + username + "; Plain Text: " + password + "; Salt: " + salt + "; Encrypted: " + encrypted);
+                System.out.println("Entry Name: " + entryName + "; Username: " + username + "; Plain Text: " + password + "; Salt: " + salt + "; Encrypted: " + encodedPassword);
             }
 
             if (commandLine.hasOption("decrypt"))
@@ -317,7 +323,6 @@ public class PasswordUtility
                     DEBUGGER.debug("String username: {}", username);
                 }
 
-                System.out.println(repoConfig.getPasswordFile());
                 File passwordFile = FileUtils.getFile(repoConfig.getPasswordFile());
                 File saltFile = FileUtils.getFile(repoConfig.getSaltFile());
 
@@ -472,24 +477,34 @@ public class PasswordUtility
             ERROR_RECORDER.error(iox.getMessage(), iox);
 
             System.err.println("An error occurred during processing: " + iox.getMessage());
+
+            System.exit(1);
         }
         catch (ParseException px)
         {
             ERROR_RECORDER.error(px.getMessage(), px);
 
             System.err.println("An error occurred during processing: " + px.getMessage());
+
+            System.exit(1);
         }
         catch (SecurityException sx)
         {
             ERROR_RECORDER.error(sx.getMessage(), sx);
 
             System.err.println("An error occurred during processing: " + sx.getMessage());
+
+            System.exit(1);
         }
         catch (SecurityServiceException ssx)
         {
             ERROR_RECORDER.error(ssx.getMessage(), ssx);
 
             System.err.println("An error occurred during processing: " + ssx.getMessage());
+
+            System.exit(1);
         }
+
+        System.exit(0);
     }
 }
