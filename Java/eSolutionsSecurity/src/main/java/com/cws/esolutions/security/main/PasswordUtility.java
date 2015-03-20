@@ -461,7 +461,7 @@ public class PasswordUtility
                     DEBUGGER.debug("String decrypted: {}", decrypted);
                 }
 
-                System.out.println("Entry Name: " + entryName + "; Username: " + username + "; Plain Text: " + decrypted + "; Salt: " + saltEntryPassword + "; Encrypted: " + passwordEntryPassword);
+                System.out.println("Entry Name: " + entryName + "; Username: " + username + "; Plain Text: " + decrypted);
             }
             else if (commandLine.hasOption("encode"))
             {
