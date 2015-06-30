@@ -1,9 +1,0 @@
-DNS Team,
-
-The following site has been failed over by &USER_NAME:
-
-Change Request:   &CHANGE_CONTROL
-Site Hostname:    &ZONE_NAME
-Business Unit:    &BIZ_UNIT
-Project Code:     &PROJ_CODE
-New datacenter:   &TARGET_DC
