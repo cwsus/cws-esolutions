@@ -19,7 +19,7 @@
     </scm>
 
     <properties>
-        <activemq.version>5.8.0</activemq.version>
+        <activemq.version>5.9.1</activemq.version>
         <jms-api.version>1.1-rev-1</jms-api.version>
         <quartz.version>2.1.6</quartz.version>
         <j2ssh.version>0.2.9</j2ssh.version>
@@ -36,35 +36,6 @@
 
     <dependencies>
         <!-- Third-party jars -->
-        <!-- bouncycastle -->
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>${bouncycastle.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpkix-jdk15on</artifactId>
-            <version>${bouncycastle.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpg-jdk15on</artifactId>
-            <version>${bouncycastle.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-ext-jdk15on</artifactId>
-            <version>${bouncycastle.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
         <!-- apache commons -->
         <dependency>
             <groupId>commons-cli</groupId>
@@ -72,20 +43,6 @@
             <version>${commons-cli.version}</version>
             <type>jar</type>
             <scope>compile</scope>
-        </dependency>
-        <!-- activemq -->
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-all</artifactId>
-            <version>${activemq.version}</version>
-            <type>jar</type>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>slf4j-api</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <!-- jms -->
         <dependency>
