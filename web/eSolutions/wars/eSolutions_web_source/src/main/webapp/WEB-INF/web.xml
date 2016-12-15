@@ -247,6 +247,14 @@
             <description>No access to JSP files</description>
             <url-pattern>*.jsp</url-pattern>
         </web-resource-collection>
+        <web-resource-collection>
+            <web-resource-name>Secure URLs</web-resource-name>
+            <description>Enforce SSL</description>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
     </security-constraint>
 
     <session-config>
