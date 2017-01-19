@@ -1,0 +1,14 @@
+<IfModule proxy_module>
+    ProxyRequests                off
+    ProxyVia                     block
+    ProxyTimeout                 30
+    ProxyErrorOverride           on
+    ProxyPass                    "/{{ vhost }}/ ajp://{{ tomcatHostName }}/{{ vhost }}/"
+    ProxyPassReverse             "/{{ vhost }}/ ajp://{{ tomcatHostName }}/{{ vhost }}/"
+
+    <Proxy "/{{ vhost }}/"">
+        Order                    deny,allow
+        Deny                     from all
+        Allow                    "{{ allowed_networks }}"
+    </Proxy>
+</IfModule>

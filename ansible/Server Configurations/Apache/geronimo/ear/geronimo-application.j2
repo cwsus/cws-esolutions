@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application application-name="@artifactId@" xmlns="http://geronimo.apache.org/xml/ns/j2ee/application-2.0">
+    <environment xmlns="http://geronimo.apache.org/xml/ns/deployment-1.2">
+        <moduleId>
+            <groupId>{{ groupId }}</groupId>
+            <artifactId>{{ artifactId }}</artifactId>
+            <version>{{ version }}</version>
+            <type>ear</type>
+        </moduleId>
+    </environment>
+
+    <!--
+    <module>
+        <connector>tranql-connector-mysql-local-1.6.rar</connector>
+        <alt-dd>cwssec.xml</alt-dd>
+    </module>
+
+    <module>
+        <connector>tranql-connector-mysql-local-1.6.rar</connector>
+        <alt-dd>esolutionssvc.xml</alt-dd>
+    </module>
+    -->
+
+    <module>
+        <web>{{ module }}</web>
+        <alt-dd>{{ module }}/WEB-INF/geronimo-web.xml</alt-dd>
+    </module>
+</application>
