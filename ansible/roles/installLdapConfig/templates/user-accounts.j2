@@ -1,7 +1,7 @@
 version: 1
 
 <% for user in userlist %>
-dn: uid={{ user_id }},organizationalunitname=Users,organizationname={{ organization_name }},dc={{ domain_name_one }},dc={{ domain_name_two }}
+dn: uid={{ user_id }},organizationalunitname=Users,organizationname={{ organization_name }},{{ ldap_domain }}
 objectClass: top
 objectClass: cwsperson
 objectClass: inetOrgPerson
