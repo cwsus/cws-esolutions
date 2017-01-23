@@ -2,5 +2,4 @@
 #          NAME:  hosts
 #   DESCRIPTION:  Host list to execute against
 #==============================================================================
-[admin]
-admin01.caspersbox.com
+---
