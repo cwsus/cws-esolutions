@@ -1,0 +1,58 @@
+#=====  ANSIBLE   =============================================================
+#          NAME:  build-ecelerity/templates/auth.j2
+#   DESCRIPTION:  "{{ ansible_managed }}"
+#==============================================================================
+
+##
+## Catalina specifics
+##
+typeset CATALINA_HOME="{{ catalina_home }}"
+typeset CATALINA_BASE="{{ catalina_base }}"
+typeset CATALINA_TMPDIR="${CATALINA_HOME}/tmp"
+typeset CATALINA_OUT="${CATALINA_HOME}/logs/stdout"
+typeset CATALINA_PID="${CATALINA_HOME}/logs/catalina.pid"
+
+##
+## catalina options
+##
+typeset CATALINA_OPTS="";
+
+##
+## Java specifics
+##
+typeset JAVA_HOME="/usr/java/latest"
+typeset JRE_HOME="/usr/java/latest/jre"
+
+##
+## JMX
+##
+typeset JMX_OPTIONS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=${JMX_PORT}";
+typeset JMX_OPTIONS="${JMX_OPTIONS} -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=true";
+typeset JMX_OPTIONS="${JMX_OPTIONS} -Dcom.sun.management.jmxremote.password.file=${JMX_AUTH_FILE}";
+
+typeset DEBUG_OPTS="-Djava.security.debug=all -Djavax.net.debug=all";
+
+##
+## Java options
+##
+typeset JAVA_OPTS="-server -verbose:gc -verbose:jni -Xrs -Xms512m -Xmx512m -Xshare:classes -XX:+ScavengeBeforeFullGC";
+typeset JAVA_OPTS="${JAVA_OPTS} -XX:-UseConcMarkSweepGC -XX:+UseGCOverheadLimit -XX:-UseParallelGC -XX:-PrintClassHistogram";
+typeset JAVA_OPTS="${JAVA_OPTS} -XX:-PrintConcurrentLocks -XX:-PrintGC -XX:-PrintGCDetails -XX:-PrintGCTimeStamps";
+typeset JAVA_OPTS="${JAVA_OPTS} -XX:-UseParallelOldGC -XX:+AggressiveOpts -XX:+UseLargePages -XX:+UseStringCache";
+typeset JAVA_OPTS="${JAVA_OPTS} -XX:+UseCompressedStrings -XX:+OptimizeStringConcat -XX:ErrorFile=${LOG_ROOT}/hs_err_pid.log";
+typeset JAVA_OPTS="${JAVA_OPTS} -XX:HeapDumpPath=${LOG_ROOT}/java_pid.hprof -XX:-HeapDumpOnOutOfMemoryError";
+typeset JAVA_OPTS="${JAVA_OPTS} -Xloggc:${LOG_ROOT}/gclog -XX:-UseGCLogFileRotation -XX:NumberOfGClogFiles=1";
+typeset JAVA_OPTS="${JAVA_OPTS} -XX:+AlwaysPreTouch";
+
+##
+## Java parameters
+##
+typeset JAVA_OPTS="${JAVA_OPTS} -DLOG_ROOT=${LOG_ROOT} -Dbuild.compiler.emacs=true -Dfile.encoding=utf-8";
+typeset JAVA_OPTS="${JAVA_OPTS} -Djava.net.preferIPv4Stack=true -Djava.awt.headless=true";
+
+##
+## i guess theres a java tools options ??
+##
+typeset JAVA_TOOL_OPTIONS="-Xdebug ${JAVA_TOOL_OPTIONS} -XX:OnError=\"kill -3 %p\"";
+typeset JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,address=${LISTEN_ADDR}:${PORT_NUM},timeout=900000,suspend=n";
+typeset JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS} -XX:OnOutOfMemoryError=\"kill -3 %p; jmap -dump:format=b,file=${LOG_ROOT}/heap-%p.dmp %p\"";

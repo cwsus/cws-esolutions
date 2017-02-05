@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context docBase="C:/appvol/ATS70/eSolutions/eSolutions_web_source-1.0.war" sessionCookieDomain="127.0.0.1" sessionCookiePath="/eSolutions" sessionCookieName="ESOLUTIONS_ID">
+<Context docBase="{{ docBase }}/eSolutions_web_source-1.0.war" sessionCookieDomain="127.0.0.1" sessionCookiePath="/eSolutions" sessionCookieName="ESOLUTIONS_ID">
     <Resource name="jdbc/esolutionssvc" auth="Container" type="javax.sql.DataSource"
         username="appuser" password="appuser10" driverClassName="com.mysql.jdbc.Driver"
-        url="jdbc:mysql://127.0.0.1/esolutionssvc?useConfigs=fullDebug&amp;useCompression=true&amp;
+        url="jdbc:mysql://{{ dbaseServerHost }}/esolutionssvc?useConfigs=fullDebug&amp;useCompression=true&amp;
             useSSL=true&amp;requireSSL=true&amp;verifyServerCertificate=true&amp;
             clientCertificateKeyStoreUrl=${catalina.home}/conf/tomcat.jks&amp;
             clientCertificateKeyStoreType=JKS&amp;clientCertificateKeyStorePassword=changeit&amp;
@@ -22,7 +22,7 @@
 
     <Resource name="jdbc/cwssec" auth="Container" type="javax.sql.DataSource"
         username="appuser" password="appuser10" driverClassName="com.mysql.jdbc.Driver"
-        url="jdbc:mysql://127.0.0.1/cwssec?useConfigs=fullDebug&amp;useCompression=true&amp;
+        url="jdbc:mysql://{{ dbaseServerHost }}/cwssec?useConfigs=fullDebug&amp;useCompression=true&amp;
             useSSL=true&amp;requireSSL=true&amp;verifyServerCertificate=true&amp;
             clientCertificateKeyStoreUrl=${catalina.home}/conf/tomcat.jks&amp;
             clientCertificateKeyStoreType=JKS&amp;clientCertificateKeyStorePassword=changeit&amp;
@@ -44,12 +44,12 @@
         factory="org.apache.activemq.jndi.JNDIReferenceFactory" brokerURL="tcp://127.0.0.1:61616" />
 
     <Resource name="jms/requestQueue" auth="Container" type="org.apache.activemq.command.ActiveMQQueue"
-        factory="org.apache.activemq.jndi.JNDIReferenceFactory" physicalName="CWS.REQUEST.QUEUE"/>
+        factory="org.apache.activemq.jndi.JNDIReferenceFactory" physicalName="{{ mqRequestQueue }}"/>
 
     <Resource name="jms/responseQueue" auth="Container" type="org.apache.activemq.command.ActiveMQQueue"
-        factory="org.apache.activemq.jndi.JNDIReferenceFactory" physicalName="CWS.RESPONSE.QUEUE"/>
+        factory="org.apache.activemq.jndi.JNDIReferenceFactory" physicalName="{{ mqResponseQueue }}"/>
 
-    <Valve className="org.apache.catalina.valves.ExtendedAccessLogValve" directory="C:/appvol/ATS70/eSolutions/applog" prefix="access" suffix=".log"
+    <Valve className="org.apache.catalina.valves.ExtendedAccessLogValve" directory="{{ logroot }}" prefix="access" suffix=".log"
         fileDateFormat="yyyy-MM-dd" rotatable="true" encoding="UTF-8" locale="en_US" requestAttributesEnabled="true" buffered="true"
         pattern="date time time-taken bytes cs-uri cs-uri-query cs-uri-stem date s-dns s-ip sc-status c-dns x-H(remoteUser) cs-method cs-uri x-H(protocol)" />        
 </Context>
