@@ -23,8 +23,14 @@ COMMIT;
 --
 -- add privileges
 --
-GRANT SELECT,INSERT,UPDATE,DELETE,EXECUTE ON cwssec.* TO 'appuser'@'{{ sql_server }}' IDENTIFIED BY PASSWORD '*ED66694310AF846C68C9FC3D430B30594837998D';
-GRANT SELECT ON `mysql`.`proc` TO 'appuser'@'{{ sql_server }}';
+GRANT SELECT, INSERT, UPDATE, DELETE, EXECUTE ON cwssec.* TO '{{ sqlUserName }}'@'localhost' IDENTIFIED BY PASSWORD '*ED66694310AF846C68C9FC3D430B30594837998D';
+GRANT SELECT ON `mysql`.`proc` TO '{{ sqlUserName }}'@'{{ sqlHostName }}';
+
+<% for host in hostlist %>
+GRANT SELECT, INSERT, UPDATE, DELETE, EXECUTE ON cwssec.* TO '{{ sqlUserName }}'@'{{ host }}' IDENTIFIED BY PASSWORD '*ED66694310AF846C68C9FC3D430B30594837998D';
+GRANT SELECT ON `mysql`.`proc` TO 'appuser'@'{{ host }}';
+
+<% endfor %>
 
 FLUSH PRIVILEGES;
 COMMIT;
