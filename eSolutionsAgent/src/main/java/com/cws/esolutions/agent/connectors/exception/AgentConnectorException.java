@@ -27,14 +27,29 @@ package com.cws.esolutions.agent.connectors.exception;
  */
 import com.cws.esolutions.agent.exception.AgentException;
 /**
- * @see com.cws.esolutions.agent.exception.AgentException
+ * eSolutionsAgent
+ * com.cws.esolutions.agent.connectors.exception
+ * AgentConnectorException.java
+ *
+ * TODO: Add class description
+ *
+ * @author 35033355
+ * @version 1.0
+ *
+ * History
+ * ----------------------------------------------------------------------------
+ * 35033355 @ Dec 2, 2014 10:14:17 AM
+ *     Created.
  */
 public class AgentConnectorException extends AgentException
 {
     private static final long serialVersionUID = -6855732173388405517L;
 
     /**
-     * @see com.cws.esolutions.agent.exception.AgentException#CoreServiceException(java.lang.String)
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param message - The message for the exception
      */
     public AgentConnectorException(final String message)
     {
@@ -42,7 +57,10 @@ public class AgentConnectorException extends AgentException
     }
 
     /**
-     * @see com.cws.esolutions.agent.exception.AgentException#CoreServiceException(java.lang.Throwable)
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param throwable - The throwable for the exception
      */
     public AgentConnectorException(final Throwable throwable)
     {
@@ -50,7 +68,11 @@ public class AgentConnectorException extends AgentException
     }
 
     /**
-     * @see com.cws.esolutions.agent.exception.AgentException#CoreServiceException(java.lang.String, java.lang.Throwable)
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param message - The message for the exception
+     * @param throwable - The throwable for the exception
      */
     public AgentConnectorException(final String message, final Throwable throwable)
     {

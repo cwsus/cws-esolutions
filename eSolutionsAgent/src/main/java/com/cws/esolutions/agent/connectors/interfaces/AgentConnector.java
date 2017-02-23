@@ -34,10 +34,6 @@ import com.cws.esolutions.agent.connectors.exception.AgentConnectorException;
  *
  * TODO: Add class description
  *
- * $Id: cws-codetemplates.xml 2286 2013-01-03 20:50:12Z kmhuntly@gmail.com $
- * $Author: kmhuntly@gmail.com $
- * $Date: 2013-01-03 15:50:12 -0500 (Thu, 03 Jan 2013) $
- * $Revision: 2286 $
  * @author 35033355
  * @version 1.0
  *
@@ -52,10 +48,10 @@ public interface AgentConnector
      * 
      * TODO: Add in the method description/comments
      *
-     * @param mbeanName
-     * @param jmxConfig
-     * @throws IOException
-     * @throws MalformedURLException
+     * @param mbeanName - The mbean to load
+     * @param jmxConfig - The JMX configuration to use
+     * @return AgentConnector - The AgentConnector class
+     * @throws AgentConnectorException - AgentConnectorException
      */
     public Object getJMXConnector(final String mbeanName, final JMXConfig jmxConfig) throws AgentConnectorException;
 }

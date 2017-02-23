@@ -1,5 +1,0 @@
-<resources>
-    <string name="homeTitle">eSolutions - Home</string>
-    <string name="welcome" formatted="false">Welcome, %s. Your last login was on %s</string>
-</resources>
-

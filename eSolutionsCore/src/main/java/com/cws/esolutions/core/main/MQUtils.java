@@ -69,7 +69,7 @@ public final class MQUtils
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", args);
+            DEBUGGER.debug("Value: {}", (Object[]) args);
         }
     }
 

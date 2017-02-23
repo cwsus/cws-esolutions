@@ -311,7 +311,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("Value: {}", data);
+                            DEBUGGER.debug("Value: {}", (Object[]) data);
                         }
 
                         responseData.add(data);

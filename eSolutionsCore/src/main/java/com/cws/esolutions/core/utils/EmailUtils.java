@@ -421,7 +421,7 @@ public final class EmailUtils
      * @param dataSource - The email message
      * @param authRequired - <code>true</code> if authentication is required, <code>false</code> otherwise
      * @param authList - If authRequired is true, this must be populated with the auth info
-     * @return List<EmailMessage> - The list of email messages in the mailstore
+     * @return List - The list of email messages in the mailstore
      * @throws MessagingException {@link javax.mail.MessagingException} if an exception occurs during processing
      */
     public static final synchronized List<EmailMessage> readEmailMessages(final Properties dataSource, final boolean authRequired, final List<String> authList) throws MessagingException

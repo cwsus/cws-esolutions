@@ -34,7 +34,9 @@ public class FileHandlerException extends CoreServiceException
     private static final long serialVersionUID = -7112480254009579206L;
 
     /**
-     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.String) 
+     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.String)
+     *
+     * @param message - The message for the exception
      */
     public FileHandlerException(final String message)
     {
@@ -42,7 +44,9 @@ public class FileHandlerException extends CoreServiceException
     }
 
     /**
-     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.Throwable) 
+     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.String)
+     *
+     * @param throwable - The throwable for the exception
      */
     public FileHandlerException(final Throwable throwable)
     {
@@ -50,7 +54,10 @@ public class FileHandlerException extends CoreServiceException
     }
 
     /**
-     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.String, java.lang.Throwable) 
+     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.String)
+     *
+     * @param message - The message for the exception
+     * @param throwable - The throwable for the exception
      */
     public FileHandlerException(final String message, final Throwable throwable)
     {

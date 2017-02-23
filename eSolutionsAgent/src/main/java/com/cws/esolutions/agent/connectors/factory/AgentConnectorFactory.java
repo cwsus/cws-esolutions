@@ -49,11 +49,10 @@ public class AgentConnectorFactory
     private static final String CNAME = AgentConnectorFactory.class.getName();
 
     /**
-     * Static method to provide a new or existing instance of a
-     * {@link com.cws.esolutions.core.processors.interfaces.VirtualServiceManager} singleton
+     * Static method to provide a new or existing instance of an AgentConnector
      *
      * @param className - The fully qualified class name to return
-     * @return an instance of a {@link com.cws.esolutions.core.processors.interfaces.VirtualServiceManager} singleton
+     * @return an instance of a {@link com.cws.esolutions.agent.connectors.interfaces.AgentConnector}
      */
     public static final AgentConnector createAgentConnector(final String className)
     {

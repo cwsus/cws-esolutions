@@ -34,7 +34,9 @@ public class ServerManagementException extends CoreServiceException
     private static final long serialVersionUID = -5781381750308274171L;
 
     /**
-     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.String) 
+     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.String)
+     *
+     * @param message - The message for the exception
      */
     public ServerManagementException(final String message)
     {
@@ -42,7 +44,9 @@ public class ServerManagementException extends CoreServiceException
     }
 
     /**
-     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.Throwable) 
+     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.String)
+     *
+     * @param throwable - The throwable for the exception
      */
     public ServerManagementException(final Throwable throwable)
     {
@@ -50,7 +54,10 @@ public class ServerManagementException extends CoreServiceException
     }
 
     /**
-     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.String, java.lang.Throwable) 
+     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.String)
+     *
+     * @param message - The message for the exception
+     * @param throwable - The throwable for the exception
      */
     public ServerManagementException(final String message, final Throwable throwable)
     {

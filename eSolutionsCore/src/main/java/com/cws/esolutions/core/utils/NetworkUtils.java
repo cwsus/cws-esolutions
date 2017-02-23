@@ -108,12 +108,12 @@ public final class NetworkUtils
      * If no passphrase exists on the key: ssh-keygen -i -f /path/to/file
      * If a passphrase exists:
      * Remove the passphrase first: ssh-keygen-g3 -e /path/to/file
-     * <enter passphrase>
+     *  - provide passphrase
      * Type 'yes'
      * Type 'no'
      * Type 'yes'
      * Hit enter twice without entering a new passphrase
-     * Convert the keyfile: ssh-keygen -i -f /path/to/file > /path/to/new-file
+     * Convert the keyfile: ssh-keygen -i -f /path/to/file &gt; /path/to/new-file
      * Re-encrypt the file: ssh-keygen -p -f /path/to/new-file
      *
      * @param sourceFile - The full path to the source file to transfer
@@ -298,12 +298,12 @@ public final class NetworkUtils
      * If no passphrase exists on the key: ssh-keygen -i -f /path/to/file
      * If a passphrase exists:
      * Remove the passphrase first: ssh-keygen-g3 -e /path/to/file
-     * <enter passphrase>
+     *  - provide passphrase
      * Type 'yes'
      * Type 'no'
      * Type 'yes'
      * Hit enter twice without entering a new passphrase
-     * Convert the keyfile: ssh-keygen -i -f /path/to/file > /path/to/new-file
+     * Convert the keyfile: ssh-keygen -i -f /path/to/file &gt; /path/to/new-file
      * Re-encrypt the file: ssh-keygen -p -f /path/to/new-file
      *
      * @param sourceFile - The full path to the source file to transfer
@@ -488,12 +488,12 @@ public final class NetworkUtils
      * If no passphrase exists on the key: ssh-keygen -i -f /path/to/file
      * If a passphrase exists:
      * Remove the passphrase first: ssh-keygen-g3 -e /path/to/file
-     * <enter passphrase>
+     *  - provide passphrase
      * Type 'yes'
      * Type 'no'
      * Type 'yes'
      * Hit enter twice without entering a new passphrase
-     * Convert the keyfile: ssh-keygen -i -f /path/to/file > /path/to/new-file
+     * Convert the keyfile: ssh-keygen -i -f /path/to/file &gt; /path/to/new-file
      * Re-encrypt the file: ssh-keygen -p -f /path/to/new-file
      *
      * @param targetHost - The target server to perform the transfer to

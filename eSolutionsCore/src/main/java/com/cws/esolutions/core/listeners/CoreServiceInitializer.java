@@ -75,6 +75,7 @@ public class CoreServiceInitializer
      *
      * @param coreConfig - The service configuration file to utilize
      * @param logConfig - The logging configuration file to utilize
+     * @param startConnections - Flag to start connections
      * @throws CoreServiceException @{link com.cws.esolutions.core.exception.CoreServiceException}
      * if an exception occurs during initialization
      */
