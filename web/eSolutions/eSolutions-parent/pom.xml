@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.cws</groupId>
         <artifactId>cws</artifactId>
-        <version>4.3</version>
+        <version>4.5</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
