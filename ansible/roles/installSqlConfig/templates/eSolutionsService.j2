@@ -5,18 +5,14 @@
 --
 -- Create schema esolutions
 --
+
 CREATE DATABASE IF NOT EXISTS esolutionssvc;
 COMMIT;
 
 USE esolutionssvc;
 
-SOURCE ./eSolutions/eSolutionsService.articles.sql;
-SOURCE ./eSolutions/eSolutionsService.dns_service.sql;
-SOURCE ./eSolutions/eSolutionsService.installed_applications.sql;
-SOURCE ./eSolutions/eSolutionsService.installed_systems.sql;
-SOURCE ./eSolutions/eSolutionsService.service_datacenters.sql;
-SOURCE ./eSolutions/eSolutionsService.service_messages.sql;
-SOURCE ./eSolutions/eSolutionsService.service_platforms.sql;
+SOURCE ./eSolutions/eSolutionsService.tables.sql;
+SOURCE ./eSolutions/eSolutionsService.procedures.sql;
 
 COMMIT;
 
