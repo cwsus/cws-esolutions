@@ -69,49 +69,44 @@ public class SecurityServiceInitializer
      * Initializes the security service in a standalone mode - used for applications outside of a container or when
      * run as a standalone jar.
      *
-     * @param secConfig - The security configuration file to utilize
+     * @param configFile - The security configuration file to utilize
      * @param logConfig - The logging configuration file to utilize
      * @param startConnections - Configure, load and start repository connections
      * @throws SecurityServiceException @{link com.cws.esolutions.security.exception.SecurityServiceException}
      * if an exception occurs during initialization
      */
-    public static void initializeService(final String secConfig, final String logConfig, final boolean startConnections) throws SecurityServiceException
+    public static void initializeService(final String configFile, final String logConfig, final boolean startConnections) throws SecurityServiceException
     {
         URL xmlURL = null;
         JAXBContext context = null;
         Unmarshaller marshaller = null;
         SecurityConfigurationData configData = null;
 
+        System.out.println("configFile: " + configFile);
+        System.out.println("logConfig: " + logConfig);
+
         final ClassLoader classLoader = SecurityServiceInitializer.class.getClassLoader();
-        final String serviceConfig = (StringUtils.isBlank(secConfig)) ? System.getProperty("secConfigFile") : secConfig;
+        final String serviceConfig = (StringUtils.isBlank(configFile)) ? System.getProperty("configFileFile") : configFile;
         final String loggingConfig = (StringUtils.isBlank(logConfig)) ? System.getProperty("secLogConfig") : logConfig;
 
         try
         {
-            if (FileUtils.getFile(loggingConfig).exists())
+            try
+            {
+                DOMConfigurator.configure(Loader.getResource(loggingConfig));
+            }
+            catch (NullPointerException npx)
             {
                 try
                 {
-                    DOMConfigurator.configure(Loader.getResource(loggingConfig));
+                    DOMConfigurator.configure(FileUtils.getFile(loggingConfig).toURI().toURL());
                 }
-                catch (NullPointerException npx)
+                catch (NullPointerException npx1)
                 {
-                    try
-                    {
-                        DOMConfigurator.configure(FileUtils.getFile(loggingConfig).toURI().toURL());
-                    }
-                    catch (NullPointerException npx1)
-                    {
-                        System.err.println("Unable to load logging configuration. No logging enabled!");
-                        System.err.println("");
-                        npx1.printStackTrace();
-                    }
+                    System.err.println("Unable to load logging configuration. No logging enabled!");
+                    System.err.println("");
+                    npx1.printStackTrace();
                 }
-            }
-            else
-            {
-                System.err.println("Logging configuration file " + loggingConfig + " does not exist. No logging enabled!");
-                System.err.println("Unable to load logging configuration. No logging enabled!");
             }
 
             xmlURL = classLoader.getResource(serviceConfig);

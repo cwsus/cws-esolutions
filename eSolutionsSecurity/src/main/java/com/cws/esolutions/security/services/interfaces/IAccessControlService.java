@@ -28,10 +28,11 @@ package com.cws.esolutions.security.services.interfaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
+import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
+import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
 import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
@@ -65,5 +66,5 @@ public interface IAccessControlService
      * @return <code>true</code> if authorization succeeded, <code>false</code> otherwise
      * @throws AccessControlServiceException {@link com.cws.esolutions.security.services.exception.AccessControlServiceException} if an exception occurs during processing
      */
-    boolean isUserAuthorized(final UserAccount userAccount, final String serviceGuid) throws AccessControlServiceException;
+    AccessControlServiceResponse isUserAuthorized(final AccessControlServiceRequest request) throws AccessControlServiceException;
 }

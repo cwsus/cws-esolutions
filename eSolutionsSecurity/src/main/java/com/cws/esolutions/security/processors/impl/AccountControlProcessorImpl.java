@@ -51,6 +51,8 @@ import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
+import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
+import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /**
  * @see com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor
@@ -89,122 +91,163 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            boolean isUserAuthorized = accessControl.isUserAuthorized(reqAccount, request.getServiceId());
+            // this will require admin and service authorization
+        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+        	accessRequest.setUserAccount(userAccount);
+        	accessRequest.setServiceGuid(request.getServiceId());
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+        	}
+
+        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+        	}
+
+            if (!(accessResponse.getIsUserAuthorized()))
+            {
+                // unauthorized
+            	response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+
+                // audit
+                try
+                {
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
+                }
+                catch (AuditServiceException asx)
+                {
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                }
+
+                return response;
+            }
+
+            String userGuid = UUID.randomUUID().toString();
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                DEBUGGER.debug("Value: {}", userGuid);
             }
 
-            if (isUserAuthorized)
+            int x = 0;
+
+            while (true)
             {
-                String userGuid = UUID.randomUUID().toString();
-
-                if (DEBUG)
+                if (x == 10)
                 {
-                    DEBUGGER.debug("Value: {}", userGuid);
+                    throw new AccountControlException("Failed to generate a unique user GUID");
                 }
 
-                int x = 0;
-
-                while (true)
+                try
                 {
-                    if (x == 10)
-                    {
-                        throw new AccountControlException("Failed to generate a unique user GUID");
-                    }
+                    userManager.validateUserAccount(userAccount.getUsername(), userGuid);
 
-                    try
-                    {
-                        userManager.validateUserAccount(userAccount.getUsername(), userGuid);
-
-                        break;
-                    }
-                    catch (UserManagementException umx)
-                    {
-                        ERROR_RECORDER.error(umx.getMessage(), umx);
-
-                        if (!(StringUtils.contains(umx.getMessage(), "UUID")))
-                        {
-                            response.setRequestStatus(SecurityRequestStatus.FAILURE);
-
-                            return response;
-                        }
-
-                        userGuid = UUID.randomUUID().toString();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Value: {}", userGuid);
-                        }
-
-                        x++;
-
-                        continue;
-                    }
+                    break;
                 }
-
-                // insert the user salt
-                boolean isSaltInserted = userSec.addOrUpdateSalt(userGuid, newUserSalt, SaltType.LOGON.name());
-
-                if (DEBUG)
+                catch (UserManagementException umx)
                 {
-                    DEBUGGER.debug("isSaltInserted: {}", isSaltInserted);
-                }
+                    ERROR_RECORDER.error(umx.getMessage(), umx);
 
-                if (isSaltInserted)
-                {
-                    String newPassword = PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()), newUserSalt,
-                            secConfig.getAuthAlgorithm(), secConfig.getIterations(),
-                            secBean.getConfigData().getSystemConfig().getEncoding());
-
-                    List<String> accountData = new ArrayList<>(
-                        Arrays.asList(
-                                userGuid,
-                                userAccount.getUsername(),
-                                newPassword,
-                                String.valueOf(userAccount.isSuspended()),
-                                userAccount.getSurname(),
-                                userAccount.getGivenName(),
-                                userAccount.getGivenName() + " " + userAccount.getSurname(), 
-                                userAccount.getEmailAddr()));
-
-                    if (DEBUG)
+                    if (!(StringUtils.contains(umx.getMessage(), "UUID")))
                     {
-                        DEBUGGER.debug("accountData: {}", accountData);
-                    }
-
-                    boolean isUserCreated = userManager.addUserAccount(accountData,
-                            new ArrayList<>(Arrays.asList(Arrays.toString(userAccount.getGroups()))));
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("isUserCreated: {}", isUserCreated);
-                    }
-
-                    if (isUserCreated)
-                    {
-                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    }
-                    else
-                    {
-                        // failed to add the user to the repository
-                        ERROR_RECORDER.error("Failed to add user to the userAccount repository");
-
                         response.setRequestStatus(SecurityRequestStatus.FAILURE);
+
+                        return response;
                     }
+
+                    userGuid = UUID.randomUUID().toString();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Value: {}", userGuid);
+                    }
+
+                    x++;
+
+                    continue;
+                }
+            }
+
+            // insert the user salt
+            boolean isSaltInserted = userSec.addOrUpdateSalt(userGuid, newUserSalt, SaltType.LOGON.name());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isSaltInserted: {}", isSaltInserted);
+            }
+
+            if (isSaltInserted)
+            {
+                String newPassword = PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()), newUserSalt,
+                        secConfig.getAuthAlgorithm(), secConfig.getIterations(),
+                        secBean.getConfigData().getSystemConfig().getEncoding());
+
+                List<String> accountData = new ArrayList<>(
+                    Arrays.asList(
+                            userGuid,
+                            userAccount.getUsername(),
+                            newPassword,
+                            String.valueOf(userAccount.isSuspended()),
+                            userAccount.getSurname(),
+                            userAccount.getGivenName(),
+                            userAccount.getGivenName() + " " + userAccount.getSurname(), 
+                            userAccount.getEmailAddr()));
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("accountData: {}", accountData);
+                }
+
+                boolean isUserCreated = userManager.addUserAccount(accountData,
+                        new ArrayList<>(Arrays.asList(Arrays.toString(userAccount.getGroups()))));
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("isUserCreated: {}", isUserCreated);
+                }
+
+                if (isUserCreated)
+                {
+                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                 }
                 else
                 {
-                    // failed to insert salt
-                    ERROR_RECORDER.error("Failed to provision new user: failed to insert the generated salt value");
+                    // failed to add the user to the repository
+                    ERROR_RECORDER.error("Failed to add user to the userAccount repository");
 
                     response.setRequestStatus(SecurityRequestStatus.FAILURE);
                 }
             }
             else
             {
-                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+                // failed to insert salt
+                ERROR_RECORDER.error("Failed to provision new user: failed to insert the generated salt value");
+
+                response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
         catch (AccountControlException acx)
@@ -296,31 +339,76 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            boolean isUserAuthorized = accessControl.isUserAuthorized(reqAccount, request.getServiceId());
+            // this will require admin and service authorization
+        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+        	accessRequest.setUserAccount(userAccount);
+        	accessRequest.setServiceGuid(request.getServiceId());
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+        	}
+
+        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+        	}
+
+            if (!(accessResponse.getIsUserAuthorized()))
+            {
+                // unauthorized
+            	response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+
+                // audit
+                try
+                {
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
+                }
+                catch (AuditServiceException asx)
+                {
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                }
+
+                return response;
+            }
+
+            // delete userAccount
+            boolean isComplete = userManager.removeUserAccount(userAccount.getGuid());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
 
-            if (isUserAuthorized)
+            if (isComplete)
             {
-                // delete userAccount
-                boolean isComplete = userManager.removeUserAccount(userAccount.getGuid());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
-
-                if (isComplete)
-                {
-                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                }
-                else
-                {
-                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                }
+                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+            }
+            else
+            {
+                response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
         catch (AccessControlServiceException acsx)
@@ -400,52 +488,93 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            boolean isUserAuthorized = accessControl.isUserAuthorized(reqAccount, request.getServiceId());
+            // this will require admin and service authorization
+        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+        	accessRequest.setUserAccount(userAccount);
+        	accessRequest.setServiceGuid(request.getServiceId());
 
-            if (DEBUG)
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+        	}
+
+        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+        	}
+
+            if (!(accessResponse.getIsUserAuthorized()))
             {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-            }
+                // unauthorized
+            	response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
-            if (isUserAuthorized)
-            {
-                // we will only have a guid here - so we need to load the user
-                List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
-
-                if (DEBUG)
+                // audit
+                try
                 {
-                    DEBUGGER.debug("List<Object>: {}", userData);
-                }
-
-                if ((userData != null) && (userData.size() != 0))
-                {
-                    boolean isComplete = userManager.modifyUserSuspension((String) userData.get(1), userAccount.isSuspended());
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("isComplete: {}", isComplete);
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
 
-                    if (isComplete)
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+
+                    if (DEBUG)
                     {
-                        response.setUserAccount(userAccount);
-                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
                     }
-                    else
-                    {
-                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                    }
+
+                    auditor.auditRequest(auditRequest);
+                }
+                catch (AuditServiceException asx)
+                {
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                }
+
+                return response;
+            }
+
+            // we will only have a guid here - so we need to load the user
+            List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("List<Object>: {}", userData);
+            }
+
+            if ((userData != null) && (userData.size() != 0))
+            {
+                boolean isComplete = userManager.modifyUserSuspension((String) userData.get(1), userAccount.isSuspended());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("isComplete: {}", isComplete);
+                }
+
+                if (isComplete)
+                {
+                    response.setUserAccount(userAccount);
+                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                 }
                 else
                 {
-                    ERROR_RECORDER.error("Failed to locate user for given GUID");
-
                     response.setRequestStatus(SecurityRequestStatus.FAILURE);
                 }
             }
             else
             {
-                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+                ERROR_RECORDER.error("Failed to locate user for given GUID");
+
+                response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
         catch (AccessControlServiceException acsx)
@@ -526,90 +655,131 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            boolean isUserAuthorized = accessControl.isUserAuthorized(reqAccount, request.getServiceId());
+            // this will require admin and service authorization
+        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+        	accessRequest.setUserAccount(userAccount);
+        	accessRequest.setServiceGuid(request.getServiceId());
 
-            if (DEBUG)
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+        	}
+
+        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+        	}
+
+            if (!(accessResponse.getIsUserAuthorized()))
             {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-            }
+                // unauthorized
+            	response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
-            if (isUserAuthorized)
-            {
-                // we will only have a guid here - so we need to load the user
-                List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
-
-                if (DEBUG)
+                // audit
+                try
                 {
-                    DEBUGGER.debug("List<Object>: {}", userData);
-                }
-
-                if ((userData != null) && (userData.size() != 0))
-                {
-                    boolean isComplete = userManager.modifyUserGroups((String) userData.get(0), userAccount.getGroups());
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("isComplete: {}", isComplete);
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
 
-                    if (isComplete)
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+
+                    if (DEBUG)
                     {
-                        List<Object> resData = userManager.loadUserAccount((String) userData.get(0));
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
+                }
+                catch (AuditServiceException asx)
+                {
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                }
+
+                return response;
+            }
+
+            // we will only have a guid here - so we need to load the user
+            List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("List<Object>: {}", userData);
+            }
+
+            if ((userData != null) && (userData.size() != 0))
+            {
+                boolean isComplete = userManager.modifyUserGroups((String) userData.get(0), userAccount.getGroups());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("isComplete: {}", isComplete);
+                }
+
+                if (isComplete)
+                {
+                    List<Object> resData = userManager.loadUserAccount((String) userData.get(0));
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("List<Object>: {}", resData);
+                    }
+
+                    if ((resData != null) && (!(resData.isEmpty())))
+                    {
+                        UserAccount resAccount = new UserAccount();
+                        resAccount.setGuid((String) userData.get(0));
+                        resAccount.setUsername((String) userData.get(1));
+                        resAccount.setGivenName((String) userData.get(2));
+                        resAccount.setSurname((String) userData.get(3));
+                        resAccount.setDisplayName((String) userData.get(4));
+                        resAccount.setEmailAddr((String) userData.get(5));
+                        resAccount.setPagerNumber((userData.get(6) == null) ? SecurityServiceConstants.NOT_SET : (String) userData.get(6));
+                        resAccount.setTelephoneNumber((userData.get(7) == null) ? SecurityServiceConstants.NOT_SET : (String) userData.get(7));
+                        resAccount.setFailedCount(((userData.get(9) == null) ? 0 : (Integer) userData.get(9)));
+                        resAccount.setLastLogin(((userData.get(10) == null) ? new Date(1L) : new Date((Long) userData.get(10))));
+                        resAccount.setExpiryDate(((userData.get(11) == null) ? new Date(System.currentTimeMillis()) : (Date) userData.get(11)));
+                        resAccount.setSuspended(((userData.get(12) == null) ? Boolean.FALSE : (Boolean) userData.get(12)));
+                        resAccount.setOlrSetup(((userData.get(13) == null) ? Boolean.FALSE : (Boolean) userData.get(13)));
+                        resAccount.setOlrLocked(((userData.get(14) == null) ? Boolean.FALSE : (Boolean) userData.get(14)));
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("List<Object>: {}", resData);
+                            DEBUGGER.debug("UserAccount: {}", resAccount);
                         }
 
-                        if ((resData != null) && (!(resData.isEmpty())))
-                        {
-                            UserAccount resAccount = new UserAccount();
-                            resAccount.setGuid((String) userData.get(0));
-                            resAccount.setUsername((String) userData.get(1));
-                            resAccount.setGivenName((String) userData.get(2));
-                            resAccount.setSurname((String) userData.get(3));
-                            resAccount.setDisplayName((String) userData.get(4));
-                            resAccount.setEmailAddr((String) userData.get(5));
-                            resAccount.setPagerNumber((userData.get(6) == null) ? SecurityServiceConstants.NOT_SET : (String) userData.get(6));
-                            resAccount.setTelephoneNumber((userData.get(7) == null) ? SecurityServiceConstants.NOT_SET : (String) userData.get(7));
-                            resAccount.setFailedCount(((userData.get(9) == null) ? 0 : (Integer) userData.get(9)));
-                            resAccount.setLastLogin(((userData.get(10) == null) ? new Date(1L) : new Date((Long) userData.get(10))));
-                            resAccount.setExpiryDate(((userData.get(11) == null) ? new Date(System.currentTimeMillis()) : (Date) userData.get(11)));
-                            resAccount.setSuspended(((userData.get(12) == null) ? Boolean.FALSE : (Boolean) userData.get(12)));
-                            resAccount.setOlrSetup(((userData.get(13) == null) ? Boolean.FALSE : (Boolean) userData.get(13)));
-                            resAccount.setOlrLocked(((userData.get(14) == null) ? Boolean.FALSE : (Boolean) userData.get(14)));
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("UserAccount: {}", resAccount);
-                            }
-
-                            response.setUserAccount(resAccount);
-                        }
-                        else
-                        {
-                            // if we have an issue re-loading the userAccount
-                            // just put the existing one in. its something.
-                            response.setUserAccount(userAccount);
-                        }
-
-                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                        response.setUserAccount(resAccount);
                     }
                     else
                     {
-                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                        // if we have an issue re-loading the userAccount
+                        // just put the existing one in. its something.
+                        response.setUserAccount(userAccount);
                     }
+
+                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                 }
                 else
                 {
-                    ERROR_RECORDER.error("Failed to locate user for given GUID");
-
                     response.setRequestStatus(SecurityRequestStatus.FAILURE);
                 }
             }
             else
             {
-                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+                ERROR_RECORDER.error("Failed to locate user for given GUID");
+
+                response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
         catch (AccessControlServiceException acsx)
@@ -694,84 +864,125 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            boolean isUserAuthorized = accessControl.isUserAuthorized(reqAccount, request.getServiceId());
+            // this will require admin and service authorization
+        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+        	accessRequest.setUserAccount(userAccount);
+        	accessRequest.setServiceGuid(request.getServiceId());
 
-            if (DEBUG)
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+        	}
+
+        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+        	}
+
+            if (!(accessResponse.getIsUserAuthorized()))
             {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                // unauthorized
+            	response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+
+                // audit
+                try
+                {
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
+                }
+                catch (AuditServiceException asx)
+                {
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                }
+
+                return response;
             }
 
-            if (isUserAuthorized)
-            {
-                // this is a reset request, so we need to do a few things
-                // 1, we need to generate a unique id that we can email off
-                // to the user, that we can then look up to confirm
-                // then once we have that we can actually do the reset
-                // first, change the existing password
-                // 128 character values - its possible that the reset is
-                // coming as a result of a possible compromise
-                String tmpPassword = PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()),
-                        RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength()),
-                        secConfig.getAuthAlgorithm(), secConfig.getIterations(),
-                        secBean.getConfigData().getSystemConfig().getEncoding());
-                String tmpSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
+            // this is a reset request, so we need to do a few things
+            // 1, we need to generate a unique id that we can email off
+            // to the user, that we can then look up to confirm
+            // then once we have that we can actually do the reset
+            // first, change the existing password
+            // 128 character values - its possible that the reset is
+            // coming as a result of a possible compromise
+            String tmpPassword = PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()),
+                    RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength()),
+                    secConfig.getAuthAlgorithm(), secConfig.getIterations(),
+                    secBean.getConfigData().getSystemConfig().getEncoding());
+            String tmpSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
 
-                if ((StringUtils.isNotEmpty(tmpPassword)) && (StringUtils.isNotEmpty(tmpSalt)))
+            if ((StringUtils.isNotEmpty(tmpPassword)) && (StringUtils.isNotEmpty(tmpSalt)))
+            {
+                // update the authentication datastore with the new password
+                // we never show the user the password, we're only doing this
+                // to prevent unauthorized access (or further unauthorized access)
+                // we get a return code back but we aren't going to use it really
+                boolean isComplete = userManager.modifyUserPassword(userAccount.getGuid(), tmpPassword);
+
+                if (DEBUG)
                 {
-                    // update the authentication datastore with the new password
-                    // we never show the user the password, we're only doing this
-                    // to prevent unauthorized access (or further unauthorized access)
-                    // we get a return code back but we aren't going to use it really
-                    boolean isComplete = userManager.modifyUserPassword(userAccount.getGuid(), tmpPassword);
+                    DEBUGGER.debug("isComplete: {}", isComplete);
+                }
+
+                // now generate a temporary id to stuff into the database
+                // this will effectively replace the current salt value
+                String resetId = RandomStringUtils.randomAlphanumeric(secConfig.getResetIdLength());
+                String resetSms = RandomStringUtils.randomAlphanumeric(secConfig.getSmsCodeLength());
+
+                if ((StringUtils.isNotEmpty(resetId)) && (StringUtils.isNotEmpty(resetSms)))
+                {
+                    isComplete = userSec.insertResetData(userAccount.getGuid(), resetId, ((secConfig.getSmsResetEnabled()) ? resetSms : null));
 
                     if (DEBUG)
                     {
                         DEBUGGER.debug("isComplete: {}", isComplete);
                     }
 
-                    // now generate a temporary id to stuff into the database
-                    // this will effectively replace the current salt value
-                    String resetId = RandomStringUtils.randomAlphanumeric(secConfig.getResetIdLength());
-                    String resetSms = RandomStringUtils.randomAlphanumeric(secConfig.getSmsCodeLength());
-
-                    if ((StringUtils.isNotEmpty(resetId)) && (StringUtils.isNotEmpty(resetSms)))
+                    if (isComplete)
                     {
-                        isComplete = userSec.insertResetData(userAccount.getGuid(), resetId, ((secConfig.getSmsResetEnabled()) ? resetSms : null));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("isComplete: {}", isComplete);
-                        }
-
-                        if (isComplete)
-                        {
-                            response.setResetId(resetId);
-                            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        }
-                        else
-                        {
-                            ERROR_RECORDER.error("Unable to insert password identifier into database. Cannot continue.");
-
-                            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        }
+                        response.setResetId(resetId);
+                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                     }
                     else
                     {
-                        ERROR_RECORDER.error("Unable to generate a unique identifier. Cannot continue.");
+                        ERROR_RECORDER.error("Unable to insert password identifier into database. Cannot continue.");
 
                         response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                     }
                 }
                 else
                 {
-                    ERROR_RECORDER.error("Failed to generate a temporary password. Cannot continue.");
+                    ERROR_RECORDER.error("Unable to generate a unique identifier. Cannot continue.");
 
                     response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                 }
             }
             else
             {
-                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+                ERROR_RECORDER.error("Failed to generate a temporary password. Cannot continue.");
+
+                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
             }
         }
         catch (SQLException sqx)
@@ -857,47 +1068,88 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            boolean isUserAuthorized = accessControl.isUserAuthorized(reqAccount, request.getServiceId());
+            // this will require admin and service authorization
+        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+        	accessRequest.setUserAccount(userAccount);
+        	accessRequest.setServiceGuid(request.getServiceId());
 
-            if (DEBUG)
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+        	}
+
+        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+        	}
+
+            if (!(accessResponse.getIsUserAuthorized()))
             {
-                DEBUGGER.debug("isAuthorized: {}", isUserAuthorized);
-            }
+                // unauthorized
+            	response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
-            if (isUserAuthorized)
-            {
-                // we will only have a guid here - so we need to load the user
-                List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
-
-                if (DEBUG)
+                // audit
+                try
                 {
-                    DEBUGGER.debug("List<Object>: {}", userData);
-                }
-
-                if ((userData != null) && (userData.size() != 0))
-                {
-                    boolean isComplete = userManager.modifyUserLock((String) userData.get(0), true, userAccount.getFailedCount());
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("isComplete: {}", isComplete);
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
 
-                    if (isComplete)
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+
+                    if (DEBUG)
                     {
-                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
                     }
-                }
-                else
-                {
-                    ERROR_RECORDER.error("Failed to locate user for given GUID");
 
-                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                    auditor.auditRequest(auditRequest);
+                }
+                catch (AuditServiceException asx)
+                {
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                }
+
+                return response;
+            }
+
+            // we will only have a guid here - so we need to load the user
+            List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("List<Object>: {}", userData);
+            }
+
+            if ((userData != null) && (userData.size() != 0))
+            {
+                boolean isComplete = userManager.modifyUserLock((String) userData.get(0), true, userAccount.getFailedCount());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("isComplete: {}", isComplete);
+                }
+
+                if (isComplete)
+                {
+                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                 }
             }
             else
             {
-                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+                ERROR_RECORDER.error("Failed to locate user for given GUID");
+
+                response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
         catch (AccessControlServiceException acsx)
@@ -978,11 +1230,59 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            boolean isUserAuthorized = accessControl.isUserAuthorized(reqAccount, request.getServiceId());
+            // this will require admin and service authorization
+        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+        	accessRequest.setUserAccount(userAccount);
+        	accessRequest.setServiceGuid(request.getServiceId());
 
-            if (DEBUG)
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+        	}
+
+        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+        	}
+
+            if (!(accessResponse.getIsUserAuthorized()))
             {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                // unauthorized
+            	response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+
+                // audit
+                try
+                {
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
+                }
+                catch (AuditServiceException asx)
+                {
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                }
+
+                return response;
             }
 
             List<String[]> userList = userManager.searchUsers(userAccount.getEmailAddr());
@@ -1109,54 +1409,95 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            boolean isUserAuthorized = accessControl.isUserAuthorized(reqAccount, request.getServiceId());
+            // this will require admin and service authorization
+        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+        	accessRequest.setUserAccount(userAccount);
+        	accessRequest.setServiceGuid(request.getServiceId());
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+        	}
+
+        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+        	}
+
+            if (!(accessResponse.getIsUserAuthorized()))
+            {
+                // unauthorized
+            	response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+
+                // audit
+                try
+                {
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
+                }
+                catch (AuditServiceException asx)
+                {
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                }
+
+                return response;
+            }
+
+            List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                DEBUGGER.debug("List<Object>: {}", userData);
             }
 
-            if (isUserAuthorized)
+            if ((userData != null) && (!(userData.isEmpty())))
             {
-                List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
+                UserAccount loadAccount = new UserAccount();
+                loadAccount.setGuid((String) userData.get(0));
+                loadAccount.setUsername((String) userData.get(1));
+                loadAccount.setSurname((String) userData.get(2));
+                loadAccount.setGivenName((String) userData.get(3));
+                loadAccount.setEmailAddr((String) userData.get(4));
+                loadAccount.setDisplayName((String) userData.get(5));
+                loadAccount.setTelephoneNumber((userData.get(6) == null) ? SecurityServiceConstants.NOT_SET : (String) userData.get(6));
 
+                if (userData.size() > 7)
+                {
+                    loadAccount.setManagerGuid((String) userData.get(7));
+                    loadAccount.setManagerName((String) userData.get(8));
+                }
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("List<Object>: {}", userData);
+                    DEBUGGER.debug("UserAccount: {}", loadAccount);
                 }
 
-                if ((userData != null) && (!(userData.isEmpty())))
-                {
-                    UserAccount loadAccount = new UserAccount();
-                    loadAccount.setGuid((String) userData.get(0));
-                    loadAccount.setUsername((String) userData.get(1));
-                    loadAccount.setSurname((String) userData.get(2));
-                    loadAccount.setGivenName((String) userData.get(3));
-                    loadAccount.setEmailAddr((String) userData.get(4));
-                    loadAccount.setDisplayName((String) userData.get(5));
-                    loadAccount.setTelephoneNumber((userData.get(6) == null) ? SecurityServiceConstants.NOT_SET : (String) userData.get(6));
-
-                    if (userData.size() > 7)
-                    {
-                        loadAccount.setManagerGuid((String) userData.get(7));
-                        loadAccount.setManagerName((String) userData.get(8));
-                    }
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("UserAccount: {}", loadAccount);
-                    }
-
-                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    response.setUserAccount(loadAccount);
-                }
-                else
-                {
-                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                }
+                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                response.setUserAccount(loadAccount);
             }
             else
             {
-                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+                response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
 
             if (DEBUG)
@@ -1241,67 +1582,108 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            boolean isUserAuthorized = accessControl.isUserAuthorized(reqAccount, request.getServiceId());
+            // this will require admin and service authorization
+        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+        	accessRequest.setUserAccount(userAccount);
+        	accessRequest.setServiceGuid(request.getServiceId());
 
-            if (DEBUG)
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+        	}
+
+        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+        	}
+
+            if (!(accessResponse.getIsUserAuthorized()))
             {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-            }
+                // unauthorized
+            	response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
-            if (isUserAuthorized)
-            {
-                List<String[]> userList = userManager.listUserAccounts();
-
-                if (DEBUG)
+                // audit
+                try
                 {
-                    DEBUGGER.debug("userList: {}", userList);
-                }
-
-                if ((userList != null) && (userList.size() != 0))
-                {
-                    List<UserAccount> userAccounts = new ArrayList<>();
-
-                    for (String[] userData : userList)
-                    {
-                        if (!(StringUtils.equals(reqAccount.getGuid(), userData[0])))
-                        {
-                            UserAccount userInfo = new UserAccount();
-                            userInfo.setGuid(userData[0]);
-                            userInfo.setUsername(userData[1]);
-                            userInfo.setDisplayName(userData[2]);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("UserAccount: {}", userInfo);
-                            }
-
-                            userAccounts.add(userInfo);
-                        }
-                    }
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("userAccounts: {}", userAccounts);
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
 
-                    if (userAccounts.size() == 0)
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+
+                    if (DEBUG)
                     {
-                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
                     }
-                    else
+
+                    auditor.auditRequest(auditRequest);
+                }
+                catch (AuditServiceException asx)
+                {
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                }
+
+                return response;
+            }
+
+            List<String[]> userList = userManager.listUserAccounts();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("userList: {}", userList);
+            }
+
+            if ((userList != null) && (userList.size() != 0))
+            {
+                List<UserAccount> userAccounts = new ArrayList<>();
+
+                for (String[] userData : userList)
+                {
+                    if (!(StringUtils.equals(reqAccount.getGuid(), userData[0])))
                     {
-                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        response.setUserList(userAccounts);
+                        UserAccount userInfo = new UserAccount();
+                        userInfo.setGuid(userData[0]);
+                        userInfo.setUsername(userData[1]);
+                        userInfo.setDisplayName(userData[2]);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("UserAccount: {}", userInfo);
+                        }
+
+                        userAccounts.add(userInfo);
                     }
+                }
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("userAccounts: {}", userAccounts);
+                }
+
+                if (userAccounts.size() == 0)
+                {
+                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
                 }
                 else
                 {
-                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                    response.setUserList(userAccounts);
                 }
             }
             else
             {
-                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+                response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
         catch (UserManagementException umx)

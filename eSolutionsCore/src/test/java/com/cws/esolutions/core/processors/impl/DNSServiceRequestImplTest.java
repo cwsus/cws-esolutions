@@ -70,9 +70,8 @@ public class DNSServiceRequestImplTest
             userAccount.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
             userAccount.setUsername("khuntly");
 
-            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "logging/logging.xml", true);
-
-            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", false);
+            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true);
+            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
         catch (Exception ex)
         {
@@ -86,7 +85,7 @@ public class DNSServiceRequestImplTest
     public void performLookup()
     {
         DNSRecord record = new DNSRecord();
-        record.setRecordName("connect.us.hsbc");
+        record.setRecordName("www.google.com");
         record.setRecordType(DNSRecordType.A);
 
         DNSServiceRequest request = new DNSServiceRequest();
@@ -249,7 +248,7 @@ public class DNSServiceRequestImplTest
     }
 
     @Test
-    public static void pushNewService()
+    public void pushNewService()
     {
         StringBuilder builder = new StringBuilder()
             .append("$ORIGIN .\n")

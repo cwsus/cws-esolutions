@@ -52,7 +52,6 @@ import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
-import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /**
  * @see com.cws.esolutions.web.processors.interfaces.IMessagingProcessor
  */
@@ -102,54 +101,40 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
 
         try
         {
-            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
+        	String messageId = RandomStringUtils.randomAlphanumeric(appConfig.getMessageIdLength());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                DEBUGGER.debug("messageId: {}", messageId);
             }
 
-            if (isUserAuthorized)
+            List<Object> messageList = new ArrayList<Object>(
+                    Arrays.asList(
+                            messageId,
+                            message.getMessageTitle(),
+                            message.getMessageText(),
+                            userAccount.getGuid(),
+                            message.getIsActive(),
+                            message.isAlert(),
+                            message.getDoesExpire(),
+                            message.getExpiryDate()));
+
+            // submit it
+            boolean isSubmitted = this.dao.insertMessage(messageList);
+
+            if (DEBUG)
             {
-                String messageId = RandomStringUtils.randomAlphanumeric(appConfig.getMessageIdLength());
+                DEBUGGER.debug("isSubmitted: {}", isSubmitted);
+            }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("messageId: {}", messageId);
-                }
-
-                List<Object> messageList = new ArrayList<Object>(
-                        Arrays.asList(
-                                messageId,
-                                message.getMessageTitle(),
-                                message.getMessageText(),
-                                userAccount.getGuid(),
-                                message.getIsActive(),
-                                message.isAlert(),
-                                message.getDoesExpire(),
-                                message.getExpiryDate()));
-
-                // submit it
-                boolean isSubmitted = this.dao.insertMessage(messageList);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isSubmitted: {}", isSubmitted);
-                }
-
-                if (!(isSubmitted))
-                {
-                    response.setRequestStatus(CoreServicesStatus.FAILURE);
-                }
-                else
-                {
-                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setMessageId(messageId);
-                }
+            if (!(isSubmitted))
+            {
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                response.setMessageId(messageId);
             }
 
             if (DEBUG)
@@ -162,12 +147,6 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new MessagingServiceException(sqx.getMessage(), sqx);
-        }
-        catch (AccessControlServiceException acsx)
-        {
-            ERROR_RECORDER.error(acsx.getMessage(), acsx);
-            
-            throw new MessagingServiceException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -234,51 +213,37 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
 
         try
         {
-            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
+        	List<Object> messageList = new ArrayList<Object>(
+                    Arrays.asList(
+                            message.getMessageTitle(),
+                            message.getMessageText(),
+                            message.getIsActive(),
+                            message.isAlert(),
+                            message.getDoesExpire(),
+                            message.getExpiryDate(),
+                            userAccount.getUsername()));
+
+            // submit it
+            boolean isUpdated = this.dao.updateMessage(message.getMessageId(), messageList);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                DEBUGGER.debug("isUpdated: {}", isUpdated);
             }
 
-            if (isUserAuthorized)
+            if (isUpdated)
             {
-                List<Object> messageList = new ArrayList<Object>(
-                        Arrays.asList(
-                                message.getMessageTitle(),
-                                message.getMessageText(),
-                                message.getIsActive(),
-                                message.isAlert(),
-                                message.getDoesExpire(),
-                                message.getExpiryDate(),
-                                userAccount.getUsername()));
-
-                // submit it
-                boolean isUpdated = this.dao.updateMessage(message.getMessageId(), messageList);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isUpdated: {}", isUpdated);
-                }
-
-                if (isUpdated)
-                {
-                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setMessageId(message.getMessageId());
-                }
-                else
-                {
-                    response.setRequestStatus(CoreServicesStatus.FAILURE);
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("MessagingResponse: {}", response);
-                }
+                response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                response.setMessageId(message.getMessageId());
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("MessagingResponse: {}", response);
             }
 
             if (DEBUG)
@@ -291,12 +256,6 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new MessagingServiceException(sqx.getMessage(), sqx);
-        }
-        catch (AccessControlServiceException acsx)
-        {
-            ERROR_RECORDER.error(acsx.getMessage(), acsx);
-            
-            throw new MessagingServiceException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -404,8 +363,9 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                 }
 
                 UserAccount svcAccount = new UserAccount();
-                svcAccount.setUsername(serviceAccount.get(0));
-                svcAccount.setGuid(serviceAccount.get(1));
+                svcAccount.setUsername(serviceAccount.getAccountName());
+                svcAccount.setGuid(serviceAccount.getAccountGuid());
+                svcAccount.setGroups(new String[] { serviceAccount.getAccountRole() });
 
                 if (DEBUG)
                 {
@@ -645,8 +605,9 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
             }
 
             UserAccount svcAccount = new UserAccount();
-            svcAccount.setUsername(serviceAccount.get(0));
-            svcAccount.setGuid(serviceAccount.get(1));
+            svcAccount.setUsername(serviceAccount.getAccountName());
+            svcAccount.setGuid(serviceAccount.getAccountGuid());
+            svcAccount.setGroups(new String[] { serviceAccount.getAccountRole() });
 
             if (DEBUG)
             {

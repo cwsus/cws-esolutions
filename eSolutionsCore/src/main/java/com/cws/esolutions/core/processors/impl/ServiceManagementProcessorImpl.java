@@ -49,6 +49,8 @@ import com.cws.esolutions.core.processors.dto.ServiceManagementResponse;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.exception.ServiceManagementException;
 import com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor;
+import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
+import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /**
  * @see com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor
@@ -84,90 +86,131 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
         try
         {
-            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
+            // this will require admin and service authorization
+        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+        	accessRequest.setUserAccount(userAccount);
+        	accessRequest.setServiceGuid(request.getServiceId());
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+        	}
+
+        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+        	}
+
+            if (!(accessResponse.getIsUserAuthorized()))
+            {
+                // unauthorized
+            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+
+                // audit
+                try
+                {
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
+                }
+                catch (AuditServiceException asx)
+                {
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                }
+
+                return response;
+            }
+
+            if (service == null)
+            {
+                throw new ServiceManagementException("No platform was provided. Cannot continue.");
+            }
+
+            // make sure all the platform data is there
+            List<Object[]> validator = null;
+
+            try
+            {
+                validator = serviceDao.getServicesByAttribute(service.getName(), request.getStartPage());
+            }
+            catch (SQLException sqx)
+            {
+                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+            }
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                DEBUGGER.debug("Validator: {}", validator);
             }
 
-            if (isUserAuthorized)
+            if ((validator == null) || (validator.size() == 0))
             {
-                if (service == null)
+                // valid platform
+                List<String> serverList = new ArrayList<>();
+                for (Server server : service.getServers())
                 {
-                    throw new ServiceManagementException("No platform was provided. Cannot continue.");
-                }
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Server: {}", server);
+                    }
 
-                // make sure all the platform data is there
-                List<Object[]> validator = null;
-
-                try
-                {
-                    validator = serviceDao.getServicesByAttribute(service.getName(), request.getStartPage());
-                }
-                catch (SQLException sqx)
-                {
-                    ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                    serverList.add(server.getServerGuid());
                 }
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("Validator: {}", validator);
+                    DEBUGGER.debug("List<String>: {}", serverList);
                 }
 
-                if ((validator == null) || (validator.size() == 0))
+                List<String> insertData = new ArrayList<>(
+                        Arrays.asList(
+                                UUID.randomUUID().toString(), // GUID
+                                service.getType().name(), // SERVICE_TYPE
+                                service.getName(), // NAME
+                                service.getRegion().name(), // REGION
+                                service.getPartition().name(), // NWPARTITION
+                                service.getStatus().name(), // STATUS
+                                serverList.toString(), // SERVERS
+                                service.getDescription())); // DESCRIPTION
+                
+                if (DEBUG)
                 {
-                    // valid platform
-                    List<String> serverList = new ArrayList<>();
-                    for (Server server : service.getServers())
+                    for (Object str : insertData)
                     {
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Server: {}", server);
-                        }
-
-                        serverList.add(server.getServerGuid());
+                        DEBUGGER.debug("Value: {}", str);
                     }
+                }
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("List<String>: {}", serverList);
-                    }
+                boolean isComplete = serviceDao.addService(insertData);
 
-                    List<String> insertData = new ArrayList<>(
-                            Arrays.asList(
-                                    UUID.randomUUID().toString(), // GUID
-                                    service.getType().name(), // SERVICE_TYPE
-                                    service.getName(), // NAME
-                                    service.getRegion().name(), // REGION
-                                    service.getPartition().name(), // NWPARTITION
-                                    service.getStatus().name(), // STATUS
-                                    serverList.toString(), // SERVERS
-                                    service.getDescription())); // DESCRIPTION
-                    
-                    if (DEBUG)
-                    {
-                        for (Object str : insertData)
-                        {
-                            DEBUGGER.debug("Value: {}", str);
-                        }
-                    }
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("isComplete: {}", isComplete);
+                }
 
-                    boolean isComplete = serviceDao.addService(insertData);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("isComplete: {}", isComplete);
-                    }
-
-                    if (isComplete)
-                    {
-                        response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    }
-                    else
-                    {
-                        response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    }
+                if (isComplete)
+                {
+                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
                 }
                 else
                 {
@@ -176,7 +219,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
         catch (SQLException sqx)
@@ -256,68 +299,109 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
         try
         {
-            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
+            // this will require admin and service authorization
+        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+        	accessRequest.setUserAccount(userAccount);
+        	accessRequest.setServiceGuid(request.getServiceId());
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+        	}
+
+        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+        	}
+
+            if (!(accessResponse.getIsUserAuthorized()))
+            {
+                // unauthorized
+            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+
+                // audit
+                try
+                {
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
+                }
+                catch (AuditServiceException asx)
+                {
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                }
+
+                return response;
+            }
+
+            List<String> serverList = new ArrayList<>();
+            for (Server server : service.getServers())
+            {
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Server: {}", server);
+                }
+
+                serverList.add(server.getServerGuid());
+            }
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                DEBUGGER.debug("List<String>: {}", serverList);
             }
 
-            if (isUserAuthorized)
+            List<String> insertData = new ArrayList<>(
+                    Arrays.asList(
+                            service.getGuid(),
+                            service.getName(),
+                            service.getRegion().name(),
+                            service.getPartition().name(),
+                            service.getStatus().name(),
+                            serverList.toString(),
+                            service.getDescription()));
+
+            if (DEBUG)
             {
-                List<String> serverList = new ArrayList<>();
-                for (Server server : service.getServers())
+                for (Object str : insertData)
                 {
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Server: {}", server);
-                    }
-
-                    serverList.add(server.getServerGuid());
+                    DEBUGGER.debug("Value: {}", str);
                 }
+            }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("List<String>: {}", serverList);
-                }
+            boolean isComplete = serviceDao.updateService(insertData);
 
-                List<String> insertData = new ArrayList<>(
-                        Arrays.asList(
-                                service.getGuid(),
-                                service.getName(),
-                                service.getRegion().name(),
-                                service.getPartition().name(),
-                                service.getStatus().name(),
-                                serverList.toString(),
-                                service.getDescription()));
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isComplete: {}", isComplete);
+            }
 
-                if (DEBUG)
-                {
-                    for (Object str : insertData)
-                    {
-                        DEBUGGER.debug("Value: {}", str);
-                    }
-                }
-
-                boolean isComplete = serviceDao.updateService(insertData);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
-
-                if (isComplete)
-                {
-                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                }
-                else
-                {
-                    response.setRequestStatus(CoreServicesStatus.FAILURE);
-                }
+            if (isComplete)
+            {
+                response.setRequestStatus(CoreServicesStatus.SUCCESS);
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
         catch (AccessControlServiceException acsx)
@@ -397,34 +481,75 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
         try
         {
-            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
+            // this will require admin and service authorization
+        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+        	accessRequest.setUserAccount(userAccount);
+        	accessRequest.setServiceGuid(request.getServiceId());
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+        	}
+
+        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+        	}
+
+            if (!(accessResponse.getIsUserAuthorized()))
+            {
+                // unauthorized
+            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+
+                // audit
+                try
+                {
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
+                }
+                catch (AuditServiceException asx)
+                {
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                }
+
+                return response;
+            }
+
+            boolean isComplete = serviceDao.removeService(service.getGuid());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
 
-            if (isUserAuthorized)
+            if (isComplete)
             {
-                boolean isComplete = serviceDao.removeService(service.getGuid());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
-
-                if (isComplete)
-                {
-                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                }
-                else
-                {
-                    response.setRequestStatus(CoreServicesStatus.FAILURE);
-                }
+                response.setRequestStatus(CoreServicesStatus.SUCCESS);
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
         catch (AccessControlServiceException acsx)
@@ -502,58 +627,99 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
         try
         {
-            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
+            // this will require admin and service authorization
+        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+        	accessRequest.setUserAccount(userAccount);
+        	accessRequest.setServiceGuid(request.getServiceId());
 
-            if (DEBUG)
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+        	}
+
+        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+        	}
+
+            if (!(accessResponse.getIsUserAuthorized()))
             {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-            }
+                // unauthorized
+            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
-            if (isUserAuthorized)
-            {
-                List<String[]> serviceData = serviceDao.listServices(request.getStartPage());
-
-                if (DEBUG)
+                // audit
+                try
                 {
-                    DEBUGGER.debug("serviceData: {}", serviceData);
-                }
-
-                if ((serviceData != null) && (serviceData.size() != 0))
-                {
-                    List<Service> serviceList = new ArrayList<>();
-
-                    for (String[] data : serviceData)
-                    {
-                        Service service = new Service();
-                        service.setGuid(data[0]);
-                        service.setType(ServiceType.valueOf(data[1]));
-                        service.setName(data[2]);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Service: {}", service);
-                        }
-
-                        serviceList.add(service);
-                    }
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("serviceList: {}", serviceList);
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
 
-                    // response.setEntryCount(count); // TODO
-                    response.setServiceList(serviceList);
-                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-                else
+                catch (AuditServiceException asx)
                 {
-                    response.setRequestStatus(CoreServicesStatus.FAILURE);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
+
+                return response;
+            }
+
+            List<String[]> serviceData = serviceDao.listServices(request.getStartPage());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("serviceData: {}", serviceData);
+            }
+
+            if ((serviceData != null) && (serviceData.size() != 0))
+            {
+                List<Service> serviceList = new ArrayList<>();
+
+                for (String[] data : serviceData)
+                {
+                    Service service = new Service();
+                    service.setGuid(data[0]);
+                    service.setType(ServiceType.valueOf(data[1]));
+                    service.setName(data[2]);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Service: {}", service);
+                    }
+
+                    serviceList.add(service);
+                }
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("serviceList: {}", serviceList);
+                }
+
+                // response.setEntryCount(count); // TODO
+                response.setServiceList(serviceList);
+                response.setRequestStatus(CoreServicesStatus.SUCCESS);
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
         catch (SQLException sqx)
@@ -633,61 +799,102 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
         try
         {
-            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
+            // this will require admin and service authorization
+        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+        	accessRequest.setUserAccount(userAccount);
+        	accessRequest.setServiceGuid(request.getServiceId());
 
-            if (DEBUG)
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+        	}
+
+        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+        	}
+
+            if (!(accessResponse.getIsUserAuthorized()))
             {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-            }
+                // unauthorized
+            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
-            if (isUserAuthorized)
-            {
-                List<String[]> serviceData = serviceDao.listServices(request.getStartPage());
-
-                if (DEBUG)
+                // audit
+                try
                 {
-                    DEBUGGER.debug("serviceData: {}", serviceData);
-                }
-
-                if ((serviceData != null) && (serviceData.size() != 0))
-                {
-                    List<Service> serviceList = new ArrayList<>();
-
-                    for (String[] data : serviceData)
-                    {
-                        if (ServiceType.valueOf(data[1]) == service.getType())
-                        {
-                            Service resService = new Service();
-                            resService.setGuid(data[0]);
-                            resService.setType(ServiceType.valueOf(data[1]));
-                            resService.setName(data[2]);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Service: {}", resService);
-                            }
-
-                            serviceList.add(resService);
-                        }
-                    }
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("serviceList: {}", serviceList);
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
 
-                    // response.setEntryCount(count); // TODO
-                    response.setServiceList(serviceList);
-                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-                else
+                catch (AuditServiceException asx)
                 {
-                    response.setRequestStatus(CoreServicesStatus.FAILURE);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
+
+                return response;
+            }
+
+            List<String[]> serviceData = serviceDao.listServices(request.getStartPage());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("serviceData: {}", serviceData);
+            }
+
+            if ((serviceData != null) && (serviceData.size() != 0))
+            {
+                List<Service> serviceList = new ArrayList<>();
+
+                for (String[] data : serviceData)
+                {
+                    if (ServiceType.valueOf(data[1]) == service.getType())
+                    {
+                        Service resService = new Service();
+                        resService.setGuid(data[0]);
+                        resService.setType(ServiceType.valueOf(data[1]));
+                        resService.setName(data[2]);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Service: {}", resService);
+                        }
+
+                        serviceList.add(resService);
+                    }
+                }
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("serviceList: {}", serviceList);
+                }
+
+                // response.setEntryCount(count); // TODO
+                response.setServiceList(serviceList);
+                response.setRequestStatus(CoreServicesStatus.SUCCESS);
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
         catch (SQLException sqx)
@@ -767,57 +974,98 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
         try
         {
-            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
+            // this will require admin and service authorization
+        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+        	accessRequest.setUserAccount(userAccount);
+        	accessRequest.setServiceGuid(request.getServiceId());
 
-            if (DEBUG)
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+        	}
+
+        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+        	}
+
+            if (!(accessResponse.getIsUserAuthorized()))
             {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-            }
+                // unauthorized
+            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
-            if (isUserAuthorized)
-            {
-                List<Object[]> serviceData = serviceDao.getServicesByAttribute(service.getName(), request.getStartPage());
-
-                if (DEBUG)
+                // audit
+                try
                 {
-                    DEBUGGER.debug("serviceData: {}", serviceData);
-                }
-
-                if ((serviceData != null) && (serviceData.size() != 0))
-                {
-                    List<Service> serviceList = new ArrayList<>();
-
-                    for (Object[] data : serviceData)
-                    {
-                        Service resService = new Service();
-                        service.setGuid((String) data[0]);
-                        service.setName((String) data[1]);
-                        service.setScore((double) data[2]);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Service: {}", resService);
-                        }
-
-                        serviceList.add(resService);
-                    }
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("serviceList: {}", serviceList);
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
 
-                    response.setServiceList(serviceList);
-                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-                else
+                catch (AuditServiceException asx)
                 {
-                    response.setRequestStatus(CoreServicesStatus.FAILURE);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
+
+                return response;
+            }
+
+            List<Object[]> serviceData = serviceDao.getServicesByAttribute(service.getName(), request.getStartPage());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("serviceData: {}", serviceData);
+            }
+
+            if ((serviceData != null) && (serviceData.size() != 0))
+            {
+                List<Service> serviceList = new ArrayList<>();
+
+                for (Object[] data : serviceData)
+                {
+                    Service resService = new Service();
+                    service.setGuid((String) data[0]);
+                    service.setName((String) data[1]);
+                    service.setScore((double) data[2]);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Service: {}", resService);
+                    }
+
+                    serviceList.add(resService);
+                }
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("serviceList: {}", serviceList);
+                }
+
+                response.setServiceList(serviceList);
+                response.setRequestStatus(CoreServicesStatus.SUCCESS);
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
         catch (SQLException sqx)
@@ -897,98 +1145,138 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
         try
         {
-            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
+            // this will require admin and service authorization
+        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+        	accessRequest.setUserAccount(userAccount);
+        	accessRequest.setServiceGuid(request.getServiceId());
 
-            if (DEBUG)
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+        	}
+
+        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+        	}
+
+            if (!(accessResponse.getIsUserAuthorized()))
             {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-            }
+                // unauthorized
+            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
-            if (isUserAuthorized)
-            {
-                List<Server> serverList = null;
-
-                List<String> serviceData = serviceDao.getService(service.getGuid());
-
-                if (DEBUG)
+                // audit
+                try
                 {
-                    DEBUGGER.debug("serviceData: {}", serviceData);
-                }
-
-                if ((serviceData != null) && (serviceData.size() != 0))
-                {
-                    if (ServiceType.valueOf(serviceData.get(0)) == ServiceType.PLATFORM)
-                    {
-                        String appTmp = StringUtils.remove(serviceData.get(5), "["); // PLATFORM_SERVERS
-                        String platformServers = StringUtils.remove(appTmp, "]");
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("String: {}", platformServers);
-                        }
-
-                        if (platformServers.split(",").length >= 1)
-                        {
-                            serverList = new ArrayList<>();
-
-                            for (String serverGuid : platformServers.split(","))
-                            {
-                                List<Object> serverData = serverDao.getServer(StringUtils.trim(serverGuid));
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("serverData: {}", serverData);
-                                }
-
-                                if ((serverData != null) && (serverData.size() != 0))
-                                {
-                                    Server server = new Server();
-                                    server.setServerGuid((String) serverData.get(0)); // SYSTEM_GUID
-                                    server.setServerRegion(ServiceRegion.valueOf((String) serverData.get(3))); // SYSTEM_REGION
-                                    server.setOperHostName((String) serverData.get(16)); // OPER_HOSTNAME
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("Server: {}", server);
-                                    }
-
-                                    serverList.add(server);
-                                }
-                            }
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("serverList: {}", serverList);
-                            }
-                        }
-                    }
-
-                    Service resService = new Service();
-                    resService.setGuid(service.getGuid());
-                    resService.setType(ServiceType.valueOf(serviceData.get(0)));
-                    resService.setName(serviceData.get(1));
-                    resService.setRegion(ServiceRegion.valueOf(serviceData.get(2)));
-                    resService.setPartition(NetworkPartition.valueOf(serviceData.get(3)));
-                    resService.setServers(serverList);
-                    resService.setStatus(ServiceStatus.valueOf(serviceData.get(4)));
-                    resService.setDescription(serviceData.get(6));
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("Service: {}", resService);
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
 
-                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setService(resService);
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-                else
+                catch (AuditServiceException asx)
                 {
-                    response.setRequestStatus(CoreServicesStatus.FAILURE);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
+
+                return response;
+            }
+
+            List<Server> serverList = null;
+            List<String> serviceData = serviceDao.getService(service.getGuid());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("serviceData: {}", serviceData);
+            }
+
+            if ((serviceData != null) && (serviceData.size() != 0))
+            {
+                if (ServiceType.valueOf(serviceData.get(0)) == ServiceType.PLATFORM)
+                {
+                    String appTmp = StringUtils.remove(serviceData.get(5), "["); // PLATFORM_SERVERS
+                    String platformServers = StringUtils.remove(appTmp, "]");
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("String: {}", platformServers);
+                    }
+
+                    if (platformServers.split(",").length >= 1)
+                    {
+                        serverList = new ArrayList<>();
+
+                        for (String serverGuid : platformServers.split(","))
+                        {
+                            List<Object> serverData = serverDao.getServer(StringUtils.trim(serverGuid));
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("serverData: {}", serverData);
+                            }
+
+                            if ((serverData != null) && (serverData.size() != 0))
+                            {
+                                Server server = new Server();
+                                server.setServerGuid((String) serverData.get(0)); // SYSTEM_GUID
+                                server.setServerRegion(ServiceRegion.valueOf((String) serverData.get(3))); // SYSTEM_REGION
+                                server.setOperHostName((String) serverData.get(16)); // OPER_HOSTNAME
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("Server: {}", server);
+                                }
+
+                                serverList.add(server);
+                            }
+                        }
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("serverList: {}", serverList);
+                        }
+                    }
+                }
+
+                Service resService = new Service();
+                resService.setGuid(service.getGuid());
+                resService.setType(ServiceType.valueOf(serviceData.get(0)));
+                resService.setName(serviceData.get(1));
+                resService.setRegion(ServiceRegion.valueOf(serviceData.get(2)));
+                resService.setPartition(NetworkPartition.valueOf(serviceData.get(3)));
+                resService.setServers(serverList);
+                resService.setStatus(ServiceStatus.valueOf(serviceData.get(4)));
+                resService.setDescription(serviceData.get(6));
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Service: {}", resService);
+                }
+
+                response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                response.setService(resService);
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
         catch (SQLException sqx)

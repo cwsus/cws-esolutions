@@ -49,6 +49,8 @@ import com.cws.esolutions.agent.processors.dto.ServiceCheckResponse;
 import com.cws.esolutions.core.processors.exception.SystemCheckException;
 import com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
+import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
+import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /**
  * @see com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor
@@ -85,92 +87,133 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
         try
         {
-            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
+            // this will require admin and service authorization
+        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+        	accessRequest.setUserAccount(userAccount);
+        	accessRequest.setServiceGuid(request.getServiceId());
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+        	}
+
+        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+        	}
+
+            if (!(accessResponse.getIsUserAuthorized()))
+            {
+                // unauthorized
+            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+
+                // audit
+                try
+                {
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
+                }
+                catch (AuditServiceException asx)
+                {
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                }
+
+                return response;
+            }
+
+            ServiceCheckRequest systemReq = new ServiceCheckRequest();
+            systemReq.setRequestType(SystemCheckType.NETSTAT);
+            systemReq.setPortNumber(request.getPortNumber());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                DEBUGGER.debug("ServiceCheckRequest: {}", request);
             }
 
-            if (isUserAuthorized)
+            AgentRequest agentRequest = new AgentRequest();
+            agentRequest.setAppName(appConfig.getAppName());
+            agentRequest.setRequestPayload(systemReq);
+
+            if (DEBUG)
             {
-                ServiceCheckRequest systemReq = new ServiceCheckRequest();
-                systemReq.setRequestType(SystemCheckType.NETSTAT);
-                systemReq.setPortNumber(request.getPortNumber());
+                DEBUGGER.debug("AgentRequest: {}", agentRequest);
+            }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ServiceCheckRequest: {}", request);
-                }
+            String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(),
+                    new ArrayList<>(
+                            Arrays.asList(
+                                    agentConfig.getUsername(),
+                                    agentConfig.getPassword(),
+                                    agentConfig.getSalt())),
+                                    agentConfig.getRequestQueue(),
+                                    server.getOperHostName(),
+                                    agentRequest);
 
-                AgentRequest agentRequest = new AgentRequest();
-                agentRequest.setAppName(appConfig.getAppName());
-                agentRequest.setRequestPayload(systemReq);
+            if (DEBUG)
+            {
+                DEBUGGER.debug("correlator: {}", correlator);
+            }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AgentRequest: {}", agentRequest);
-                }
-
-                String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(),
+            if (StringUtils.isNotEmpty(correlator))
+            {
+                agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
                         new ArrayList<>(
                                 Arrays.asList(
                                         agentConfig.getUsername(),
                                         agentConfig.getPassword(),
                                         agentConfig.getSalt())),
                                         agentConfig.getRequestQueue(),
-                                        server.getOperHostName(),
-                                        agentRequest);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("correlator: {}", correlator);
-                }
-
-                if (StringUtils.isNotEmpty(correlator))
-                {
-                    agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
-                            new ArrayList<>(
-                                    Arrays.asList(
-                                            agentConfig.getUsername(),
-                                            agentConfig.getPassword(),
-                                            agentConfig.getSalt())),
-                                            agentConfig.getRequestQueue(),
-                                            agentConfig.getTimeout(),
-                                            correlator);
-                }
-                else
-                {
-                    response.setRequestStatus(CoreServicesStatus.FAILURE);
-
-                    return response;
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AgentResponse: {}", agentResponse);
-                }
-
-                if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
-                {
-                    ServiceCheckResponse systemRes = (ServiceCheckResponse) agentResponse.getResponsePayload();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ServiceCheckResponse: {}", systemRes);
-                    }
-
-                    response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
-                    response.setResponseObject(systemRes.getResponseData());
-                }
-                else
-                {
-                    response.setRequestStatus(CoreServicesStatus.FAILURE);
-                }
+                                        agentConfig.getTimeout(),
+                                        correlator);
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
+
+                return response;
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AgentResponse: {}", agentResponse);
+            }
+
+            if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
+            {
+                ServiceCheckResponse systemRes = (ServiceCheckResponse) agentResponse.getResponsePayload();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ServiceCheckResponse: {}", systemRes);
+                }
+
+                response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
+                response.setResponseObject(systemRes.getResponseData());
+            }
+            else
+            {
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
         catch (UtilityException ux)
@@ -251,93 +294,134 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
         try
         {
-            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
+            // this will require admin and service authorization
+        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+        	accessRequest.setUserAccount(userAccount);
+        	accessRequest.setServiceGuid(request.getServiceId());
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+        	}
+
+        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+        	}
+
+            if (!(accessResponse.getIsUserAuthorized()))
+            {
+                // unauthorized
+            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+
+                // audit
+                try
+                {
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
+                }
+                catch (AuditServiceException asx)
+                {
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                }
+
+                return response;
+            }
+
+            ServiceCheckRequest systemReq = new ServiceCheckRequest();
+            systemReq.setRequestType(SystemCheckType.TELNET);
+            systemReq.setPortNumber(request.getPortNumber());
+            systemReq.setTargetHost(request.getTargetServer().getOperHostName());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                DEBUGGER.debug("ServiceCheckRequest: {}", request);
             }
 
-            if (isUserAuthorized)
+            AgentRequest agentRequest = new AgentRequest();
+            agentRequest.setAppName(appConfig.getAppName());
+            agentRequest.setRequestPayload(systemReq);
+
+            if (DEBUG)
             {
-                ServiceCheckRequest systemReq = new ServiceCheckRequest();
-                systemReq.setRequestType(SystemCheckType.TELNET);
-                systemReq.setPortNumber(request.getPortNumber());
-                systemReq.setTargetHost(request.getTargetServer().getOperHostName());
+                DEBUGGER.debug("AgentRequest: {}", agentRequest);
+            }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ServiceCheckRequest: {}", request);
-                }
+            String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(),
+                    new ArrayList<>(
+                            Arrays.asList(
+                                    agentConfig.getUsername(),
+                                    agentConfig.getPassword(),
+                                    agentConfig.getSalt())),
+                                    agentConfig.getRequestQueue(),
+                                    server.getOperHostName(),
+                                    agentRequest);
 
-                AgentRequest agentRequest = new AgentRequest();
-                agentRequest.setAppName(appConfig.getAppName());
-                agentRequest.setRequestPayload(systemReq);
+            if (DEBUG)
+            {
+                DEBUGGER.debug("correlator: {}", correlator);
+            }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AgentRequest: {}", agentRequest);
-                }
-
-                String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(),
+            if (StringUtils.isNotEmpty(correlator))
+            {
+                agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
                         new ArrayList<>(
                                 Arrays.asList(
                                         agentConfig.getUsername(),
                                         agentConfig.getPassword(),
                                         agentConfig.getSalt())),
                                         agentConfig.getRequestQueue(),
-                                        server.getOperHostName(),
-                                        agentRequest);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("correlator: {}", correlator);
-                }
-
-                if (StringUtils.isNotEmpty(correlator))
-                {
-                    agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
-                            new ArrayList<>(
-                                    Arrays.asList(
-                                            agentConfig.getUsername(),
-                                            agentConfig.getPassword(),
-                                            agentConfig.getSalt())),
-                                            agentConfig.getRequestQueue(),
-                                            agentConfig.getTimeout(),
-                                            correlator);
-                }
-                else
-                {
-                    response.setRequestStatus(CoreServicesStatus.FAILURE);
-
-                    return response;
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AgentResponse: {}", agentResponse);
-                }
-
-                if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
-                {
-                    ServiceCheckResponse systemRes = (ServiceCheckResponse) agentResponse.getResponsePayload();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ServiceCheckResponse: {}", systemRes);
-                    }
-
-                    response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
-                    response.setResponseObject(systemRes.getResponseData());
-                }
-                else
-                {
-                    response.setRequestStatus(CoreServicesStatus.FAILURE);
-                }
+                                        agentConfig.getTimeout(),
+                                        correlator);
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
+
+                return response;
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AgentResponse: {}", agentResponse);
+            }
+
+            if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
+            {
+                ServiceCheckResponse systemRes = (ServiceCheckResponse) agentResponse.getResponsePayload();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ServiceCheckResponse: {}", systemRes);
+                }
+
+                response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
+                response.setResponseObject(systemRes.getResponseData());
+            }
+            else
+            {
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
         catch (UtilityException ux)
@@ -418,92 +502,133 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
         try
         {
-            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
+            // this will require admin and service authorization
+        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+        	accessRequest.setUserAccount(userAccount);
+        	accessRequest.setServiceGuid(request.getServiceId());
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+        	}
+
+        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+        	}
+
+            if (!(accessResponse.getIsUserAuthorized()))
+            {
+                // unauthorized
+            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+
+                // audit
+                try
+                {
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
+                }
+                catch (AuditServiceException asx)
+                {
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                }
+
+                return response;
+            }
+
+            ServiceCheckRequest systemReq = new ServiceCheckRequest();
+            systemReq.setRequestType(SystemCheckType.REMOTEDATE);
+            systemReq.setPortNumber(request.getPortNumber());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                DEBUGGER.debug("ServiceCheckRequest: {}", request);
             }
 
-            if (isUserAuthorized)
+            AgentRequest agentRequest = new AgentRequest();
+            agentRequest.setAppName(appConfig.getAppName());
+            agentRequest.setRequestPayload(systemReq);
+
+            if (DEBUG)
             {
-                ServiceCheckRequest systemReq = new ServiceCheckRequest();
-                systemReq.setRequestType(SystemCheckType.REMOTEDATE);
-                systemReq.setPortNumber(request.getPortNumber());
+                DEBUGGER.debug("AgentRequest: {}", agentRequest);
+            }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ServiceCheckRequest: {}", request);
-                }
+            String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(),
+                    new ArrayList<>(
+                            Arrays.asList(
+                                    agentConfig.getUsername(),
+                                    agentConfig.getPassword(),
+                                    agentConfig.getSalt())),
+                                    agentConfig.getRequestQueue(),
+                                    server.getOperHostName(),
+                                    agentRequest);
 
-                AgentRequest agentRequest = new AgentRequest();
-                agentRequest.setAppName(appConfig.getAppName());
-                agentRequest.setRequestPayload(systemReq);
+            if (DEBUG)
+            {
+                DEBUGGER.debug("correlator: {}", correlator);
+            }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AgentRequest: {}", agentRequest);
-                }
-
-                String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(),
+            if (StringUtils.isNotEmpty(correlator))
+            {
+                agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
                         new ArrayList<>(
                                 Arrays.asList(
                                         agentConfig.getUsername(),
                                         agentConfig.getPassword(),
                                         agentConfig.getSalt())),
                                         agentConfig.getRequestQueue(),
-                                        server.getOperHostName(),
-                                        agentRequest);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("correlator: {}", correlator);
-                }
-
-                if (StringUtils.isNotEmpty(correlator))
-                {
-                    agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
-                            new ArrayList<>(
-                                    Arrays.asList(
-                                            agentConfig.getUsername(),
-                                            agentConfig.getPassword(),
-                                            agentConfig.getSalt())),
-                                            agentConfig.getRequestQueue(),
-                                            agentConfig.getTimeout(),
-                                            correlator);
-                }
-                else
-                {
-                    response.setRequestStatus(CoreServicesStatus.FAILURE);
-
-                    return response;
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AgentResponse: {}", agentResponse);
-                }
-
-                if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
-                {
-                    ServiceCheckResponse systemRes = (ServiceCheckResponse) agentResponse.getResponsePayload();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ServiceCheckResponse: {}", systemRes);
-                    }
-
-                    response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
-                    response.setResponseObject(systemRes.getResponseData());
-                }
-                else
-                {
-                    response.setRequestStatus(CoreServicesStatus.FAILURE);
-                }
+                                        agentConfig.getTimeout(),
+                                        correlator);
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
+
+                return response;
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AgentResponse: {}", agentResponse);
+            }
+
+            if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
+            {
+                ServiceCheckResponse systemRes = (ServiceCheckResponse) agentResponse.getResponsePayload();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ServiceCheckResponse: {}", systemRes);
+                }
+
+                response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
+                response.setResponseObject(systemRes.getResponseData());
+            }
+            else
+            {
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
         catch (UtilityException ux)
@@ -584,91 +709,132 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
         try
         {
-            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
+            // this will require admin and service authorization
+        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+        	accessRequest.setUserAccount(userAccount);
+        	accessRequest.setServiceGuid(request.getServiceId());
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+        	}
+
+        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+        	}
+
+            if (!(accessResponse.getIsUserAuthorized()))
+            {
+                // unauthorized
+            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+
+                // audit
+                try
+                {
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
+                }
+                catch (AuditServiceException asx)
+                {
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                }
+
+                return response;
+            }
+
+            ServiceCheckRequest systemReq = new ServiceCheckRequest();
+            systemReq.setRequestType(SystemCheckType.PROCESSLIST);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                DEBUGGER.debug("ServiceCheckRequest: {}", request);
             }
 
-            if (isUserAuthorized)
+            AgentRequest agentRequest = new AgentRequest();
+            agentRequest.setAppName(appConfig.getAppName());
+            agentRequest.setRequestPayload(systemReq);
+
+            if (DEBUG)
             {
-                ServiceCheckRequest systemReq = new ServiceCheckRequest();
-                systemReq.setRequestType(SystemCheckType.PROCESSLIST);
+                DEBUGGER.debug("AgentRequest: {}", agentRequest);
+            }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ServiceCheckRequest: {}", request);
-                }
+            String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(),
+                    new ArrayList<>(
+                            Arrays.asList(
+                                    agentConfig.getUsername(),
+                                    agentConfig.getPassword(),
+                                    agentConfig.getSalt())),
+                                    agentConfig.getRequestQueue(),
+                                    server.getOperHostName(),
+                                    agentRequest);
 
-                AgentRequest agentRequest = new AgentRequest();
-                agentRequest.setAppName(appConfig.getAppName());
-                agentRequest.setRequestPayload(systemReq);
+            if (DEBUG)
+            {
+                DEBUGGER.debug("correlator: {}", correlator);
+            }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AgentRequest: {}", agentRequest);
-                }
-
-                String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(),
+            if (StringUtils.isNotEmpty(correlator))
+            {
+                agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
                         new ArrayList<>(
                                 Arrays.asList(
                                         agentConfig.getUsername(),
                                         agentConfig.getPassword(),
                                         agentConfig.getSalt())),
                                         agentConfig.getRequestQueue(),
-                                        server.getOperHostName(),
-                                        agentRequest);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("correlator: {}", correlator);
-                }
-
-                if (StringUtils.isNotEmpty(correlator))
-                {
-                    agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
-                            new ArrayList<>(
-                                    Arrays.asList(
-                                            agentConfig.getUsername(),
-                                            agentConfig.getPassword(),
-                                            agentConfig.getSalt())),
-                                            agentConfig.getRequestQueue(),
-                                            agentConfig.getTimeout(),
-                                            correlator);
-                }
-                else
-                {
-                    response.setRequestStatus(CoreServicesStatus.FAILURE);
-
-                    return response;
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AgentResponse: {}", agentResponse);
-                }
-
-                if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
-                {
-                    ServiceCheckResponse systemRes = (ServiceCheckResponse) agentResponse.getResponsePayload();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ServiceCheckResponse: {}", systemRes);
-                    }
-
-                    response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
-                    response.setResponseObject(systemRes.getResponseData());
-                }
-                else
-                {
-                    response.setRequestStatus(CoreServicesStatus.FAILURE);
-                }
+                                        agentConfig.getTimeout(),
+                                        correlator);
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
+
+                return response;
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AgentResponse: {}", agentResponse);
+            }
+
+            if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
+            {
+                ServiceCheckResponse systemRes = (ServiceCheckResponse) agentResponse.getResponsePayload();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ServiceCheckResponse: {}", systemRes);
+                }
+
+                response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
+                response.setResponseObject(systemRes.getResponseData());
+            }
+            else
+            {
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
         catch (UtilityException ux)

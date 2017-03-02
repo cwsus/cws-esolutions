@@ -34,7 +34,6 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElementWrapper;
 
 import com.cws.esolutions.core.CoreServiceConstants;
 /**
@@ -58,7 +57,7 @@ public final class ApplicationConfig implements Serializable
     private String emailAliasId = null;
     private String agentBundleSource = null;
     private String virtualManagerClass = null;
-    private List<String> serviceAccount = null;
+    private List<ServiceAccount> serviceAccount = null;
 
     private static final long serialVersionUID = -2125011070971484380L;
     private static final String CNAME = ApplicationConfig.class.getName();
@@ -184,9 +183,9 @@ public final class ApplicationConfig implements Serializable
         this.agentBundleSource = value;
     }
 
-    public final void setServiceAccount(final List<String> value)
+    public final void setServiceAccount(final List<ServiceAccount> value)
     {
-        final String methodName = ApplicationConfig.CNAME + "#setServiceAccount(final List<String> value)";
+        final String methodName = ApplicationConfig.CNAME + "#setServiceAccount(final List<ServiceAccount> value)";
 
         if (DEBUG)
         {
@@ -362,9 +361,8 @@ public final class ApplicationConfig implements Serializable
         return this.agentBundleSource;
     }
 
-    @XmlElement(name = "accountInformation")
-    @XmlElementWrapper(name = "serviceAccount")
-    public final List<String> getServiceAccount()
+    @XmlElement(name = "serviceAccount")
+    public final List<ServiceAccount> getServiceAccount()
     {
         final String methodName = ApplicationConfig.CNAME + "#getServiceAccount()";
 

@@ -63,6 +63,8 @@ import com.cws.esolutions.core.processors.dto.DNSServiceResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.exception.DNSServiceException;
+import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
+import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
@@ -71,86 +73,133 @@ import com.cws.esolutions.security.services.exception.AccessControlServiceExcept
  */
 public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcessor
 {
-    /*
-     * Project: eSolutionsCore
-     * Package: com.cws.esolutions.security.audit.processors.interfaces
-     * File: IAuditProcessor.java
-     *
-     * History
-     * Author               Date                            Comments
-     * ----------------------------------------------------------------------------
-     * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
-     */
-    static class ModifyEntryToAddRecord
+	public DNSServiceResponse addRecordToEntry(final DNSServiceRequest request) throws DNSServiceException
     {
-        static final String CNAME = ModifyEntryToAddRecord.class.getName();
+        final String methodName = IDNSServiceRequestProcessor.CNAME + "#addRecordToEntry(final DNSServiceRequest request) throws DNSServiceException";
 
-        public static final DNSEntry addRecordToEntry(final DNSEntry entry, final DNSRecord record, final boolean isApex)
+        if (DEBUG)
         {
-            final String methodName = ModifyEntryToAddRecord.CNAME + "#addRecordToEntry(final DNSEntry entry, final DNSRecord record, final boolean isApex)";
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("DNSServiceRequest: {}", request);
+        }
 
-            if (DEBUG)
+        final DNSServiceResponse response = new DNSServiceResponse();
+        final DNSEntry dnsEntry = request.getDnsEntry();
+        final UserAccount userAccount = request.getUserAccount();
+        final RequestHostInfo reqInfo = request.getRequestInfo();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("DNSEntry: {}", dnsEntry);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+        }
+
+        try
+        {
+            // this will require admin and service authorization
+        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+        	accessRequest.setUserAccount(userAccount);
+        	accessRequest.setServiceGuid(request.getServiceId());
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+        	}
+
+        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+        	}
+
+            if (!(accessResponse.getIsUserAuthorized()))
             {
-                DEBUGGER.debug(methodName);
-                DEBUGGER.debug("Value: {}", entry);
-                DEBUGGER.debug("Value: {}", record);
-                DEBUGGER.debug("Value: {}", isApex);
-            }
+                // unauthorized
+            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
-            if ((StringUtils.equals(entry.getApex(), record.getRecordName())) || (StringUtils.equals(entry.getApex(), record.getRecordOrigin())))
-            {
-                List<DNSRecord> list = null;
-
-                if (isApex)
+                // audit
+                try
                 {
-                    if ((entry.getApexRecords() == null) || (entry.getApexRecords().size() == 0))
-                    {
-                        list = new ArrayList<>();
-                    }
-                    else
-                    {
-                        list = entry.getApexRecords();
-                    }
-                }
-                else
-                {
-                    if ((entry.getSubRecords() == null) || (entry.getSubRecords().size() == 0))
-                    {
-                        list = new ArrayList<>();
-                    }
-                    else
-                    {
-                        list = entry.getSubRecords();
-                    }
-                }
-
-                if (!(list.contains(record)))
-                {
-                    list.add(record);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("list: {}", list);
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
 
-                    if (isApex)
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+
+                    if (DEBUG)
                     {
-                        entry.setApexRecords(list);
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
                     }
-                    else
-                    {
-                        entry.setSubRecords(list);
-                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
+                catch (AuditServiceException asx)
+                {
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                }
+
+                return response;
             }
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("DNSEntry: {}", entry);
-            }
-
-            return entry;
+            // build me
         }
+        catch (SecurityException sx)
+        {
+            ERROR_RECORDER.error(sx.getMessage(), sx);
+
+            throw new DNSServiceException(sx.getMessage(), sx);
+        }
+        catch (AccessControlServiceException acsx)
+        {
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
+
+            throw new DNSServiceException(acsx.getMessage(), acsx);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
+        }
+
+        return response;
     }
 
     /**
@@ -361,10 +410,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
             {
                 Security.setProperty("networkaddress.cache.ttl", currentTimeout);
             }
-            catch (NullPointerException npx)
-            {
-                // dont do anything with it
-            }
+            catch (NullPointerException npx) {}
         }
 
         return response;
@@ -400,145 +446,184 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
         try
         {
             // this will require admin and service authorization
-            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
+        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+        	accessRequest.setUserAccount(userAccount);
+        	accessRequest.setServiceGuid(request.getServiceId());
 
-            if (DEBUG)
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+        	}
+
+        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+        	}
+
+            if (!(accessResponse.getIsUserAuthorized()))
             {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                // unauthorized
+            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+
+                // audit
+                try
+                {
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
+                }
+                catch (AuditServiceException asx)
+                {
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                }
+
+                return response;
             }
 
-            if (isUserAuthorized)
+            StringBuilder sBuilder = new StringBuilder()
+                .append("$ORIGIN " + entry.getOrigin() + "\n")
+                .append("$TTL " + entry.getLifetime() + "\n")
+                .append(entry.getApex() + " IN SOA " + entry.getMaster() + " " + entry.getOwner() + " (\n")
+                .append(entry.getSerialNumber() + "\n")
+                .append(entry.getSlaveRefresh() + "\n")
+                .append(entry.getSlaveRetry() + "\n")
+                .append(entry.getSlaveExpiry() + "\n")
+                .append(entry.getCacheTime() + "\n")
+                .append(")\n");
+
+            if ((entry.getApexRecords() != null) && (entry.getApexRecords().size() != 0))
             {
-                StringBuilder sBuilder = new StringBuilder()
-                    .append("$ORIGIN " + entry.getOrigin() + "\n")
-                    .append("$TTL " + entry.getLifetime() + "\n")
-                    .append(entry.getApex() + " IN SOA " + entry.getMaster() + " " + entry.getOwner() + " (\n")
-                    .append(entry.getSerialNumber() + "\n")
-                    .append(entry.getSlaveRefresh() + "\n")
-                    .append(entry.getSlaveRetry() + "\n")
-                    .append(entry.getSlaveExpiry() + "\n")
-                    .append(entry.getCacheTime() + "\n")
-                    .append(")\n");
-
-                if ((entry.getApexRecords() != null) && (entry.getApexRecords().size() != 0))
+                for (DNSRecord rec : entry.getApexRecords())
                 {
-                    for (DNSRecord rec : entry.getApexRecords())
+                    if (rec.getRecordType() == DNSRecordType.MX)
                     {
-                        if (rec.getRecordType() == DNSRecordType.MX)
-                        {
-                            sBuilder.append(StringUtils.rightPad(rec.getRecordClass(), 8, ""));
-                            sBuilder.append(StringUtils.rightPad(rec.getRecordType().name(), 8, ""));
-                            sBuilder.append(StringUtils.rightPad(String.valueOf(rec.getRecordPriority()), 8, ""));
-                            sBuilder.append(StringUtils.rightPad(rec.getPrimaryAddress().get(0), 8, ""));
-                            sBuilder.append("\n");
-                        }
-                        else
-                        {
-                            sBuilder.append(StringUtils.rightPad(rec.getRecordClass(), 8, ""));
-                            sBuilder.append(StringUtils.rightPad(rec.getRecordType().name(), 8, ""));
-                            sBuilder.append(StringUtils.rightPad(rec.getPrimaryAddress().get(0), 8, ""));
-                            sBuilder.append("\n");
-                        }
+                        sBuilder.append(StringUtils.rightPad(rec.getRecordClass(), 8, ""));
+                        sBuilder.append(StringUtils.rightPad(rec.getRecordType().name(), 8, ""));
+                        sBuilder.append(StringUtils.rightPad(String.valueOf(rec.getRecordPriority()), 8, ""));
+                        sBuilder.append(StringUtils.rightPad(rec.getPrimaryAddress().get(0), 8, ""));
+                        sBuilder.append("\n");
                     }
-
-                    sBuilder.append("\n");
-
-                    if ((entry.getSubRecords() != null) && (entry.getSubRecords().size() != 0))
+                    else
                     {
-                        sBuilder.append("$ORIGIN " + entry.getApex() + "\n");
+                        sBuilder.append(StringUtils.rightPad(rec.getRecordClass(), 8, ""));
+                        sBuilder.append(StringUtils.rightPad(rec.getRecordType().name(), 8, ""));
+                        sBuilder.append(StringUtils.rightPad(rec.getPrimaryAddress().get(0), 8, ""));
+                        sBuilder.append("\n");
+                    }
+                }
 
-                        for (DNSRecord rec : entry.getSubRecords())
+                sBuilder.append("\n");
+
+                if ((entry.getSubRecords() != null) && (entry.getSubRecords().size() != 0))
+                {
+                    sBuilder.append("$ORIGIN " + entry.getApex() + "\n");
+
+                    for (DNSRecord rec : entry.getSubRecords())
+                    {
+                        switch (rec.getRecordType())
                         {
-                            switch (rec.getRecordType())
-                            {
-                                case SRV:
-                                    //_service._proto.name. TTL class SRV priority weight port target.
-                                    StringBuilder srv = new StringBuilder()
-                                        .append("_" + rec.getRecordService() + ".")
-                                        .append("_" + rec.getRecordProtocol() + ".")
-                                        .append(StringUtils.rightPad((StringUtils.endsWith(rec.getRecordName(),  ".") ? rec.getRecordName() : rec.getRecordName() + "."), 16, ""))
-                                        .append(StringUtils.rightPad(rec.getRecordClass(), 8, ""))
-                                        .append(StringUtils.rightPad(String.valueOf(rec.getRecordPriority()), 8, ""))
-                                        .append(StringUtils.rightPad(String.valueOf(rec.getRecordWeight()), 8, ""))
-                                        .append(StringUtils.rightPad(String.valueOf(rec.getRecordPort()),  8, ""))
-                                        .append(rec.getPrimaryAddress().get(0));
+                            case SRV:
+                                //_service._proto.name. TTL class SRV priority weight port target.
+                                StringBuilder srv = new StringBuilder()
+                                    .append("_" + rec.getRecordService() + ".")
+                                    .append("_" + rec.getRecordProtocol() + ".")
+                                    .append(StringUtils.rightPad((StringUtils.endsWith(rec.getRecordName(),  ".") ? rec.getRecordName() : rec.getRecordName() + "."), 16, ""))
+                                    .append(StringUtils.rightPad(rec.getRecordClass(), 8, ""))
+                                    .append(StringUtils.rightPad(String.valueOf(rec.getRecordPriority()), 8, ""))
+                                    .append(StringUtils.rightPad(String.valueOf(rec.getRecordWeight()), 8, ""))
+                                    .append(StringUtils.rightPad(String.valueOf(rec.getRecordPort()),  8, ""))
+                                    .append(rec.getPrimaryAddress().get(0));
 
-                                    sBuilder.append(srv.toString() + "\n");
+                                sBuilder.append(srv.toString() + "\n");
 
-                                    break;
-                                case MX:
-                                    StringBuilder mx = new StringBuilder()
-                                        .append(StringUtils.rightPad(rec.getRecordName(), 16, ""))
-                                        .append(StringUtils.rightPad(rec.getRecordClass(), 8, ""))
-                                        .append(StringUtils.rightPad(rec.getRecordType().name(), 8, ""))
-                                        .append(StringUtils.rightPad(String.valueOf(rec.getRecordWeight()), 8, ""))
-                                        .append(rec.getPrimaryAddress().get(0));
+                                break;
+                            case MX:
+                                StringBuilder mx = new StringBuilder()
+                                    .append(StringUtils.rightPad(rec.getRecordName(), 16, ""))
+                                    .append(StringUtils.rightPad(rec.getRecordClass(), 8, ""))
+                                    .append(StringUtils.rightPad(rec.getRecordType().name(), 8, ""))
+                                    .append(StringUtils.rightPad(String.valueOf(rec.getRecordWeight()), 8, ""))
+                                    .append(rec.getPrimaryAddress().get(0));
 
-                                    sBuilder.append(mx.toString() + "\n");
+                                sBuilder.append(mx.toString() + "\n");
 
-                                    break;
-                                case CNAME:
-                                    sBuilder.append(StringUtils.rightPad(rec.getRecordName(), 16, ""));
-                                    sBuilder.append(StringUtils.rightPad(rec.getRecordClass(), 8, ""));
-                                    sBuilder.append(StringUtils.rightPad(rec.getRecordType().name(), 8, ""));
-                                    sBuilder.append(StringUtils.rightPad((StringUtils.endsWith(rec.getPrimaryAddress().get(0),  ".") ? rec.getPrimaryAddress().get(0) : rec.getPrimaryAddress().get(0) + "."), 8, ""));
-                                    sBuilder.append("\n");
+                                break;
+                            case CNAME:
+                                sBuilder.append(StringUtils.rightPad(rec.getRecordName(), 16, ""));
+                                sBuilder.append(StringUtils.rightPad(rec.getRecordClass(), 8, ""));
+                                sBuilder.append(StringUtils.rightPad(rec.getRecordType().name(), 8, ""));
+                                sBuilder.append(StringUtils.rightPad((StringUtils.endsWith(rec.getPrimaryAddress().get(0),  ".") ? rec.getPrimaryAddress().get(0) : rec.getPrimaryAddress().get(0) + "."), 8, ""));
+                                sBuilder.append("\n");
 
-                                    break;
-                                case TXT:
-                                    sBuilder.append(StringUtils.rightPad(rec.getRecordName(), 16, ""));
-                                    sBuilder.append(StringUtils.rightPad(rec.getRecordClass(), 8, ""));
-                                    sBuilder.append(StringUtils.rightPad(rec.getRecordType().name(), 8, ""));
-                                    sBuilder.append("\"" + StringUtils.rightPad(rec.getPrimaryAddress().get(0), 8, "") + "\"");
-                                    sBuilder.append("\n");
+                                break;
+                            case TXT:
+                                sBuilder.append(StringUtils.rightPad(rec.getRecordName(), 16, ""));
+                                sBuilder.append(StringUtils.rightPad(rec.getRecordClass(), 8, ""));
+                                sBuilder.append(StringUtils.rightPad(rec.getRecordType().name(), 8, ""));
+                                sBuilder.append("\"" + StringUtils.rightPad(rec.getPrimaryAddress().get(0), 8, "") + "\"");
+                                sBuilder.append("\n");
 
-                                    break;
-                                default:
-                                    sBuilder.append(StringUtils.rightPad(rec.getRecordName(), 16, ""));
-                                    sBuilder.append(StringUtils.rightPad(rec.getRecordClass(), 8, ""));
-                                    sBuilder.append(StringUtils.rightPad(rec.getRecordType().name(), 8, ""));
+                                break;
+                            default:
+                                sBuilder.append(StringUtils.rightPad(rec.getRecordName(), 16, ""));
+                                sBuilder.append(StringUtils.rightPad(rec.getRecordClass(), 8, ""));
+                                sBuilder.append(StringUtils.rightPad(rec.getRecordType().name(), 8, ""));
 
-                                    for (String addr : rec.getPrimaryAddress())
+                                for (String addr : rec.getPrimaryAddress())
+                                {
+                                    if (DEBUG)
                                     {
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("addr: {}", addr);
-                                        }
-
-                                        sBuilder.append(StringUtils.leftPad(StringUtils.rightPad(rec.getRecordClass(), 8, ""), 16, ""));
-                                        sBuilder.append(StringUtils.rightPad(rec.getRecordType().name(), 8, ""));
-                                        sBuilder.append(StringUtils.rightPad(addr, 8, ""));
-                                        sBuilder.append("\n");
+                                        DEBUGGER.debug("addr: {}", addr);
                                     }
 
-                                    if (StringUtils.isNotEmpty(rec.getSpfRecord()))
-                                    {
-                                        sBuilder.append(StringUtils.leftPad(StringUtils.rightPad(rec.getRecordClass(), 8, ""), 16, ""));
-                                        sBuilder.append(StringUtils.rightPad(DNSRecordType.TXT.name(), 8, ""));
-                                        sBuilder.append("\"" + StringUtils.rightPad(rec.getSpfRecord(), 8, "") + "\"");
-                                        sBuilder.append("\n");
-                                    }
+                                    sBuilder.append(StringUtils.leftPad(StringUtils.rightPad(rec.getRecordClass(), 8, ""), 16, ""));
+                                    sBuilder.append(StringUtils.rightPad(rec.getRecordType().name(), 8, ""));
+                                    sBuilder.append(StringUtils.rightPad(addr, 8, ""));
+                                    sBuilder.append("\n");
+                                }
 
-                                    break;
-                            }
+                                if (StringUtils.isNotEmpty(rec.getSpfRecord()))
+                                {
+                                    sBuilder.append(StringUtils.leftPad(StringUtils.rightPad(rec.getRecordClass(), 8, ""), 16, ""));
+                                    sBuilder.append(StringUtils.rightPad(DNSRecordType.TXT.name(), 8, ""));
+                                    sBuilder.append("\"" + StringUtils.rightPad(rec.getSpfRecord(), 8, "") + "\"");
+                                    sBuilder.append("\n");
+                                }
+
+                                break;
                         }
                     }
-
-                    response.setDnsEntry(entry);
-                    response.setZoneData(sBuilder);
-                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
                 }
-                else
-                {
-                    ERROR_RECORDER.error("No apex record was found. Cannot generate zone.");
 
-                    throw new DNSServiceException("No apex record was found. Cannot generate zone.");
-                }
+                response.setDnsEntry(entry);
+                response.setZoneData(sBuilder);
+                response.setRequestStatus(CoreServicesStatus.SUCCESS);
             }
             else
             {
-                // unauthorized
-                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                ERROR_RECORDER.error("No apex record was found. Cannot generate zone.");
+
+                throw new DNSServiceException("No apex record was found. Cannot generate zone.");
             }
         }
         catch (SecurityException sx)
@@ -619,101 +704,140 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
         try
         {
             // this will require admin and service authorization
-            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
+        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+        	accessRequest.setUserAccount(userAccount);
+        	accessRequest.setServiceGuid(request.getServiceId());
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-            }
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+        	}
 
-            if (isUserAuthorized)
+        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+        	}
+
+            if (!(accessResponse.getIsUserAuthorized()))
             {
-                // here we're going to generate the actual file given the provided
-                // data. at this point everything should already be in the database
-                // we could generate the zone file without having a "zone data" field,
-                // but the zone data field makes it somewhat easier, since its already
-                // been created for presentation/approval to the requestor
-                if (entry.getZoneData() != null)
+                // unauthorized
+            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+
+                // audit
+                try
                 {
-                    File zoneFile = FileUtils.getFile(CoreServiceConstants.TMP_DIR, entry.getFileName());
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("File: {}", zoneFile);
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
 
-                    IOUtils.write(entry.getZoneData(), new FileOutputStream(zoneFile));
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
 
-                    if ((zoneFile.exists()) && (zoneFile.length() != 0))
+                    if (DEBUG)
                     {
-                        IServerDataDAO dao = new ServerDataDAOImpl();
-                        List<Object[]> dnsServers = dao.getServersByAttribute(ServerType.DNSMASTER.name() + " " + request.getServiceRegion().name(), 0);
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
+                }
+                catch (AuditServiceException asx)
+                {
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                }
+
+                return response;
+            }
+
+            // here we're going to generate the actual file given the provided
+            // data. at this point everything should already be in the database
+            // we could generate the zone file without having a "zone data" field,
+            // but the zone data field makes it somewhat easier, since its already
+            // been created for presentation/approval to the requestor
+            if (entry.getZoneData() != null)
+            {
+                File zoneFile = FileUtils.getFile(CoreServiceConstants.TMP_DIR, entry.getFileName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("File: {}", zoneFile);
+                }
+
+                IOUtils.write(entry.getZoneData(), new FileOutputStream(zoneFile));
+
+                if ((zoneFile.exists()) && (zoneFile.length() != 0))
+                {
+                    IServerDataDAO dao = new ServerDataDAOImpl();
+                    List<Object[]> dnsServers = dao.getServersByAttribute(ServerType.DNSMASTER.name() + " " + request.getServiceRegion().name(), 0);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("dnsServers: {}", dnsServers);
+                    }
+
+                    if ((dnsServers != null) && (dnsServers.size() != 0))
+                    {
+                        NetworkUtils.executeSftpTransfer(zoneFile.toString(), zoneFile.getAbsolutePath(), (String) dnsServers.get(0)[18], true);
+
+                        List<Object[]> slaveServers = dao.getServersByAttribute(ServerType.DNSSLAVE.name() + " " + request.getServiceRegion().name(), 0);
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("dnsServers: {}", dnsServers);
+                            DEBUGGER.debug("slaveServers: {}", slaveServers);
                         }
 
-                        if ((dnsServers != null) && (dnsServers.size() != 0))
+                        if ((slaveServers != null) && (slaveServers.size() != 0))
                         {
-                            NetworkUtils.executeSftpTransfer(zoneFile.toString(), zoneFile.getAbsolutePath(), (String) dnsServers.get(0)[18], true);
+                            int errCount = 0;
 
-                            List<Object[]> slaveServers = dao.getServersByAttribute(ServerType.DNSSLAVE.name() + " " + request.getServiceRegion().name(), 0);
-
-                            if (DEBUG)
+                            for (Object[] server : slaveServers)
                             {
-                                DEBUGGER.debug("slaveServers: {}", slaveServers);
+                                try
+                                {
+                                    NetworkUtils.executeSftpTransfer(zoneFile.toString(), zoneFile.getAbsolutePath(), (String) server[18], true);
+                                }
+                                catch (UtilityException ux)
+                                {
+                                    ERROR_RECORDER.error(ux.getMessage(), ux);
+
+                                    errCount++;
+                                }
                             }
 
-                            if ((slaveServers != null) && (slaveServers.size() != 0))
+                            if (errCount == 0)
                             {
-                                int errCount = 0;
-
-                                for (Object[] server : slaveServers)
-                                {
-                                    try
-                                    {
-                                        NetworkUtils.executeSftpTransfer(zoneFile.toString(), zoneFile.getAbsolutePath(), (String) server[18], true);
-                                    }
-                                    catch (UtilityException ux)
-                                    {
-                                        ERROR_RECORDER.error(ux.getMessage(), ux);
-
-                                        errCount++;
-                                    }
-                                }
-
-                                if (errCount == 0)
-                                {
-                                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                                }
-                                else
-                                {
-                                    response.setRequestStatus(CoreServicesStatus.FAILURE);
-                                }
+                                response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                            }
+                            else
+                            {
+                                response.setRequestStatus(CoreServicesStatus.FAILURE);
                             }
                         }
-                    }
-                    else
-                    {
-                        // zone file wasn't created
-                        ERROR_RECORDER.error("Zone file was not created. Cannot continue.");
-
-                        response.setRequestStatus(CoreServicesStatus.FAILURE);
                     }
                 }
                 else
                 {
                     // zone file wasn't created
-                    ERROR_RECORDER.error("No zone data was provided in the request. Cannot continue.");
+                    ERROR_RECORDER.error("Zone file was not created. Cannot continue.");
 
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
             }
             else
             {
-                // unauthorized
-                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                // zone file wasn't created
+                ERROR_RECORDER.error("No zone data was provided in the request. Cannot continue.");
+
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
         catch (SecurityException sx)
@@ -816,25 +940,65 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
         try
         {
             // this will require admin and service authorization
-            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
+        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+        	accessRequest.setUserAccount(userAccount);
+        	accessRequest.setServiceGuid(request.getServiceId());
 
-            if (DEBUG)
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+        	}
+
+        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+        	}
+
+            if (!(accessResponse.getIsUserAuthorized()))
             {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                // unauthorized
+            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+
+                // audit
+                try
+                {
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
+                }
+                catch (AuditServiceException asx)
+                {
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                }
+
+                return response;
             }
 
-            if (isUserAuthorized)
-            {
-                // TODO: build
-                // this will take the IP address in the "masters" clause and 
-                // change it to whatever the new one is. then it pushes the file
-                // out to the associated servers and continues from there to the
-                // slaves
-            }
-            else
-            {
-                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-            }
+            // TODO: build
+            // this will take the IP address in the "masters" clause and 
+            // change it to whatever the new one is. then it pushes the file
+            // out to the associated servers and continues from there to the
+            // slaves
         }
         catch (SecurityException sx)
         {

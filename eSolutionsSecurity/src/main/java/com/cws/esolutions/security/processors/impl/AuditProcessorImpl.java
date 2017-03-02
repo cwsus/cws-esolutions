@@ -40,6 +40,8 @@ import com.cws.esolutions.security.processors.dto.AuditResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
+import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
+import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /**
  * @see com.cws.esolutions.security.processors.interfaces.IAuditProcessor
@@ -160,107 +162,148 @@ public class AuditProcessorImpl implements IAuditProcessor
 
         try
         {
-            boolean isUserAuthorized = accessControl.isUserAuthorized(reqAccount, IAuditProcessor.SERVICE_ID);
+            // this will require admin and service authorization
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(reqAccount);
+            accessRequest.setServiceGuid(request.getApplicationId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
             }
 
-            if (isUserAuthorized)
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+            if (DEBUG)
             {
-                if (secConfig.getPerformAudit())
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
+
+            if (!(accessResponse.getIsUserAuthorized()))
+            {
+                // unauthorized
+                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+
+                // audit
+                try
                 {
-                    final UserAccount user = auditEntry.getUserAccount();
+                    AuditEntry setAuditEntry = new AuditEntry();
+                    setAuditEntry.setHostInfo(reqInfo);
+                    setAuditEntry.setAuditType(AuditType.GETAUDITENTRIES);
+                    setAuditEntry.setUserAccount(reqAccount);
+                    setAuditEntry.setApplicationId(request.getApplicationId());
+                    setAuditEntry.setApplicationName(request.getApplicationName());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("UserAccount: {}", user);
+                        DEBUGGER.debug("AuditEntry: {}", setAuditEntry);
                     }
 
-                    List<Object> dataResponse = auditDAO.getAuditInterval(user.getGuid(), request.getStartRow());
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(setAuditEntry);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("Data: {}", dataResponse);
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
                     }
 
-                    if ((dataResponse != null) && (dataResponse.size() != 0))
-                    {
-                        int count = (Integer) dataResponse.get(0);
-                        List<AuditEntry> auditList = new ArrayList<>();
+                    auditRequest(auditRequest);
+                }
+                catch (AuditServiceException asx)
+                {
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                }
 
-                        for (int x = 1; dataResponse.size() != x; x++)
+                return response;
+            }
+
+            if (secConfig.getPerformAudit())
+            {
+                final UserAccount user = auditEntry.getUserAccount();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("UserAccount: {}", user);
+                }
+
+                List<Object> dataResponse = auditDAO.getAuditInterval(user.getGuid(), request.getStartRow());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Data: {}", dataResponse);
+                }
+
+                if ((dataResponse != null) && (dataResponse.size() != 0))
+                {
+                    int count = (Integer) dataResponse.get(0);
+                    List<AuditEntry> auditList = new ArrayList<>();
+
+                    for (int x = 1; dataResponse.size() != x; x++)
+                    {
+                        if (DEBUG)
                         {
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Value: {}", dataResponse.get(x));
-                            }
-
-                            Object[] array = (Object[]) dataResponse.get(x);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Object[]: {}", array);
-                            }
-
-                            RequestHostInfo hostInfo = new RequestHostInfo();
-                            hostInfo.setHostAddress((String) array[7]); // resultSet.getString(9), // SOURCE_ADDRESS
-                            hostInfo.setHostName((String) array[8]); // resultSet.getString(10) // SOURCE_HOSTNAME
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("RequestHostInfo: {}", hostInfo);
-                            }
-
-                            // capture
-                            UserAccount userAccount = new UserAccount();
-                            userAccount.setUsername((String) array[1]); // resultSet.getString(3), // USERNAME
-                            userAccount.setGuid((String) array[2]); // resultSet.getString(4), // CN
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("UserAccount: {}", userAccount);
-                            }
-
-                            AuditEntry resEntry = new AuditEntry();
-                            resEntry.setApplicationId((String) (array[3])); // resultSet.getString(5), // APPLICATION_ID
-                            resEntry.setApplicationName((String) array[4]); // resultSet.getString(6), // APPLICATION_NAME
-                            resEntry.setAuditDate((Date) array[5]); // resultSet.getTimestamp(7), // REQUEST_TIMESTAMP
-                            resEntry.setAuditType(AuditType.valueOf((String) array[6])); // resultSet.getString(8), // ACTION
-                            resEntry.setHostInfo(hostInfo);
-                            resEntry.setUserAccount(userAccount);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("AuditEntry: {}", resEntry);
-                            }
-
-                            auditList.add(resEntry);
+                            DEBUGGER.debug("Value: {}", dataResponse.get(x));
                         }
+
+                        Object[] array = (Object[]) dataResponse.get(x);
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("AuditList: {}", auditList);
+                            DEBUGGER.debug("Object[]: {}", array);
                         }
 
-                        response.setEntryCount(count);
-                        response.setAuditList(auditList);
-                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                        RequestHostInfo hostInfo = new RequestHostInfo();
+                        hostInfo.setHostAddress((String) array[7]); // resultSet.getString(9), // SOURCE_ADDRESS
+                        hostInfo.setHostName((String) array[8]); // resultSet.getString(10) // SOURCE_HOSTNAME
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("RequestHostInfo: {}", hostInfo);
+                        }
+
+                        // capture
+                        UserAccount userAccount = new UserAccount();
+                        userAccount.setUsername((String) array[1]); // resultSet.getString(3), // USERNAME
+                        userAccount.setGuid((String) array[2]); // resultSet.getString(4), // CN
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("UserAccount: {}", userAccount);
+                        }
+
+                        AuditEntry resEntry = new AuditEntry();
+                        resEntry.setApplicationId((String) (array[3])); // resultSet.getString(5), // APPLICATION_ID
+                        resEntry.setApplicationName((String) array[4]); // resultSet.getString(6), // APPLICATION_NAME
+                        resEntry.setAuditDate((Date) array[5]); // resultSet.getTimestamp(7), // REQUEST_TIMESTAMP
+                        resEntry.setAuditType(AuditType.valueOf((String) array[6])); // resultSet.getString(8), // ACTION
+                        resEntry.setHostInfo(hostInfo);
+                        resEntry.setUserAccount(userAccount);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditEntry: {}", resEntry);
+                        }
+
+                        auditList.add(resEntry);
                     }
-                    else
+
+                    if (DEBUG)
                     {
-                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                        DEBUGGER.debug("AuditList: {}", auditList);
                     }
+
+                    response.setEntryCount(count);
+                    response.setAuditList(auditList);
+                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                 }
                 else
                 {
-                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
                 }
             }
             else
             {
-                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
             }
         }
         catch (SQLException sqx)

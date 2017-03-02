@@ -27,23 +27,15 @@ package com.cws.esolutions.core.listeners;
  */
 import java.net.URL;
 import java.util.Map;
-
 import org.slf4j.Logger;
-
 import java.util.HashMap;
-
 import javax.sql.DataSource;
-
 import java.sql.SQLException;
-
 import org.slf4j.LoggerFactory;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.JAXBException;
-
 import java.net.MalformedURLException;
-
 import org.apache.log4j.helpers.Loader;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -79,40 +71,41 @@ public class CoreServiceInitializer
      * @throws CoreServiceException @{link com.cws.esolutions.core.exception.CoreServiceException}
      * if an exception occurs during initialization
      */
-    public static void initializeService(final String coreConfig, final String logConfig, final boolean startConnections) throws CoreServiceException
+    public static void initializeService(final String configFile, final String logConfig, final boolean startConnections) throws CoreServiceException
     {
         URL xmlURL = null;
         JAXBContext context = null;
         Unmarshaller marshaller = null;
         CoreConfigurationData configData = null;
 
+        System.out.println("configFile: " + configFile);
+        System.out.println("logConfig: " + logConfig);
+        
         final ClassLoader classLoader = CoreServiceInitializer.class.getClassLoader();
-        final String serviceConfig = (StringUtils.isBlank(coreConfig)) ? System.getProperty("coreConfigFile") : coreConfig;
+        final String serviceConfig = (StringUtils.isBlank(configFile)) ? System.getProperty("coreConfigFile") : configFile;
         final String loggingConfig = (StringUtils.isBlank(logConfig)) ? System.getProperty("coreLogConfig") : logConfig;
+
+        System.out.println("serviceConfig: " + serviceConfig);
+        System.out.println("loggingConfig: " + loggingConfig);
 
         try
         {
-            if (FileUtils.getFile(loggingConfig).exists())
+            try
+            {
+                DOMConfigurator.configure(Loader.getResource(loggingConfig));
+            }
+            catch (NullPointerException npx)
             {
                 try
                 {
-                    DOMConfigurator.configure(Loader.getResource(loggingConfig));
+                    DOMConfigurator.configure(FileUtils.getFile(loggingConfig).toURI().toURL());
                 }
-                catch (NullPointerException npx)
+                catch (NullPointerException npx1)
                 {
-                    try
-                    {
-                        DOMConfigurator.configure(FileUtils.getFile(loggingConfig).toURI().toURL());
-                    }
-                    catch (NullPointerException npx1)
-                    {
-                        System.err.println("Unable to load logging configuration. No logging enabled!");
-                    }
+                    System.err.println("Unable to load logging configuration. No logging enabled!");
+                    System.err.println("");
+                    npx1.printStackTrace();
                 }
-            }
-            else
-            {
-                System.err.println("Unable to load logging configuration. No logging enabled!");
             }
 
             xmlURL = classLoader.getResource(serviceConfig);
@@ -120,7 +113,7 @@ public class CoreServiceInitializer
             if (xmlURL == null)
             {
                 // try loading from the filesystem
-                xmlURL = FileUtils.getFile(coreConfig).toURI().toURL();
+                xmlURL = FileUtils.getFile(configFile).toURI().toURL();
             }
 
             context = JAXBContext.newInstance(CoreConfigurationData.class);
