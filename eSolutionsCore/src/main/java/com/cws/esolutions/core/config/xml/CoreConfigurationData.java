@@ -49,8 +49,9 @@ public final class CoreConfigurationData implements Serializable
     private DNSConfig dnsConfig = null;
     private MailConfig mailConfig = null;
     private HTTPConfig httpConfig = null;
-    private ProxyConfig proxyConfig = null;
     private AgentConfig agentConfig = null;
+    private ProxyConfig proxyConfig = null;
+    private SecurityConfig secConfig = null;
     private ScriptConfig scriptConfig = null;
     private SystemConfig systemConfig = null;
     private ApplicationConfig appConfig = null;
@@ -103,6 +104,20 @@ public final class CoreConfigurationData implements Serializable
 
         this.resourceConfig = value;
     }
+
+    public final void setSecConfig(final SecurityConfig value)
+    {
+        final String methodName = CoreConfigurationData.CNAME + "#setSecConfig(final SecurityConfig value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.secConfig = value;
+    }
+
 
     public final void setProxyConfig(final ProxyConfig value)
     {
@@ -246,6 +261,20 @@ public final class CoreConfigurationData implements Serializable
         }
 
         return this.appConfig;
+    }
+
+    @XmlElement(name = "security-config")
+    public final SecurityConfig getSecConfig()
+    {
+        final String methodName = CoreConfigurationData.CNAME + "#getSecConfig()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.secConfig);
+        }
+
+        return this.secConfig;
     }
 
     @XmlElement(name = "script-config")

@@ -45,9 +45,12 @@ import org.apache.commons.dbcp.BasicDataSource;
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.security.utils.PasswordUtils;
+import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.config.xml.DataSourceManager;
+import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
+import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 /**
  * @author khuntly
  * @version 1.0
@@ -73,20 +76,17 @@ public class CoreServiceInitializer
      */
     public static void initializeService(final String configFile, final String logConfig, final boolean startConnections) throws CoreServiceException
     {
+    	final SecurityConfigurationData secConfigData = SecurityServiceBean.getInstance().getConfigData();
+    	final SecurityConfig secConfig = secConfigData.getSecurityConfig();
+
         URL xmlURL = null;
         JAXBContext context = null;
         Unmarshaller marshaller = null;
         CoreConfigurationData configData = null;
 
-        System.out.println("configFile: " + configFile);
-        System.out.println("logConfig: " + logConfig);
-        
         final ClassLoader classLoader = CoreServiceInitializer.class.getClassLoader();
         final String serviceConfig = (StringUtils.isBlank(configFile)) ? System.getProperty("coreConfigFile") : configFile;
         final String loggingConfig = (StringUtils.isBlank(logConfig)) ? System.getProperty("coreLogConfig") : logConfig;
-
-        System.out.println("serviceConfig: " + serviceConfig);
-        System.out.println("loggingConfig: " + loggingConfig);
 
         try
         {
@@ -157,7 +157,7 @@ public class CoreServiceInitializer
                         dataSource.setUsername(mgr.getDsUser());
                         dataSource.setConnectionProperties(sBuilder.toString());
                         dataSource.setPassword(PasswordUtils.decryptText(mgr.getDsPass(), mgr.getSalt().length(),
-                                configData.getAppConfig().getAlgorithm(), configData.getAppConfig().getInstance(),
+                        		secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
                                 configData.getAppConfig().getEncoding()));
 
                         if (DEBUG)
@@ -179,10 +179,12 @@ public class CoreServiceInitializer
         }
         catch (JAXBException jx)
         {
+            jx.printStackTrace();
             throw new CoreServiceException(jx.getMessage(), jx);
         }
         catch (MalformedURLException mux)
         {
+            mux.printStackTrace();
             throw new CoreServiceException(mux.getMessage(), mux);
         }
     }

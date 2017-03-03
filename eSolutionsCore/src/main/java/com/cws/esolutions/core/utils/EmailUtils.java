@@ -166,7 +166,6 @@ public final class EmailUtils
             marshaller = context.createUnmarshaller();
             configData = (CoreConfigurationData) marshaller.unmarshal(xmlURL);
 
-            System.out.println(configData.getMailConfig());
             EmailMessage message = new EmailMessage();
             message.setMessageTo(new ArrayList<>(Arrays.asList(commandLine.getOptionValues("to"))));
             message.setMessageSubject(commandLine.getOptionValue("subject"));

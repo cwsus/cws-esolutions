@@ -23,8 +23,8 @@
         <smsCodeLength>8</smsCodeLength> <!-- how long should the sms reset id be ? -->
         <resetTimeout>30</resetTimeout> <!-- reset timeout length (minutes) -->
         <authConfig>/opt/cws/eSolutions/etc/repository.properties</authConfig>
-        <authManager>com.cws.esolutions.security.dao.userauth.impl.LDAPAuthenticator</authManager>
-        <userManager>com.cws.esolutions.security.dao.usermgmt.impl.LDAPUserManager</userManager>
+        <authManager>com.cws.esolutions.security.dao.userauth.impl.SQLAuthenticator</authManager>
+        <userManager>com.cws.esolutions.security.dao.usermgmt.impl.SQLUserManager</userManager>
     </security-config>
 
     <!-- this should correlate back to the data obtained from -->
@@ -100,16 +100,20 @@
             <datasource>jdbc:mysql://127.0.0.1/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
             <dsUser>appuser</dsUser>
-            <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
-            <salt>OITltocOUZjW</salt>
+            <dsPass>gs7NHN8ILKEogAlCXaXyWGEkYgSrTG6a2xemMntLMy9zmaOYxNwhBtJ4s0j6Nv+bAT3hLhkz41Z4bkjuHxt1+HobG5CDgnKZqL91jCvBvKo=</dsPass>
+            <salt>VY772zetrNG3qfttpqoUWKM86J7KEpT6ii83YmPE70jnUh3tbPFOURSJJTLCgJol</salt>
+            <connectTimeout>10</connectTimeout>
+            <autoReconnect>true</autoReconnect>
         </DataSourceManager>
         <DataSourceManager>
             <dsName>AuditDataSource</dsName>
             <datasource>jdbc:mysql://127.0.0.1/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
             <dsUser>appuser</dsUser>
-            <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
-            <salt>OITltocOUZjW</salt>
+            <dsPass>gs7NHN8ILKEogAlCXaXyWGEkYgSrTG6a2xemMntLMy9zmaOYxNwhBtJ4s0j6Nv+bAT3hLhkz41Z4bkjuHxt1+HobG5CDgnKZqL91jCvBvKo=</dsPass>
+            <salt>VY772zetrNG3qfttpqoUWKM86J7KEpT6ii83YmPE70jnUh3tbPFOURSJJTLCgJol</salt>
+            <connectTimeout>10</connectTimeout>
+            <autoReconnect>true</autoReconnect>
         </DataSourceManager>
     </resource-config>
 </configuration>

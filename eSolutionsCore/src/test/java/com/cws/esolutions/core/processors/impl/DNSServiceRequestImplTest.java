@@ -70,8 +70,22 @@ public class DNSServiceRequestImplTest
             userAccount.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
             userAccount.setUsername("khuntly");
 
-            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true);
-            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
+            try
+            {
+            	SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
+            }
+            catch (Exception ex)
+            {
+            	ex.printStackTrace();
+            }
+            try
+            {
+            	CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true);
+            }
+            catch (Exception ex)
+            {
+            	ex.printStackTrace();
+            }
         }
         catch (Exception ex)
         {
@@ -250,7 +264,7 @@ public class DNSServiceRequestImplTest
     @Test
     public void pushNewService()
     {
-        StringBuilder builder = new StringBuilder()
+        StringBuilder pbuilder = new StringBuilder()
             .append("$ORIGIN .\n")
             .append("$TTL 900\n")
             .append("mysite.com IN SOA prodns.caspersbox.com hostmaster.caspersbox.com (\n")
@@ -420,7 +434,7 @@ public class DNSServiceRequestImplTest
         entry.setSerialNumber(sdf.format(cal.getTime())); // this would be generated, not static
         entry.setApexRecords(apexRecords);
         entry.setSubRecords(subRecords);
-        entry.setZoneData(builder);
+        // entry.setZoneData(builder);
         entry.setProjectCode("PRDPRJ");
         entry.setFileName("db.mysite");
         entry.setOrigin(".");
@@ -437,7 +451,7 @@ public class DNSServiceRequestImplTest
         try
         {
             DNSServiceResponse response = dnsService.pushNewService(request);
-
+System.out.println(response.toString());
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
         catch (DNSServiceException dnsx)
