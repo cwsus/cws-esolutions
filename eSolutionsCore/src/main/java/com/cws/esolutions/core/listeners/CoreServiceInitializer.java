@@ -74,17 +74,21 @@ public class CoreServiceInitializer
      * @throws CoreServiceException @{link com.cws.esolutions.core.exception.CoreServiceException}
      * if an exception occurs during initialization
      */
-    public static void initializeService(final String configFile, final String logConfig, final boolean startConnections) throws CoreServiceException
+    public static void initializeService(final String configFile, final String logConfig, final boolean loadSecurity, final boolean startConnections) throws CoreServiceException
     {
-    	final SecurityConfigurationData secConfigData = SecurityServiceBean.getInstance().getConfigData();
-    	final SecurityConfig secConfig = secConfigData.getSecurityConfig();
-
-        URL xmlURL = null;
+    	URL xmlURL = null;
         JAXBContext context = null;
         Unmarshaller marshaller = null;
+        SecurityConfig secConfig = null;
         CoreConfigurationData configData = null;
+        SecurityConfigurationData secConfigData = null;
 
-        final ClassLoader classLoader = CoreServiceInitializer.class.getClassLoader();
+    	if (loadSecurity)
+    	{
+    		secConfigData = SecurityServiceBean.getInstance().getConfigData();
+    		secConfig = secConfigData.getSecurityConfig();
+    	}
+
         final String serviceConfig = (StringUtils.isBlank(configFile)) ? System.getProperty("coreConfigFile") : configFile;
         final String loggingConfig = (StringUtils.isBlank(logConfig)) ? System.getProperty("coreLogConfig") : logConfig;
 
@@ -108,7 +112,7 @@ public class CoreServiceInitializer
                 }
             }
 
-            xmlURL = classLoader.getResource(serviceConfig);
+            xmlURL = CoreServiceInitializer.class.getClassLoader().getResource(serviceConfig);
 
             if (xmlURL == null)
             {
@@ -151,15 +155,14 @@ public class CoreServiceInitializer
                             DEBUGGER.debug("StringBuilder: {}", sBuilder);
                         }
 
-                        BasicDataSource dataSource = new BasicDataSource();
-                        dataSource.setDriverClassName(mgr.getDriver());
-                        dataSource.setUrl(mgr.getDataSource());
-                        dataSource.setUsername(mgr.getDsUser());
-                        dataSource.setConnectionProperties(sBuilder.toString());
-                        dataSource.setPassword(PasswordUtils.decryptText(mgr.getDsPass(), mgr.getSalt().length(),
-                        		secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
-                                configData.getAppConfig().getEncoding()));
-
+	                    BasicDataSource dataSource = new BasicDataSource();
+	                        dataSource.setDriverClassName(mgr.getDriver());
+	                        dataSource.setUrl(mgr.getDataSource());
+	                        dataSource.setUsername(mgr.getDsUser());
+	                        dataSource.setConnectionProperties(sBuilder.toString());
+	                        dataSource.setPassword(PasswordUtils.decryptText(mgr.getDsPass(), mgr.getSalt().length(),
+	                        		secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
+	                                configData.getAppConfig().getEncoding()));
                         if (DEBUG)
                         {
                             DEBUGGER.debug("BasicDataSource: {}", dataSource);

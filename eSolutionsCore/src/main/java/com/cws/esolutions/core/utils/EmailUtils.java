@@ -24,14 +24,12 @@ package com.cws.esolutions.core.utils;
  * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
  */
-import java.net.URL;
 import java.util.Map;
 import java.util.List;
 import javax.mail.Part;
 import org.slf4j.Logger;
 import javax.mail.Store;
 import javax.mail.Flags;
-import java.util.Arrays;
 import java.util.HashMap;
 import javax.mail.Folder;
 import java.util.Calendar;
@@ -50,32 +48,18 @@ import javax.mail.Multipart;
 import org.slf4j.LoggerFactory;
 import java.io.FileInputStream;
 import javax.mail.Authenticator;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
 import javax.naming.InitialContext;
-import javax.xml.bind.JAXBException;
 import javax.naming.NamingException;
 import javax.mail.MessagingException;
-import java.net.MalformedURLException;
-import org.apache.commons.cli.Options;
-import org.apache.commons.io.FileUtils;
 import javax.mail.internet.MimeMessage;
 import javax.mail.Message.RecipientType;
 import javax.mail.PasswordAuthentication;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.OptionGroup;
-import org.apache.commons.cli.PosixParser;
 import org.apache.commons.lang.StringUtils;
 import javax.mail.internet.InternetAddress;
-import org.apache.commons.cli.OptionBuilder;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.CommandLineParser;
 
 import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.config.xml.MailConfig;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
-import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -84,127 +68,14 @@ import com.cws.esolutions.core.config.xml.CoreConfigurationData;
  * @author khuntly
  * @version 1.0
  */
-@SuppressWarnings("static-access")
 public final class EmailUtils
 {
-    private static Options options = null;
-
     private static final String INIT_DS_CONTEXT = "java:comp/env/";
     private static final String CNAME = EmailUtils.class.getName();
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
-
-    static
-    {
-        OptionGroup sendOptions = new OptionGroup();
-        sendOptions.addOption(OptionBuilder.withLongOpt("to")
-            .withDescription("The port number to connect to the server on")
-            .hasArg(true)
-            .withArgName("RECIPIENTS")
-            .withType(String.class)
-            .isRequired(true)
-            .create());
-        sendOptions.addOption(OptionBuilder.withLongOpt("from")
-            .withDescription("The port number to connect to the server on")
-            .hasArg(true)
-            .withArgName("FROM")
-            .withType(String.class)
-            .isRequired(true)
-            .create());
-        sendOptions.addOption(OptionBuilder.withLongOpt("subject")
-            .withDescription("The port number to connect to the server on")
-            .hasArg(true)
-            .withArgName("SUBJECT")
-            .withType(String.class)
-            .isRequired(true)
-            .create());
-
-        options = new Options();
-        options.addOption(OptionBuilder.withLongOpt("config")
-            .withDescription("The mail configuration XML to utilize")
-            .hasArg(true)
-            .withArgName("CONFIG")
-            .withType(String.class)
-            .isRequired(true)
-            .create("c"));
-        options.addOption("s", "send", false, "Send an email with the provided information");
-        options.addOptionGroup(sendOptions);
-    }
-
-    public static final void main(final String[] args)
-    {
-        final String methodName = EmailUtils.CNAME + "#main(final String[] args)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", (Object) args);
-        }
-
-        if (args.length == 0)
-        {
-            HelpFormatter usage = new HelpFormatter();
-            usage.printHelp(EmailUtils.CNAME, options, true);
-
-            return;
-        }
-
-        try
-        {
-            CommandLineParser parser = new PosixParser();
-            CommandLine commandLine = parser.parse(options, args);
-
-            URL xmlURL = null;
-            JAXBContext context = null;
-            Unmarshaller marshaller = null;
-            CoreConfigurationData configData = null;
-
-            xmlURL = FileUtils.getFile(commandLine.getOptionValue("config")).toURI().toURL();
-            context = JAXBContext.newInstance(CoreConfigurationData.class);
-            marshaller = context.createUnmarshaller();
-            configData = (CoreConfigurationData) marshaller.unmarshal(xmlURL);
-
-            EmailMessage message = new EmailMessage();
-            message.setMessageTo(new ArrayList<>(Arrays.asList(commandLine.getOptionValues("to"))));
-            message.setMessageSubject(commandLine.getOptionValue("subject"));
-            message.setMessageBody((String) commandLine.getArgList().get(0));
-            message.setEmailAddr(
-                    (StringUtils.isNotEmpty(commandLine.getOptionValue("from"))) ? new ArrayList<>(Arrays.asList(commandLine.getOptionValue("from")))
-                            : new ArrayList<>(Arrays.asList(configData.getMailConfig().getMailFrom())));
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("EmailMessage: {}", message);
-            }
-
-            try
-            {
-                EmailUtils.sendEmailMessage(configData.getMailConfig(), message, false);
-            }
-            catch (MessagingException mx)
-            {
-                System.err.println("An error occurred while sending the requested message. Exception: " + mx.getMessage());
-            }
-        }
-        catch (ParseException px)
-        {
-            px.printStackTrace();
-            HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp(EmailUtils.CNAME, options, true);
-        }
-        catch (MalformedURLException mx)
-        {
-            HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp(EmailUtils.CNAME, options, true);
-        }
-        catch (JAXBException jx)
-        {
-            jx.printStackTrace();
-            System.err.println("An error occurred while loading the provided configuration file. Cannot continue.");
-        }
-    }
 
     /**
      * eSolutionsCore
@@ -308,7 +179,7 @@ public final class EmailUtils
 
                 try
                 {
-                    mailProps.load(EmailUtils.class.getResourceAsStream(mailConfig.getPropertyFile()));
+                	mailProps.load(EmailUtils.class.getClassLoader().getResourceAsStream(mailConfig.getPropertyFile()));
                 }
                 catch (NullPointerException npx)
                 {

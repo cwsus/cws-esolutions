@@ -17,7 +17,7 @@ package com.cws.esolutions.core.main;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.utils
- * File: SQLUtils.java
+ * File: SQLUtility.java
  *
  * History
  *
@@ -28,29 +28,31 @@ package com.cws.esolutions.core.main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.cli.Options;
-import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.OptionGroup;
-import org.apache.commons.cli.PosixParser;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.CommandLineParser;
 
 import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
+import com.cws.esolutions.security.exception.SecurityServiceException;
+import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 /**
  * @author khuntly
  * @version 1.0
  */
 @SuppressWarnings("static-access")
-public class SQLUtils
+public class SQLUtility
 {
     private static Options options = null;
-    private static OptionGroup sshOptions = null;
 
-    private static final String CNAME = SQLUtils.class.getName();
+    private static final String CNAME = SQLUtility.class.getName();
+    private static final String CORE_LOG_CONFIG = System.getProperty("user.home") + "/etc/eSolutionsCore/logging/logging.xml";
+    private static final String CORE_SVC_CONFIG = System.getProperty("user.home") + "/etc/eSolutionsCore/config/ServiceConfig.xml";
+    private static final String SEC_LOG_CONFIG = System.getProperty("user.home") + "/etc/SecurityService/logging/logging.xml";
+    private static final String SEC_SVC_CONFIG = System.getProperty("user.home") + "/etc/SecurityService/config/ServiceConfig.xml";
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -90,7 +92,7 @@ public class SQLUtils
 
     public static final void main(final String[] args)
     {
-        final String methodName = SQLUtils.CNAME + "#main(final String[] args)";
+        final String methodName = SQLUtility.CNAME + "#main(final String[] args)";
 
         if (DEBUG)
         {
@@ -101,15 +103,28 @@ public class SQLUtils
         if (args.length == 0)
         {
             HelpFormatter usage = new HelpFormatter();
-            usage.printHelp(SQLUtils.CNAME, options, true);
+            usage.printHelp(SQLUtility.CNAME, options, true);
 
             return;
         }
 
+        final String coreConfiguration = (StringUtils.isBlank(System.getProperty("coreConfigFile"))) ? SQLUtility.CORE_SVC_CONFIG : System.getProperty("coreConfigFile");
+        final String securityConfiguration = (StringUtils.isBlank(System.getProperty("secConfigFile"))) ? SQLUtility.CORE_LOG_CONFIG : System.getProperty("secConfigFile");
+        final String coreLogging = (StringUtils.isBlank(System.getProperty("coreLogConfig"))) ? SQLUtility.SEC_SVC_CONFIG : System.getProperty("coreLogConfig");
+        final String securityLogging = (StringUtils.isBlank(System.getProperty("secLogConfig"))) ? SQLUtility.SEC_LOG_CONFIG : System.getProperty("secLogConfig");
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("String coreConfiguration: {}", coreConfiguration);
+            DEBUGGER.debug("String securityConfiguration: {}", securityConfiguration);
+            DEBUGGER.debug("String coreLogging: {}", coreLogging);
+            DEBUGGER.debug("String securityLogging: {}", securityLogging);
+        }
+
         try
         {
-            CoreServiceInitializer.initializeService("C:/opt/cws/eSolutions/etc/eSolutionsCore/config/ServiceConfig.xml",
-                "C:/opt/cws/eSolutions/etc/eSolutionsCore/logging/logging.xml", false);
+            SecurityServiceInitializer.initializeService(securityConfiguration, securityLogging, false);
+            CoreServiceInitializer.initializeService(coreConfiguration, coreLogging, false, true);
         }
         catch (CoreServiceException csx)
         {
@@ -117,32 +132,23 @@ public class SQLUtils
 
             System.exit(1);
         }
+        catch (SecurityServiceException sx)
+        {
+            System.err.println("An error occurred while loading configuration data: " + sx.getCause().getMessage());
+
+            System.exit(1);
+		}
 
         Options options = new Options();
-        CommandLineParser parser = new PosixParser();
 
         try
         {
-            if (StringUtils.equals(args[0], "ssh"))
-            {
-                options.addOptionGroup(sshOptions);
-
-                CommandLine commandLine = parser.parse(options, args);
-
-                if (commandLine.getOptions().length >= 1)
-                {
-                }
-                else
-                {
-                    HelpFormatter formatter = new HelpFormatter();
-                    formatter.printHelp(SQLUtils.CNAME + " ssh", options, true);
-                }
-            }
+            throw new ParseException("nothing to see here");
         }
         catch (ParseException px)
         {
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp(SQLUtils.CNAME, options, true);
+            formatter.printHelp(SQLUtility.CNAME, options, true);
         }
     }
 }

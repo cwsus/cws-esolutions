@@ -275,8 +275,8 @@ public final class NetworkUtility
                 DEBUGGER.debug("String securityLogging: {}", securityLogging);
             }
 
-            CoreServiceInitializer.initializeService(coreConfiguration, coreLogging, false);
             SecurityServiceInitializer.initializeService(securityConfiguration, securityLogging, false);
+            CoreServiceInitializer.initializeService(coreConfiguration, coreLogging, false, true);
 
             final CoreConfigurationData coreConfigData = NetworkUtility.appBean.getConfigData();
             final SecurityConfigurationData secConfigData = NetworkUtility.secBean.getConfigData();

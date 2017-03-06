@@ -70,22 +70,8 @@ public class DNSServiceRequestImplTest
             userAccount.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
             userAccount.setUsername("khuntly");
 
-            try
-            {
-            	SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
-            }
-            catch (Exception ex)
-            {
-            	ex.printStackTrace();
-            }
-            try
-            {
-            	CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true);
-            }
-            catch (Exception ex)
-            {
-            	ex.printStackTrace();
-            }
+            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", false);
+            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "logging/logging.xml", true, true);
         }
         catch (Exception ex)
         {
