@@ -75,13 +75,6 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>sshtools</groupId>
-            <artifactId>j2ssh-common</artifactId>
-            <version>${j2ssh.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>com.jcraft</groupId>
             <artifactId>jsch</artifactId>
             <version>${jsch.version}</version>

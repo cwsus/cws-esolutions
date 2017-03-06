@@ -16,7 +16,7 @@
 package com.cws.esolutions.security.services.dto;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.processors.dto
+ * Package: com.cws.esolutions.security.processors.dto
  * File: DNSEntry.java
  *
  * History
