@@ -73,7 +73,7 @@ public class AgentConnectorFactory
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("VirtualServiceManager: {}", agentConnector);
+                    DEBUGGER.debug("AgentConnector: {}", agentConnector);
                 }
             }
             catch (InstantiationException ix)
