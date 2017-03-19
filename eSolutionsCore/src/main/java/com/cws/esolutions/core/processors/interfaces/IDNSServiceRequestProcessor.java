@@ -60,6 +60,18 @@ public interface IDNSServiceRequestProcessor
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
 
     /**
+     * Adds a new record to an existing DNS zone. The record can be a subdomain, CNAME, TXT
+     * or any other valid record type. Additionally, it can be an apex record to the zone
+     * if necessary.
+     *
+     * @param request - The {@link com.cws.esolutions.core.processors.dto.DNSServiceRequest}
+     * housing the necessary data to process
+     * @return The {@link com.cws.esolutions.core.processors.dto.DNSServiceResponse} containing the response information, or error code
+     * @throws DNSServiceException {@link com.cws.esolutions.core.processors.exception.DNSServiceException} if an error occurs during processing
+     */
+    DNSServiceResponse addRecordToEntry(final DNSServiceRequest request) throws DNSServiceException;
+
+    /**
      * Performs a simple DNS lookup for the given service name of the provided
      * record type. For example, www.google.com of type A would return 173.194.113.179
      * (among others). Responses are returned to the requestor for utilization. If no

@@ -27,23 +27,15 @@ package com.cws.esolutions.core.listeners;
  */
 import java.net.URL;
 import java.util.Map;
-
 import org.slf4j.Logger;
-
 import java.util.HashMap;
-
 import javax.sql.DataSource;
-
 import java.sql.SQLException;
-
 import org.slf4j.LoggerFactory;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.JAXBException;
-
 import java.net.MalformedURLException;
-
 import org.apache.log4j.helpers.Loader;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -53,9 +45,12 @@ import org.apache.commons.dbcp.BasicDataSource;
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.security.utils.PasswordUtils;
+import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.config.xml.DataSourceManager;
+import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
+import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 /**
  * @author khuntly
  * @version 1.0
@@ -75,51 +70,54 @@ public class CoreServiceInitializer
      *
      * @param coreConfig - The service configuration file to utilize
      * @param logConfig - The logging configuration file to utilize
+     * @param startConnections - Flag to start connections
      * @throws CoreServiceException @{link com.cws.esolutions.core.exception.CoreServiceException}
      * if an exception occurs during initialization
      */
-    public static void initializeService(final String coreConfig, final String logConfig, final boolean startConnections) throws CoreServiceException
+    public static void initializeService(final String configFile, final String logConfig, final boolean loadSecurity, final boolean startConnections) throws CoreServiceException
     {
-        URL xmlURL = null;
+    	URL xmlURL = null;
         JAXBContext context = null;
         Unmarshaller marshaller = null;
+        SecurityConfig secConfig = null;
         CoreConfigurationData configData = null;
+        SecurityConfigurationData secConfigData = null;
 
-        final ClassLoader classLoader = CoreServiceInitializer.class.getClassLoader();
-        final String serviceConfig = (StringUtils.isBlank(coreConfig)) ? System.getProperty("coreConfigFile") : coreConfig;
+    	if (loadSecurity)
+    	{
+    		secConfigData = SecurityServiceBean.getInstance().getConfigData();
+    		secConfig = secConfigData.getSecurityConfig();
+    	}
+
+        final String serviceConfig = (StringUtils.isBlank(configFile)) ? System.getProperty("coreConfigFile") : configFile;
         final String loggingConfig = (StringUtils.isBlank(logConfig)) ? System.getProperty("coreLogConfig") : logConfig;
 
         try
         {
-            if (FileUtils.getFile(loggingConfig).exists())
+            try
+            {
+                DOMConfigurator.configure(Loader.getResource(loggingConfig));
+            }
+            catch (NullPointerException npx)
             {
                 try
                 {
-                    DOMConfigurator.configure(Loader.getResource(loggingConfig));
+                    DOMConfigurator.configure(FileUtils.getFile(loggingConfig).toURI().toURL());
                 }
-                catch (NullPointerException npx)
+                catch (NullPointerException npx1)
                 {
-                    try
-                    {
-                        DOMConfigurator.configure(FileUtils.getFile(loggingConfig).toURI().toURL());
-                    }
-                    catch (NullPointerException npx1)
-                    {
-                        System.err.println("Unable to load logging configuration. No logging enabled!");
-                    }
+                    System.err.println("Unable to load logging configuration. No logging enabled!");
+                    System.err.println("");
+                    npx1.printStackTrace();
                 }
-            }
-            else
-            {
-                System.err.println("Unable to load logging configuration. No logging enabled!");
             }
 
-            xmlURL = classLoader.getResource(serviceConfig);
+            xmlURL = CoreServiceInitializer.class.getClassLoader().getResource(serviceConfig);
 
             if (xmlURL == null)
             {
                 // try loading from the filesystem
-                xmlURL = FileUtils.getFile(coreConfig).toURI().toURL();
+                xmlURL = FileUtils.getFile(configFile).toURI().toURL();
             }
 
             context = JAXBContext.newInstance(CoreConfigurationData.class);
@@ -157,15 +155,14 @@ public class CoreServiceInitializer
                             DEBUGGER.debug("StringBuilder: {}", sBuilder);
                         }
 
-                        BasicDataSource dataSource = new BasicDataSource();
-                        dataSource.setDriverClassName(mgr.getDriver());
-                        dataSource.setUrl(mgr.getDataSource());
-                        dataSource.setUsername(mgr.getDsUser());
-                        dataSource.setConnectionProperties(sBuilder.toString());
-                        dataSource.setPassword(PasswordUtils.decryptText(mgr.getDsPass(), mgr.getSalt().length(),
-                                configData.getAppConfig().getAlgorithm(), configData.getAppConfig().getInstance(),
-                                configData.getAppConfig().getEncoding()));
-
+	                    BasicDataSource dataSource = new BasicDataSource();
+	                        dataSource.setDriverClassName(mgr.getDriver());
+	                        dataSource.setUrl(mgr.getDataSource());
+	                        dataSource.setUsername(mgr.getDsUser());
+	                        dataSource.setConnectionProperties(sBuilder.toString());
+	                        dataSource.setPassword(PasswordUtils.decryptText(mgr.getDsPass(), mgr.getSalt().length(),
+	                        		secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
+	                                configData.getAppConfig().getEncoding()));
                         if (DEBUG)
                         {
                             DEBUGGER.debug("BasicDataSource: {}", dataSource);
@@ -185,10 +182,12 @@ public class CoreServiceInitializer
         }
         catch (JAXBException jx)
         {
+            jx.printStackTrace();
             throw new CoreServiceException(jx.getMessage(), jx);
         }
         catch (MalformedURLException mux)
         {
+            mux.printStackTrace();
             throw new CoreServiceException(mux.getMessage(), mux);
         }
     }

@@ -101,14 +101,6 @@ public class PasswordUtility
             .withType(String.class)
             .create();
 
-        if (DEBUG)
-        {
-            DEBUGGER.debug("Option entryNameOption: {}", entryNameOption);
-            DEBUGGER.debug("Option usernameOption: {}", usernameOption);
-            DEBUGGER.debug("Option passwordOption: {}", passwordOption);
-            DEBUGGER.debug("Option writeToFile: {}", writeToFile);
-        }
-
         Option encryptOption = OptionBuilder.withLongOpt("encrypt")
             .hasArg(false)
             .withArgName("entry")
@@ -119,10 +111,6 @@ public class PasswordUtility
             .isRequired(false)
             .create();
 
-        if (DEBUG)
-        {
-            DEBUGGER.debug("Option encryptOption: {}", encryptOption);
-        }
 
         OptionGroup encryptOptionsGroup = new OptionGroup()
             .addOption(encryptOption)
@@ -130,11 +118,6 @@ public class PasswordUtility
             .addOption(usernameOption)
             .addOption(passwordOption)
             .addOption(writeToFile);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("OptionGroup encryptOptionsGroup: {}", encryptOptionsGroup);
-        }
 
         Option decryptOption = OptionBuilder.withLongOpt("decrypt")
             .hasArg(false)
@@ -145,29 +128,14 @@ public class PasswordUtility
             .isRequired(false)
             .create();
 
-        if (DEBUG)
-        {
-            DEBUGGER.debug("Option decryptOption: {}", decryptOption);
-        }
-
         OptionGroup decryptOptionsGroup = new OptionGroup()
             .addOption(decryptOption)
             .addOption(entryNameOption)
             .addOption(usernameOption);
 
-        if (DEBUG)
-        {
-            DEBUGGER.debug("OptionGroup decryptOptionsGroup: {}", decryptOptionsGroup);
-        }
-
         options = new Options();
         options.addOptionGroup(encryptOptionsGroup);
         options.addOptionGroup(decryptOptionsGroup);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("Options options: {}", options);
-        }
     }
 
     public static void main(final String[] args)
@@ -190,6 +158,7 @@ public class PasswordUtility
             if (DEBUG)
             {
                 DEBUGGER.debug(methodName);
+                DEBUGGER.debug("Options options: {}", options);
 
                 for (String arg : args)
                 {
@@ -304,9 +273,9 @@ public class PasswordUtility
                 String passwordEntryUsername = null;
                 String passwordEntryPassword = null;
 
-                if (StringUtils.isEmpty(commandLine.getOptionValue("entry")))
+                if ((StringUtils.isEmpty(commandLine.getOptionValue("entry")) && (StringUtils.isEmpty(commandLine.getOptionValue("username")))))
                 {
-                    throw new ParseException("no entry provided to decrypt");
+                    throw new ParseException("No entry or username was provided to decrypt.");
                 }
 
                 if (StringUtils.isEmpty(commandLine.getOptionValue("username")))
@@ -332,14 +301,9 @@ public class PasswordUtility
                     DEBUGGER.debug("File saltFile: {}", saltFile);
                 }
 
-                if (!(saltFile.canRead()))
+                if ((!(saltFile.canRead())) || (!(passwordFile.canRead())))
                 {
-                    throw new IOException("Unable to read configured salt file");
-                }
-
-                if (!(passwordFile.canRead()))
-                {
-                    throw new IOException("Unable to read configured password file");
+                    throw new IOException("Unable to read configured password/salt file. Please check configuration and/or permissions.");
                 }
 
                 List<String> saltArray = FileUtils.readLines(saltFile, systemConfig.getEncoding());
@@ -351,14 +315,9 @@ public class PasswordUtility
                     DEBUGGER.debug("List<String> passwordArray: {}", passwordArray);
                 }
 
-                if (saltArray.isEmpty())
+                if ((saltArray.isEmpty()) || ((passwordArray.isEmpty())))
                 {
-                    throw new SecurityException("No entries were loaded from the configured password file");
-                }
-
-                if (passwordArray.isEmpty())
-                {
-                    throw new SecurityException("No entries were loaded from the configured salt file");
+                    throw new SecurityException("No entries were loaded from the configured password/salt file");
                 }
 
                 for (String saltEntry : saltArray)

@@ -29,28 +29,33 @@ import java.util.List;
 import java.sql.SQLException;
 
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
+import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
+import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /**
  * @see com.cws.esolutions.security.services.interfaces.IAccessControlService
  */
 public class AccessControlServiceImpl implements IAccessControlService
 {
     /**
-     * @see com.cws.esolutions.security.services.interfaces.IAccessControlService#isUserAuthorized(com.cws.esolutions.security.dto.UserAccount, java.lang.String)
+     * @see com.cws.esolutions.security.services.interfaces.IAccessControlService#isUserAuthorized(final AccessControlServiceRequest request) throws AccessControlServiceException
      */
     @Override
-    public boolean isUserAuthorized(final UserAccount userAccount, final String serviceGuid)
+    public AccessControlServiceResponse isUserAuthorized(final AccessControlServiceRequest request) throws AccessControlServiceException
     {
-        final String methodName = IAccessControlService.CNAME + "#isUserAuthorized(final UserAccount userAccount, final String serviceGuid)";
+        final String methodName = IAccessControlService.CNAME + "#isUserAuthorized(final AccessControlServiceRequest request) throws AccessControlServiceException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-            DEBUGGER.debug("serviceGuid: {}", serviceGuid);
+            DEBUGGER.debug("AccessControlServiceRequest: {}", request);
         }
 
-        boolean isAuthorized = false;
+        final UserAccount userAccount = request.getUserAccount();
+        final String userServiceId = request.getServiceGuid();
+
+        AccessControlServiceResponse response = new AccessControlServiceResponse();
 
         if (secConfig.securityEnabled())
         {
@@ -70,22 +75,24 @@ public class AccessControlServiceImpl implements IAccessControlService
                         DEBUGGER.debug("List<String>: {}", services);
                     }
     
-                    if (services.contains(serviceGuid))
+                    if (services.contains(userServiceId))
                     {
-                        isAuthorized=true;
+                    	response.setIsUserAuthorized(Boolean.TRUE);
                     }
                 }
                 catch (SQLException sqx)
                 {
                     ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+                    response.setIsUserAuthorized(Boolean.FALSE);
     			}
             }
         }
         else
         {
-            isAuthorized=true;
+        	response.setIsUserAuthorized(Boolean.TRUE);
         }
 
-        return isAuthorized;
+        return response;
     }
 }

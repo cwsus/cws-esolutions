@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.cws</groupId>
         <artifactId>cws</artifactId>
-        <version>4.3</version>
+        <version>4.5</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -75,13 +75,6 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>sshtools</groupId>
-            <artifactId>j2ssh-common</artifactId>
-            <version>${j2ssh.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>com.jcraft</groupId>
             <artifactId>jsch</artifactId>
             <version>${jsch.version}</version>
@@ -123,4 +116,5 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+    <groupId>com.cws</groupId>
 </project>

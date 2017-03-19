@@ -25,14 +25,10 @@ package com.cws.esolutions.security.utils;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.Map;
 import org.junit.Test;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Assert;
-import java.util.Map.Entry;
-import java.util.Properties;
-import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.utils.PasswordUtils;
@@ -57,87 +53,33 @@ public class PasswordUtilsTest
         }
     }
 
-    @Test public void test()
+    @Test public void twoWayEncrypt()
     {
-        String var = "rootDirectory = ${user.home}";
+    	String password = "appuser10";
+    	String salt = "VY772zetrNG3qfttpqoUWKM86J7KEpT6ii83YmPE70jnUh3tbPFOURSJJTLCgJol";
+    	String expected = "YQtDf58ru+MeUMW+vo+VHorHWoWcFm/jptbImCzohKWkifLPYl8ZVM8DmKbQVn5C+6WrwDn1jFFUPxVF7Cer2QlHmPOGXcOOxjHPUZ27lFI=";
 
-        System.out.println(expandEnvVars(var));
+    	String response = PasswordUtils.encryptText(password, salt,
+    			bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+    			bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+    			bean.getConfigData().getSystemConfig().getEncoding());
 
-        //System.out.println(PasswordUtils.encryptText("MyTextValue", "OwTVX8+4u5!EF$l~eUep$kprFiPNGdU0Of4IS!M(lHgjDC3bK5lTemVPoYIQLTbF",
-        //        bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-        //        bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-        //        bean.getConfigData().getSystemConfig().getEncoding()));
+    	System.out.println("<break>" + response + "<break>");
+        Assert.assertEquals(response, expected);
     }
 
-    public static final String expandEnvVars(final String value)
+    @Test public void twoWayDecrypt()
     {
-        String returnValue = null;
+    	String expected = "appuser10";
+    	String salt = "VY772zetrNG3qfttpqoUWKM86J7KEpT6ii83YmPE70jnUh3tbPFOURSJJTLCgJol";
+    	String encrypted = "gs7NHN8ILKEogAlCXaXyWGEkYgSrTG6a2xemMntLMy9zmaOYxNwhBtJ4s0j6Nv+bAT3hLhkz41Z4bkjuHxt1+HobG5CDgnKZqL91jCvBvKo=";
 
-        if (!(StringUtils.contains(value, "$")))
-        {
-            return null;
-        }
+    	String response = PasswordUtils.decryptText(encrypted, salt.length(),
+    			bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+    			bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+    			bean.getConfigData().getSystemConfig().getEncoding());
 
-        final Properties sysProps = System.getProperties();
-        final Map<String, String> envMap = System.getenv();
-        final String text = StringUtils.replaceEachRepeatedly(value.split("=")[1].trim(), new String[] {"${", "}" }, new String[] { "", "" });
-
-        for (Entry<Object, Object> property : sysProps.entrySet())
-        {
-            String key = (String) property.getKey();
-
-            if (StringUtils.equals(key.trim(), text.trim()))
-            {
-                returnValue = sysProps.getProperty(key.trim());
-
-                break;
-            }
-        }
-
-        for (Entry<String, String> entry : envMap.entrySet())
-        {
-            String key = entry.getKey();
-
-            if (StringUtils.equals(key.trim(), text.trim()))
-            {
-                returnValue = entry.getValue();
-
-                break;
-            }
-        }
-
-        return returnValue;
-    }
-
-    @Test public void encryptText()
-    {
-        Assert.assertEquals("xdwcvNbTtdBkcxvtn3g5BTHz1naNiq3tZAn255ai1hZtRUPiA0TyoLPs3fP6lC9YcvyNcreuFqEuse10nnyHAg==",
-                PasswordUtils.encryptText("TestPasswordValue", "zHnDJVgtiJy3FNFDfSe9ZK1KW97zd1oDmA8awAoW7QnDR6i2wd9AfV2NmXOOVYJO",
-                        bean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
-                        bean.getConfigData().getSecurityConfig().getIterations(),
-                        bean.getConfigData().getSystemConfig().getEncoding()));
-    }
-
-    @Test public void testTwoWayHash()
-    {
-        Assert.assertEquals("41hvglQql38+cr8Et//rFFmrJk3Zfg8Xh5b4SLwtRZd0PGuC1a2Wq83iA/YY5mrOS8eh8ZElOJK4Ba43hiijGzbHo2skKg4UpLNf7zhpCowmJKYUcIeBmaUy7ivro8fEsxaHXW6WYeDmcAbmuENOjWft3q31KHtuGmZhluUk+b2navuW/4doetGtH/D8VoZI",
-                PasswordUtils.encryptText("a?.Zd`5ExI%$wm@g/v;L$oq6yqFM$iFAmjVqx72pB|KwG65sd3,ukUDPo;H,|o.O",
-                        "wHqqSZI63Et38DRwksM4WanElRHJoZvQkydokLsAo8YkF3NurF5BoTXllwpCd2Ub",
-                        bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                        bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                        bean.getConfigData().getSystemConfig().getEncoding()));
-    }
-
-    @Test public void decryptText()
-    {
-        String returned = PasswordUtils.decryptText("G1ZTp/d9pufJ9JfW0tJBBCbyOQ3d8RcNyPcVfQdQ4eQ0qd15g7N04Mb1TzOJORMIU03D/480YgHVl6kiqq4u1tt8xD2qqxyNqEGX7dwMsgg=",
-                64,
-                bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                bean.getConfigData().getSystemConfig().getEncoding());
-
-        System.out.println(returned);
-        Assert.assertEquals("MyTextValue", returned);
+        Assert.assertEquals(expected, response);
     }
 
     @Test public void validateOtpValue()

@@ -108,202 +108,12 @@ public final class NetworkUtils
      * If no passphrase exists on the key: ssh-keygen -i -f /path/to/file
      * If a passphrase exists:
      * Remove the passphrase first: ssh-keygen-g3 -e /path/to/file
-     * <enter passphrase>
+     *  - provide passphrase
      * Type 'yes'
      * Type 'no'
      * Type 'yes'
      * Hit enter twice without entering a new passphrase
-     * Convert the keyfile: ssh-keygen -i -f /path/to/file > /path/to/new-file
-     * Re-encrypt the file: ssh-keygen -p -f /path/to/new-file
-     *
-     * @param sourceFile - The full path to the source file to transfer
-     * @param targetFile - The full path (including file name) of the desired target file
-     * @param targetHost - The target server to perform the transfer to
-     * @param isUpload - <code>true</code> is the transfer is an upload, <code>false</code> if it
-     *            is a download 
-     * @throws UtilityException {@link com.cws.esolutions.core.utils.exception.UtilityException} if an error occurs processing
-     */
-/*    public static final synchronized void executeSCPTransfer(final String sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
-    {
-        final String methodName = NetworkUtils.CNAME + "#executeSCPTransfer(final String authList, final String targetFile, final String targetHost, final String passphrase) throws UtilityException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", sourceFile);
-            DEBUGGER.debug("Value: {}", targetFile);
-            DEBUGGER.debug("Value: {}", targetHost);
-        }
-
-        final SshClient sshClient = new SshClient();
-        final SSHConfig sshConfig = appBean.getConfigData().getSshConfig();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("SshClient: {}", sshClient);
-            DEBUGGER.debug("SSHConfig: {}", sshConfig);
-        }
-
-        try
-        {
-            SshConnectionProperties connProps = new SshConnectionProperties();
-            connProps.setHost(targetHost); // set as obtained from db
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("SshConnectionProperties: {}", connProps);
-            }
-
-            boolean isKeyAuthentication = false;
-            PasswordAuthenticationClient passAuth = null;
-            PublicKeyAuthenticationClient keyAuth = null;
-
-            if (StringUtils.isNotEmpty(sshConfig.getSshKey()))
-            {
-                isKeyAuthentication = true;
-
-                SshPrivateKeyFile sshPrivateKeyFile = SshPrivateKeyFile.parse(FileUtils.getFile(sshConfig.getSshKey()));
-                SshPrivateKey sshPrivateKey = null;
-
-                switch (sshConfig.getSshPassword().length())
-                {
-                    case 0:
-                        sshPrivateKeyFile.toPrivateKey(null);
-
-                        break;
-                    default:
-                        sshPrivateKeyFile.toPrivateKey(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length(),
-                            secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                            secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                            appBean.getConfigData().getSystemConfig().getEncoding()));
-
-                        break;
-                }
-
-                keyAuth = new PublicKeyAuthenticationClient();
-                keyAuth.setKey(sshPrivateKey);
-                keyAuth.setUsername((StringUtils.isNotEmpty(sshConfig.getSshAccount())) ? sshConfig.getSshAccount() : System.getProperty("user.name"));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("PublicKeyAuthenticationClient: {}", keyAuth);
-                }
-            }
-            else
-            {
-                passAuth = new PasswordAuthenticationClient();
-                passAuth.setUsername((StringUtils.isNotEmpty(sshConfig.getSshAccount())) ? sshConfig.getSshAccount() : System.getProperty("user.name"));
-                passAuth.setPassword(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length(),
-                    secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                    secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                    appBean.getConfigData().getSystemConfig().getEncoding()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("PasswordAuthenticationClient: {}", passAuth);
-                }
-            }
-
-            sshClient.connect(connProps, new IgnoreHostKeyVerification());
-
-            if (sshClient.isConnected())
-            {
-                int authResult = -1;
-
-                if (isKeyAuthentication)
-                {
-                    authResult = sshClient.authenticate(keyAuth);
-                }
-                else
-                {
-                    authResult = sshClient.authenticate(passAuth);
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Authentication Result: {}", authResult);
-                }
-
-                if (authResult == AuthenticationProtocolState.COMPLETE)
-                {
-                    // do stuff...
-                    if (sshClient.isAuthenticated())
-                    {
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("SSH client connected and authenticated");
-                        }
-
-                        ScpClient client = sshClient.openScpClient();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("ScpClient: {}", client);
-                        }
-
-                        if (!(FileUtils.getFile(sourceFile).canRead()))
-                        {
-                            throw new IOException("File " + sourceFile + " does not exist or cannot be read. Skipping");
-                        }
-
-                        if (isUpload)
-                        {
-                            client.put(sourceFile, targetFile, false);
-                        }
-                        else
-                        {
-                            client.get(targetFile, sourceFile, false);
-                        }
-                    }
-                    else
-                    {
-                        throw new AuthenticationProtocolException("Failed to authenticate to remote host.");
-                    }
-                }
-                else
-                {
-                    throw new AuthenticationProtocolException("Failed to authenticate to remote host.");
-                }
-            }
-            else
-            {
-                throw new ConnectException("Failed to connect to remote host");
-            }
-        }
-        catch (AuthenticationProtocolException apx)
-        {
-            throw new UtilityException(apx.getMessage());
-        }
-        catch (IOException iox)
-        {
-            throw new UtilityException(iox.getMessage(), iox);
-        }
-        finally
-        {
-            if (sshClient.isConnected())
-            {
-                sshClient.disconnect();
-            }
-        }
-    }*/
-
-    /**
-     * Creates an SSH connection to a target host and then executes an SCP
-     * request to send or receive a file to or from the target. This is fully
-     * key-based, as a result, a keyfile is required for the connection to
-     * successfully authenticate.
-     * 
-     * NOTE: The key file provided MUST be an OpenSSH key. If its not, it must
-     * be converted using ssh-keygen:
-     * If no passphrase exists on the key: ssh-keygen -i -f /path/to/file
-     * If a passphrase exists:
-     * Remove the passphrase first: ssh-keygen-g3 -e /path/to/file
-     * <enter passphrase>
-     * Type 'yes'
-     * Type 'no'
-     * Type 'yes'
-     * Hit enter twice without entering a new passphrase
-     * Convert the keyfile: ssh-keygen -i -f /path/to/file > /path/to/new-file
+     * Convert the keyfile: ssh-keygen -i -f /path/to/file &gt; /path/to/new-file
      * Re-encrypt the file: ssh-keygen -p -f /path/to/new-file
      *
      * @param sourceFile - The full path to the source file to transfer
@@ -488,12 +298,12 @@ public final class NetworkUtils
      * If no passphrase exists on the key: ssh-keygen -i -f /path/to/file
      * If a passphrase exists:
      * Remove the passphrase first: ssh-keygen-g3 -e /path/to/file
-     * <enter passphrase>
+     *  - provide passphrase
      * Type 'yes'
      * Type 'no'
      * Type 'yes'
      * Hit enter twice without entering a new passphrase
-     * Convert the keyfile: ssh-keygen -i -f /path/to/file > /path/to/new-file
+     * Convert the keyfile: ssh-keygen -i -f /path/to/file &gt; /path/to/new-file
      * Re-encrypt the file: ssh-keygen -p -f /path/to/new-file
      *
      * @param targetHost - The target server to perform the transfer to

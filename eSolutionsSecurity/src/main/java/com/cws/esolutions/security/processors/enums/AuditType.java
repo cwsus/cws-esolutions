@@ -58,6 +58,7 @@ public enum AuditType
     SEARCHACCOUNTS,
     LOADACCOUNT,
     CHANGEKEYS,
+    GETAUDITENTRIES,
 
     // file security
     DECRYPTFILE,

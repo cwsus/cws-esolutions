@@ -31,7 +31,6 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             <plugin>
                 <artifactId>maven-ear-plugin</artifactId>
                 <configuration>
-                    <packagingIncludes>META-INF/**, **/*.war</packagingIncludes>
                     <modules>
                         <webModule>
                             <groupId>${project.dependencies[0].groupId}</groupId>

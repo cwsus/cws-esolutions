@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Server port="{{ tomcatShutdownPort }}" shutdown="SHUTDOWN">
+    <Listener className="org.apache.catalina.startup.VersionLoggerListener" />
+    <Listener className="org.apache.catalina.security.SecurityListener" />
+    <Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="on" />
+    <Listener className="org.apache.catalina.core.JasperListener" />
+    <Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener" />
+    <Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener" />
+    <Listener className="org.apache.catalina.core.ThreadLocalLeakPreventionListener" />
+
+    <GlobalNamingResources />
+
+    <Service name="Catalina">
+        <Executor name="tomcatThreadPool" namePrefix="catalina-exec-" maxThreads="200" minSpareThreads="25" />
+
+        <Connector executor="tomcatThreadPool" protocol="HTTP/1.1" address="{{ tomcatHostAddress }}" port="{{ tomcatNonSSLListener }}" maxHttpHeaderSize="8192" maxThreads="150"
+            minSpareThreads="25" maxSpareThreads="75" enableLookups="false" redirectPort="8443" acceptCount="100"
+            compression="on" compressionMinSize="2048" noCompressionUserAgents="gozilla, traviata" compressableMimeType="text/html,text/xml,application/xml"
+            connectionTimeout="20000" disableUploadTimeout="true" />
+
+        <Connector executor="tomcatThreadPool" protocol="HTTP/1.1" address="{{ tomcatHostAddress }}" port="{{ tomcatSSLListener }}" maxHttpHeaderSize="8192" maxThreads="150"
+            minSpareThreads="25" maxSpareThreads="75" enableLookups="false" acceptCount="100" connectionTimeout="20000" disableUploadTimeout="true"
+            compression="on" compressionMinSize="2048" noCompressionUserAgents="gozilla, traviata" compressableMimeType="text/html,text/xml,application/xml"
+            scheme="https" secure="true" SSLEnabled="true" clientAuth="false" sslEnabledProtocols="TLSv1.2,TLSv1.1,TLSv1,SSLv2Hello"
+            ciphers="TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA"
+            keystoreType="JKS" keystoreFile="{{ sslKeystore }}" keystorePass="{{ sslKeypass }}" />
+
+        <Connector executor="tomcatThreadPool" ajpFlush="true" allowTrace="true" asyncTimeout="10" enableLookups="true" address="{{ tomcatHostAddress }}" port="{{ tomcatAJPNonSSLListener }}"
+            connectionTimeout="10" protocol="org.apache.coyote.ajp.AjpProtocol" redirectPort="8083" scheme="http" secure="false" xpoweredBy="true"/>
+
+        <Connector executor="tomcatThreadPool" ajpFlush="true" allowTrace="true" asyncTimeout="10" enableLookups="true" address="{{ tomcatHostAddress }}" port="{{ tomcatAJPSSLListener }}"
+            connectionTimeout="10" protocol="org.apache.coyote.ajp.AjpProtocol" scheme="https" secure="true" xpoweredBy="true"/>
+
+        <Engine name="Catalina" defaultHost="{{ tomcatHostName }}">
+            <Host createDirs="true" autoDeploy="true" failCtxIfServletStartFails="true" name="{{ tomcatHostName }}" undeployOldVersions="true" appBase="installedApps"
+                copyXML="true" deployXML="true" unpackWARs="true" workDir="{{ tomcatWorkDir }}">
+            </Host>
+        </Engine>
+    </Service>
+</Server>

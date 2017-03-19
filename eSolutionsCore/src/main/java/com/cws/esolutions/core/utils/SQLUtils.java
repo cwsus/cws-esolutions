@@ -37,33 +37,19 @@ import java.sql.SQLException;
 import org.slf4j.LoggerFactory;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
-import org.apache.commons.cli.Options;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.OptionGroup;
-import org.apache.commons.cli.PosixParser;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.OptionBuilder;
-import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.CommandLineParser;
 
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.CoreServiceConstants;
-import com.cws.esolutions.core.exception.CoreServiceException;
+import com.cws.esolutions.core.utils.enums.LoadType;
 import com.cws.esolutions.core.utils.exception.UtilityException;
-import com.cws.esolutions.core.listeners.CoreServiceInitializer;
-
 /**
  * @author khuntly
  * @version 1.0
  */
-@SuppressWarnings("static-access")
 public class SQLUtils
 {
-    private static Options options = null;
-    private static OptionGroup sshOptions = null;
-
     private static final String CNAME = SQLUtils.class.getName();
     private static final CoreServiceBean appBean = CoreServiceBean.getInstance();
     private static final DataSource dataSource = appBean.getDataSources().get("ApplicationDataSource");
@@ -71,106 +57,6 @@ public class SQLUtils
     private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER);
-
-    public enum LoadType
-    {
-        INSERT,
-        APPEND,
-        TRUNCATE,
-        REPLACE;
-    }
-
-    static
-    {
-        OptionGroup commandOptions = new OptionGroup();
-        commandOptions.addOption(OptionBuilder.withLongOpt("ssh")
-            .withDescription("Perform an SSH connection to a target host")
-            .isRequired(true)
-            .create());
-        commandOptions.addOption(OptionBuilder.withLongOpt("scp")
-            .withDescription("Perform an SCP connection to a target host")
-            .isRequired(true)
-            .create());
-        commandOptions.addOption(OptionBuilder.withLongOpt("telnet")
-            .withDescription("Perform an telnet connection to a target host")
-            .isRequired(true)
-            .create());
-        commandOptions.addOption(OptionBuilder.withLongOpt("tcp")
-            .withDescription("Perform an TCP connection to a target host and put data on the request")
-            .isRequired(true)
-            .create());
-        commandOptions.addOption(OptionBuilder.withLongOpt("http")
-            .withDescription("Perform an HTTP request to a target host")
-            .isRequired(true)
-            .create());
-    }
-
-    public static final void main(final String[] args)
-    {
-        final String methodName = SQLUtils.CNAME + "#main(final String[] args)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", (Object) args);
-        }
-
-        if (args.length == 0)
-        {
-            HelpFormatter usage = new HelpFormatter();
-            usage.printHelp(SQLUtils.CNAME, options, true);
-
-            return;
-        }
-
-        try
-        {
-            CoreServiceInitializer.initializeService("C:/opt/cws/eSolutions/etc/eSolutionsCore/config/ServiceConfig.xml",
-                "C:/opt/cws/eSolutions/etc/eSolutionsCore/logging/logging.xml", false);
-        }
-        catch (CoreServiceException csx)
-        {
-            System.err.println("An error occurred while loading configuration data: " + csx.getCause().getMessage());
-
-            System.exit(1);
-        }
-
-        Options options = new Options();
-        CommandLineParser parser = new PosixParser();
-
-        try
-        {
-            if (StringUtils.equals(args[0], "ssh"))
-            {
-                options.addOptionGroup(sshOptions);
-
-                CommandLine commandLine = parser.parse(options, args);
-
-                if (commandLine.getOptions().length >= 1)
-                {
-                    try
-                    {
-                        NetworkUtils.executeSshConnection(commandLine.getOptionValue("targetHost"),
-                                (commandLine.hasOption("commandList") ? commandLine.getOptionValue("commandList") : null));
-                    }
-                    catch (UtilityException ux)
-                    {
-                        System.err.println("An error occurred while executing the request: " + ux.getMessage());
-                    }
-                }
-                else
-                {
-                    HelpFormatter formatter = new HelpFormatter();
-                    formatter.printHelp(SQLUtils.CNAME + " ssh", options, true);
-                }
-            }
-        }
-        catch (ParseException px)
-        {
-            HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp(SQLUtils.CNAME, options, true);
-        }
-    }
 
     /**
      * Run a provided query against the configured datasource and return the resultset for

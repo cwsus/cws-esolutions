@@ -52,7 +52,14 @@ public class EmailUtilsTest
     {
         try
         {
-            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "logging/logging.xml", false);
+        	try
+        	{
+        		CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", false, false);
+        	}
+        	catch (Exception ex)
+        	{
+        		ex.printStackTrace();
+        	}
         }
         catch (Exception ex)
         {

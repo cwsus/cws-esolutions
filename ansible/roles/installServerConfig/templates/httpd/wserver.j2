@@ -1,0 +1,85 @@
+# Config file for {{ vhostName }}
+
+PidFile                          logs/{{ vhostName }}/httpd.pid
+ServerName                       "{{ domain_name }}"
+ServerSignature                  On
+ServerTokens                     Prod
+UseCanonicalName                 On
+HostnameLookups                  Double
+ContentDigest                    On
+FileETag                         MTime Size
+DocumentRoot                     "{{ document_root }}"
+
+Include                          "conf/{{ vhostName }}/tomcat-config.conf"
+
+<Directory />
+    Options                      +FollowSymLinks -SymLinksIfOwnerMatch -ExecCGI -Indexes
+    AllowOverride                none
+    Order                        allow,deny
+    Allow                        from all
+</Directory>
+
+<Directory "/{{ vhostName }}/"">
+    Options                      +FollowSymLinks -SymLinksIfOwnerMatch -ExecCGI -Indexes
+    AllowOverride                none
+    Order                        allow,deny
+    Allow                        from all
+</Directory>
+
+<Directory "/error/{{ vhostName }}/"">
+    Options                      +FollowSymLinks -SymLinksIfOwnerMatch -ExecCGI -Indexes
+    AllowOverride                none
+    Order                        allow,deny
+    Allow                        from all
+</Directory>
+
+<Location "/{{ vhostName }}/WEB-INF/*">
+    Order                        allow,deny
+    Deny                         from all
+</Location>
+
+<Location "/{{ vhostName }}/META-INF/*">
+    Order                        allow,deny
+    Deny                         from all
+</Location>
+
+<IfModule headers_module>
+    Header                       add S "{{ hostvars[inventory_hostname]['ansible_fqdn'] }}"
+</IfModule>
+
+ErrorDocument                    400 /error/{{ vhostName }}/errHandler.htm
+ErrorDocument                    401 /error/{{ vhostName }}/errHandler.htm
+ErrorDocument                    403 /error/{{ vhostName }}/errHandler.htm
+ErrorDocument                    404 /error/{{ vhostName }}/errHandler.htm
+ErrorDocument                    500 /error/{{ vhostName }}/errHandler.htm
+ErrorDocument                    503 /error/{{ vhostName }}/errHandler.htm
+
+Listen                           "{{ http_listen_addr }}:{{ http_listen_port }}"
+<VirtualHost "{{ http_listen_addr }}:{{ http_listen_port }}">
+    RewriteLog                   "|{{ httpd_root }}/bin/rotatelogs '{{ logs_dir }}/logs/{{ vhostName }}/rewrite.%Y%m%d.log' '86400'"
+
+    Include                      conf/{{ vhostName }}/redirects.conf
+    Include                      conf/{{ vhostName }}/security.conf
+
+    LogLevel                     error
+    ErrorLog                     "|{{ httpd_root }}/bin/rotatelogs '{{ logs_dir }}/logs/{{ vhostName }}/error.%Y%m%d.log' '86400'"
+    CustomLog                    "|{{ httpd_root }}/bin/rotatelogs '{{ logs_dir }}/logs/{{ vhostName }}/access.%Y%m%d.log' '3600'" p14
+</VirtualHost>
+
+{% if 'enable_ssl' %}
+Listen                           "{{ https_listen_addr }}:{{ https_listen_port }}"
+<VirtualHost "{{ https_listen_addr }}:{{ https_listen_port }}">
+    SSLEngine                    on
+    SSLCertificateFile           ssl.d/crt/{{ vhostName }}.crt
+    SSLCertificateKeyFile        ssl.d/key/{{ vhostName }}.key
+
+    RewriteLog                   "|{{ httpd_root }}/bin/rotatelogs '{{ logs_dir }}/logs/{{ vhostName }}/rewrite.secure.%Y%m%d.log' '86400'"
+
+    Include                      conf/{{ vhostName }}/redirects.conf
+    Include                      conf/{{ vhostName }}/security.conf
+
+    LogLevel                     error
+    ErrorLog                     "|{{ httpd_root }}/bin/rotatelogs '{{ logs_dir }}/logs/{{ vhostName }}/error.secure.%Y%m%d.log' '86400'"
+    CustomLog                    "|{{ httpd_root }}/bin/rotatelogs '{{ logs_dir }}/logs/{{ vhostName }}/access.secure.%Y%m%d.log' '3600'" p14
+</VirtualHost>
+{% endif %}

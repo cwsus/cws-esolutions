@@ -31,6 +31,7 @@ import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
+import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 
 public class AccessControlServiceImplTest
@@ -64,7 +65,11 @@ public class AccessControlServiceImplTest
     {
         try
         {
-            Assert.assertNotNull(processor.isUserAuthorized(userAccount, "test"));
+        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+        	accessRequest.setUserAccount(userAccount);
+        	accessRequest.setServiceGuid("test");
+
+            Assert.assertNotNull(processor.isUserAuthorized(accessRequest));
         }
         catch (AccessControlServiceException acsx)
         {

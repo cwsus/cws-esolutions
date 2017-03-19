@@ -49,8 +49,8 @@ public final class CoreConfigurationData implements Serializable
     private DNSConfig dnsConfig = null;
     private MailConfig mailConfig = null;
     private HTTPConfig httpConfig = null;
-    private ProxyConfig proxyConfig = null;
     private AgentConfig agentConfig = null;
+    private ProxyConfig proxyConfig = null;
     private ScriptConfig scriptConfig = null;
     private SystemConfig systemConfig = null;
     private ApplicationConfig appConfig = null;

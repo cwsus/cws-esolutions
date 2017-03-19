@@ -1,22 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <configuration>
     <application-config>
         <appName>eSolutionsCore</appName>
+        <emailAlias>esolutions@caspersbox.com</emailAlias>
+        <connectTimeout>15000</connectTimeout>
+        <messageIdLength>16</messageIdLength>
+        <dateFormat>MM/dd/yyyy hh:mm</dateFormat>
+        <nlsFileName>nls.properties</nlsFileName>
+        <virtualManagerClass>com.cws.esolutions.core.processors.impl.OracleVBoxManager</virtualManagerClass>
+        <agentBundleSource>/nas/installs/eSolutionsAgent/eSolutionsAgent.tar.gz</agentBundleSource>
+        <encoding>UTF8</encoding>
         <serviceRootDirectory>/opt/cws/eSolutions</serviceRootDirectory>
         <archiveRootDirectory>/opt/cws/eSolutions/archive</archiveRootDirectory>
         <fileRepositoryRoot>C:/Temp/repo</fileRepositoryRoot>
-        <dateFormat>MM/dd/yyyy hh:mm</dateFormat>
-        <connectTimeout>15000</connectTimeout>
         <scriptTimeout>30000</scriptTimeout>
-        <messageIdLength>16</messageIdLength>
-        <virtualManagerClass>com.cws.esolutions.core.processors.impl.OracleVBoxManager</virtualManagerClass>
-        <agentBundleSource>/nas/installs/eSolutionsAgent/eSolutionsAgent.tar.gz</agentBundleSource>
         <serviceAccount>
-            <accountInformation>service-account</accountInformation>
-            <accountInformation>a9c68aa0-5f26-4f96-a4d9-49c647b7aeb0</accountInformation>
-            <accountInformation>SITEADMIN</accountInformation>
+            <accountName>service-account</accountName>
+            <accountGuid>a9c68aa0-5f26-4f96-a4d9-49c647b7aeb0</accountGuid>
+            <accountRole>SITEADMIN</accountRole>
         </serviceAccount>
     </application-config>
+
+	<security-config />
 
     <mail-config>
         <propertyFile>eSolutionsCore/mail/MailConfig.properties</propertyFile>
@@ -29,23 +35,23 @@
         <requestQueue>CWS.REQUEST.TOPIC</requestQueue>
         <responseQueue>CWS.RESPONSE.QUEUE</responseQueue>
         <username>cwsmq</username>
-        <password>OXjrFNJCkWg6KIgv3XioKDyas9bhkyGnsB3Se55nJ1a+em8CdViU/ZuTw4LYS08wMHi+V1i7rsvlrAkeCH58VNXAYCjIXErmm2wXK0EzSYm152/Cg/bKcW27pM48Oovgp2r7lv+HaHrRrR/w/FaGSA==</password>
-        <salt>Hjq7slET1m8haapqkZqKAnLvT9DxhJPc9hfGlfpjzNZ8pSSbcSgX8Ji7G1L6Q9rw</salt>
+        <password>gs7NHN8ILKEogAlCXaXyWGEkYgSrTG6a2xemMntLMy9zmaOYxNwhBtJ4s0j6Nv+bAT3hLhkz41Z4bkjuHxt1+HobG5CDgnKZqL91jCvBvKo=</password>
+        <salt>VY772zetrNG3qfttpqoUWKM86J7KEpT6ii83YmPE70jnUh3tbPFOURSJJTLCgJol</salt>
         <timeout>10000</timeout>
     </agent-config>
 
     <!-- do we need a proxy for internet access? -->
     <proxy-config>
-        <proxyServiceRequired>true</proxyServiceRequired>
-        <proxyServerName>chibcarray.us.hsbc</proxyServerName>
-        <proxyServerPort>8080</proxyServerPort>
-        <proxyAuthRequired>true</proxyAuthRequired>
-        <proxyAuthType>NTLM</proxyAuthType>
-        <proxyAuthDomain>HNAH</proxyAuthDomain>
-        <proxyServerRealm>NTLM_DMZServices</proxyServerRealm>
-        <proxyUserId>35033355</proxyUserId>
-        <proxyPwdSalt>yN9r0BeCmRh2okYb6vEapXbTDjDozTXT</proxyPwdSalt>
-        <proxyPassword>L/rZFW1wndHXVKvfsaRT5hGUSWiVIMWIhK/uVjJ6q5JwY37KEP/4PlMhWTwtVndnp2r7lv+HaHrRrR/w/FaGSA==</proxyPassword>
+        <proxyServiceRequired>false</proxyServiceRequired>
+        <proxyServerName />
+        <proxyServerPort />
+        <proxyAuthRequired />
+        <proxyAuthType />
+        <proxyAuthDomain />
+        <proxyServerRealm />
+        <proxyUserId />
+        <proxyPwdSalt />
+        <proxyPassword />
     </proxy-config>
 
     <dns-config>
@@ -81,8 +87,10 @@
             <datasource>jdbc:mysql://127.0.0.1/esolutionssvc?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
             <dsUser>appuser</dsUser>
-            <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
-            <salt>OITltocOUZjW</salt>
+            <dsPass>gs7NHN8ILKEogAlCXaXyWGEkYgSrTG6a2xemMntLMy9zmaOYxNwhBtJ4s0j6Nv+bAT3hLhkz41Z4bkjuHxt1+HobG5CDgnKZqL91jCvBvKo=</dsPass>
+            <salt>VY772zetrNG3qfttpqoUWKM86J7KEpT6ii83YmPE70jnUh3tbPFOURSJJTLCgJol</salt>
+            <connectTimeout>10</connectTimeout>
+            <autoReconnect>true</autoReconnect>
         </DataSourceManager>
     </resource-config>
 </configuration>

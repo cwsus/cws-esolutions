@@ -100,16 +100,20 @@
             <datasource>jdbc:mysql://127.0.0.1/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
             <dsUser>appuser</dsUser>
-            <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
-            <salt>OITltocOUZjW</salt>
+            <dsPass>gs7NHN8ILKEogAlCXaXyWGEkYgSrTG6a2xemMntLMy9zmaOYxNwhBtJ4s0j6Nv+bAT3hLhkz41Z4bkjuHxt1+HobG5CDgnKZqL91jCvBvKo=</dsPass>
+            <salt>VY772zetrNG3qfttpqoUWKM86J7KEpT6ii83YmPE70jnUh3tbPFOURSJJTLCgJol</salt>
+            <connectTimeout>10</connectTimeout>
+            <autoReconnect>true</autoReconnect>
         </DataSourceManager>
         <DataSourceManager>
             <dsName>AuditDataSource</dsName>
             <datasource>jdbc:mysql://127.0.0.1/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
             <dsUser>appuser</dsUser>
-            <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
-            <salt>OITltocOUZjW</salt>
+            <dsPass>gs7NHN8ILKEogAlCXaXyWGEkYgSrTG6a2xemMntLMy9zmaOYxNwhBtJ4s0j6Nv+bAT3hLhkz41Z4bkjuHxt1+HobG5CDgnKZqL91jCvBvKo=</dsPass>
+            <salt>VY772zetrNG3qfttpqoUWKM86J7KEpT6ii83YmPE70jnUh3tbPFOURSJJTLCgJol</salt>
+            <connectTimeout>10</connectTimeout>
+            <autoReconnect>true</autoReconnect>
         </DataSourceManager>
     </resource-config>
 </configuration>

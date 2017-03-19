@@ -25,12 +25,12 @@ package com.cws.esolutions.web.processors.interfaces;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.CoreServiceConstants;
+import com.cws.esolutions.core.config.xml.ServiceAccount;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
@@ -49,7 +49,7 @@ public interface IMessagingProcessor
     static final IAccessControlService accessControl = new AccessControlServiceImpl();
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
-    static final List<String> serviceAccount = appBean.getConfigData().getAppConfig().getServiceAccount();
+    static final ServiceAccount serviceAccount = appBean.getConfigData().getAppConfig().getServiceAccount().get(0);
 
     static final String dateFormat = appConfig.getDateFormat();
     static final String CNAME = IMessagingProcessor.class.getName();

@@ -34,7 +34,6 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElementWrapper;
 
 import com.cws.esolutions.core.CoreServiceConstants;
 /**
@@ -47,18 +46,15 @@ import com.cws.esolutions.core.CoreServiceConstants;
 public final class ApplicationConfig implements Serializable
 {
     private String appName = null;
-    private String instance = null;
     private String encoding = null;
     private int connectTimeout = 0;
     private int messageIdLength = 0;
-    private String algorithm = null;
     private String dateFormat = null;
-    private String proxyConfig = null;
     private String nlsFileName = null;
     private String emailAliasId = null;
     private String agentBundleSource = null;
     private String virtualManagerClass = null;
-    private List<String> serviceAccount = null;
+    private List<ServiceAccount> serviceAccount = null;
 
     private static final long serialVersionUID = -2125011070971484380L;
     private static final String CNAME = ApplicationConfig.class.getName();
@@ -145,19 +141,6 @@ public final class ApplicationConfig implements Serializable
         this.nlsFileName = value;
     }
 
-    public final void setProxyConfigFile(final String value)
-    {
-        final String methodName = ApplicationConfig.CNAME + "#setProxyConfigFile(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.proxyConfig = value;
-    }
-
     public final void setVirtualManagerClass(final String value)
     {
         final String methodName = ApplicationConfig.CNAME + "#setVirtualManagerClass(final String value)";
@@ -184,9 +167,9 @@ public final class ApplicationConfig implements Serializable
         this.agentBundleSource = value;
     }
 
-    public final void setServiceAccount(final List<String> value)
+    public final void setServiceAccount(final List<ServiceAccount> value)
     {
-        final String methodName = ApplicationConfig.CNAME + "#setServiceAccount(final List<String> value)";
+        final String methodName = ApplicationConfig.CNAME + "#setServiceAccount(final List<ServiceAccount> value)";
 
         if (DEBUG)
         {
@@ -195,32 +178,6 @@ public final class ApplicationConfig implements Serializable
         }
 
         this.serviceAccount = value;
-    }
-
-    public final void setAlgorithm(final String value)
-    {
-        final String methodName = ApplicationConfig.CNAME + "#setAlgorithm(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.algorithm = value;
-    }
-
-    public final void setInstance(final String value)
-    {
-        final String methodName = ApplicationConfig.CNAME + "#setInstance(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.instance = value;
     }
 
     public final void setEncoding(final String value)
@@ -320,20 +277,6 @@ public final class ApplicationConfig implements Serializable
         return this.nlsFileName;
     }
 
-    @XmlElement(name = "proxyConfigFile")
-    public final String getProxyConfigFile()
-    {
-        final String methodName = ApplicationConfig.CNAME + "#getProxyConfigFile()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.proxyConfig);
-        }
-
-        return this.proxyConfig;
-    }
-
     @XmlElement(name = "virtualManagerClass")
     public final String getVirtualManagerClass()
     {
@@ -362,9 +305,8 @@ public final class ApplicationConfig implements Serializable
         return this.agentBundleSource;
     }
 
-    @XmlElement(name = "accountInformation")
-    @XmlElementWrapper(name = "serviceAccount")
-    public final List<String> getServiceAccount()
+    @XmlElement(name = "serviceAccount")
+    public final List<ServiceAccount> getServiceAccount()
     {
         final String methodName = ApplicationConfig.CNAME + "#getServiceAccount()";
 
@@ -375,34 +317,6 @@ public final class ApplicationConfig implements Serializable
         }
 
         return this.serviceAccount;
-    }
-
-    @XmlElement(name = "algorithm")
-    public final String getAlgorithm()
-    {
-        final String methodName = ApplicationConfig.CNAME + "#getAlgorithm()";
-        
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.algorithm);
-        }
-        
-        return this.algorithm;
-    }
-
-    @XmlElement(name = "instance")
-    public final String getInstance()
-    {
-        final String methodName = ApplicationConfig.CNAME + "#getInstance()";
-        
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.instance);
-        }
-        
-        return this.instance;
     }
 
     @XmlElement(name = "encoding")
