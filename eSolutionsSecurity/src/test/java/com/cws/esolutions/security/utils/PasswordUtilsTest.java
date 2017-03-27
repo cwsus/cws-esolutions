@@ -57,14 +57,14 @@ public class PasswordUtilsTest
     {
     	String password = "appuser10";
     	String salt = "VY772zetrNG3qfttpqoUWKM86J7KEpT6ii83YmPE70jnUh3tbPFOURSJJTLCgJol";
-    	String expected = "YQtDf58ru+MeUMW+vo+VHorHWoWcFm/jptbImCzohKWkifLPYl8ZVM8DmKbQVn5C+6WrwDn1jFFUPxVF7Cer2QlHmPOGXcOOxjHPUZ27lFI=";
+    	String expected = "zuPztAohr1mI5PiX7spywPRdku78+SlBrp1EDGJde7EQB47sw0hWQH24EQpEt5KEornnV+xnXqX917LzBDmB3Nl09klCiMlkeKhP5/3uuKc=";
 
     	String response = PasswordUtils.encryptText(password, salt,
     			bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
     			bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
     			bean.getConfigData().getSystemConfig().getEncoding());
 
-    	System.out.println("<break>" + response + "<break>");
+    	System.out.println(response);
         Assert.assertEquals(response, expected);
     }
 
@@ -72,7 +72,7 @@ public class PasswordUtilsTest
     {
     	String expected = "appuser10";
     	String salt = "VY772zetrNG3qfttpqoUWKM86J7KEpT6ii83YmPE70jnUh3tbPFOURSJJTLCgJol";
-    	String encrypted = "gs7NHN8ILKEogAlCXaXyWGEkYgSrTG6a2xemMntLMy9zmaOYxNwhBtJ4s0j6Nv+bAT3hLhkz41Z4bkjuHxt1+HobG5CDgnKZqL91jCvBvKo=";
+    	String encrypted = "zuPztAohr1mI5PiX7spywPRdku78+SlBrp1EDGJde7EQB47sw0hWQH24EQpEt5KEornnV+xnXqX917LzBDmB3Nl09klCiMlkeKhP5/3uuKc=";
 
     	String response = PasswordUtils.decryptText(encrypted, salt.length(),
     			bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),

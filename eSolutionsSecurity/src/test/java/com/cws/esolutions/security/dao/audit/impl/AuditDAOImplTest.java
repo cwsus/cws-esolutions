@@ -61,7 +61,7 @@ public class AuditDAOImplTest
     {
         for (int x = 0; x < 50; x++)
         {
-            List<String> auditList = new ArrayList<>(
+            List<String> auditList = new ArrayList<String>(
                 Arrays.asList(
                         RandomStringUtils.randomAlphanumeric(32),
                         "junit",

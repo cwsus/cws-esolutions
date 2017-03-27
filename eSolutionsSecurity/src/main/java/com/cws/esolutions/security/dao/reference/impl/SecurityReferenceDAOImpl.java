@@ -45,7 +45,6 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
     /**
      * @see com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO#obtainApprovedServers()
      */
-    @Override
     public synchronized List<String> obtainApprovedServers() throws SQLException
     {
         final String methodName = ISecurityReferenceDAO.CNAME + "#obtainApprovedServers() throws SQLException";
@@ -90,7 +89,7 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
                 {
                     resultSet.beforeFirst();
 
-                    securityList = new ArrayList<>();
+                    securityList = new ArrayList<String>();
 
                     while (resultSet.next())
                     {
@@ -138,7 +137,6 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
     /**
      * @see com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO#obtainSecurityQuestionList()
      */
-    @Override
     public synchronized List<String> obtainSecurityQuestionList() throws SQLException
     {
         final String methodName = ISecurityReferenceDAO.CNAME + "#obtainSecurityQuestionList() throws SQLException";
@@ -186,7 +184,7 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
 
                 int iColumns = resultData.getColumnCount();
 
-                questionList = new ArrayList<>();
+                questionList = new ArrayList<String>();
 
                 for (int x = 1; x < iColumns + 1; x++)
                 {
@@ -231,7 +229,6 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
     /**
      * @see com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO#listAvailableServices()
      */
-    @Override
     public synchronized Map<String, String> listAvailableServices() throws SQLException
     {
         final String methodName = ISecurityReferenceDAO.CNAME + "#listAvailableServices() throws SQLException";
@@ -275,7 +272,7 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
                 if (resultSet.next())
                 {
                     resultSet.beforeFirst();
-                    serviceMap = new HashMap<>();
+                    serviceMap = new HashMap<String, String>();
 
                     while (resultSet.next())
                     {
@@ -317,7 +314,6 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
     /**
      * @see com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO#listServicesForGroup(java.lang.String)
      */
-    @Override
     public synchronized List<String> listServicesForGroup(final String groupName) throws SQLException
     {
         final String methodName = ISecurityReferenceDAO.CNAME + "#listServicesForGroup(final String groupName) throws SQLException";
@@ -368,7 +364,7 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
                 if (resultSet.next())
                 {
                     resultSet.first();
-                    serviceList = new ArrayList<>();
+                    serviceList = new ArrayList<String>();
 
                     for (String service : StringUtils.split(resultSet.getString(1), ",")) // single row response
                     {

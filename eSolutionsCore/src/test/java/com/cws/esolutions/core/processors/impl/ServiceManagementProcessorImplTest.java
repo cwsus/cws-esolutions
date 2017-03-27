@@ -85,7 +85,7 @@ public class ServiceManagementProcessorImplTest
     @Test
     public void addNewServiceAsPlatform()
     {
-        List<String> devServers = new ArrayList<>(
+        List<String> devServers = new ArrayList<String>(
                 Arrays.asList(
                         "fc7a3a40-7d36-479e-b1e1-d27ce11ff0e4",
                         "03783b9e-63af-48ba-8efb-38bd1744c2e1",
@@ -105,7 +105,7 @@ public class ServiceManagementProcessorImplTest
                         "3b303d2f-29d7-44d6-9984-2f2f3ef268ff",
                         "5fc1a31f-967d-47ae-9c97-82cb4186c7f4"));
 
-        List<String> qaServers = new ArrayList<>(
+        List<String> qaServers = new ArrayList<String>(
                 Arrays.asList(
                         "42209338-ad01-45fd-8786-6bb4080662d8",
                         "303c1556-6a01-4e71-b75c-7ac54ecbd075",
@@ -125,7 +125,7 @@ public class ServiceManagementProcessorImplTest
                         "77d9e1c9-f39a-4f85-b72a-70c84c7c12ae",
                         "a462e029-8854-4ff0-92de-d55535cfad08"));
 
-        List<String> prdServers = new ArrayList<>(
+        List<String> prdServers = new ArrayList<String>(
                 Arrays.asList(
                         "f8040ce6-86c0-4107-8a07-6ae8fd063018",
                         "a4507b8f-34f9-4e8c-aa74-45071ea0d2d3",
@@ -147,7 +147,7 @@ public class ServiceManagementProcessorImplTest
 
         for (int x = 0; x < 3; x++)
         {
-            List<Server> servers = new ArrayList<>();
+            List<Server> servers = new ArrayList<Server>();
 
             Service service = new Service();
 

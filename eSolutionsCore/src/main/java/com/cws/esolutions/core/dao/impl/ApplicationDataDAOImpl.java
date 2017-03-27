@@ -46,7 +46,6 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
     /**
      * @see com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO#addApplication(java.util.List)
      */
-    @Override
     public synchronized boolean addApplication(final List<Object> value) throws SQLException
     {
         final String methodName = IApplicationDataDAO.CNAME + "#addApplication(final List<Object> value) throws SQLException";
@@ -74,7 +73,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
             stmt = sqlConn.prepareCall("{CALL insertNewApplication(?, ?, ?, ?, ?, ?, ?, ?, ?)}");
             stmt.setString(1, (String) value.get(0)); // appGuid
             stmt.setString(2, (String) value.get(1)); // appName
-            stmt.setDouble(3, (double) value.get(2)); // appVersion
+            stmt.setDouble(3, new Double(value.get(2).toString())); // appVersion
             stmt.setString(4, (String) value.get(3)); // installPath
             stmt.setString(5, (String) value.get(4)); // packageLocation
             stmt.setString(6, (String) value.get(5)); // packageInstaller
@@ -117,7 +116,6 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
     /**
      * @see com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO#updateApplication(java.util.List)
      */
-    @Override
     public synchronized boolean updateApplication(final List<Object> value) throws SQLException
     {
         final String methodName = IApplicationDataDAO.CNAME + "#updateApplication(final List<Object> value) throws SQLException";
@@ -145,7 +143,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
             stmt = sqlConn.prepareCall("{CALL updateApplicationData(?, ?, ?, ?, ?, ?, ?, ?, ?)}");
             stmt.setString(1, (String) value.get(0)); // appGuid
             stmt.setString(2, (String) value.get(1)); // appName
-            stmt.setDouble(3, (double) value.get(2)); // appVersion
+            stmt.setDouble(3, new Double(value.get(2).toString())); // appVersion
             stmt.setString(4, (String) value.get(3)); // installPath
             stmt.setString(5, (String) value.get(4)); // packageLocation
             stmt.setString(6, (String) value.get(5)); // packageInstaller
@@ -188,7 +186,6 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
     /**
      * @see com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO#removeApplication(java.lang.String)
      */
-    @Override
     public synchronized boolean removeApplication(final String value) throws SQLException
     {
         final String methodName = IApplicationDataDAO.CNAME + "#removeApplication(final String value) throws SQLException";
@@ -251,7 +248,6 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
     /**
      * @see com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO#listApplications(int)
      */
-    @Override
     public synchronized List<String[]> listApplications(final int startRow) throws SQLException
     {
         final String methodName = IApplicationDataDAO.CNAME + "#listApplications(final int startRow) throws SQLException";
@@ -299,7 +295,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                 if (resultSet.next())
                 {
                     resultSet.beforeFirst();
-                    responseData = new ArrayList<>();
+                    responseData = new ArrayList<String[]>();
 
                     while (resultSet.next())
                     {
@@ -352,7 +348,6 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
     /**
      * @see com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO#getApplicationsByAttribute(java.lang.String, int)
      */
-    @Override
     public synchronized List<Object[]> getApplicationsByAttribute(final String value, final int startRow) throws SQLException
     {
         final String methodName = IApplicationDataDAO.CNAME + "#getApplicationsByAttribute(final String value, final int startRow) throws SQLException";
@@ -425,7 +420,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                 if (resultSet.next())
                 {
                     resultSet.beforeFirst();
-                    responseData = new ArrayList<>();
+                    responseData = new ArrayList<Object[]>();
 
                     while (resultSet.next())
                     {
@@ -479,7 +474,6 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
     /**
      * @see com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO#getApplication(java.lang.String)
      */
-    @Override
     public synchronized List<Object> getApplication(final String value) throws SQLException
     {
         final String methodName = IApplicationDataDAO.CNAME + "#getApplication(final String value) throws SQLException";

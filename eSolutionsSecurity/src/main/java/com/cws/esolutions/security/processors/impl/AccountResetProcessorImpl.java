@@ -60,7 +60,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#findUserAccount(com.cws.esolutions.security.processors.dto.AccountResetRequest)
      */
-    @Override
     public AccountResetResponse findUserAccount(final AccountResetRequest request) throws AccountResetException
     {
         final String methodName = IAccountResetProcessor.CNAME + "#findUserAccount(final AccountResetRequest request) throws AccountResetException";
@@ -121,7 +120,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#obtainUserSecurityConfig(com.cws.esolutions.security.processors.dto.AccountResetRequest)
      */
-    @Override
     public AccountResetResponse obtainUserSecurityConfig(final AccountResetRequest request) throws AccountResetException
     {
         final String methodName = IAccountResetProcessor.CNAME + "#obtainUserSecurityConfig(final AccountResetRequest request) throws AccountResetException";
@@ -235,7 +233,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#verifyUserSecurityConfig(com.cws.esolutions.security.processors.dto.AccountResetRequest)
      */
-    @Override
     public AccountResetResponse verifyUserSecurityConfig(final AccountResetRequest request) throws AccountResetException
     {
         final String methodName = IAccountResetProcessor.CNAME + "#verifyUserSecurityConfig(final AccountResetRequest request) throws AccountResetException";
@@ -265,7 +262,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             if (StringUtils.isNotEmpty(userSalt))
             {
                 boolean isVerified = authenticator.verifySecurityData(userAccount.getUsername(), userAccount.getGuid(),
-                    new ArrayList<>(
+                    new ArrayList<String>(
                         Arrays.asList(
                             PasswordUtils.encryptText(userSecurity.getSecAnswerOne(), userSalt,
                                 secConfig.getAuthAlgorithm(), secConfig.getIterations(),
@@ -357,7 +354,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#resetUserPassword(com.cws.esolutions.security.processors.dto.AccountResetRequest)
      */
-    @Override
     public AccountResetResponse resetUserPassword(final AccountResetRequest request) throws AccountResetException
     {
         final String methodName = IAccountResetProcessor.CNAME + "#resetUserPassword(final AccountResetRequest request) throws AccountResetException";
@@ -501,7 +497,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#verifyResetRequest(com.cws.esolutions.security.processors.dto.AccountResetRequest)
      */
-    @Override
     public AccountResetResponse verifyResetRequest(final AccountResetRequest request) throws AccountResetException
     {
         final String methodName = IAccountResetProcessor.CNAME + "#verifyResetRequest(final AccountResetRequest request) throws AccountResetException";

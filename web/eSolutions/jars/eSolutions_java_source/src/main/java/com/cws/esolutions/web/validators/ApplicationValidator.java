@@ -140,7 +140,6 @@ public class ApplicationValidator implements Validator
         this.messagePackageInstallerRequired = value;
     }
 
-    @Override
     public final boolean supports(final Class<?> value)
     {
         final String methodName = ApplicationValidator.CNAME + "#supports(final Class<?> value)";
@@ -161,7 +160,6 @@ public class ApplicationValidator implements Validator
         return isSupported;
     }
 
-    @Override
     public final void validate(final Object target, final Errors errors)
     {
         final String methodName = ApplicationValidator.CNAME + "#validate(final Object target, final Errors errors)";

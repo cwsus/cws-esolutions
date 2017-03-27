@@ -71,7 +71,9 @@ public class SessionAuthenticationFilter implements Filter
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
-    @Override
+    /**
+     * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
+     */
     public void init(final FilterConfig filterConfig) throws ServletException
     {
         final String methodName = SessionAuthenticationFilter.CNAME + "#init(final FilterConfig filterConfig) throws ServletException";
@@ -121,7 +123,9 @@ public class SessionAuthenticationFilter implements Filter
         }
     }
 
-    @Override
+    /**
+     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.filter.FilterChain)
+     */
     public void doFilter(final ServletRequest sRequest, final ServletResponse sResponse, final FilterChain filterChain) throws IOException, ServletException
     {
         final String methodName = SessionAuthenticationFilter.CNAME + "#doFilter(final ServletRequest sRequest, final ServletResponse sResponse, final FilterChain filterChain) throws IOException, ServletException";
@@ -346,7 +350,9 @@ public class SessionAuthenticationFilter implements Filter
         return;
     }
 
-    @Override
+    /**
+     * @see javax.servlet.Filter#destroy()
+     */
     public void destroy()
     {
         final String methodName = SessionAuthenticationFilter.CNAME + "#destroy()";

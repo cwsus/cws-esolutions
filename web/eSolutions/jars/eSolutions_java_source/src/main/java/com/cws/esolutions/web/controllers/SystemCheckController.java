@@ -237,79 +237,73 @@ public class SystemCheckController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            try
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
+        }
+
+        try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+            if (DEBUG)
             {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostName(hRequest.getRemoteHost());
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                }
-
-                Server server = new Server();
-                server.setServerGuid(guid);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Server: {}", server);
-                }
-
-                // a source server is *required*
-                SystemCheckRequest request = new SystemCheckRequest();
-                request.setRequestInfo(reqInfo);
-                request.setUserAccount(userAccount);
-                request.setServiceId(this.serviceId);
-                request.setApplicationId(this.appConfig.getApplicationId());
-                request.setApplicationName(this.appConfig.getApplicationName());
-                request.setTargetServer(server);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("SystemCheckRequest: {}", request);
-                }
-
-                SystemCheckResponse response = processor.runRemoteDateCheck(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("SystemCheckResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                {
-                    mView.addObject("server", "server"); // TODO
-                    mView.addObject("command", new SystemCheckRequest());
-                    mView.setViewName(this.remoteDatePage);
-                }
-                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    return mView;
-                }
-                else
-                {
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                    return mView;
-                }
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
-            catch (SystemCheckException scx)
+
+            Server server = new Server();
+            server.setServerGuid(guid);
+
+            if (DEBUG)
             {
-                ERROR_RECORDER.error(scx.getMessage(), scx);
+                DEBUGGER.debug("Server: {}", server);
+            }
 
+            // a source server is *required*
+            SystemCheckRequest request = new SystemCheckRequest();
+            request.setRequestInfo(reqInfo);
+            request.setUserAccount(userAccount);
+            request.setServiceId(this.serviceId);
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setApplicationName(this.appConfig.getApplicationName());
+            request.setTargetServer(server);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("SystemCheckRequest: {}", request);
+            }
+
+            SystemCheckResponse response = processor.runRemoteDateCheck(request);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("SystemCheckResponse: {}", response);
+            }
+
+            if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+            {
+                mView.addObject("server", "server"); // TODO
+                mView.addObject(Constants.COMMAND, new SystemCheckRequest());
+                mView.setViewName(this.remoteDatePage);
+            }
+            else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+            {
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
+            }
+            else
+            {
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                return mView;
             }
         }
-        else
+        catch (SystemCheckException scx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            ERROR_RECORDER.error(scx.getMessage(), scx);
+
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)
@@ -380,33 +374,33 @@ public class SystemCheckController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            RequestHostInfo reqInfo = new RequestHostInfo();
-            reqInfo.setHostName(hRequest.getRemoteHost());
-            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+        	mView.setViewName(this.appConfig.getUnavailablePage());
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            }
-
-            Server server = new Server();
-            server.setServerGuid(guid);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Server: {}", server);
-            }
-
-            mView.addObject("server", server);
-            mView.addObject("command", new SystemCheckRequest());
-            mView.setViewName(this.testTelnetPage);
+        	return mView;
         }
-        else
+
+        RequestHostInfo reqInfo = new RequestHostInfo();
+        reqInfo.setHostName(hRequest.getRemoteHost());
+        reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+        if (DEBUG)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
         }
+
+        Server server = new Server();
+        server.setServerGuid(guid);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Server: {}", server);
+        }
+
+        mView.addObject("server", server);
+        mView.addObject(Constants.COMMAND, new SystemCheckRequest());
+        mView.setViewName(this.testTelnetPage);
 
         if (DEBUG)
         {
@@ -476,26 +470,24 @@ public class SystemCheckController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            Server server = new Server();
-            server.setServerGuid(guid);
+        	mView.setViewName(this.appConfig.getUnavailablePage());
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Server: {}", server);
-            }
-
-            mView.addObject("server", server);
-            mView.addObject("command", new SystemCheckRequest());
-            mView.setViewName(this.netstatPage);
+        	return mView;
         }
-        else
+
+        Server server = new Server();
+        server.setServerGuid(guid);
+
+        if (DEBUG)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            DEBUGGER.debug("Server: {}", server);
         }
+
+        mView.addObject("server", server);
+        mView.addObject(Constants.COMMAND, new SystemCheckRequest());
+        mView.setViewName(this.netstatPage);
 
         if (DEBUG)
         {
@@ -565,25 +557,23 @@ public class SystemCheckController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            Server server = new Server();
-            server.setServerGuid(guid);
+        	mView.setViewName(this.appConfig.getUnavailablePage());
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Server: {}", server);
-            }
-
-            mView.addObject("server", server);
-            mView.setViewName(this.listProcessesPage);
+        	return mView;
         }
-        else
+
+        Server server = new Server();
+        server.setServerGuid(guid);
+
+        if (DEBUG)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            DEBUGGER.debug("Server: {}", server);
         }
+
+        mView.addObject("server", server);
+        mView.setViewName(this.listProcessesPage);
 
         if (DEBUG)
         {
@@ -655,73 +645,66 @@ public class SystemCheckController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            this.validator.validate(request, bindResult);
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
+        }
+
+        this.validator.validate(request, bindResult);
+
+        if (bindResult.hasErrors())
+        {
+            // validation failed
+            ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
+
+            mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessageValidationFailed());
+            mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
+            mView.addObject(Constants.COMMAND, new SystemCheckRequest());
+            mView.addObject("server", request.getSourceServer());
+            mView.setViewName(this.testTelnetPage);
+
+            return mView;
+        }
+
+        RequestHostInfo reqInfo = new RequestHostInfo();
+        reqInfo.setHostName(hRequest.getRemoteHost());
+        reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+        }
+
+        try
+        {
+            SystemCheckResponse response = processor.runTelnetCheck(request);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("BindingResult: {}", bindResult);
+                DEBUGGER.debug("SystemCheckResponse: {}", response);
             }
 
-            if (bindResult.hasErrors())
+            if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
             {
-                mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessageValidationFailed());
-                mView.addObject("command", new SystemCheckRequest());
-                mView.addObject("server", request.getSourceServer());
-
-                mView.setViewName(this.testTelnetPage);
-                return mView;
+                // all set
+                mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
             }
-
-            RequestHostInfo reqInfo = new RequestHostInfo();
-            reqInfo.setHostName(hRequest.getRemoteHost());
-            reqInfo.setHostAddress(hRequest.getRemoteAddr());
-
-            if (DEBUG)
+            else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
             }
-
-            try
+            else
             {
-                SystemCheckResponse response = processor.runTelnetCheck(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("SystemCheckResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                {
-                    // all set
-                    mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
-                }
-                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    return mView;
-                }
-                else
-                {
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                    return mView;
-                }
-            }
-            catch (SystemCheckException scx)
-            {
-                ERROR_RECORDER.error(scx.getMessage(), scx);
-
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                return mView;
             }
         }
-        else
+        catch (SystemCheckException scx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            ERROR_RECORDER.error(scx.getMessage(), scx);
+
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)
@@ -794,79 +777,70 @@ public class SystemCheckController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            this.validator.validate(request, bindResult);
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
+        }
+
+        this.validator.validate(request, bindResult);
+
+        if (bindResult.hasErrors())
+        {
+            // validation failed
+            ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
+
+            mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessageValidationFailed());
+            mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
+            mView.addObject(Constants.COMMAND, new SystemCheckRequest());
+            mView.addObject("server", request.getSourceServer());
+            mView.setViewName(this.netstatPage);
+
+            return mView;
+        }
+
+        RequestHostInfo reqInfo = new RequestHostInfo();
+        reqInfo.setHostName(hRequest.getRemoteHost());
+        reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+        }
+
+        try
+        {
+            SystemCheckResponse response = processor.runNetstatCheck(request);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("BindingResult: {}", bindResult);
+                DEBUGGER.debug("SystemCheckResponse: {}", response);
             }
 
-            if (bindResult.hasErrors())
+            if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
             {
-                mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessageValidationFailed());
-                mView.addObject("command", new SystemCheckRequest());
-                mView.addObject("server", request.getSourceServer());
-
-                mView.setViewName(this.netstatPage);
-                return mView;
+                // all set
+                mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
             }
-
-            RequestHostInfo reqInfo = new RequestHostInfo();
-            reqInfo.setHostName(hRequest.getRemoteHost());
-            reqInfo.setHostAddress(hRequest.getRemoteAddr());
-
-            if (DEBUG)
+            else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
             }
-
-            try
+            else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                SystemCheckResponse response = processor.runNetstatCheck(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("SystemCheckResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                {
-                    // all set
-                    mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
-                }
-                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    return mView;
-                }
-                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    return mView;
-                }
-                else
-                {
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                    return mView;
-                }
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
             }
-            catch (SystemCheckException scx)
+            else
             {
-                ERROR_RECORDER.error(scx.getMessage(), scx);
-
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                return mView;
             }
         }
-        else
+        catch (SystemCheckException scx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            ERROR_RECORDER.error(scx.getMessage(), scx);
+
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)
@@ -939,80 +913,71 @@ public class SystemCheckController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            this.validator.validate(request, bindResult);
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
+        }
+
+        this.validator.validate(request, bindResult);
+
+        if (bindResult.hasErrors())
+        {
+            // validation failed
+            ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
+
+            mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessageValidationFailed());
+            mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
+            mView.addObject(Constants.COMMAND, new SystemCheckRequest());
+            mView.addObject("server", request.getSourceServer());
+            mView.setViewName(this.listProcessesPage);
+
+            return mView;
+        }
+
+        RequestHostInfo reqInfo = new RequestHostInfo();
+        reqInfo.setHostName(hRequest.getRemoteHost());
+        reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+        }
+
+        try
+        {
+            SystemCheckResponse response = processor.runProcessListCheck(request);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("BindingResult: {}", bindResult);
+                DEBUGGER.debug("SystemCheckResponse: {}", response);
             }
 
-            if (bindResult.hasErrors())
+            if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
             {
-                mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessageValidationFailed());
-                mView.addObject("command", new SystemCheckRequest());
-                mView.addObject("server", request.getSourceServer());
-
-                mView.setViewName(this.listProcessesPage);
-                return mView;
+                // all set
+                mView.addObject("responseData", response.getResponseObject());
+                mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
             }
-
-            RequestHostInfo reqInfo = new RequestHostInfo();
-            reqInfo.setHostName(hRequest.getRemoteHost());
-            reqInfo.setHostAddress(hRequest.getRemoteAddr());
-
-            if (DEBUG)
+            else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
             }
-
-            try
+            else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                SystemCheckResponse response = processor.runProcessListCheck(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("SystemCheckResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                {
-                    // all set
-                    mView.addObject("responseData", response.getResponseObject());
-                    mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
-                }
-                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    return mView;
-                }
-                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    return mView;
-                }
-                else
-                {
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                    return mView;
-                }
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
             }
-            catch (SystemCheckException scx)
+            else
             {
-                ERROR_RECORDER.error(scx.getMessage(), scx);
-
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                return mView;
             }
         }
-        else
+        catch (SystemCheckException scx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            ERROR_RECORDER.error(scx.getMessage(), scx);
+
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)

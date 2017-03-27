@@ -75,7 +75,7 @@ public class LDAPUserManagerTest
         try
         {
             Assert.assertTrue(manager.addUserAccount(
-                    new ArrayList<>(
+                    new ArrayList<String>(
                             Arrays.asList(
                                     "junit-test",
                                     RandomStringUtils.randomAlphanumeric(64),
@@ -84,7 +84,7 @@ public class LDAPUserManagerTest
                                     "test@test.com",
                                     LDAPUserManagerTest.GUID,
                                     "Test User")),
-                    new ArrayList<>(
+                    new ArrayList<String>(
                             Arrays.asList(
                                     "USER"))));
         }
@@ -147,7 +147,7 @@ public class LDAPUserManagerTest
         try
         {
             Assert.assertTrue(manager.modifyUserContact(LDAPUserManagerTest.GUID,
-                    new ArrayList<>(
+                    new ArrayList<String>(
                             Arrays.asList("555-555-1212", "555-555-1213"))));
         }
         catch (UserManagementException umx)
@@ -224,7 +224,7 @@ public class LDAPUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyUserSecurity(LDAPUserManagerTest.GUID, new ArrayList<>(
+            Assert.assertTrue(manager.modifyUserSecurity(LDAPUserManagerTest.GUID, new ArrayList<String>(
                     Arrays.asList(
                             RandomStringUtils.randomAlphanumeric(64),
                             RandomStringUtils.randomAlphanumeric(64),

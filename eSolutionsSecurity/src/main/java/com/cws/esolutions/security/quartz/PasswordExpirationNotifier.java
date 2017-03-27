@@ -62,7 +62,6 @@ public class PasswordExpirationNotifier implements Job
     /**
      * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
      */
-    @Override
     public void execute(final JobExecutionContext context)
     {
         final String methodName = PasswordExpirationNotifier.CNAME + "#execute(final JobExecutionContext jobContext)";
@@ -131,12 +130,12 @@ public class PasswordExpirationNotifier implements Job
                     email.setHostName((String) jobData.get("mailHost"));
                     email.setSmtpPort(Integer.parseInt((String) jobData.get("portNumber")));
 
-                    if ((boolean) jobData.get("isSecure"))
+                    if ((Boolean) jobData.get("isSecure"))
                     {
                         email.setSSLOnConnect(true);
                     }
 
-                    if ((boolean) jobData.get("isAuthenticated"))
+                    if ((Boolean) jobData.get("isAuthenticated"))
                     {
                         email.setAuthenticator(new DefaultAuthenticator((String) jobData.get("username"),
                                 PasswordUtils.decryptText(

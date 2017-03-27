@@ -57,7 +57,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor#processAgentLogon(com.cws.esolutions.security.processors.dto.AuthenticationRequest)
      */
-    @Override
     public AuthenticationResponse processAgentLogon(final AuthenticationRequest request) throws AuthenticationException
     {
         final String methodName = IAuthenticationProcessor.CNAME + "#processAgentLogon(final AuthenticationRequest request) throws AuthenticationException";
@@ -269,7 +268,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor#processOtpLogon(com.cws.esolutions.security.processors.dto.AuthenticationRequest)
      */
-    @Override
     public AuthenticationResponse processOtpLogon(final AuthenticationRequest request) throws AuthenticationException
     {
         final String methodName = IAuthenticationProcessor.CNAME + "#processOtpLogon(final AuthenticationRequest request) throws AuthenticationException";

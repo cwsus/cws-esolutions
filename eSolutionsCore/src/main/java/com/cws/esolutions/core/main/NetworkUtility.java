@@ -328,9 +328,9 @@ public final class NetworkUtility
                     throw new CoreServiceException("No target file(s) were provided. Unable to process request.");
                 }
 
-                List<String> filesToTransfer = new ArrayList<>(
+                List<String> filesToTransfer = new ArrayList<String>(
                     Arrays.asList(commandLine.getOptionValues("sourceFile")));
-                List<String> filesToCreate = new ArrayList<>(
+                List<String> filesToCreate = new ArrayList<String>(
                     Arrays.asList(commandLine.getOptionValues("targetFile")));
 
                 if (DEBUG)

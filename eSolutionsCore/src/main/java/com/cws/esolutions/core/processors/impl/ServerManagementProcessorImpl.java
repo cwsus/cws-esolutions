@@ -68,7 +68,6 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
     /**
      * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#addNewServer(com.cws.esolutions.core.processors.dto.ServerManagementRequest)
      */
-    @Override
     public ServerManagementResponse addNewServer(final ServerManagementRequest request) throws ServerManagementException
     {
         final String methodName = IServerManagementProcessor.CNAME + "#addNewServer(final ServerManagementRequest request) throws ServerManagementException";
@@ -296,7 +295,6 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
     /**
      * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#updateServerData(com.cws.esolutions.core.processors.dto.ServerManagementRequest)
      */
-    @Override
     public ServerManagementResponse updateServerData(final ServerManagementRequest request) throws ServerManagementException
     {
         final String methodName = IServerManagementProcessor.CNAME + "#updateServerData(final ServerManagementRequest request) throws ServerManagementException";
@@ -495,7 +493,6 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
     /**
      * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#removeServerData(com.cws.esolutions.core.processors.dto.ServerManagementRequest)
      */
-    @Override
     public ServerManagementResponse removeServerData(final ServerManagementRequest request) throws ServerManagementException
     {
         final String methodName = IServerManagementProcessor.CNAME + "#removeServerData(final ServerManagementRequest request) throws ServerManagementException";
@@ -641,7 +638,6 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
     /**
      * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#listServers(com.cws.esolutions.core.processors.dto.ServerManagementRequest)
      */
-    @Override
     public ServerManagementResponse listServers(final ServerManagementRequest request) throws ServerManagementException
     {
         final String methodName = IServerManagementProcessor.CNAME + "#listServers(final ServerManagementRequest request) throws ServerManagementException";
@@ -729,7 +725,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
             if ((serverData != null) && (serverData.size() != 0))
             {
-                List<Server> serverList = new ArrayList<>();
+                List<Server> serverList = new ArrayList<Server>();
 
                 for (String[] data : serverData)
                 {
@@ -812,7 +808,6 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
     /**
      * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#listServersByAttribute(com.cws.esolutions.core.processors.dto.ServerManagementRequest)
      */
-    @Override
     public ServerManagementResponse listServersByAttribute(final ServerManagementRequest request) throws ServerManagementException
     {
         final String methodName = IServerManagementProcessor.CNAME + "#listServersByAttribute(final ServerManagementRequest request) throws ServerManagementException";
@@ -900,14 +895,14 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
             if ((serverData != null) && (serverData.size() != 0))
             {
-                List<Server> serverList = new ArrayList<>();
+                List<Server> serverList = new ArrayList<Server>();
 
                 for (Object[] data : serverData)
                 {
                     Server server = new Server();
                     server.setServerGuid((String) data[0]); // SYSTEM_GUID
                     server.setOperHostName((String) data[1]); // OPER_HOSTNAME
-                    server.setScore((double) data[2]);
+                    server.setScore(new Double(data[2].toString()));
 
                     if (DEBUG)
                     {
@@ -982,7 +977,6 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
     /**
      * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#getServerData(com.cws.esolutions.core.processors.dto.ServerManagementRequest)
      */
-    @Override
     public ServerManagementResponse getServerData(final ServerManagementRequest request) throws ServerManagementException
     {
         final String methodName = IServerManagementProcessor.CNAME + "#getServerData(final ServerManagementRequest request) throws ServerManagementException";

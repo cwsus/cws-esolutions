@@ -127,7 +127,6 @@ public class SecurityResponseValidator implements Validator
         this.messageQuestionsAnswersMatch = value;
     }
 
-    @Override
     public final boolean supports(final Class<?> value)
     {
         final String methodName = SecurityResponseValidator.CNAME + "#supports(final Class<?> value)";
@@ -148,7 +147,6 @@ public class SecurityResponseValidator implements Validator
         return isSupported;
     }
 
-    @Override
     public final void validate(final Object target, final Errors errors)
     {
         final String methodName = SecurityResponseValidator.CNAME + "#validate(final <Class> request)";

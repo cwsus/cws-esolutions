@@ -228,16 +228,16 @@ public class DNSServiceController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.addObject("serviceTypes", this.serviceTypes);
-            mView.addObject("command", new DNSRecord());
-            mView.setViewName(this.lookupPage);
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
         }
-        else
-        {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-        }
+
+        mView.addObject("serviceTypes", this.serviceTypes);
+        mView.addObject(Constants.COMMAND, new DNSRecord());
+        mView.setViewName(this.lookupPage);
 
         if (DEBUG)
         {
@@ -307,16 +307,16 @@ public class DNSServiceController
         }
 
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.addObject("serviceTypes", this.serviceTypes);
-            mView.addObject("command", new DNSRecord());
-            mView.setViewName(this.lookupPage);
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
         }
-        else
-        {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-        }
+            
+        mView.addObject("serviceTypes", this.serviceTypes);
+        mView.addObject(Constants.COMMAND, new DNSRecord());
+        mView.setViewName(this.lookupPage);
 
         if (DEBUG)
         {
@@ -389,79 +389,78 @@ public class DNSServiceController
         }
 
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            try
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
+        }
+
+        try
+        {
+            // ensure authenticated access
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+            reqInfo.setHostName(hRequest.getRemoteHost());
+
+            if (DEBUG)
             {
-                // ensure authenticated access
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setHostName(hRequest.getRemoteHost());
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            }
 
-                if (DEBUG)
+            DNSServiceRequest dnsRequest = new DNSServiceRequest();
+            dnsRequest.setRecord(request);
+            dnsRequest.setRequestInfo(reqInfo);
+            dnsRequest.setUserAccount(userAccount);
+            dnsRequest.setServiceId(this.serviceId);
+            dnsRequest.setSearchURL(this.serviceHost);
+            dnsRequest.setSearchPath(this.searchSuffix);
+            dnsRequest.setRequestType(DNSRequestType.LOOKUP);
+            dnsRequest.setApplicationId(this.appConfig.getApplicationId());
+            dnsRequest.setApplicationName(this.appConfig.getApplicationName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("DNSServiceRequest: {}", dnsRequest);
+            }
+
+            DNSServiceResponse response = dnsProcessor.performLookup(dnsRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("DNSServiceResponse: {}", response);
+            }
+
+            if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+            {
+                if ((response.getDnsRecords() != null) && (response.getDnsRecords().size() != 0))
                 {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                    // multiple records were returned
+                    mView.addObject("dnsEntries", response.getDnsRecords());
                 }
-
-                DNSServiceRequest dnsRequest = new DNSServiceRequest();
-                dnsRequest.setRecord(request);
-                dnsRequest.setRequestInfo(reqInfo);
-                dnsRequest.setUserAccount(userAccount);
-                dnsRequest.setServiceId(this.serviceId);
-                dnsRequest.setSearchURL(this.serviceHost);
-                dnsRequest.setSearchPath(this.searchSuffix);
-                dnsRequest.setRequestType(DNSRequestType.LOOKUP);
-                dnsRequest.setApplicationId(this.appConfig.getApplicationId());
-                dnsRequest.setApplicationName(this.appConfig.getApplicationName());
-
-                if (DEBUG)
+                else if (response.getDnsRecord() != null)
                 {
-                    DEBUGGER.debug("DNSServiceRequest: {}", dnsRequest);
-                }
-
-                DNSServiceResponse response = dnsProcessor.performLookup(dnsRequest);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("DNSServiceResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                {
-                    if ((response.getDnsRecords() != null) && (response.getDnsRecords().size() != 0))
-                    {
-                        // multiple records were returned
-                        mView.addObject("dnsEntries", response.getDnsRecords());
-                    }
-                    else if (response.getDnsRecord() != null)
-                    {
-                        mView.addObject("dnsEntry", response.getDnsRecord());
-                    }
-                    else
-                    {
-                        mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                    }
+                    mView.addObject("dnsEntry", response.getDnsRecord());
                 }
                 else
                 {
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-                    return mView;
+                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
                 }
-
-                mView.addObject("serviceTypes", this.serviceTypes);
-                mView.addObject("command", new DNSRecord());
-                mView.setViewName(this.lookupPage);
             }
-            catch (DNSServiceException dsx)
+            else
             {
-                ERROR_RECORDER.error(dsx.getMessage(), dsx);
-
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
+
+            mView.addObject("serviceTypes", this.serviceTypes);
+            mView.addObject(Constants.COMMAND, new DNSRecord());
+            mView.setViewName(this.lookupPage);
         }
-        else
+        catch (DNSServiceException dsx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            ERROR_RECORDER.error(dsx.getMessage(), dsx);
+
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)

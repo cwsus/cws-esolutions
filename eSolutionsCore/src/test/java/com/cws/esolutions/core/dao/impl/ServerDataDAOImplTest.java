@@ -62,7 +62,7 @@ public class ServerDataDAOImplTest
 
     @Test public void addNewServer()
     {
-        List<Object> data = new ArrayList<Object>
+		List<Object> data = new ArrayList<Object>
         (
             Arrays.asList
             (

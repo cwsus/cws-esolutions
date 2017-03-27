@@ -53,7 +53,6 @@ public class IdleAccountLocker implements Job
     /**
      * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
      */
-    @Override
     public void execute(final JobExecutionContext context)
     {
         final String methodName = IdleAccountLocker.CNAME + "#execute(final JobExecutionContext context)";

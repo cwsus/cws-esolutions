@@ -32,6 +32,8 @@ public class Constants
     public static final String AUDIT_LOGGER = "AUDIT_RECORDER.";
     public static final String DEBUGGER = "ESOLUTIONS_DEBUGGER";
 
+    public static final String COMMAND = "command";
+    public static final String BIND_RESULT = "bindResult";
     public static final String USER_ACCOUNT = "userAccount";
     public static final String USER_SECURITY = "userSecurity";
     public static final String ALLOW_RESET = "allowUserReset";

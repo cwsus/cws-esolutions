@@ -49,7 +49,6 @@ public class SQLUserManager implements UserManager
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#validateUserAccount(java.lang.String, java.lang.String)
      */
-    @Override
     public synchronized boolean validateUserAccount(final String userId, final String userGuid) throws UserManagementException
     {
         final String methodName = SQLUserManager.CNAME + "#validateUserAccount(final String userId, final String userGuid) throws UserManagementException";
@@ -148,7 +147,6 @@ public class SQLUserManager implements UserManager
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#addUserAccount(java.util.List, java.util.List)
      */
-    @Override
     public synchronized boolean addUserAccount(final List<String> userAccount, final List<String> roles) throws UserManagementException
     {
         final String methodName = SQLUserManager.CNAME + "#addUserAccount(final List<String> userAccount, final List<String> roles) throws UserManagementException";
@@ -225,7 +223,6 @@ public class SQLUserManager implements UserManager
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#removeUserAccount(java.lang.String)
      */
-    @Override
     public synchronized boolean removeUserAccount(final String userId) throws UserManagementException
     {
         final String methodName = SQLUserManager.CNAME + "#removeUserAccount(final String userId) throws UserManagementException";
@@ -294,7 +291,6 @@ public class SQLUserManager implements UserManager
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#searchUsers(java.lang.String)
      */
-    @Override
     public synchronized List<String[]> searchUsers(final String searchData) throws UserManagementException
     {
         final String methodName = SQLUserManager.CNAME + "#searchUsers(final String searchData) throws UserManagementException";
@@ -337,7 +333,7 @@ public class SQLUserManager implements UserManager
                 if (resultSet.next())
                 {
                     resultSet.beforeFirst();
-                    results = new ArrayList<>();
+                    results = new ArrayList<String[]>();
 
                     while (resultSet.next())
                     {
@@ -397,7 +393,6 @@ public class SQLUserManager implements UserManager
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#loadUserAccount(java.lang.String)
      */
-    @Override
     public synchronized List<Object> loadUserAccount(final String userGuid) throws UserManagementException
     {
         final String methodName = SQLUserManager.CNAME + "#loadUserAccount(final String guid) throws UserManagementException";
@@ -521,7 +516,6 @@ public class SQLUserManager implements UserManager
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#listUserAccounts()
      */
-    @Override
     public synchronized List<String[]> listUserAccounts() throws UserManagementException
     {
         final String methodName = SQLUserManager.CNAME + "#listUserAccounts() throws UserManagementException";
@@ -561,7 +555,7 @@ public class SQLUserManager implements UserManager
                 if (resultSet.next())
                 {
                     resultSet.beforeFirst();
-                    results = new ArrayList<>();
+                    results = new ArrayList<String[]>();
 
                     while (resultSet.next())
                     {
@@ -624,7 +618,6 @@ public class SQLUserManager implements UserManager
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserEmail(java.lang.String, java.lang.String)
      */
-    @Override
     public synchronized boolean modifyUserEmail(final String userId, final String value) throws UserManagementException
     {
         final String methodName = SQLUserManager.CNAME + "#modifyUserEmail(final String userId, final String value) throws UserManagementException";
@@ -697,7 +690,6 @@ public class SQLUserManager implements UserManager
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserContact(java.lang.String, java.util.List)
      */
-    @Override
     public synchronized boolean modifyUserContact(final String userId, final List<String> values) throws UserManagementException
     {
         final String methodName = SQLUserManager.CNAME + "#modifyUserContact(final String userId, final List<String> values) throws UserManagementException";
@@ -771,7 +763,6 @@ public class SQLUserManager implements UserManager
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserSuspension(java.lang.String, boolean)
      */
-    @Override
     public synchronized boolean modifyUserSuspension(final String userId, final boolean isSuspended) throws UserManagementException
     {
         final String methodName = SQLUserManager.CNAME + "#modifyUserSuspension(final String userId, final boolean isSuspended) throws UserManagementException";
@@ -849,7 +840,6 @@ public class SQLUserManager implements UserManager
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserGroups(java.lang.String, java.lang.Object[])
      */
-    @Override
     public synchronized boolean modifyUserGroups(final String userId, final Object[] values) throws UserManagementException
     {
         final String methodName = SQLUserManager.CNAME + "#modifyUserGroups(final String userId, final Object[] values) throws UserManagementException";
@@ -922,7 +912,6 @@ public class SQLUserManager implements UserManager
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyOlrLock(java.lang.String, boolean)
      */
-    @Override
     public synchronized boolean modifyOlrLock(final String userId, final boolean isLocked) throws UserManagementException
     {
         final String methodName = SQLUserManager.CNAME + "#modifyOlrLock(final String userId, final boolean value) throws UserManagementException";
@@ -995,7 +984,6 @@ public class SQLUserManager implements UserManager
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserLock(java.lang.String, boolean, int)
      */
-    @Override
     public synchronized boolean modifyUserLock(final String userId, final boolean isLocked, final int increment) throws UserManagementException
     {
         final String methodName = SQLUserManager.CNAME + "#modifyUserLock(final String userId, final boolean int, final boolean increment) throws UserManagementException";
@@ -1068,7 +1056,6 @@ public class SQLUserManager implements UserManager
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserPassword(java.lang.String, java.lang.String)
      */
-    @Override
     public synchronized boolean modifyUserPassword(final String userId, final String newPass) throws UserManagementException
     {
         final String methodName = SQLUserManager.CNAME + "#modifyUserPassword(final String userId, final String newPass) throws UserManagementException";
@@ -1140,7 +1127,6 @@ public class SQLUserManager implements UserManager
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyOtpSecret(java.lang.String, boolean, java.lang.String)
      */
-    @Override
     public synchronized boolean modifyOtpSecret(final String userId, final boolean addSecret, final String secret) throws UserManagementException
     {
         final String methodName = SQLUserManager.CNAME + "#modifyOtpSecret(final String userId, final boolean addSecret, final String secret) throws UserManagementException";
@@ -1218,7 +1204,6 @@ public class SQLUserManager implements UserManager
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserSecurity(java.lang.String, java.util.List)
      */
-    @Override
     public synchronized boolean modifyUserSecurity(final String userId, final List<String> values) throws UserManagementException
     {
         final String methodName = SQLUserManager.CNAME + "#modifyUserSecurity(final String userId, final List<String> values) throws UserManagementException";

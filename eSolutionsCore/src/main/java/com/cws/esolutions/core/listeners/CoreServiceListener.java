@@ -66,7 +66,6 @@ public class CoreServiceListener implements ServletContextListener
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
 
-    @Override
     public void contextInitialized(final ServletContextEvent contextEvent)
     {
         URL xmlURL = null;
@@ -125,7 +124,7 @@ public class CoreServiceListener implements ServletContextListener
                     Context initContext = new InitialContext();
                     Context envContext = (Context) initContext.lookup(CoreServiceListener.DS_CONTEXT);
 
-                    Map<String, DataSource> dsMap = new HashMap<>();
+                    Map<String, DataSource> dsMap = new HashMap<String, DataSource>();
 
                     for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())
                     {
@@ -154,7 +153,6 @@ public class CoreServiceListener implements ServletContextListener
         }
     }
 
-    @Override
     public void contextDestroyed(final ServletContextEvent contextEvent)
     {
         final String methodName = CoreServiceListener.CNAME + "#contextDestroyed(final ServletContextEvent contextEvent)";

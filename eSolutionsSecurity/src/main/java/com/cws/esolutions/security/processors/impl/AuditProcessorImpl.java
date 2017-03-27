@@ -51,7 +51,6 @@ public class AuditProcessorImpl implements IAuditProcessor
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAuditProcessor#auditRequest(com.cws.esolutions.security.processors.dto.AuditRequest)
      */
-    @Override
     public void auditRequest(final AuditRequest request) throws AuditServiceException
     {
         final String methodName = IAuditProcessor.CNAME + "#auditRequest(final AuditRequest request) throws AuditServiceException";
@@ -80,7 +79,7 @@ public class AuditProcessorImpl implements IAuditProcessor
                 throw new AuditServiceException("Cannot perform audit: RequestHostInfo / UserAccount is missing");
             }
 
-            List<String> auditList = new ArrayList<>();
+            List<String> auditList = new ArrayList<String>();
 
             switch (auditEntry.getAuditType())
             {
@@ -136,7 +135,6 @@ public class AuditProcessorImpl implements IAuditProcessor
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAuditProcessor#getAuditEntries(com.cws.esolutions.security.processors.dto.AuditRequest)
      */
-    @Override
     public AuditResponse getAuditEntries(final AuditRequest request) throws AuditServiceException
     {
         final String methodName = IAuditProcessor.CNAME + "#getAuditEntries(final AuditRequest request) throws AuditServiceException";
@@ -236,7 +234,7 @@ public class AuditProcessorImpl implements IAuditProcessor
                 if ((dataResponse != null) && (dataResponse.size() != 0))
                 {
                     int count = (Integer) dataResponse.get(0);
-                    List<AuditEntry> auditList = new ArrayList<>();
+                    List<AuditEntry> auditList = new ArrayList<AuditEntry>();
 
                     for (int x = 1; dataResponse.size() != x; x++)
                     {

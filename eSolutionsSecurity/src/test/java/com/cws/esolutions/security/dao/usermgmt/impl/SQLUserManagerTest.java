@@ -76,7 +76,7 @@ public class SQLUserManagerTest
         try
         {
             Assert.assertTrue(manager.addUserAccount(
-                    new ArrayList<>(
+                    new ArrayList<String>(
                             Arrays.asList(
                                     "junit-test",
                                     RandomStringUtils.randomAlphanumeric(64),
@@ -85,7 +85,7 @@ public class SQLUserManagerTest
                                     "test@test.com",
                                     SQLUserManagerTest.GUID,
                                     "Test User")),
-                    new ArrayList<>(
+                    new ArrayList<String>(
                             Arrays.asList(
                                     "USER"))));
         }
@@ -148,7 +148,7 @@ public class SQLUserManagerTest
         try
         {
             Assert.assertTrue(manager.modifyUserContact(SQLUserManagerTest.GUID,
-                    new ArrayList<>(
+                    new ArrayList<String>(
                             Arrays.asList("555-555-1212", "555-555-1213"))));
         }
         catch (UserManagementException umx)
@@ -225,7 +225,7 @@ public class SQLUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyUserSecurity(SQLUserManagerTest.GUID, new ArrayList<>(
+            Assert.assertTrue(manager.modifyUserSecurity(SQLUserManagerTest.GUID, new ArrayList<String>(
                     Arrays.asList(
                             RandomStringUtils.randomAlphanumeric(64),
                             RandomStringUtils.randomAlphanumeric(64),

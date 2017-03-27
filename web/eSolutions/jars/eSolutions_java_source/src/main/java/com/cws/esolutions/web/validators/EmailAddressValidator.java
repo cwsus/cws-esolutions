@@ -56,7 +56,6 @@ public class EmailAddressValidator implements Validator
         this.messageEmailAddressRequired = value;
     }
 
-    @Override
     public final boolean supports(final Class<?> value)
     {
         final String methodName = EmailAddressValidator.CNAME + "#supports(final Class value)";
@@ -77,7 +76,6 @@ public class EmailAddressValidator implements Validator
         return isSupported;
     }
 
-    @Override
     public final void validate(final Object target, final Errors errors)
     {
         final String methodName = EmailAddressValidator.CNAME + "#validate(final <Class> request)";

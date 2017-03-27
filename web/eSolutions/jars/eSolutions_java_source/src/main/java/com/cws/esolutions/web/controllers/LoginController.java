@@ -296,7 +296,7 @@ public class LoginController
         }
 
         mView.setViewName(this.loginPage);
-        mView.addObject("command", new LoginRequest());
+        mView.addObject(Constants.COMMAND, new LoginRequest());
 
         try
         {
@@ -467,8 +467,12 @@ public class LoginController
 
         if (bindResult.hasErrors())
         {
-            mView.addObject("errors", bindResult.getAllErrors());
-            mView.addObject("command", new LoginRequest());
+            // validation failed
+            ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
+
+            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+            mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
+            mView.addObject(Constants.COMMAND, new LoginRequest());
             mView.setViewName(this.loginPage);
 
             return mView;
@@ -551,13 +555,13 @@ public class LoginController
                             DEBUGGER.debug("ModelAndView: {}", mView);
                         }
 
-                        return mView;
+                        break;
                     case EXPIRED:
                         // password expired - redirect to change password page
                         hSession.invalidate();
 
                         mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessagePasswordExpired());
-                        mView.addObject("command", new LoginRequest());
+                        mView.addObject(Constants.COMMAND, new LoginRequest());
                         mView.setViewName(this.loginPage);
 
                         if (DEBUG)
@@ -565,13 +569,13 @@ public class LoginController
                             DEBUGGER.debug("ModelAndView: {}", mView);
                         }
 
-                        return mView;
+                        break;
                     default:
                         // no dice (but its also an unspecified failure)
                         ERROR_RECORDER.error("An unspecified error occurred during authentication.");
 
                         mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
-                        mView.addObject("command", new LoginRequest());
+                        mView.addObject(Constants.COMMAND, new LoginRequest());
                         mView.setViewName(this.loginPage);
 
                         break;
@@ -580,7 +584,7 @@ public class LoginController
             else
             {
                 mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
-                mView.addObject("command", new LoginRequest());
+                mView.addObject(Constants.COMMAND, new LoginRequest());
                 mView.setViewName(this.loginPage);
             }
         }
@@ -588,7 +592,7 @@ public class LoginController
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
 
-            mView.addObject("command", new LoginRequest());
+            mView.addObject(Constants.COMMAND, new LoginRequest());
             mView.setViewName(this.loginPage);
             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
         }
@@ -719,18 +723,18 @@ public class LoginController
                             mView = new ModelAndView(new RedirectView(this.appConfig.getHomeRedirect(), true));
                         }
 
-                        return mView;
+                        break;
                     case EXPIRED:
                         // password expired - redirect to change password page
                         hSession.invalidate();
 
                         mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessagePasswordExpired());
-                        mView.addObject("command", new LoginRequest());
+                        mView.addObject(Constants.COMMAND, new LoginRequest());
                         mView.setViewName(this.loginPage);
 
-                        return mView;
+                        break;
                     default:
-                        mView.addObject("command", new AuthenticationData());
+                        mView.addObject(Constants.COMMAND, new AuthenticationData());
                         mView.setViewName(this.otpLoginPage);
                         mView.addObject(Constants.ERROR_RESPONSE, this.messageSubmissionFailed);
 
@@ -739,7 +743,7 @@ public class LoginController
             }
             else
             {
-                mView.addObject("command", new AuthenticationData());
+                mView.addObject(Constants.COMMAND, new AuthenticationData());
                 mView.setViewName(this.otpLoginPage);
                 mView.addObject(Constants.ERROR_RESPONSE, this.messageSubmissionFailed);
             }
@@ -748,7 +752,7 @@ public class LoginController
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
 
-            mView.addObject("command", new AuthenticationData());
+            mView.addObject(Constants.COMMAND, new AuthenticationData());
             mView.setViewName(this.otpLoginPage);
             mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageRequestProcessingFailure());
         }

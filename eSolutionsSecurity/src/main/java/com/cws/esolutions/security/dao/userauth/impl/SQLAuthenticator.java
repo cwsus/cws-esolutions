@@ -51,7 +51,6 @@ public class SQLAuthenticator implements Authenticator
     /**
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String)
      */
-    @Override
     public synchronized List<Object> performLogon(final String username, final String password) throws AuthenticatorException
     {
         final String methodName = SQLAuthenticator.CNAME + "#performLogon(final String user, final String password) throws AuthenticatorException";
@@ -103,7 +102,7 @@ public class SQLAuthenticator implements Authenticator
             {
                 resultSet.first();
 
-                userAccount = new ArrayList<>();
+                userAccount = new ArrayList<Object>();
 
                 for (String returningAttribute : userAttributes.getReturningAttributes())
                 {
@@ -156,7 +155,6 @@ public class SQLAuthenticator implements Authenticator
     /**
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainSecurityData(java.lang.String, java.lang.String)
      */
-    @Override
     public synchronized List<String> obtainSecurityData(final String userName, final String userGuid) throws AuthenticatorException
     {
         final String methodName = SQLAuthenticator.CNAME + "#obtainSecurityData(final String userName, final String userGuid) throws AuthenticatorException";
@@ -243,7 +241,7 @@ public class SQLAuthenticator implements Authenticator
 
                                 if (resultSet.next())
                                 {
-                                    userSecurity = new ArrayList<>(
+                                    userSecurity = new ArrayList<String>(
                                         Arrays.asList(
                                             resultSet.getString(1),
                                             resultSet.getString(2)));
@@ -295,7 +293,6 @@ public class SQLAuthenticator implements Authenticator
     /**
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainOtpSecret(java.lang.String, java.lang.String)
      */
-    @Override
     public synchronized String obtainOtpSecret(final String userName, final String userGuid) throws AuthenticatorException
     {
         final String methodName = SQLAuthenticator.CNAME + "#obtainOtpSecret(final String userName, final String userGuid) throws AuthenticatorException";
@@ -384,7 +381,6 @@ public class SQLAuthenticator implements Authenticator
     /**
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#verifySecurityData(java.lang.String, java.lang.String, java.util.List)
      */
-    @Override
     public synchronized boolean verifySecurityData(final String userId, final String userGuid, final List<String> attributes) throws AuthenticatorException
     {
         final String methodName = SQLAuthenticator.CNAME + "#verifySecurityData(final String userId, final String userGuid, final List<String> attributes) throws AuthenticatorException";

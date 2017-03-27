@@ -70,7 +70,6 @@ public class SystemCheckValidator implements Validator
         this.messageTargetPortRequired = value;
     }
 
-    @Override
     public final boolean supports(final Class<?> value)
     {
         final String methodName = SystemCheckValidator.CNAME + "#supports(final Class<?> value)";
@@ -91,7 +90,6 @@ public class SystemCheckValidator implements Validator
         return isSupported;
     }
 
-    @Override
     public final void validate(final Object target, final Errors errors)
     {
         final String methodName = SystemCheckValidator.CNAME + "#validate(final Object target, final Errors errors)";

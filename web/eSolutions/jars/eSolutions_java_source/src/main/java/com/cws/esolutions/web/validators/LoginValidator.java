@@ -58,7 +58,6 @@ public class LoginValidator implements Validator
         this.messageLoginUserRequired = value;
     }
 
-    @Override
     public final boolean supports(final Class<?> value)
     {
         final String methodName = LoginValidator.CNAME + "#supports(final Class<?> value)";
@@ -79,7 +78,6 @@ public class LoginValidator implements Validator
         return isSupported;
     }
 
-    @Override
     public final void validate(final Object target, final Errors errors)
     {
         final String methodName = LoginValidator.CNAME + "#validate(final <Class> request)";

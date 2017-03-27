@@ -54,7 +54,6 @@ public class SQLKeyManager implements KeyManager
     /**
      * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#createKeys(java.lang.String)
      */
-    @Override
     public synchronized boolean createKeys(final String guid) throws KeyManagementException
     {
         final String methodName = SQLKeyManager.CNAME + "#keyManager(final String guid) throws KeyManagementException";
@@ -172,7 +171,6 @@ public class SQLKeyManager implements KeyManager
     /**
      * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#returnKeys(java.lang.String)
      */
-    @Override
     public synchronized KeyPair returnKeys(final String guid) throws KeyManagementException
     {
         final String methodName = SQLKeyManager.CNAME + "#returnKeys(final String guid) throws KeyManagementException";
@@ -293,7 +291,6 @@ public class SQLKeyManager implements KeyManager
     /**
      * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#removeKeys(java.lang.String)
      */
-    @Override
     public synchronized boolean removeKeys(final String guid) throws KeyManagementException
     {
         final String methodName = SQLKeyManager.CNAME + "#removeKeys(final String guid) throws KeyManagementException";

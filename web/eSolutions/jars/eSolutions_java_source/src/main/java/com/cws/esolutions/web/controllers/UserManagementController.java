@@ -451,15 +451,15 @@ public class UserManagementController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.addObject("command", new UserAccount());
-            mView.setViewName(this.searchUsersPage);
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
         }
-        else
-        {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-        }
+
+        mView.addObject(Constants.COMMAND, new UserAccount());
+        mView.setViewName(this.searchUsersPage);
 
         if (DEBUG)
         {
@@ -531,122 +531,114 @@ public class UserManagementController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            try
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
+        }
+
+        try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+            reqInfo.setHostName(hRequest.getRemoteHost());
+
+            if (DEBUG)
             {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setHostName(hRequest.getRemoteHost());
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            }
 
-                if (DEBUG)
+            UserAccount searchAccount = new UserAccount();
+
+            if (StringUtils.equalsIgnoreCase(type, "guid"))
+            {
+                searchAccount.setGuid(terms);
+            }
+
+            if (StringUtils.equalsIgnoreCase(type, "displayName"))
+            {
+                searchAccount.setDisplayName(terms);
+            }
+
+            if (StringUtils.equalsIgnoreCase(type, "emailAddr"))
+            {
+                searchAccount.setEmailAddr(terms);
+            }
+
+            if (StringUtils.equalsIgnoreCase(type, "username"))
+            {
+                searchAccount.setUsername(terms);
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("UserAccount: {}", searchAccount);
+            }
+
+            // search accounts
+            AccountControlRequest request = new AccountControlRequest();
+            request.setHostInfo(reqInfo);
+            request.setUserAccount(searchAccount);
+            request.setApplicationId(this.appConfig.getApplicationName());
+            request.setRequestor(userAccount);
+            request.setServiceId(this.serviceId);
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setApplicationName(this.appConfig.getApplicationName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlRequest: {}", request);
+            }
+
+            IAccountControlProcessor processor = new AccountControlProcessorImpl();
+            AccountControlResponse response = processor.searchAccounts(request);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlResponse: {}", response);
+            }
+
+            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            {
+                if ((response.getUserList() != null) && (response.getUserList().size() != 0))
                 {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                }
+                    List<UserAccount> userList = response.getUserList();
 
-                UserAccount searchAccount = new UserAccount();
-
-                if (StringUtils.equalsIgnoreCase(type, "guid"))
-                {
-                    searchAccount.setGuid(terms);
-                }
-
-                if (StringUtils.equalsIgnoreCase(type, "displayName"))
-                {
-                    searchAccount.setDisplayName(terms);
-                }
-
-                if (StringUtils.equalsIgnoreCase(type, "emailAddr"))
-                {
-                    searchAccount.setEmailAddr(terms);
-                }
-
-                if (StringUtils.equalsIgnoreCase(type, "username"))
-                {
-                    searchAccount.setUsername(terms);
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserAccount: {}", searchAccount);
-                }
-
-                // search accounts
-                AccountControlRequest request = new AccountControlRequest();
-                request.setHostInfo(reqInfo);
-                request.setUserAccount(searchAccount);
-                request.setApplicationId(this.appConfig.getApplicationName());
-                request.setRequestor(userAccount);
-                request.setServiceId(this.serviceId);
-                request.setApplicationId(this.appConfig.getApplicationId());
-                request.setApplicationName(this.appConfig.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlRequest: {}", request);
-                }
-
-                IAccountControlProcessor processor = new AccountControlProcessorImpl();
-                AccountControlResponse response = processor.searchAccounts(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                {
-                    if ((response.getUserList() != null) && (response.getUserList().size() != 0))
+                    if (DEBUG)
                     {
-                        List<UserAccount> userList = response.getUserList();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("List<UserAccount> {}", userList);
-                        }
-
-                        mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
-                        mView.addObject("page", page);
-                        mView.addObject("command", new UserAccount());
-                        mView.addObject("searchAccount", searchAccount);
-                        mView.addObject("searchResults", userList);
-                        mView.setViewName(this.searchUsersPage);
-                    }
-                    else
-                    {
-                        mView.addObject("command", new UserAccount());
-                        mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                        DEBUGGER.debug("List<UserAccount> {}", userList);
                     }
 
+                    mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
+                    mView.addObject("page", page);
+                    mView.addObject(Constants.COMMAND, new UserAccount());
+                    mView.addObject("searchAccount", searchAccount);
+                    mView.addObject("searchResults", userList);
                     mView.setViewName(this.searchUsersPage);
-                }
-                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    return mView;
                 }
                 else
                 {
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                    return mView;
+                    mView.addObject(Constants.COMMAND, new UserAccount());
+                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
                 }
+
+                mView.setViewName(this.searchUsersPage);
             }
-            catch (AccountControlException acx)
+            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
-                ERROR_RECORDER.error(acx.getMessage(), acx);
-
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
+            }
+            else
+            {
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                return mView;
             }
         }
-        else
+        catch (AccountControlException acx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            ERROR_RECORDER.error(acx.getMessage(), acx);
 
-            return mView;
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)
@@ -716,18 +708,16 @@ public class UserManagementController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            // mView.addObject("roles", availableRoles);
-            mView.addObject("command", new UserAccount());
-            mView.setViewName(this.createUserPage);
-        }
-        else
-        {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+        	mView.setViewName(this.appConfig.getUnavailablePage());
 
-            return mView;
+        	return mView;
         }
+
+        // mView.addObject("roles", availableRoles);
+        mView.addObject(Constants.COMMAND, new UserAccount());
+        mView.setViewName(this.createUserPage);
 
         if (DEBUG)
         {
@@ -798,90 +788,82 @@ public class UserManagementController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            try
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
+        }
+
+        try
+        {
+            // ensure authenticated access
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+            reqInfo.setHostName(hRequest.getRemoteHost());
+
+            if (DEBUG)
             {
-                // ensure authenticated access
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setHostName(hRequest.getRemoteHost());
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            }
 
-                if (DEBUG)
+            UserAccount searchAccount = new UserAccount();
+            searchAccount.setGuid(userGuid);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("UserAccount: {}", searchAccount);
+            }
+
+            AccountControlRequest request = new AccountControlRequest();
+            request.setHostInfo(reqInfo);
+            request.setUserAccount(searchAccount);
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setRequestor(userAccount);
+            request.setServiceId(this.serviceId);
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setApplicationName(this.appConfig.getApplicationName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlRequest: {}", request);
+            }
+
+            AccountControlResponse response = processor.loadUserAccount(request);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlResponse: {}", response);
+            }
+
+            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            {
+                if (response.getUserAccount() != null)
                 {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                }
-
-                UserAccount searchAccount = new UserAccount();
-                searchAccount.setGuid(userGuid);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserAccount: {}", searchAccount);
-                }
-
-                AccountControlRequest request = new AccountControlRequest();
-                request.setHostInfo(reqInfo);
-                request.setUserAccount(searchAccount);
-                request.setApplicationId(this.appConfig.getApplicationId());
-                request.setRequestor(userAccount);
-                request.setServiceId(this.serviceId);
-                request.setApplicationId(this.appConfig.getApplicationId());
-                request.setApplicationName(this.appConfig.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlRequest: {}", request);
-                }
-
-                AccountControlResponse response = processor.loadUserAccount(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                {
-                    if (response.getUserAccount() != null)
-                    {
-                        // mView.addObject("userRoles", Role.values());
-                        mView.addObject("userAccount", response.getUserAccount());
-                        mView.setViewName(this.viewUserPage);
-                    }
-                    else
-                    {
-                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageNoSearchResults());
-                        mView.setViewName(this.searchUsersPage);
-                    }
-                }
-                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    return mView;
+                    // mView.addObject("userRoles", Role.values());
+                    mView.addObject("userAccount", response.getUserAccount());
+                    mView.setViewName(this.viewUserPage);
                 }
                 else
                 {
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                    return mView;
+                    mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageNoSearchResults());
+                    mView.setViewName(this.searchUsersPage);
                 }
             }
-            catch (AccountControlException acx)
+            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
-                ERROR_RECORDER.error(acx.getMessage(), acx);
-
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
+            }
+            else
+            {
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                return mView;
             }
         }
-        else
+        catch (AccountControlException acx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            ERROR_RECORDER.error(acx.getMessage(), acx);
 
-            return mView;
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         return mView;
@@ -948,103 +930,95 @@ public class UserManagementController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            try
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
+        }
+
+        try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+            reqInfo.setHostName(hRequest.getRemoteHost());
+
+            if (DEBUG)
             {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setHostName(hRequest.getRemoteHost());
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            }
+
+            UserAccount searchAccount = new UserAccount();
+            searchAccount.setGuid(userGuid);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("UserAccount: {}", searchAccount);
+            }
+
+            AuditEntry entry = new AuditEntry();
+            entry.setUserAccount(searchAccount);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AuditEntry: {}", entry);
+            }
+
+            AuditRequest request = new AuditRequest();
+            request.setUserAccount(userAccount);
+            request.setAuditEntry(entry);
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setApplicationName(this.appConfig.getApplicationName());
+            request.setHostInfo(reqInfo);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AuditRequest: {}", request);
+            }
+
+            AuditResponse response = processor.getAuditEntries(request);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlResponse: {}", response);
+            }
+
+            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            {
+                List<AuditEntry> auditEntries = response.getAuditList();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                    DEBUGGER.debug("List<AuditEntry>: {}", auditEntries);
                 }
 
-                UserAccount searchAccount = new UserAccount();
-                searchAccount.setGuid(userGuid);
-
-                if (DEBUG)
+                if ((auditEntries != null) && (auditEntries.size() != 0))
                 {
-                    DEBUGGER.debug("UserAccount: {}", searchAccount);
-                }
-
-                AuditEntry entry = new AuditEntry();
-                entry.setUserAccount(searchAccount);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", entry);
-                }
-
-                AuditRequest request = new AuditRequest();
-                request.setUserAccount(userAccount);
-                request.setAuditEntry(entry);
-                request.setApplicationId(this.appConfig.getApplicationId());
-                request.setApplicationName(this.appConfig.getApplicationName());
-                request.setHostInfo(reqInfo);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", request);
-                }
-
-                AuditResponse response = processor.getAuditEntries(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                {
-                    List<AuditEntry> auditEntries = response.getAuditList();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("List<AuditEntry>: {}", auditEntries);
-                    }
-
-                    if ((auditEntries != null) && (auditEntries.size() != 0))
-                    {
-                        mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
-                        mView.addObject("page", 1);
-                        mView.addObject("auditEntries", auditEntries);
-                    }
-                    else
-                    {
-                        mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                    }
-
-                    mView.setViewName(this.viewAuditPage);
-                }
-                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    return mView;
+                    mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
+                    mView.addObject("page", 1);
+                    mView.addObject("auditEntries", auditEntries);
                 }
                 else
                 {
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                    return mView;
+                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
                 }
+
+                mView.setViewName(this.viewAuditPage);
             }
-            catch (AuditServiceException asx)
+            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
+            }
+            else
+            {
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                return mView;
             }
         }
-        else
+        catch (AuditServiceException asx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            ERROR_RECORDER.error(asx.getMessage(), asx);
 
-            return mView;
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         return mView;
@@ -1112,104 +1086,96 @@ public class UserManagementController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            try
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
+        }
+
+        try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+            reqInfo.setHostName(hRequest.getRemoteHost());
+
+            if (DEBUG)
             {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setHostName(hRequest.getRemoteHost());
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            }
+
+            UserAccount searchAccount = new UserAccount();
+            searchAccount.setGuid(userGuid);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("UserAccount: {}", searchAccount);
+            }
+
+            AuditEntry entry = new AuditEntry();
+            entry.setUserAccount(searchAccount);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AuditEntry: {}", entry);
+            }
+
+            AuditRequest request = new AuditRequest();
+            request.setUserAccount(userAccount);
+            request.setAuditEntry(entry);
+            request.setStartRow(page);
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setApplicationName(this.appConfig.getApplicationName());
+            request.setHostInfo(reqInfo);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AuditRequest: {}", request);
+            }
+
+            AuditResponse response = processor.getAuditEntries(request);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlResponse: {}", response);
+            }
+
+            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            {
+                List<AuditEntry> auditEntries = response.getAuditList();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                    DEBUGGER.debug("List<AuditEntry>: {}", auditEntries);
                 }
 
-                UserAccount searchAccount = new UserAccount();
-                searchAccount.setGuid(userGuid);
-
-                if (DEBUG)
+                if ((auditEntries != null) && (auditEntries.size() != 0))
                 {
-                    DEBUGGER.debug("UserAccount: {}", searchAccount);
-                }
-
-                AuditEntry entry = new AuditEntry();
-                entry.setUserAccount(searchAccount);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", entry);
-                }
-
-                AuditRequest request = new AuditRequest();
-                request.setUserAccount(userAccount);
-                request.setAuditEntry(entry);
-                request.setStartRow(page);
-                request.setApplicationId(this.appConfig.getApplicationId());
-                request.setApplicationName(this.appConfig.getApplicationName());
-                request.setHostInfo(reqInfo);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", request);
-                }
-
-                AuditResponse response = processor.getAuditEntries(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                {
-                    List<AuditEntry> auditEntries = response.getAuditList();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("List<AuditEntry>: {}", auditEntries);
-                    }
-
-                    if ((auditEntries != null) && (auditEntries.size() != 0))
-                    {
-                        mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
-                        mView.addObject("page", page);
-                        mView.addObject("auditEntries", auditEntries);
-                    }
-                    else
-                    {
-                        mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                    }
-
-                    mView.setViewName(this.viewAuditPage);
-                }
-                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    return mView;
+                    mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
+                    mView.addObject("page", page);
+                    mView.addObject("auditEntries", auditEntries);
                 }
                 else
                 {
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                    return mView;
+                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
                 }
+
+                mView.setViewName(this.viewAuditPage);
             }
-            catch (AuditServiceException asx)
+            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
+            }
+            else
+            {
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                return mView;
             }
         }
-        else
+        catch (AuditServiceException asx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            ERROR_RECORDER.error(asx.getMessage(), asx);
 
-            return mView;
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         return mView;
@@ -1276,81 +1242,73 @@ public class UserManagementController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            try
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
+        }
+
+        try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+            reqInfo.setHostName(hRequest.getRemoteHost());
+
+            if (DEBUG)
             {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setHostName(hRequest.getRemoteHost());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                }
-
-                UserAccount account = new UserAccount();
-                account.setGuid(userGuid);
-                account.setFailedCount(3);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserAccount: {}", account);
-                }
-
-                AccountControlRequest request = new AccountControlRequest();
-                request.setHostInfo(reqInfo);
-                request.setUserAccount(account);
-                request.setApplicationName(this.appConfig.getApplicationName());
-                request.setApplicationId(this.appConfig.getApplicationId());
-                request.setRequestor(userAccount);
-                request.setServiceId(this.serviceId);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlRequest: {}", request);
-                }
-
-                AccountControlResponse response = processor.modifyUserLockout(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                {
-                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountLockSuccess);
-                    mView.addObject("userAccount", response.getUserAccount());
-                    mView.setViewName(this.viewUserPage);
-                }
-                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    return mView;
-                }
-                else
-                {
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                    return mView;
-                }
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
-            catch (AccountControlException acx)
+
+            UserAccount account = new UserAccount();
+            account.setGuid(userGuid);
+            account.setFailedCount(3);
+
+            if (DEBUG)
             {
-                ERROR_RECORDER.error(acx.getMessage(), acx);
+                DEBUGGER.debug("UserAccount: {}", account);
+            }
 
+            AccountControlRequest request = new AccountControlRequest();
+            request.setHostInfo(reqInfo);
+            request.setUserAccount(account);
+            request.setApplicationName(this.appConfig.getApplicationName());
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setRequestor(userAccount);
+            request.setServiceId(this.serviceId);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlRequest: {}", request);
+            }
+
+            AccountControlResponse response = processor.modifyUserLockout(request);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlResponse: {}", response);
+            }
+
+            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            {
+                mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountLockSuccess);
+                mView.addObject("userAccount", response.getUserAccount());
+                mView.setViewName(this.viewUserPage);
+            }
+            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+            {
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
+            }
+            else
+            {
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                return mView;
             }
         }
-        else
+        catch (AccountControlException acx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            ERROR_RECORDER.error(acx.getMessage(), acx);
 
-            return mView;
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         return mView;
@@ -1417,81 +1375,73 @@ public class UserManagementController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            try
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
+        }
+
+        try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+            reqInfo.setHostName(hRequest.getRemoteHost());
+
+            if (DEBUG)
             {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setHostName(hRequest.getRemoteHost());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                }
-
-                UserAccount account = new UserAccount();
-                account.setGuid(userGuid);
-                account.setFailedCount(0);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserAccount: {}", account);
-                }
-
-                AccountControlRequest request = new AccountControlRequest();
-                request.setHostInfo(reqInfo);
-                request.setUserAccount(account);
-                request.setApplicationName(this.appConfig.getApplicationName());
-                request.setApplicationId(this.appConfig.getApplicationId());
-                request.setRequestor(userAccount);
-                request.setServiceId(this.serviceId);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlRequest: {}", request);
-                }
-
-                AccountControlResponse response = processor.modifyUserLockout(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                {
-                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountUnlockSuccess);
-                    mView.addObject("userAccount", response.getUserAccount());
-                    mView.setViewName(this.viewUserPage);
-                }
-                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    return mView;
-                }
-                else
-                {
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                    return mView;
-                }
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
-            catch (AccountControlException acx)
+
+            UserAccount account = new UserAccount();
+            account.setGuid(userGuid);
+            account.setFailedCount(0);
+
+            if (DEBUG)
             {
-                ERROR_RECORDER.error(acx.getMessage(), acx);
+                DEBUGGER.debug("UserAccount: {}", account);
+            }
 
+            AccountControlRequest request = new AccountControlRequest();
+            request.setHostInfo(reqInfo);
+            request.setUserAccount(account);
+            request.setApplicationName(this.appConfig.getApplicationName());
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setRequestor(userAccount);
+            request.setServiceId(this.serviceId);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlRequest: {}", request);
+            }
+
+            AccountControlResponse response = processor.modifyUserLockout(request);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlResponse: {}", response);
+            }
+
+            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            {
+                mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountUnlockSuccess);
+                mView.addObject("userAccount", response.getUserAccount());
+                mView.setViewName(this.viewUserPage);
+            }
+            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+            {
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
+            }
+            else
+            {
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                return mView;
             }
         }
-        else
+        catch (AccountControlException acx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            ERROR_RECORDER.error(acx.getMessage(), acx);
 
-            return mView;
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         return mView;
@@ -1558,82 +1508,74 @@ public class UserManagementController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            try
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
+        }
+
+        try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+            reqInfo.setHostName(hRequest.getRemoteHost());
+
+            if (DEBUG)
             {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setHostName(hRequest.getRemoteHost());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                }
-
-                UserAccount account = new UserAccount();
-                account.setGuid(userGuid);
-                account.setSuspended(true);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserAccount: {}", account);
-                }
-
-                AccountControlRequest request = new AccountControlRequest();
-                request.setHostInfo(reqInfo);
-                request.setUserAccount(account);
-                request.setApplicationName(this.appConfig.getApplicationName());
-                request.setApplicationId(this.appConfig.getApplicationId());
-                request.setRequestor(userAccount);
-                request.setServiceId(this.serviceId);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlRequest: {}", request);
-                }
-
-                AccountControlResponse response = processor.modifyUserSuspension(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                {
-                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountSuspendSuccess);
-                    // mView.addObject("userRoles", Role.values());
-                    mView.addObject("userAccount", response.getUserAccount());
-                    mView.setViewName(this.viewUserPage);
-                }
-                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    return mView;
-                }
-                else
-                {
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                    return mView;
-                }
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
-            catch (AccountControlException acx)
+
+            UserAccount account = new UserAccount();
+            account.setGuid(userGuid);
+            account.setSuspended(true);
+
+            if (DEBUG)
             {
-                ERROR_RECORDER.error(acx.getMessage(), acx);
+                DEBUGGER.debug("UserAccount: {}", account);
+            }
 
+            AccountControlRequest request = new AccountControlRequest();
+            request.setHostInfo(reqInfo);
+            request.setUserAccount(account);
+            request.setApplicationName(this.appConfig.getApplicationName());
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setRequestor(userAccount);
+            request.setServiceId(this.serviceId);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlRequest: {}", request);
+            }
+
+            AccountControlResponse response = processor.modifyUserSuspension(request);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlResponse: {}", response);
+            }
+
+            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            {
+                mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountSuspendSuccess);
+                // mView.addObject("userRoles", Role.values());
+                mView.addObject("userAccount", response.getUserAccount());
+                mView.setViewName(this.viewUserPage);
+            }
+            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+            {
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
+            }
+            else
+            {
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                return mView;
             }
         }
-        else
+        catch (AccountControlException acx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            ERROR_RECORDER.error(acx.getMessage(), acx);
 
-            return mView;
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         return mView;
@@ -1700,81 +1642,73 @@ public class UserManagementController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            try
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
+        }
+
+        try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+            reqInfo.setHostName(hRequest.getRemoteHost());
+
+            if (DEBUG)
             {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setHostName(hRequest.getRemoteHost());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                }
-
-                UserAccount account = new UserAccount();
-                account.setGuid(userGuid);
-                account.setSuspended(false);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserAccount: {}", account);
-                }
-
-                AccountControlRequest request = new AccountControlRequest();
-                request.setHostInfo(reqInfo);
-                request.setUserAccount(account);
-                request.setApplicationName(this.appConfig.getApplicationName());
-                request.setApplicationId(this.appConfig.getApplicationId());
-                request.setRequestor(userAccount);
-                request.setServiceId(this.serviceId);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlRequest: {}", request);
-                }
-
-                AccountControlResponse response = processor.modifyUserSuspension(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                {
-                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountUnsuspendSuccess);
-                    mView.addObject("userAccount", response.getUserAccount());
-                    mView.setViewName(this.viewUserPage);
-                }
-                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    return mView;
-                }
-                else
-                {
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                    return mView;
-                }
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
-            catch (AccountControlException acx)
+
+            UserAccount account = new UserAccount();
+            account.setGuid(userGuid);
+            account.setSuspended(false);
+
+            if (DEBUG)
             {
-                ERROR_RECORDER.error(acx.getMessage(), acx);
+                DEBUGGER.debug("UserAccount: {}", account);
+            }
 
+            AccountControlRequest request = new AccountControlRequest();
+            request.setHostInfo(reqInfo);
+            request.setUserAccount(account);
+            request.setApplicationName(this.appConfig.getApplicationName());
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setRequestor(userAccount);
+            request.setServiceId(this.serviceId);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlRequest: {}", request);
+            }
+
+            AccountControlResponse response = processor.modifyUserSuspension(request);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlResponse: {}", response);
+            }
+
+            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            {
+                mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountUnsuspendSuccess);
+                mView.addObject("userAccount", response.getUserAccount());
+                mView.setViewName(this.viewUserPage);
+            }
+            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+            {
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
+            }
+            else
+            {
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                return mView;
             }
         }
-        else
+        catch (AccountControlException acx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            ERROR_RECORDER.error(acx.getMessage(), acx);
 
-            return mView;
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)
@@ -1846,114 +1780,144 @@ public class UserManagementController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            try
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
+        }
+
+        try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+            reqInfo.setHostName(hRequest.getRemoteHost());
+
+            if (DEBUG)
             {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setHostName(hRequest.getRemoteHost());
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            }
+
+            // load the user account
+            UserAccount searchAccount = new UserAccount();
+            searchAccount.setGuid(userGuid);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("UserAccount: {}", searchAccount);
+            }
+
+            AccountControlRequest request = new AccountControlRequest();
+            request.setHostInfo(reqInfo);
+            request.setUserAccount(searchAccount);
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setRequestor(userAccount);
+            request.setServiceId(this.serviceId);
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setApplicationName(this.appConfig.getApplicationName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlRequest: {}", request);
+            }
+
+            AccountControlResponse response = processor.loadUserAccount(request);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlResponse: {}", response);
+            }
+
+            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            {
+                UserAccount account = response.getUserAccount();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                    DEBUGGER.debug("UserAccount: {}", account);
                 }
 
-                // load the user account
-                UserAccount searchAccount = new UserAccount();
-                searchAccount.setGuid(userGuid);
+                AccountControlRequest resetReq = new AccountControlRequest();
+                resetReq.setHostInfo(reqInfo);
+                resetReq.setUserAccount(account);
+                resetReq.setApplicationName(this.appConfig.getApplicationName());
+                resetReq.setApplicationId(this.appConfig.getApplicationId());
+                resetReq.setRequestor(userAccount);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("UserAccount: {}", searchAccount);
+                    DEBUGGER.debug("AccountResetRequest: {}", resetReq);
                 }
 
-                AccountControlRequest request = new AccountControlRequest();
-                request.setHostInfo(reqInfo);
-                request.setUserAccount(searchAccount);
-                request.setApplicationId(this.appConfig.getApplicationId());
-                request.setRequestor(userAccount);
-                request.setServiceId(this.serviceId);
-                request.setApplicationId(this.appConfig.getApplicationId());
-                request.setApplicationName(this.appConfig.getApplicationName());
+                AccountControlResponse resetRes = processor.modifyUserPassword(request);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("AccountControlRequest: {}", request);
+                    DEBUGGER.debug("AccountResetResponse: {}", resetRes);
                 }
 
-                AccountControlResponse response = processor.loadUserAccount(request);
-
-                if (DEBUG)
+                if (resetRes.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                 {
-                    DEBUGGER.debug("AccountControlResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                {
-                    UserAccount account = response.getUserAccount();
+                    StringBuilder targetURL = new StringBuilder()
+                        .append(hRequest.getScheme() + "://" + hRequest.getServerName())
+                        .append((hRequest.getServerPort() == 443) ? null : ":" + hRequest.getServerPort())
+                        .append(hRequest.getContextPath() + this.resetURL + resetRes.getResetId());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("UserAccount: {}", account);
+                        DEBUGGER.debug("targetURL: {}", targetURL);
                     }
 
-                    AccountControlRequest resetReq = new AccountControlRequest();
-                    resetReq.setHostInfo(reqInfo);
-                    resetReq.setUserAccount(account);
-                    resetReq.setApplicationName(this.appConfig.getApplicationName());
-                    resetReq.setApplicationId(this.appConfig.getApplicationId());
-                    resetReq.setRequestor(userAccount);
-
-                    if (DEBUG)
+                    try
                     {
-                        DEBUGGER.debug("AccountResetRequest: {}", resetReq);
-                    }
-
-                    AccountControlResponse resetRes = processor.modifyUserPassword(request);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountResetResponse: {}", resetRes);
-                    }
-
-                    if (resetRes.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                    {
-                        StringBuilder targetURL = new StringBuilder()
-                            .append(hRequest.getScheme() + "://" + hRequest.getServerName())
-                            .append((hRequest.getServerPort() == 443) ? null : ":" + hRequest.getServerPort())
-                            .append(hRequest.getContextPath() + this.resetURL + resetRes.getResetId());
+                        EmailMessage message = new EmailMessage();
+                        message.setIsAlert(false);
+                        message.setMessageSubject(this.forgotPasswordEmail.getSubject());
+                        message.setMessageTo(new ArrayList<String>(
+                                Arrays.asList(
+                                        String.format(this.forgotPasswordEmail.getTo()[0], account.getEmailAddr()))));
+                        message.setEmailAddr(new ArrayList<String>(
+                                Arrays.asList(
+                                        String.format(this.forgotPasswordEmail.getTo()[0], this.appConfig.getEmailAddress()))));
+                        message.setMessageBody(String.format(this.forgotPasswordEmail.getText(),
+                                account.getGivenName(),
+                                new Date(System.currentTimeMillis()),
+                                reqInfo.getHostName(),
+                                targetURL.toString(),
+                                this.secConfig.getSecurityConfig().getPasswordMinLength(),
+                                this.secConfig.getSecurityConfig().getPasswordMaxLength()));
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("targetURL: {}", targetURL);
+                            DEBUGGER.debug("EmailMessage: {}", message);
+                        }
+
+                        EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), message, true);
+                    }
+                    catch (MessagingException mx)
+                    {
+                        ERROR_RECORDER.error(mx.getMessage(), mx);
+
+                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
+                    }
+
+                    if (this.secConfig.getSecurityConfig().getSmsResetEnabled())
+                    {
+                        // send an sms code
+                        EmailMessage smsMessage = new EmailMessage();
+                        smsMessage.setIsAlert(true); // set this to alert so it shows as high priority
+                        smsMessage.setMessageBody(resetRes.getSmsCode());
+                        smsMessage.setMessageTo(new ArrayList<String>(Arrays.asList(account.getPagerNumber())));
+                        smsMessage.setEmailAddr(new ArrayList<String>(Arrays.asList(this.appConfig.getEmailAddress())));
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("EmailMessage: {}", smsMessage);
                         }
 
                         try
                         {
-                            EmailMessage message = new EmailMessage();
-                            message.setIsAlert(false);
-                            message.setMessageSubject(this.forgotPasswordEmail.getSubject());
-                            message.setMessageTo(new ArrayList<>(
-                                    Arrays.asList(
-                                            String.format(this.forgotPasswordEmail.getTo()[0], account.getEmailAddr()))));
-                            message.setEmailAddr(new ArrayList<>(
-                                    Arrays.asList(
-                                            String.format(this.forgotPasswordEmail.getTo()[0], this.appConfig.getEmailAddress()))));
-                            message.setMessageBody(String.format(this.forgotPasswordEmail.getText(),
-                                    account.getGivenName(),
-                                    new Date(System.currentTimeMillis()),
-                                    reqInfo.getHostName(),
-                                    targetURL.toString(),
-                                    this.secConfig.getSecurityConfig().getPasswordMinLength(),
-                                    this.secConfig.getSecurityConfig().getPasswordMaxLength()));
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("EmailMessage: {}", message);
-                            }
-
-                            EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), message, true);
+                            EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), smsMessage, true);
                         }
                         catch (MessagingException mx)
                         {
@@ -1961,79 +1925,37 @@ public class UserManagementController
 
                             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                         }
-
-                        if (this.secConfig.getSecurityConfig().getSmsResetEnabled())
-                        {
-                            // send an sms code
-                            EmailMessage smsMessage = new EmailMessage();
-                            smsMessage.setIsAlert(true); // set this to alert so it shows as high priority
-                            smsMessage.setMessageBody(resetRes.getSmsCode());
-                            smsMessage.setMessageTo(new ArrayList<>(Arrays.asList(account.getPagerNumber())));
-                            smsMessage.setEmailAddr(new ArrayList<>(Arrays.asList(this.appConfig.getEmailAddress())));
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("EmailMessage: {}", smsMessage);
-                            }
-
-                            try
-                            {
-                                EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), smsMessage, true);
-                            }
-                            catch (MessagingException mx)
-                            {
-                                ERROR_RECORDER.error(mx.getMessage(), mx);
-
-                                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
-                            }
-                        }
-
-                        mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountResetSuccess);
-                        mView.addObject("userAccount", response.getUserAccount());
-                        mView.setViewName(this.viewUserPage);
                     }
-                    else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
-                    {
-                        mView.setViewName(this.appConfig.getUnauthorizedPage());
 
-                        return mView;
-                    }
-                    else
-                    {
-                        // some failure occurred
-                        mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                        return mView;
-                    }
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountResetSuccess);
+                    mView.addObject("userAccount", response.getUserAccount());
+                    mView.setViewName(this.viewUserPage);
                 }
                 else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
                 {
                     mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    return mView;
                 }
                 else
                 {
                     // some failure occurred
                     mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                    return mView;
                 }
             }
-            catch (AccountControlException acx)
+            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
-                ERROR_RECORDER.error(acx.getMessage(), acx);
-
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
+            }
+            else
+            {
+                // some failure occurred
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                return mView;
             }
         }
-        else
+        catch (AccountControlException acx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            ERROR_RECORDER.error(acx.getMessage(), acx);
 
-            return mView;
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)
@@ -2106,81 +2028,73 @@ public class UserManagementController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            try
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
+        }
+
+        try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+            reqInfo.setHostName(hRequest.getRemoteHost());
+
+            if (DEBUG)
             {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setHostName(hRequest.getRemoteHost());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                }
-
-                UserAccount account = new UserAccount();
-                account.setGuid(userGuid);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserAccount: {}", account);
-                }
-
-                AccountControlRequest request = new AccountControlRequest();
-                request.setHostInfo(reqInfo);
-                request.setUserAccount(account);
-                request.setApplicationId(this.appConfig.getApplicationId());
-                request.setRequestor(userAccount);
-                request.setServiceId(this.serviceId);
-                request.setApplicationId(this.appConfig.getApplicationId());
-                request.setApplicationName(this.appConfig.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlRequest: {}", request);
-                }
-
-                AccountControlResponse response = processor.modifyUserRole(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                {
-                    mView.addObject("userAccount", response.getUserAccount());
-                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageRoleChangeSuccess);
-                    mView.setViewName(this.viewUserPage);
-                }
-                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    return mView;
-                }
-                else
-                {
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                    return mView;
-                }
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
-            catch (AccountControlException acx)
+
+            UserAccount account = new UserAccount();
+            account.setGuid(userGuid);
+
+            if (DEBUG)
             {
-                ERROR_RECORDER.error(acx.getMessage(), acx);
+                DEBUGGER.debug("UserAccount: {}", account);
+            }
 
+            AccountControlRequest request = new AccountControlRequest();
+            request.setHostInfo(reqInfo);
+            request.setUserAccount(account);
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setRequestor(userAccount);
+            request.setServiceId(this.serviceId);
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setApplicationName(this.appConfig.getApplicationName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlRequest: {}", request);
+            }
+
+            AccountControlResponse response = processor.modifyUserRole(request);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlResponse: {}", response);
+            }
+
+            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            {
+                mView.addObject("userAccount", response.getUserAccount());
+                mView.addObject(Constants.RESPONSE_MESSAGE, this.messageRoleChangeSuccess);
+                mView.setViewName(this.viewUserPage);
+            }
+            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+            {
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
+            }
+            else
+            {
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                return mView;
             }
         }
-        else
+        catch (AccountControlException acx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            ERROR_RECORDER.error(acx.getMessage(), acx);
 
-            return mView;
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         return mView;
@@ -2247,130 +2161,122 @@ public class UserManagementController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            try
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
+        }
+
+        try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+            reqInfo.setHostName(hRequest.getRemoteHost());
+
+            if (DEBUG)
             {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setHostName(hRequest.getRemoteHost());
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            }
 
-                if (DEBUG)
+            String searchType = null;
+
+            UserAccount searchAccount = new UserAccount();
+
+            if (StringUtils.isNotEmpty(request.getGuid()))
+            {
+                searchType = "guid";
+                searchAccount.setGuid(request.getGuid());
+            }
+
+            if (StringUtils.isNotEmpty(request.getDisplayName()))
+            {
+                searchType = "displayName";
+                searchAccount.setDisplayName(request.getDisplayName());
+            }
+
+            if (StringUtils.isNotEmpty(request.getEmailAddr()))
+            {
+                searchType = "emailAddr";
+                searchAccount.setEmailAddr(request.getEmailAddr());
+            }
+
+            if (StringUtils.isNotEmpty(request.getUsername()))
+            {
+                searchType = "username";
+                searchAccount.setUsername(request.getUsername());
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchType: {}", searchType);
+                DEBUGGER.debug("UserAccount: {}", searchAccount);
+            }
+
+            // search accounts
+            AccountControlRequest searchRequest = new AccountControlRequest();
+            searchRequest.setHostInfo(reqInfo);
+            searchRequest.setUserAccount(searchAccount);
+            searchRequest.setApplicationId(this.appConfig.getApplicationName());
+            searchRequest.setRequestor(userAccount);
+            searchRequest.setServiceId(this.serviceId);
+            searchRequest.setApplicationId(this.appConfig.getApplicationId());
+            searchRequest.setApplicationName(this.appConfig.getApplicationName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
+            }
+
+            IAccountControlProcessor processor = new AccountControlProcessorImpl();
+            AccountControlResponse response = processor.searchAccounts(searchRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlResponse: {}", response);
+            }
+
+            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            {
+                if ((response.getUserList() != null) && (response.getUserList().size() != 0))
                 {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                }
+                    List<UserAccount> userList = response.getUserList();
 
-                String searchType = null;
-
-                UserAccount searchAccount = new UserAccount();
-
-                if (StringUtils.isNotEmpty(request.getGuid()))
-                {
-                    searchType = "guid";
-                    searchAccount.setGuid(request.getGuid());
-                }
-
-                if (StringUtils.isNotEmpty(request.getDisplayName()))
-                {
-                    searchType = "displayName";
-                    searchAccount.setDisplayName(request.getDisplayName());
-                }
-
-                if (StringUtils.isNotEmpty(request.getEmailAddr()))
-                {
-                    searchType = "emailAddr";
-                    searchAccount.setEmailAddr(request.getEmailAddr());
-                }
-
-                if (StringUtils.isNotEmpty(request.getUsername()))
-                {
-                    searchType = "username";
-                    searchAccount.setUsername(request.getUsername());
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("searchType: {}", searchType);
-                    DEBUGGER.debug("UserAccount: {}", searchAccount);
-                }
-
-                // search accounts
-                AccountControlRequest searchRequest = new AccountControlRequest();
-                searchRequest.setHostInfo(reqInfo);
-                searchRequest.setUserAccount(searchAccount);
-                searchRequest.setApplicationId(this.appConfig.getApplicationName());
-                searchRequest.setRequestor(userAccount);
-                searchRequest.setServiceId(this.serviceId);
-                searchRequest.setApplicationId(this.appConfig.getApplicationId());
-                searchRequest.setApplicationName(this.appConfig.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
-                }
-
-                IAccountControlProcessor processor = new AccountControlProcessorImpl();
-                AccountControlResponse response = processor.searchAccounts(searchRequest);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                {
-                    if ((response.getUserList() != null) && (response.getUserList().size() != 0))
+                    if (DEBUG)
                     {
-                        List<UserAccount> userList = response.getUserList();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("List<UserAccount> {}", userList);
-                        }
-
-                        mView.addObject("searchAccount", searchAccount);
-                        mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
-                        mView.addObject("page", 1);
-                        mView.addObject("searchType", searchType);
-                        mView.addObject("command", new UserAccount());
-                        mView.addObject("searchResults", userList);
-                        mView.setViewName(this.searchUsersPage);
-                    }
-                    else
-                    {
-                        mView.addObject("command", new UserAccount());
-                        mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                        DEBUGGER.debug("List<UserAccount> {}", userList);
                     }
 
+                    mView.addObject("searchAccount", searchAccount);
+                    mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
+                    mView.addObject("page", 1);
+                    mView.addObject("searchType", searchType);
+                    mView.addObject(Constants.COMMAND, new UserAccount());
+                    mView.addObject("searchResults", userList);
                     mView.setViewName(this.searchUsersPage);
-                }
-                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    return mView;
                 }
                 else
                 {
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                    return mView;
+                    mView.addObject(Constants.COMMAND, new UserAccount());
+                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
                 }
+
+                mView.setViewName(this.searchUsersPage);
             }
-            catch (AccountControlException acx)
+            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
-                ERROR_RECORDER.error(acx.getMessage(), acx);
-
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
+            }
+            else
+            {
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                return mView;
             }
         }
-        else
+        catch (AccountControlException acx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            ERROR_RECORDER.error(acx.getMessage(), acx);
 
-            return mView;
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)
@@ -2442,151 +2348,184 @@ public class UserManagementController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            this.validator.validate(user, bindResult);
+        	mView.setViewName(this.appConfig.getUnavailablePage());
 
-            if (bindResult.hasErrors())
+        	return mView;
+        }
+
+        this.validator.validate(user, bindResult);
+
+        if (bindResult.hasErrors())
+        {
+        	ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
+
+        	mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+        	mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
+            mView.addObject(Constants.COMMAND, user);
+            mView.setViewName(this.createUserPage);
+        }
+
+        try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+            reqInfo.setHostName(hRequest.getRemoteHost());
+
+            if (DEBUG)
             {
-                mView.addObject("errors", bindResult.getAllErrors());
-                mView.addObject("command", user);
-                mView.setViewName(this.createUserPage);
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            try
+            UserAccount newUser = new UserAccount();
+            newUser.setGuid(user.getGuid());
+            newUser.setSurname(user.getSurname());
+            newUser.setFailedCount(user.getFailedCount());
+            newUser.setOlrLocked(false);
+            newUser.setOlrSetup(true);
+            newUser.setSuspended(user.isSuspended());
+            newUser.setDisplayName(user.getGivenName() + " " + user.getSurname());
+            newUser.setEmailAddr(user.getEmailAddr());
+            newUser.setGivenName(user.getGivenName());
+            newUser.setUsername(user.getUsername());
+
+            if (DEBUG)
             {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setHostName(hRequest.getRemoteHost());
+                DEBUGGER.debug("UserAccount: {}", newUser);
+            }
+
+            AuthenticationData security = new AuthenticationData();
+            security.setPassword(RandomStringUtils.randomAlphanumeric(this.secConfig.getSecurityConfig().getPasswordMaxLength()));
+            security.setUserSalt(RandomStringUtils.randomAlphanumeric(this.secConfig.getSecurityConfig().getSaltLength()));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AuthenticationData: {}", security);
+            }
+
+            // search accounts
+            AccountControlRequest request = new AccountControlRequest();
+            request.setHostInfo(reqInfo);
+            request.setUserAccount(newUser);
+            request.setUserSecurity(security);
+            request.setApplicationId(this.appConfig.getApplicationName());
+            request.setRequestor(userAccount);
+            request.setServiceId(this.serviceId);
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setApplicationName(this.appConfig.getApplicationName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlRequest: {}", request);
+            }
+
+            AccountControlResponse response = processor.createNewUser(request);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlResponse: {}", response);
+            }
+
+            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            {
+                // account created
+                AccountControlRequest resetReq = new AccountControlRequest();
+                resetReq.setHostInfo(reqInfo);
+                resetReq.setUserAccount(newUser);
+                resetReq.setUserSecurity(security);
+                resetReq.setApplicationId(this.appConfig.getApplicationName());
+                resetReq.setRequestor(userAccount);
+                resetReq.setServiceId(this.serviceId);
+                resetReq.setApplicationId(this.appConfig.getApplicationId());
+                resetReq.setApplicationName(this.appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                    DEBUGGER.debug("AccountControlRequest: {}", resetReq);
                 }
 
-                UserAccount newUser = new UserAccount();
-                newUser.setGuid(user.getGuid());
-                newUser.setSurname(user.getSurname());
-                newUser.setFailedCount(user.getFailedCount());
-                newUser.setOlrLocked(false);
-                newUser.setOlrSetup(true);
-                newUser.setSuspended(user.isSuspended());
-                newUser.setDisplayName(user.getGivenName() + " " + user.getSurname());
-                newUser.setEmailAddr(user.getEmailAddr());
-                newUser.setGivenName(user.getGivenName());
-                newUser.setUsername(user.getUsername());
+                AccountControlResponse resetRes = processor.modifyUserPassword(resetReq);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("UserAccount: {}", newUser);
+                    DEBUGGER.debug("AccountControlResponse: {}", resetRes);
                 }
 
-                AuthenticationData security = new AuthenticationData();
-                security.setPassword(RandomStringUtils.randomAlphanumeric(this.secConfig.getSecurityConfig().getPasswordMaxLength()));
-                security.setUserSalt(RandomStringUtils.randomAlphanumeric(this.secConfig.getSecurityConfig().getSaltLength()));
-
-                if (DEBUG)
+                if (resetRes.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                 {
-                    DEBUGGER.debug("AuthenticationData: {}", security);
-                }
-
-                // search accounts
-                AccountControlRequest request = new AccountControlRequest();
-                request.setHostInfo(reqInfo);
-                request.setUserAccount(newUser);
-                request.setUserSecurity(security);
-                request.setApplicationId(this.appConfig.getApplicationName());
-                request.setRequestor(userAccount);
-                request.setServiceId(this.serviceId);
-                request.setApplicationId(this.appConfig.getApplicationId());
-                request.setApplicationName(this.appConfig.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlRequest: {}", request);
-                }
-
-                AccountControlResponse response = processor.createNewUser(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                {
-                    // account created
-                    AccountControlRequest resetReq = new AccountControlRequest();
-                    resetReq.setHostInfo(reqInfo);
-                    resetReq.setUserAccount(newUser);
-                    resetReq.setUserSecurity(security);
-                    resetReq.setApplicationId(this.appConfig.getApplicationName());
-                    resetReq.setRequestor(userAccount);
-                    resetReq.setServiceId(this.serviceId);
-                    resetReq.setApplicationId(this.appConfig.getApplicationId());
-                    resetReq.setApplicationName(this.appConfig.getApplicationName());
+                    // good, send email
+                    UserAccount responseAccount = resetRes.getUserAccount();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("AccountControlRequest: {}", resetReq);
+                        DEBUGGER.debug("UserAccount: {}", responseAccount);
                     }
 
-                    AccountControlResponse resetRes = processor.modifyUserPassword(resetReq);
+                    String emailId = RandomStringUtils.randomAlphanumeric(16);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("AccountControlResponse: {}", resetRes);
+                        DEBUGGER.debug("Message ID: {}", emailId);
                     }
 
-                    if (resetRes.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                    StringBuilder targetURL = new StringBuilder()
+                        .append(hRequest.getScheme() + "://" + hRequest.getServerName())
+                        .append((hRequest.getServerPort() == 443) ? null : ":" + hRequest.getServerPort())
+                        .append(hRequest.getContextPath() + this.resetURL + resetRes.getResetId());
+
+                    if (DEBUG)
                     {
-                        // good, send email
-                        UserAccount responseAccount = resetRes.getUserAccount();
+                        DEBUGGER.debug("targetURL: {}", targetURL);
+                    }
+                        
+                    try
+                    {
+                        EmailMessage message = new EmailMessage();
+                        message.setIsAlert(false);
+                        message.setMessageSubject(this.accountCreatedEmail.getSubject());
+                        message.setMessageTo(new ArrayList<String>(
+                                Arrays.asList(
+                                        String.format(this.accountCreatedEmail.getTo()[0], responseAccount.getEmailAddr()))));
+                        message.setEmailAddr(new ArrayList<String>(
+                                Arrays.asList(
+                                        String.format(this.accountCreatedEmail.getTo()[0], this.appConfig.getEmailAddress()))));
+                        message.setMessageBody(String.format(this.accountCreatedEmail.getText(),
+                                this.appConfig.getApplicationName(),
+                                responseAccount.getUsername(),
+                                targetURL.toString()));
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("UserAccount: {}", responseAccount);
+                            DEBUGGER.debug("EmailMessage: {}", message);
                         }
 
-                        String emailId = RandomStringUtils.randomAlphanumeric(16);
+                        EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), message, true);
+                    }
+                    catch (MessagingException mx)
+                    {
+                        ERROR_RECORDER.error(mx.getMessage(), mx);
+
+                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
+                    }
+
+                    if (this.secConfig.getSecurityConfig().getSmsResetEnabled())
+                    {
+                        // send an sms code
+                        EmailMessage smsMessage = new EmailMessage();
+                        smsMessage.setIsAlert(true); // set this to alert so it shows as high priority
+                        smsMessage.setMessageBody(resetRes.getSmsCode());
+                        smsMessage.setMessageTo(new ArrayList<String>(Arrays.asList(responseAccount.getPagerNumber())));
+                        smsMessage.setEmailAddr(new ArrayList<String>(Arrays.asList(this.appConfig.getEmailAddress())));
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("Message ID: {}", emailId);
+                            DEBUGGER.debug("EmailMessage: {}", smsMessage);
                         }
 
-                        StringBuilder targetURL = new StringBuilder()
-                            .append(hRequest.getScheme() + "://" + hRequest.getServerName())
-                            .append((hRequest.getServerPort() == 443) ? null : ":" + hRequest.getServerPort())
-                            .append(hRequest.getContextPath() + this.resetURL + resetRes.getResetId());
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("targetURL: {}", targetURL);
-                        }
-                            
                         try
                         {
-                            EmailMessage message = new EmailMessage();
-                            message.setIsAlert(false);
-                            message.setMessageSubject(this.accountCreatedEmail.getSubject());
-                            message.setMessageTo(new ArrayList<>(
-                                    Arrays.asList(
-                                            String.format(this.accountCreatedEmail.getTo()[0], responseAccount.getEmailAddr()))));
-                            message.setEmailAddr(new ArrayList<>(
-                                    Arrays.asList(
-                                            String.format(this.accountCreatedEmail.getTo()[0], this.appConfig.getEmailAddress()))));
-                            message.setMessageBody(String.format(this.accountCreatedEmail.getText(),
-                                    this.appConfig.getApplicationName(),
-                                    responseAccount.getUsername(),
-                                    targetURL.toString()));
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("EmailMessage: {}", message);
-                            }
-
-                            EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), message, true);
+                            EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), smsMessage, true);
                         }
                         catch (MessagingException mx)
                         {
@@ -2594,71 +2533,33 @@ public class UserManagementController
 
                             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                         }
-
-                        if (this.secConfig.getSecurityConfig().getSmsResetEnabled())
-                        {
-                            // send an sms code
-                            EmailMessage smsMessage = new EmailMessage();
-                            smsMessage.setIsAlert(true); // set this to alert so it shows as high priority
-                            smsMessage.setMessageBody(resetRes.getSmsCode());
-                            smsMessage.setMessageTo(new ArrayList<>(Arrays.asList(responseAccount.getPagerNumber())));
-                            smsMessage.setEmailAddr(new ArrayList<>(Arrays.asList(this.appConfig.getEmailAddress())));
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("EmailMessage: {}", smsMessage);
-                            }
-
-                            try
-                            {
-                                EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), smsMessage, true);
-                            }
-                            catch (MessagingException mx)
-                            {
-                                ERROR_RECORDER.error(mx.getMessage(), mx);
-
-                                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
-                            }
-                        }
-
-                        mView = new ModelAndView(new RedirectView());
-                        mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAddUserSuccess);
-                        mView.setViewName(UserManagementController.ADD_USER_REDIRECT);
                     }
-                    else
-                    {
-                        // some failure occurred
-                        mView.addObject(Constants.ERROR_RESPONSE, this.messageAddUserFailed);
-                        mView.setViewName(this.appConfig.getErrorResponsePage());
-                    }
-                }
-                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
 
-                    return mView;
+                    mView = new ModelAndView(new RedirectView());
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAddUserSuccess);
+                    mView.setViewName(UserManagementController.ADD_USER_REDIRECT);
                 }
                 else
                 {
+                    // some failure occurred
+                    mView.addObject(Constants.ERROR_RESPONSE, this.messageAddUserFailed);
                     mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                    return mView;
                 }
             }
-            catch (AccountControlException acx)
+            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
-                ERROR_RECORDER.error(acx.getMessage(), acx);
-
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
+            }
+            else
+            {
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                return mView;
             }
         }
-        else
+        catch (AccountControlException acx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            ERROR_RECORDER.error(acx.getMessage(), acx);
 
-            return mView;
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)

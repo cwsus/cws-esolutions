@@ -41,7 +41,6 @@ public class AccessControlServiceImpl implements IAccessControlService
     /**
      * @see com.cws.esolutions.security.services.interfaces.IAccessControlService#isUserAuthorized(final AccessControlServiceRequest request) throws AccessControlServiceException
      */
-    @Override
     public AccessControlServiceResponse isUserAuthorized(final AccessControlServiceRequest request) throws AccessControlServiceException
     {
         final String methodName = IAccessControlService.CNAME + "#isUserAuthorized(final AccessControlServiceRequest request) throws AccessControlServiceException";

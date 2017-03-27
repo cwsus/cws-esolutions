@@ -58,8 +58,7 @@ import com.cws.esolutions.agent.config.xml.ConfigurationData;
  * into the asset management database to obtain, modify and remove
  * application information.
  *
- * @author khuntly
- * @version 1.0
+ * @see org.apache.commons.daemon.Daemon
  */
 public class AgentDaemon implements Daemon
 {
@@ -130,7 +129,6 @@ public class AgentDaemon implements Daemon
         }
     }
 
-    @Override
     public void init(final DaemonContext dContext) throws DaemonInitException
     {
         final String methodName = AgentDaemon.CNAME + "#init(final DaemonContext dContext) throws DaemonInitException";
@@ -207,7 +205,6 @@ public class AgentDaemon implements Daemon
         }
     }
 
-    @Override
     public void start()
     {
         final String methodName = AgentDaemon.CNAME + "#start()";
@@ -293,7 +290,6 @@ public class AgentDaemon implements Daemon
         }
     }
 
-    @Override
     public void stop()
     {
         final String methodName = AgentDaemon.CNAME + "#stop()";
@@ -339,7 +335,6 @@ public class AgentDaemon implements Daemon
         destroy();
     }
 
-    @Override
     public void destroy()
     {
         final String methodName = AgentDaemon.CNAME + "#destroy()";

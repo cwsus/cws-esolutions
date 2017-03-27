@@ -402,7 +402,7 @@ public class CommonController
         }
 
         mView.addObject("serviceEmail", this.coreConfig.getAppConfig().getEmailAliasId());
-        mView.addObject("command", new EmailMessage());
+        mView.addObject(Constants.COMMAND, new EmailMessage());
         mView.setViewName(this.appConfig.getContactAdminsPage());
 
         return mView;
@@ -425,7 +425,7 @@ public class CommonController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
-        final EmailMessageValidator messageValidator = this.appConfig.getMessageValidator();
+        final EmailMessageValidator validator = this.appConfig.getMessageValidator();
         final String emailId = RandomStringUtils.randomAlphanumeric(16);
 
         if (DEBUG)
@@ -433,7 +433,7 @@ public class CommonController
             DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
             DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("EmailMessageValidator: {}", messageValidator);
+            DEBUGGER.debug("EmailMessageValidator: {}", validator);
             DEBUGGER.debug("emailId: {}", emailId);
 
             DEBUGGER.debug("Dumping session content:");
@@ -470,12 +470,16 @@ public class CommonController
             }
         }
 
-        messageValidator.validate(message, bindResult);
+        validator.validate(message, bindResult);
 
         if (bindResult.hasErrors())
         {
-            mView.addObject("errors", bindResult.getAllErrors());
-            mView.addObject("command", message);
+            // validation failed
+            ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
+
+            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+            mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
+            mView.addObject(Constants.COMMAND, message);
             mView.setViewName(this.appConfig.getContactAdminsPage());
 
             return mView;
@@ -488,8 +492,8 @@ public class CommonController
             EmailMessage autoResponse = new EmailMessage();
             autoResponse.setIsAlert(false);
             autoResponse.setMessageSubject(this.contactResponseEmail.getSubject());
-            autoResponse.setMessageTo(new ArrayList<>(Arrays.asList(String.format(this.contactResponseEmail.getTo()[0], message.getEmailAddr().get(0)))));
-            autoResponse.setEmailAddr(new ArrayList<>(Arrays.asList(String.format(this.contactResponseEmail.getFrom()))));
+            autoResponse.setMessageTo(new ArrayList<String>(Arrays.asList(String.format(this.contactResponseEmail.getTo()[0], message.getEmailAddr().get(0)))));
+            autoResponse.setEmailAddr(new ArrayList<String>(Arrays.asList(String.format(this.contactResponseEmail.getFrom()))));
             autoResponse.setMessageBody(String.format(
                 this.contactResponseEmail.getText(),
                 message.getEmailAddr(),

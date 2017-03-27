@@ -65,14 +65,14 @@ public class ServiceDataDAOImplTest
 
     @Test public void addServiceAsDatacenterAsPlatform()
     {
-        List<String> servers = new ArrayList<>(
+        List<String> servers = new ArrayList<String>(
                 Arrays.asList(
                         "eb98ef5a-5fc0-44b3-a01b-4bdb382aa716",
                         "2a515fa2-d1a8-4817-91b0-6a0547fea48b",
                         "250892d5-03fb-436c-8125-3d9d30de8f68",
                         "40d4ba5e-ed50-4a83-a6a3-fd7d32631a26"));
 
-        List<String> serviceData = new ArrayList<>(
+        List<String> serviceData = new ArrayList<String>(
                 Arrays.asList(
                         pGuid, // guid
                         ServiceType.PLATFORM.name(), // serviceType
@@ -95,7 +95,7 @@ public class ServiceDataDAOImplTest
 
     @Test public void addServiceAsDatacenter()
     {
-        List<String> serviceData = new ArrayList<>(
+        List<String> serviceData = new ArrayList<String>(
                 Arrays.asList(
                         dGuid, // guid
                         ServiceType.DATACENTER.name(), // serviceType
@@ -118,14 +118,14 @@ public class ServiceDataDAOImplTest
 
     @Test public void updatePlatformData()
     {
-        List<String> servers = new ArrayList<>(
+        List<String> servers = new ArrayList<String>(
                 Arrays.asList(
                         "eb98ef5a-5fc0-44b3-a01b-4bdb382aa716",
                         "2a515fa2-d1a8-4817-91b0-6a0547fea48b",
                         "250892d5-03fb-436c-8125-3d9d30de8f68",
                         "40d4ba5e-ed50-4a83-a6a3-fd7d32631a26"));
 
-        List<String> serviceData = new ArrayList<>(
+        List<String> serviceData = new ArrayList<String>(
                 Arrays.asList(
                         pGuid, // guid
                         ServiceType.PLATFORM.name(), // serviceType
@@ -148,7 +148,7 @@ public class ServiceDataDAOImplTest
 
     @Test public void updateDatacenterData()
     {
-        List<String> serviceData = new ArrayList<>(
+        List<String> serviceData = new ArrayList<String>(
                 Arrays.asList(
                         dGuid, // guid
                         ServiceType.DATACENTER.name(), // serviceType

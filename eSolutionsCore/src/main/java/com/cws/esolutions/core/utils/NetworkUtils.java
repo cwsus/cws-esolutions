@@ -148,7 +148,7 @@ public final class NetworkUtils
 
         try
         {
-            Hashtable<String, String> sshProperties = new Hashtable<>();
+            Hashtable<String, String> sshProperties = new Hashtable<String, String>();
             sshProperties.put("StrictHostKeyChecking", "no");
 
             if (DEBUG)
@@ -335,7 +335,7 @@ public final class NetworkUtils
 
         try
         {
-            Hashtable<String, String> sshProperties = new Hashtable<>();
+            Hashtable<String, String> sshProperties = new Hashtable<String, String>();
             sshProperties.put("StrictHostKeyChecking", "yes");
 
             if (DEBUG)
@@ -784,7 +784,7 @@ public final class NetworkUtils
 
                     if (proxyConfig.isProxyAuthRequired())
                     {
-                        List<String> authList = new ArrayList<>();
+                        List<String> authList = new ArrayList<String>();
                         authList.add(AuthPolicy.BASIC);
                         authList.add(AuthPolicy.DIGEST);
                         authList.add(AuthPolicy.NTLM);

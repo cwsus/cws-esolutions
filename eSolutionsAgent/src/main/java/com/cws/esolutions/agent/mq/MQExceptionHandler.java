@@ -45,7 +45,6 @@ public class MQExceptionHandler implements ExceptionListener
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(AgentConstants.ERROR_LOGGER + CNAME);
 
-    @Override
     public void onException(final JMSException exception)
     {
         final String methodName = MQExceptionHandler.CNAME + "#onException(final JMSException exception)";

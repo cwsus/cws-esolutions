@@ -60,7 +60,6 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
     /**
      * @see com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor#runNetstatCheck(com.cws.esolutions.core.processors.dto.SystemCheckRequest)
      */
-    @Override
     public SystemCheckResponse runNetstatCheck(final SystemCheckRequest request) throws SystemCheckException
     {
         final String methodName = ISystemCheckProcessor.CNAME + "#runNetstatCheck(final SystemCheckRequest request) throws SystemCheckException";
@@ -161,7 +160,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
             }
 
             String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(),
-                    new ArrayList<>(
+                    new ArrayList<String>(
                             Arrays.asList(
                                     agentConfig.getUsername(),
                                     agentConfig.getPassword(),
@@ -178,7 +177,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
             if (StringUtils.isNotEmpty(correlator))
             {
                 agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
-                        new ArrayList<>(
+                        new ArrayList<String>(
                                 Arrays.asList(
                                         agentConfig.getUsername(),
                                         agentConfig.getPassword(),
@@ -267,7 +266,6 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
     /**
      * @see com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor#runTelnetCheck(com.cws.esolutions.core.processors.dto.SystemCheckRequest)
      */
-    @Override
     public SystemCheckResponse runTelnetCheck(final SystemCheckRequest request) throws SystemCheckException
     {
         final String methodName = ISystemCheckProcessor.CNAME + "#runTelnetCheck(final SystemCheckRequest request) throws SystemCheckException";
@@ -369,7 +367,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
             }
 
             String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(),
-                    new ArrayList<>(
+                    new ArrayList<String>(
                             Arrays.asList(
                                     agentConfig.getUsername(),
                                     agentConfig.getPassword(),
@@ -386,7 +384,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
             if (StringUtils.isNotEmpty(correlator))
             {
                 agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
-                        new ArrayList<>(
+                        new ArrayList<String>(
                                 Arrays.asList(
                                         agentConfig.getUsername(),
                                         agentConfig.getPassword(),
@@ -475,7 +473,6 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
     /**
      * @see com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor#runRemoteDateCheck(com.cws.esolutions.core.processors.dto.SystemCheckRequest)
      */
-    @Override
     public SystemCheckResponse runRemoteDateCheck(final SystemCheckRequest request) throws SystemCheckException
     {
         final String methodName = ISystemCheckProcessor.CNAME + "#runRemoteDateCheck(final SystemCheckRequest request) throws SystemCheckException";
@@ -576,7 +573,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
             }
 
             String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(),
-                    new ArrayList<>(
+                    new ArrayList<String>(
                             Arrays.asList(
                                     agentConfig.getUsername(),
                                     agentConfig.getPassword(),
@@ -593,7 +590,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
             if (StringUtils.isNotEmpty(correlator))
             {
                 agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
-                        new ArrayList<>(
+                        new ArrayList<String>(
                                 Arrays.asList(
                                         agentConfig.getUsername(),
                                         agentConfig.getPassword(),
@@ -682,7 +679,6 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
     /**
      * @see com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor#runProcessListCheck(com.cws.esolutions.core.processors.dto.SystemCheckRequest)
      */
-    @Override
     public SystemCheckResponse runProcessListCheck(final SystemCheckRequest request) throws SystemCheckException
     {
         final String methodName = ISystemCheckProcessor.CNAME + "#runProcessListCheck(final SystemCheckRequest request) throws SystemCheckException";
@@ -782,7 +778,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
             }
 
             String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(),
-                    new ArrayList<>(
+                    new ArrayList<String>(
                             Arrays.asList(
                                     agentConfig.getUsername(),
                                     agentConfig.getPassword(),
@@ -799,7 +795,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
             if (StringUtils.isNotEmpty(correlator))
             {
                 agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
-                        new ArrayList<>(
+                        new ArrayList<String>(
                                 Arrays.asList(
                                         agentConfig.getUsername(),
                                         agentConfig.getPassword(),

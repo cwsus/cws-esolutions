@@ -139,12 +139,12 @@ public final class EmailUtility
             configData = (CoreConfigurationData) marshaller.unmarshal(xmlURL);
 
             EmailMessage message = new EmailMessage();
-            message.setMessageTo(new ArrayList<>(Arrays.asList(commandLine.getOptionValues("to"))));
+            message.setMessageTo(new ArrayList<String>(Arrays.asList(commandLine.getOptionValues("to"))));
             message.setMessageSubject(commandLine.getOptionValue("subject"));
             message.setMessageBody((String) commandLine.getArgList().get(0));
             message.setEmailAddr(
-                    (StringUtils.isNotEmpty(commandLine.getOptionValue("from"))) ? new ArrayList<>(Arrays.asList(commandLine.getOptionValue("from")))
-                            : new ArrayList<>(Arrays.asList(configData.getMailConfig().getMailFrom())));
+                    (StringUtils.isNotEmpty(commandLine.getOptionValue("from"))) ? new ArrayList<String>(Arrays.asList(commandLine.getOptionValue("from")))
+                            : new ArrayList<String>(Arrays.asList(configData.getMailConfig().getMailFrom())));
 
             if (DEBUG)
             {

@@ -355,7 +355,7 @@ public class ServiceMessagingController
             }
         }
 
-        mView.addObject("command", new ServiceMessage());
+        mView.addObject(Constants.COMMAND, new ServiceMessage());
         mView.setViewName(this.addServiceMessagePage);
 
         if (DEBUG)
@@ -474,7 +474,7 @@ public class ServiceMessagingController
                     DEBUGGER.debug("ServiceMessage: {}", responseMessage);
                 }
 
-                mView.addObject("command", responseMessage);
+                mView.addObject(Constants.COMMAND, responseMessage);
                 mView.setViewName(this.addServiceMessagePage);
             }
             else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
@@ -618,7 +618,7 @@ public class ServiceMessagingController
                 return mView;
             }
 
-            mView.addObject("command", new ServiceMessage());
+            mView.addObject(Constants.COMMAND, new ServiceMessage());
             mView.setViewName(this.createMessageRedirect);
         }
         catch (MessagingServiceException msx)

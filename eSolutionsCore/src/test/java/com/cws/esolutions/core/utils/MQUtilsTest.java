@@ -73,7 +73,7 @@ public class MQUtilsTest
         try
         {
             Assert.assertNotNull(MQUtils.sendMqMessage(this.bean.getConfigData().getAgentConfig().getConnectionName(),
-                    new ArrayList<>(
+                    new ArrayList<String>(
                             Arrays.asList(
                                     this.bean.getConfigData().getAgentConfig().getUsername(),
                                     this.bean.getConfigData().getAgentConfig().getPassword(),
@@ -94,7 +94,7 @@ public class MQUtilsTest
         try
         {
             Assert.assertNotNull(MQUtils.getMqMessage(this.bean.getConfigData().getAgentConfig().getConnectionName(),
-                    new ArrayList<>(
+                    new ArrayList<String>(
                             Arrays.asList(
                                     this.bean.getConfigData().getAgentConfig().getUsername(),
                                     this.bean.getConfigData().getAgentConfig().getPassword(),

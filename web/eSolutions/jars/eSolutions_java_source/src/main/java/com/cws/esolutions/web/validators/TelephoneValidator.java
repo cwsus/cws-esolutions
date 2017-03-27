@@ -74,7 +74,6 @@ public class TelephoneValidator implements Validator
         this.messagePasswordRequired = value;
     }
 
-    @Override
     public final boolean supports(final Class<?> value)
     {
         final String methodName = TelephoneValidator.CNAME + "#supports(final Class<?> value)";
@@ -95,7 +94,6 @@ public class TelephoneValidator implements Validator
         return isSupported;
     }
 
-    @Override
     public final void validate(final Object target, final Errors errors)
     {
         final String methodName = TelephoneValidator.CNAME + "#validate(final Object target, final Errors errors)";
@@ -119,7 +117,7 @@ public class TelephoneValidator implements Validator
         }
 
         boolean patternMatch = false;
-        final List<Pattern> patternList = new ArrayList<>(
+        final List<Pattern> patternList = new ArrayList<Pattern>(
                 Arrays.asList(
                         Pattern.compile("\\d{10}"),
                         Pattern.compile("\\d{3}-\\d{3}-\\d{4}"),

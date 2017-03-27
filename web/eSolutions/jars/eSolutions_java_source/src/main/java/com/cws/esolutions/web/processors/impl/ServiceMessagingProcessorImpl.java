@@ -75,7 +75,6 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
     /**
      * @see com.cws.esolutions.web.processors.interfaces.IMessagingProcessor#addNewMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
      */
-    @Override
     public MessagingResponse addNewMessage(final MessagingRequest request) throws MessagingServiceException
     {
         final String methodName = IMessagingProcessor.CNAME + "#addNewMessage(final MessagingRequest request) throws MessagingServiceException";
@@ -187,7 +186,6 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
     /**
      * @see com.cws.esolutions.web.processors.interfaces.IMessagingProcessor#updateExistingMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
      */
-    @Override
     public MessagingResponse updateExistingMessage(final MessagingRequest request) throws MessagingServiceException
     {
         final String methodName = IMessagingProcessor.CNAME + "#updateExistingMessage(final MessagingRequest request) throws MessagingServiceException";
@@ -296,7 +294,6 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
     /**
      * @see com.cws.esolutions.web.processors.interfaces.IMessagingProcessor#showMessages(com.cws.esolutions.core.processors.dto.MessagingRequest)
      */
-    @Override
     public MessagingResponse showMessages(final MessagingRequest request) throws MessagingServiceException
     {
         final String methodName = IMessagingProcessor.CNAME + "#showMessages(final MessagingRequest request) throws MessagingServiceException";
@@ -335,7 +332,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                 return response;
             }
 
-            List<ServiceMessage> svcMessages = new ArrayList<>();
+            List<ServiceMessage> svcMessages = new ArrayList<ServiceMessage>();
 
             for (Object[] object : data)
             {
@@ -469,7 +466,6 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
     /**
      * @see com.cws.esolutions.web.processors.interfaces.IMessagingProcessor#showAlertMessages(com.cws.esolutions.core.processors.dto.MessagingRequest)
      */
-    @Override
     public MessagingResponse showAlertMessages(final MessagingRequest request) throws MessagingServiceException
     {
         final String methodName = IMessagingProcessor.CNAME + "#showAlertMessages(final MessagingRequest request) throws MessagingServiceException";
@@ -498,7 +494,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                 return response;
             }
 
-            List<ServiceMessage> svcMessages = new ArrayList<>();
+            List<ServiceMessage> svcMessages = new ArrayList<ServiceMessage>();
 
             for (Object[] object : data)
             {
@@ -545,7 +541,6 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
     /**
      * @see com.cws.esolutions.web.processors.interfaces.IMessagingProcessor#showMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
      */
-    @Override
     public MessagingResponse showMessage(final MessagingRequest request) throws MessagingServiceException
     {
         final String methodName = IMessagingProcessor.CNAME + "#showMessage(final MessagingRequest request) throws MessagingServiceException";

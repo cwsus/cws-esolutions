@@ -65,7 +65,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
     /**
      * @see com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor#addNewApplication(com.cws.esolutions.core.processors.dto.ApplicationManagementRequest)
      */
-    @Override
     public ApplicationManagementResponse addNewApplication(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
         final String methodName = IApplicationManagementProcessor.CNAME + "#addNewApplication(final ApplicationManagementRequest request) throws ApplicationManagementException";
@@ -178,7 +177,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 // different table in the database)
                 if ((application.getPlatforms() != null) && (application.getPlatforms().size() != 0))
                 {
-                    List<String> platforms = new ArrayList<>();
+                    List<String> platforms = new ArrayList<String>();
 
                     for (Service targetPlatform : application.getPlatforms())
                     {
@@ -297,7 +296,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
     /**
      * @see com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor#updateApplicationData(com.cws.esolutions.core.processors.dto.ApplicationManagementRequest)
      */
-    @Override
     public ApplicationManagementResponse updateApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
         final String methodName = IApplicationManagementProcessor.CNAME + "#updateApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException";
@@ -467,7 +465,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
     /**
      * @see com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor#deleteApplicationData(com.cws.esolutions.core.processors.dto.ApplicationManagementRequest)
      */
-    @Override
     public ApplicationManagementResponse deleteApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
         final String methodName = IApplicationManagementProcessor.CNAME + "#deleteApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException";
@@ -620,7 +617,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
     /**
      * @see com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor#listApplications(com.cws.esolutions.core.processors.dto.ApplicationManagementRequest)
      */
-    @Override
     public ApplicationManagementResponse listApplications(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
         final String methodName = IApplicationManagementProcessor.CNAME + "#listApplications(final ApplicationManagementRequest request) throws ApplicationManagementException";
@@ -710,7 +706,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             if ((appData != null) && (appData.size() != 0))
             {
-                List<Application> appList = new ArrayList<>();
+                List<Application> appList = new ArrayList<Application>();
 
                 for (String[] array : appData)
                 {
@@ -802,7 +798,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
     /**
      * @see com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor#listApplicationsByAttribute(com.cws.esolutions.core.processors.dto.ApplicationManagementRequest)
      */
-    @Override
     public ApplicationManagementResponse listApplicationsByAttribute(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
         final String methodName = IApplicationManagementProcessor.CNAME + "#listApplicationsByAttribute(final ApplicationManagementRequest request) throws ApplicationManagementException";
@@ -892,14 +887,14 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             if ((appData != null) && (appData.size() != 0))
             {
-                List<Application> appList = new ArrayList<>();
+                List<Application> appList = new ArrayList<Application>();
 
                 for (Object[] array : appData)
                 {
                     Application app = new Application();
                     app.setGuid((String) array[0]); // T1.APPLICATION_GUID
                     app.setName((String) array[1]); // T1.APPLICATION_NAME
-                    app.setScore((double) array[2]);
+                    app.setScore(new Double(array[2].toString()));
 
                     if (DEBUG)
                     {
@@ -985,7 +980,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
     /**
      * @see com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor#getApplicationData(com.cws.esolutions.core.processors.dto.ApplicationManagementRequest)
      */
-    @Override
     public ApplicationManagementResponse getApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
         final String methodName = IApplicationManagementProcessor.CNAME + "#getApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException";
@@ -1084,7 +1078,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 Application resApplication = new Application();
                 resApplication.setGuid((String) appData.get(0)); // GUID
                 resApplication.setName((String) appData.get(1)); // NAME
-                resApplication.setVersion((double) appData.get(2)); // VERSION
+                resApplication.setVersion(new Double(appData.get(2).toString())); // VERSION
                 resApplication.setInstallPath((String) appData.get(3)); // INSTALLATION_PATH
                 resApplication.setPackageLocation((String) appData.get(4)); // PACKAGE_LOCATION
                 resApplication.setPackageInstaller((String) appData.get(5)); // PACKAGE_INSTALLER
@@ -1162,7 +1156,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
     /**
      * @see com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor#applicationFileRequest(com.cws.esolutions.core.processors.dto.ApplicationManagementRequest)
      */
-    @Override
     public ApplicationManagementResponse applicationFileRequest(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
         final String methodName = IApplicationManagementProcessor.CNAME + "#applicationFileRequest(final ApplicationManagementRequest request) throws ApplicationManagementException";
@@ -1281,7 +1274,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 }
 
                 String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(),
-                        new ArrayList<>(
+                        new ArrayList<String>(
                                 Arrays.asList(
                                         agentConfig.getUsername(),
                                         agentConfig.getPassword(),
@@ -1298,7 +1291,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 if (StringUtils.isNotEmpty(correlator))
                 {
                     agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
-                            new ArrayList<>(
+                            new ArrayList<String>(
                                     Arrays.asList(
                                             agentConfig.getUsername(),
                                             agentConfig.getPassword(),
@@ -1439,7 +1432,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
     /**
      * @see com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor#deployApplication(com.cws.esolutions.core.processors.dto.ApplicationManagementRequest)
      */
-    @Override
     public ApplicationManagementResponse deployApplication(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
         final String methodName = IApplicationManagementProcessor.CNAME + "#deployApplication(final ApplicationManagementRequest request) throws ApplicationManagementException";

@@ -36,7 +36,9 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cws.esolutions.web.dao.interfaces.IMessagingDAO;
-
+/**
+ * @see com.cws.esolutions.web.dao.interfaces.IMessagingDAO
+ */
 public class ServiceMessagingDAOImpl implements IMessagingDAO
 {
     @Autowired private DataSource dataSource = null;
@@ -54,7 +56,9 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
         this.dataSource = value;
     }
 
-    @Override
+    /**
+     * @see com.cws.esolutions.web.dao.interfaces.IMessagingDAO#insertMessage(List)
+     */
     public synchronized boolean insertMessage(final List<Object> messageList) throws SQLException
     {
         final String methodName = IMessagingDAO.CNAME + "#insertMessage(final List<Object> messageList) throws SQLException";
@@ -118,7 +122,9 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
         return isComplete;
     }
 
-    @Override
+    /**
+     * @see com.cws.esolutions.web.dao.interfaces.IMessagingDAO#retrieveMessage(String)
+     */
     public synchronized List<Object> retrieveMessage(final String messageId) throws SQLException
     {
         final String methodName = IMessagingDAO.CNAME + "#retrieveMessage(final String messageId) throws SQLException";
@@ -159,7 +165,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
                 if (resultSet.next())
                 {
                     resultSet.first();
-                    svcMessage = new ArrayList<>();
+                    svcMessage = new ArrayList<Object>();
                     svcMessage.add(resultSet.getString(1)); // svc_message_id
                     svcMessage.add(resultSet.getString(2)); // svc_message_title
                     svcMessage.add(resultSet.getString(3)); // svc_message_txt
@@ -206,7 +212,9 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
         return svcMessage;
     }
 
-    @Override
+    /**
+     * @see com.cws.esolutions.web.dao.interfaces.IMessagingDAO#retrieveMessages()
+     */
     public synchronized List<Object[]> retrieveMessages() throws SQLException
     {
         final String methodName = IMessagingDAO.CNAME + "#retrieveMessages() throws SQLException";
@@ -250,7 +258,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
                 if (resultSet.next())
                 {
                     resultSet.beforeFirst();
-                    response = new ArrayList<>();
+                    response = new ArrayList<Object[]>();
 
                     while (resultSet.next())
                     {
@@ -306,7 +314,9 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
         return response;
     }
 
-    @Override
+    /**
+     * @see com.cws.esolutions.web.dao.interfaces.IMessagingDAO#retrieveAlertMessages()
+     */
     public synchronized List<Object[]> retrieveAlertMessages() throws SQLException
     {
         final String methodName = IMessagingDAO.CNAME + "#retrieveAlertMessages() throws SQLException";
@@ -350,7 +360,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
                 if (resultSet.next())
                 {
                     resultSet.beforeFirst();
-                    response = new ArrayList<>();
+                    response = new ArrayList<Object[]>();
 
                     while (resultSet.next())
                     {
@@ -406,7 +416,9 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
         return response;
     }
 
-    @Override
+    /**
+     * @see com.cws.esolutions.web.dao.interfaces.IMessagingDAO#updateMessage(String, List)
+     */
     public synchronized boolean updateMessage(final String messageId, final List<Object> messageList) throws SQLException
     {
         final String methodName = IMessagingDAO.CNAME + "#updateMessage(final String messageId, final List<Object> messageList) throws SQLException";
@@ -476,7 +488,9 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
         return isComplete;
     }
 
-    @Override
+    /**
+     * @see com.cws.esolutions.web.dao.interfaces.IMessagingDAO#deleteMessage(String)
+     */
     public synchronized boolean deleteMessage(final String messageId) throws SQLException
     {
         final String methodName = IMessagingDAO.CNAME + "#deleteMessage(final String messageId) throws SQLException";
@@ -538,7 +552,9 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
         return isComplete;
     }
 
-    @Override
+    /**
+     * @see com.cws.esolutions.web.dao.interfaces.IMessagingDAO#getMessagesByAttribute(String)
+     */
     public synchronized List<Object[]> getMessagesByAttribute(final String value) throws SQLException
     {
         final String methodName = IMessagingDAO.CNAME + "#getMessagesByAttribute(final String value) throws SQLException";
@@ -608,7 +624,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
                 if (resultSet.next())
                 {
                     resultSet.beforeFirst();
-                    responseData = new ArrayList<>();
+                    responseData = new ArrayList<Object[]>();
 
                     while (resultSet.next())
                     {

@@ -62,7 +62,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor#createNewUser(com.cws.esolutions.security.processors.dto.AccountControlRequest)
      */
-    @Override
     public AccountControlResponse createNewUser(final AccountControlRequest request) throws AccountControlException
     {
         final String methodName = IAccountControlProcessor.CNAME + "#createNewUser(final CreateUserRequest createReq) throws AccountControlException";
@@ -206,7 +205,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         secConfig.getAuthAlgorithm(), secConfig.getIterations(),
                         secBean.getConfigData().getSystemConfig().getEncoding());
 
-                List<String> accountData = new ArrayList<>(
+                List<String> accountData = new ArrayList<String>(
                     Arrays.asList(
                             userGuid,
                             userAccount.getUsername(),
@@ -223,7 +222,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 }
 
                 boolean isUserCreated = userManager.addUserAccount(accountData,
-                        new ArrayList<>(Arrays.asList(Arrays.toString(userAccount.getGroups()))));
+                        new ArrayList<String>(Arrays.asList(Arrays.toString(userAccount.getGroups()))));
 
                 if (DEBUG)
                 {
@@ -313,7 +312,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor#removeUserAccount(com.cws.esolutions.security.processors.dto.AccountControlRequest)
      */
-    @Override
     public AccountControlResponse removeUserAccount(final AccountControlRequest request) throws AccountControlException
     {
         final String methodName = IAccountControlProcessor.CNAME + "#removeUserAccount(final AccountControlRequest) throws AccountControlException";
@@ -462,7 +460,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor#modifyUserSuspension(com.cws.esolutions.security.processors.dto.AccountControlRequest)
      */
-    @Override
     public AccountControlResponse modifyUserSuspension(final AccountControlRequest request) throws AccountControlException
     {
         final String methodName = IAccountControlProcessor.CNAME + "#modifyUserSuspension(final AccountControlRequest) throws AccountControlException";
@@ -629,7 +626,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor#modifyUserRole(com.cws.esolutions.security.processors.dto.AccountControlRequest)
      */
-    @Override
     public AccountControlResponse modifyUserRole(final AccountControlRequest request) throws AccountControlException
     {
         final String methodName = IAccountControlProcessor.CNAME + "#modifyUserRole(final AccountControlRequest) throws AccountControlException";
@@ -834,7 +830,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor#modifyUserPassword(com.cws.esolutions.security.processors.dto.AccountControlRequest)
      */
-    @Override
     public AccountControlResponse modifyUserPassword(final AccountControlRequest request) throws AccountControlException
     {
         final String methodName = IAccountControlProcessor.CNAME + "#modifyUserPassword(final AccountControlRequest request) throws AccountControlException";
@@ -1042,7 +1037,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor#modifyUserLockout(com.cws.esolutions.security.processors.dto.AccountControlRequest)
      */
-    @Override
     public AccountControlResponse modifyUserLockout(final AccountControlRequest request) throws AccountControlException
     {
         final String methodName = IAccountControlProcessor.CNAME + "#modifyUserLockout(final AccountControlRequest) throws AccountControlException";
@@ -1204,7 +1198,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor#searchAccounts(com.cws.esolutions.security.processors.dto.AccountControlRequest)
      */
-    @Override
     public AccountControlResponse searchAccounts(final AccountControlRequest request) throws AccountControlException
     {
         final String methodName = IAccountControlProcessor.CNAME + "#searchAccounts(final AccountControlRequest request) throws AccountControlException";
@@ -1294,7 +1287,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if ((userList != null) && (userList.size() != 0))
             {
-                List<UserAccount> userAccounts = new ArrayList<>();
+                List<UserAccount> userAccounts = new ArrayList<UserAccount>();
 
                 for (Object[] userData : userList)
                 {
@@ -1383,7 +1376,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor#loadUserAccount(com.cws.esolutions.security.processors.dto.AccountControlRequest)
      */
-    @Override
     public AccountControlResponse loadUserAccount(final AccountControlRequest request) throws AccountControlException
     {
         final String methodName = IAccountControlProcessor.CNAME + "#loadUserAccount(final AccountControlRequest request) throws AccountControlException";
@@ -1556,7 +1548,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor#listUserAccounts(com.cws.esolutions.security.processors.dto.AccountControlRequest)
      */
-    @Override
     public AccountControlResponse listUserAccounts(final AccountControlRequest request) throws AccountControlException
     {
         final String methodName = IAccountControlProcessor.CNAME + "#listUserAccounts(final AccountControlRequest request) throws AccountControlException";
@@ -1646,7 +1637,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if ((userList != null) && (userList.size() != 0))
             {
-                List<UserAccount> userAccounts = new ArrayList<>();
+                List<UserAccount> userAccounts = new ArrayList<UserAccount>();
 
                 for (String[] userData : userList)
                 {

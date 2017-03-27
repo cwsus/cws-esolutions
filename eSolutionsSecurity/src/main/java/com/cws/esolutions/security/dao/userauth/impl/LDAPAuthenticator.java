@@ -54,7 +54,6 @@ public class LDAPAuthenticator implements Authenticator
     /**
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String)
      */
-    @Override
     public synchronized List<Object> performLogon(final String username, final String password) throws AuthenticatorException
     {
         final String methodName = LDAPAuthenticator.CNAME + "#performLogon(final String username, final String password) throws AuthenticatorException";
@@ -146,7 +145,7 @@ public class LDAPAuthenticator implements Authenticator
                 DEBUGGER.debug("BindResult: {}", bindResult);
             }
 
-            userAccount = new ArrayList<>();
+            userAccount = new ArrayList<Object>();
 
             for (String returningAttribute : userAttributes.getReturningAttributes())
             {
@@ -246,7 +245,6 @@ public class LDAPAuthenticator implements Authenticator
     /**
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainSecurityData(java.lang.String, java.lang.String)
      */
-    @Override
     public synchronized List<String> obtainSecurityData(final String userId, final String userGuid) throws AuthenticatorException
     {
         final String methodName = LDAPAuthenticator.CNAME + "#obtainSecurityData(final String userId, final String userGuid) throws AuthenticatorException";
@@ -316,7 +314,7 @@ public class LDAPAuthenticator implements Authenticator
 
             SearchResultEntry entry = searchResult.getSearchEntries().get(0);
 
-            userSecurity = new ArrayList<>(
+            userSecurity = new ArrayList<String>(
                 Arrays.asList(
                     entry.getAttributeValue(securityAttributes.getSecQuestionOne()),
                     entry.getAttributeValue(securityAttributes.getSecQuestionTwo())));
@@ -349,7 +347,6 @@ public class LDAPAuthenticator implements Authenticator
     /**
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainOtpSecret(java.lang.String, java.lang.String)
      */
-    @Override
     public synchronized String obtainOtpSecret(final String userId, final String userGuid) throws AuthenticatorException
     {
         final String methodName = LDAPAuthenticator.CNAME + "#obtainOtpSecret(final String userId, final String userGuid) throws AuthenticatorException";
@@ -443,7 +440,6 @@ public class LDAPAuthenticator implements Authenticator
     /**
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#verifySecurityData(java.lang.String, java.lang.String, java.util.List)
      */
-    @Override
     public synchronized boolean verifySecurityData(final String userId, final String userGuid, List<String> values) throws AuthenticatorException
     {
         final String methodName = LDAPAuthenticator.CNAME + "#verifySecurityData(final String userId, final String userGuid, List<String> values) throws AuthenticatorException";

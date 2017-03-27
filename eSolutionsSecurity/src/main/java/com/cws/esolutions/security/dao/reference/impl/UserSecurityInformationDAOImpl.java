@@ -42,7 +42,6 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
     /**
      * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#addOrUpdateSalt(java.lang.String, java.lang.String, java.lang.String)
      */
-    @Override
     public synchronized boolean addOrUpdateSalt(final String commonName, final String saltValue, final String saltType) throws SQLException
     {
         final String methodName = IUserSecurityInformationDAO.CNAME + "#addOrUpdateSalt(final String commonName, final String saltValue, final String saltType) throws SQLException";
@@ -102,7 +101,6 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
     /**
      * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#getUserSalt(java.lang.String, java.lang.String)
      */
-    @Override
     public synchronized String getUserSalt(final String commonName, final String saltType) throws SQLException
     {
         final String methodName = IUserSecurityInformationDAO.CNAME + "#getUserSalt(final String commonName, final String saltType) throws SQLException";
@@ -181,7 +179,6 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
     /**
      * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#removeUserData(java.lang.String, java.lang.String)
      */
-    @Override
     public synchronized boolean removeUserData(final String commonName, final String saltType) throws SQLException
     {
         final String methodName = IUserSecurityInformationDAO.CNAME + "#removeUserData(final String commonName, final String saltType) throws SQLException";
@@ -250,7 +247,6 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
     /**
      * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#insertResetData(java.lang.String, java.lang.String, java.lang.String)
      */
-    @Override
     public synchronized boolean insertResetData(final String commonName, final String resetId, final String smsCode) throws SQLException
     {
         final String methodName = IUserSecurityInformationDAO.CNAME + "#insertResetData(final String commonName, final String resetId, final String smsCode) throws SQLException";
@@ -313,7 +309,6 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
     /**
      * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#listActiveResets()
      */
-    @Override
     public synchronized List<String[]> listActiveResets() throws SQLException
     {
         final String methodName = IUserSecurityInformationDAO.CNAME + "#listActiveResets() throws SQLException";
@@ -358,7 +353,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
                 if (resultSet.next())
                 {
                     resultSet.beforeFirst();
-                    response = new ArrayList<>();
+                    response = new ArrayList<String[]>();
 
                     while (resultSet.next())
                     {
@@ -397,7 +392,6 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
     /**
      * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#getResetData(java.lang.String)
      */
-    @Override
     public synchronized List<Object> getResetData(final String resetId) throws SQLException
     {
         final String methodName = IUserSecurityInformationDAO.CNAME + "#getResetData(final String resetId) throws SQLException";
@@ -473,7 +467,6 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
     /**
      * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#removeResetData(java.lang.String, java.lang.String)
      */
-    @Override
     public synchronized boolean removeResetData(final String commonName, final String resetId) throws SQLException
     {
         final String methodName = IUserSecurityInformationDAO.CNAME + "#removeResetData(final String commonName, final String resetId) throws SQLException";
@@ -537,7 +530,6 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
     /**
      * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#verifySmsForReset(java.lang.String, java.lang.String, java.lang.String)
      */
-    @Override
     public synchronized boolean verifySmsForReset(final String userGuid, final String resetId, final String smsCode) throws SQLException
     {
         final String methodName = IUserSecurityInformationDAO.CNAME + "#verifySmsForReset(final String userGuid, final String resetId, final String smsCode) throws SQLException";

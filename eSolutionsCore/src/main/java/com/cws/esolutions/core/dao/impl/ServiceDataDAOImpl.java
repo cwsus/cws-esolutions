@@ -43,7 +43,6 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
     /**
      * @see com.cws.esolutions.core.dao.interfaces.IServiceDataDAO#addService(java.util.List)
      */
-    @Override
     public synchronized boolean addService(final List<String> data) throws SQLException
     {
         final String methodName = IServiceDataDAO.CNAME + "#addService(final List<String> data) throws SQLException";
@@ -118,7 +117,6 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
     /**
      * @see com.cws.esolutions.core.dao.interfaces.IServiceDataDAO#updateService(java.util.List)
      */
-    @Override
     public synchronized boolean updateService(final List<String> data) throws SQLException
     {
         final String methodName = IServiceDataDAO.CNAME + "#updateService(final List<String> data) throws SQLException";
@@ -193,7 +191,6 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
     /**
      * @see com.cws.esolutions.core.dao.interfaces.IServiceDataDAO#removeService(java.lang.String)
      */
-    @Override
     public synchronized boolean removeService(final String datacenter) throws SQLException
     {
         final String methodName = IServiceDataDAO.CNAME + "#removeService(final String datacenter) throws SQLException";
@@ -257,7 +254,6 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
     /**
      * @see com.cws.esolutions.core.dao.interfaces.IServiceDataDAO#listServices(int)
      */
-    @Override
     public synchronized List<String[]> listServices(final int startRow) throws SQLException
     {
         final String methodName = IServiceDataDAO.CNAME + "#listServices(final int startRow) throws SQLException";
@@ -304,7 +300,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
                 if (resultSet.next())
                 {
                     resultSet.beforeFirst();
-                    responseData = new ArrayList<>();
+                    responseData = new ArrayList<String[]>();
 
                     while (resultSet.next())
                     {
@@ -355,7 +351,6 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
     /**
      * @see com.cws.esolutions.core.dao.interfaces.IServiceDataDAO#getServicesByAttribute(java.lang.String, int)
      */
-    @Override
     public synchronized List<Object[]> getServicesByAttribute(final String attribute, final int startRow) throws SQLException
     {
         final String methodName = IServiceDataDAO.CNAME + "#getServicesByAttribute(final String attribute, final int startRow) throws SQLException";
@@ -427,7 +422,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
                 if (resultSet.next())
                 {
                     resultSet.beforeFirst();
-                    responseData = new ArrayList<>();
+                    responseData = new ArrayList<Object[]>();
 
                     while (resultSet.next())
                     {
@@ -481,7 +476,6 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
     /**
      * @see com.cws.esolutions.core.dao.interfaces.IServiceDataDAO#getService(java.lang.String)
      */
-    @Override
     public synchronized List<String> getService(final String attribute) throws SQLException
     {
         final String methodName = IServiceDataDAO.CNAME + "#getService(final String attribute) throws SQLException";
@@ -531,7 +525,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
                 {
                     resultSet.first();
 
-                    responseData = new ArrayList<>(
+                    responseData = new ArrayList<String>(
                             Arrays.asList(
                                     resultSet.getString(1), // SERVICE_TYPE
                                     resultSet.getString(2), // NAME

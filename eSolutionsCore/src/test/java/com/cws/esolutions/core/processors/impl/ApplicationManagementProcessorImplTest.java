@@ -78,7 +78,7 @@ public class ApplicationManagementProcessorImplTest
     {
         String[] platforms = { "09571c2c-dd88-4d57-b418-dbbd35deb653", "16d15529-2e28-4beb-873c-eb5fba452feb", "54c10a53-5d77-4c54-8041-eb90c33e7c1d" };
 
-        List<Service> platformList = new ArrayList<>();
+        List<Service> platformList = new ArrayList<Service>();
 
         for (String str : platforms)
         {

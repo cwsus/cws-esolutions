@@ -120,6 +120,9 @@
     <c:if test="${not empty fn:trim(errorResponse)}">
         <p id="error">${errorResponse}</p>
     </c:if>
+    <c:if test="${not empty fn:trim(bindResult)}">
+        <p id="error">${bindResult}</p>
+    </c:if>
     <c:if test="${not empty fn:trim(responseMessage)}">
         <p id="info"><spring:message code="${responseMessage}" /></p>
     </c:if>

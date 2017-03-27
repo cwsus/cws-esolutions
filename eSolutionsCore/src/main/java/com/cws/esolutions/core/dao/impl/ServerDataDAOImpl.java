@@ -43,7 +43,6 @@ public class ServerDataDAOImpl implements IServerDataDAO
     /**
      * @see com.cws.esolutions.core.dao.interfaces.IServerDataDAO#addServer(java.util.List)
      */
-    @Override
     public synchronized boolean addServer(final List<Object> serverData) throws SQLException
     {
         final String methodName = IServerDataDAO.CNAME + "#addServer(final List<Object> serverData) throws SQLException";
@@ -139,7 +138,6 @@ public class ServerDataDAOImpl implements IServerDataDAO
     /**
      * @see com.cws.esolutions.core.dao.interfaces.IServerDataDAO#updateServer(java.lang.String, java.util.List)
      */
-    @Override
     public synchronized boolean updateServer(final String serverGuid, final List<Object> serverData) throws SQLException
     {
         final String methodName = IServerDataDAO.CNAME + "#updateServer(final String serverGuid, final List<Object> serverData) throws SQLException";
@@ -236,7 +234,6 @@ public class ServerDataDAOImpl implements IServerDataDAO
     /**
      * @see com.cws.esolutions.core.dao.interfaces.IServerDataDAO#removeServer(java.lang.String)
      */
-    @Override
     public synchronized boolean removeServer(final String serverGuid) throws SQLException
     {
         final String methodName = IServerDataDAO.CNAME + "#removeServer(final String serverGuid) throws SQLException";
@@ -300,7 +297,6 @@ public class ServerDataDAOImpl implements IServerDataDAO
     /**
      * @see com.cws.esolutions.core.dao.interfaces.IServerDataDAO#listServers(int)
      */
-    @Override
     public synchronized List<String[]> listServers(final int startRow) throws SQLException
     {
         final String methodName = IServerDataDAO.CNAME + "#listServers(final int startRow) throws SQLException";
@@ -347,7 +343,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
                 if (resultSet.next())
                 {
                     resultSet.beforeFirst();
-                    responseData = new ArrayList<>();
+                    responseData = new ArrayList<String[]>();
 
                     while (resultSet.next())
                     {
@@ -414,7 +410,6 @@ public class ServerDataDAOImpl implements IServerDataDAO
     /**
      * @see com.cws.esolutions.core.dao.interfaces.IServerDataDAO#getServersByAttribute(java.lang.String, int)
      */
-    @Override
     public synchronized List<Object[]> getServersByAttribute(final String value, final int startRow) throws SQLException
     {
         final String methodName = IServerDataDAO.CNAME + "#getServersByAttribute(final String value, final int startRow) throws SQLException";
@@ -541,7 +536,6 @@ public class ServerDataDAOImpl implements IServerDataDAO
     /**
      * @see com.cws.esolutions.core.dao.interfaces.IServerDataDAO#getServer(java.lang.String)
      */
-    @Override
     public synchronized List<Object> getServer(final String attribute) throws SQLException
     {
         final String methodName = IServerDataDAO.CNAME + "#getServer(final String attribute) throws SQLException";

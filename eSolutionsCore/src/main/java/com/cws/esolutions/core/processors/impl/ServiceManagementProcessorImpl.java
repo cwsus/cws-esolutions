@@ -60,7 +60,6 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
     /**
      * @see com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor#addNewService(com.cws.esolutions.core.processors.dto.ServiceManagementRequest)
      */
-    @Override
     public ServiceManagementResponse addNewService(final ServiceManagementRequest request) throws ServiceManagementException
     {
         final String methodName = IServiceManagementProcessor.CNAME + "#addNewService(final ServiceManagementRequest request) throws ServiceManagementException";
@@ -166,7 +165,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
             if ((validator == null) || (validator.size() == 0))
             {
                 // valid platform
-                List<String> serverList = new ArrayList<>();
+                List<String> serverList = new ArrayList<String>();
                 for (Server server : service.getServers())
                 {
                     if (DEBUG)
@@ -182,7 +181,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                     DEBUGGER.debug("List<String>: {}", serverList);
                 }
 
-                List<String> insertData = new ArrayList<>(
+                List<String> insertData = new ArrayList<String>(
                         Arrays.asList(
                                 UUID.randomUUID().toString(), // GUID
                                 service.getType().name(), // SERVICE_TYPE
@@ -273,7 +272,6 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
     /**
      * @see com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor#updateServiceData(com.cws.esolutions.core.processors.dto.ServiceManagementRequest)
      */
-    @Override
     public ServiceManagementResponse updateServiceData(final ServiceManagementRequest request) throws ServiceManagementException
     {
         final String methodName = IServiceManagementProcessor.CNAME + "#updateServiceData(final ServiceManagementRequest request) throws ServiceManagementException";
@@ -354,7 +352,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 return response;
             }
 
-            List<String> serverList = new ArrayList<>();
+            List<String> serverList = new ArrayList<String>();
             for (Server server : service.getServers())
             {
                 if (DEBUG)
@@ -370,7 +368,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 DEBUGGER.debug("List<String>: {}", serverList);
             }
 
-            List<String> insertData = new ArrayList<>(
+            List<String> insertData = new ArrayList<String>(
                     Arrays.asList(
                             service.getGuid(),
                             service.getName(),
@@ -455,7 +453,6 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
     /**
      * @see com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor#removeServiceData(com.cws.esolutions.core.processors.dto.ServiceManagementRequest)
      */
-    @Override
     public ServiceManagementResponse removeServiceData(final ServiceManagementRequest request) throws ServiceManagementException
     {
         final String methodName = IServiceManagementProcessor.CNAME + "#removeServiceData(final ServiceManagementRequest request) throws ServiceManagementException";
@@ -603,7 +600,6 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
     /**
      * @see com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor#listServices(com.cws.esolutions.core.processors.dto.ServiceManagementRequest)
      */
-    @Override
     public ServiceManagementResponse listServices(final ServiceManagementRequest request) throws ServiceManagementException
     {
         final String methodName = IServiceManagementProcessor.CNAME + "#listServices(final ServiceManagementRequest request) throws ServiceManagementException";
@@ -691,7 +687,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
             if ((serviceData != null) && (serviceData.size() != 0))
             {
-                List<Service> serviceList = new ArrayList<>();
+                List<Service> serviceList = new ArrayList<Service>();
 
                 for (String[] data : serviceData)
                 {
@@ -773,7 +769,6 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
     /**
      * @see com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor#listServicesByType(com.cws.esolutions.core.processors.dto.ServiceManagementRequest)
      */
-    @Override
     public ServiceManagementResponse listServicesByType(final ServiceManagementRequest request) throws ServiceManagementException
     {
         final String methodName = IServiceManagementProcessor.CNAME + "#listServicesByType(final ServiceManagementRequest request) throws ServiceManagementException";
@@ -863,7 +858,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
             if ((serviceData != null) && (serviceData.size() != 0))
             {
-                List<Service> serviceList = new ArrayList<>();
+                List<Service> serviceList = new ArrayList<Service>();
 
                 for (String[] data : serviceData)
                 {
@@ -948,7 +943,6 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
     /**
      * @see com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor#getServiceByAttribute(com.cws.esolutions.core.processors.dto.ServiceManagementRequest)
      */
-    @Override
     public ServiceManagementResponse getServiceByAttribute(final ServiceManagementRequest request) throws ServiceManagementException
     {
         final String methodName = IServiceManagementProcessor.CNAME + "#getServiceByAttribute(final ServiceManagementRequest request) throws ServiceManagementException";
@@ -1038,14 +1032,14 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
             if ((serviceData != null) && (serviceData.size() != 0))
             {
-                List<Service> serviceList = new ArrayList<>();
+                List<Service> serviceList = new ArrayList<Service>();
 
                 for (Object[] data : serviceData)
                 {
                     Service resService = new Service();
                     service.setGuid((String) data[0]);
                     service.setName((String) data[1]);
-                    service.setScore((double) data[2]);
+                    service.setScore(new Double(data[2].toString()));
 
                     if (DEBUG)
                     {
@@ -1119,7 +1113,6 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
     /**
      * @see com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor#getServiceData(com.cws.esolutions.core.processors.dto.ServiceManagementRequest)
      */
-    @Override
     public ServiceManagementResponse getServiceData(final ServiceManagementRequest request) throws ServiceManagementException
     {
         final String methodName = IServiceManagementProcessor.CNAME + "#getServiceData(final ServiceManagementRequest request) throws ServiceManagementException";
@@ -1222,7 +1215,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
                     if (platformServers.split(",").length >= 1)
                     {
-                        serverList = new ArrayList<>();
+                        serverList = new ArrayList<Server>();
 
                         for (String serverGuid : platformServers.split(","))
                         {

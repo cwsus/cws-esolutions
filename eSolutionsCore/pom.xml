@@ -116,5 +116,4 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-    <groupId>com.cws</groupId>
 </project>

@@ -81,7 +81,6 @@ public class SecurityServiceListener implements ServletContextListener
     /**
      * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.ServletContextEvent)
      */
-    @Override
     public void contextInitialized(final ServletContextEvent sContextEvent)
     {
         final String methodName = SecurityServiceListener.CNAME + "#contextInitialized(final ServletContextEvent sContextEvent)";
@@ -150,7 +149,7 @@ public class SecurityServiceListener implements ServletContextListener
 					DAOInitializer.configureAndCreateAuthConnection(new FileInputStream(FileUtils.getFile(configData.getSecurityConfig().getAuthConfig())),
                             false, SecurityServiceListener.svcBean);
 
-                    Map<String, DataSource> dsMap = new HashMap<>();
+                    Map<String, DataSource> dsMap = new HashMap<String, DataSource>();
 
                     for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())
                     {
@@ -190,7 +189,6 @@ public class SecurityServiceListener implements ServletContextListener
     /**
      * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.ServletContextEvent)
      */
-    @Override
     public void contextDestroyed(final ServletContextEvent sContextEvent)
     {
         final String methodName = SecurityServiceListener.CNAME + "#contextDestroyed(final ServletContextEvent sContextEvent)";

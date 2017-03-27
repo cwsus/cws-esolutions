@@ -61,7 +61,6 @@ public class MQMessageHandler implements MessageListener
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(AgentConstants.ERROR_LOGGER + CNAME);
 
-    @Override
     public void onMessage(final Message message)
     {
         final String methodName = MQMessageHandler.CNAME + "#onMessage(final Message message)";

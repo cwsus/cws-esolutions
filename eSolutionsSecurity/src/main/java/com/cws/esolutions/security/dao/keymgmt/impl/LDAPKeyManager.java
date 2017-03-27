@@ -71,7 +71,6 @@ public class LDAPKeyManager implements KeyManager
     /**
      * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#createKeys(java.lang.String)
      */
-    @Override
     public synchronized boolean createKeys(final String guid) throws KeyManagementException
     {
         final String methodName = LDAPKeyManager.CNAME + "#createKeys(final String guid) throws KeyManagementException";
@@ -179,7 +178,7 @@ public class LDAPKeyManager implements KeyManager
                 throw new KeyManagementException("No users were located with the search data provided");
             }
 
-            List<Modification> modifyList = new ArrayList<>(
+            List<Modification> modifyList = new ArrayList<Modification>(
                     Arrays.asList(
                             new Modification(ModificationType.ADD, keyConfig.getPublicKeyAttribute(), keyPair.getPublic().getEncoded())));
 
@@ -271,7 +270,6 @@ public class LDAPKeyManager implements KeyManager
     /**
      * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#returnKeys(java.lang.String)
      */
-    @Override
     public synchronized KeyPair returnKeys(final String guid) throws KeyManagementException
     {
         final String methodName = LDAPKeyManager.CNAME + "#returnKeys(final String guid) throws KeyManagementException";
@@ -464,7 +462,6 @@ public class LDAPKeyManager implements KeyManager
     /**
      * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#removeKeys(java.lang.String)
      */
-    @Override
     public synchronized boolean removeKeys(final String guid) throws KeyManagementException
     {
         final String methodName = LDAPKeyManager.CNAME + "#removeKeys(final String guid) throws KeyManagementException";
@@ -547,7 +544,7 @@ public class LDAPKeyManager implements KeyManager
 
             if (!(stmt.execute()))
             {
-                List<Modification> modifyList = new ArrayList<>(
+                List<Modification> modifyList = new ArrayList<Modification>(
                         Arrays.asList(
                                 new Modification(ModificationType.DELETE, keyConfig.getPublicKeyAttribute())));
 

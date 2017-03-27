@@ -442,7 +442,7 @@ public class UserAccountController
             DEBUGGER.debug("UserChangeRequest: {}", changeReq);
         }
 
-        mView.addObject("command", changeReq);
+        mView.addObject(Constants.COMMAND, changeReq);
         mView.setViewName(this.changePasswordPage);
 
         if (DEBUG)
@@ -512,7 +512,7 @@ public class UserAccountController
             }
         }
 
-        mView.addObject("command", new UserChangeRequest());
+        mView.addObject(Constants.COMMAND, new UserChangeRequest());
         mView.setViewName(this.enableOtpPage);
 
         if (DEBUG)
@@ -616,20 +616,16 @@ public class UserAccountController
             if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
             {
                 mView.addObject("questionList", response.getQuestionList());
-                mView.addObject("command", new UserChangeRequest());
+                mView.addObject(Constants.COMMAND, new UserChangeRequest());
                 mView.setViewName(this.changeSecurityPage);
             }
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
                 mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                return mView;
             }
             else
             {
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                return mView;
             }
         }
         catch (AccountResetException acx)
@@ -637,8 +633,6 @@ public class UserAccountController
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
             mView.setViewName(this.appConfig.getErrorResponsePage());
-
-            return mView;
         }
 
         if (DEBUG)
@@ -708,7 +702,7 @@ public class UserAccountController
             }
         }
 
-        mView.addObject("command", new UserChangeRequest());
+        mView.addObject(Constants.COMMAND, new UserChangeRequest());
         mView.setViewName(this.changeEmailPage);
 
         if (DEBUG)
@@ -778,7 +772,7 @@ public class UserAccountController
             }
         }
 
-        mView.addObject("command", new UserChangeRequest());
+        mView.addObject(Constants.COMMAND, new UserChangeRequest());
         mView.setViewName(this.changeContactPage);
 
         if (DEBUG)
@@ -857,7 +851,7 @@ public class UserAccountController
                 mView = new ModelAndView(new RedirectView());
                 mView.setViewName(this.appConfig.getLogonRedirect());
 
-                return mView;
+                break;
             case RESET:
                 hSession.removeAttribute(Constants.USER_ACCOUNT);
                 hSession.invalidate();
@@ -865,7 +859,7 @@ public class UserAccountController
                 mView = new ModelAndView(new RedirectView());
                 mView.setViewName(this.appConfig.getLogonRedirect());
 
-                return mView;
+                break;
             default:
                 break;
         }
@@ -979,14 +973,10 @@ public class UserAccountController
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
                 mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                return mView;
             }
             else
             {
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                return mView;
             }
         }
         catch (AccountChangeException acx)
@@ -994,8 +984,6 @@ public class UserAccountController
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
             mView.setViewName(this.appConfig.getErrorResponsePage());
-
-            return mView;
         }
 
         if (DEBUG)
@@ -1074,12 +1062,17 @@ public class UserAccountController
 
         if (bindResult.hasErrors())
         {
+        	ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
+
             UserChangeRequest command = new UserChangeRequest();
             changeReq.setIsReset(changeReq.isReset());
 
-            mView.addObject("command", command);
             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+            mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
+            mView.addObject(Constants.COMMAND, command);
             mView.setViewName(this.changePasswordPage);
+
+            return mView;
         }
 
         try
@@ -1173,14 +1166,10 @@ public class UserAccountController
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
                 mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                return mView;
             }
             else
             {
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                return mView;
             }
         }
         catch (AccountChangeException acx)
@@ -1267,8 +1256,11 @@ public class UserAccountController
 
         if (bindResult.hasErrors())
         {
-            mView.addObject("command", new UserChangeRequest());
-            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+        	ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
+
+        	mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+        	mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
+            mView.addObject(Constants.COMMAND, new UserChangeRequest());
             mView.setViewName(this.enableOtpPage);
         }
 
@@ -1319,14 +1311,10 @@ public class UserAccountController
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
                 mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                return mView;
             }
             else
             {
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                return mView;
             }
         }
         catch (AccountChangeException acx)
@@ -1413,8 +1401,11 @@ public class UserAccountController
 
         if (bindResult.hasErrors())
         {
-            mView.addObject("command", new UserChangeRequest());
+            ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
+
             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+            mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
+            mView.addObject(Constants.COMMAND, new UserChangeRequest());
             mView.setViewName(this.changeSecurityPage);
 
             return mView;
@@ -1471,14 +1462,10 @@ public class UserAccountController
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
                 mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                return mView;
             }
             else
             {
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                return mView;
             }
         }
         catch (AccountChangeException acx)
@@ -1486,8 +1473,6 @@ public class UserAccountController
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
             mView.setViewName(this.appConfig.getErrorResponsePage());
-
-            return mView;
         }
 
         if (DEBUG)
@@ -1565,8 +1550,11 @@ public class UserAccountController
 
         if (bindResult.hasErrors())
         {
-            mView.addObject("command", new UserChangeRequest());
+            ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
+
             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+            mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
+            mView.addObject(Constants.COMMAND, new UserChangeRequest());
             mView.setViewName(this.changeEmailPage);
 
             return mView;
@@ -1631,14 +1619,10 @@ public class UserAccountController
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
                 mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                return mView;
             }
             else
             {
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                return mView;
             }
         }
         catch (AccountChangeException acx)
@@ -1646,8 +1630,6 @@ public class UserAccountController
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
             mView.setViewName(this.appConfig.getErrorResponsePage());
-
-            return mView;
         }
 
         if (DEBUG)
@@ -1725,8 +1707,11 @@ public class UserAccountController
 
         if (bindResult.hasErrors())
         {
-            mView.addObject("command", new UserChangeRequest());
+            ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
+
             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+            mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
+            mView.addObject(Constants.COMMAND, new UserChangeRequest());
             mView.setViewName(this.changeContactPage);
 
             return mView;
@@ -1792,14 +1777,10 @@ public class UserAccountController
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
                 mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                return mView;
             }
             else
             {
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                return mView;
             }
         }
         catch (AccountChangeException acx)
@@ -1807,8 +1788,6 @@ public class UserAccountController
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
             mView.setViewName(this.appConfig.getErrorResponsePage());
-
-            return mView;
         }
 
         if (DEBUG)

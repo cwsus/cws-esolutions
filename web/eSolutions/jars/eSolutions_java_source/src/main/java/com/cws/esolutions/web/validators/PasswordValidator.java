@@ -129,7 +129,6 @@ public class PasswordValidator implements Validator
         this.messagePasswordFailedValidation = value;
     }
 
-    @Override
     public final boolean supports(final Class<?> value)
     {
         final String methodName = PasswordValidator.CNAME + "#supports(final Class<?> value)";
@@ -150,7 +149,6 @@ public class PasswordValidator implements Validator
         return isSupported;
     }
 
-    @Override
     public final void validate(final Object target, final Errors errors)
     {
         final String methodName = PasswordValidator.CNAME + "#validate(final <Class> request)";

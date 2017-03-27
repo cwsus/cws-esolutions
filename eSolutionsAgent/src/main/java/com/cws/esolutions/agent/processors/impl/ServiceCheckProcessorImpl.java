@@ -53,7 +53,6 @@ import com.cws.esolutions.agent.processors.interfaces.IServiceCheckProcessor;
  */
 public class ServiceCheckProcessorImpl implements IServiceCheckProcessor
 {
-    @Override
     public ServiceCheckResponse runSystemCheck(final ServiceCheckRequest request) throws ServiceCheckException
     {
         final String methodName = IServiceCheckProcessor.CNAME + "#runSystemCheck(final ServiceCheckRequest request) throws ServiceCheckException";

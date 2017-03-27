@@ -52,7 +52,9 @@ public class SessionFixationFilter implements Filter
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
-    @Override
+    /**
+     * @see java.servlet.Filter.init(javax.servlet.FilterConfig)
+     */
     public void init(final FilterConfig filterConfig)
     {
         final String methodName = SessionFixationFilter.CNAME + "#init(final FilterConfig filterConfig) throws ServletException";
@@ -64,7 +66,9 @@ public class SessionFixationFilter implements Filter
         }
     }
 
-    @Override
+    /**
+     * @see java.servlet.Filter.doFilter(javax.servlet.ServletRequest, java.servlet.ServletResponse, javax.servlet.FilterChain)
+     */
     public void doFilter(final ServletRequest sRequest, final ServletResponse sResponse, final FilterChain filterChain) throws IOException, ServletException
     {
         final String methodName = SessionFixationFilter.CNAME + "#doFilter(final ServletRequest sRequest, final ServletResponse sResponse, final FilterChain filterChain) throws IOException, ServletException";
@@ -148,7 +152,7 @@ public class SessionFixationFilter implements Filter
                     DEBUGGER.debug("sessionValue: {}", value);
                 }
 
-                currentSession = new HashMap<>();
+                currentSession = new HashMap<String, Object>();
                 currentSession.put(element, value);
 
                 if (DEBUG)
@@ -202,7 +206,9 @@ public class SessionFixationFilter implements Filter
         return;
     }
 
-    @Override
+    /**
+     * @see javax.servlet.Filter.destroy()
+     */
     public void destroy()
     {
         final String methodName = SessionFixationFilter.CNAME + "#destroy()";

@@ -126,7 +126,6 @@ public class UserAccountValidator implements Validator
         this.messageSuspensionFlagRequired = value;
     }
 
-    @Override
     public final boolean supports(final Class<?> value)
     {
         final String methodName = UserAccountValidator.CNAME + "#supports(final Class<?> value)";
@@ -147,7 +146,6 @@ public class UserAccountValidator implements Validator
         return isSupported;
     }
 
-    @Override
     public final void validate(final Object target, final Errors errors)
     {
         final String methodName = UserAccountValidator.CNAME + "#validate(final Object target, final Errors errors)";

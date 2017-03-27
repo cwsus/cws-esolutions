@@ -61,7 +61,6 @@ public class CheckEmailMessages implements Job
     /**
      * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
      */
-    @Override
     public void execute(final JobExecutionContext jec)
     {
         final String methodName = CheckEmailMessages.CNAME + "#execute(final JobExecutionContext jec) throws JobExecutionException";
@@ -109,7 +108,7 @@ public class CheckEmailMessages implements Job
             String encoding = (String) props.get("encoding");
 
             messageList = EmailUtils.readEmailMessages(props, true,
-                    new ArrayList<>(
+                    new ArrayList<String>(
                             Arrays.asList(
                                     name,
                                     PasswordUtils.decryptText(pass, salt.length(),

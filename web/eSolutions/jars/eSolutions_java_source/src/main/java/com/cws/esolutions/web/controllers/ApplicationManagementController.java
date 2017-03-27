@@ -91,11 +91,11 @@ public class ApplicationManagementController
     private String viewApplicationsPage = null;
     private String addApplicationRedirect = null;
     private String messageApplicationAdded = null;
+    private ApplicationValidator validator = null;
     private ApplicationServiceBean appConfig = null;
     private String messageNoPlatformAssigned = null;
     private String messageApplicationRetired = null;
     private String messageNoApplicationsFound = null;
-    private ApplicationValidator applicationValidator = null;
 
     private static final String CNAME = ApplicationManagementController.class.getName();
 
@@ -103,7 +103,7 @@ public class ApplicationManagementController
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
 
-    public final void setApplicationValidator(final ApplicationValidator value)
+    public final void setValidator(final ApplicationValidator value)
     {
         final String methodName = ApplicationManagementController.CNAME + "#setValidator(final ApplicationValidator value)";
 
@@ -113,7 +113,7 @@ public class ApplicationManagementController
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.applicationValidator = value;
+        this.validator = value;
     }
 
     public final void setAppConfig(final ApplicationServiceBean value)
@@ -396,15 +396,15 @@ public class ApplicationManagementController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.addObject("command", new Application());
-            mView.setViewName(this.defaultPage);
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
         }
-        else
-        {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-        }
+
+        mView.addObject(Constants.COMMAND, new Application());
+        mView.setViewName(this.defaultPage);
 
         if (DEBUG)
         {
@@ -476,77 +476,77 @@ public class ApplicationManagementController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            try
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
+        }
+
+        try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+            if (DEBUG)
             {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostName(hRequest.getRemoteHost());
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                }
-
-                Application application = new Application();
-                application.setName(terms);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Application: {}", application);
-                }
-
-                ApplicationManagementRequest request = new ApplicationManagementRequest();
-                request.setApplication(application);
-                request.setApplicationId(this.appConfig.getApplicationId());
-                request.setApplicationName(this.appConfig.getApplicationName());
-                request.setRequestInfo(reqInfo);
-                request.setServiceId(this.serviceId);
-                request.setUserAccount(userAccount);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("SearchRequest: {}", request);
-                }
-
-                ApplicationManagementResponse response = processor.listApplications(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ApplicationManagementResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                {
-                    mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
-                    mView.addObject("page", page);
-                    mView.addObject("searchTerms", terms);
-                    mView.addObject(Constants.SEARCH_RESULTS, response.getApplicationList());
-                    mView.addObject("command", new Application());
-                    mView.setViewName(this.defaultPage);
-                }
-                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-                }
-                else
-                {
-                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                    mView.addObject("command", new Application());
-                    mView.setViewName(this.defaultPage);
-                }
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
-            catch (ApplicationManagementException amx)
-            {
-                ERROR_RECORDER.error(amx.getMessage(), amx);
 
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+            Application application = new Application();
+            application.setName(terms);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Application: {}", application);
+            }
+
+            ApplicationManagementRequest request = new ApplicationManagementRequest();
+            request.setApplication(application);
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setApplicationName(this.appConfig.getApplicationName());
+            request.setRequestInfo(reqInfo);
+            request.setServiceId(this.serviceId);
+            request.setUserAccount(userAccount);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("SearchRequest: {}", request);
+            }
+
+            ApplicationManagementResponse response = processor.listApplications(request);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementResponse: {}", response);
+            }
+
+            if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+            {
+                mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
+                mView.addObject("page", page);
+                mView.addObject("searchTerms", terms);
+                mView.addObject(Constants.SEARCH_RESULTS, response.getApplicationList());
+                mView.addObject(Constants.COMMAND, new Application());
+                mView.setViewName(this.defaultPage);
+            }
+            else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+            {
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
+            }
+            else
+            {
+                mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                mView.addObject(Constants.COMMAND, new Application());
+                mView.setViewName(this.defaultPage);
             }
         }
-        else
+        catch (ApplicationManagementException amx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            ERROR_RECORDER.error(amx.getMessage(), amx);
+
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)
@@ -617,79 +617,79 @@ public class ApplicationManagementController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            try
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
+        }
+
+        try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+            if (DEBUG)
             {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostName(hRequest.getRemoteHost());
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            }
+
+            ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
+            appRequest.setRequestInfo(reqInfo);
+            appRequest.setServiceId(this.serviceId);
+            appRequest.setUserAccount(userAccount);
+            appRequest.setApplicationId(this.appConfig.getApplicationId());
+            appRequest.setApplicationName(this.appConfig.getApplicationName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementRequest: {}", appRequest);
+            }
+
+            ApplicationManagementResponse appResponse = appMgr.listApplications(appRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementResponse: {}", appResponse);
+            }
+
+            if (appResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+            {
+                List<Application> applicationList = appResponse.getApplicationList();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                    DEBUGGER.debug("List<Application>: {}", applicationList);
                 }
 
-                ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
-                appRequest.setRequestInfo(reqInfo);
-                appRequest.setServiceId(this.serviceId);
-                appRequest.setUserAccount(userAccount);
-                appRequest.setApplicationId(this.appConfig.getApplicationId());
-                appRequest.setApplicationName(this.appConfig.getApplicationName());
-
-                if (DEBUG)
+                if ((applicationList != null) && (applicationList.size() != 0))
                 {
-                    DEBUGGER.debug("ApplicationManagementRequest: {}", appRequest);
-                }
-
-                ApplicationManagementResponse appResponse = appMgr.listApplications(appRequest);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ApplicationManagementResponse: {}", appResponse);
-                }
-
-                if (appResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                {
-                    List<Application> applicationList = appResponse.getApplicationList();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("List<Application>: {}", applicationList);
-                    }
-
-                    if ((applicationList != null) && (applicationList.size() != 0))
-                    {
-                        mView.addObject("applicationList", applicationList);
-                        mView.setViewName(this.viewApplicationsPage);
-                    }
-                    else
-                    {
-                        mView.addObject(Constants.ERROR_MESSAGE, this.messageNoApplicationsFound);
-                        mView.setViewName(this.defaultPage);
-                    }
-                }
-                else if (appResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
+                    mView.addObject("applicationList", applicationList);
+                    mView.setViewName(this.viewApplicationsPage);
                 }
                 else
                 {
-                    mView = new ModelAndView(new RedirectView());
-                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                    mView.setViewName(this.addApplicationRedirect);
+                    mView.addObject(Constants.ERROR_MESSAGE, this.messageNoApplicationsFound);
+                    mView.setViewName(this.defaultPage);
                 }
             }
-            catch (ApplicationManagementException amx)
+            else if (appResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                ERROR_RECORDER.error(amx.getMessage(), amx);
-
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
+            }
+            else
+            {
+                mView = new ModelAndView(new RedirectView());
+                mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                mView.setViewName(this.addApplicationRedirect);
             }
         }
-        else
+        catch (ApplicationManagementException amx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            ERROR_RECORDER.error(amx.getMessage(), amx);
+
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)
@@ -761,80 +761,80 @@ public class ApplicationManagementController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            try
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
+        }
+
+    	try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+            if (DEBUG)
             {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostName(hRequest.getRemoteHost());
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                }
-
-                Application reqApplication = new Application();
-                reqApplication.setGuid(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Application: {}", reqApplication);
-                }
-
-                // get a list of available servers
-                ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
-                appRequest.setRequestInfo(reqInfo);
-                appRequest.setUserAccount(userAccount);
-                appRequest.setServiceId(this.serviceId);
-                appRequest.setApplication(reqApplication);
-                appRequest.setApplicationId(this.appConfig.getApplicationId());
-                appRequest.setApplicationName(this.appConfig.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ApplicationManagementRequest: {}", appRequest);
-                }
-
-                ApplicationManagementResponse appResponse = appMgr.getApplicationData(appRequest);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ApplicationManagementResponse: {}", appResponse);
-                }
-
-                if (appResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                {
-                    Application resApplication = appResponse.getApplication();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Application: {}", resApplication);
-                    }
-
-                    mView.addObject("application", resApplication);
-                    mView.setViewName(this.viewAppPage);
-                }
-                else if (appResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-                }
-                else
-                {
-                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                    mView.setViewName(this.defaultPage);
-                }
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
-            catch (ApplicationManagementException amx)
-            {
-                ERROR_RECORDER.error(amx.getMessage(), amx);
 
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+            Application reqApplication = new Application();
+            reqApplication.setGuid(request);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Application: {}", reqApplication);
+            }
+
+            // get a list of available servers
+            ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
+            appRequest.setRequestInfo(reqInfo);
+            appRequest.setUserAccount(userAccount);
+            appRequest.setServiceId(this.serviceId);
+            appRequest.setApplication(reqApplication);
+            appRequest.setApplicationId(this.appConfig.getApplicationId());
+            appRequest.setApplicationName(this.appConfig.getApplicationName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementRequest: {}", appRequest);
+            }
+
+            ApplicationManagementResponse appResponse = appMgr.getApplicationData(appRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementResponse: {}", appResponse);
+            }
+
+            if (appResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+            {
+                Application resApplication = appResponse.getApplication();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Application: {}", resApplication);
+                }
+
+                mView.addObject("application", resApplication);
+                mView.setViewName(this.viewAppPage);
+            }
+            else if (appResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+            {
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
+            }
+            else
+            {
+                mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                mView.setViewName(this.defaultPage);
             }
         }
-        else
+        catch (ApplicationManagementException amx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            ERROR_RECORDER.error(amx.getMessage(), amx);
+
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)
@@ -905,107 +905,101 @@ public class ApplicationManagementController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            RequestHostInfo reqInfo = new RequestHostInfo();
-            reqInfo.setHostName(hRequest.getRemoteHost());
-            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
+        }
+
+        RequestHostInfo reqInfo = new RequestHostInfo();
+        reqInfo.setHostName(hRequest.getRemoteHost());
+        reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+        }
+
+        Service platform = new Service();
+        platform.setType(ServiceType.PLATFORM);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Service: {}", platform);
+        }
+
+        ServiceManagementRequest platformReq = new ServiceManagementRequest();
+        platformReq.setRequestInfo(reqInfo);
+        platformReq.setServiceId(this.platformMgmt);
+        platformReq.setUserAccount(userAccount);
+        platformReq.setApplicationId(this.appConfig.getApplicationId());
+        platformReq.setApplicationName(this.appConfig.getApplicationName());
+        platformReq.setService(platform);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServiceManagementRequest: {}", platformReq);
+        }
+
+        try
+        {
+            ServiceManagementResponse platformResponse = processor.listServicesByType(platformReq);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                DEBUGGER.debug("ServiceManagementResponse: {}", platformResponse);
             }
 
-            Service platform = new Service();
-            platform.setType(ServiceType.PLATFORM);
-
-            if (DEBUG)
+            if (platformResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
             {
-                DEBUGGER.debug("Service: {}", platform);
-            }
-
-            ServiceManagementRequest platformReq = new ServiceManagementRequest();
-            platformReq.setRequestInfo(reqInfo);
-            platformReq.setServiceId(this.platformMgmt);
-            platformReq.setUserAccount(userAccount);
-            platformReq.setApplicationId(this.appConfig.getApplicationId());
-            platformReq.setApplicationName(this.appConfig.getApplicationName());
-            platformReq.setService(platform);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ServiceManagementRequest: {}", platformReq);
-            }
-
-            try
-            {
-                ServiceManagementResponse platformResponse = processor.listServicesByType(platformReq);
+                List<Service> platformList = platformResponse.getServiceList();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("ServiceManagementResponse: {}", platformResponse);
+                    DEBUGGER.debug("platformList: {}", platformList);
                 }
 
-                if (platformResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                if ((platformList != null) && (platformList.size() != 0))
                 {
-                    List<Service> platformList = platformResponse.getServiceList();
+                    Map<String, String> platformListing = new HashMap<String, String>();
+
+                    for (Service resPlatform : platformList)
+                    {
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Service: {}", resPlatform);
+                        }
+
+                        platformListing.put(resPlatform.getGuid(), resPlatform.getName());
+                    }
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("platformList: {}", platformList);
+                        DEBUGGER.debug("platformListing: {}", platformListing);
                     }
 
-                    if ((platformList != null) && (platformList.size() != 0))
-                    {
-                        Map<String, String> platformListing = new HashMap<>();
-
-                        for (Service resPlatform : platformList)
-                        {
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Service: {}", resPlatform);
-                            }
-
-                            platformListing.put(resPlatform.getGuid(), resPlatform.getName());
-                        }
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("platformListing: {}", platformListing);
-                        }
-
-                        mView.addObject("platformListing", platformListing);
-                    }
-                }
-                else if (platformResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    return mView;
-                }
-                else
-                {
-                    mView = new ModelAndView(new RedirectView());
-                    mView.setViewName(this.addPlatformRedirect);
-
-                    return mView;
+                    mView.addObject("platformListing", platformListing);
                 }
             }
-            catch (ServiceManagementException pmx)
+            else if (platformResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+            {
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
+            }
+            else
             {
                 mView = new ModelAndView(new RedirectView());
                 mView.setViewName(this.addPlatformRedirect);
-
-                return mView;
             }
-
-            mView.addObject("command", new ApplicationRequest());
-            mView.setViewName(this.addAppPage);
         }
-        else
+        catch (ServiceManagementException pmx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            mView = new ModelAndView(new RedirectView());
+            mView.setViewName(this.addPlatformRedirect);
         }
+
+        mView.addObject(Constants.COMMAND, new ApplicationRequest());
+        mView.setViewName(this.addAppPage);
 
         if (DEBUG)
         {
@@ -1076,72 +1070,72 @@ public class ApplicationManagementController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            try
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
+        }
+
+        try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+            if (DEBUG)
             {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostName(hRequest.getRemoteHost());
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                }
-
-                Application reqApplication = new Application();
-                reqApplication.setGuid(application);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Application: {}", reqApplication);
-                }
-
-                // get a list of available servers
-                ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
-                appRequest.setRequestInfo(reqInfo);
-                appRequest.setUserAccount(userAccount);
-                appRequest.setServiceId(this.serviceId);
-                appRequest.setApplication(reqApplication);
-                appRequest.setApplicationId(this.appConfig.getApplicationId());
-                appRequest.setApplicationName(this.appConfig.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ApplicationManagementRequest: {}", appRequest);
-                }
-
-                ApplicationManagementResponse appRes = appMgr.deleteApplicationData(appRequest);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ApplicationManagementResponse: {}", appRes);
-                }
-
-                if (appRes.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                {
-                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageApplicationRetired);
-                    mView.setViewName(this.defaultPage);
-                }
-                else if (appRes.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-                }
-                else
-                {
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-                }
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
-            catch (ApplicationManagementException amx)
-            {
-                ERROR_RECORDER.error(amx.getMessage(), amx);
 
+            Application reqApplication = new Application();
+            reqApplication.setGuid(application);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Application: {}", reqApplication);
+            }
+
+            // get a list of available servers
+            ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
+            appRequest.setRequestInfo(reqInfo);
+            appRequest.setUserAccount(userAccount);
+            appRequest.setServiceId(this.serviceId);
+            appRequest.setApplication(reqApplication);
+            appRequest.setApplicationId(this.appConfig.getApplicationId());
+            appRequest.setApplicationName(this.appConfig.getApplicationName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementRequest: {}", appRequest);
+            }
+
+            ApplicationManagementResponse appRes = appMgr.deleteApplicationData(appRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementResponse: {}", appRes);
+            }
+
+            if (appRes.getRequestStatus() == CoreServicesStatus.SUCCESS)
+            {
+                mView.addObject(Constants.RESPONSE_MESSAGE, this.messageApplicationRetired);
+                mView.setViewName(this.defaultPage);
+            }
+            else if (appRes.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+            {
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
+            }
+            else
+            {
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        else
+        catch (ApplicationManagementException amx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            ERROR_RECORDER.error(amx.getMessage(), amx);
+
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)
@@ -1213,103 +1207,103 @@ public class ApplicationManagementController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            // validate the user has access
-            try
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
+        }
+
+        // validate the user has access
+        try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+            if (DEBUG)
             {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostName(hRequest.getRemoteHost());
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            }
+
+            Application appl = new Application();
+            appl.setGuid(application);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Application: {}", appl);
+            }
+
+            ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
+            appRequest.setApplication(appl);
+            appRequest.setRequestInfo(reqInfo);
+            appRequest.setUserAccount(userAccount);
+            appRequest.setServiceId(this.serviceId);
+            appRequest.setApplicationId(this.appConfig.getApplicationId());
+            appRequest.setApplicationName(this.appConfig.getApplicationName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementRequest: {}", appRequest);
+            }
+
+            ApplicationManagementResponse appResponse = appMgr.getApplicationData(appRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementResponse: {}", appResponse);
+            }
+
+            if (appResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+            {
+                Application app = appResponse.getApplication();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                    DEBUGGER.debug("Application: {}", app);
                 }
 
-                Application appl = new Application();
-                appl.setGuid(application);
-
-                if (DEBUG)
+                if (app != null)
                 {
-                    DEBUGGER.debug("Application: {}", appl);
-                }
-
-                ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
-                appRequest.setApplication(appl);
-                appRequest.setRequestInfo(reqInfo);
-                appRequest.setUserAccount(userAccount);
-                appRequest.setServiceId(this.serviceId);
-                appRequest.setApplicationId(this.appConfig.getApplicationId());
-                appRequest.setApplicationName(this.appConfig.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ApplicationManagementRequest: {}", appRequest);
-                }
-
-                ApplicationManagementResponse appResponse = appMgr.getApplicationData(appRequest);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ApplicationManagementResponse: {}", appResponse);
-                }
-
-                if (appResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                {
-                    Application app = appResponse.getApplication();
+                    List<Service> platformList = app.getPlatforms();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("Application: {}", app);
+                        DEBUGGER.debug("platformList: {}", platformList);
                     }
 
-                    if (app != null)
+                    if ((platformList != null) && (platformList.size() != 0))
                     {
-                        List<Service> platformList = app.getPlatforms();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("platformList: {}", platformList);
-                        }
-
-                        if ((platformList != null) && (platformList.size() != 0))
-                        {
-                            mView.addObject("platformList", platformList);
-                            mView.addObject("application", app);
-                            mView.setViewName(this.retrieveFilesPage);
-                        }
-                        else
-                        {
-                            mView.addObject(Constants.ERROR_MESSAGE, this.messageNoPlatformAssigned);
-                            mView.setViewName(this.defaultPage);
-                        }
+                        mView.addObject("platformList", platformList);
+                        mView.addObject("application", app);
+                        mView.setViewName(this.retrieveFilesPage);
                     }
                     else
                     {
-                        mView.addObject(Constants.ERROR_MESSAGE, this.messageNoApplicationsFound);
+                        mView.addObject(Constants.ERROR_MESSAGE, this.messageNoPlatformAssigned);
                         mView.setViewName(this.defaultPage);
                     }
                 }
-                else if (appResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-                }
                 else
                 {
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+                    mView.addObject(Constants.ERROR_MESSAGE, this.messageNoApplicationsFound);
+                    mView.setViewName(this.defaultPage);
                 }
             }
-            catch (ApplicationManagementException amx)
+            else if (appResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                ERROR_RECORDER.error(amx.getMessage(), amx);
-
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
+            }
+            else
+            {
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        else
+        catch (ApplicationManagementException amx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            ERROR_RECORDER.error(amx.getMessage(), amx);
+
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)
@@ -1381,104 +1375,104 @@ public class ApplicationManagementController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            // validate the user has access
-            try
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
+        }
+
+        // validate the user has access
+        try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+            if (DEBUG)
             {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostName(hRequest.getRemoteHost());
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            }
+
+            Application app = new Application();
+            app.setGuid(application);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Application: {}", app);
+            }
+
+            Service reqPlatform = new Service();
+            reqPlatform.setGuid(platform);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Service: {}", reqPlatform);
+            }
+
+            ServiceManagementRequest platformRequest = new ServiceManagementRequest();
+            platformRequest.setUserAccount(userAccount);
+            platformRequest.setRequestInfo(reqInfo);
+            platformRequest.setServiceId(this.platformMgmt);
+            platformRequest.setService(reqPlatform);
+            platformRequest.setApplicationId(this.appConfig.getApplicationId());
+            platformRequest.setApplicationName(this.appConfig.getApplicationName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ServiceManagementRequest: {}", platformRequest);
+            }
+
+            ServiceManagementResponse platformResponse = processor.getServiceData(platformRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ServiceManagementResponse: {}", platformResponse);
+            }
+
+            if (platformResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+            {
+                Service resPlatform = platformResponse.getService();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                    DEBUGGER.debug("Service: {}", resPlatform);
                 }
 
-                Application app = new Application();
-                app.setGuid(application);
-
-                if (DEBUG)
+                if (resPlatform != null)
                 {
-                    DEBUGGER.debug("Application: {}", app);
-                }
-
-                Service reqPlatform = new Service();
-                reqPlatform.setGuid(platform);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Service: {}", reqPlatform);
-                }
-
-                ServiceManagementRequest platformRequest = new ServiceManagementRequest();
-                platformRequest.setUserAccount(userAccount);
-                platformRequest.setRequestInfo(reqInfo);
-                platformRequest.setServiceId(this.platformMgmt);
-                platformRequest.setService(reqPlatform);
-                platformRequest.setApplicationId(this.appConfig.getApplicationId());
-                platformRequest.setApplicationName(this.appConfig.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ServiceManagementRequest: {}", platformRequest);
-                }
-
-                ServiceManagementResponse platformResponse = processor.getServiceData(platformRequest);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ServiceManagementResponse: {}", platformResponse);
-                }
-
-                if (platformResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                {
-                    Service resPlatform = platformResponse.getService();
+                    List<Server> servers = resPlatform.getServers();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("Service: {}", resPlatform);
+                        DEBUGGER.debug("List<Server>: {}", servers);
                     }
 
-                    if (resPlatform != null)
-                    {
-                        List<Server> servers = resPlatform.getServers();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("List<Server>: {}", servers);
-                        }
-
-                        mView.addObject("platform", resPlatform);
-                        mView.addObject("servers", servers);
-                        mView.addObject("application", app);
-                        mView.setViewName(this.retrieveFilesPage);
-                    }
-                    else
-                    {
-                        mView.addObject(Constants.ERROR_MESSAGE, this.messageNoPlatformAssigned);
-                        mView.setViewName(this.defaultPage);
-                    }
-                }
-                else if (platformResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
+                    mView.addObject("platform", resPlatform);
+                    mView.addObject("servers", servers);
+                    mView.addObject("application", app);
+                    mView.setViewName(this.retrieveFilesPage);
                 }
                 else
                 {
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+                    mView.addObject(Constants.ERROR_MESSAGE, this.messageNoPlatformAssigned);
+                    mView.setViewName(this.defaultPage);
                 }
             }
-            catch (ServiceManagementException pmx)
+            else if (platformResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                ERROR_RECORDER.error(pmx.getMessage(), pmx);
-
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
+            }
+            else
+            {
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        else
+        catch (ServiceManagementException pmx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            ERROR_RECORDER.error(pmx.getMessage(), pmx);
+
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)
@@ -1551,103 +1545,103 @@ public class ApplicationManagementController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            // validate the user has access
-            try
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
+        }
+
+        // validate the user has access
+        try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+            if (DEBUG)
             {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostName(hRequest.getRemoteHost());
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            }
+
+            Service reqPlatform = new Service();
+            reqPlatform.setGuid(platform);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Service: {}", reqPlatform);
+            }
+
+            Application appl = new Application();
+            appl.setGuid(application);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Application: {}", appl);
+            }
+
+            Server targetServer = new Server();
+            targetServer.setServerGuid(server);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Server: {}", targetServer);
+            }
+
+            ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
+            appRequest.setApplication(appl);
+            appRequest.setRequestInfo(reqInfo);
+            appRequest.setUserAccount(userAccount);
+            appRequest.setServiceId(this.serviceId);
+            appRequest.setServer(targetServer);
+            appRequest.setApplicationId(this.appConfig.getApplicationId());
+            appRequest.setApplicationName(this.appConfig.getApplicationName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementRequest: {}", appRequest);
+            }
+
+            ApplicationManagementResponse appResponse = appMgr.applicationFileRequest(appRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementResponse: {}", appResponse);
+            }
+
+            if (appResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+            {
+                List<String> fileList = appResponse.getFileList();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                    DEBUGGER.debug("List<String>: {}", fileList);
                 }
 
-                Service reqPlatform = new Service();
-                reqPlatform.setGuid(platform);
-
-                if (DEBUG)
+                if ((fileList != null) && (fileList.size() != 0))
                 {
-                    DEBUGGER.debug("Service: {}", reqPlatform);
-                }
-
-                Application appl = new Application();
-                appl.setGuid(application);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Application: {}", appl);
-                }
-
-                Server targetServer = new Server();
-                targetServer.setServerGuid(server);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Server: {}", targetServer);
-                }
-
-                ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
-                appRequest.setApplication(appl);
-                appRequest.setRequestInfo(reqInfo);
-                appRequest.setUserAccount(userAccount);
-                appRequest.setServiceId(this.serviceId);
-                appRequest.setServer(targetServer);
-                appRequest.setApplicationId(this.appConfig.getApplicationId());
-                appRequest.setApplicationName(this.appConfig.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ApplicationManagementRequest: {}", appRequest);
-                }
-
-                ApplicationManagementResponse appResponse = appMgr.applicationFileRequest(appRequest);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ApplicationManagementResponse: {}", appResponse);
-                }
-
-                if (appResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                {
-                    List<String> fileList = appResponse.getFileList();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("List<String>: {}", fileList);
-                    }
-
-                    if ((fileList != null) && (fileList.size() != 0))
-                    {
-                        mView.addObject("fileList", fileList);
-                        mView.addObject("application", appl);
-                        mView.addObject("server", targetServer);
-                        mView.addObject("platform", reqPlatform);
-                        mView.addObject("currentPath", appResponse.getApplication().getInstallPath());
-                        mView.setViewName(this.retrieveFilesPage);
-                    }
-                }
-                else if (appResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-                }
-                else
-                {
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+                    mView.addObject("fileList", fileList);
+                    mView.addObject("application", appl);
+                    mView.addObject("server", targetServer);
+                    mView.addObject("platform", reqPlatform);
+                    mView.addObject("currentPath", appResponse.getApplication().getInstallPath());
+                    mView.setViewName(this.retrieveFilesPage);
                 }
             }
-            catch (ApplicationManagementException amx)
+            else if (appResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                ERROR_RECORDER.error(amx.getMessage(), amx);
-
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
+            }
+            else
+            {
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        else
+        catch (ApplicationManagementException amx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            ERROR_RECORDER.error(amx.getMessage(), amx);
+
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)
@@ -1721,85 +1715,100 @@ public class ApplicationManagementController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            // validate the user has access
-            try
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
+        }
+
+        // validate the user has access
+        try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+            if (DEBUG)
             {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostName(hRequest.getRemoteHost());
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            }
 
-                if (DEBUG)
+            Service reqPlatform = new Service();
+            reqPlatform.setGuid(platform);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Service: {}", reqPlatform);
+            }
+
+            Server targetServer = new Server();
+            targetServer.setServerGuid(server);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Server: {}", targetServer);
+            }
+
+            Application targetApp = new Application();
+            targetApp.setGuid(application);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Application: {}", targetApp);
+            }
+
+            ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
+            appRequest.setApplication(targetApp);
+            appRequest.setRequestInfo(reqInfo);
+            appRequest.setUserAccount(userAccount);
+            appRequest.setServiceId(this.serviceId);
+            appRequest.setServer(targetServer);
+            appRequest.setRequestFile(vpath);
+            appRequest.setApplicationId(this.appConfig.getApplicationId());
+            appRequest.setApplicationName(this.appConfig.getApplicationName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementRequest: {}", appRequest);
+            }
+
+            ApplicationManagementResponse appResponse = appMgr.applicationFileRequest(appRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementResponse: {}", appResponse);
+            }
+
+            if (appResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+            {
+                // we're going to go out, get a list of files/directories
+                // in the base of the application, and return that back here
+                // then list them out as links on the display
+                // need a way to ensure the existing selected path is here
+                // as well as the newly selected path too
+                if (appResponse.getFileData() != null)
                 {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                }
+                    byte[] fileData = appResponse.getFileData();
 
-                Service reqPlatform = new Service();
-                reqPlatform.setGuid(platform);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Service: {}", reqPlatform);
-                }
-
-                Server targetServer = new Server();
-                targetServer.setServerGuid(server);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Server: {}", targetServer);
-                }
-
-                Application targetApp = new Application();
-                targetApp.setGuid(application);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Application: {}", targetApp);
-                }
-
-                ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
-                appRequest.setApplication(targetApp);
-                appRequest.setRequestInfo(reqInfo);
-                appRequest.setUserAccount(userAccount);
-                appRequest.setServiceId(this.serviceId);
-                appRequest.setServer(targetServer);
-                appRequest.setRequestFile(vpath);
-                appRequest.setApplicationId(this.appConfig.getApplicationId());
-                appRequest.setApplicationName(this.appConfig.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ApplicationManagementRequest: {}", appRequest);
-                }
-
-                ApplicationManagementResponse appResponse = appMgr.applicationFileRequest(appRequest);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ApplicationManagementResponse: {}", appResponse);
-                }
-
-                if (appResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                {
-                    // we're going to go out, get a list of files/directories
-                    // in the base of the application, and return that back here
-                    // then list them out as links on the display
-                    // need a way to ensure the existing selected path is here
-                    // as well as the newly selected path too
-                    if (appResponse.getFileData() != null)
+                    if (DEBUG)
                     {
-                        byte[] fileData = appResponse.getFileData();
+                        DEBUGGER.debug("fileData: {}", fileData);
+                    }
+
+                    if ((fileData != null) && (fileData.length != 0))
+                    {
+                        String dataString = IOUtils.toString(fileData, this.appConfig.getFileEncoding());
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("fileData: {}", fileData);
+                            DEBUGGER.debug("dataString: {}", dataString);
                         }
 
-                        if ((fileData != null) && (fileData.length != 0))
+                        if (StringUtils.isNotEmpty(dataString))
                         {
-                            String dataString = IOUtils.toString(fileData, this.appConfig.getFileEncoding());
+                            dataString = StringUtils.replace(dataString, "<", "&lt;");
+                            dataString = StringUtils.replace(dataString, ">", "&gt;");
 
                             if (DEBUG)
                             {
@@ -1808,32 +1817,12 @@ public class ApplicationManagementController
 
                             if (StringUtils.isNotEmpty(dataString))
                             {
-                                dataString = StringUtils.replace(dataString, "<", "&lt;");
-                                dataString = StringUtils.replace(dataString, ">", "&gt;");
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("dataString: {}", dataString);
-                                }
-
-                                if (StringUtils.isNotEmpty(dataString))
-                                {
-                                    mView.addObject("server", targetServer);
-                                    mView.addObject("platform", reqPlatform);
-                                    mView.addObject("fileData", dataString);
-                                    mView.addObject("application", appResponse.getApplication());
-                                    mView.addObject("currentPath", vpath);
-                                    mView.setViewName(this.viewFilePage);
-                                }
-                                else
-                                {
-                                    mView.addObject(Constants.ERROR_MESSAGE, this.messageNoFileData);
-                                    mView.addObject("platform", reqPlatform);
-                                    mView.addObject("server", targetServer);
-                                    mView.addObject("application", appResponse.getApplication());
-                                    mView.addObject("currentPath", vpath);
-                                    mView.setViewName(this.viewFilePage);
-                                }
+                                mView.addObject("server", targetServer);
+                                mView.addObject("platform", reqPlatform);
+                                mView.addObject("fileData", dataString);
+                                mView.addObject("application", appResponse.getApplication());
+                                mView.addObject("currentPath", vpath);
+                                mView.setViewName(this.viewFilePage);
                             }
                             else
                             {
@@ -1857,46 +1846,51 @@ public class ApplicationManagementController
                     }
                     else
                     {
-                        List<String> fileList = appResponse.getFileList();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("List<String>: {}", fileList);
-                        }
-
+                        mView.addObject(Constants.ERROR_MESSAGE, this.messageNoFileData);
                         mView.addObject("platform", reqPlatform);
+                        mView.addObject("server", targetServer);
                         mView.addObject("application", appResponse.getApplication());
                         mView.addObject("currentPath", vpath);
-                        mView.addObject("server", targetServer);
-                        mView.addObject("fileList", fileList);
-                        mView.setViewName(this.retrieveFilesPage);
+                        mView.setViewName(this.viewFilePage);
                     }
-                }
-                else if (appResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
                 }
                 else
                 {
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+                    List<String> fileList = appResponse.getFileList();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("List<String>: {}", fileList);
+                    }
+
+                    mView.addObject("platform", reqPlatform);
+                    mView.addObject("application", appResponse.getApplication());
+                    mView.addObject("currentPath", vpath);
+                    mView.addObject("server", targetServer);
+                    mView.addObject("fileList", fileList);
+                    mView.setViewName(this.retrieveFilesPage);
                 }
             }
-            catch (ApplicationManagementException amx)
+            else if (appResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                ERROR_RECORDER.error(amx.getMessage(), amx);
-
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
             }
-            catch (IOException iox)
+            else
             {
-                ERROR_RECORDER.error(iox.getMessage(), iox);
-
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        else
+        catch (ApplicationManagementException amx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            ERROR_RECORDER.error(amx.getMessage(), amx);
+
+            mView.setViewName(this.appConfig.getErrorResponsePage());
+        }
+        catch (IOException iox)
+        {
+            ERROR_RECORDER.error(iox.getMessage(), iox);
+
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)
@@ -1969,69 +1963,69 @@ public class ApplicationManagementController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            try
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
+        }
+
+        try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+            if (DEBUG)
             {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostName(hRequest.getRemoteHost());
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                }
-
-                ApplicationManagementRequest request = new ApplicationManagementRequest();
-                request.setApplication(application);
-                request.setApplicationId(this.appConfig.getApplicationId());
-                request.setApplicationName(this.appConfig.getApplicationName());
-                request.setRequestInfo(reqInfo);
-                request.setServiceId(this.serviceId);
-                request.setUserAccount(userAccount);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("SearchRequest: {}", request);
-                }
-
-                ApplicationManagementResponse response = processor.listApplications(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ApplicationManagementResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                {
-                    mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
-                    mView.addObject("page", 1);
-                    mView.addObject("searchTerms", application.getName());
-                    mView.addObject(Constants.SEARCH_RESULTS, response.getApplicationList());
-                    mView.addObject("command", new Application());
-                    mView.setViewName(this.defaultPage);
-                }
-                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-                }
-                else
-                {
-                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                    mView.addObject("command", new Application());
-                    mView.setViewName(this.defaultPage);
-                }
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
-            catch (ApplicationManagementException amx)
-            {
-                ERROR_RECORDER.error(amx.getMessage(), amx);
 
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+            ApplicationManagementRequest request = new ApplicationManagementRequest();
+            request.setApplication(application);
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setApplicationName(this.appConfig.getApplicationName());
+            request.setRequestInfo(reqInfo);
+            request.setServiceId(this.serviceId);
+            request.setUserAccount(userAccount);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("SearchRequest: {}", request);
+            }
+
+            ApplicationManagementResponse response = processor.listApplications(request);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementResponse: {}", response);
+            }
+
+            if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+            {
+                mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
+                mView.addObject("page", 1);
+                mView.addObject("searchTerms", application.getName());
+                mView.addObject(Constants.SEARCH_RESULTS, response.getApplicationList());
+                mView.addObject(Constants.COMMAND, new Application());
+                mView.setViewName(this.defaultPage);
+            }
+            else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+            {
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
+            }
+            else
+            {
+                mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                mView.addObject(Constants.COMMAND, new Application());
+                mView.setViewName(this.defaultPage);
             }
         }
-        else
+        catch (ApplicationManagementException amx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            ERROR_RECORDER.error(amx.getMessage(), amx);
+
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)
@@ -2104,102 +2098,103 @@ public class ApplicationManagementController
             }
         }
 
-        if (this.appConfig.getServices().get(this.serviceName))
+        if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            this.applicationValidator.validate(request, bindResult);
+        	mView.setViewName(this.appConfig.getUnavailablePage());
 
-            if (bindResult.hasErrors())
+        	return mView;
+        }
+
+        this.validator.validate(request, bindResult);
+
+        if (bindResult.hasErrors())
+        {
+            // validation failed
+            ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
+
+            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+            mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
+            mView.addObject(Constants.COMMAND, new ApplicationRequest());
+            mView.setViewName(this.addAppPage);
+
+            return mView;
+        }
+
+        try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+            if (DEBUG)
             {
-                // validation failed
-                ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
-
-                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
-                mView.addObject("command", new ApplicationRequest());
-                mView.setViewName(this.addAppPage);
-
-                return mView;
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            try
+            Service newPlatform = new Service();
+            newPlatform.setGuid(request.getPlatform());
+
+            if (DEBUG)
             {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostName(hRequest.getRemoteHost());
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                }
-
-                Service newPlatform = new Service();
-                newPlatform.setGuid(request.getPlatform());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Service: {}", newPlatform);
-                }
-
-                Application newApp = new Application();
-                newApp.setGuid(UUID.randomUUID().toString());
-                newApp.setName(request.getApplicationName());
-                newApp.setPlatforms(new ArrayList<>(Arrays.asList(newPlatform)));
-                newApp.setVersion(request.getVersion());
-                newApp.setLogsDirectory(request.getLogsPath());
-                newApp.setInstallPath(request.getInstallPath());
-                newApp.setPackageLocation(request.getScmPath());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Application: {}", newApp);
-                }
-
-                ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
-                appRequest.setApplication(newApp);
-                appRequest.setServiceId(this.serviceId);
-                appRequest.setRequestInfo(reqInfo);
-                appRequest.setUserAccount(userAccount);
-                appRequest.setApplicationId(this.appConfig.getApplicationId());
-                appRequest.setApplicationName(this.appConfig.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ApplicationManagementRequest: {}", request);
-                }
-
-                ApplicationManagementResponse response = processor.addNewApplication(appRequest);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ApplicationManagementResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                {
-                    // app added
-
-                    mView = new ModelAndView(new RedirectView());
-                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageApplicationAdded);
-                    mView.setViewName(this.addApplicationRedirect);
-                }
-                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-                }
-                else
-                {
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-                }
+                DEBUGGER.debug("Service: {}", newPlatform);
             }
-            catch (ApplicationManagementException amx)
-            {
-                ERROR_RECORDER.error(amx.getMessage(), amx);
 
+            Application newApp = new Application();
+            newApp.setGuid(UUID.randomUUID().toString());
+            newApp.setName(request.getApplicationName());
+            newApp.setPlatforms(new ArrayList<Service>(Arrays.asList(newPlatform)));
+            newApp.setVersion(request.getVersion());
+            newApp.setLogsDirectory(request.getLogsPath());
+            newApp.setInstallPath(request.getInstallPath());
+            newApp.setPackageLocation(request.getScmPath());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Application: {}", newApp);
+            }
+
+            ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
+            appRequest.setApplication(newApp);
+            appRequest.setServiceId(this.serviceId);
+            appRequest.setRequestInfo(reqInfo);
+            appRequest.setUserAccount(userAccount);
+            appRequest.setApplicationId(this.appConfig.getApplicationId());
+            appRequest.setApplicationName(this.appConfig.getApplicationName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementRequest: {}", request);
+            }
+
+            ApplicationManagementResponse response = processor.addNewApplication(appRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementResponse: {}", response);
+            }
+
+            if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+            {
+                // app added
+
+                mView = new ModelAndView(new RedirectView());
+                mView.addObject(Constants.RESPONSE_MESSAGE, this.messageApplicationAdded);
+                mView.setViewName(this.addApplicationRedirect);
+            }
+            else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+            {
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
+            }
+            else
+            {
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        else
+        catch (ApplicationManagementException amx)
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            ERROR_RECORDER.error(amx.getMessage(), amx);
+
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)

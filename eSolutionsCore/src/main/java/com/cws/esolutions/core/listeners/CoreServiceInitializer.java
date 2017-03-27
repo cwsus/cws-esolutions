@@ -137,7 +137,7 @@ public class CoreServiceInitializer
 
                 if (dsMap == null)
                 {
-                    dsMap = new HashMap<>();
+                    dsMap = new HashMap<String, DataSource>();
                 }
 
                 for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())

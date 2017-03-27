@@ -66,14 +66,16 @@ public class SSLEnforcementFilter implements Filter
     private static final String FILTER_CONFIG_PARAM_NAME = "filter-config";
     private static final String CNAME = SSLEnforcementFilter.class.getName();
     private static final String FILTER_CONFIG_FILE_NAME = "config/FilterConfig";
-    private static final Set<String> LOCALHOST = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("localhost", "127.0.0.1")));
+    private static final Set<String> LOCALHOST = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("localhost", "127.0.0.1")));
     private static final SystemConfig systemConfig = SecurityServiceBean.getInstance().getConfigData().getSystemConfig();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
-    @Override
+    /**
+     * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
+     */
     public void init(final FilterConfig filterConfig) throws ServletException
     {
         final String methodName = SSLEnforcementFilter.CNAME + "#init(FilterConfig filterConfig) throws ServletException";
@@ -133,7 +135,9 @@ public class SSLEnforcementFilter implements Filter
         }
     }
 
-    @Override
+    /**
+     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
+     */
     public void doFilter(final ServletRequest sRequest, final ServletResponse sResponse, final FilterChain filterChain) throws ServletException, IOException
     {
         final String methodName = SSLEnforcementFilter.CNAME + "#doFilter(final ServletRequest req, final servletResponse res, final FilterChain filterChain) throws ServletException, IOException";
@@ -317,7 +321,9 @@ public class SSLEnforcementFilter implements Filter
         return;
     }
 
-    @Override
+    /**
+     * @see javax.servlet.Filter#destroy()
+     */
     public void destroy()
     {
         final String methodName = SSLEnforcementFilter.CNAME + "#destroy()";

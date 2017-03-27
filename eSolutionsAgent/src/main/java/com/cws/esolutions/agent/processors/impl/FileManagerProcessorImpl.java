@@ -41,7 +41,6 @@ import com.cws.esolutions.agent.processors.interfaces.IFileManagerProcessor;
  */
 public class FileManagerProcessorImpl implements IFileManagerProcessor
 {
-    @Override
     public FileManagerResponse retrieveFile(final FileManagerRequest request) throws FileManagerException
     {
         final String methodName = IFileManagerProcessor.CNAME + "#retrieveFile(final ApplicationManagerRequest request) throws FileManagerException";
@@ -68,7 +67,7 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
 
                 if ((fileList != null) && (fileList.length != 0))
                 {
-                    List<String> fileData = new ArrayList<>();
+                    List<String> fileData = new ArrayList<String>();
 
                     for (File file : fileList)
                     {
@@ -140,7 +139,6 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
         return response;
     }
 
-    @Override
     public FileManagerResponse deployFile(final FileManagerRequest request) throws FileManagerException
     {
         final String methodName = IFileManagerProcessor.CNAME + "#deployFile(final FileManagerRequest request) throws FileManagerException";
@@ -168,7 +166,7 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
 
             if ((isSourceList) && (isTargetList))
             {
-                List<String> failedFiles = new ArrayList<>();
+                List<String> failedFiles = new ArrayList<String>();
 
                 for (int x = 0; x < request.getSourceFiles().size(); x++)
                 {
@@ -274,7 +272,6 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
         return response;
     }
 
-    @Override
     public FileManagerResponse deleteFile(final FileManagerRequest request) throws FileManagerException
     {
         final String methodName = IFileManagerProcessor.CNAME + "#deleteFile(final FileManagerRequest request) throws FileManagerException";
@@ -296,7 +293,7 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
 
         if ((request.getTargetFiles() != null) && (request.getTargetFiles().size() != 0))
         {
-            List<String> failedFiles = new ArrayList<>();
+            List<String> failedFiles = new ArrayList<String>();
 
             for (String target : request.getTargetFiles())
             {

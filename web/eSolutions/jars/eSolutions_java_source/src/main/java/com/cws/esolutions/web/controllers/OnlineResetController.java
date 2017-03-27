@@ -349,7 +349,7 @@ public class OnlineResetController
         }
 
         mView.addObject("resetType", ResetRequestType.USERNAME);
-        mView.addObject("command", new UserChangeRequest());
+        mView.addObject(Constants.COMMAND, new UserChangeRequest());
         mView.setViewName(this.submitEmailAddrPage);
 
         if (DEBUG)
@@ -439,7 +439,7 @@ public class OnlineResetController
         }
 
         mView.addObject("resetType", ResetRequestType.PASSWORD);
-        mView.addObject("command", new UserChangeRequest());
+        mView.addObject(Constants.COMMAND, new UserChangeRequest());
         mView.setViewName(this.submitUsernamePage);
 
         if (DEBUG)
@@ -718,15 +718,17 @@ public class OnlineResetController
 
         if (bindResult.hasErrors())
         {
-            ERROR_RECORDER.error("Failed to validate request");
+            // validation failed
+            ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
 
             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
-            mView.addObject("command", new UserChangeRequest());
+            mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
+            mView.addObject(Constants.COMMAND, new UserChangeRequest());
             mView.setViewName(this.submitUsernamePage);
 
             return mView;
         }
-        
+
         try
         {
             // ensure authenticated access
@@ -780,10 +782,10 @@ public class OnlineResetController
                     EmailMessage message = new EmailMessage();
                     message.setIsAlert(false);
                     message.setMessageSubject(this.forgotUsernameEmail.getSubject());
-                    message.setMessageTo(new ArrayList<>(
+                    message.setMessageTo(new ArrayList<String>(
                             Arrays.asList(
                                     String.format(this.forgotUsernameEmail.getTo()[0], userAccount.getEmailAddr()))));
-                    message.setEmailAddr(new ArrayList<>(
+                    message.setEmailAddr(new ArrayList<String>(
                             Arrays.asList(
                                     String.format(this.forgotUsernameEmail.getTo()[0], this.appConfig.getEmailAddress()))));
                     message.setMessageBody(String.format(this.forgotUsernameEmail.getText(),
@@ -895,10 +897,12 @@ public class OnlineResetController
 
         if (bindResult.hasErrors())
         {
-            ERROR_RECORDER.error("Request failed validation");
+            // validation failed
+            ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
 
             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
-            mView.addObject("command", new UserChangeRequest());
+            mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
+            mView.addObject(Constants.COMMAND, new UserChangeRequest());
             mView.setViewName(this.submitUsernamePage);
 
             return mView;
@@ -974,7 +978,7 @@ public class OnlineResetController
                 hSession.setAttribute(Constants.USER_ACCOUNT, resAccount);
 
                 mView.addObject("resetType", ResetRequestType.QUESTIONS);
-                mView.addObject("command", changeReq);
+                mView.addObject(Constants.COMMAND, changeReq);
                 mView.setViewName(this.submitAnswersPage);
             }
             else
@@ -1065,10 +1069,12 @@ public class OnlineResetController
 
         if (bindResult.hasErrors())
         {
-            ERROR_RECORDER.error("Request validation failed");
+            // validation failed
+            ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
 
             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
-            mView.addObject("command", request);
+            mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
+            mView.addObject(Constants.COMMAND, request);
             mView.setViewName(this.submitAnswersPage);
 
             return mView;
@@ -1169,10 +1175,10 @@ public class OnlineResetController
                         EmailMessage message = new EmailMessage();
                         message.setIsAlert(false);
                         message.setMessageSubject(this.forgotPasswordEmail.getSubject());
-                        message.setMessageTo(new ArrayList<>(
+                        message.setMessageTo(new ArrayList<String>(
                                 Arrays.asList(
                                         String.format(this.forgotPasswordEmail.getTo()[0], userAccount.getEmailAddr()))));
-                        message.setEmailAddr(new ArrayList<>(
+                        message.setEmailAddr(new ArrayList<String>(
                                 Arrays.asList(
                                         String.format(this.forgotPasswordEmail.getTo()[0], this.appConfig.getEmailAddress()))));
                         message.setMessageBody(String.format(this.forgotPasswordEmail.getText(),
@@ -1203,8 +1209,8 @@ public class OnlineResetController
                         EmailMessage smsMessage = new EmailMessage();
                         smsMessage.setIsAlert(true); // set this to alert so it shows as high priority
                         smsMessage.setMessageBody(resetRes.getSmsCode());
-                        smsMessage.setMessageTo(new ArrayList<>(Arrays.asList(responseAccount.getPagerNumber())));
-                        smsMessage.setEmailAddr(new ArrayList<>(Arrays.asList(this.appConfig.getEmailAddress())));
+                        smsMessage.setMessageTo(new ArrayList<String>(Arrays.asList(responseAccount.getPagerNumber())));
+                        smsMessage.setEmailAddr(new ArrayList<String>(Arrays.asList(this.appConfig.getEmailAddress())));
 
                         if (DEBUG)
                         {
@@ -1241,7 +1247,7 @@ public class OnlineResetController
 
                 resetError = true;
                 mView.addObject(Constants.ERROR_RESPONSE, this.messageRequestFailure);
-                mView.addObject("command", request);
+                mView.addObject(Constants.COMMAND, request);
                 mView.setViewName(this.submitAnswersPage);
             }
         }

@@ -66,7 +66,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#changeUserEmail(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
      */
-    @Override
     public AccountChangeResponse changeUserEmail(final AccountChangeRequest request) throws AccountChangeException
     {
         final String methodName = IAccountChangeProcessor.CNAME + "#changeUserEmail(final AccountChangeRequest request) throws AccountChangeException";
@@ -197,7 +196,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#changeUserContact(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
      */
-    @Override
     public AccountChangeResponse changeUserContact(final AccountChangeRequest request) throws AccountChangeException
     {
         final String methodName = IAccountChangeProcessor.CNAME + "#changeUserContact(final AccountChangeRequest request) throws AccountChangeException";
@@ -252,7 +250,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                             secBean.getConfigData().getSystemConfig().getEncoding()));
 
                 boolean isComplete = userManager.modifyUserContact(userAccount.getUsername(),
-                        new ArrayList<>(
+                        new ArrayList<String>(
                                 Arrays.asList(
                                         userAccount.getTelephoneNumber(),
                                         userAccount.getPagerNumber())));
@@ -333,7 +331,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#changeUserPassword(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
      */
-    @Override
     public AccountChangeResponse changeUserPassword(final AccountChangeRequest request) throws AccountChangeException
     {
         final String methodName = IAccountChangeProcessor.CNAME + "#changeUserPassword(final AccountChangeRequest request) throws AccountChangeException";
@@ -551,7 +548,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#changeUserSecurity(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
      */
-    @Override
     public AccountChangeResponse changeUserSecurity(final AccountChangeRequest request) throws AccountChangeException
     {
         final String methodName = IAccountChangeProcessor.CNAME + "#changeUserSecurity(final AccountChangeRequest request) throws AccountChangeException";
@@ -636,7 +632,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                             // good, move forward
                             // make the modification in the user repository
                             boolean isComplete = userManager.modifyUserSecurity(userAccount.getUsername(), 
-                                    new ArrayList<>(
+                                    new ArrayList<String>(
                                         Arrays.asList(
                                             reqSecurity.getSecQuestionOne(),
                                             reqSecurity.getSecQuestionTwo(),
@@ -668,7 +664,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                     // undo it then the user will never be able to login without admin
                                     // intervention
                                     boolean isReverted = userManager.modifyUserSecurity(userAccount.getUsername(), 
-                                            new ArrayList<>(
+                                            new ArrayList<String>(
                                                 Arrays.asList(
                                                         currentSec.get(0),
                                                         currentSec.get(1),
@@ -779,7 +775,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#changeUserKeys(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
      */
-    @Override
     public AccountChangeResponse changeUserKeys(final AccountChangeRequest request) throws AccountChangeException
     {
         final String methodName = IAccountChangeProcessor.CNAME + "#changeUserKeys(final AccountChangeRequest request) throws AccountChangeException";
@@ -894,7 +889,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#enableOtpAuth(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
      */
-    @Override
     public AccountChangeResponse enableOtpAuth(final AccountChangeRequest request) throws AccountChangeException
     {
         final String methodName = IAccountChangeProcessor.CNAME + "#enableOtpAuth(final AccountChangeRequest request) throws AccountChangeException";
@@ -1084,7 +1078,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#disableOtpAuth(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
      */
-    @Override
     public AccountChangeResponse disableOtpAuth(final AccountChangeRequest request) throws AccountChangeException
     {
         final String methodName = IAccountChangeProcessor.CNAME + "#disableOtpAuth(final AccountChangeRequest request) throws AccountChangeException";

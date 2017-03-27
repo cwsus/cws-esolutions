@@ -73,6 +73,9 @@ import com.cws.esolutions.security.services.exception.AccessControlServiceExcept
  */
 public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcessor
 {
+	/**
+	 * @see com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor#addRecordToEntry(DNSServiceRequest)
+	 */
 	public DNSServiceResponse addRecordToEntry(final DNSServiceRequest request) throws DNSServiceException
     {
         final String methodName = IDNSServiceRequestProcessor.CNAME + "#addRecordToEntry(final DNSServiceRequest request) throws DNSServiceException";
@@ -205,7 +208,6 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
     /**
      * @see com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor#performLookup(com.cws.esolutions.core.processors.dto.DNSServiceRequest)
      */
-    @Override
     public DNSServiceResponse performLookup(DNSServiceRequest request) throws DNSServiceException
     {
         final String methodName = IDNSServiceRequestProcessor.CNAME + "#performLookup(final DNSServiceRequest request) throws DNSServiceException";
@@ -288,7 +290,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                     }
 
                     DNSRecord responseRecord = new DNSRecord();
-                    responseRecord.setPrimaryAddress(new ArrayList<>(Arrays.asList(record.rdataToString())));
+                    responseRecord.setPrimaryAddress(new ArrayList<String>(Arrays.asList(record.rdataToString())));
                     responseRecord.setRecordName(record.getName().toString());
                     responseRecord.setRecordType(DNSRecordType.valueOf(Type.string(record.getType())));
 
@@ -307,7 +309,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 }
                 else
                 {
-                    List<DNSRecord> responseList = new ArrayList<>();
+                    List<DNSRecord> responseList = new ArrayList<DNSRecord>();
 
                     if ((recordList != null) && (recordList.length != 0))
                     {
@@ -319,7 +321,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                             }
 
                             DNSRecord rec = new DNSRecord();
-                            rec.setPrimaryAddress(new ArrayList<>(Arrays.asList(record.rdataToString())));
+                            rec.setPrimaryAddress(new ArrayList<String>(Arrays.asList(record.rdataToString())));
                             rec.setRecordName(record.getName().toString());
                             rec.setRecordType(DNSRecordType.valueOf(Type.string(record.getType())));
 
@@ -419,7 +421,6 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
     /**
      * @see com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor#createNewService(com.cws.esolutions.core.processors.dto.DNSServiceRequest)
      */
-    @Override
     public DNSServiceResponse createNewService(final DNSServiceRequest request) throws DNSServiceException
     {
         final String methodName = IDNSServiceRequestProcessor.CNAME + "#createNewService(final DNSServiceRequest request) throws DNSServiceException";
@@ -677,7 +678,6 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
     /**
      * @see com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor#pushNewService(com.cws.esolutions.core.processors.dto.DNSServiceRequest)
      */
-    @Override
     public DNSServiceResponse pushNewService(final DNSServiceRequest request) throws DNSServiceException
     {
         final String methodName = IDNSServiceRequestProcessor.CNAME + "#pushNewService(final DNSServiceRequest request) throws DNSServiceException";
@@ -915,7 +915,6 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
     /**
      * @see com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor#performSiteTransfer(com.cws.esolutions.core.processors.dto.DNSServiceRequest)
      */
-    @Override
     public DNSServiceResponse performSiteTransfer(final DNSServiceRequest request) throws DNSServiceException
     {
         final String methodName = IDNSServiceRequestProcessor.CNAME + "#performSiteTransfer(final DNSServiceRequest request) throws DNSServiceException";

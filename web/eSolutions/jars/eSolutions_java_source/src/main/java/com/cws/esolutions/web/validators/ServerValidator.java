@@ -353,7 +353,6 @@ public class ServerValidator implements Validator
         this.messageNetworkPartitionRequired = value;
     }
 
-    @Override
     public final boolean supports(final Class<?> value)
     {
         final String methodName = ServerValidator.CNAME + "#supports(final Class<?> value)";
@@ -374,7 +373,6 @@ public class ServerValidator implements Validator
         return isSupported;
     }
 
-    @Override
     public final void validate(final Object target, final Errors errors)
     {
         final String methodName = ServerValidator.CNAME + "#validate(final Object target, final Errors errors)";

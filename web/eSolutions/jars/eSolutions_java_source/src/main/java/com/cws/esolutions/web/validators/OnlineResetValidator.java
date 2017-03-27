@@ -84,7 +84,6 @@ public class OnlineResetValidator implements Validator
         this.messageEmailAddressRequired = value;
     }
 
-    @Override
     public final boolean supports(final Class<?> value)
     {
         final String methodName = OnlineResetValidator.CNAME + "#supports(final Class<?> value)";
@@ -105,7 +104,6 @@ public class OnlineResetValidator implements Validator
         return isSupported;
     }
 
-    @Override
     public final void validate(final Object target, final Errors errors)
     {
         final String methodName = OnlineResetValidator.CNAME + "#validate(final Object target, final Errors errors)";

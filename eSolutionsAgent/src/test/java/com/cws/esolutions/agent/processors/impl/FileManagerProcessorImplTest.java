@@ -119,13 +119,13 @@ public class FileManagerProcessorImplTest
     {
         try
         {
-            List<String> fileSet = new ArrayList<>(
+            List<String> fileSet = new ArrayList<String>(
                     Arrays.asList(
                             "C:\\var\\temp\\acct.sql",
                             "C:\\var\\temp\\cust.sql",
                             "C:\\var\\temp\\dns.sql"));
 
-            List<byte[]> dataSet = new ArrayList<>(
+            List<byte[]> dataSet = new ArrayList<byte[]>(
                     Arrays.asList(
                             FileUtils.readFileToByteArray(FileUtils.getFile("C:\\temp\\acct.sql")),
                             FileUtils.readFileToByteArray(FileUtils.getFile("C:\\temp\\cust.sql")),
@@ -153,7 +153,7 @@ public class FileManagerProcessorImplTest
     @Test
     public final void testDeleteFiles()
     {
-        List<String> fileSet = new ArrayList<>(
+        List<String> fileSet = new ArrayList<String>(
                 Arrays.asList(
                         "C:\\var\\temp\\acct.sql",
                         "C:\\var\\temp\\cust.sql",

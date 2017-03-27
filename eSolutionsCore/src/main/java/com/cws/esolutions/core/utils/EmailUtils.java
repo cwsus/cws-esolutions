@@ -370,7 +370,7 @@ public final class EmailUtils
 
                         if (mailMessages.length != 0)
                         {
-                            emailMessages = new ArrayList<>();
+                            emailMessages = new ArrayList<EmailMessage>();
 
                             for (Message message : mailMessages)
                             {
@@ -396,7 +396,7 @@ public final class EmailUtils
                                 {
                                     // process it
                                     Multipart attachment = (Multipart) message.getContent();
-                                    Map<String, InputStream> attachmentList = new HashMap<>();
+                                    Map<String, InputStream> attachmentList = new HashMap<String, InputStream>();
 
                                     for (int x = 0; x < attachment.getCount(); x++)
                                     {
@@ -410,10 +410,10 @@ public final class EmailUtils
                                         attachmentList.put(bodyPart.getFileName(), bodyPart.getInputStream());
                                     }
 
-                                    List<String> toList = new ArrayList<>();
-                                    List<String> ccList = new ArrayList<>();
-                                    List<String> bccList = new ArrayList<>();
-                                    List<String> fromList = new ArrayList<>();
+                                    List<String> toList = new ArrayList<String>();
+                                    List<String> ccList = new ArrayList<String>();
+                                    List<String> bccList = new ArrayList<String>();
+                                    List<String> fromList = new ArrayList<String>();
 
                                     for (Address from : message.getFrom())
                                     {
