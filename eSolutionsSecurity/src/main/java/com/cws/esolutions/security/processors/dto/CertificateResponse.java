@@ -1,0 +1,128 @@
+/*
+ * Copyright (c) 2009 - 2017 CaspersBox Web Services
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.cws.esolutions.security.processors.dto;
+/*
+ * Project: eSolutionsSecurity
+ * Package: com.cws.esolutions.security.processors.dto
+ * File: CertificateResponse.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   03/28/2017 01:41:00             Created.
+ */
+import java.io.File;
+import org.slf4j.Logger;
+import java.io.Serializable;
+import org.slf4j.LoggerFactory;
+import java.lang.reflect.Field;
+
+import com.cws.esolutions.security.SecurityServiceConstants;
+/**
+ * @author khuntly
+ * @version 1.0
+ * @see java.io.Serializable
+ */
+public class CertificateResponse implements Serializable
+{
+	private File csrFile = null;
+
+	private static final long serialVersionUID = 4835067783924884463L;
+	private static final String CNAME = CertificateResponse.class.getName();
+
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
+    private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
+
+    public final void setCsrFile(final File value)
+    {
+        final String methodName = CertificateResponse.CNAME + "#setCsrFile(final File value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.csrFile = value;
+    }
+
+    public final File getCsrFile()
+    {
+        final String methodName = CertificateResponse.CNAME + "#getCsrFile()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.csrFile);
+        }
+
+        return this.csrFile;
+    }
+
+    @Override
+    public final String toString()
+    {
+        final String methodName = CertificateResponse.CNAME + "#toString()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        StringBuilder sBuilder = new StringBuilder()
+            .append("[" + this.getClass().getName() + "]" + SecurityServiceConstants.LINE_BREAK + "{" + SecurityServiceConstants.LINE_BREAK);
+
+        for (Field field : this.getClass().getDeclaredFields())
+        {
+            if (DEBUG)
+            {
+                DEBUGGER.debug("field: {}", field);
+            }
+
+            if (!(field.getName().equals("methodName")) &&
+                    (!(field.getName().equals("CNAME"))) &&
+                    (!(field.getName().equals("DEBUGGER"))) &&
+                    (!(field.getName().equals("DEBUG"))) &&
+                    (!(field.getName().equals("ERROR_RECORDER"))) &&
+                    (!(field.getName().equals("userSecurity"))) &&
+                    (!(field.getName().equals("serialVersionUID"))))
+            {
+                try
+                {
+                    if (field.get(this) != null)
+                    {
+                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + SecurityServiceConstants.LINE_BREAK);
+                    }
+                }
+                catch (IllegalAccessException iax)
+                {
+                    ERROR_RECORDER.error(iax.getMessage(), iax);
+                }
+            }
+        }
+
+        sBuilder.append('}');
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("sBuilder: {}", sBuilder);
+        }
+
+        return sBuilder.toString();
+    }
+}

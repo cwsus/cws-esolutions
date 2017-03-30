@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 - 2014 CaspersBox Web Services
+ * Copyright (c) 2009 - 2017 CaspersBox Web Services
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,47 +75,40 @@ public class FileKeyManager implements KeyManager
 
         try
         {
-            if (!(FileUtils.getFile(keyConfig.getKeyDirectory()).exists()))
+            if (!(keyDirectory.exists()))
             {
-                throw new KeyManagementException("Configured key directory does not exist");
+            	throw new KeyManagementException("Configured key directory does not exist and unable to create it");
             }
 
-            if (keyDirectory.exists())
+            File publicFile = FileUtils.getFile(keyDirectory + "/" + guid + ".pub");
+            File privateFile = FileUtils.getFile(keyDirectory + "/" + guid + ".key");
+
+            if ((publicFile.exists()) && (privateFile.exists()))
             {
-                File publicFile = FileUtils.getFile(keyDirectory + "/" + guid + ".pub");
-                File privateFile = FileUtils.getFile(keyDirectory + "/" + guid + ".key");
+                privStream = new FileInputStream(privateFile);
+                byte[] privKeyBytes = IOUtils.toByteArray(privStream);
 
-                if ((publicFile.exists()) && (privateFile.exists()))
-                {
-                    privStream = new FileInputStream(privateFile);
-                    byte[] privKeyBytes = IOUtils.toByteArray(privStream);
+                pubStream = new FileInputStream(publicFile);
+                byte[] pubKeyBytes = IOUtils.toByteArray(pubStream);
 
-                    pubStream = new FileInputStream(publicFile);
-                    byte[] pubKeyBytes = IOUtils.toByteArray(pubStream);
+                // files exist
+                KeyFactory keyFactory = KeyFactory.getInstance(keyConfig.getKeyAlgorithm());
 
-                    // files exist
-                    KeyFactory keyFactory = KeyFactory.getInstance(keyConfig.getKeyAlgorithm());
+                // generate private key
+                PKCS8EncodedKeySpec privateSpec = new PKCS8EncodedKeySpec(privKeyBytes);
+                PrivateKey privKey = keyFactory.generatePrivate(privateSpec);
 
-                    // generate private key
-                    PKCS8EncodedKeySpec privateSpec = new PKCS8EncodedKeySpec(privKeyBytes);
-                    PrivateKey privKey = keyFactory.generatePrivate(privateSpec);
+                // generate pubkey
+                X509EncodedKeySpec publicSpec = new X509EncodedKeySpec(pubKeyBytes);
+                PublicKey pubKey = keyFactory.generatePublic(publicSpec);
 
-                    // generate pubkey
-                    X509EncodedKeySpec publicSpec = new X509EncodedKeySpec(pubKeyBytes);
-                    PublicKey pubKey = keyFactory.generatePublic(publicSpec);
-
-                    // make the keypair
-                    keyPair = new KeyPair(pubKey, privKey);
-                }
-                else
-                {
-                    // files dont exist
-                    throw new KeyManagementException("Failed to locate user keys");
-                }
+                // make the keypair
+                keyPair = new KeyPair(pubKey, privKey);
             }
             else
             {
-                throw new KeyManagementException("User key directory does not exist");
+                // files dont exist
+                throw new KeyManagementException("Failed to locate user keys");
             }
         }
         catch (FileNotFoundException fnfx)
@@ -171,17 +164,12 @@ public class FileKeyManager implements KeyManager
 
         try
         {
-            if (!(FileUtils.getFile(keyConfig.getKeyDirectory()).exists()))
-            {
-                throw new KeyManagementException("Configured key directory does not exist");
-            }
-
             if (!(keyDirectory.exists()))
             {
-                if (!(keyDirectory.mkdir()))
-                {
-                    throw new IOException("Failed to create user key directory");
-                }
+            	if (!(keyDirectory.mkdirs()))
+            	{
+            		throw new KeyManagementException("Configured key directory does not exist and unable to create it");
+            	}
             }
 
             keyDirectory.setExecutable(true, true);
@@ -270,7 +258,7 @@ public class FileKeyManager implements KeyManager
 
         try
         {
-            if (!(FileUtils.getFile(keyConfig.getKeyDirectory()).exists()))
+            if (!(keyDirectory.exists()))
             {
                 throw new KeyManagementException("Configured key directory does not exist");
             }

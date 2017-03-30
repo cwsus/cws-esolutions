@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 - 2014 CaspersBox Web Services
+ * Copyright (c) 2009 - 2017 CaspersBox Web Services
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,6 +48,7 @@ public final class KeyConfig implements Serializable
     private String keyManager = null;
     private String keyAlgorithm = null;
     private String keyDirectory = null;
+    private String signatureAlgorithm = null;
     private String publicKeyAttribute = null;
 
     private static final String CNAME = KeyConfig.class.getName();
@@ -122,6 +123,19 @@ public final class KeyConfig implements Serializable
         this.publicKeyAttribute = value;
     }
 
+    public final void setSignatureAlgorithm(final String value)
+    {
+        final String methodName = KeyConfig.CNAME + "#setSignatureAlgorithm(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.signatureAlgorithm = value;
+    }
+
     @XmlElement(name = "keyManager")
     public final String getKeyManager()
     {
@@ -190,6 +204,20 @@ public final class KeyConfig implements Serializable
         }
 
         return this.publicKeyAttribute;
+    }
+
+    @XmlElement(name = "signatureAlgorithm")
+    public final String getSignatureAlgorithm()
+    {
+        final String methodName = KeyConfig.CNAME + "#getSignatureAlgorithm()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.signatureAlgorithm);
+        }
+
+        return this.signatureAlgorithm;
     }
 
     @Override

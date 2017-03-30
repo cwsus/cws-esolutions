@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2009 - 2014 CaspersBox Web Services
+ * Copyright (c) 2009 - 2017 CaspersBox Web Services
  * 
  * All rights reserved. These materials are confidential and
  * proprietary to CaspersBox Web Services N.A and no part of
@@ -14,10 +14,6 @@
  * com.cws.us.esolutions.dnsservice/jsp/html/en
  * DNSService_ServiceLookup.jsp
  *
- * $Id$
- * $Author$
- * $Date$
- * $Revision$
  * @author kh05451
  * @version 1.0
  *

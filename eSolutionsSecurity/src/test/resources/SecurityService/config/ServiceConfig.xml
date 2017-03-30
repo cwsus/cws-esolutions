@@ -79,6 +79,7 @@
     <!-- only required if file-based signing is used. the keys arent used for anything else. -->
     <key-config>
         <keyAlgorithm>RSA</keyAlgorithm> <!-- keygen algorithm -->
+        <signatureAlgorithm>SHA512withRSA</signatureAlgorithm>
         <keySize>4096</keySize> <!-- if algorithm is DSA, this MUST be 1024: http://docs.oracle.com/javase/6/docs/technotes/guides/security/SunProviders.html -->
         <keyDirectory>/opt/cws/eSolutions/keys</keyDirectory> <!-- this is ONLY required if you're using a file-based keymanager -->
         <keyManager>com.cws.esolutions.security.dao.keymgmt.impl.SQLKeyManager</keyManager>

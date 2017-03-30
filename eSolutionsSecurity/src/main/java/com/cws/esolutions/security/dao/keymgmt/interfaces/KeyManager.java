@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 - 2014 CaspersBox Web Services
+ * Copyright (c) 2009 - 2017 CaspersBox Web Services
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,6 +78,22 @@ public interface KeyManager
      * @throws KeyManagementException {@link com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException} if an exception occurs during processing
      */
     boolean createKeys(final String guid) throws KeyManagementException;
+
+    /**
+     * 
+     * @param commonName
+     * @param orgUnitName
+     * @param orgName
+     * @param localityName
+     * @param stateName
+     * @param countryName
+     * @param contactEmail
+     * @param validityPeriod
+     * @param keySize
+     * @return
+     * @throws KeyManagementException {@link com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException} if an exception occurs during processing
+     */
+    // KeyPair createCertificateRequest(final String commonName, final String orgUnitName, final String orgName, final String localityName, final String stateName, final String countryName, final String contactEmail, final int validityPeriod, final int keySize) throws KeyManagementException;
 
     /**
      * Revokes and removes the keys associated with a provided user account so they cannot be re-used.
