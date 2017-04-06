@@ -64,9 +64,9 @@ public interface IAccountResetProcessor
     static final Authenticator authenticator = AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());
     static final UserManager userManager = UserManagerFactory.getUserManager(secBean.getConfigData().getSecurityConfig().getUserManager());
 
+    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
     /**
      * Finds and returns the user account associated with the provided search criterion.

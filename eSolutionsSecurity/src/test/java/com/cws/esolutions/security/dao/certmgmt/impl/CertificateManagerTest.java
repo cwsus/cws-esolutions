@@ -27,6 +27,8 @@ package com.cws.esolutions.security.dao.certmgmt.impl;
  */
 import org.junit.Test;
 import java.util.List;
+
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Assert;
@@ -71,9 +73,9 @@ public class CertificateManagerTest
     {
         List<String> subjectData = new ArrayList<String>(
         		Arrays.asList(
-        				"kevin.com",
-        				"myorgunit",
-        				"myorgname",
+        				"test.junit.com",
+        				"Research and Development",
+        				"CaspersBox Web Services",
         				"Buffalo",
         				"New York",
         				"US",
@@ -81,7 +83,19 @@ public class CertificateManagerTest
 
         try
         {
-        	processor.createCertificateRequest(subjectData, "mypassword", 365, 4096);
+        	processor.createCertificateRequest(subjectData, "junit", 365, 4096);
+        }
+        catch (Exception ex)
+        {
+            Assert.fail(ex.getMessage());
+        }
+    }
+
+    @Test public void applyCertificateRequest()
+    {
+        try
+        {
+        	processor.applyCertificateRequest("test.junit.com", FileUtils.getFile("test.junit.com.crt"), "junit");
         }
         catch (Exception ex)
         {

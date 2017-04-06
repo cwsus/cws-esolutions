@@ -40,246 +40,218 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  * @version 1.0
  * @see java.io.Serializable
  */
-@XmlType(name = "repository-config")
+@XmlType(name = "certificate-config")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class RepositoryConfig implements Serializable
+public final class CertificateConfig implements Serializable
 {
-    private String baseObject = null;
-    private String repositoryBaseDN = null;
-    private String repositoryUserBase = null;
-    private String repositoryRoleBase = null;
-    private UserReturningAttributes userAttributes = null;
-    private SecurityReturningAttributes securityAttributes = null;
-    private String saltFile = System.getProperty("user.home") + "/etc/secret.properties";
-    private String passwordFile = System.getProperty("user.home") + "/etc/repository.properties";
+	private int certKeySize = 2048;
+	private String certAlgorithm = null;
+	private String certificateType = null;
+    private String rootCertificateName = null;
+    private String rootCertificateFile = null;
+    private String intermediateCertificateName = null;
+    private String intermediateCertificateFile = null;
 
-    private static final long serialVersionUID = -4767557511096921048L;
-    private static final String CNAME = RepositoryConfig.class.getName();
+    private static final long serialVersionUID = -8867893854548973748L;
+    private static final String CNAME = CertificateConfig.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
 
-    public final void setSaltFile(final String value)
+    public final void setCertKeySize(final int value)
     {
-        final String methodName = RepositoryConfig.CNAME + "#setSaltFile(final String value)";
+        final String methodName = CertificateConfig.CNAME + "#setCertKeySize(final int value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.saltFile = value;
-    }
-
-    public final void setPasswordFile(final String value)
-    {
-        final String methodName = RepositoryConfig.CNAME + "#setPasswordFile(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.passwordFile = value;
-    }
-
-    public final void setBaseObject(final String value)
-    {
-        final String methodName = RepositoryConfig.CNAME + "#setBaseObject(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.baseObject = value;
-    }
-
-    public final void setRepositoryBaseDN(final String value)
-    {
-        final String methodName = RepositoryConfig.CNAME + "#setRepositoryBaseDN(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.repositoryBaseDN = value;
-    }
-
-    public final void setRepositoryUserBase(final String value)
-    {
-        final String methodName = RepositoryConfig.CNAME + "#setRepositoryUserBase(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.repositoryUserBase = value;
-    }
-
-    public final void setRepositoryRoleBase(final String value)
-    {
-        final String methodName = RepositoryConfig.CNAME + "#setRepositoryRoleBase(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.repositoryRoleBase = value;
-    }
-
-    public final void setSecurityAttributes(final SecurityReturningAttributes value)
-    {
-        final String methodName = RepositoryConfig.CNAME + "#setSecurityAttributes(final SecurityReturningAttributes value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.securityAttributes = value;
-    }
-
-    public final void setUserAttributes(final UserReturningAttributes value)
-    {
-        final String methodName = RepositoryConfig.CNAME + "#setUserAttributes(final UserReturningAttributes value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.userAttributes = value;
-    }
-
-    @XmlElement(name = "passwordFile")
-    public final String getPasswordFile()
-    {
-        final String methodName = RepositoryConfig.CNAME + "#getPasswordFile()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.passwordFile);
-        }
-
-        return this.passwordFile;
-    }
-
-    @XmlElement(name = "saltFile")
-    public final String getSaltFile()
-    {
-        final String methodName = RepositoryConfig.CNAME + "#getSaltFile()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.saltFile);
-        }
-
-        return this.saltFile;
-    }
-
-    @XmlElement(name = "baseObjectClass")
-    public final String getBaseObject()
-    {
-        final String methodName = RepositoryConfig.CNAME + "#getBaseObject()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.baseObject);
-        }
-
-        return this.baseObject;
-    }
-
-    @XmlElement(name = "repositoryBaseDN")
-    public final String getRepositoryBaseDN()
-    {
-        final String methodName = RepositoryConfig.CNAME + "#getRepositoryBaseDN()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.repositoryBaseDN);
-        }
-
-        return this.repositoryBaseDN;
-    }
-
-    @XmlElement(name = "repositoryUserBase")
-    public final String getRepositoryUserBase()
-    {
-        final String methodName = RepositoryConfig.CNAME + "#getRepositoryUserBase(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.repositoryRoleBase);
-        }
-
-        return this.repositoryUserBase;
-    }
-
-    @XmlElement(name = "repositoryRoleBase")
-    public final String getRepositoryRoleBase()
-    {
-        final String methodName = RepositoryConfig.CNAME + "#getRepositoryRoleBase()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.repositoryRoleBase);
-        }
-
-        return this.repositoryRoleBase;
-    }
-
-    @XmlElement(name = "userReturningAttributes")
-    public final UserReturningAttributes getUserAttributes()
-    {
-        final String methodName = RepositoryConfig.CNAME + "#getUserAttributes()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.userAttributes);
         }
         
-        return this.userAttributes;
+        this.certKeySize = value;
     }
 
-    @XmlElement(name = "securityReturningAttributes")
-    public final SecurityReturningAttributes getSecurityAttributes()
+    public final void setCertificateType(final String value)
     {
-        final String methodName = RepositoryConfig.CNAME + "#getSecurityAttributes()";
+        final String methodName = CertificateConfig.CNAME + "#setCertificateType(final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.securityAttributes);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.certificateType = value;
+    }
+
+    public final void setCertAlgorithm(final String value)
+    {
+        final String methodName = CertificateConfig.CNAME + "#setCertAlgorithm(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
         }
         
-        return this.securityAttributes;
+        this.certAlgorithm = value;
+    }
+
+    public final void setRootCertificateName(final String value)
+    {
+        final String methodName = CertificateConfig.CNAME + "#setRootCertificateName(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+        
+        this.rootCertificateName = value;
+    }
+
+    public final void setRootCertificateFile(final String value)
+    {
+        final String methodName = CertificateConfig.CNAME + "#setRootCertificateFile(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+        
+        this.rootCertificateFile = value;
+    }
+
+    public final void setIntermediateCertificateName(final String value)
+    {
+        final String methodName = CertificateConfig.CNAME + "#setIntermediateCertificateName(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+        
+        this.intermediateCertificateName = value;
+    }
+
+    public final void setIntermediateCertificateFile(final String value)
+    {
+        final String methodName = CertificateConfig.CNAME + "#setIntermediateCertificateFile(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+        
+        this.intermediateCertificateFile = value;
+    }
+
+    @XmlElement(name = "certKeySize")
+    public final int getCertKeySize()
+    {
+        final String methodName = CertificateConfig.CNAME + "#getCertKeySize()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.certKeySize);
+        }
+        
+        return this.certKeySize;
+    }
+
+    @XmlElement(name = "certAlgorithm")
+    public final String getCertAlgorithm()
+    {
+        final String methodName = CertificateConfig.CNAME + "#getCertAlgorithm()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.certAlgorithm);
+        }
+        
+        return this.certAlgorithm;
+    }
+
+    @XmlElement(name = "certificateType")
+    public final String getCertificateType()
+    {
+        final String methodName = CertificateConfig.CNAME + "#getCertificateType()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.certificateType);
+        }
+        
+        return this.certificateType;
+    }
+
+    @XmlElement(name = "rootCertificateName")
+    public final String getRootCertificateName()
+    {
+        final String methodName = CertificateConfig.CNAME + "#getRootCertificateName()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.rootCertificateName);
+        }
+        
+        return this.rootCertificateName;
+    }
+
+    @XmlElement(name = "rootCertificateFile")
+    public final String getRootCertificateFile()
+    {
+        final String methodName = CertificateConfig.CNAME + "#getRootCertificateFile()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.rootCertificateFile);
+        }
+        
+        return this.rootCertificateFile;
+    }
+
+    @XmlElement(name = "intermediateCertificateName")
+    public final String getIntermediateCertificateName()
+    {
+        final String methodName = CertificateConfig.CNAME + "#getIntermediateCertificateName()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.intermediateCertificateName);
+        }
+        
+        return this.intermediateCertificateName;
+    }
+
+    @XmlElement(name = "intermediateCertificateFile")
+    public final String getIntermediateCertificateFile()
+    {
+        final String methodName = CertificateConfig.CNAME + "#getIntermediateCertificateFile()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.intermediateCertificateFile);
+        }
+        
+        return this.intermediateCertificateFile;
     }
 
     @Override
     public final String toString()
     {
-        final String methodName = RepositoryConfig.CNAME + "#toString()";
+        final String methodName = CertificateConfig.CNAME + "#toString()";
 
         if (DEBUG)
         {

@@ -53,9 +53,19 @@
         <keyAlgorithm>RSA</keyAlgorithm> <!-- keygen algorithm -->
         <signatureAlgorithm>SHA512withRSA</signatureAlgorithm>
         <keySize>4096</keySize> <!-- if algorithm is DSA, this MUST be 1024: http://docs.oracle.com/javase/6/docs/technotes/guides/security/SunProviders.html -->
-        <keyDirectory>/opt/eSolutions/keys</keyDirectory> <!-- this is ONLY required if you're using a file-based keymanager -->
-        <keyManager>com.cws.esolutions.security.keymgmt.impl.LDAPKeyManager</keyManager>
+        <keyDirectory>/opt/cws/eSolutions/keys</keyDirectory> <!-- this is ONLY required if you're using a file-based keymanager -->
+        <keyManager>com.cws.esolutions.security.dao.keymgmt.impl.SQLKeyManager</keyManager>
     </key-config>
+
+	<certificate-config>
+    	<certificateType>X509</certificateType>
+    	<certAlgorithm>SHA512withRSA</certAlgorithm>
+     	<certificateKeySize>2048</certificateKeySize>
+     	<rootCertificateName>CWS Root CA v1</rootCertificateName>
+     	<intermediateCertificateName>CWS Intermediate CA v1</intermediateCertificateName>
+     	<rootCertificateFile>/opt/cws/eSolutions/keys/cacerts/CWS Root CA v1.crt</rootCertificateFile>
+     	<intermediateCertificateFile>/opt/cws/eSolutions/keys/cacerts/CWS Intermediate CA v1.crt</intermediateCertificateFile>
+	</certificate-config>
 
     <!-- only required if file-based signing is used. if this is configured then key-config MUST be configured. -->
     <file-security-config>

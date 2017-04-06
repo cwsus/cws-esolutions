@@ -97,7 +97,7 @@ public class AuditDAOImpl implements IAuditDAO
             }
             catch (SQLException sqx)
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+            	throw new SQLException(sqx.getMessage(), sqx);
             }
         }
     }
@@ -216,7 +216,7 @@ public class AuditDAOImpl implements IAuditDAO
             }
             catch (SQLException sqx)
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+            	throw new SQLException(sqx.getMessage(), sqx);
             }
         }
 

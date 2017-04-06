@@ -37,7 +37,6 @@ import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.CertificateRequest;
 import com.cws.esolutions.security.processors.dto.CertificateResponse;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
-import com.cws.esolutions.security.processors.exception.CertificateRequestException;
 import com.cws.esolutions.security.processors.interfaces.ICertificateRequestProcessor;
 /**
  * @author khuntly
@@ -80,11 +79,11 @@ public final class CertificateRequestProcessorTest
     	request.setUserAccount(userAccount);
     	request.setApplicationId("junit");
     	request.setApplicationName("junit");
-    	request.setCommonName("junit.com");
+    	request.setCommonName("test.junit.com");
     	request.setOrganizationalUnit("junit");
-    	request.setOrganizationName("junit");
+    	request.setOrganizationName("CaspersBox Web Services");
     	request.setLocalityName("Buffalo");
-    	request.setStateName("NY");
+    	request.setStateName("New York");
     	request.setCountryName("US");
     	request.setContactEmail("secadm@caspersbox.com");
     	request.setKeySize(2048);
@@ -96,10 +95,11 @@ public final class CertificateRequestProcessorTest
     		CertificateResponse response = processor.generateCertificateRequest(request);
     		Assert.assertNotNull(response.getCsrFile());
     	}
-    	catch (CertificateRequestException crx)
+    	catch (Exception ex)
     	{
-    		Assert.fail(crx.getMessage());
-    	}
+    		ex.printStackTrace();
+			Assert.fail(ex.getMessage());
+		}
     }
 
     @After public void tearDown()

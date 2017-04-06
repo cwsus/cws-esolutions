@@ -273,7 +273,7 @@ public class LDAPUserManager implements UserManager
 
                     if (addToGroupResult.getResultCode() != ResultCode.SUCCESS)
                     {
-                        ERROR_RECORDER.error("Failed to add user to group: {}", role);
+                        throw new UserManagementException("Failed to add user to group: " +  role);
                     }
                 }
 

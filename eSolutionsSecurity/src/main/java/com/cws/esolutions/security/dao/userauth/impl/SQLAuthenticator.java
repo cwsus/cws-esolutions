@@ -145,7 +145,7 @@ public class SQLAuthenticator implements Authenticator
             }
             catch (SQLException sqx)
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                throw new AuthenticatorException(sqx.getMessage(), sqx);
             }
         }
 
@@ -283,7 +283,7 @@ public class SQLAuthenticator implements Authenticator
             }
             catch (SQLException sqx)
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                throw new AuthenticatorException(sqx.getMessage(), sqx);
             }
         }
 
@@ -371,7 +371,7 @@ public class SQLAuthenticator implements Authenticator
             }
             catch (SQLException sqx)
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                throw new AuthenticatorException(sqx.getMessage(), sqx);
             }
         }
 
@@ -439,7 +439,7 @@ public class SQLAuthenticator implements Authenticator
             }
             catch (SQLException sqx)
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                throw new AuthenticatorException(sqx.getMessage(), sqx);
             }
         }
     }

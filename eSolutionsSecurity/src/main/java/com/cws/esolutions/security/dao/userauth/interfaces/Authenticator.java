@@ -54,7 +54,6 @@ public interface Authenticator
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + Authenticator.class.getName());
 
     /**
      * Processes an agent logon request via an LDAP user datastore. If the

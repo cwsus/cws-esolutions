@@ -55,6 +55,7 @@ public final class SecurityConfigurationData implements Serializable
     private KeyConfig keyConfig = null;
     private SystemConfig systemConfig = null;
     private RepositoryConfig repoConfig = null;
+    private CertificateConfig certConfig = null;
     private SecurityConfig securityConfig = null;
     private ResourceConfig resourceConfig = null;
     private ExceptionConfig exceptionConfig = null;
@@ -161,7 +162,7 @@ public final class SecurityConfigurationData implements Serializable
 
     public final void setFileSecurityConfig(final FileSecurityConfig value)
     {
-        final String methodName = SecurityConfigurationData.CNAME + "#setFileSecurityConfig(final ExceptionConfig value)";
+        final String methodName = SecurityConfigurationData.CNAME + "#setFileSecurityConfig(final FileSecurityConfig value)";
 
         if (DEBUG)
         {
@@ -170,6 +171,19 @@ public final class SecurityConfigurationData implements Serializable
         }
 
         this.fileSecurityConfig = value;
+    }
+
+    public final void setCertConfig(final CertificateConfig value)
+    {
+        final String methodName = SecurityConfigurationData.CNAME + "#setCertConfig(final CertificateConfig value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.certConfig = value;
     }
 
     @XmlElement(name = "system-config")
@@ -200,7 +214,7 @@ public final class SecurityConfigurationData implements Serializable
         return this.securityConfig;
     }
 
-    @XmlElement(name = "repositoryConfiguration")
+    @XmlElement(name = "repository-config")
     public final RepositoryConfig getRepoConfig()
     {
         final String methodName = SecurityConfigurationData.CNAME + "#getRepoConfig()";
@@ -282,6 +296,20 @@ public final class SecurityConfigurationData implements Serializable
         }
 
         return this.passwordRepo;
+    }
+
+    @XmlElement(name = "certificate-config")
+    public final CertificateConfig getCertConfig()
+    {
+        final String methodName = SecurityConfigurationData.CNAME + "#getCertConfig()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.certConfig);
+        }
+
+        return this.certConfig;
     }
 
     public static final String expandEnvVars(final String value)

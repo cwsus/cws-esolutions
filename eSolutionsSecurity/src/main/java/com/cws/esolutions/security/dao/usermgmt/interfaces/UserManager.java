@@ -54,7 +54,6 @@ public interface UserManager
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + UserManager.class.getName());
 
     /**
      * Validates new user uniqueness by ensuring that the provided GUID and username

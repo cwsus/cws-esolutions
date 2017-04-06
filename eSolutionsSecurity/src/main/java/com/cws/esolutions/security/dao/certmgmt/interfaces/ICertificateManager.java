@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.config.xml.KeyConfig;
 import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.config.xml.CertificateConfig;
 import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
 /**
  * API allowing user key management tasks. Used in conjunction with the
@@ -47,18 +48,30 @@ public interface ICertificateManager
 	static final String CNAME = ICertificateManager.class.getName();
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
     static final KeyConfig keyConfig = svcBean.getConfigData().getKeyConfig();
+    static final CertificateConfig certConfig = svcBean.getConfigData().getCertConfig();
     
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + ICertificateManager.class.getName());
 
     /**
      * 
      * @param subjectData
+     * @param storePassword
      * @param validityPeriod
      * @param keySize
      * @return
-     * @throws KeyManagementException {@link com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException} if an exception occurs during processing
+     * @throws KeyManagementException
      */
     File createCertificateRequest(final List<String> subjectData, final String storePassword, final int validityPeriod, final int keySize) throws KeyManagementException;
+
+    /**
+     * 
+     * @param commonName
+     * @param certFile
+     * @param storeFile
+     * @param storePassword
+     * @return
+     * @throws KeyManagementException {@link com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException} if an exception occurs during processing
+     */
+    boolean applyCertificateRequest(final String commonName, final File certFile, final String storePassword) throws KeyManagementException;
 }

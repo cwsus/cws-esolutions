@@ -137,7 +137,7 @@ public class SQLUserManager implements UserManager
             }
             catch (SQLException sqx)
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                throw new UserManagementException(sqx.getMessage(), sqx);
             }
         }
 
@@ -213,7 +213,7 @@ public class SQLUserManager implements UserManager
             }
             catch (SQLException sqx)
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                throw new UserManagementException(sqx.getMessage(), sqx);
             }
         }
 
@@ -281,7 +281,7 @@ public class SQLUserManager implements UserManager
             }
             catch (SQLException sqx)
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                throw new UserManagementException(sqx.getMessage(), sqx);
             }
         }
 
@@ -383,7 +383,7 @@ public class SQLUserManager implements UserManager
             }
             catch (SQLException sqx)
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                throw new UserManagementException(sqx.getMessage(), sqx);
             }
         }
 
@@ -506,7 +506,7 @@ public class SQLUserManager implements UserManager
             }
             catch (SQLException sqx)
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                throw new UserManagementException(sqx.getMessage(), sqx);
             }
         }
 
@@ -608,7 +608,7 @@ public class SQLUserManager implements UserManager
             }
             catch (SQLException sqx)
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                throw new UserManagementException(sqx.getMessage(), sqx);
             }
         }
 
@@ -680,7 +680,7 @@ public class SQLUserManager implements UserManager
             }
             catch (SQLException sqx)
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                throw new UserManagementException(sqx.getMessage(), sqx);
             }
         }
 
@@ -753,7 +753,7 @@ public class SQLUserManager implements UserManager
             }
             catch (SQLException sqx)
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                throw new UserManagementException(sqx.getMessage(), sqx);
             }
         }
 
@@ -830,7 +830,7 @@ public class SQLUserManager implements UserManager
             }
             catch (SQLException sqx)
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                throw new UserManagementException(sqx.getMessage(), sqx);
             }
         }
 
@@ -902,7 +902,7 @@ public class SQLUserManager implements UserManager
             }
             catch (SQLException sqx)
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                throw new UserManagementException(sqx.getMessage(), sqx);
             }
         }
 
@@ -974,7 +974,7 @@ public class SQLUserManager implements UserManager
             }
             catch (SQLException sqx)
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                throw new UserManagementException(sqx.getMessage(), sqx);
             }
         }
 
@@ -1048,7 +1048,7 @@ public class SQLUserManager implements UserManager
             }
             catch (SQLException sqx)
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                throw new UserManagementException(sqx.getMessage(), sqx);
             }
         }
     }
@@ -1117,7 +1117,7 @@ public class SQLUserManager implements UserManager
             }
             catch (SQLException sqx)
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                throw new UserManagementException(sqx.getMessage(), sqx);
             }
         }
 
@@ -1194,7 +1194,7 @@ public class SQLUserManager implements UserManager
             }
             catch (SQLException sqx)
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                throw new UserManagementException(sqx.getMessage(), sqx);
             }
         }
 
@@ -1268,7 +1268,7 @@ public class SQLUserManager implements UserManager
             }
             catch (SQLException sqx)
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                throw new UserManagementException(sqx.getMessage(), sqx);
             }
         }
 

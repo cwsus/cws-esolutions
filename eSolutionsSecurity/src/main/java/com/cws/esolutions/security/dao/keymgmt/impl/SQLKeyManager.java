@@ -161,7 +161,7 @@ public class SQLKeyManager implements KeyManager
             }
             catch (SQLException sqx)
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                throw new KeyManagementException(sqx.getMessage(), sqx);
             }
         }
 
@@ -281,7 +281,7 @@ public class SQLKeyManager implements KeyManager
             }
             catch (SQLException sqx)
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                throw new KeyManagementException(sqx.getMessage(), sqx);
             }
         }
 
@@ -353,7 +353,7 @@ public class SQLKeyManager implements KeyManager
             }
             catch (SQLException sqx)
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                throw new KeyManagementException(sqx.getMessage(), sqx);
             }
         }
 

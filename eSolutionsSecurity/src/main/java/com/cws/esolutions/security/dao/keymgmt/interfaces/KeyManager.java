@@ -57,7 +57,6 @@ public interface KeyManager
     
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + KeyManager.class.getName());
 
     /**
      * Obtains the keys associated with a given user account for use

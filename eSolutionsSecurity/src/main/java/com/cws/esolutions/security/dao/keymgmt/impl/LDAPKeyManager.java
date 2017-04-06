@@ -211,7 +211,7 @@ public class LDAPKeyManager implements KeyManager
 
                 if (!(stmt.execute()))
                 {
-                    ERROR_RECORDER.error("Failed to remove generated private key for the provided user");
+                    throw new KeyManagementException("Failed to remove generated private key for the provided user");
                 }
 
                 return false;
@@ -262,7 +262,7 @@ public class LDAPKeyManager implements KeyManager
             }
             catch (SQLException sqx)
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                throw new KeyManagementException(sqx.getMessage(), sqx);
             }
         }
     }
@@ -454,7 +454,7 @@ public class LDAPKeyManager implements KeyManager
             }
             catch (SQLException sqx)
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                throw new KeyManagementException(sqx.getMessage(), sqx);
             }
         }
     }
@@ -605,7 +605,7 @@ public class LDAPKeyManager implements KeyManager
             }
             catch (SQLException sqx)
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                throw new KeyManagementException(sqx.getMessage(), sqx);
             }
         }
 

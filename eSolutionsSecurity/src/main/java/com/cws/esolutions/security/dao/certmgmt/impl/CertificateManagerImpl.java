@@ -26,16 +26,15 @@ package com.cws.esolutions.security.dao.certmgmt.impl;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.io.File;
-import java.util.Date;
 import java.util.List;
 import java.security.Key;
 import java.util.Calendar;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.PublicKey;
 import java.security.Signature;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.security.PrivateKey;
 import java.io.OutputStreamWriter;
@@ -48,16 +47,15 @@ import org.apache.commons.io.FileUtils;
 import java.security.InvalidKeyException;
 import java.security.cert.X509Certificate;
 import org.bouncycastle.asn1.x500.X500Name;
+import java.security.cert.CertificateFactory;
 import java.security.NoSuchAlgorithmException;
 import org.bouncycastle.operator.ContentSigner;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
-import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.pkcs.PKCS10CertificationRequestBuilder;
-import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
-import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
 
@@ -73,7 +71,7 @@ public class CertificateManagerImpl implements ICertificateManager
      */
     public synchronized File createCertificateRequest(final List<String> subjectData, final String storePassword, final int validityPeriod, final int keySize) throws KeyManagementException
     {
-    	final String methodName = ICertificateManager.CNAME + "#createCertificateRequest(final List<String> subjectData, final String storePassword, final int validityPeriod, final int keySize) throws KeyManagementException";
+        final String methodName = ICertificateManager.CNAME + "#createCertificateRequest(final List<String> subjectData, final String storePassword, final int validityPeriod, final int keySize) throws KeyManagementException";
         
         if (DEBUG)
         {
@@ -89,9 +87,9 @@ public class CertificateManagerImpl implements ICertificateManager
 
         if (DEBUG)
         {
-        	DEBUGGER.debug("sigAlg: {}", sigAlg);
-        	DEBUGGER.debug("keyDirectory: {}", keyDirectory);
-        	DEBUGGER.debug("X500Name: {}", x500Name);
+            DEBUGGER.debug("sigAlg: {}", sigAlg);
+            DEBUGGER.debug("keyDirectory: {}", keyDirectory);
+            DEBUGGER.debug("X500Name: {}", x500Name);
         }
 
         File csrFile = null;
@@ -111,7 +109,7 @@ public class CertificateManagerImpl implements ICertificateManager
 
             if (DEBUG)
             {
-            	DEBUGGER.debug("File: {}", keyStoreFile);
+                DEBUGGER.debug("File: {}", keyStoreFile);
             }
 
             KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
@@ -119,25 +117,25 @@ public class CertificateManagerImpl implements ICertificateManager
 
             if (DEBUG)
             {
-            	DEBUGGER.debug("KeyStore: {}", keyStore);
+                DEBUGGER.debug("KeyStore: {}", keyStore);
             }
 
             keyDirectory.setExecutable(true, true);
 
             SecureRandom random = new SecureRandom();
-            KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(keyConfig.getKeyAlgorithm());
+            KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(certConfig.getCertAlgorithm());
             keyGenerator.initialize(keySize, random);
 
             if (DEBUG)
             {
-            	DEBUGGER.debug("KeyGenerator: {}", keyGenerator);
+                DEBUGGER.debug("KeyGenerator: {}", keyGenerator);
             }
 
             KeyPair keyPair = keyGenerator.generateKeyPair();
 
             if (DEBUG)
             {
-            	DEBUGGER.debug("KeyPair: {}", keyPair);
+                DEBUGGER.debug("KeyPair: {}", keyPair);
             }
 
             if (keyPair != null)
@@ -148,9 +146,9 @@ public class CertificateManagerImpl implements ICertificateManager
 
                 if (DEBUG)
                 {
-                	DEBUGGER.debug("Signature: {}", sig);
-                	DEBUGGER.debug("PrivateKey: {}", privateKey);
-                	DEBUGGER.debug("PublicKey: {}", publicKey);
+                    DEBUGGER.debug("Signature: {}", sig);
+                    DEBUGGER.debug("PrivateKey: {}", privateKey);
+                    DEBUGGER.debug("PublicKey: {}", publicKey);
                 }
 
                 sig.initSign(privateKey, random);
@@ -158,7 +156,7 @@ public class CertificateManagerImpl implements ICertificateManager
 
                 if (DEBUG)
                 {
-                	DEBUGGER.debug("ContentSigner: {}", signGen);
+                    DEBUGGER.debug("ContentSigner: {}", signGen);
                 }
 
                 Calendar expiry = Calendar.getInstance();
@@ -166,56 +164,55 @@ public class CertificateManagerImpl implements ICertificateManager
 
                 if (DEBUG)
                 {
-                	DEBUGGER.debug("Calendar: {}", expiry);
+                    DEBUGGER.debug("Calendar: {}", expiry);
                 }
- 
-                X509v3CertificateBuilder x509CertBuilder = new JcaX509v3CertificateBuilder(x500Name, BigInteger.valueOf(1), new Date(System.currentTimeMillis()),
-                		new Date(expiry.getTimeInMillis()), x500Name, keyPair.getPublic());
+
+                CertificateFactory certFactory = CertificateFactory.getInstance(certConfig.getCertificateType());
 
                 if (DEBUG)
                 {
-                	DEBUGGER.debug("X509v3CertificateBuilder: {}", x509CertBuilder);
+                    DEBUGGER.debug("CertificateFactory: {}", certFactory);
                 }
 
-                X509Certificate x509Certificate = new JcaX509CertificateConverter().setProvider("BC").getCertificate(x509CertBuilder.build(signGen));
-                X509Certificate[] certChain = new X509Certificate[1];
-                certChain[0] = x509Certificate;
+                X509Certificate[] issuerCert = new X509Certificate[] { (X509Certificate) certFactory.generateCertificate(new FileInputStream(certConfig.getIntermediateCertificateFile())) };
 
                 if (DEBUG)
                 {
-                	DEBUGGER.debug("x509Certificate: {}", (Object) x509Certificate);
-                	DEBUGGER.debug("X509Certificate[]: {}", (Object) certChain);
+                	DEBUGGER.debug("X509Certificate[]: {}", (Object) issuerCert);
                 }
 
-                keyStore.setKeyEntry(subjectData.get(0), keyPair.getPrivate(), storePassword.toCharArray(), certChain);
-                keyStore.store(new FileOutputStream(keyStoreFile), storePassword.toCharArray());
-
-                if (DEBUG)
-                {
-                	DEBUGGER.debug("X509Certificate: {}", x509Certificate);
-                }
+                keyStore.setCertificateEntry(certConfig.getRootCertificateName(), 
+                        certFactory.generateCertificate(new FileInputStream(FileUtils.getFile(certConfig.getRootCertificateFile()))));
+                keyStore.setCertificateEntry(certConfig.getIntermediateCertificateName(), 
+                        certFactory.generateCertificate(new FileInputStream(FileUtils.getFile(certConfig.getIntermediateCertificateFile()))));
 
                 PKCS10CertificationRequestBuilder builder = new JcaPKCS10CertificationRequestBuilder(x500Name, publicKey);
 
                 if (DEBUG)
                 {
-                	DEBUGGER.debug("PKCS10CertificationRequestBuilder: {}", builder);
+                    DEBUGGER.debug("PKCS10CertificationRequestBuilder: {}", builder);
                 }
 
                 PKCS10CertificationRequest csr = builder.build(signGen);
 
                 if (DEBUG)
                 {
-                	DEBUGGER.debug("PKCS10CertificationRequest: {}", csr);
+                    DEBUGGER.debug("PKCS10CertificationRequest: {}", csr);
                 }
 
-                keyStore.setKeyEntry(subjectData.get(0), (Key) keyPair.getPrivate(), storePassword.toCharArray(), certChain);
+                keyStore.setKeyEntry(subjectData.get(0), (Key) keyPair.getPrivate(), storePassword.toCharArray(), issuerCert);
+                keyStore.store(new FileOutputStream(keyStoreFile), storePassword.toCharArray());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("KeyStore: {}", keyStore);
+                }
 
                 csrFile = FileUtils.getFile(keyDirectory + "/" + subjectData.get(0) + ".csr");
 
                 if (DEBUG)
                 {
-                	DEBUGGER.debug("CSR File: {}", csrFile);
+                    DEBUGGER.debug("CSR File: {}", csrFile);
                 }
 
                 if (!(csrFile.createNewFile()))
@@ -245,32 +242,190 @@ public class CertificateManagerImpl implements ICertificateManager
         }
         catch (IllegalStateException isx)
         {
-			throw new KeyManagementException(isx.getMessage(), isx);
-		}
+            throw new KeyManagementException(isx.getMessage(), isx);
+        }
         catch (InvalidKeyException ikx)
         {
-        	throw new KeyManagementException(ikx.getMessage(), ikx);
-		}
+            throw new KeyManagementException(ikx.getMessage(), ikx);
+        }
         catch (OperatorCreationException ocx)
         {
-        	throw new KeyManagementException(ocx.getMessage(), ocx);
-		}
+            throw new KeyManagementException(ocx.getMessage(), ocx);
+        }
         catch (KeyStoreException ksx)
         {
-        	throw new KeyManagementException(ksx.getMessage(), ksx);
-		}
+            throw new KeyManagementException(ksx.getMessage(), ksx);
+        }
         catch (CertificateException cx)
         {
-        	throw new KeyManagementException(cx.getMessage(), cx);
-		}
+            throw new KeyManagementException(cx.getMessage(), cx);
+        }
         finally
         {
-        	if (pemWriter != null)
-        	{
-        		IOUtils.closeQuietly(pemWriter);
-        	}
+            if (pemWriter != null)
+            {
+                IOUtils.closeQuietly(pemWriter);
+            }
         }
 
         return csrFile;
+    }
+
+    /**
+     * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#applyCertificateRequest(final File certFile, final String storePassword)
+     */
+    public synchronized boolean applyCertificateRequest(final String commonName, final File certFile, final String storePassword) throws KeyManagementException
+    {
+        final String methodName = ICertificateManager.CNAME + "#applyCertificateRequest(final String commonName, final File certFile, final String storePassword) throws KeyManagementException";
+        
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", commonName);
+            DEBUGGER.debug("Value: {}", certFile);
+        }
+
+        final File keyDirectory = FileUtils.getFile(keyConfig.getKeyDirectory() + "/" + commonName);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("keyDirectory: {}", keyDirectory);
+        }
+
+        boolean isComplete = false;
+        FileInputStream certStream = null;
+        FileOutputStream storeStream = null;
+        FileInputStream keystoreInput = null;
+        FileInputStream rootCertStream = null;
+        FileInputStream intermediateCertStream = null;
+
+        try
+        {
+            if (!(keyDirectory.exists()))
+            {
+                throw new KeyManagementException("Configured key directory does not exist and unable to create it");
+            }
+
+            final File keyStoreFile = FileUtils.getFile(keyDirectory + "/" + commonName + "." + KeyStore.getDefaultType());
+            final File certResponse = FileUtils.getFile(keyDirectory + "/" + certFile);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("keyStoreFile: {}", keyStoreFile);
+                DEBUGGER.debug("certResponse: {}", certResponse);
+            }
+
+            if (!(keyStoreFile.canRead()))
+            {
+                throw new KeyManagementException("Requested keystore does not exist. Cannot continue.");
+            }
+
+            keystoreInput = FileUtils.openInputStream(keyStoreFile);
+            certStream = FileUtils.openInputStream(certResponse);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("keystoreInput: {}", keystoreInput);
+                DEBUGGER.debug("certStream: {}", certStream);
+            }
+
+            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            keyStore.load(keystoreInput, storePassword.toCharArray());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("KeyStore: {}", keyStore);
+            }
+
+            Key privateKey = keyStore.getKey(commonName, storePassword.toCharArray());
+
+            CertificateFactory certFactory = CertificateFactory.getInstance(certConfig.getCertificateType());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("CertificateFactory: {}", certFactory);
+            }
+
+            rootCertStream = FileUtils.openInputStream(FileUtils.getFile(certConfig.getRootCertificateFile()));
+            intermediateCertStream = FileUtils.openInputStream(FileUtils.getFile(certConfig.getIntermediateCertificateFile()));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("rootCertStream: {}", rootCertStream);
+                DEBUGGER.debug("intermediateCertStream: {}", intermediateCertStream);
+            }
+
+            X509Certificate[] responseCert = new X509Certificate[] { (X509Certificate) certFactory.generateCertificate(rootCertStream),
+            		(X509Certificate) certFactory.generateCertificate(intermediateCertStream),
+            		(X509Certificate) certFactory.generateCertificate(certStream) };
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("X509Certificate[]", (Object) responseCert);
+            }
+
+            storeStream = FileUtils.openOutputStream(keyStoreFile);
+            keyStore.setKeyEntry(commonName, privateKey, storePassword.toCharArray(), responseCert);
+            keyStore.store(storeStream, storePassword.toCharArray());
+
+            isComplete = true;
+        }
+        catch (FileNotFoundException fnfx)
+        {
+            throw new KeyManagementException(fnfx.getMessage(), fnfx);
+        }
+        catch (IOException iox)
+        {
+            throw new KeyManagementException(iox.getMessage(), iox);
+        }
+        catch (NoSuchAlgorithmException nsax)
+        {
+            throw new KeyManagementException(nsax.getMessage(), nsax);
+        }
+        catch (IllegalStateException isx)
+        {
+            throw new KeyManagementException(isx.getMessage(), isx);
+        }
+        catch (KeyStoreException ksx)
+        {
+            throw new KeyManagementException(ksx.getMessage(), ksx);
+        }
+        catch (CertificateException cx)
+        {
+            throw new KeyManagementException(cx.getMessage(), cx);
+        }
+        catch (UnrecoverableKeyException ukx)
+        {
+        	throw new KeyManagementException(ukx.getMessage(), ukx);
+		}
+        finally
+        {
+        	if (storeStream != null)
+        	{
+        	    IOUtils.closeQuietly(storeStream);
+        	}
+
+        	if (intermediateCertStream != null)
+        	{
+        	    IOUtils.closeQuietly(intermediateCertStream);
+        	}
+
+        	if (rootCertStream != null)
+        	{
+        	    IOUtils.closeQuietly(rootCertStream);
+        	}
+
+        	if (certStream != null)
+        	{
+        	    IOUtils.closeQuietly(certStream);
+        	}
+
+        	if (keystoreInput != null)
+        	{
+        	    IOUtils.closeQuietly(keystoreInput);
+        	}
+        }
+
+        return isComplete;
     }
 }
