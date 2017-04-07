@@ -126,6 +126,7 @@ public enum AuditType
     UPDATEDATACENTER,
 
     // certificate mgmt
+    LISTCSR,
     GENERATECERT,
     APPLYCERT,
 

@@ -69,6 +69,12 @@
         <put-attribute name="body"          value="/com.cws.esolutions.web.application-management/jsp/html/en/AppMgmt_ViewFile.jsp" cascade="true" />
     </definition>
 
+    <!-- Certificate Management -->
+    <definition name="CertMgmt_DefaultHandler" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Certificate Management" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.esolutions.web.certificate-management/jsp/html/en/CertMgmt_DefaultHandler.jsp" cascade="true" />
+    </definition>
+
     <!-- Authentication -->
     <definition name="Login" extends="baseLayout">
         <put-attribute name="title"         value="eSolutions - Login" cascade="true" />

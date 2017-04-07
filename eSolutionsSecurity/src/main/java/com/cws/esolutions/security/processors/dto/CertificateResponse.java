@@ -27,6 +27,7 @@ package com.cws.esolutions.security.processors.dto;
  */
 import java.io.File;
 import org.slf4j.Logger;
+import java.util.ArrayList;
 import java.io.Serializable;
 import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
@@ -41,6 +42,7 @@ import com.cws.esolutions.security.enums.SecurityRequestStatus;
 public class CertificateResponse implements Serializable
 {
 	private File csrFile = null;
+	private ArrayList<String> availableRequests = null;
 	private SecurityRequestStatus requestStatus = null;
 
 	private static final long serialVersionUID = 4835067783924884463L;
@@ -76,6 +78,19 @@ public class CertificateResponse implements Serializable
         this.requestStatus = value;
     }
 
+    public final void setAvailableRequests(final ArrayList<String> value)
+    {
+        final String methodName = CertificateResponse.CNAME + "#setAvailableRequests(final ArrayList<String> value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.availableRequests = value;
+    }
+
     public final File getCsrFile()
     {
         final String methodName = CertificateResponse.CNAME + "#getCsrFile()";
@@ -87,6 +102,19 @@ public class CertificateResponse implements Serializable
         }
 
         return this.csrFile;
+    }
+
+    public final ArrayList<String> getAvailableRequests()
+    {
+        final String methodName = CertificateResponse.CNAME + "#getAvailableRequests()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.availableRequests);
+        }
+
+        return this.availableRequests;
     }
 
     public final SecurityRequestStatus getRequestStatus()

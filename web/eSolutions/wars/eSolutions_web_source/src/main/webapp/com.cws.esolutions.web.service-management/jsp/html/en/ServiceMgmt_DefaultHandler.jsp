@@ -14,10 +14,6 @@
  * com.cws.us.esolutions.service-management/jsp/html/en
  * ServiceMgmt_DefaultHandler.jsp
  *
- * $Id$
- * $Author$
- * $Date$
- * $Revision$
  * @author kh05451
  * @version 1.0
  *

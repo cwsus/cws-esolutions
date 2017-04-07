@@ -14,6 +14,7 @@
  * com.cws.us.esolutions.application-management/jsp/html/en
  * AppMgmt_DefaultHandler.jsp
  *
+ * @author kh05451
  * @version 1.0
  *
  * History
@@ -45,10 +46,10 @@
 </script>
 
 <div id="sidebar">
-    <h1><spring:message code="app.mgmt.header" /></h1>
+    <h1><spring:message code="cert.mgmt.header" /></h1>
     <ul>
-        <li><a href="${pageContext.request.contextPath}/ui/application-management/list-applications" title="<spring:message code='app.mgmt.list.applications' />"><spring:message code='app.mgmt.list.applications' /></a></li>
-        <li><a href="${pageContext.request.contextPath}/ui/application-management/add-application" title="<spring:message code='app.mgmt.add.application' />"><spring:message code='app.mgmt.add.application' /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/certificate-management/list-certificates" title="<spring:message code='cert.mgmt.list.certificates' />"><spring:message code='cert.mgmt.list.certificates' /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/certificate-management/add-certificate" title="<spring:message code='cert.mgmt.add.certificate' />"><spring:message code='cert.mgmt.add.certificate' /></a></li>
     </ul>
 </div>
 
@@ -77,7 +78,7 @@
     </c:if>
 
     <p>
-        <form:form id="searchRequest" name="searchRequest" action="${pageContext.request.contextPath}/ui/application-management/search" method="post">
+        <form:form id="searchRequest" name="searchRequest" action="${pageContext.request.contextPath}/ui/certificate-management/search" method="post">
             <label id="txtAppName"><spring:message code="theme.search.terms" /></label>
             <form:input path="searchTerms" />
             <form:errors path="searchTerms" cssClass="error" />

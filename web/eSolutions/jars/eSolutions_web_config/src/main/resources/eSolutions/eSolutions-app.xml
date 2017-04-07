@@ -64,6 +64,7 @@
                 <entry key="sysMgmt" value="true" />
                 <entry key="svcMgmt" value="true" />
                 <entry key="userAdmin" value="true" />
+                <entry key="certMgmt" value="true" />
             </map>
         </property>
         <property name="homePage" value="HomePage" />
@@ -102,6 +103,7 @@
                 <value>classpath:nls/OnlineResetServlet/OnlineResetServlet</value>
                 <value>classpath:nls/UserAccountServlet/UserAccountServlet</value>
                 <value>classpath:nls/UserManagementServlet/UserManagementServlet</value>
+                <value>classpath:nls/UserManagementServlet/CertificateManagementServlet</value>
                 <value>classpath:nls/theme/resources</value>
             </list>
         </property>

@@ -74,6 +74,26 @@ public final class CertificateRequestProcessorTest
         }
     }
 
+    @Test public void listActiveRequests()
+    {
+    	CertificateRequest request = new CertificateRequest();
+    	request.setHostInfo(hostInfo);
+    	request.setUserAccount(userAccount);
+    	request.setApplicationId("junit");
+    	request.setApplicationName("junit");
+
+    	try
+    	{
+    		CertificateResponse response = processor.listActiveRequests(request);
+    		System.out.println(response.toString());
+    		Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+    	}
+    	catch (Exception ex)
+    	{
+			Assert.fail(ex.getMessage());
+		}
+    }
+
     @Test public void generateCertificateRequest()
     {
     	CertificateRequest request = new CertificateRequest();

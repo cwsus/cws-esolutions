@@ -61,6 +61,8 @@ public interface ICertificateRequestProcessor
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
+    CertificateResponse listActiveRequests(final CertificateRequest request) throws CertificateRequestException;
+
     /**
      * Request and generate a new certificate for a given user or website. This request requires all the necessary
      * information that would be required to generate a certificate using keytool or any other certificate generation

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <bean id="applicationManagementController" class="com.cws.esolutions.web.controllers.ApplicationManagementController">
+        <property name="applicationValidator">
+            <ref bean="applicationValidatorBean" />
+        </property>
+        <property name="appConfig">
+            <ref bean="appConfig" />
+        </property>
+        <property name="serviceName" value="certMgmt" />
+        <property name="serviceId" value="5DC38ADF-6D09-4843-8A58-514072DD25D5" />
+        <property name="defaultPage" value="CertMgmt_DefaultHandler" />
+    </bean>
+</beans>

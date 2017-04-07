@@ -30,7 +30,9 @@ import java.util.List;
 import java.util.Arrays;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.io.FileNotFoundException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityServiceConstants;
@@ -52,6 +54,150 @@ import com.cws.esolutions.security.dao.certmgmt.exception.CertificateManagementE
  */
 public class CertificateRequestProcessorImpl implements ICertificateRequestProcessor
 {
+	public CertificateResponse listActiveRequests(final CertificateRequest request) throws CertificateRequestException
+	{
+        final String methodName = ICertificateRequestProcessor.CNAME + "#listActiveRequests(final CertificateRequest request) throws CertificateRequestException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("CertificateRequest: {}", request);
+        }
+
+        CertificateResponse response = new CertificateResponse();
+        ArrayList<String> availableRequests = new ArrayList<String>();
+
+        final RequestHostInfo reqInfo = request.getHostInfo();
+        final UserAccount authUser = request.getUserAccount();
+        final File rootDirectory = FileUtils.getFile(certConfig.getRootDirectory());
+        final File csrDirectory = FileUtils.getFile(certConfig.getCsrDirectory());
+        final File certificateDirectory = FileUtils.getFile(certConfig.getStoreDirectory());
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            DEBUGGER.debug("authUser: {}", authUser);
+            DEBUGGER.debug("rootDirectory: {}", rootDirectory);
+            DEBUGGER.debug("csrDirectory: {}", csrDirectory);
+            DEBUGGER.debug("certificateDirectory: {}", certificateDirectory);
+        }
+
+        try
+        {
+            if (!(rootDirectory.canWrite()))
+            {
+            	if (!(rootDirectory.mkdirs()))
+            	{
+            		throw new IOException("Root certificate directory either does not exist or cannot be written to. Cannot continue.");
+            	}
+            }
+
+            if (!(csrDirectory.canWrite()))
+            {
+                if (!(csrDirectory.mkdirs()))
+                {
+                    throw new IOException("Private directory either does not exist or cannot be written to. Cannot continue.");
+                }
+            }
+
+            if (!(certificateDirectory.canWrite()))
+            {
+                if (!(certificateDirectory.mkdirs()))
+                {
+                    throw new IOException("Private directory either does not exist or cannot be written to. Cannot continue.");
+                }
+            }
+
+            for (File csrFile : FileUtils.listFiles(csrDirectory, new String[] { SecurityServiceConstants.CSR_FILE_EXT.replace(".", "") }, true))
+            {
+    			if (DEBUG)
+    			{
+    				DEBUGGER.debug("File: {}", csrFile);
+    			}
+
+    			String csrFileName = csrFile.getName();
+
+    			if (DEBUG)
+    			{
+    				DEBUGGER.debug("csrFileName: {}", csrFileName);
+    			}
+
+    			for (File certFile : FileUtils.listFiles(certificateDirectory, new String[] { SecurityServiceConstants.CERTIFICATE_FILE_EXT.replace(".", "") }, true))
+    			{
+        			if (DEBUG)
+        			{
+        				DEBUGGER.debug("File: {}", certFile);
+        			}
+
+        			String certFileName = certFile.getName();
+
+        			if (DEBUG)
+        			{
+        				DEBUGGER.debug("certFileName: {}", certFileName);
+        			}
+
+        			if (!(StringUtils.equals(StringUtils.replace(csrFileName, SecurityServiceConstants.CSR_FILE_EXT, ""), StringUtils.replace(certFileName, SecurityServiceConstants.CERTIFICATE_FILE_EXT, ""))))
+        			{
+        				availableRequests.add(csrFile.toString());
+
+                		if (DEBUG)
+                		{
+                			DEBUGGER.debug("availableRequests: {}", availableRequests);
+                		}
+        			}
+    			}
+    		}
+
+    		if (DEBUG)
+    		{
+    			DEBUGGER.debug("availableRequests: {}", availableRequests);
+    		}
+
+        	response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+        	response.setAvailableRequests(availableRequests);
+        }
+        catch (IOException iox)
+        {
+        	ERROR_RECORDER.error(iox.getMessage(), iox);
+
+            throw new CertificateRequestException(iox.getMessage(), iox);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.LISTCSR);
+                auditEntry.setUserAccount(authUser);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
+        }
+
+        return response;
+	}
+
 	/**
 	 * @see com.cws.esolutions.security.processors.interfaces.ICertificateRequestProcessor#generateCertificateRequest(com.cws.esolutions.security.processors.dto.CertificateRequest)
 	 */
@@ -102,25 +248,25 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
             {
             	if (!(rootDirectory.mkdirs()))
             	{
-            		throw new CertificateRequestException("Root certificate directory either does not exist or cannot be written to. Cannot continue.");
+            		throw new IOException("Root certificate directory either does not exist or cannot be written to. Cannot continue.");
             	}
             }
 
             if (!(certConfig.getRootCertificateFile().exists()))
             {
-                throw new CertificateRequestException("Root certificate file does not exist. Cannot continue."); 
+                throw new FileNotFoundException("Root certificate file does not exist. Cannot continue."); 
             }
 
             if (!(certConfig.getIntermediateCertificateFile().exists()))
             {
-                throw new CertificateRequestException("Intermediate certificate file does not exist. Cannot continue."); 
+                throw new FileNotFoundException("Intermediate certificate file does not exist. Cannot continue."); 
             }
 
             if (!(privateKeyDirectory.canWrite()))
             {
                 if (!(privateKeyDirectory.mkdirs()))
                 {
-                    throw new CertificateRequestException("Private directory either does not exist or cannot be written to. Cannot continue.");
+                    throw new IOException("Private directory either does not exist or cannot be written to. Cannot continue.");
                 }
             }
 
@@ -128,7 +274,7 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
             {
                 if (!(publicKeyDirectory.mkdirs()))
                 {
-                    throw new CertificateRequestException("Private directory either does not exist or cannot be written to. Cannot continue.");
+                    throw new IOException("Private directory either does not exist or cannot be written to. Cannot continue.");
                 }
             }
 
@@ -136,7 +282,7 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
             {
                 if (!(csrDirectory.mkdirs()))
                 {
-                    throw new CertificateRequestException("CSR directory either does not exist or cannot be written to. Cannot continue.");
+                    throw new IOException("CSR directory either does not exist or cannot be written to. Cannot continue.");
                 }
             }
 
@@ -144,7 +290,7 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
             {
                 if (!(storeDirectory.mkdirs()))
                 {
-                    throw new CertificateRequestException("Keystore directory either does not exist or cannot be written to. Cannot continue.");
+                    throw new IOException("Keystore directory either does not exist or cannot be written to. Cannot continue.");
                 }
             }
 
@@ -173,6 +319,12 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
         	{
         		response.setRequestStatus(SecurityRequestStatus.FAILURE);
         	}
+        }
+        catch (IOException iox)
+        {
+        	ERROR_RECORDER.error(iox.getMessage(), iox);
+
+            throw new CertificateRequestException(iox.getMessage(), iox);
         }
         catch (CertificateManagementException cmx)
         {
@@ -279,28 +431,28 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
             {
             	if (!(rootDirectory.mkdirs()))
             	{
-            		throw new CertificateRequestException("Root certificate directory either does not exist or cannot be written to. Cannot continue.");
+            		throw new IOException("Root certificate directory either does not exist or cannot be written to. Cannot continue.");
             	}
             }
 
             if (!(certConfig.getRootCertificateFile().exists()))
             {
-                throw new CertificateRequestException("Root certificate file does not exist. Cannot continue."); 
+                throw new FileNotFoundException("Root certificate file does not exist. Cannot continue."); 
             }
 
             if (!(certConfig.getIntermediateCertificateFile().exists()))
             {
-                throw new CertificateRequestException("Intermediate certificate file does not exist. Cannot continue."); 
+                throw new FileNotFoundException("Intermediate certificate file does not exist. Cannot continue."); 
             }
 
             if (!(certificateDirectory.canWrite()))
             {
-                throw new CertificateRequestException("Certificate directory either does not exist or cannot be written to. Cannot continue.");
+                throw new IOException("Certificate directory either does not exist or cannot be written to. Cannot continue.");
             }
 
             if (!(storeDirectory.canWrite()))
             {
-                throw new CertificateRequestException("Keystore directory either does not exist or cannot be written to. Cannot continue.");
+                throw new IOException("Keystore directory either does not exist or cannot be written to. Cannot continue.");
             }
 
             boolean isComplete = processor.applyCertificateRequest(request.getCommonName(), certificateFile, keystoreFile, request.getStorePassword());
@@ -318,6 +470,12 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
         	{
         		response.setRequestStatus(SecurityRequestStatus.FAILURE);
         	}
+        }
+        catch (IOException iox)
+        {
+            ERROR_RECORDER.error(iox.getMessage(), iox);
+
+            throw new CertificateRequestException(iox.getMessage(), iox);
         }
         catch (CertificateManagementException cmx)
         {
