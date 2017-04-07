@@ -27,13 +27,12 @@ package com.cws.esolutions.security.dao.certmgmt.impl;
  */
 import org.junit.Test;
 import java.util.List;
-
-import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Assert;
 import java.util.Arrays;
 import java.util.ArrayList;
+import org.apache.commons.io.FileUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
@@ -95,7 +94,7 @@ public class CertificateManagerTest
     {
         try
         {
-        	processor.applyCertificateRequest("test.junit.com", FileUtils.getFile("test.junit.com.crt"), "junit");
+        	processor.applyCertificateRequest("test.junit.com", FileUtils.getFile("/opt/cws/eSolutions/certs/certificates/test.junit.com.crt"), FileUtils.getFile("/opt/cws/eSolutions/certs/keystores/test.junit.com.jks"), "junit");
         }
         catch (Exception ex)
         {

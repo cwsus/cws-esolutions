@@ -125,6 +125,10 @@ public enum AuditType
     LOADDATACENTER,
     UPDATEDATACENTER,
 
+    // certificate mgmt
+    GENERATECERT,
+    APPLYCERT,
+
     // added to satisfy service tests
     // DO NOT REMOVE
     JUNIT;

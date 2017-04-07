@@ -40,4 +40,11 @@ public final class SecurityServiceConstants
     public static final String INIT_CONFIG_FILE = "SecurityServiceConfig";
     public static final String INIT_SECURITYDS_MANAGER = "SecurityDataSource";
     public static final String LINE_BREAK = System.getProperty("line.separator");
+
+    // set some stuff
+    public static final String CSR_FILE_EXT = ".csr";
+    public static final String KEYSTORE_FILE_EXT = ".jks";
+    public static final String PRIVATEKEY_FILE_EXT = ".key";
+    public static final String PUBLICKEY_FILE_EXT = ".pub";
+    public static final String CERTIFICATE_FILE_EXT = ".crt";
 }

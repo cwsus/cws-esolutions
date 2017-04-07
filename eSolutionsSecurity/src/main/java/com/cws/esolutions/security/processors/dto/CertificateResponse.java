@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.enums.SecurityRequestStatus;
 /**
  * @author khuntly
  * @version 1.0
@@ -40,6 +41,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 public class CertificateResponse implements Serializable
 {
 	private File csrFile = null;
+	private SecurityRequestStatus requestStatus = null;
 
 	private static final long serialVersionUID = 4835067783924884463L;
 	private static final String CNAME = CertificateResponse.class.getName();
@@ -61,6 +63,19 @@ public class CertificateResponse implements Serializable
         this.csrFile = value;
     }
 
+    public final void setRequestStatus(final SecurityRequestStatus value)
+    {
+        final String methodName = CertificateResponse.CNAME + "#setRequestStatus(final SecurityRequestStatus value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.requestStatus = value;
+    }
+
     public final File getCsrFile()
     {
         final String methodName = CertificateResponse.CNAME + "#getCsrFile()";
@@ -72,6 +87,19 @@ public class CertificateResponse implements Serializable
         }
 
         return this.csrFile;
+    }
+
+    public final SecurityRequestStatus getRequestStatus()
+    {
+        final String methodName = CertificateResponse.CNAME + "#getRequestStatus()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.requestStatus);
+        }
+
+        return this.requestStatus;
     }
 
     @Override

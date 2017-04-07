@@ -25,12 +25,14 @@ package com.cws.esolutions.security.processors.impl;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import java.io.File;
 import org.junit.Test;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Assert;
 
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
@@ -93,7 +95,29 @@ public final class CertificateRequestProcessorTest
     	try
     	{
     		CertificateResponse response = processor.generateCertificateRequest(request);
-    		Assert.assertNotNull(response.getCsrFile());
+    		Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+    	}
+    	catch (Exception ex)
+    	{
+			Assert.fail(ex.getMessage());
+		}
+    }
+
+    @Test public void applyCertificateRequest()
+    {
+    	CertificateRequest request = new CertificateRequest();
+    	request.setHostInfo(hostInfo);
+    	request.setUserAccount(userAccount);
+    	request.setApplicationId("junit");
+    	request.setApplicationName("junit");
+    	request.setCommonName("test.junit.com");
+    	request.setCertificateFile(new File("/opt/cws/eSolutions/certs/certificates/test.junit.com.crt"));
+    	request.setStorePassword("junit");
+
+    	try
+    	{
+    		CertificateResponse response = processor.applyCertificateResponse(request);
+    		Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
     	}
     	catch (Exception ex)
     	{

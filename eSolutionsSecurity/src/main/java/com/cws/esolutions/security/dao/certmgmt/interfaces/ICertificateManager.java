@@ -16,8 +16,8 @@
 package com.cws.esolutions.security.dao.certmgmt.interfaces;
 /*
  * Project: eSolutionsSecurity
- * Package: com.cws.esolutions.security.dao.keymgmt.interfaces
- * File: KeyManager.java
+ * Package: com.cws.esolutions.security.dao.certmgmt.interfaces
+ * File: ICertificateManager.java
  *
  * History
  *
@@ -31,14 +31,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.config.xml.KeyConfig;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.CertificateConfig;
-import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
+import com.cws.esolutions.security.dao.certmgmt.exception.CertificateManagementException;
 /**
- * API allowing user key management tasks. Used in conjunction with the
- * {@link com.cws.esolutions.security.dao.keymgmt.factory.KeyManagementFactory}
- * to provide functionality for LDAP, SQL and file-based key repositories.
+ * API allowing certificate management tasks.
  *
  * @author khuntly
  * @version 1.0
@@ -47,7 +44,6 @@ public interface ICertificateManager
 {
 	static final String CNAME = ICertificateManager.class.getName();
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
-    static final KeyConfig keyConfig = svcBean.getConfigData().getKeyConfig();
     static final CertificateConfig certConfig = svcBean.getConfigData().getCertConfig();
     
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
@@ -62,16 +58,16 @@ public interface ICertificateManager
      * @return
      * @throws KeyManagementException
      */
-    File createCertificateRequest(final List<String> subjectData, final String storePassword, final int validityPeriod, final int keySize) throws KeyManagementException;
+    File createCertificateRequest(final List<String> subjectData, final String storePassword, final int validityPeriod, final int keySize) throws CertificateManagementException;
 
     /**
      * 
      * @param commonName
-     * @param certFile
-     * @param storeFile
+     * @param certificateFile
+     * @param keystoreFile
      * @param storePassword
      * @return
-     * @throws KeyManagementException {@link com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException} if an exception occurs during processing
+     * @throws CertificateManagementException
      */
-    boolean applyCertificateRequest(final String commonName, final File certFile, final String storePassword) throws KeyManagementException;
+    boolean applyCertificateRequest(final String commonName, final File certificateFile, final File keystoreFile, final String storePassword) throws CertificateManagementException;
 }

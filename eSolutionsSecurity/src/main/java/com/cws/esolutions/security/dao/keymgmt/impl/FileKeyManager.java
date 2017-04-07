@@ -46,6 +46,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
 import com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager;
+import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
 /**
  * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager
@@ -80,8 +81,8 @@ public class FileKeyManager implements KeyManager
             	throw new KeyManagementException("Configured key directory does not exist and unable to create it");
             }
 
-            File publicFile = FileUtils.getFile(keyDirectory + "/" + guid + ".pub");
-            File privateFile = FileUtils.getFile(keyDirectory + "/" + guid + ".key");
+            File publicFile = FileUtils.getFile(keyDirectory + "/" + guid + SecurityServiceConstants.PUBLICKEY_FILE_EXT);
+            File privateFile = FileUtils.getFile(keyDirectory + "/" + guid + SecurityServiceConstants.PRIVATEKEY_FILE_EXT);
 
             if ((publicFile.exists()) && (privateFile.exists()))
             {
@@ -181,8 +182,8 @@ public class FileKeyManager implements KeyManager
 
             if (keyPair != null)
             {
-                File privateFile = FileUtils.getFile(keyDirectory + "/" + guid + ".key");
-                File publicFile = FileUtils.getFile(keyDirectory + "/" + guid + ".pub");
+                File privateFile = FileUtils.getFile(keyDirectory + "/" + guid + SecurityServiceConstants.PRIVATEKEY_FILE_EXT);
+                File publicFile = FileUtils.getFile(keyDirectory + "/" + guid + SecurityServiceConstants.PUBLICKEY_FILE_EXT);
 
                 if (!(privateFile.createNewFile()))
                 {

@@ -58,18 +58,25 @@
     </key-config>
 
 	<certificate-config>
+		<rootDirectory>/opt/cws/eSolutions/certs</rootDirectory>
+		<privateKeyDirectory>/opt/cws/eSolutions/certs/private</privateKeyDirectory>
+		<publicKeyDirectory>/opt/cws/eSolutions/certs/public</publicKeyDirectory>
+		<certificateDirectory>/opt/cws/eSolutions/certs/certificates</certificateDirectory>
+		<csrDirectory>/opt/cws/eSolutions/certs/certreq</csrDirectory>
+		<storeDirectory>/opt/cws/eSolutions/certs/keystores</storeDirectory>
     	<certificateType>X509</certificateType>
-    	<certAlgorithm>SHA512withRSA</certAlgorithm>
+    	<certificateAlgorithm>RSA</certificateAlgorithm>
+    	<signatureAlgorithm>SHA512withRSA</signatureAlgorithm>
      	<certificateKeySize>2048</certificateKeySize>
      	<rootCertificateName>CWS Root CA v1</rootCertificateName>
      	<intermediateCertificateName>CWS Intermediate CA v1</intermediateCertificateName>
-     	<rootCertificateFile>/opt/cws/eSolutions/keys/cacerts/CWS Root CA v1.crt</rootCertificateFile>
-     	<intermediateCertificateFile>/opt/cws/eSolutions/keys/cacerts/CWS Intermediate CA v1.crt</intermediateCertificateFile>
+     	<rootCertificateFile>/opt/cws/eSolutions/certs/cacerts/CWS Root CA v1.crt</rootCertificateFile>
+     	<intermediateCertificateFile>/opt/cws/eSolutions/certs/cacerts/CWS Intermediate CA v1.crt</intermediateCertificateFile>
 	</certificate-config>
 
     <!-- only required if file-based signing is used. if this is configured then key-config MUST be configured. -->
     <file-security-config>
-        <signatureAlgorithm>SHA1withRSA</signatureAlgorithm> <!-- file signature algorithm -->
+        <signatureAlgorithm>SHA512withRSA</signatureAlgorithm> <!-- file signature algorithm -->
         <encryptionAlgorithm>RSA</encryptionAlgorithm> <!-- file encryption algorithm -->
     </file-security-config>
 

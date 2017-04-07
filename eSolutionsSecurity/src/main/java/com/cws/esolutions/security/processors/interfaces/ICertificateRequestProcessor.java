@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
+import com.cws.esolutions.security.config.xml.CertificateConfig;
 import com.cws.esolutions.security.processors.dto.CertificateRequest;
 import com.cws.esolutions.security.processors.dto.CertificateResponse;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
@@ -54,6 +55,7 @@ public interface ICertificateRequestProcessor
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final IAccessControlService accessControl = new AccessControlServiceImpl();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
+    static final CertificateConfig certConfig = secBean.getConfigData().getCertConfig();
 
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
@@ -69,4 +71,12 @@ public interface ICertificateRequestProcessor
      * @throws CertificateRequestException if an error occurs during processing
      */
     CertificateResponse generateCertificateRequest(final CertificateRequest request) throws CertificateRequestException;
+
+    /**
+     * 
+     * @param request
+     * @return
+     * @throws CertificateRequestException
+     */
+    CertificateResponse applyCertificateResponse(final CertificateRequest request) throws CertificateRequestException;
 }

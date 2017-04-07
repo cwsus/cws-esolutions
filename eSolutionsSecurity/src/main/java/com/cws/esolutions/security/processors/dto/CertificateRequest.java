@@ -25,6 +25,7 @@ package com.cws.esolutions.security.processors.dto;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   03/28/2017 01:41:00             Created.
  */
+import java.io.File;
 import org.slf4j.Logger;
 import java.io.Serializable;
 import org.slf4j.LoggerFactory;
@@ -46,6 +47,7 @@ public class CertificateRequest implements Serializable
 	private String countryName = null;
 	private String localityName = null;
 	private String contactEmail = null;
+	private File certificateFile = null;
     private String applicationId = null;
     private String storePassword = null;
     private String applicationName = null;
@@ -243,6 +245,19 @@ public class CertificateRequest implements Serializable
         this.storePassword = value;
     }
 
+    public final void setCertificateFile(final File value)
+    {
+        final String methodName = CertificateRequest.CNAME + "#setCertificateFile(final File value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.certificateFile = value;
+    }
+
     public final String getApplicationId()
     {
         final String methodName = CertificateRequest.CNAME + "#getApplicationId()";
@@ -423,6 +438,19 @@ public class CertificateRequest implements Serializable
         }
 
         return this.storePassword;
+    }
+
+    public final File getCertificateFile()
+    {
+        final String methodName = CertificateRequest.CNAME + "#getCertificateFile()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.certificateFile);
+        }
+
+        return this.certificateFile;
     }
 
     @Override

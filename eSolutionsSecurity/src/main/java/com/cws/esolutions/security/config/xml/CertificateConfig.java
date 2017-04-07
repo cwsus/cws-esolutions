@@ -25,6 +25,7 @@ package com.cws.esolutions.security.config.xml;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import java.io.File;
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -45,12 +46,19 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 public final class CertificateConfig implements Serializable
 {
 	private int certKeySize = 2048;
-	private String certAlgorithm = null;
+	private File csrDirectory = null;
+	private File rootDirectory = null;
+	private File storeDirectory = null;
 	private String certificateType = null;
+	private File publicKeyDirectory = null;
+    private File rootCertificateFile = null;
+    private File privateKeyDirectory = null;
+    private File certificateDirectory = null;
+    private String signatureAlgorithm = null;
     private String rootCertificateName = null;
-    private String rootCertificateFile = null;
+    private String certificateAlgorithm = null;
+    private File intermediateCertificateFile = null;
     private String intermediateCertificateName = null;
-    private String intermediateCertificateFile = null;
 
     private static final long serialVersionUID = -8867893854548973748L;
     private static final String CNAME = CertificateConfig.class.getName();
@@ -58,6 +66,84 @@ public final class CertificateConfig implements Serializable
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
+
+    public final void setRootDirectory(final File value)
+    {
+        final String methodName = CertificateConfig.CNAME + "#setRootDirectory(final File value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+        
+        this.rootDirectory = value;
+    }
+
+    public final void setCsrDirectory(final File value)
+    {
+        final String methodName = CertificateConfig.CNAME + "#setCsrDirectory(final File value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.csrDirectory = value;
+    }
+
+    public final void setPrivateKeyDirectory(final File value)
+    {
+        final String methodName = CertificateConfig.CNAME + "#setPrivateKeyDirectory(final File value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.privateKeyDirectory = value;
+    }
+
+    public final void setPublicKeyDirectory(final File value)
+    {
+        final String methodName = CertificateConfig.CNAME + "#setPublicKeyDirectory(final File value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.publicKeyDirectory = value;
+    }
+
+    public final void setCertificateDirectory(final File value)
+    {
+        final String methodName = CertificateConfig.CNAME + "#setCertificateDirectory(final File value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.certificateDirectory = value;
+    }
+
+    public final void setStoreDirectory(final File value)
+    {
+        final String methodName = CertificateConfig.CNAME + "#setStoreDirectory(final File value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.storeDirectory = value;
+    }
 
     public final void setCertKeySize(final int value)
     {
@@ -85,9 +171,9 @@ public final class CertificateConfig implements Serializable
         this.certificateType = value;
     }
 
-    public final void setCertAlgorithm(final String value)
+    public final void setCertificateAlgorithm(final String value)
     {
-        final String methodName = CertificateConfig.CNAME + "#setCertAlgorithm(final String value)";
+        final String methodName = CertificateConfig.CNAME + "#setCertificateAlgorithm(final String value)";
 
         if (DEBUG)
         {
@@ -95,7 +181,20 @@ public final class CertificateConfig implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
         
-        this.certAlgorithm = value;
+        this.certificateAlgorithm = value;
+    }
+
+    public final void setSignatureAlgorithm(final String value)
+    {
+        final String methodName = CertificateConfig.CNAME + "#setSignatureAlgorithm(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+        
+        this.signatureAlgorithm = value;
     }
 
     public final void setRootCertificateName(final String value)
@@ -111,9 +210,9 @@ public final class CertificateConfig implements Serializable
         this.rootCertificateName = value;
     }
 
-    public final void setRootCertificateFile(final String value)
+    public final void setRootCertificateFile(final File value)
     {
-        final String methodName = CertificateConfig.CNAME + "#setRootCertificateFile(final String value)";
+        final String methodName = CertificateConfig.CNAME + "#setRootCertificateFile(final File value)";
 
         if (DEBUG)
         {
@@ -137,9 +236,9 @@ public final class CertificateConfig implements Serializable
         this.intermediateCertificateName = value;
     }
 
-    public final void setIntermediateCertificateFile(final String value)
+    public final void setIntermediateCertificateFile(final File value)
     {
-        final String methodName = CertificateConfig.CNAME + "#setIntermediateCertificateFile(final String value)";
+        final String methodName = CertificateConfig.CNAME + "#setIntermediateCertificateFile(final File value)";
 
         if (DEBUG)
         {
@@ -148,6 +247,90 @@ public final class CertificateConfig implements Serializable
         }
         
         this.intermediateCertificateFile = value;
+    }
+
+    @XmlElement(name = "rootDirectory")
+    public final File getRootDirectory()
+    {
+        final String methodName = CertificateConfig.CNAME + "#getRootDirectory()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.rootDirectory);
+        }
+        
+        return this.rootDirectory;
+    }
+
+    @XmlElement(name = "privateKeyDirectory")
+    public final File getPrivateKeyDirectory()
+    {
+        final String methodName = CertificateConfig.CNAME + "#getPrivateKeyDirectory()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.privateKeyDirectory);
+        }
+
+        return this.privateKeyDirectory;
+    }
+
+    @XmlElement(name = "publicKeyDirectory")
+    public final File getPublicKeyDirectory()
+    {
+        final String methodName = CertificateConfig.CNAME + "#getPublicKeyDirectory()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.publicKeyDirectory);
+        }
+
+        return this.publicKeyDirectory;
+    }
+
+    @XmlElement(name = "certificateDirectory")
+    public final File getCertificateDirectory()
+    {
+        final String methodName = CertificateConfig.CNAME + "#getCertificateDirectory()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.certificateDirectory);
+        }
+
+        return this.certificateDirectory;
+    }
+
+    @XmlElement(name = "csrDirectory")
+    public final File getCsrDirectory()
+    {
+        final String methodName = CertificateConfig.CNAME + "#getCsrDirectory()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.csrDirectory);
+        }
+        
+        return this.csrDirectory;
+    }
+
+    @XmlElement(name = "storeDirectory")
+    public final File getStoreDirectory()
+    {
+        final String methodName = CertificateConfig.CNAME + "#getStoreDirectory()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.storeDirectory);
+        }
+
+        return this.storeDirectory;
     }
 
     @XmlElement(name = "certKeySize")
@@ -164,18 +347,32 @@ public final class CertificateConfig implements Serializable
         return this.certKeySize;
     }
 
-    @XmlElement(name = "certAlgorithm")
-    public final String getCertAlgorithm()
+    @XmlElement(name = "certificateAlgorithm")
+    public final String getCertificateAlgorithm()
     {
-        final String methodName = CertificateConfig.CNAME + "#getCertAlgorithm()";
+        final String methodName = CertificateConfig.CNAME + "#getCertificateAlgorithm()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.certAlgorithm);
+            DEBUGGER.debug("Value: {}", this.certificateAlgorithm);
         }
         
-        return this.certAlgorithm;
+        return this.certificateAlgorithm;
+    }
+
+    @XmlElement(name = "signatureAlgorithm")
+    public final String getSignatureAlgorithm()
+    {
+        final String methodName = CertificateConfig.CNAME + "#getSignatureAlgorithm()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.signatureAlgorithm);
+        }
+        
+        return this.signatureAlgorithm;
     }
 
     @XmlElement(name = "certificateType")
@@ -207,7 +404,7 @@ public final class CertificateConfig implements Serializable
     }
 
     @XmlElement(name = "rootCertificateFile")
-    public final String getRootCertificateFile()
+    public final File getRootCertificateFile()
     {
         final String methodName = CertificateConfig.CNAME + "#getRootCertificateFile()";
 
@@ -235,7 +432,7 @@ public final class CertificateConfig implements Serializable
     }
 
     @XmlElement(name = "intermediateCertificateFile")
-    public final String getIntermediateCertificateFile()
+    public final File getIntermediateCertificateFile()
     {
         final String methodName = CertificateConfig.CNAME + "#getIntermediateCertificateFile()";
 

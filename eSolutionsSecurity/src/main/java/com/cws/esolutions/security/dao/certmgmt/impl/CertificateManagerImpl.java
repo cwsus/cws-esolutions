@@ -60,7 +60,8 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
 
 import com.cws.esolutions.security.dao.certmgmt.interfaces.ICertificateManager;
-import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
+import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.dao.certmgmt.exception.CertificateManagementException;
 /**
  * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager
  */
@@ -69,9 +70,9 @@ public class CertificateManagerImpl implements ICertificateManager
     /**
      * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#createCertificateRequest(final String commonName, final String orgUnitName, final String orgName, final String localityName, final String stateName, final String contactEmail, final int validityPeriod, final int keySize)
      */
-    public synchronized File createCertificateRequest(final List<String> subjectData, final String storePassword, final int validityPeriod, final int keySize) throws KeyManagementException
+    public synchronized File createCertificateRequest(final List<String> subjectData, final String storePassword, final int validityPeriod, final int keySize) throws CertificateManagementException
     {
-        final String methodName = ICertificateManager.CNAME + "#createCertificateRequest(final List<String> subjectData, final String storePassword, final int validityPeriod, final int keySize) throws KeyManagementException";
+        final String methodName = ICertificateManager.CNAME + "#createCertificateRequest(final List<String> subjectData, final String storePassword, final int validityPeriod, final int keySize) throws CertificateManagementException";
         
         if (DEBUG)
         {
@@ -81,37 +82,41 @@ public class CertificateManagerImpl implements ICertificateManager
             DEBUGGER.debug("Value: {}", keySize);
         }
 
-        final String sigAlg = keyConfig.getSignatureAlgorithm();
-        final File keyDirectory = FileUtils.getFile(keyConfig.getKeyDirectory() + "/" + subjectData.get(0));
+        final File rootDirectory = certConfig.getRootDirectory();
+        final String signatureAlgorithm = certConfig.getSignatureAlgorithm();
+        final String certificateAlgorithm = certConfig.getCertificateAlgorithm();
+        final File privateKeyDirectory = FileUtils.getFile(certConfig.getPrivateKeyDirectory() + "/" + subjectData.get(0));
+        final File publicKeyDirectory = FileUtils.getFile(certConfig.getPublicKeyDirectory() + "/" + subjectData.get(0));
+        final File csrDirectory = FileUtils.getFile(certConfig.getCsrDirectory() + "/" + subjectData.get(0));
+        final File storeDirectory = FileUtils.getFile(certConfig.getStoreDirectory() + "/" + subjectData.get(0));
         final X500Name x500Name = new X500Name("CN=" + subjectData.get(0) + ",OU=" + subjectData.get(1) + ",O=" + subjectData.get(2) + ",L=" + subjectData.get(3) + ",ST=" + subjectData.get(4) + ",C=" + subjectData.get(5) + ",E=" + subjectData.get(6));
 
         if (DEBUG)
         {
-            DEBUGGER.debug("sigAlg: {}", sigAlg);
-            DEBUGGER.debug("keyDirectory: {}", keyDirectory);
-            DEBUGGER.debug("X500Name: {}", x500Name);
+            DEBUGGER.debug("rootDirectory: {}", rootDirectory);
+            DEBUGGER.debug("signatureAlgorithm: {}", signatureAlgorithm);
+            DEBUGGER.debug("certificateAlgorithm: {}", certificateAlgorithm);
+            DEBUGGER.debug("privateKeyDirectory: {}", privateKeyDirectory);
+            DEBUGGER.debug("publicKeyDirectory: {}", publicKeyDirectory);
+            DEBUGGER.debug("csrDirectory: {}", csrDirectory);
+            DEBUGGER.debug("storeDirectory: {}", storeDirectory);
+            DEBUGGER.debug("x500Name: {}", x500Name);
         }
 
         File csrFile = null;
-        JcaPEMWriter pemWriter = null;
+        JcaPEMWriter csrPemWriter = null;
+        JcaPEMWriter publicKeyWriter = null;
+        JcaPEMWriter privateKeyWriter = null;
+        FileOutputStream csrFileStream = null;
+        FileOutputStream keyStoreStream = null;
+        FileOutputStream publicKeyFileStream = null;
+        FileOutputStream privateKeyFileStream = null;
+        OutputStreamWriter csrFileStreamWriter = null;
+        OutputStreamWriter privateKeyStreamWriter = null;
+        OutputStreamWriter publicKeyStreamWriter = null;
 
         try
         {
-            if (!(keyDirectory.exists()))
-            {
-                if (!(keyDirectory.mkdirs()))
-                {
-                    throw new KeyManagementException("Configured key directory does not exist and unable to create it");
-                }
-            }
-
-            File keyStoreFile = FileUtils.getFile(keyDirectory + "/" + subjectData.get(0) + "." + KeyStore.getDefaultType().toString());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("File: {}", keyStoreFile);
-            }
-
             KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
             keyStore.load(null, storePassword.toCharArray());
 
@@ -120,10 +125,8 @@ public class CertificateManagerImpl implements ICertificateManager
                 DEBUGGER.debug("KeyStore: {}", keyStore);
             }
 
-            keyDirectory.setExecutable(true, true);
-
             SecureRandom random = new SecureRandom();
-            KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(certConfig.getCertAlgorithm());
+            KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(certificateAlgorithm);
             keyGenerator.initialize(keySize, random);
 
             if (DEBUG)
@@ -140,7 +143,7 @@ public class CertificateManagerImpl implements ICertificateManager
 
             if (keyPair != null)
             {
-                final Signature sig = Signature.getInstance(sigAlg);
+                final Signature sig = Signature.getInstance(signatureAlgorithm);
                 final PrivateKey privateKey = keyPair.getPrivate();
                 final PublicKey publicKey = keyPair.getPublic();
 
@@ -152,7 +155,7 @@ public class CertificateManagerImpl implements ICertificateManager
                 }
 
                 sig.initSign(privateKey, random);
-                ContentSigner signGen = new JcaContentSignerBuilder(sigAlg).build(privateKey);
+                ContentSigner signGen = new JcaContentSignerBuilder(signatureAlgorithm).build(privateKey);
 
                 if (DEBUG)
                 {
@@ -200,19 +203,68 @@ public class CertificateManagerImpl implements ICertificateManager
                     DEBUGGER.debug("PKCS10CertificationRequest: {}", csr);
                 }
 
-                keyStore.setKeyEntry(subjectData.get(0), (Key) keyPair.getPrivate(), storePassword.toCharArray(), issuerCert);
-                keyStore.store(new FileOutputStream(keyStoreFile), storePassword.toCharArray());
+                // write private key
+                File privateKeyFile = FileUtils.getFile(privateKeyDirectory + "/" + subjectData.get(0) + SecurityServiceConstants.PRIVATEKEY_FILE_EXT);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("KeyStore: {}", keyStore);
+                	DEBUGGER.debug("privateKeyFile: {}", privateKeyFile);
                 }
 
-                csrFile = FileUtils.getFile(keyDirectory + "/" + subjectData.get(0) + ".csr");
+                if (!(privateKeyFile.createNewFile()))
+                {
+                    throw new IOException("Failed to store private file");
+                }
+
+                privateKeyFileStream = new FileOutputStream(privateKeyFile);
+                privateKeyStreamWriter = new OutputStreamWriter(privateKeyFileStream);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("CSR File: {}", csrFile);
+                    DEBUGGER.debug("privateKeyFileStream: {}", privateKeyFileStream);
+                    DEBUGGER.debug("privateKeyStreamWriter: {}", privateKeyStreamWriter);
+                }
+
+                privateKeyWriter = new JcaPEMWriter(privateKeyStreamWriter);
+                privateKeyWriter.writeObject(privateKey);
+                privateKeyWriter.flush();
+                privateKeyStreamWriter.flush();
+                privateKeyFileStream.flush();
+
+                // write public key
+                File publicKeyFile = FileUtils.getFile(publicKeyDirectory + "/" + subjectData.get(0) + SecurityServiceConstants.PUBLICKEY_FILE_EXT);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("publicKeyFile: {}", publicKeyFile);
+                }
+
+                if (!(publicKeyFile.createNewFile()))
+                {
+                    throw new IOException("Failed to store public key file");
+                }
+
+                publicKeyFileStream = new FileOutputStream(publicKeyFile);
+                publicKeyStreamWriter = new OutputStreamWriter(publicKeyFileStream);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("publicKeyFileStream: {}", publicKeyFileStream);
+                    DEBUGGER.debug("publicKeyStreamWriter: {}", publicKeyStreamWriter);
+                }
+
+                publicKeyWriter = new JcaPEMWriter(publicKeyStreamWriter);
+                publicKeyWriter.writeObject(publicKey);
+                publicKeyWriter.flush();
+                publicKeyStreamWriter.flush();
+                publicKeyFileStream.flush();
+
+                // write csr
+                csrFile = FileUtils.getFile(csrDirectory + "/" + subjectData.get(0) + SecurityServiceConstants.CSR_FILE_EXT);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("csrFile: {}", csrFile);
                 }
 
                 if (!(csrFile.createNewFile()))
@@ -220,76 +272,163 @@ public class CertificateManagerImpl implements ICertificateManager
                     throw new IOException("Failed to store CSR file");
                 }
 
-                pemWriter = new JcaPEMWriter(new OutputStreamWriter(new FileOutputStream(csrFile)));
-                pemWriter.writeObject(csr);
+                csrFileStream = new FileOutputStream(csrFile);
+                csrFileStreamWriter = new OutputStreamWriter(csrFileStream);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("publicKeyFileStream: {}", publicKeyFileStream);
+                    DEBUGGER.debug("publicKeyStreamWriter: {}", publicKeyStreamWriter);
+                }
+
+                csrPemWriter = new JcaPEMWriter(csrFileStreamWriter);
+                csrPemWriter.writeObject(csr);
+                csrPemWriter.flush();
+                csrFileStreamWriter.flush();
+                csrFileStream.flush();
+
+                File keyStoreFile = FileUtils.getFile(storeDirectory + "/" + subjectData.get(0) + "." + KeyStore.getDefaultType());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("keyStoreFile: {}", keyStoreFile);
+                }
+
+                keyStoreStream = FileUtils.openOutputStream(keyStoreFile);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("keyStoreStream: {}", keyStoreStream);
+                }
+
+                keyStore.setKeyEntry(subjectData.get(0), (Key) keyPair.getPrivate(), storePassword.toCharArray(), issuerCert);
+                keyStore.store(keyStoreStream, storePassword.toCharArray());
+                keyStoreStream.flush();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("KeyStore: {}", keyStore);
+                }
             }
             else
             {
-                throw new KeyManagementException("Failed to generate keypair. Cannot continue.");
+                throw new CertificateManagementException("Failed to generate keypair. Cannot continue.");
             }
         }
         catch (FileNotFoundException fnfx)
         {
-            throw new KeyManagementException(fnfx.getMessage(), fnfx);
+        	throw new CertificateManagementException(fnfx.getMessage(), fnfx);
         }
         catch (IOException iox)
         {
-            throw new KeyManagementException(iox.getMessage(), iox);
+            throw new CertificateManagementException(iox.getMessage(), iox);
         }
         catch (NoSuchAlgorithmException nsax)
         {
-            throw new KeyManagementException(nsax.getMessage(), nsax);
+            throw new CertificateManagementException(nsax.getMessage(), nsax);
         }
         catch (IllegalStateException isx)
         {
-            throw new KeyManagementException(isx.getMessage(), isx);
+            throw new CertificateManagementException(isx.getMessage(), isx);
         }
         catch (InvalidKeyException ikx)
         {
-            throw new KeyManagementException(ikx.getMessage(), ikx);
+            throw new CertificateManagementException(ikx.getMessage(), ikx);
         }
         catch (OperatorCreationException ocx)
         {
-            throw new KeyManagementException(ocx.getMessage(), ocx);
+            throw new CertificateManagementException(ocx.getMessage(), ocx);
         }
         catch (KeyStoreException ksx)
         {
-            throw new KeyManagementException(ksx.getMessage(), ksx);
+            throw new CertificateManagementException(ksx.getMessage(), ksx);
         }
         catch (CertificateException cx)
         {
-            throw new KeyManagementException(cx.getMessage(), cx);
+            throw new CertificateManagementException(cx.getMessage(), cx);
         }
         finally
         {
-            if (pemWriter != null)
-            {
-                IOUtils.closeQuietly(pemWriter);
-            }
+        	if (csrFileStreamWriter != null)
+        	{
+        	    IOUtils.closeQuietly(csrFileStreamWriter);
+        	}
+
+        	if (csrFileStream != null)
+        	{
+        	    IOUtils.closeQuietly(csrFileStream);
+        	}
+
+        	if (csrPemWriter != null)
+        	{
+        		IOUtils.closeQuietly(csrPemWriter);
+        	}
+
+        	if (publicKeyFileStream != null)
+        	{
+        	    IOUtils.closeQuietly(publicKeyFileStream);
+        	}
+
+        	if (publicKeyStreamWriter != null)
+        	{
+        	    IOUtils.closeQuietly(publicKeyStreamWriter);
+        	}
+
+        	if (publicKeyWriter != null)
+        	{
+        		IOUtils.closeQuietly(publicKeyWriter);
+        	}
+
+        	if (privateKeyFileStream != null)
+        	{
+        	    IOUtils.closeQuietly(privateKeyFileStream);
+        	}
+
+        	if (privateKeyStreamWriter != null)
+        	{
+        	    IOUtils.closeQuietly(privateKeyStreamWriter);
+        	}
+
+        	if (privateKeyWriter != null)
+        	{
+        		IOUtils.closeQuietly(privateKeyWriter);
+        	}
+
+        	if (keyStoreStream != null)
+        	{
+        	    IOUtils.closeQuietly(keyStoreStream);
+        	}
         }
 
         return csrFile;
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#applyCertificateRequest(final File certFile, final String storePassword)
+     * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#applyCertificateRequest(final String commonName, final File certificateFile, final File keystoreFile, final String storePassword)
      */
-    public synchronized boolean applyCertificateRequest(final String commonName, final File certFile, final String storePassword) throws KeyManagementException
+    public synchronized boolean applyCertificateRequest(final String commonName, final File certificateFile, final File keystoreFile, final String storePassword) throws CertificateManagementException
     {
-        final String methodName = ICertificateManager.CNAME + "#applyCertificateRequest(final String commonName, final File certFile, final String storePassword) throws KeyManagementException";
+        final String methodName = ICertificateManager.CNAME + "#applyCertificateRequest(final String commonName, final File certificateFile, final File keystoreFile, final String storePassword) throws CertificateManagementException";
         
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", commonName);
-            DEBUGGER.debug("Value: {}", certFile);
+            DEBUGGER.debug("Value: {}", certificateFile);
+            DEBUGGER.debug("Value: {}", keystoreFile);
         }
 
-        final File keyDirectory = FileUtils.getFile(keyConfig.getKeyDirectory() + "/" + commonName);
+        final File rootDirectory = certConfig.getRootDirectory();
+        final File certificateDirectory = FileUtils.getFile(certConfig.getCertificateDirectory() + "/" + commonName);
+        final File storeDirectory = FileUtils.getFile(certConfig.getStoreDirectory() + "/" + commonName);
 
         if (DEBUG)
         {
-            DEBUGGER.debug("keyDirectory: {}", keyDirectory);
+            DEBUGGER.debug("rootDirectory: {}", rootDirectory);
+            DEBUGGER.debug("certificateDirectory: {}", certificateDirectory);
+            DEBUGGER.debug("storeDirectory: {}", storeDirectory);
+            DEBUGGER.debug("certificateFile: {}", certificateFile);
+            DEBUGGER.debug("keystoreFile: {}", keystoreFile);
         }
 
         boolean isComplete = false;
@@ -301,27 +440,38 @@ public class CertificateManagerImpl implements ICertificateManager
 
         try
         {
-            if (!(keyDirectory.exists()))
+            if (!(rootDirectory.exists()))
             {
-                throw new KeyManagementException("Configured key directory does not exist and unable to create it");
+            	throw new CertificateManagementException("Root certificate directory either does not exist or cannot be written to. Cannot continue.");
             }
 
-            final File keyStoreFile = FileUtils.getFile(keyDirectory + "/" + commonName + "." + KeyStore.getDefaultType());
-            final File certResponse = FileUtils.getFile(keyDirectory + "/" + certFile);
-
-            if (DEBUG)
+            if (!(rootDirectory.canWrite()))
             {
-                DEBUGGER.debug("keyStoreFile: {}", keyStoreFile);
-                DEBUGGER.debug("certResponse: {}", certResponse);
+                throw new CertificateManagementException("Root certificate directory either does not exist or cannot be written to. Cannot continue.");             
             }
 
-            if (!(keyStoreFile.canRead()))
+            if (!(certConfig.getRootCertificateFile().exists()))
             {
-                throw new KeyManagementException("Requested keystore does not exist. Cannot continue.");
+                throw new CertificateManagementException("Root certificate file does not exist. Cannot continue."); 
             }
 
-            keystoreInput = FileUtils.openInputStream(keyStoreFile);
-            certStream = FileUtils.openInputStream(certResponse);
+            if (!(certConfig.getIntermediateCertificateFile().exists()))
+            {
+                throw new CertificateManagementException("Intermediate certificate file does not exist. Cannot continue."); 
+            }
+
+            if (!(storeDirectory.canWrite()))
+            {
+                throw new CertificateManagementException("Keystore directory either does not exist or cannot be written to. Cannot continue.");
+            }
+
+            if (!(keystoreFile.canWrite()))
+            {
+                throw new CertificateManagementException("Unable to write to applicable keystore. Cannot continue.");
+            }
+
+            keystoreInput = FileUtils.openInputStream(keystoreFile);
+            certStream = FileUtils.openInputStream(certificateFile);
 
             if (DEBUG)
             {
@@ -338,7 +488,6 @@ public class CertificateManagerImpl implements ICertificateManager
             }
 
             Key privateKey = keyStore.getKey(commonName, storePassword.toCharArray());
-
             CertificateFactory certFactory = CertificateFactory.getInstance(certConfig.getCertificateType());
 
             if (DEBUG)
@@ -364,7 +513,7 @@ public class CertificateManagerImpl implements ICertificateManager
             	DEBUGGER.debug("X509Certificate[]", (Object) responseCert);
             }
 
-            storeStream = FileUtils.openOutputStream(keyStoreFile);
+            storeStream = FileUtils.openOutputStream(keystoreFile);
             keyStore.setKeyEntry(commonName, privateKey, storePassword.toCharArray(), responseCert);
             keyStore.store(storeStream, storePassword.toCharArray());
 
@@ -372,31 +521,31 @@ public class CertificateManagerImpl implements ICertificateManager
         }
         catch (FileNotFoundException fnfx)
         {
-            throw new KeyManagementException(fnfx.getMessage(), fnfx);
+            throw new CertificateManagementException(fnfx.getMessage(), fnfx);
         }
         catch (IOException iox)
         {
-            throw new KeyManagementException(iox.getMessage(), iox);
+            throw new CertificateManagementException(iox.getMessage(), iox);
         }
         catch (NoSuchAlgorithmException nsax)
         {
-            throw new KeyManagementException(nsax.getMessage(), nsax);
+            throw new CertificateManagementException(nsax.getMessage(), nsax);
         }
         catch (IllegalStateException isx)
         {
-            throw new KeyManagementException(isx.getMessage(), isx);
+            throw new CertificateManagementException(isx.getMessage(), isx);
         }
         catch (KeyStoreException ksx)
         {
-            throw new KeyManagementException(ksx.getMessage(), ksx);
+            throw new CertificateManagementException(ksx.getMessage(), ksx);
         }
         catch (CertificateException cx)
         {
-            throw new KeyManagementException(cx.getMessage(), cx);
+            throw new CertificateManagementException(cx.getMessage(), cx);
         }
         catch (UnrecoverableKeyException ukx)
         {
-        	throw new KeyManagementException(ukx.getMessage(), ukx);
+        	throw new CertificateManagementException(ukx.getMessage(), ukx);
 		}
         finally
         {
