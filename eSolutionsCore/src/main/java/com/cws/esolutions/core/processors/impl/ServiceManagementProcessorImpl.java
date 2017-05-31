@@ -112,8 +112,9 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.ADDPLATFORM);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -242,6 +243,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.ADDPLATFORM);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -324,8 +326,9 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.UPDATEPLATFORM);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -423,6 +426,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.UPDATEPLATFORM);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -505,8 +509,9 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.DELETEPLATFORM);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -568,8 +573,9 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
             {
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.UPDATEPLATFORM);
+                auditEntry.setAuditType(AuditType.DELETEPLATFORM);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -650,8 +656,9 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.LISTPLATFORMS);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -739,6 +746,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.LISTPLATFORMS);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -821,8 +829,9 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.LISTPLATFORMS);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -913,6 +922,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.LISTPLATFORMS);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -995,8 +1005,9 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.LISTPLATFORMS);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1083,6 +1094,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.LISTPLATFORMS);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1165,8 +1177,9 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.LOADPLATFORM);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1293,6 +1306,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.LOADPLATFORM);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 

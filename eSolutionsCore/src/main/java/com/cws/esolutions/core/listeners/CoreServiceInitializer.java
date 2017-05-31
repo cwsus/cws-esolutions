@@ -208,24 +208,27 @@ public class CoreServiceInitializer
 
         try
         {
-            for (String key : datasources.keySet())
-            {
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Key: {}", key);
-                }
+        	if ((datasources != null) && (datasources.size() != 0))
+        	{
+        		for (String key : datasources.keySet())
+        		{
+        			if (DEBUG)
+        			{
+        				DEBUGGER.debug("Key: {}", key);
+        			}
 
-                BasicDataSource dataSource = (BasicDataSource) datasources.get(key);
+        			BasicDataSource dataSource = (BasicDataSource) datasources.get(key);
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("BasicDataSource: {}", dataSource);
-                }
+        			if (DEBUG)
+        			{
+        				DEBUGGER.debug("BasicDataSource: {}", dataSource);
+        			}
 
-                if ((dataSource != null ) && (!(dataSource.isClosed())))
-                {
-                    dataSource.close();
-                }
+        			if ((dataSource != null ) && (!(dataSource.isClosed())))
+        			{
+        				dataSource.close();
+        			}
+        		}
             }
         }
         catch (SQLException sqx)

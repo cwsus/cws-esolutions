@@ -32,6 +32,7 @@ import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.CoreServiceConstants;
+import com.cws.esolutions.core.processors.enums.DNSRecordClass;
 import com.cws.esolutions.core.processors.enums.DNSRecordType;
 /**
  * @author khuntly
@@ -44,17 +45,14 @@ public class DNSRecord implements Serializable
     private int recordWeight = 0; // only used for srv/mx records
     private int recordLifetime = 0; // only used for srv records
     private int recordPriority = 10; // only used for srv/mx records
-    private String spfRecord = null; // spf record for mx
     private String recordName = null; // used for all record types
-    private String recordClass = "IN"; // used for all record types
-    private String recordOrigin = "."; // all records have an origin, apex will be .
-    private boolean mailRecord = false; // set this to true if the record is an mx record
+    private String recordOrigin = ".";
+    private String recordAddress = null; // one or more addresses
     private String recordService = null; // only used for srv records
     private String recordProtocol = null; // only used for srv records
     private DNSRecordType recordType = null; // used for all record types
-    private List<String> primaryAddress = null; // one or more addresses
-    private List<String> tertiaryAddress = null; // one or more addresses
-    private List<String> secondaryAddress = null; // one or more addresses
+    private List<String> recordAddresses = null; // one or more addresses
+    private DNSRecordClass recordClass = DNSRecordClass.IN; // used for all record types
 
     private static final String CNAME = DNSRecord.class.getName();
     private static final long serialVersionUID = -3108982210099182120L;
@@ -62,24 +60,6 @@ public class DNSRecord implements Serializable
     private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER);
-
-    /**
-     * Utilize this method to set record origin
-     *
-     * @param value the record origin (defaults to "." if not specified)
-     */
-    public final void setRecordOrigin(final String value)
-    {
-        final String methodName = DNSRecord.CNAME + "#setRecordOrigin(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.recordOrigin = value;
-    }
 
     /**
      * Utilize this method to set a port number for an associated
@@ -180,9 +160,9 @@ public class DNSRecord implements Serializable
      *
      * @param value The record class (defaults to "IN" if not specified)
      */
-    public final void setRecordClass(final String value)
+    public final void setRecordClass(final DNSRecordClass value)
     {
-        final String methodName = DNSRecord.CNAME + "#setRecordClass(final String value)";
+        final String methodName = DNSRecord.CNAME + "#setRecordClass(final DNSRecordClass value)";
 
         if (DEBUG)
         {
@@ -198,9 +178,9 @@ public class DNSRecord implements Serializable
      *
      * @param value The primary record address
      */
-    public final void setPrimaryAddress(final List<String> value)
+    public final void setRecordAddress(final String value)
     {
-        final String methodName = DNSRecord.CNAME + "#setPrimaryAddress(final List<String> value)";
+        final String methodName = DNSRecord.CNAME + "#setRecordAddress(final String value)";
 
         if (DEBUG)
         {
@@ -208,43 +188,7 @@ public class DNSRecord implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.primaryAddress = value;
-    }
-
-    /**
-     * Utilize this method to set a secondary address for the record
-     *
-     * @param value the secondary record address
-     */
-    public final void setSecondaryAddress(final List<String> value)
-    {
-        final String methodName = DNSRecord.CNAME + "#setSecondaryAddress(final List<String> value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.secondaryAddress = value;
-    }
-
-    /**
-     * Utilize this method to set a tertiary address for the record
-     *
-     * @param value the tertiary record address
-     */
-    public final void setTertiaryAddress(final List<String> value)
-    {
-        final String methodName = DNSRecord.CNAME + "#setTertiaryAddress(final List<String> value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.tertiaryAddress = value;
+        this.recordAddress = value;
     }
 
     /**
@@ -305,16 +249,11 @@ public class DNSRecord implements Serializable
     }
 
     /**
-     * Utilize this method to set multiple address records
-     * for a given entry - e.g.
-     * proxy IN A 192.168.10.6
-             IN A 192.168.10.8
-     *
-     * @param value the SPF record information
+     * @return The primary record address
      */
-    public final void setSpfRecord(final String value)
+    public final void setRecordAddresses(final List<String> value)
     {
-        final String methodName = DNSRecord.CNAME + "#setSpfRecord(final String value)";
+        final String methodName = DNSRecord.CNAME + "#setRecordAddresses(final List<String> value)";
 
         if (DEBUG)
         {
@@ -322,17 +261,15 @@ public class DNSRecord implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.spfRecord = value;
+        this.recordAddresses = value;
     }
 
     /**
-     * Sets a <code>boolean</code> value to determine if the record is an MX record
-     *
-     * @param value - <code>true</code> if this is an MX record, <code>false</code> otherwise
+     * @return The primary record address
      */
-    public final void setMailRecord(final boolean value)
+    public final void setRecordOrigin(final String value)
     {
-        final String methodName = DNSRecord.CNAME + "#setMailRecord(final boolean value)";
+        final String methodName = DNSRecord.CNAME + "#setRecordOrigin(final String value)";
 
         if (DEBUG)
         {
@@ -340,23 +277,7 @@ public class DNSRecord implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.mailRecord = value;
-    }
-
-    /**
-     * @return The record origin
-     */
-    public final String getRecordOrigin()
-    {
-        final String methodName = DNSRecord.CNAME + "#getRecordOrigin()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.recordOrigin);
-        }
-
-        return this.recordOrigin;
+        this.recordOrigin = value;
     }
 
     /**
@@ -442,7 +363,7 @@ public class DNSRecord implements Serializable
     /**
      * @return The record class
      */
-    public final String getRecordClass()
+    public final DNSRecordClass getRecordClass()
     {
         final String methodName = DNSRecord.CNAME + "#getRecordClass()";
 
@@ -458,49 +379,34 @@ public class DNSRecord implements Serializable
     /**
      * @return The primary record address
      */
-    public final List<String> getPrimaryAddress()
+    public final String getRecordAddress()
     {
-        final String methodName = DNSRecord.CNAME + "#getPrimaryAddress()";
+        final String methodName = DNSRecord.CNAME + "#getRecordAddress()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.primaryAddress);
+            DEBUGGER.debug("Value: {}", this.recordAddress);
         }
 
-        return this.primaryAddress;
+        return this.recordAddress;
     }
 
+
     /**
-     * @return The secondary, if assigned, address for the record
+     * @return The primary record address
      */
-    public final List<String> getSecondaryAddress()
+    public final List<String> getRecordAddresses()
     {
-        final String methodName = DNSRecord.CNAME + "#getSecondaryAddress()";
+        final String methodName = DNSRecord.CNAME + "#getRecordAddresses()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.secondaryAddress);
+            DEBUGGER.debug("Value: {}", this.recordAddresses);
         }
 
-        return this.secondaryAddress;
-    }
-
-    /**
-     * @return The tertiary, if assigned, address for the record
-     */
-    public final List<String> getTertiaryAddress()
-    {
-        final String methodName = DNSRecord.CNAME + "#getTertiaryAddress()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.tertiaryAddress);
-        }
-
-        return this.tertiaryAddress;
+        return this.recordAddresses;
     }
 
     /**
@@ -552,35 +458,19 @@ public class DNSRecord implements Serializable
     }
 
     /**
-     * @return The string representation of an SPF record
+     * @return The primary record address
      */
-    public final String getSpfRecord()
+    public final String getRecordOrigin()
     {
-        final String methodName = DNSRecord.CNAME + "#getSpfRecord()";
+        final String methodName = DNSRecord.CNAME + "#getRecordOrigin()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.spfRecord);
+            DEBUGGER.debug("Value: {}", this.recordOrigin);
         }
 
-        return this.spfRecord;
-    }
-
-    /**
-     * @return <code>true</code> if this is an MX record, <code>false</code> otherwise
-     */
-    public final boolean isMailRecord()
-    {
-        final String methodName = DNSRecord.CNAME + "#isMailRecord()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.mailRecord);
-        }
-
-        return this.mailRecord;
+        return this.recordOrigin;
     }
 
     /**

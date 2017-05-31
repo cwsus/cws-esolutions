@@ -27,8 +27,6 @@
         <property name="jndiName" value="java:comp/env/jdbc/esolutions" />
     </bean>
 
-    <import resource="classpath:/eSolutions/dao/ServiceMessagingDAO.xml" />
-
     <bean id="messageValidator" class="com.cws.esolutions.web.validators.EmailMessageValidator">
         <property name="messageSubjectRequired" value="theme.subject.required" />
         <property name="messageBodyRequired" value="theme.body.required" />

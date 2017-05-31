@@ -52,8 +52,8 @@ import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
-import com.cws.esolutions.web.processors.impl.ServiceMessagingProcessorImpl;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
+import com.cws.esolutions.core.processors.impl.ServiceMessagingProcessorImpl;
 /**
  * @author khuntly
  * @version 1.0

@@ -109,6 +109,7 @@ public enum AuditType
 
     // platform mgmt
     ADDPLATFORM,
+    DELETEPLATFORM,
     UPDATEPLATFORM,
     LISTPLATFORMS,
     LOADPLATFORM,

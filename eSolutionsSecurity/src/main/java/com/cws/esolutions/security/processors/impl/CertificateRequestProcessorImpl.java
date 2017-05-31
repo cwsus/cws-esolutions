@@ -171,6 +171,7 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.LISTCSR);
                 auditEntry.setUserAccount(authUser);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -354,6 +355,7 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.GENERATECERT);
                 auditEntry.setUserAccount(authUser);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -492,6 +494,7 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.APPLYCERT);
                 auditEntry.setUserAccount(authUser);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 

@@ -17,7 +17,8 @@
         <encryptionAlgorithm>AES</encryptionAlgorithm>
         <encryptionInstance>AES/CBC/PKCS5Padding</encryptionInstance>
         <saltLength>64</saltLength> <!-- salt string length (bigger is better) -->
-        <performAudit>true</performAudit> <!-- should we audit stuff ? (default true) -->
+        <performAudit>false</performAudit> <!-- should we audit stuff ? (default true) -->
+        <enableSecurity>false</enableSecurity>
         <resetIdLength>64</resetIdLength> <!-- reset id length (bigger is better) -->
         <smsResetEnabled>false</smsResetEnabled> <!-- do we send the reset email AND an sms ? -->
         <smsCodeLength>8</smsCodeLength> <!-- how long should the sms reset id be ? -->

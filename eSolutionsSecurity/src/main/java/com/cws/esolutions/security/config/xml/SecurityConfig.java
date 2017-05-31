@@ -432,19 +432,6 @@ public final class SecurityConfig implements Serializable
         return this.enableSecurity;
     }
 
-    public final boolean securityEnabled()
-    {
-        final String methodName = SecurityConfig.CNAME + "#securityEnabled()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.enableSecurity);
-        }
-
-        return this.enableSecurity;
-    }
-
     @XmlElement(name = "maxAttempts")
     public final int getMaxAttempts()
     {

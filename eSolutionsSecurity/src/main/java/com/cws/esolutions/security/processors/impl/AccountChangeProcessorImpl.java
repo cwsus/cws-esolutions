@@ -166,6 +166,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.MODIFYUSER);
                 auditEntry.setUserAccount(requestor);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -301,6 +302,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.MODIFYUSER);
                 auditEntry.setUserAccount(requestor);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -518,6 +520,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.CHANGEPASS);
                 auditEntry.setUserAccount(requestor);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -745,6 +748,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.ADDSECURITY);
                 auditEntry.setUserAccount(requestor);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -859,6 +863,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.CHANGEKEYS);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1048,6 +1053,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.CHANGEKEYS);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1198,6 +1204,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.CHANGEKEYS);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 

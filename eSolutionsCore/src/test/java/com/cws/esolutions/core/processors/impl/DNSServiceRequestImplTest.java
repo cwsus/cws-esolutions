@@ -25,7 +25,6 @@ package com.cws.esolutions.core.processors.impl;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.List;
 import org.junit.Test;
 import org.junit.After;
 import java.util.Arrays;
@@ -40,6 +39,7 @@ import com.cws.esolutions.core.processors.dto.DNSEntry;
 import com.cws.esolutions.core.processors.dto.DNSRecord;
 import com.cws.esolutions.core.processors.enums.DNSRecordType;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
+import com.cws.esolutions.core.processors.enums.DNSRecordClass;
 import com.cws.esolutions.core.processors.enums.DNSRequestType;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
@@ -71,7 +71,7 @@ public class DNSServiceRequestImplTest
             userAccount.setUsername("khuntly");
 
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", false);
-            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "logging/logging.xml", true, true);
+            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, false);
         }
         catch (Exception ex)
         {
@@ -85,10 +85,11 @@ public class DNSServiceRequestImplTest
     public void performLookup()
     {
         DNSRecord record = new DNSRecord();
-        record.setRecordName("www.google.com");
-        record.setRecordType(DNSRecordType.A);
+        record.setRecordName("google.com");
+        record.setRecordType(DNSRecordType.SOA);
 
         DNSServiceRequest request = new DNSServiceRequest();
+        request.setResolverHost("8.8.4.4");
         request.setRecord(record);
         request.setRequestInfo(hostInfo);
         request.setRequestType(DNSRequestType.LOOKUP);
@@ -98,6 +99,7 @@ public class DNSServiceRequestImplTest
         try
         {
             DNSServiceResponse response = dnsService.performLookup(request);
+            System.out.println(response);
 
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
@@ -107,7 +109,7 @@ public class DNSServiceRequestImplTest
         }
     }
 
-    @Test
+    /*@Test
     public void createNewService()
     {
         Calendar cal = Calendar.getInstance();
@@ -245,186 +247,161 @@ public class DNSServiceRequestImplTest
         {
             Assert.fail(dnsx.getMessage());
         }
-    }
+    }*/
 
     @Test
-    public void pushNewService()
+    public void createNewService()
     {
-        StringBuilder pbuilder = new StringBuilder()
-            .append("$ORIGIN .\n")
-            .append("$TTL 900\n")
-            .append("mysite.com IN SOA prodns.caspersbox.com hostmaster.caspersbox.com (\n")
-            .append("       2013072300\n")
-            .append("       900\n")
-            .append("       3600\n")
-            .append("       604800\n")
-            .append("       3600\n")
-            .append("       )\n")
-            .append("       IN      NS              prodns1.caspersbox.com\n")
-            .append("       IN      NS              prodns2.caspersbox.com\n")
-            .append("       IN      NS              prodns3.caspersbox.com\n")
-            .append("       IN      NS              prodns4.caspersbox.com\n")
-            .append("       IN      RP              dnsadmins.caspersbox.com\n")
-            .append("       IN      A               127.0.0.1\n")
-            .append("       IN      A               127.0.0.2\n")
-            .append("       IN      MX      10      mail.mysite.com\n")
-            .append("\n")
-            .append("$ORIGIN mysite.com\n")
-            .append("www                        IN      CNAME                   mysite.com.\n")
-            .append("test                       IN      A                       127.0.2.1\n")
-            .append("another                    IN      A                       127.0.2.1\n")
-            .append("                           IN      A                       182.1.32.1\n")
-            .append("                           IN      A                       49.49.1.3\n")
-            .append("_domainkey                 IN      TXT                     \"DomainKey-Signature: a=rsa-sha1;s=newyork;d=example.com;c=simple;q=dns;b=dydVyOfAKCdLXdJOc8G2q8LoXSlEniSbav+yuU4zGffruD00lszZVoG4ZHRNiYzR;\"\n")
-            .append("_ldap._tcp.mysite.com.     IN      100     10      10389   ldap.server.com\n")
-            .append("mail                       IN      A                       172.1.6.1\n")
-            .append("                           IN      A                       172.1.2.3\n")
-            .append("                           IN      A                       172.4.3.1\n")
-            .append("                           IN      TXT                     \"v=spf1 ip4:192.168.10.0/24 mx ?all\"\n");
-
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMdd00");
 
-        DNSRecord apexns1 = new DNSRecord();
-        apexns1.setRecordName("mysite.com");
-        apexns1.setRecordType(DNSRecordType.NS);
-        apexns1.setPrimaryAddress(new ArrayList<String>(Arrays.asList("prodns1.caspersbox.com")));
-        apexns1.setRecordClass("IN");
-        apexns1.setRecordOrigin(".");
+        // apex records
+        DNSRecord nsRecord1 = new DNSRecord();
+        nsRecord1.setRecordClass(DNSRecordClass.IN);
+        nsRecord1.setRecordType(DNSRecordType.NS);
+        nsRecord1.setRecordAddress("prodns1.caspersbox.com");
 
-        DNSRecord apexns2 = new DNSRecord();
-        apexns2.setRecordType(DNSRecordType.NS);
-        apexns2.setPrimaryAddress(new ArrayList<String>(Arrays.asList("prodns2.caspersbox.com")));
-        apexns2.setRecordClass("IN");
-        apexns2.setRecordOrigin(".");
-        apexns2.setRecordName("mysite.com");
+        DNSRecord nsRecord2 = new DNSRecord();
+        nsRecord2.setRecordClass(DNSRecordClass.IN);
+        nsRecord2.setRecordType(DNSRecordType.NS);
+        nsRecord2.setRecordAddress("prodns2.caspersbox.com");
 
-        DNSRecord apexns3 = new DNSRecord();
-        apexns3.setRecordType(DNSRecordType.NS);
-        apexns3.setPrimaryAddress(new ArrayList<String>(Arrays.asList("prodns3.caspersbox.com")));
-        apexns3.setRecordClass("IN");
-        apexns3.setRecordOrigin(".");
-        apexns3.setRecordName("mysite.com");
+        DNSRecord nsRecord3 = new DNSRecord();
+        nsRecord3.setRecordClass(DNSRecordClass.IN);
+        nsRecord3.setRecordType(DNSRecordType.NS);
+        nsRecord3.setRecordAddress("prodns3.caspersbox.com");
 
-        DNSRecord apexns4 = new DNSRecord();
-        apexns4.setRecordType(DNSRecordType.NS);
-        apexns4.setPrimaryAddress(new ArrayList<String>(Arrays.asList("prodns4.caspersbox.com")));
-        apexns4.setRecordClass("IN");
-        apexns4.setRecordOrigin(".");
-        apexns4.setRecordName("mysite.com");
+        DNSRecord nsRecord4 = new DNSRecord();
+        nsRecord4.setRecordClass(DNSRecordClass.IN);
+        nsRecord4.setRecordType(DNSRecordType.NS);
+        nsRecord4.setRecordAddress("prodns4.caspersbox.com");
 
-        DNSRecord rp = new DNSRecord();
-        rp.setRecordClass("IN");
-        rp.setRecordType(DNSRecordType.RP);
-        rp.setPrimaryAddress(new ArrayList<String>(Arrays.asList("dnsadmins.caspersbox.com")));
-        rp.setRecordOrigin(".");
-        rp.setRecordName("mysite.com");
+        DNSRecord rpRecord = new DNSRecord();
+        rpRecord.setRecordClass(DNSRecordClass.IN);
+        rpRecord.setRecordType(DNSRecordType.RP);
+        rpRecord.setRecordAddress("dnsadmins.caspersbox.com");
 
         DNSRecord apexAddress1 = new DNSRecord();
         apexAddress1.setRecordType(DNSRecordType.A);
-        apexAddress1.setPrimaryAddress(new ArrayList<String>(Arrays.asList("127.0.0.1")));
-        apexAddress1.setRecordClass("IN");
-        apexAddress1.setRecordOrigin(".");
-        apexAddress1.setRecordName("mysite.com");
+        apexAddress1.setRecordClass(DNSRecordClass.IN);
+        apexAddress1.setRecordAddress("127.0.0.1");
 
         DNSRecord apexAddress2 = new DNSRecord();
         apexAddress2.setRecordType(DNSRecordType.A);
-        apexAddress2.setPrimaryAddress(new ArrayList<String>(Arrays.asList("127.0.0.2")));
-        apexAddress2.setRecordClass("IN");
-        apexAddress2.setRecordOrigin(".");
-        apexAddress2.setRecordName("mysite.com");
+        apexAddress2.setRecordClass(DNSRecordClass.IN);
+        apexAddress2.setRecordAddress("127.0.0.1");
 
         DNSRecord mxRecord = new DNSRecord();
-        mxRecord.setRecordClass("IN");
+        mxRecord.setRecordClass(DNSRecordClass.IN);
         mxRecord.setRecordType(DNSRecordType.MX);
         mxRecord.setRecordPriority(10);
-        mxRecord.setPrimaryAddress(new ArrayList<String>(Arrays.asList("mail.mysite.com")));
-        mxRecord.setRecordOrigin(".");
-        mxRecord.setRecordName("mysite.com");
+        mxRecord.setRecordAddress("mail.mysite.com");
 
-        List<DNSRecord> apexRecords = new ArrayList<DNSRecord>(
-                Arrays.asList(
-                        apexns1,
-                        apexns2,
-                        apexns3,
-                        apexns4,
-                        rp,
-                        apexAddress1,
-                        apexAddress2,
-                        mxRecord));
+        DNSRecord spfRecord = new DNSRecord();
+        spfRecord.setRecordClass(DNSRecordClass.IN);
+        spfRecord.setRecordType(DNSRecordType.TXT);
+        spfRecord.setRecordAddress("\"v=spf1 mx a ip4:127.0.0.1/8 ~all\"");
 
+        // subrecords
         DNSRecord cnameRecord = new DNSRecord();
-        cnameRecord.setRecordType(DNSRecordType.CNAME);
-        cnameRecord.setPrimaryAddress(new ArrayList<String>(Arrays.asList("mysite.com.")));
-        cnameRecord.setRecordClass("IN");
         cnameRecord.setRecordName("www");
-        cnameRecord.setRecordOrigin("mysite.com");
+        cnameRecord.setRecordClass(DNSRecordClass.IN);
+        cnameRecord.setRecordType(DNSRecordType.CNAME);
+        cnameRecord.setRecordAddress("mysite.com");
+
+        DNSRecord mxAddress = new DNSRecord();
+        mxAddress.setRecordName("mail");
+        mxAddress.setRecordClass(DNSRecordClass.IN);
+        mxAddress.setRecordType(DNSRecordType.A);
+        mxAddress.setRecordAddress("127.0.0.1");
 
         DNSRecord aRecord = new DNSRecord();
         aRecord.setRecordName("test");
-        aRecord.setRecordClass("IN");
+        aRecord.setRecordClass(DNSRecordClass.IN);
         aRecord.setRecordType(DNSRecordType.A);
-        aRecord.setPrimaryAddress(new ArrayList<String>(Arrays.asList("127.0.2.1")));
-        aRecord.setRecordOrigin("mysite.com");
+        aRecord.setRecordAddresses(new ArrayList<String>(
+        		Arrays.asList(
+        				"1.2.3.4",
+        				"4.3.2.1")));
 
-        DNSRecord aRecord1 = new DNSRecord();
-        aRecord1.setRecordName("another");
-        aRecord1.setRecordClass("IN");
-        aRecord1.setRecordType(DNSRecordType.A);
-        aRecord1.setPrimaryAddress(new ArrayList<String>(Arrays.asList("127.0.2.1", "182.1.32.1", "49.49.1.3")));
-        aRecord1.setRecordOrigin("mysite.com");
+        DNSRecord domainKeyRecord = new DNSRecord();
+        domainKeyRecord.setRecordName("_domainkey");
+        domainKeyRecord.setRecordClass(DNSRecordClass.IN);
+        domainKeyRecord.setRecordType(DNSRecordType.TXT);
+        domainKeyRecord.setRecordAddress("\"t=y; o=~;\"");
 
-        DNSRecord txtRecord = new DNSRecord();
-        txtRecord.setRecordName("_domainkey");
-        txtRecord.setRecordClass("IN");
-        txtRecord.setRecordType(DNSRecordType.TXT);
-        txtRecord.setPrimaryAddress(new ArrayList<String>(Arrays.asList("DomainKey-Signature: a=rsa-sha1;s=newyork;d=example.com;c=simple;q=dns;b=dydVyOfAKCdLXdJOc8G2q8LoXSlEniSbav+yuU4zGffruD00lszZVoG4ZHRNiYzR;")));
-        txtRecord.setRecordOrigin("mysite.com");
-
-        DNSRecord mailRecord = new DNSRecord();
-        mailRecord.setMailRecord(true);
-        mailRecord.setRecordName("mail");
-        mailRecord.setRecordClass("IN");
-        mailRecord.setRecordType(DNSRecordType.A);
-        mailRecord.setPrimaryAddress(new ArrayList<String>(Arrays.asList("172.1.6.1", "172.1.2.3", "172.4.3.1")));
-        mailRecord.setSpfRecord("v=spf1 ip4:192.168.10.0/24 mx ?all");
-        mailRecord.setRecordOrigin("mysite.com");
+        DNSRecord dkimRecord = new DNSRecord();
+        dkimRecord.setRecordName("_dkim._domainkey");
+        dkimRecord.setRecordClass(DNSRecordClass.IN);
+        dkimRecord.setRecordType(DNSRecordType.TXT);
+        dkimRecord.setRecordAddress("\"k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA10BDb8liXHf9m+3HX5N2fl5m7N/F/n2Yi9MaDgf6zUPIDjucvQWsiUNoS9QS1JH2DkRMgx8m/AG4G+I8e6s6jt4AJwE5OBv00kHwfCQL+fLnftkUsHZ1MMOOHfCjzpNS0BYs06YWuh5IFK91EC1mQjviZJ3oxHAnSrFqGMWE86Sh8ZJnGDIEU4K3/w63MNWL17RnrNw+lo+sHTwvPQ8mJRZ7u+ZBLV33EBTYCVeF4sKZsuydUJcbXd3Jy9uI703lcw0L2BKRDmmlZiXtvlLhK1Waljc5FZPDmhT3uZZggnzmqn0w7OvZ241mJnnEHo4iE727kCSENdthvpFJhQZUWwIDAQAB\"");
 
         // _service._proto.name. TTL class SRV priority weight port target.
         DNSRecord srvRecord = new DNSRecord();
-        srvRecord.setRecordService("ldap");
-        srvRecord.setRecordProtocol("tcp");
-        srvRecord.setRecordName("mysite.com");
+        srvRecord.setRecordService("_ldap");
+        srvRecord.setRecordProtocol("_tcp");
         srvRecord.setRecordLifetime(900);
-        srvRecord.setRecordClass("IN");
+        srvRecord.setRecordClass(DNSRecordClass.IN);
         srvRecord.setRecordType(DNSRecordType.SRV);
         srvRecord.setRecordPriority(100);
         srvRecord.setRecordWeight(10);
         srvRecord.setRecordPort(10389);
-        srvRecord.setPrimaryAddress(new ArrayList<String>(Arrays.asList("ldap.server.com")));
-        srvRecord.setRecordOrigin("mysite.com");
+        srvRecord.setRecordAddress("ldap.server.com");
 
-        List<DNSRecord> subRecords = new ArrayList<DNSRecord>(
-                Arrays.asList(
-                        cnameRecord,
-                        aRecord,
-                        aRecord1,
-                        txtRecord,
-                        srvRecord,
-                        mailRecord));
+        DNSRecord otherRecord = new DNSRecord();
+        otherRecord.setRecordName("trustus");
+        otherRecord.setRecordOrigin("new.mysite.com");
+        otherRecord.setRecordClass(DNSRecordClass.IN);
+        otherRecord.setRecordType(DNSRecordType.CNAME);
+        otherRecord.setRecordAddress("8.l8.4.4");
 
+        DNSRecord otherRecord1 = new DNSRecord();
+        otherRecord1.setRecordName("nodont");
+        otherRecord1.setRecordOrigin("new.mysite.com");
+        otherRecord1.setRecordClass(DNSRecordClass.IN);
+        otherRecord1.setRecordType(DNSRecordType.CNAME);
+        otherRecord1.setRecordAddress("8.l8.4.4");
+
+        // put it all together
         DNSEntry entry = new DNSEntry();
-        entry.setApex("mysite.com");
-        entry.setMaster("prodns.caspersbox.com");
-        entry.setOwner("hostmaster.caspersbox.com");
-        entry.setSerialNumber(sdf.format(cal.getTime())); // this would be generated, not static
-        entry.setApexRecords(apexRecords);
-        entry.setSubRecords(subRecords);
-        entry.setZoneData(pbuilder);
-        entry.setProjectCode("PRDPRJ");
-        entry.setFileName("db.mysite");
-        entry.setOrigin(".");
 
+        // soa block
+        entry.setOrigin(".");
+        entry.setLifetime(900);
+        entry.setSiteName("mysite.com");
+        entry.setMaster("prodns1.caspersbox.com");
+        entry.setOwner("hostmaster.caspersbox.com");
+        entry.setSerialNumber(Integer.parseInt(sdf.format(cal.getTime())));
+        entry.setRefresh(900);
+        entry.setRetry(3600);
+        entry.setExpiry(604800);
+        entry.setMinimum(3600);
+
+        // apex records
+        entry.setApexRecords(new ArrayList<DNSRecord>(
+        		Arrays.asList(
+        				nsRecord1,
+        				nsRecord2,
+        				nsRecord3,
+        				nsRecord4,
+        				rpRecord,
+        				apexAddress1,
+        				apexAddress2,
+        				mxRecord,
+        				spfRecord)));
+
+        // subrecords
+        entry.setSubRecords(new ArrayList<DNSRecord>(
+        		Arrays.asList(
+        				cnameRecord,
+        				aRecord,
+        				mxAddress,
+        				domainKeyRecord,
+        				dkimRecord,
+        				srvRecord,
+        				otherRecord,
+        				otherRecord1)));
+        
         DNSServiceRequest request = new DNSServiceRequest();
         request.setDnsEntry(entry); // first entry is the apex
         request.setRequestInfo(hostInfo);
@@ -436,7 +413,7 @@ public class DNSServiceRequestImplTest
 
         try
         {
-            DNSServiceResponse response = dnsService.pushNewService(request);
+            DNSServiceResponse response = dnsService.createNewService(request);
 System.out.println(response.toString());
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }

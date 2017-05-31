@@ -42,6 +42,7 @@ import com.cws.esolutions.security.processors.enums.AuditType;
 public class AuditEntry implements Serializable
 {
     private Date auditDate = null;
+    private Boolean authorized = false;
     private AuditType auditType = null;
     private String applicationId = null;
     private String applicationName = null;
@@ -133,6 +134,19 @@ public class AuditEntry implements Serializable
         this.auditType = value;
     }
 
+    public final void setAuthorized(final Boolean value)
+    {
+        final String methodName = AuditEntry.CNAME + "#setAuthorized(final Boolean value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.authorized = value;
+    }
+
     public final RequestHostInfo getHostInfo()
     {
         final String methodName = AuditEntry.CNAME + "#getHostInfo()";
@@ -209,6 +223,19 @@ public class AuditEntry implements Serializable
         }
 
         return this.auditType;
+    }
+
+    public final Boolean getAuthorized()
+    {
+        final String methodName = AuditEntry.CNAME + "#getAuthorized()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.authorized);
+        }
+
+        return this.authorized;
     }
 
     @Override

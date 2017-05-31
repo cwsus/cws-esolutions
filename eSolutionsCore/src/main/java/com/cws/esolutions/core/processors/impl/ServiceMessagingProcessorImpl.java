@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.web.processors.impl;
+package com.cws.esolutions.core.processors.impl;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.impl
@@ -31,53 +31,36 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import org.apache.commons.lang.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.core.processors.dto.ServiceMessage;
 import com.cws.esolutions.security.processors.enums.AuditType;
-import com.cws.esolutions.web.dao.impl.ServiceMessagingDAOImpl;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
-import com.cws.esolutions.web.processors.interfaces.IMessagingProcessor;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
+import com.cws.esolutions.core.processors.interfaces.IWebMessagingProcessor;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 /**
- * @see com.cws.esolutions.web.processors.interfaces.IMessagingProcessor
+ * @see com.cws.esolutions.core.processors.interfaces.IWebMessagingProcessor
  */
-public class ServiceMessagingProcessorImpl implements IMessagingProcessor
+public class ServiceMessagingProcessorImpl implements IWebMessagingProcessor
 {
-    @Autowired private ServiceMessagingDAOImpl dao = null;
-
-    public final void setDao(final ServiceMessagingDAOImpl value)
-    {
-        final String methodName = IMessagingProcessor.CNAME + "#setDao(final ServiceMessagingDAOImpl value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.dao = value;
-    }
-
     /**
-     * @see com.cws.esolutions.web.processors.interfaces.IMessagingProcessor#addNewMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IWebMessagingProcessor#addNewMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
      */
     public MessagingResponse addNewMessage(final MessagingRequest request) throws MessagingServiceException
     {
-        final String methodName = IMessagingProcessor.CNAME + "#addNewMessage(final MessagingRequest request) throws MessagingServiceException";
+        final String methodName = IWebMessagingProcessor.CNAME + "#addNewMessage(final MessagingRequest request) throws MessagingServiceException";
 
         if (DEBUG)
         {
@@ -119,7 +102,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                             message.getExpiryDate()));
 
             // submit it
-            boolean isSubmitted = this.dao.insertMessage(messageList);
+            boolean isSubmitted = webMessengerDAO.insertMessage(messageList);
 
             if (DEBUG)
             {
@@ -156,6 +139,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.ADDSVCMESSAGE);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -184,11 +168,11 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
     }
 
     /**
-     * @see com.cws.esolutions.web.processors.interfaces.IMessagingProcessor#updateExistingMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IWebMessagingProcessor#updateExistingMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
      */
     public MessagingResponse updateExistingMessage(final MessagingRequest request) throws MessagingServiceException
     {
-        final String methodName = IMessagingProcessor.CNAME + "#updateExistingMessage(final MessagingRequest request) throws MessagingServiceException";
+        final String methodName = IWebMessagingProcessor.CNAME + "#updateExistingMessage(final MessagingRequest request) throws MessagingServiceException";
         
         if (DEBUG)
         {
@@ -222,7 +206,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                             userAccount.getUsername()));
 
             // submit it
-            boolean isUpdated = this.dao.updateMessage(message.getMessageId(), messageList);
+            boolean isUpdated = webMessengerDAO.updateMessage(message.getMessageId(), messageList);
 
             if (DEBUG)
             {
@@ -264,6 +248,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.EDITSVCMESSAGE);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -292,11 +277,11 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
     }
 
     /**
-     * @see com.cws.esolutions.web.processors.interfaces.IMessagingProcessor#showMessages(com.cws.esolutions.core.processors.dto.MessagingRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IWebMessagingProcessor#showMessages(com.cws.esolutions.core.processors.dto.MessagingRequest)
      */
     public MessagingResponse showMessages(final MessagingRequest request) throws MessagingServiceException
     {
-        final String methodName = IMessagingProcessor.CNAME + "#showMessages(final MessagingRequest request) throws MessagingServiceException";
+        final String methodName = IWebMessagingProcessor.CNAME + "#showMessages(final MessagingRequest request) throws MessagingServiceException";
         
         if (DEBUG)
         {
@@ -318,7 +303,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
 
         try
         {
-            List<Object[]> data = this.dao.retrieveMessages();
+            List<Object[]> data = webMessengerDAO.retrieveMessages();
 
             if (DEBUG)
             {
@@ -436,6 +421,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.SHOWMESSAGES);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -464,11 +450,11 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
     }
 
     /**
-     * @see com.cws.esolutions.web.processors.interfaces.IMessagingProcessor#showAlertMessages(com.cws.esolutions.core.processors.dto.MessagingRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IWebMessagingProcessor#showAlertMessages(com.cws.esolutions.core.processors.dto.MessagingRequest)
      */
     public MessagingResponse showAlertMessages(final MessagingRequest request) throws MessagingServiceException
     {
-        final String methodName = IMessagingProcessor.CNAME + "#showAlertMessages(final MessagingRequest request) throws MessagingServiceException";
+        final String methodName = IWebMessagingProcessor.CNAME + "#showAlertMessages(final MessagingRequest request) throws MessagingServiceException";
         
         if (DEBUG)
         {
@@ -480,7 +466,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
 
         try
         {
-            List<Object[]> data = this.dao.retrieveAlertMessages();
+            List<Object[]> data = webMessengerDAO.retrieveAlertMessages();
 
             if (DEBUG)
             {
@@ -539,11 +525,11 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
     }
 
     /**
-     * @see com.cws.esolutions.web.processors.interfaces.IMessagingProcessor#showMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IWebMessagingProcessor#showMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
      */
     public MessagingResponse showMessage(final MessagingRequest request) throws MessagingServiceException
     {
-        final String methodName = IMessagingProcessor.CNAME + "#showMessage(final MessagingRequest request) throws MessagingServiceException";
+        final String methodName = IWebMessagingProcessor.CNAME + "#showMessage(final MessagingRequest request) throws MessagingServiceException";
         
         if (DEBUG)
         {
@@ -567,7 +553,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
 
         try
         {
-            List<Object> responseList = this.dao.retrieveMessage(reqMessage.getMessageId());
+            List<Object> responseList = webMessengerDAO.retrieveMessage(reqMessage.getMessageId());
 
             if (DEBUG)
             {
@@ -673,6 +659,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.LOADMESSAGE);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 

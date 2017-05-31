@@ -56,7 +56,7 @@ public class AccessControlServiceImpl implements IAccessControlService
 
         AccessControlServiceResponse response = new AccessControlServiceResponse();
 
-        if (secConfig.securityEnabled())
+        if (secConfig.getEnableSecurity())
         {
             for (String group : userAccount.getGroups())
             {

@@ -39,19 +39,18 @@ import com.cws.esolutions.core.CoreServiceConstants;
  */
 public class DNSEntry implements Serializable
 {
-    private String apex = null;
+	private int retry = 3600;
+	private int refresh = 900;
     private int lifetime = 900;
+    private int minimum = 3600;
     private String owner = null;
     private String origin = ".";
-    private int cacheTime = 3600;
+    private int expiry = 604800;
     private String master = null;
-    private int slaveRetry = 3600;
+    private int serialNumber = -1;
     private String fileName = null;
-    private int slaveRefresh = 900;
-    private int slaveExpiry = 604800;
+    private String siteName = null;
     private String projectCode = null;
-    private String serialNumber = null;
-    private StringBuilder zoneData = null;
     private List<DNSRecord> subRecords = null;
     private List<DNSRecord> apexRecords = null;
 
@@ -114,9 +113,9 @@ public class DNSEntry implements Serializable
         this.lifetime = value;
     }
 
-    public final void setApex(final String value)
+    public final void setSiteName(final String value)
     {
-        final String methodName = DNSEntry.CNAME + "#setApex(final String value)";
+        final String methodName = DNSEntry.CNAME + "#setSiteName(final String value)";
 
         if (DEBUG)
         {
@@ -124,7 +123,7 @@ public class DNSEntry implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.apex = value;
+        this.siteName = value;
     }
 
     public final void setMaster(final String value)
@@ -153,9 +152,9 @@ public class DNSEntry implements Serializable
         this.owner = value;
     }
 
-    public final void setSerialNumber(final String value)
+    public final void setSerialNumber(final int value)
     {
-        final String methodName = DNSEntry.CNAME + "#setSerialNumber(final String value)";
+        final String methodName = DNSEntry.CNAME + "#setSerialNumber(final int value)";
 
         if (DEBUG)
         {
@@ -166,9 +165,9 @@ public class DNSEntry implements Serializable
         this.serialNumber = value;
     }
 
-    public final void setSlaveRefresh(final int value)
+    public final void setRefresh(final int value)
     {
-        final String methodName = DNSEntry.CNAME + "#setSlaveRefresh(final int value)";
+        final String methodName = DNSEntry.CNAME + "#setRefresh(final int value)";
 
         if (DEBUG)
         {
@@ -176,12 +175,12 @@ public class DNSEntry implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.slaveRefresh = value;
+        this.refresh = value;
     }
 
-    public final void setSlaveRetry(final int value)
+    public final void setRetry(final int value)
     {
-        final String methodName = DNSEntry.CNAME + "#setSlaveRetry(final int value)";
+        final String methodName = DNSEntry.CNAME + "#setRetry(final int value)";
 
         if (DEBUG)
         {
@@ -189,12 +188,12 @@ public class DNSEntry implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.slaveRetry = value;
+        this.retry = value;
     }
 
-    public final void setSlaveExpiry(final int value)
+    public final void setExpiry(final int value)
     {
-        final String methodName = DNSEntry.CNAME + "#setSlaveExpiry(final int value)";
+        final String methodName = DNSEntry.CNAME + "#setExpiry(final int value)";
 
         if (DEBUG)
         {
@@ -202,12 +201,12 @@ public class DNSEntry implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.slaveExpiry = value;
+        this.expiry = value;
     }
 
-    public final void setCacheTime(final int value)
+    public final void setMinimum(final int value)
     {
-        final String methodName = DNSEntry.CNAME + "#setCacheTime(final int value)";
+        final String methodName = DNSEntry.CNAME + "#setMinimum(final int value)";
 
         if (DEBUG)
         {
@@ -215,20 +214,7 @@ public class DNSEntry implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.cacheTime = value;
-    }
-
-    public final void setApexRecords(final List<DNSRecord> value)
-    {
-        final String methodName = DNSEntry.CNAME + "#setApexRecords(final List<DNSRecord> value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.apexRecords = value;
+        this.minimum = value;
     }
 
     public final void setSubRecords(final List<DNSRecord> value)
@@ -244,9 +230,9 @@ public class DNSEntry implements Serializable
         this.subRecords = value;
     }
 
-    public final void setZoneData(final StringBuilder value)
+    public final void setApexRecords(final List<DNSRecord> value)
     {
-        final String methodName = DNSEntry.CNAME + "#setZoneData(final StringBuilder value)";
+        final String methodName = DNSEntry.CNAME + "#setApexRecords(final List<DNSRecord> value)";
 
         if (DEBUG)
         {
@@ -254,7 +240,7 @@ public class DNSEntry implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.zoneData = value;
+        this.apexRecords = value;
     }
 
     public final String getProjectCode()
@@ -309,17 +295,17 @@ public class DNSEntry implements Serializable
         return this.lifetime;
     }
 
-    public final String getApex()
+    public final String getSiteName()
     {
-        final String methodName = DNSEntry.CNAME + "#getApex()";
+        final String methodName = DNSEntry.CNAME + "#getSiteName()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.apex);
+            DEBUGGER.debug("Value: {}", this.siteName);
         }
 
-        return this.apex;
+        return this.siteName;
     }
 
     public final String getMaster()
@@ -348,7 +334,7 @@ public class DNSEntry implements Serializable
         return this.owner;
     }
 
-    public final String getSerialNumber()
+    public final int getSerialNumber()
     {
         final String methodName = DNSEntry.CNAME + "#getSerialNumber()";
 
@@ -361,69 +347,56 @@ public class DNSEntry implements Serializable
         return this.serialNumber;
     }
 
-    public final int getSlaveRefresh()
+    public final int getRefresh()
     {
-        final String methodName = DNSEntry.CNAME + "#getSlaveRefresh()";
+        final String methodName = DNSEntry.CNAME + "#getRefresh()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.slaveRefresh);
+            DEBUGGER.debug("Value: {}", this.refresh);
         }
 
-        return this.slaveRefresh;
+        return this.refresh;
     }
 
-    public final int getSlaveRetry()
+    public final int getRetry()
     {
-        final String methodName = DNSEntry.CNAME + "#getSlaveRetry()";
+        final String methodName = DNSEntry.CNAME + "#getRetry()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.slaveRetry);
+            DEBUGGER.debug("Value: {}", this.retry);
         }
 
-        return this.slaveRetry;
+        return this.retry;
     }
 
-    public final int getSlaveExpiry()
+    public final int getExpiry()
     {
-        final String methodName = DNSEntry.CNAME + "#getSlaveExpiry()";
+        final String methodName = DNSEntry.CNAME + "#getExpiry()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.slaveExpiry);
+            DEBUGGER.debug("Value: {}", this.expiry);
         }
 
-        return this.slaveExpiry;
+        return this.expiry;
     }
 
-    public final int getCacheTime()
+    public final int getMinimum()
     {
-        final String methodName = DNSEntry.CNAME + "#getCacheTime()";
+        final String methodName = DNSEntry.CNAME + "#getMinimum()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.cacheTime);
+            DEBUGGER.debug("Value: {}", this.minimum);
         }
 
-        return this.cacheTime;
-    }
-
-    public final List<DNSRecord> getApexRecords()
-    {
-        final String methodName = DNSEntry.CNAME + "#getApexRecords()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.apexRecords);
-        }
-
-        return this.apexRecords;
+        return this.minimum;
     }
 
     public final List<DNSRecord> getSubRecords()
@@ -439,17 +412,17 @@ public class DNSEntry implements Serializable
         return this.subRecords;
     }
 
-    public final StringBuilder getZoneData()
+    public final List<DNSRecord> getApexRecords()
     {
-        final String methodName = DNSEntry.CNAME + "#getZoneData()";
+        final String methodName = DNSEntry.CNAME + "#getApexRecords()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.zoneData);
+            DEBUGGER.debug("Value: {}", this.apexRecords);
         }
 
-        return this.zoneData;
+        return this.apexRecords;
     }
 
     @Override

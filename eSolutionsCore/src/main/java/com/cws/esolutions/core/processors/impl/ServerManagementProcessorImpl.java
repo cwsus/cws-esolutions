@@ -120,7 +120,8 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.ADDSERVER);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setUserAccount(userAccount);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -264,6 +265,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.ADDSERVER);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
@@ -347,8 +349,9 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.UPDATESERVER);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -463,6 +466,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.UPDATESERVER);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -545,8 +549,9 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.DELETESERVER);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -606,8 +611,9 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             {
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.UPDATESERVER);
+                auditEntry.setAuditType(AuditType.DELETESERVER);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -688,8 +694,9 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.LISTSERVERS);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -778,6 +785,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.LISTSERVERS);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -858,8 +866,9 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.LISTSERVERS);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -947,6 +956,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.LISTSERVERS);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1033,8 +1043,9 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.GETSERVER);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1226,6 +1237,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.GETSERVER);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 

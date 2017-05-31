@@ -25,40 +25,30 @@ package com.cws.esolutions.core.processors.impl;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.io.File;
 import java.util.List;
 import java.util.Arrays;
 import org.xbill.DNS.Name;
 import org.xbill.DNS.Type;
 import java.util.ArrayList;
-import java.io.IOException;
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Record;
 import java.sql.SQLException;
 import java.security.Security;
-import java.io.FileOutputStream;
 import org.xbill.DNS.SimpleResolver;
-import java.io.FileNotFoundException;
 import java.net.UnknownHostException;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.FileUtils;
 import org.xbill.DNS.TextParseException;
 import org.apache.commons.lang.StringUtils;
 
-import com.cws.esolutions.core.utils.NetworkUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.processors.dto.DNSEntry;
 import com.cws.esolutions.core.processors.dto.DNSRecord;
-import com.cws.esolutions.core.dao.impl.ServerDataDAOImpl;
 import com.cws.esolutions.core.processors.enums.ServerType;
-import com.cws.esolutions.core.dao.interfaces.IServerDataDAO;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.core.processors.enums.DNSRecordType;
 import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.core.processors.dto.DNSServiceRequest;
-import com.cws.esolutions.core.utils.exception.UtilityException;
 import com.cws.esolutions.core.processors.dto.DNSServiceResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
@@ -128,6 +118,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setUserAccount(userAccount);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -178,6 +169,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -218,6 +210,9 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
             DEBUGGER.debug("DNSServiceRequest: {}", request);
         }
 
+        Lookup lookup = null;
+        Record[] recordList = null;
+        SimpleResolver resolver = null;
         DNSServiceResponse response = new DNSServiceResponse();
 
         final DNSRecord dnsRecord = request.getRecord();
@@ -233,7 +228,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
         {
             // no authorization required for service lookup
             Name name = Name.fromString(dnsRecord.getRecordName());
-            Lookup lookup = new Lookup(name, Type.value(dnsRecord.getRecordType().name()));
+            lookup = new Lookup(name, Type.value(dnsRecord.getRecordType().name()));
 
             if (DEBUG)
             {
@@ -243,7 +238,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
             if (StringUtils.isNotEmpty(request.getResolverHost()))
             {
-                SimpleResolver resolver = new SimpleResolver(request.getResolverHost());
+                resolver = new SimpleResolver(request.getResolverHost());
 
                 if (DEBUG)
                 {
@@ -251,106 +246,105 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 }
 
                 lookup.setResolver(resolver);
-            }
-
-            lookup.setCache(null);
-
-            if (request.getSearchPath() != null)
-            {
-                lookup.setSearchPath(request.getSearchPath());
-            }
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Lookup: {}", lookup);
-            }
-
-            Record[] recordList = lookup.run();
-
-            if (DEBUG)
-            {
-                if (recordList != null)
-                {
-                    for (Record record : recordList)
-                    {
-                        DEBUGGER.debug("Record: {}", record);
-                    }
-                }
-            }
-
-            if (lookup.getResult() == Lookup.SUCCESSFUL)
-            {
-                if ((recordList != null) && (recordList.length == 1))
-                {
-                    Record record = recordList[0];
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Record: {}", record);
-                    }
-
-                    DNSRecord responseRecord = new DNSRecord();
-                    responseRecord.setPrimaryAddress(new ArrayList<String>(Arrays.asList(record.rdataToString())));
-                    responseRecord.setRecordName(record.getName().toString());
-                    responseRecord.setRecordType(DNSRecordType.valueOf(Type.string(record.getType())));
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("responseRecord: {}", responseRecord);
-                    }
-
-                    response.setDnsRecord(responseRecord);
-                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("DNSServiceResponse: {}", response);
-                    }
-                }
-                else
-                {
-                    List<DNSRecord> responseList = new ArrayList<DNSRecord>();
-
-                    if ((recordList != null) && (recordList.length != 0))
-                    {
-                        for (Record record : recordList)
-                        {
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Record: {}", record);
-                            }
-
-                            DNSRecord rec = new DNSRecord();
-                            rec.setPrimaryAddress(new ArrayList<String>(Arrays.asList(record.rdataToString())));
-                            rec.setRecordName(record.getName().toString());
-                            rec.setRecordType(DNSRecordType.valueOf(Type.string(record.getType())));
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("DNSRecord: {}", rec);
-                            }
-
-                            responseList.add(rec);
-                        }
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("responseList: {}", responseList);
-                        }
-
-                        response.setDnsRecords(responseList);
-                        response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    }
-                    else
-                    {
-                        response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    }
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("DNSServiceResponse: {}", response);
-                }
+	            lookup.setCache(null);
+	
+	            if (request.getSearchPath() != null)
+	            {
+	                lookup.setSearchPath(request.getSearchPath());
+	            }
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("Lookup: {}", lookup);
+	            }
+	
+	            recordList = lookup.run();
+	
+	            if (DEBUG)
+	            {
+	                if (recordList != null)
+	                {
+	                    for (Record record : recordList)
+	                    {
+	                        DEBUGGER.debug("Record: {}", record);
+	                    }
+	                }
+	            }
+	
+	            if (lookup.getResult() == Lookup.SUCCESSFUL)
+	            {
+	                if ((recordList != null) && (recordList.length == 1))
+	                {
+	                    Record record = recordList[0];
+	
+	                    if (DEBUG)
+	                    {
+	                        DEBUGGER.debug("Record: {}", record);
+	                    }
+	
+	                    DNSRecord responseRecord = new DNSRecord();
+	                    responseRecord.setRecordAddresses(new ArrayList<String>(Arrays.asList(record.rdataToString())));
+	                    responseRecord.setRecordName(record.getName().toString());
+	                    responseRecord.setRecordType(DNSRecordType.valueOf(Type.string(record.getType())));
+	
+	                    if (DEBUG)
+	                    {
+	                        DEBUGGER.debug("responseRecord: {}", responseRecord);
+	                    }
+	
+	                    response.setDnsRecord(responseRecord);
+	                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
+	
+	                    if (DEBUG)
+	                    {
+	                        DEBUGGER.debug("DNSServiceResponse: {}", response);
+	                    }
+	                }
+	                else
+	                {
+	                    List<DNSRecord> responseList = new ArrayList<DNSRecord>();
+	
+	                    if ((recordList != null) && (recordList.length != 0))
+	                    {
+	                        for (Record record : recordList)
+	                        {
+	                            if (DEBUG)
+	                            {
+	                                DEBUGGER.debug("Record: {}", record);
+	                            }
+	
+	                            DNSRecord rec = new DNSRecord();
+	                            rec.setRecordAddresses(new ArrayList<String>(Arrays.asList(record.rdataToString())));
+	                            rec.setRecordName(record.getName().toString());
+	                            rec.setRecordType(DNSRecordType.valueOf(Type.string(record.getType())));
+	
+	                            if (DEBUG)
+	                            {
+	                                DEBUGGER.debug("DNSRecord: {}", rec);
+	                            }
+	
+	                            responseList.add(rec);
+	                        }
+	
+	                        if (DEBUG)
+	                        {
+	                            DEBUGGER.debug("responseList: {}", responseList);
+	                        }
+	
+	                        response.setDnsRecords(responseList);
+	                        response.setRequestStatus(CoreServicesStatus.SUCCESS);
+	                    }
+	                    else
+	                    {
+	                        response.setRequestStatus(CoreServicesStatus.FAILURE);
+	                    }
+	                }
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("DNSServiceResponse: {}", response);
+	                }
+	            }
             }
             else
             {
@@ -378,7 +372,117 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                             DEBUGGER.debug("serverName: {}", serverName);
                         }
 
-                        // do the lookup here
+                        resolver = new SimpleResolver(request.getResolverHost());
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("SimpleResolver: {}", resolver);
+                        }
+
+                        lookup.setResolver(resolver);
+                        lookup.setCache(null);
+
+                        if (request.getSearchPath() != null)
+                        {
+                            lookup.setSearchPath(request.getSearchPath());
+                        }
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Lookup: {}", lookup);
+                        }
+
+                        recordList = lookup.run();
+
+                        if (DEBUG)
+                        {
+                            if (recordList != null)
+                            {
+                                for (Record record : recordList)
+                                {
+                                    DEBUGGER.debug("Record: {}", record);
+                                }
+                            }
+                        }
+
+                        if (lookup.getResult() == Lookup.SUCCESSFUL)
+                        {
+                            if ((recordList != null) && (recordList.length == 1))
+                            {
+                                Record record = recordList[0];
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("Record: {}", record);
+                                }
+
+                                DNSRecord responseRecord = new DNSRecord();
+                                responseRecord.setRecordAddresses(new ArrayList<String>(Arrays.asList(record.rdataToString())));
+                                responseRecord.setRecordName(record.getName().toString());
+                                responseRecord.setRecordType(DNSRecordType.valueOf(Type.string(record.getType())));
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("responseRecord: {}", responseRecord);
+                                }
+
+                                response.setDnsRecord(responseRecord);
+                                response.setRequestStatus(CoreServicesStatus.SUCCESS);
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("DNSServiceResponse: {}", response);
+                                }
+                            }
+                            else
+                            {
+                                List<DNSRecord> responseList = new ArrayList<DNSRecord>();
+
+                                if ((recordList != null) && (recordList.length != 0))
+                                {
+                                    for (Record record : recordList)
+                                    {
+                                        if (DEBUG)
+                                        {
+                                            DEBUGGER.debug("Record: {}", record);
+                                        }
+
+                                        DNSRecord rec = new DNSRecord();
+                                        rec.setRecordAddresses(new ArrayList<String>(Arrays.asList(record.rdataToString())));
+                                        rec.setRecordName(record.getName().toString());
+                                        rec.setRecordType(DNSRecordType.valueOf(Type.string(record.getType())));
+
+                                        if (DEBUG)
+                                        {
+                                            DEBUGGER.debug("DNSRecord: {}", rec);
+                                        }
+
+                                        responseList.add(rec);
+                                    }
+
+                                    if (DEBUG)
+                                    {
+                                        DEBUGGER.debug("responseList: {}", responseList);
+                                    }
+
+                                    response.setDnsRecords(responseList);
+                                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                                }
+                                else
+                                {
+                                    response.setRequestStatus(CoreServicesStatus.FAILURE);
+                                }
+                            }
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("DNSServiceResponse: {}", response);
+                            }
+                        }
+                        else
+                        {
+                        	response.setRequestStatus(CoreServicesStatus.FAILURE);
+                        }
                     }
                 }
                 else
@@ -474,6 +578,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setUserAccount(userAccount);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -501,131 +606,119 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 return response;
             }
 
-            StringBuilder sBuilder = new StringBuilder()
-                .append("$ORIGIN " + entry.getOrigin() + "\n")
-                .append("$TTL " + entry.getLifetime() + "\n")
-                .append(entry.getApex() + " IN SOA " + entry.getMaster() + " " + entry.getOwner() + " (\n")
-                .append(entry.getSerialNumber() + "\n")
-                .append(entry.getSlaveRefresh() + "\n")
-                .append(entry.getSlaveRetry() + "\n")
-                .append(entry.getSlaveExpiry() + "\n")
-                .append(entry.getCacheTime() + "\n")
-                .append(")\n");
+            // here we're going to generate the actual file given the provided
+            // data. at this point everything should already be in the database
+            // we could generate the zone file without having a "zone data" field,
+            // but the zone data field makes it somewhat easier, since its already
+            // been created for presentation/approval to the requestor
+            List<DNSRecord> apexRecords = entry.getApexRecords();
 
-            if ((entry.getApexRecords() != null) && (entry.getApexRecords().size() != 0))
+            if (DEBUG)
             {
-                for (DNSRecord rec : entry.getApexRecords())
-                {
-                    if (rec.getRecordType() == DNSRecordType.MX)
-                    {
-                        sBuilder.append(StringUtils.rightPad(rec.getRecordClass(), 8, ""));
-                        sBuilder.append(StringUtils.rightPad(rec.getRecordType().name(), 8, ""));
-                        sBuilder.append(StringUtils.rightPad(String.valueOf(rec.getRecordPriority()), 8, ""));
-                        sBuilder.append(StringUtils.rightPad(rec.getPrimaryAddress().get(0), 8, ""));
-                        sBuilder.append("\n");
-                    }
-                    else
-                    {
-                        sBuilder.append(StringUtils.rightPad(rec.getRecordClass(), 8, ""));
-                        sBuilder.append(StringUtils.rightPad(rec.getRecordType().name(), 8, ""));
-                        sBuilder.append(StringUtils.rightPad(rec.getPrimaryAddress().get(0), 8, ""));
-                        sBuilder.append("\n");
-                    }
-                }
-
-                sBuilder.append("\n");
-
-                if ((entry.getSubRecords() != null) && (entry.getSubRecords().size() != 0))
-                {
-                    sBuilder.append("$ORIGIN " + entry.getApex() + "\n");
-
-                    for (DNSRecord rec : entry.getSubRecords())
-                    {
-                        switch (rec.getRecordType())
-                        {
-                            case SRV:
-                                //_service._proto.name. TTL class SRV priority weight port target.
-                                StringBuilder srv = new StringBuilder()
-                                    .append("_" + rec.getRecordService() + ".")
-                                    .append("_" + rec.getRecordProtocol() + ".")
-                                    .append(StringUtils.rightPad((StringUtils.endsWith(rec.getRecordName(),  ".") ? rec.getRecordName() : rec.getRecordName() + "."), 16, ""))
-                                    .append(StringUtils.rightPad(rec.getRecordClass(), 8, ""))
-                                    .append(StringUtils.rightPad(String.valueOf(rec.getRecordPriority()), 8, ""))
-                                    .append(StringUtils.rightPad(String.valueOf(rec.getRecordWeight()), 8, ""))
-                                    .append(StringUtils.rightPad(String.valueOf(rec.getRecordPort()),  8, ""))
-                                    .append(rec.getPrimaryAddress().get(0));
-
-                                sBuilder.append(srv.toString() + "\n");
-
-                                break;
-                            case MX:
-                                StringBuilder mx = new StringBuilder()
-                                    .append(StringUtils.rightPad(rec.getRecordName(), 16, ""))
-                                    .append(StringUtils.rightPad(rec.getRecordClass(), 8, ""))
-                                    .append(StringUtils.rightPad(rec.getRecordType().name(), 8, ""))
-                                    .append(StringUtils.rightPad(String.valueOf(rec.getRecordWeight()), 8, ""))
-                                    .append(rec.getPrimaryAddress().get(0));
-
-                                sBuilder.append(mx.toString() + "\n");
-
-                                break;
-                            case CNAME:
-                                sBuilder.append(StringUtils.rightPad(rec.getRecordName(), 16, ""));
-                                sBuilder.append(StringUtils.rightPad(rec.getRecordClass(), 8, ""));
-                                sBuilder.append(StringUtils.rightPad(rec.getRecordType().name(), 8, ""));
-                                sBuilder.append(StringUtils.rightPad((StringUtils.endsWith(rec.getPrimaryAddress().get(0),  ".") ? rec.getPrimaryAddress().get(0) : rec.getPrimaryAddress().get(0) + "."), 8, ""));
-                                sBuilder.append("\n");
-
-                                break;
-                            case TXT:
-                                sBuilder.append(StringUtils.rightPad(rec.getRecordName(), 16, ""));
-                                sBuilder.append(StringUtils.rightPad(rec.getRecordClass(), 8, ""));
-                                sBuilder.append(StringUtils.rightPad(rec.getRecordType().name(), 8, ""));
-                                sBuilder.append("\"" + StringUtils.rightPad(rec.getPrimaryAddress().get(0), 8, "") + "\"");
-                                sBuilder.append("\n");
-
-                                break;
-                            default:
-                                sBuilder.append(StringUtils.rightPad(rec.getRecordName(), 16, ""));
-                                sBuilder.append(StringUtils.rightPad(rec.getRecordClass(), 8, ""));
-                                sBuilder.append(StringUtils.rightPad(rec.getRecordType().name(), 8, ""));
-
-                                for (String addr : rec.getPrimaryAddress())
-                                {
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("addr: {}", addr);
-                                    }
-
-                                    sBuilder.append(StringUtils.leftPad(StringUtils.rightPad(rec.getRecordClass(), 8, ""), 16, ""));
-                                    sBuilder.append(StringUtils.rightPad(rec.getRecordType().name(), 8, ""));
-                                    sBuilder.append(StringUtils.rightPad(addr, 8, ""));
-                                    sBuilder.append("\n");
-                                }
-
-                                if (StringUtils.isNotEmpty(rec.getSpfRecord()))
-                                {
-                                    sBuilder.append(StringUtils.leftPad(StringUtils.rightPad(rec.getRecordClass(), 8, ""), 16, ""));
-                                    sBuilder.append(StringUtils.rightPad(DNSRecordType.TXT.name(), 8, ""));
-                                    sBuilder.append("\"" + StringUtils.rightPad(rec.getSpfRecord(), 8, "") + "\"");
-                                    sBuilder.append("\n");
-                                }
-
-                                break;
-                        }
-                    }
-                }
-
-                response.setDnsEntry(entry);
-                response.setZoneData(sBuilder);
-                response.setRequestStatus(CoreServicesStatus.SUCCESS);
+            	DEBUGGER.debug("apexRecords: {}", apexRecords);
             }
-            else
+
+            StringBuilder pBuilder = new StringBuilder()
+                .append("$ORIGIN " + entry.getOrigin() + CoreServiceConstants.LINE_BREAK)
+                .append("$TTL " + entry.getLifetime() + CoreServiceConstants.LINE_BREAK)
+                .append(entry.getSiteName() + " IN SOA " + entry.getMaster() + " " + entry.getOwner() + " (" + CoreServiceConstants.LINE_BREAK)
+                .append("       " + entry.getSerialNumber() + "," + CoreServiceConstants.LINE_BREAK)
+                .append("       " + entry.getRefresh() + "," + CoreServiceConstants.LINE_BREAK)
+                .append("       " + entry.getRetry() + "," + CoreServiceConstants.LINE_BREAK)
+                .append("       " + entry.getExpiry() + "," + CoreServiceConstants.LINE_BREAK)
+                .append("       " + entry.getMinimum() + "," + CoreServiceConstants.LINE_BREAK)
+                .append("       )" + CoreServiceConstants.LINE_BREAK);
+
+            for (DNSRecord record : apexRecords)
             {
-                ERROR_RECORDER.error("No apex record was found. Cannot generate zone.");
+            	if (DEBUG)
+            	{
+            		DEBUGGER.debug("DNSRecord: {}", record);
+            	}
 
-                throw new DNSServiceException("No apex record was found. Cannot generate zone.");
+            	switch (record.getRecordType())
+            	{
+            		case MX:
+            			pBuilder.append("       " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordPriority() + "    " + record.getRecordAddress() + CoreServiceConstants.LINE_BREAK);
+
+            			break;
+            		default:
+            			pBuilder.append("       " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordAddress() + CoreServiceConstants.LINE_BREAK);
+
+            			break;
+            	}
             }
+
+            if ((entry.getSubRecords() != null) && (entry.getSubRecords().size() != 0))
+            {
+            	pBuilder.append(CoreServiceConstants.LINE_BREAK);
+            	pBuilder.append("$ORIGIN " + entry.getSiteName() + "." + CoreServiceConstants.LINE_BREAK); // always put the site name as the initial origin
+
+                for (DNSRecord record : entry.getSubRecords())
+                {
+                	if (DEBUG)
+                	{
+                		DEBUGGER.debug("DNSRecord: {}", record);
+                	}
+
+                	if (!(StringUtils.equals(record.getRecordOrigin(), ".")) || StringUtils.equals(record.getRecordOrigin(), entry.getSiteName()))
+                	{
+                		if (!(StringUtils.contains(pBuilder.toString(), record.getRecordOrigin())))
+                		{
+                			pBuilder.append(CoreServiceConstants.LINE_BREAK);
+                			pBuilder.append("$ORIGIN " + record.getRecordOrigin() + "." + CoreServiceConstants.LINE_BREAK);
+                		}
+                	}
+
+                	switch (record.getRecordType())
+                	{
+                		case MX:
+                			pBuilder.append("       " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordPriority() + "    " + record.getRecordAddress() + CoreServiceConstants.LINE_BREAK);
+
+                			break;
+                		case SRV:
+                			if (StringUtils.isNotEmpty(record.getRecordName()))
+                			{
+                				pBuilder.append(record.getRecordService() + "." + record.getRecordProtocol() + "    " + record.getRecordName() + "    " +
+                						record.getRecordLifetime() + "    " + record.getRecordClass() + "    " + record.getRecordType() + "    " +
+                						record.getRecordPriority() + "    " + record.getRecordWeight() + "    " + record.getRecordPort() + "    " + record.getRecordAddress() + CoreServiceConstants.LINE_BREAK);
+                			}
+                			else
+                			{
+                				pBuilder.append(record.getRecordService() + "." + record.getRecordProtocol() + "    " + record.getRecordLifetime() + "    " +
+                						record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordPriority() + "    " +
+                						record.getRecordWeight() + "    " + record.getRecordPort() + "    " + record.getRecordAddress() + CoreServiceConstants.LINE_BREAK);
+                			}
+
+                			break;
+                		default:
+                        	if ((record.getRecordAddress() != null) && (record.getRecordAddresses() == null))
+                        	{
+                        		pBuilder.append(record.getRecordName() + "    " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordAddress() + CoreServiceConstants.LINE_BREAK);
+                        	}
+                        	else
+                        	{
+                        		pBuilder.append(record.getRecordName() + "    " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordAddresses().get(0) + CoreServiceConstants.LINE_BREAK);
+
+	    	                	for (int x = 1; x != record.getRecordAddresses().size(); x++)
+	    	                    {
+	    	                		if (DEBUG)
+	    	                    	{
+	    	                			DEBUGGER.debug("recordAddress: {}: ", record.getRecordAddresses().get(x));
+	    	                    	}
+	    	
+	    	                		pBuilder.append("    " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordAddresses().get(x) + CoreServiceConstants.LINE_BREAK);
+	    	                    }
+                        	}
+
+                			break;
+                	}
+                }
+            }
+
+            // return the successful response back and the zone data
+            response.setRequestStatus(CoreServicesStatus.SUCCESS);
+            response.setZoneData(pBuilder);
         }
         catch (SecurityException sx)
         {
@@ -648,6 +741,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -731,6 +825,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setUserAccount(userAccount);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -758,87 +853,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 return response;
             }
 
-            // here we're going to generate the actual file given the provided
-            // data. at this point everything should already be in the database
-            // we could generate the zone file without having a "zone data" field,
-            // but the zone data field makes it somewhat easier, since its already
-            // been created for presentation/approval to the requestor
-            if (entry.getZoneData() != null)
-            {
-                File zoneFile = FileUtils.getFile(CoreServiceConstants.TMP_DIR, entry.getFileName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("File: {}", zoneFile);
-                }
-
-                IOUtils.write(entry.getZoneData(), new FileOutputStream(zoneFile));
-
-                if ((zoneFile.exists()) && (zoneFile.length() != 0))
-                {
-                    IServerDataDAO dao = new ServerDataDAOImpl();
-                    List<Object[]> dnsServers = dao.getServersByAttribute(ServerType.DNSMASTER.name() + " " + request.getServiceRegion().name(), 0);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("dnsServers: {}", dnsServers);
-                    }
-
-                    if ((dnsServers != null) && (dnsServers.size() != 0))
-                    {
-                        NetworkUtils.executeSftpTransfer(zoneFile.toString(), zoneFile.getAbsolutePath(), (String) dnsServers.get(0)[18], true);
-
-                        List<Object[]> slaveServers = dao.getServersByAttribute(ServerType.DNSSLAVE.name() + " " + request.getServiceRegion().name(), 0);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("slaveServers: {}", slaveServers);
-                        }
-
-                        if ((slaveServers != null) && (slaveServers.size() != 0))
-                        {
-                            int errCount = 0;
-
-                            for (Object[] server : slaveServers)
-                            {
-                                try
-                                {
-                                    NetworkUtils.executeSftpTransfer(zoneFile.toString(), zoneFile.getAbsolutePath(), (String) server[18], true);
-                                }
-                                catch (UtilityException ux)
-                                {
-                                    ERROR_RECORDER.error(ux.getMessage(), ux);
-
-                                    errCount++;
-                                }
-                            }
-
-                            if (errCount == 0)
-                            {
-                                response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                            }
-                            else
-                            {
-                                response.setRequestStatus(CoreServicesStatus.FAILURE);
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    // zone file wasn't created
-                    ERROR_RECORDER.error("Zone file was not created. Cannot continue.");
-
-                    response.setRequestStatus(CoreServicesStatus.FAILURE);
-                }
-            }
-            else
-            {
-                // zone file wasn't created
-                ERROR_RECORDER.error("No zone data was provided in the request. Cannot continue.");
-
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
-            }
+            // build me
         }
         catch (SecurityException sx)
         {
@@ -852,30 +867,6 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
             throw new DNSServiceException(acsx.getMessage(), acsx);
         }
-        catch (UtilityException ux)
-        {
-            ERROR_RECORDER.error(ux.getMessage(), ux);
-
-            throw new DNSServiceException(ux.getMessage(), ux);
-        }
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new DNSServiceException(sqx.getMessage(), sqx);
-        }
-        catch (FileNotFoundException fnfx)
-        {
-            ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
-
-            throw new DNSServiceException(fnfx.getMessage(), fnfx);
-        }
-        catch (IOException iox)
-        {
-            ERROR_RECORDER.error(iox.getMessage(), iox);
-
-            throw new DNSServiceException(iox.getMessage(), iox);
-        }
         finally
         {
             // audit
@@ -884,6 +875,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.PUSHDNSRECORD);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
@@ -967,6 +959,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                     auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1019,6 +1012,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.SITETXFR);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 

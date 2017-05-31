@@ -113,7 +113,8 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.NETSTAT);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setUserAccount(userAccount);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -236,6 +237,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.NETSTAT);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -319,8 +321,9 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.TELNET);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -443,6 +446,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.TELNET);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -526,7 +530,8 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.REMOTEDATE);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setUserAccount(userAccount);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -649,6 +654,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.REMOTEDATE);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -732,8 +738,9 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.PROCESSLIST);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -854,6 +861,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.PROCESSLIST);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 

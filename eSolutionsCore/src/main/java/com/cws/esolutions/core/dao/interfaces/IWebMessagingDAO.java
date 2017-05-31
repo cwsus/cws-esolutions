@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.web.dao.interfaces;
+package com.cws.esolutions.core.dao.interfaces;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.dao.processors.interfaces
@@ -26,21 +26,28 @@ package com.cws.esolutions.web.dao.interfaces;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.util.List;
+
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import java.sql.SQLException;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.web.Constants;
+import com.cws.esolutions.core.CoreServiceBean;
+import com.cws.esolutions.core.CoreServiceConstants;
 /**
  * @author khuntly
  * @version 1.0
  */
-public interface IMessagingDAO
+public interface IWebMessagingDAO
 {
-    static final String CNAME = IMessagingDAO.class.getName();
+    static final String CNAME = IWebMessagingDAO.class.getName();
 
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
-    static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    static final CoreServiceBean appBean = CoreServiceBean.getInstance();
+    static final DataSource dataSource = appBean.getDataSources().get("ApplicationDataSource");
+
+    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
+    static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     boolean insertMessage(final List<Object> messageList) throws SQLException;

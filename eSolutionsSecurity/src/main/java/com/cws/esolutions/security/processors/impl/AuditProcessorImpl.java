@@ -189,6 +189,7 @@ public class AuditProcessorImpl implements IAuditProcessor
                     setAuditEntry.setHostInfo(reqInfo);
                     setAuditEntry.setAuditType(AuditType.GETAUDITENTRIES);
                     setAuditEntry.setUserAccount(reqAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     setAuditEntry.setApplicationId(request.getApplicationId());
                     setAuditEntry.setApplicationName(request.getApplicationName());
 
@@ -324,6 +325,7 @@ public class AuditProcessorImpl implements IAuditProcessor
                 AuditEntry entry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.SHOWAUDIT);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setUserAccount(request.getUserAccount());
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());

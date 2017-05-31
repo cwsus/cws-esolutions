@@ -238,6 +238,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.LOGON);
                 auditEntry.setUserAccount(authUser);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -390,6 +391,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.LOGON);
                 auditEntry.setUserAccount(authUser);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 

@@ -119,6 +119,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -266,6 +267,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.ADDAPP);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -348,8 +350,9 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.UPDATEAPP);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -435,6 +438,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.UPDATEAPP);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -517,7 +521,8 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.DELETEAPP);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setUserAccount(userAccount);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -586,6 +591,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.DELETEAPP);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
@@ -669,7 +675,8 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.LISTAPPS);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setUserAccount(userAccount);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -768,6 +775,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.LISTAPPS);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -850,8 +858,9 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.LISTAPPS);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -950,6 +959,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.LISTAPPS);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1032,8 +1042,9 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.LOADAPP);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1126,6 +1137,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.LOADAPP);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1211,8 +1223,9 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.GETFILES);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1402,6 +1415,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.GETFILES);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1484,8 +1498,9 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.DEPLOYAPP);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1534,6 +1549,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.DEPLOYAPP);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.web.processors.interfaces;
+package com.cws.esolutions.core.processors.interfaces;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.interfaces
@@ -31,7 +31,9 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.config.xml.ServiceAccount;
+import com.cws.esolutions.core.dao.impl.WebMessagingDAOImpl;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
+import com.cws.esolutions.core.dao.interfaces.IWebMessagingDAO;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
@@ -43,16 +45,17 @@ import com.cws.esolutions.core.processors.exception.MessagingServiceException;
  * @author khuntly
  * @version 1.0
  */
-public interface IMessagingProcessor
+public interface IWebMessagingProcessor
 {
     static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final IAccessControlService accessControl = new AccessControlServiceImpl();
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
     static final ServiceAccount serviceAccount = appBean.getConfigData().getAppConfig().getServiceAccount().get(0);
+    static final IWebMessagingDAO webMessengerDAO = new WebMessagingDAOImpl();
 
     static final String dateFormat = appConfig.getDateFormat();
-    static final String CNAME = IMessagingProcessor.class.getName();
+    static final String CNAME = IWebMessagingProcessor.class.getName();
 
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
     static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);

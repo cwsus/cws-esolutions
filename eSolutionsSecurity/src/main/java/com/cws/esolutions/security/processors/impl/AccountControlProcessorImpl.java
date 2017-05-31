@@ -117,8 +117,9 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.CREATEUSER);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -282,6 +283,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.CREATEUSER);
                 auditEntry.setUserAccount(reqAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -364,8 +366,9 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.DELETEUSER);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -430,6 +433,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.DELETEUSER);
                 auditEntry.setUserAccount(reqAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -512,8 +516,9 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.SUSPENDUSER);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -595,6 +600,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.SUSPENDUSER);
                 auditEntry.setUserAccount(reqAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -678,8 +684,9 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.MODIFYUSER);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -799,6 +806,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.MODIFYUSER);
                 auditEntry.setUserAccount(reqAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -886,8 +894,9 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.CHANGEPASS);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1007,6 +1016,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.RESETPASS);
                 auditEntry.setUserAccount(reqAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1089,8 +1099,9 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.LOCKUSER);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1165,8 +1176,9 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             {
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.SUSPENDUSER);
+                auditEntry.setAuditType(AuditType.LOCKUSER);
                 auditEntry.setUserAccount(reqAccount);
+                auditEntry.setAuthorized(Boolean.FALSE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1250,8 +1262,9 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.SEARCHACCOUNTS);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1346,6 +1359,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.SEARCHACCOUNTS);
                 auditEntry.setUserAccount(reqAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1428,8 +1442,9 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.LOADACCOUNT);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1518,6 +1533,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.LOADACCOUNT);
                 auditEntry.setUserAccount(reqAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1600,8 +1616,9 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuditType(AuditType.LISTUSERS);
                     auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1696,8 +1713,9 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             {
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.SEARCHACCOUNTS);
+                auditEntry.setAuditType(AuditType.LISTUSERS);
                 auditEntry.setUserAccount(reqAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 

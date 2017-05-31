@@ -62,11 +62,11 @@ import com.cws.esolutions.security.processors.dto.AccountResetRequest;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
-import com.cws.esolutions.web.processors.interfaces.IMessagingProcessor;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
-import com.cws.esolutions.web.processors.impl.ServiceMessagingProcessorImpl;
 import com.cws.esolutions.security.processors.impl.AccountResetProcessorImpl;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
+import com.cws.esolutions.core.processors.impl.ServiceMessagingProcessorImpl;
+import com.cws.esolutions.core.processors.interfaces.IWebMessagingProcessor;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
@@ -286,7 +286,7 @@ public class OnlineResetController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
-        final IMessagingProcessor svcMessage = new ServiceMessagingProcessorImpl();
+        final IWebMessagingProcessor svcMessage = new ServiceMessagingProcessorImpl();
 
         if (DEBUG)
         {
@@ -376,7 +376,7 @@ public class OnlineResetController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
-        final IMessagingProcessor svcMessage = new ServiceMessagingProcessorImpl();
+        final IWebMessagingProcessor svcMessage = new ServiceMessagingProcessorImpl();
 
         if (DEBUG)
         {
