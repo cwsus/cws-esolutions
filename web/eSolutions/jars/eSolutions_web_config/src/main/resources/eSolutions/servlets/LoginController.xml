@@ -15,6 +15,7 @@
 
     <bean id="loginValidator" class="com.cws.esolutions.web.validators.LoginValidator">
         <property name="messageLoginUserRequired" value="error.username.empty" />
+        <property name="messageLoginPasswordRequired" value="error.password.empty" />
     </bean>
 
     <bean id="loginController" class="com.cws.esolutions.web.controllers.LoginController">

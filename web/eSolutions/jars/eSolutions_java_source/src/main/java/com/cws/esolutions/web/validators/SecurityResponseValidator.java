@@ -28,8 +28,8 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
 
+import com.cws.esolutions.security.processors.dto.AccountChangeData;
 import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.web.dto.UserChangeRequest;
 /**
  * @author khuntly
  * @version 1.0
@@ -137,7 +137,7 @@ public class SecurityResponseValidator implements Validator
             DEBUGGER.debug("Class: {}", value);
         }
 
-        final boolean isSupported = UserChangeRequest.class.isAssignableFrom(value);
+        final boolean isSupported = AccountChangeData.class.isAssignableFrom(value);
 
         if (DEBUG)
         {
@@ -158,7 +158,7 @@ public class SecurityResponseValidator implements Validator
             DEBUGGER.debug("errors: {}", errors);
         }
 
-        final UserChangeRequest request = (UserChangeRequest) target;
+        final AccountChangeData request = (AccountChangeData) target;
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "secQuestionOne", this.messageSecurityQuestionRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "secQuestionTwo", this.messageSecurityQuestionRequired);

@@ -38,7 +38,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.web.dto.LoginRequest;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.web.validators.LoginValidator;
@@ -50,8 +49,8 @@ import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
-import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 import com.cws.esolutions.core.processors.impl.ServiceMessagingProcessorImpl;
+import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 import com.cws.esolutions.security.processors.impl.AuthenticationProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor;
@@ -296,7 +295,7 @@ public class LoginController
         }
 
         mView.setViewName(this.loginPage);
-        mView.addObject(Constants.COMMAND, new LoginRequest());
+        mView.addObject(Constants.COMMAND, new AuthenticationRequest());
 
         try
         {
@@ -403,9 +402,9 @@ public class LoginController
 
     // combined logon
     @RequestMapping(value = "/submit", method = RequestMethod.POST)
-    public final ModelAndView doCombinedLogin(@ModelAttribute("loginRequest") final LoginRequest loginRequest, final BindingResult bindResult)
+    public final ModelAndView doCombinedLogin(@ModelAttribute("AuthenticationData") final AuthenticationData loginRequest, final BindingResult bindResult)
     {
-        final String methodName = LoginController.CNAME + "#doCombinedLogin(@ModelAttribute(\"loginRequest\") final LoginRequest loginRequest, final BindingResult bindResult)";
+        final String methodName = LoginController.CNAME + "#doCombinedLogin(@ModelAttribute(\"AuthenticationData\") final AuthenticationData loginRequest, final BindingResult bindResult)";
 
         if (DEBUG)
         {
@@ -472,7 +471,7 @@ public class LoginController
 
             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
             mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
-            mView.addObject(Constants.COMMAND, new LoginRequest());
+            mView.addObject(Constants.COMMAND, new AuthenticationRequest());
             mView.setViewName(this.loginPage);
 
             return mView;
@@ -491,7 +490,7 @@ public class LoginController
             }
 
             UserAccount reqUser = new UserAccount();
-            reqUser.setUsername(loginRequest.getLoginUser());
+            reqUser.setUsername(loginRequest.getUsername());
 
             if (DEBUG)
             {
@@ -499,7 +498,7 @@ public class LoginController
             }
 
             AuthenticationData reqSecurity = new AuthenticationData();
-            reqSecurity.setPassword(loginRequest.getLoginPass());
+            reqSecurity.setPassword(loginRequest.getPassword());
 
             if (DEBUG)
             {
@@ -561,7 +560,7 @@ public class LoginController
                         hSession.invalidate();
 
                         mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessagePasswordExpired());
-                        mView.addObject(Constants.COMMAND, new LoginRequest());
+                        mView.addObject(Constants.COMMAND, new AuthenticationRequest());
                         mView.setViewName(this.loginPage);
 
                         if (DEBUG)
@@ -575,7 +574,7 @@ public class LoginController
                         ERROR_RECORDER.error("An unspecified error occurred during authentication.");
 
                         mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
-                        mView.addObject(Constants.COMMAND, new LoginRequest());
+                        mView.addObject(Constants.COMMAND, new AuthenticationRequest());
                         mView.setViewName(this.loginPage);
 
                         break;
@@ -584,7 +583,7 @@ public class LoginController
             else
             {
                 mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
-                mView.addObject(Constants.COMMAND, new LoginRequest());
+                mView.addObject(Constants.COMMAND, new AuthenticationRequest());
                 mView.setViewName(this.loginPage);
             }
         }
@@ -592,7 +591,7 @@ public class LoginController
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
 
-            mView.addObject(Constants.COMMAND, new LoginRequest());
+            mView.addObject(Constants.COMMAND, new AuthenticationRequest());
             mView.setViewName(this.loginPage);
             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
         }
@@ -729,7 +728,7 @@ public class LoginController
                         hSession.invalidate();
 
                         mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessagePasswordExpired());
-                        mView.addObject(Constants.COMMAND, new LoginRequest());
+                        mView.addObject(Constants.COMMAND, new AuthenticationRequest());
                         mView.setViewName(this.loginPage);
 
                         break;

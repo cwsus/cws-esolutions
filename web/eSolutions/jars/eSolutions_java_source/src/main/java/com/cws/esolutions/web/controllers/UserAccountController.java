@@ -38,7 +38,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.web.dto.UserChangeRequest;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.web.validators.PasswordValidator;
 import com.cws.esolutions.web.validators.TelephoneValidator;
@@ -46,6 +45,7 @@ import com.cws.esolutions.web.validators.EmailAddressValidator;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
+import com.cws.esolutions.security.processors.dto.AccountChangeData;
 import com.cws.esolutions.web.validators.SecurityResponseValidator;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AccountResetRequest;
@@ -378,7 +378,7 @@ public class UserAccountController
         }
 
         ModelAndView mView = new ModelAndView();
-        UserChangeRequest changeReq = new UserChangeRequest();
+        AccountChangeData changeReq = new AccountChangeData();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -512,7 +512,7 @@ public class UserAccountController
             }
         }
 
-        mView.addObject(Constants.COMMAND, new UserChangeRequest());
+        mView.addObject(Constants.COMMAND, new AccountChangeData());
         mView.setViewName(this.enableOtpPage);
 
         if (DEBUG)
@@ -616,7 +616,7 @@ public class UserAccountController
             if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
             {
                 mView.addObject("questionList", response.getQuestionList());
-                mView.addObject(Constants.COMMAND, new UserChangeRequest());
+                mView.addObject(Constants.COMMAND, new AccountChangeData());
                 mView.setViewName(this.changeSecurityPage);
             }
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
@@ -702,7 +702,7 @@ public class UserAccountController
             }
         }
 
-        mView.addObject(Constants.COMMAND, new UserChangeRequest());
+        mView.addObject(Constants.COMMAND, new AccountChangeData());
         mView.setViewName(this.changeEmailPage);
 
         if (DEBUG)
@@ -772,7 +772,7 @@ public class UserAccountController
             }
         }
 
-        mView.addObject(Constants.COMMAND, new UserChangeRequest());
+        mView.addObject(Constants.COMMAND, new AccountChangeData());
         mView.setViewName(this.changeContactPage);
 
         if (DEBUG)
@@ -995,7 +995,7 @@ public class UserAccountController
     }
 
     @RequestMapping(value = "/password", method = RequestMethod.POST)
-    public final ModelAndView doPasswordChange(@ModelAttribute("changeReq") final UserChangeRequest changeReq, final BindingResult bindResult)
+    public final ModelAndView doPasswordChange(@ModelAttribute("changeReq") final AccountChangeData changeReq, final BindingResult bindResult)
     {
         final String methodName = UserAccountController.CNAME + "#doPasswordChange(@ModelAttribute(\"changeReq\") final UserChangeRequest changeReq, final BindingResult bindResult)";
 
@@ -1064,7 +1064,7 @@ public class UserAccountController
         {
         	ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
 
-            UserChangeRequest command = new UserChangeRequest();
+            AccountChangeData command = new AccountChangeData();
             changeReq.setIsReset(changeReq.isReset());
 
             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
@@ -1190,7 +1190,7 @@ public class UserAccountController
     }
 
     @RequestMapping(value = "/enable-otp", method = RequestMethod.POST)
-    public final ModelAndView doEnableOtp(@ModelAttribute("changeReq") final UserChangeRequest changeReq, final BindingResult bindResult)
+    public final ModelAndView doEnableOtp(@ModelAttribute("changeReq") final AccountChangeData changeReq, final BindingResult bindResult)
     {
         final String methodName = UserAccountController.CNAME + "#doEnableOtp(@ModelAttribute(\"changeReq\") final UserChangeRequest changeReq, final BindingResult bindResult)";
 
@@ -1260,7 +1260,7 @@ public class UserAccountController
 
         	mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
         	mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
-            mView.addObject(Constants.COMMAND, new UserChangeRequest());
+            mView.addObject(Constants.COMMAND, new AccountChangeData());
             mView.setViewName(this.enableOtpPage);
         }
 
@@ -1335,7 +1335,7 @@ public class UserAccountController
     }
 
     @RequestMapping(value = "/security", method = RequestMethod.POST)
-    public final ModelAndView doSecurityChange(@ModelAttribute("changeReq") final UserChangeRequest changeReq, final BindingResult bindResult)
+    public final ModelAndView doSecurityChange(@ModelAttribute("changeReq") final AccountChangeData changeReq, final BindingResult bindResult)
     {
         final String methodName = UserAccountController.CNAME + "#doSecurityChange(@ModelAttribute(\"changeReq\") final UserChangeRequest changeReq, final BindingResult bindResult)";
 
@@ -1405,7 +1405,7 @@ public class UserAccountController
 
             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
             mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
-            mView.addObject(Constants.COMMAND, new UserChangeRequest());
+            mView.addObject(Constants.COMMAND, new AccountChangeData());
             mView.setViewName(this.changeSecurityPage);
 
             return mView;
@@ -1484,7 +1484,7 @@ public class UserAccountController
     }
 
     @RequestMapping(value = "/email", method = RequestMethod.POST)
-    public final ModelAndView doEmailChange(@ModelAttribute("changeReq") final UserChangeRequest changeReq, final BindingResult bindResult)
+    public final ModelAndView doEmailChange(@ModelAttribute("changeReq") final AccountChangeData changeReq, final BindingResult bindResult)
     {
         final String methodName = UserAccountController.CNAME + "#doEmailChange(@ModelAttribute(\"changeReq\") final UserChangeRequest changeReq, final BindingResult bindResult)";
 
@@ -1554,7 +1554,7 @@ public class UserAccountController
 
             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
             mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
-            mView.addObject(Constants.COMMAND, new UserChangeRequest());
+            mView.addObject(Constants.COMMAND, new AccountChangeData());
             mView.setViewName(this.changeEmailPage);
 
             return mView;
@@ -1641,7 +1641,7 @@ public class UserAccountController
     }
 
     @RequestMapping(value = "/contact", method = RequestMethod.POST)
-    public final ModelAndView doContactChange(@ModelAttribute("changeReq") final UserChangeRequest changeReq, final BindingResult bindResult)
+    public final ModelAndView doContactChange(@ModelAttribute("changeReq") final AccountChangeData changeReq, final BindingResult bindResult)
     {
         final String methodName = UserAccountController.CNAME + "#doEmailChange(@ModelAttribute(\"changeReq\") final UserChangeRequest changeReq, final BindingResult bindResult)";
 
@@ -1711,7 +1711,7 @@ public class UserAccountController
 
             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
             mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
-            mView.addObject(Constants.COMMAND, new UserChangeRequest());
+            mView.addObject(Constants.COMMAND, new AccountChangeData());
             mView.setViewName(this.changeContactPage);
 
             return mView;

@@ -39,6 +39,7 @@ public class AuthenticationData implements Serializable
 {
     private int otpValue = 0;
     private String secret = null;
+    private String username = null;
     private String userSalt = null;
     private String password = null;
     private String newPassword = null;
@@ -52,6 +53,18 @@ public class AuthenticationData implements Serializable
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+
+    public final void setUsername(final String value)
+    {
+        final String methodName = AuthenticationData.CNAME + "#setUsername(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        this.username = value;
+    }
 
     public final void setUserSalt(final String value)
     {
@@ -159,6 +172,19 @@ public class AuthenticationData implements Serializable
         }
 
         this.secret = value;
+    }
+
+    public final String getUsername()
+    {
+        final String methodName = AuthenticationData.CNAME + "#getUsername()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.username);
+        }
+
+        return this.username;
     }
 
     public final String getUserSalt()

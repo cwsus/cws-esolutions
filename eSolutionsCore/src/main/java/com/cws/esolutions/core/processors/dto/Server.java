@@ -61,6 +61,7 @@ public class Server implements Serializable
     private String serverRack = null;
     private String domainName = null;
     private Server owningDmgr = null;
+    private String datacenter = null;
     private String serverModel = null;
     private String nasHostName = null;
     private String bkIpAddress = null;
@@ -96,6 +97,19 @@ public class Server implements Serializable
         }
 
         this.score = value;
+    }
+
+    public final void setDatacenter(final String value)
+    {
+        final String methodName = Server.CNAME + "#setDatacenter(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.datacenter = value;
     }
 
     public final void setServerGuid(final String value)
@@ -525,6 +539,19 @@ public class Server implements Serializable
         }
 
         return this.score;
+    }
+
+    public final String getDatacenter()
+    {
+        final String methodName = Server.CNAME + "#getDatacenter()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.datacenter);
+        }
+
+        return this.datacenter;
     }
 
     public final String getServerGuid()

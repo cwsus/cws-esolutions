@@ -28,7 +28,7 @@ import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
 
 import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.web.dto.ApplicationRequest;
+import com.cws.esolutions.core.processors.dto.Application;
 /**
  * @author khuntly
  * @version 1.0
@@ -150,7 +150,7 @@ public class ApplicationValidator implements Validator
             DEBUGGER.debug("Value: {}", value);
         }
 
-        final boolean isSupported = ApplicationRequest.class.isAssignableFrom(value);
+        final boolean isSupported = Application.class.isAssignableFrom(value);
 
         if (DEBUG)
         {
@@ -179,7 +179,7 @@ public class ApplicationValidator implements Validator
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "packageInstaller", this.messagePackageInstallerRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "platforms", this.messagePlatformRequired);
 
-        ApplicationRequest request = (ApplicationRequest) target;
+        Application request = (Application) target;
 
         if (DEBUG)
         {

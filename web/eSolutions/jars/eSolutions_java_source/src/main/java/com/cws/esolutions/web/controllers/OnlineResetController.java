@@ -46,9 +46,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.web.dto.UserChangeRequest;
 import com.cws.esolutions.web.ApplicationServiceBean;
-import com.cws.esolutions.web.enums.ResetRequestType;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.web.validators.OnlineResetValidator;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
@@ -56,6 +54,8 @@ import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
+import com.cws.esolutions.security.processors.dto.AccountChangeData;
+import com.cws.esolutions.security.processors.enums.ResetRequestType;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AccountResetRequest;
@@ -349,7 +349,7 @@ public class OnlineResetController
         }
 
         mView.addObject("resetType", ResetRequestType.USERNAME);
-        mView.addObject(Constants.COMMAND, new UserChangeRequest());
+        mView.addObject(Constants.COMMAND, new AccountChangeData());
         mView.setViewName(this.submitEmailAddrPage);
 
         if (DEBUG)
@@ -439,7 +439,7 @@ public class OnlineResetController
         }
 
         mView.addObject("resetType", ResetRequestType.PASSWORD);
-        mView.addObject(Constants.COMMAND, new UserChangeRequest());
+        mView.addObject(Constants.COMMAND, new AccountChangeData());
         mView.setViewName(this.submitUsernamePage);
 
         if (DEBUG)
@@ -654,7 +654,7 @@ public class OnlineResetController
     }
 
     @RequestMapping(value = "/forgot-username", method = RequestMethod.POST)
-    public final ModelAndView submitForgottenUsername(@ModelAttribute("request") final UserChangeRequest request, final BindingResult bindResult)
+    public final ModelAndView submitForgottenUsername(@ModelAttribute("request") final AccountChangeData request, final BindingResult bindResult)
     {
         final String methodName = OnlineResetController.CNAME + "#submitForgottenUsername(@ModelAttribute(\"UserChangeRequest\") final UserChangeRequest request, final BindingResult bindResult)";
 
@@ -723,7 +723,7 @@ public class OnlineResetController
 
             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
             mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
-            mView.addObject(Constants.COMMAND, new UserChangeRequest());
+            mView.addObject(Constants.COMMAND, new AccountChangeData());
             mView.setViewName(this.submitUsernamePage);
 
             return mView;
@@ -834,7 +834,7 @@ public class OnlineResetController
     }
 
     @RequestMapping(value = "/forgot-password", method = RequestMethod.POST)
-    public final ModelAndView submitUsername(@ModelAttribute("request") final UserChangeRequest request, final BindingResult bindResult)
+    public final ModelAndView submitUsername(@ModelAttribute("request") final AccountChangeData request, final BindingResult bindResult)
     {
         final String methodName = OnlineResetController.CNAME + "#submitUsername(@ModelAttribute(\"UserChangeRequest\") final UserChangeRequest request, final BindingResult bindResult)";
 
@@ -902,7 +902,7 @@ public class OnlineResetController
 
             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
             mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
-            mView.addObject(Constants.COMMAND, new UserChangeRequest());
+            mView.addObject(Constants.COMMAND, new AccountChangeData());
             mView.setViewName(this.submitUsernamePage);
 
             return mView;
@@ -965,7 +965,7 @@ public class OnlineResetController
                     DEBUGGER.debug("AuthenticationData: {}", userSec);
                 }
 
-                UserChangeRequest changeReq = new UserChangeRequest();
+                AccountChangeData changeReq = new AccountChangeData();
                 changeReq.setSecQuestionOne(userSec.getSecQuestionOne());
                 changeReq.setSecQuestionTwo(userSec.getSecQuestionTwo());
 
@@ -1003,7 +1003,7 @@ public class OnlineResetController
     }
 
     @RequestMapping(value = "/submit", method = RequestMethod.POST)
-    public final ModelAndView submitSecurityResponse(@ModelAttribute("request") final UserChangeRequest request, final BindingResult bindResult)
+    public final ModelAndView submitSecurityResponse(@ModelAttribute("request") final AccountChangeData request, final BindingResult bindResult)
     {
         final String methodName = OnlineResetController.CNAME + "#submitSecurityResponse(@ModelAttribute(\"request\") final UserChangeRequest request, final BindingResult bindResult)";
 

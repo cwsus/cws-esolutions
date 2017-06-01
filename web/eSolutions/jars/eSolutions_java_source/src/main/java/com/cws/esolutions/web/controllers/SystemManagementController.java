@@ -39,7 +39,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.web.dto.ServerRequest;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.Server;
@@ -1068,7 +1067,7 @@ public class SystemManagementController
         mView.addObject("serverStatuses", ServerStatus.values());
         mView.addObject("serverRegions", ServiceRegion.values());
         mView.addObject("networkPartitions", NetworkPartition.values());
-        mView.addObject(Constants.COMMAND, new ServerRequest());
+        mView.addObject(Constants.COMMAND, new Server());
         mView.setViewName(this.addServerPage);
 
         if (DEBUG)
@@ -1080,9 +1079,9 @@ public class SystemManagementController
     }
 
     @RequestMapping(value = "/add-server", method = RequestMethod.POST)
-    public final ModelAndView addNewServer(@ModelAttribute("request") final ServerRequest request, final BindingResult bindResult)
+    public final ModelAndView addNewServer(@ModelAttribute("request") final Server request, final BindingResult bindResult)
     {
-        final String methodName = SystemManagementController.CNAME + "#addNewServer(@ModelAttribute(\"request\") final ServerRequest request, final BindingResult bindResult)";
+        final String methodName = SystemManagementController.CNAME + "#addNewServer(@ModelAttribute(\"request\") final Server request, final BindingResult bindResult)";
 
         if (DEBUG)
         {
@@ -1204,7 +1203,7 @@ public class SystemManagementController
                     // if its an application server, theres no location configured
                     // because its driven by the owning dmgr
                     Server dmgrServer = new Server();
-                    dmgrServer.setServerGuid(request.getOwningDmgr());
+                    dmgrServer.setServerGuid(request.getOwningDmgr().getServerGuid());
 
                     if (DEBUG)
                     {

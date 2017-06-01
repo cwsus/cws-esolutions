@@ -30,8 +30,8 @@ import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
 
 import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.web.dto.UserChangeRequest;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
+import com.cws.esolutions.security.processors.dto.AccountChangeData;
 /**
  * @author khuntly
  * @version 1.0
@@ -139,7 +139,7 @@ public class PasswordValidator implements Validator
             DEBUGGER.debug("Class: {}", value);
         }
 
-        final boolean isSupported = UserChangeRequest.class.isAssignableFrom(value);
+        final boolean isSupported = AccountChangeData.class.isAssignableFrom(value);
 
         if (DEBUG)
         {
@@ -159,7 +159,7 @@ public class PasswordValidator implements Validator
             DEBUGGER.debug("errors: {}", errors);
         }
 
-        final UserChangeRequest changeReq = (UserChangeRequest) target;
+        final AccountChangeData changeReq = (AccountChangeData) target;
         final String newPassword = changeReq.getNewPassword();
         final String existingPassword = changeReq.getCurrentPassword();
         final int minLength = (this.secConfig.getSecurityConfig().getPasswordMinLength() >= 8) ? this.secConfig.getSecurityConfig().getPasswordMinLength() : 8;

@@ -9,7 +9,7 @@
  * the materials be disclosed to third parties without the
  * express written authorization of CaspersBox Web Services, N.A.
  */
-package com.cws.esolutions.web.dto;
+package com.cws.esolutions.security.processors.dto;
 /*
  * Project: eSolutions_java_source
  * Package: com.cws.esolutions.web.dto
@@ -26,13 +26,13 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.web.enums.ResetRequestType;
+import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.processors.enums.ResetRequestType;
 /**
  * @author khuntly
  * @version 1.0
  */
-public final class UserChangeRequest implements Serializable
+public final class AccountChangeData implements Serializable
 {
     private int count = 0;
     private String resetKey = null;
@@ -50,16 +50,16 @@ public final class UserChangeRequest implements Serializable
     private String confirmPassword = null;
     private ResetRequestType resetType = null;
 
-    private static final String CNAME = UserChangeRequest.class.getName();
+    private static final String CNAME = AccountChangeData.class.getName();
     private static final long serialVersionUID = -990715180500683492L;
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
 
     public final void setIsReset(final boolean value)
     {
-        final String methodName = UserChangeRequest.CNAME + "#setIsReset(final boolean value)";
+        final String methodName = AccountChangeData.CNAME + "#setIsReset(final boolean value)";
 
         if (DEBUG)
         {
@@ -72,7 +72,7 @@ public final class UserChangeRequest implements Serializable
 
     public final void setResetKey(final String value)
     {
-        final String methodName = UserChangeRequest.CNAME + "#setResetKey(final String value)";
+        final String methodName = AccountChangeData.CNAME + "#setResetKey(final String value)";
 
         if (DEBUG)
         {
@@ -85,7 +85,7 @@ public final class UserChangeRequest implements Serializable
 
     public final void setResetType(final ResetRequestType value)
     {
-        final String methodName = UserChangeRequest.CNAME + "#setResetType(final ResetRequestType value)";
+        final String methodName = AccountChangeData.CNAME + "#setResetType(final ResetRequestType value)";
 
         if (DEBUG)
         {
@@ -98,7 +98,7 @@ public final class UserChangeRequest implements Serializable
 
     public final void setUsername(final String value)
     {
-        final String methodName = UserChangeRequest.CNAME + "#setUsername(final String value)";
+        final String methodName = AccountChangeData.CNAME + "#setUsername(final String value)";
 
         if (DEBUG)
         {
@@ -111,7 +111,7 @@ public final class UserChangeRequest implements Serializable
 
     public final void setCurrentPassword(final String value)
     {
-        final String methodName = UserChangeRequest.CNAME + "#setCurrentPassword(final String value)";
+        final String methodName = AccountChangeData.CNAME + "#setCurrentPassword(final String value)";
 
         if (DEBUG)
         {
@@ -123,7 +123,7 @@ public final class UserChangeRequest implements Serializable
 
     public final void setNewPassword(final String value)
     {
-        final String methodName = UserChangeRequest.CNAME + "#setNewPassword(final String value)";
+        final String methodName = AccountChangeData.CNAME + "#setNewPassword(final String value)";
 
         if (DEBUG)
         {
@@ -135,7 +135,7 @@ public final class UserChangeRequest implements Serializable
 
     public final void setConfirmPassword(final String value)
     {
-        final String methodName = UserChangeRequest.CNAME + "#setConfirmPassword(final String value)";
+        final String methodName = AccountChangeData.CNAME + "#setConfirmPassword(final String value)";
 
         if (DEBUG)
         {
@@ -147,7 +147,7 @@ public final class UserChangeRequest implements Serializable
 
     public final void setEmailAddr(final String value)
     {
-        final String methodName = UserChangeRequest.CNAME + "#setEmailAddr(final String value)";
+        final String methodName = AccountChangeData.CNAME + "#setEmailAddr(final String value)";
 
         if (DEBUG)
         {
@@ -160,7 +160,7 @@ public final class UserChangeRequest implements Serializable
 
     public final void setSecAnswerOne(final String value)
     {
-        final String methodName = UserChangeRequest.CNAME + "#setSecAnswerOne(final String value)";
+        final String methodName = AccountChangeData.CNAME + "#setSecAnswerOne(final String value)";
 
         if (DEBUG)
         {
@@ -172,7 +172,7 @@ public final class UserChangeRequest implements Serializable
 
     public final void setSecAnswerTwo(final String value)
     {
-        final String methodName = UserChangeRequest.CNAME + "#setSecAnswerTwo(final String value)";
+        final String methodName = AccountChangeData.CNAME + "#setSecAnswerTwo(final String value)";
 
         if (DEBUG)
         {
@@ -184,7 +184,7 @@ public final class UserChangeRequest implements Serializable
 
     public final void setSecQuestionOne(final String value)
     {
-        final String methodName = UserChangeRequest.CNAME + "#setSecQuestionOne(final String value)";
+        final String methodName = AccountChangeData.CNAME + "#setSecQuestionOne(final String value)";
 
         if (DEBUG)
         {
@@ -197,7 +197,7 @@ public final class UserChangeRequest implements Serializable
 
     public final void setSecQuestionTwo(final String value)
     {
-        final String methodName = UserChangeRequest.CNAME + "#setSecQuestionTwo(final String value)";
+        final String methodName = AccountChangeData.CNAME + "#setSecQuestionTwo(final String value)";
 
         if (DEBUG)
         {
@@ -210,7 +210,7 @@ public final class UserChangeRequest implements Serializable
 
     public final void setTelNumber(final String value)
     {
-        final String methodName = UserChangeRequest.CNAME + "#setTelNumber(final String value)";
+        final String methodName = AccountChangeData.CNAME + "#setTelNumber(final String value)";
 
         if (DEBUG)
         {
@@ -223,7 +223,7 @@ public final class UserChangeRequest implements Serializable
 
     public final void setPagerNumber(final String value)
     {
-        final String methodName = UserChangeRequest.CNAME + "#setPagerNumber(final String value)";
+        final String methodName = AccountChangeData.CNAME + "#setPagerNumber(final String value)";
 
         if (DEBUG)
         {
@@ -236,7 +236,7 @@ public final class UserChangeRequest implements Serializable
 
     public final void setCount(final int value)
     {
-        final String methodName = UserChangeRequest.CNAME + "#setCount(final int value)";
+        final String methodName = AccountChangeData.CNAME + "#setCount(final int value)";
 
         if (DEBUG)
         {
@@ -249,7 +249,7 @@ public final class UserChangeRequest implements Serializable
 
     public final boolean getIsReset()
     {
-        final String methodName = UserChangeRequest.CNAME + "#getIsReset()";
+        final String methodName = AccountChangeData.CNAME + "#getIsReset()";
 
         if (DEBUG)
         {
@@ -262,7 +262,7 @@ public final class UserChangeRequest implements Serializable
 
     public final boolean isReset()
     {
-        final String methodName = UserChangeRequest.CNAME + "#isReset()";
+        final String methodName = AccountChangeData.CNAME + "#isReset()";
 
         if (DEBUG)
         {
@@ -275,7 +275,7 @@ public final class UserChangeRequest implements Serializable
 
     public final String getResetKey()
     {
-        final String methodName = UserChangeRequest.CNAME + "#getResetKey(final String value)";
+        final String methodName = AccountChangeData.CNAME + "#getResetKey(final String value)";
 
         if (DEBUG)
         {
@@ -288,7 +288,7 @@ public final class UserChangeRequest implements Serializable
 
     public final ResetRequestType getResetType()
     {
-        final String methodName = UserChangeRequest.CNAME + "#getResetType()";
+        final String methodName = AccountChangeData.CNAME + "#getResetType()";
 
         if (DEBUG)
         {
@@ -301,7 +301,7 @@ public final class UserChangeRequest implements Serializable
 
     public final String getUsername()
     {
-        final String methodName = UserChangeRequest.CNAME + "#getUsername()";
+        final String methodName = AccountChangeData.CNAME + "#getUsername()";
 
         if (DEBUG)
         {
@@ -314,7 +314,7 @@ public final class UserChangeRequest implements Serializable
 
     public final String getCurrentPassword()
     {
-        final String methodName = UserChangeRequest.CNAME + "#getCurrentPassword";
+        final String methodName = AccountChangeData.CNAME + "#getCurrentPassword";
 
         if (DEBUG)
         {
@@ -326,7 +326,7 @@ public final class UserChangeRequest implements Serializable
 
     public final String getNewPassword()
     {
-        final String methodName = UserChangeRequest.CNAME + "#getNewPassword";
+        final String methodName = AccountChangeData.CNAME + "#getNewPassword";
 
         if (DEBUG)
         {
@@ -338,7 +338,7 @@ public final class UserChangeRequest implements Serializable
 
     public final String getConfirmPassword()
     {
-        final String methodName = UserChangeRequest.CNAME + "#getConfirmPassword";
+        final String methodName = AccountChangeData.CNAME + "#getConfirmPassword";
 
         if (DEBUG)
         {
@@ -350,7 +350,7 @@ public final class UserChangeRequest implements Serializable
 
     public final String getEmailAddr()
     {
-        final String methodName = UserChangeRequest.CNAME + "#getEmailAddr()";
+        final String methodName = AccountChangeData.CNAME + "#getEmailAddr()";
 
         if (DEBUG)
         {
@@ -363,7 +363,7 @@ public final class UserChangeRequest implements Serializable
 
     public final String getSecAnswerOne()
     {
-        final String methodName = UserChangeRequest.CNAME + "#getSecAnswerOne()";
+        final String methodName = AccountChangeData.CNAME + "#getSecAnswerOne()";
 
         if (DEBUG)
         {
@@ -375,7 +375,7 @@ public final class UserChangeRequest implements Serializable
 
     public final String getSecAnswerTwo()
     {
-        final String methodName = UserChangeRequest.CNAME + "#getSecAnswerTwo()";
+        final String methodName = AccountChangeData.CNAME + "#getSecAnswerTwo()";
 
         if (DEBUG)
         {
@@ -387,7 +387,7 @@ public final class UserChangeRequest implements Serializable
 
     public final String getSecQuestionOne()
     {
-        final String methodName = UserChangeRequest.CNAME + "#getSecQuestionOne()";
+        final String methodName = AccountChangeData.CNAME + "#getSecQuestionOne()";
 
         if (DEBUG)
         {
@@ -400,7 +400,7 @@ public final class UserChangeRequest implements Serializable
 
     public final String getSecQuestionTwo()
     {
-        final String methodName = UserChangeRequest.CNAME + "#getSecQuestionTwo()";
+        final String methodName = AccountChangeData.CNAME + "#getSecQuestionTwo()";
 
         if (DEBUG)
         {
@@ -413,7 +413,7 @@ public final class UserChangeRequest implements Serializable
 
     public final String getTelNumber()
     {
-        final String methodName = UserChangeRequest.CNAME + "#getTelNumber()";
+        final String methodName = AccountChangeData.CNAME + "#getTelNumber()";
 
         if (DEBUG)
         {
@@ -426,7 +426,7 @@ public final class UserChangeRequest implements Serializable
 
     public final String getPagerNumber()
     {
-        final String methodName = UserChangeRequest.CNAME + "#getPagerNumber()";
+        final String methodName = AccountChangeData.CNAME + "#getPagerNumber()";
 
         if (DEBUG)
         {
@@ -439,7 +439,7 @@ public final class UserChangeRequest implements Serializable
 
     public final int getCount()
     {
-        final String methodName = UserChangeRequest.CNAME + "#getCount()";
+        final String methodName = AccountChangeData.CNAME + "#getCount()";
 
         if (DEBUG)
         {
@@ -453,7 +453,7 @@ public final class UserChangeRequest implements Serializable
     @Override
     public final String toString()
     {
-        final String methodName = UserChangeRequest.CNAME + "#toString()";
+        final String methodName = AccountChangeData.CNAME + "#toString()";
 
         if (DEBUG)
         {
@@ -461,7 +461,7 @@ public final class UserChangeRequest implements Serializable
         }
 
         StringBuilder sBuilder = new StringBuilder()
-            .append("[" + this.getClass().getName() + "]" + Constants.LINE_BREAK + "{" + Constants.LINE_BREAK);
+            .append("[" + this.getClass().getName() + "]" + SecurityServiceConstants.LINE_BREAK + "{" + SecurityServiceConstants.LINE_BREAK);
 
         for (Field field : this.getClass().getDeclaredFields())
         {
@@ -486,7 +486,7 @@ public final class UserChangeRequest implements Serializable
                 {
                     if (field.get(this) != null)
                     {
-                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + Constants.LINE_BREAK);
+                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + SecurityServiceConstants.LINE_BREAK);
                     }
                 }
                 catch (IllegalAccessException iax)

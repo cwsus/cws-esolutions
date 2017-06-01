@@ -9,7 +9,7 @@
  * the materials be disclosed to third parties without the
  * express written authorization of CaspersBox Web Services, N.A.
  */
-package com.cws.esolutions.web.enums;
+package com.cws.esolutions.core.processors.enums;
 /*
  * Project: eSolutions_java_source
  * Package: com.cws.esolutions.web.enums

@@ -50,7 +50,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
-import com.cws.esolutions.web.dto.ApplicationRequest;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.dto.Service;
 import com.cws.esolutions.core.processors.dto.Application;
@@ -998,7 +997,7 @@ public class ApplicationManagementController
             mView.setViewName(this.addPlatformRedirect);
         }
 
-        mView.addObject(Constants.COMMAND, new ApplicationRequest());
+        mView.addObject(Constants.COMMAND, new Application());
         mView.setViewName(this.addAppPage);
 
         if (DEBUG)
@@ -2037,9 +2036,9 @@ public class ApplicationManagementController
     }
 
     @RequestMapping(value = "/add-application", method = RequestMethod.POST)
-    public final ModelAndView doAddApplication(@ModelAttribute("request") final ApplicationRequest request, final BindingResult bindResult)
+    public final ModelAndView doAddApplication(@ModelAttribute("request") final Application request, final BindingResult bindResult)
     {
-        final String methodName = ApplicationManagementController.CNAME + "#doAddApplication(@ModelAttribute(\"request\") final ApplicationRequest request, final BindingResult bindResult)";
+        final String methodName = ApplicationManagementController.CNAME + "#doAddApplication(@ModelAttribute(\"request\") final Application request, final BindingResult bindResult)";
 
         if (DEBUG)
         {
@@ -2114,7 +2113,7 @@ public class ApplicationManagementController
 
             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
             mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
-            mView.addObject(Constants.COMMAND, new ApplicationRequest());
+            mView.addObject(Constants.COMMAND, new Application());
             mView.setViewName(this.addAppPage);
 
             return mView;

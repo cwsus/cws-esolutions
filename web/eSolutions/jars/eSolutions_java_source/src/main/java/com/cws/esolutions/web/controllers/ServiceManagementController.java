@@ -39,7 +39,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.web.dto.PlatformRequest;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.Service;
@@ -1278,7 +1277,7 @@ public class ServiceManagementController
         	return mView;
         }
 
-        mView.addObject(new PlatformRequest());
+        mView.addObject(new Service());
         mView.setViewName(this.addServicePage);
 
         if (DEBUG)

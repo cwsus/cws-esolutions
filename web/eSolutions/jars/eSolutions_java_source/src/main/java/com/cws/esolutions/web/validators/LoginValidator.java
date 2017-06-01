@@ -28,9 +28,7 @@ import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
 
 import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.web.dto.LoginRequest;
-import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.processors.dto.AuthenticationData;
+import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 /**
  * @author khuntly
  * @version 1.0
@@ -39,6 +37,7 @@ import com.cws.esolutions.security.processors.dto.AuthenticationData;
 public class LoginValidator implements Validator
 {
     private String messageLoginUserRequired = null;
+    private String messageLoginPasswordRequired = null;
 
     private static final String CNAME = LoginValidator.class.getName();
 
@@ -58,6 +57,19 @@ public class LoginValidator implements Validator
         this.messageLoginUserRequired = value;
     }
 
+    public final void setMessageLoginPasswordRequired(final String value)
+    {
+        final String methodName = LoginValidator.CNAME + "#setMessageLoginPasswordRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageLoginPasswordRequired = value;
+    }
+
     public final boolean supports(final Class<?> value)
     {
         final String methodName = LoginValidator.CNAME + "#supports(final Class<?> value)";
@@ -68,7 +80,7 @@ public class LoginValidator implements Validator
             DEBUGGER.debug("Value: {}", value);
         }
 
-        final boolean isSupported = ((UserAccount.class.isAssignableFrom(value)) || (AuthenticationData.class.isAssignableFrom(value)) || (LoginRequest.class.isAssignableFrom(value)));
+        final boolean isSupported = AuthenticationRequest.class.isAssignableFrom(value);
 
         if (DEBUG)
         {
@@ -89,5 +101,6 @@ public class LoginValidator implements Validator
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "loginUser", this.messageLoginUserRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "loginUser", this.messageLoginPasswordRequired);
     }
 }

@@ -31,8 +31,8 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
 
+import com.cws.esolutions.security.processors.dto.AccountChangeData;
 import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.web.dto.UserChangeRequest;
 /**
  * @author khuntly
  * @version 1.0
@@ -84,7 +84,7 @@ public class TelephoneValidator implements Validator
             DEBUGGER.debug("Value: {}", value);
         }
 
-        final boolean isSupported = UserChangeRequest.class.isAssignableFrom(value);
+        final boolean isSupported = AccountChangeData.class.isAssignableFrom(value);
 
         if (DEBUG)
         {
@@ -109,7 +109,7 @@ public class TelephoneValidator implements Validator
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "pagerNumber", this.messageNumberInvalid);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "currentPassword", this.messagePasswordRequired);
 
-        UserChangeRequest request = (UserChangeRequest) target;
+        AccountChangeData request = (AccountChangeData) target;
 
         if (DEBUG)
         {
