@@ -90,6 +90,10 @@
         <put-attribute name="pageTitle"     value="eSolutions - DNS Services - Service Lookup" cascade="true" />
         <put-attribute name="body"          value="/com.cws.esolutions.web.dnsservice/jsp/html/en/DNSService_ServiceLookup.jsp" cascade="true" />
     </definition>
+    <definition name="DNSService_CreateService" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - DNS Services - Create Service" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.esolutions.web.dnsservice/jsp/html/en/DNSService_CreateService.jsp" cascade="true" />
+    </definition>
 
     <!-- Messaging -->
     <definition name="ServiceMessaging_SubmitMessage" extends="baseLayout">

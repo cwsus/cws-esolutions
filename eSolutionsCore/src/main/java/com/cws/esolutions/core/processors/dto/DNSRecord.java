@@ -81,7 +81,7 @@ public class DNSRecord implements Serializable
     }
 
     /**
-     * Utilize this method to set the weight for a SRV record
+     * Utilize this method to set the weight for a SRV or MX record
      *
      * @param value the record weight
      */
@@ -249,7 +249,9 @@ public class DNSRecord implements Serializable
     }
 
     /**
-     * @return The primary record address
+     * Utilize this method to set multiple addresses for a given record
+     *
+     * @param value A list of addresses
      */
     public final void setRecordAddresses(final List<String> value)
     {
@@ -265,7 +267,9 @@ public class DNSRecord implements Serializable
     }
 
     /**
-     * @return The primary record address
+     * Utilize this method to set the record's origin
+     *
+     * @param value The record origin. If not specified, defaults to "."
      */
     public final void setRecordOrigin(final String value)
     {

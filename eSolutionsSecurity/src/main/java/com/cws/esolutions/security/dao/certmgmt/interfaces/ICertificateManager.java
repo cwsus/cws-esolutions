@@ -50,24 +50,28 @@ public interface ICertificateManager
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     /**
-     * 
-     * @param subjectData
-     * @param storePassword
-     * @param validityPeriod
-     * @param keySize
-     * @return
-     * @throws KeyManagementException
+     * Creates a new certificate request for a user or server. The CSR is then provided back to the requestor
+     * for processing by a certificate authority, resulting in a useable certificate.
+     *
+     * @param subjectData - The subject info for the certificate request.
+     * @param storePassword - The password utilized against the keystore.
+     * @param validityPeriod - How long (in days) the certificate should be valid for.
+     * @param keySize - The size of the key to generate (e.g. 2048 bits)
+     * @return A CSR file
+     * @throws CertificateManagementException if an exception occurs while processing the request
      */
     File createCertificateRequest(final List<String> subjectData, final String storePassword, final int validityPeriod, final int keySize) throws CertificateManagementException;
 
     /**
-     * 
-     * @param commonName
-     * @param certificateFile
-     * @param keystoreFile
-     * @param storePassword
-     * @return
-     * @throws CertificateManagementException
+     * Applies a certificate response from a certificate authority after a request has been
+     * sent and processed.
+     *
+     * @param commonName - The common name (site name) of the certificate
+     * @param certificateFile - The physical certificate file as obtained from the authority
+     * @param keystoreFile - The keystore the certificate should be applied to
+     * @param storePassword - The password utilized against the keystore.
+     * @return true/false, true if the operation completed successfully, false otherwise.
+     * @throws CertificateManagementException if an exception occurs while processing the request
      */
     boolean applyCertificateRequest(final String commonName, final File certificateFile, final File keystoreFile, final String storePassword) throws CertificateManagementException;
 }

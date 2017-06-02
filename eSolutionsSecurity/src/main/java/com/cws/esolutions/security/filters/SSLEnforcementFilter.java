@@ -73,9 +73,6 @@ public class SSLEnforcementFilter implements Filter
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
-    /**
-     * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
-     */
     public void init(final FilterConfig filterConfig) throws ServletException
     {
         final String methodName = SSLEnforcementFilter.CNAME + "#init(FilterConfig filterConfig) throws ServletException";
@@ -135,9 +132,6 @@ public class SSLEnforcementFilter implements Filter
         }
     }
 
-    /**
-     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
-     */
     public void doFilter(final ServletRequest sRequest, final ServletResponse sResponse, final FilterChain filterChain) throws ServletException, IOException
     {
         final String methodName = SSLEnforcementFilter.CNAME + "#doFilter(final ServletRequest req, final servletResponse res, final FilterChain filterChain) throws ServletException, IOException";
@@ -321,9 +315,6 @@ public class SSLEnforcementFilter implements Filter
         return;
     }
 
-    /**
-     * @see javax.servlet.Filter#destroy()
-     */
     public void destroy()
     {
         final String methodName = SSLEnforcementFilter.CNAME + "#destroy()";

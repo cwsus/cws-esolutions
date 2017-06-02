@@ -61,8 +61,7 @@ public interface IAccessControlService
      * portlet service. It should also query an applicable user datastore,
      * in the event the session data may have been tampered.
      *
-     * @param userAccount The {@link com.cws.esolutions.security.dto.UserAccount} to authorize
-     * @param serviceGuid The service to authorize for the given user
+     * @param request The control service request data
      * @return <code>true</code> if authorization succeeded, <code>false</code> otherwise
      * @throws AccessControlServiceException {@link com.cws.esolutions.security.services.exception.AccessControlServiceException} if an exception occurs during processing
      */

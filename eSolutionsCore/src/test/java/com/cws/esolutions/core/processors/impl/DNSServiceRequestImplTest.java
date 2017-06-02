@@ -85,7 +85,7 @@ public class DNSServiceRequestImplTest
     public void performLookup()
     {
         DNSRecord record = new DNSRecord();
-        record.setRecordName("google.com");
+        record.setRecordName("www.google.com");
         record.setRecordType(DNSRecordType.A);
 
         DNSServiceRequest request = new DNSServiceRequest();
@@ -101,7 +101,6 @@ public class DNSServiceRequestImplTest
         try
         {
             DNSServiceResponse response = dnsService.performLookup(request);
-            System.out.println(response);
 
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
@@ -182,9 +181,9 @@ public class DNSServiceRequestImplTest
         aRecord.setRecordClass(DNSRecordClass.IN);
         aRecord.setRecordType(DNSRecordType.A);
         aRecord.setRecordAddresses(new ArrayList<String>(
-        		Arrays.asList(
-        				"1.2.3.4",
-        				"4.3.2.1")));
+    		Arrays.asList(
+				"1.2.3.4",
+				"4.3.2.1")));
 
         DNSRecord domainKeyRecord = new DNSRecord();
         domainKeyRecord.setRecordName("_domainkey");

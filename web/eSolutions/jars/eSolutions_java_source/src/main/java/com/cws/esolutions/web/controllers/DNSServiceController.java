@@ -62,6 +62,7 @@ public class DNSServiceController
     private String serviceName = null;
     private String serviceHost = null;
     private String[] searchSuffix = null;
+    private String createServicePage = null;
     private List<String> serviceTypes = null;
     private ApplicationServiceBean appConfig = null;
 
@@ -82,6 +83,19 @@ public class DNSServiceController
         }
 
         this.lookupPage = value;
+    }
+
+    public final void setCreateServicePage(final String value)
+    {
+        final String methodName = DNSServiceController.CNAME + "#setCreateServicePage(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.createServicePage = value;
     }
 
     public final void setServiceName(final String value)
@@ -158,7 +172,7 @@ public class DNSServiceController
 
     public final void setServiceTypes(final List<String> value)
     {
-        final String methodName = DNSServiceController.CNAME + "#setSearchSuffix(final List<String> value)";
+        final String methodName = DNSServiceController.CNAME + "#setServiceTypes(final List<String> value)";
 
         if (DEBUG)
         {
@@ -317,6 +331,85 @@ public class DNSServiceController
         mView.addObject("serviceTypes", this.serviceTypes);
         mView.addObject(Constants.COMMAND, new DNSRecord());
         mView.setViewName(this.lookupPage);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
+    }
+
+    @RequestMapping(value = "/create-service", method = RequestMethod.GET)
+    public final ModelAndView showCreateService()
+    {
+        final String methodName = DNSServiceController.CNAME + "#showCreateService()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            Enumeration<?> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String element = (String) sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
+
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            Enumeration<?> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String element = (String) requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
+
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<?> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String element = (String) paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
+
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
+            }
+        }
+
+
+        if (!(this.appConfig.getServices().get(this.serviceName)))
+        {
+        	mView.setViewName(this.appConfig.getUnavailablePage());
+
+        	return mView;
+        }
+            
+        mView.addObject("serviceTypes", this.serviceTypes);
+        mView.addObject(Constants.COMMAND, new DNSRecord());
+        mView.setViewName(this.createServicePage);
 
         if (DEBUG)
         {

@@ -111,7 +111,6 @@ public class PasswordUtility
             .isRequired(false)
             .create();
 
-
         OptionGroup encryptOptionsGroup = new OptionGroup()
             .addOption(encryptOption)
             .addOption(entryNameOption)

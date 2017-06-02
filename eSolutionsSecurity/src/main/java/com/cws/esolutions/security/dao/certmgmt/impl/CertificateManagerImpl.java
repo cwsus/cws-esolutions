@@ -63,12 +63,12 @@ import com.cws.esolutions.security.dao.certmgmt.interfaces.ICertificateManager;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.dao.certmgmt.exception.CertificateManagementException;
 /**
- * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager
+ * @see com.cws.esolutions.security.dao.certmgmt.interfaces
  */
 public class CertificateManagerImpl implements ICertificateManager
 {
     /**
-     * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#createCertificateRequest(final String commonName, final String orgUnitName, final String orgName, final String localityName, final String stateName, final String contactEmail, final int validityPeriod, final int keySize)
+     * @see com.cws.esolutions.security.dao.certmgmt.interfaces.ICertificateManager#createCertificateRequest(List, String, int, int)
      */
     public synchronized File createCertificateRequest(final List<String> subjectData, final String storePassword, final int validityPeriod, final int keySize) throws CertificateManagementException
     {
@@ -404,7 +404,7 @@ public class CertificateManagerImpl implements ICertificateManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#applyCertificateRequest(final String commonName, final File certificateFile, final File keystoreFile, final String storePassword)
+     * @see com.cws.esolutions.security.dao.certmgmt.interfaces.ICertificateManager#applyCertificateRequest(String, File, File, String)
      */
     public synchronized boolean applyCertificateRequest(final String commonName, final File certificateFile, final File keystoreFile, final String storePassword) throws CertificateManagementException
     {

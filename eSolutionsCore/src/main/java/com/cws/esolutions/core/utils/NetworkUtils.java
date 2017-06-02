@@ -718,8 +718,8 @@ public final class NetworkUtils
      *
      * @param hostName - The fully qualified URL for the host desired. MUST be
      *     prefixed with http/https:// as necessary
-     * @param method - GET or POST, depending on what is necessary
-     * @return A byte array containing the response data
+     * @param methodType - GET or POST, depending on what is necessary
+     * @return A object containing the response data
      * @throws UtilityException {@link com.cws.esolutions.core.utils.exception.UtilityException} if an error occurs processing
      */
     public static final synchronized Object executeHttpConnection(final URL hostName, final String methodType) throws UtilityException
@@ -1056,7 +1056,7 @@ public final class NetworkUtils
      * @param recordName - The DNS hostname/IP address to lookup.
      * @param recordType - The type of record to look up.
      * @param searchList - A search list to utilize if a short name is provided.
-     * @return <code>List<List<String>></code> as output from the request
+     * @return An ArrayList as output from the request
      * @throws UtilityException {@link com.cws.esolutions.core.utils.exception.UtilityException} if an error occurs processing
      */
     public static final synchronized List<List<String>> executeDNSLookup(final String resolverHost, final String recordName, final String recordType, final String[] searchList) throws UtilityException

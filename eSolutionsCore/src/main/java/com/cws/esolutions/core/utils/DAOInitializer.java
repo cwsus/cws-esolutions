@@ -60,7 +60,6 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.security.config.enums.AuthRepositoryType;
-import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.config.enums.RepositoryConnectionType;
 /**
  * @author khuntly
@@ -98,10 +97,8 @@ public final class DAOInitializer
     /**
      * @param properties - The <code>AuthRepo</code> object containing connection information
      * @param isContainer - A <code>boolean</code> flag indicating if this is in a container
-     * @param bean - The {@link com.cws.esolutions.security.SecurityServiceBean} <code>SecurityServiceBean</code> that holds the connection
-     * @throws SecurityServiceException {@link com.cws.esolutions.security.exception.SecurityServiceException}
-     * if an exception occurs opening the connection
-     * @throws CoreServiceException 
+     * @return An object containing the datasource information
+     * @throws CoreServiceException if an error occurs during processing
      */
     public synchronized static Object configureAndCreateConnection(final InputStream properties, final boolean isContainer) throws CoreServiceException
     {
@@ -365,9 +362,8 @@ public final class DAOInitializer
     }
 
     /**
-     * @param properties - The <code>AuthRepo</code> object containing connection information
+     * @param dataObject - The object containing the datasource information
      * @param isContainer - A <code>boolean</code> flag indicating if this is in a container
-     * @param bean - The {@link com.cws.esolutions.security.SecurityServiceBean} <code>SecurityServiceBean</code> that holds the connection
      */
     public synchronized static void closeOpenConnection(final Object dataObject, final boolean isContainer)
     {

@@ -68,8 +68,9 @@ public class CoreServiceInitializer
      * Initializes the core service in a standalone mode - used for applications outside of a container or when
      * run as a standalone jar.
      *
-     * @param coreConfig - The service configuration file to utilize
+     * @param configFile - The service configuration file to utilize
      * @param logConfig - The logging configuration file to utilize
+     * @param loadSecurity - Flag to start security
      * @param startConnections - Flag to start connections
      * @throws CoreServiceException @{link com.cws.esolutions.core.exception.CoreServiceException}
      * if an exception occurs during initialization

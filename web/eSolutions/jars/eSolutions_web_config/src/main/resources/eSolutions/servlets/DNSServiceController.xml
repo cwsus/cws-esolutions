@@ -15,6 +15,7 @@
         </property>
         <property name="serviceName" value="dnsAdmin" />
         <property name="lookupPage" value="DNSService_ServiceLookup" />
+        <property name="createServicePage" value="DNSService_CreateService" />
         <property name="serviceId" value="B52B1DE9-37A4-4554-B85E-2EA28C4EE3DD" />
         <property name="searchSuffix" value="caspersbox.corp, caspersbox.com" /> <!-- dns search suffix (not required) -->
         <property name="serviceTypes">

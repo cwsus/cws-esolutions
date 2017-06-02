@@ -75,10 +75,12 @@ public interface ICertificateRequestProcessor
     CertificateResponse generateCertificateRequest(final CertificateRequest request) throws CertificateRequestException;
 
     /**
-     * 
-     * @param request
-     * @return
-     * @throws CertificateRequestException
+     * Applies a certificate response from a certificate authority after a request has been
+     * sent and processed.
+     *
+     * @param request The request information for the certificate
+     * @return A certificate response containing the data returned
+     * @throws CertificateRequestException if an error occurs during processing
      */
     CertificateResponse applyCertificateResponse(final CertificateRequest request) throws CertificateRequestException;
 }

@@ -39,7 +39,7 @@ import com.cws.esolutions.security.services.exception.AccessControlServiceExcept
 public class AccessControlServiceImpl implements IAccessControlService
 {
     /**
-     * @see com.cws.esolutions.security.services.interfaces.IAccessControlService#isUserAuthorized(final AccessControlServiceRequest request) throws AccessControlServiceException
+     * @see com.cws.esolutions.security.services.interfaces.IAccessControlService#isUserAuthorized(AccessControlServiceRequest) throws AccessControlServiceException
      */
     public AccessControlServiceResponse isUserAuthorized(final AccessControlServiceRequest request) throws AccessControlServiceException
     {
