@@ -58,17 +58,17 @@ public class ServerManagementProcessorImplTest
     @Before
     public void setUp()
     {
+        hostInfo.setHostAddress("junit");
+        hostInfo.setHostName("junit");
+
+        userAccount.setStatus(LoginStatus.SUCCESS);
+        userAccount.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
+        userAccount.setUsername("khuntly");
+
         try
         {
-            hostInfo.setHostAddress("junit");
-            hostInfo.setHostName("junit");
-
-            userAccount.setStatus(LoginStatus.SUCCESS);
-            userAccount.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
-            userAccount.setUsername("khuntly");
-
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", false);
-            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "logging/logging.xml", true, true);
+            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, true);
         }
         catch (Exception ex)
         {
@@ -132,6 +132,8 @@ public class ServerManagementProcessorImplTest
             request.setUserAccount(userAccount);
             request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
             request.setTargetServer(server);
+            request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+            request.setApplicationName("eSolutions");
 
             try
             {
@@ -189,6 +191,8 @@ public class ServerManagementProcessorImplTest
             request.setUserAccount(userAccount);
             request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
             request.setTargetServer(server);
+            request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+            request.setApplicationName("eSolutions");
 
             try
             {
@@ -242,6 +246,8 @@ public class ServerManagementProcessorImplTest
             request.setUserAccount(userAccount);
             request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
             request.setTargetServer(server);
+            request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+            request.setApplicationName("eSolutions");
 
             try
             {
@@ -299,6 +305,8 @@ public class ServerManagementProcessorImplTest
             request.setUserAccount(userAccount);
             request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
             request.setTargetServer(server);
+            request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+            request.setApplicationName("eSolutions");
 
             try
             {
@@ -352,6 +360,8 @@ public class ServerManagementProcessorImplTest
             request.setUserAccount(userAccount);
             request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
             request.setTargetServer(server);
+            request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+            request.setApplicationName("eSolutions");
 
             try
             {
@@ -409,6 +419,8 @@ public class ServerManagementProcessorImplTest
             request.setUserAccount(userAccount);
             request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
             request.setTargetServer(server);
+            request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+            request.setApplicationName("eSolutions");
 
             try
             {
@@ -462,6 +474,8 @@ public class ServerManagementProcessorImplTest
             request.setUserAccount(userAccount);
             request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
             request.setTargetServer(server);
+            request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+            request.setApplicationName("eSolutions");
 
             try
             {
@@ -513,6 +527,8 @@ public class ServerManagementProcessorImplTest
         request.setUserAccount(userAccount);
         request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
         request.setTargetServer(server);
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+        request.setApplicationName("eSolutions");
 
         try
         {
@@ -563,6 +579,8 @@ public class ServerManagementProcessorImplTest
         request.setUserAccount(userAccount);
         request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
         request.setTargetServer(server);
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+        request.setApplicationName("eSolutions");
 
         try
         {
@@ -613,6 +631,8 @@ public class ServerManagementProcessorImplTest
         request.setUserAccount(userAccount);
         request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
         request.setTargetServer(server);
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+        request.setApplicationName("eSolutions");
 
         try
         {
@@ -665,6 +685,8 @@ public class ServerManagementProcessorImplTest
             request.setUserAccount(userAccount);
             request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
             request.setTargetServer(server);
+            request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+            request.setApplicationName("eSolutions");
 
             try
             {
@@ -718,6 +740,8 @@ public class ServerManagementProcessorImplTest
             request.setUserAccount(userAccount);
             request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
             request.setTargetServer(server);
+            request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+            request.setApplicationName("eSolutions");
 
             try
             {
@@ -771,6 +795,8 @@ public class ServerManagementProcessorImplTest
             request.setUserAccount(userAccount);
             request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
             request.setTargetServer(server);
+            request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+            request.setApplicationName("eSolutions");
 
             try
             {
@@ -824,6 +850,8 @@ public class ServerManagementProcessorImplTest
             request.setUserAccount(userAccount);
             request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
             request.setTargetServer(server);
+            request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+            request.setApplicationName("eSolutions");
     
             try
             {
@@ -877,6 +905,8 @@ public class ServerManagementProcessorImplTest
             request.setUserAccount(userAccount);
             request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
             request.setTargetServer(server);
+            request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+            request.setApplicationName("eSolutions");
     
             try
             {
@@ -930,6 +960,8 @@ public class ServerManagementProcessorImplTest
             request.setUserAccount(userAccount);
             request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
             request.setTargetServer(server);
+            request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+            request.setApplicationName("eSolutions");
     
             try
             {
@@ -981,6 +1013,8 @@ public class ServerManagementProcessorImplTest
         request.setUserAccount(userAccount);
         request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
         request.setTargetServer(server);
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+        request.setApplicationName("eSolutions");
 
         try
         {
@@ -1032,6 +1066,8 @@ public class ServerManagementProcessorImplTest
         request.setUserAccount(userAccount);
         request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
         request.setTargetServer(server);
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+        request.setApplicationName("eSolutions");
 
         try
         {
@@ -1083,6 +1119,8 @@ public class ServerManagementProcessorImplTest
         request.setUserAccount(userAccount);
         request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
         request.setTargetServer(server);
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+        request.setApplicationName("eSolutions");
 
         try
         {
@@ -1123,6 +1161,8 @@ public class ServerManagementProcessorImplTest
         request.setUserAccount(userAccount);
         request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
         request.setTargetServer(server);
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+        request.setApplicationName("eSolutions");
 
         try
         {
@@ -1144,6 +1184,8 @@ public class ServerManagementProcessorImplTest
         request.setUserAccount(userAccount);
         request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
         request.setAttribute("DRN DEV");
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+        request.setApplicationName("eSolutions");
 
         try
         {
@@ -1168,6 +1210,8 @@ public class ServerManagementProcessorImplTest
         request.setUserAccount(userAccount);
         request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
         request.setTargetServer(server);
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+        request.setApplicationName("eSolutions");
 
         try
         {

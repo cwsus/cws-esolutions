@@ -26,19 +26,12 @@ package com.cws.esolutions.core.processors.impl;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.util.List;
-import java.util.Arrays;
-import org.xbill.DNS.Name;
-import org.xbill.DNS.Type;
 import java.util.ArrayList;
-import org.xbill.DNS.Lookup;
-import org.xbill.DNS.Record;
 import java.sql.SQLException;
 import java.security.Security;
-import org.xbill.DNS.SimpleResolver;
-import java.net.UnknownHostException;
-import org.xbill.DNS.TextParseException;
 import org.apache.commons.lang.StringUtils;
 
+import com.cws.esolutions.core.utils.NetworkUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.processors.dto.DNSEntry;
@@ -48,6 +41,7 @@ import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.core.processors.enums.DNSRecordType;
 import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
+import com.cws.esolutions.core.utils.exception.UtilityException;
 import com.cws.esolutions.core.processors.dto.DNSServiceRequest;
 import com.cws.esolutions.core.processors.dto.DNSServiceResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
@@ -63,140 +57,6 @@ import com.cws.esolutions.security.services.exception.AccessControlServiceExcept
  */
 public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcessor
 {
-	/**
-	 * @see com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor#addRecordToEntry(DNSServiceRequest)
-	 */
-	public DNSServiceResponse addRecordToEntry(final DNSServiceRequest request) throws DNSServiceException
-    {
-        final String methodName = IDNSServiceRequestProcessor.CNAME + "#addRecordToEntry(final DNSServiceRequest request) throws DNSServiceException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("DNSServiceRequest: {}", request);
-        }
-
-        final DNSServiceResponse response = new DNSServiceResponse();
-        final DNSEntry dnsEntry = request.getDnsEntry();
-        final UserAccount userAccount = request.getUserAccount();
-        final RequestHostInfo reqInfo = request.getRequestInfo();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("DNSEntry: {}", dnsEntry);
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-        }
-
-        try
-        {
-            // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
-
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
-
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
-
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
-
-            if (!(accessResponse.getIsUserAuthorized()))
-            {
-                // unauthorized
-            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-
-                // audit
-                try
-                {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
-                    auditEntry.setAuthorized(Boolean.FALSE);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
-                }
-
-                return response;
-            }
-
-            // build me
-        }
-        catch (SecurityException sx)
-        {
-            ERROR_RECORDER.error(sx.getMessage(), sx);
-
-            throw new DNSServiceException(sx.getMessage(), sx);
-        }
-        catch (AccessControlServiceException acsx)
-        {
-            ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-            throw new DNSServiceException(acsx.getMessage(), acsx);
-        }
-        finally
-        {
-            // audit
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
-        }
-
-        return response;
-    }
-
     /**
      * @see com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor#performLookup(com.cws.esolutions.core.processors.dto.DNSServiceRequest)
      */
@@ -210,9 +70,6 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
             DEBUGGER.debug("DNSServiceRequest: {}", request);
         }
 
-        Lookup lookup = null;
-        Record[] recordList = null;
-        SimpleResolver resolver = null;
         DNSServiceResponse response = new DNSServiceResponse();
 
         final DNSRecord dnsRecord = request.getRecord();
@@ -227,124 +84,44 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
         try
         {
             // no authorization required for service lookup
-            Name name = Name.fromString(dnsRecord.getRecordName());
-            lookup = new Lookup(name, Type.value(dnsRecord.getRecordType().name()));
-
-            if (DEBUG)
+            if ((StringUtils.isNotEmpty(request.getResolverHost())) || (request.getUseSystemResolver()))
             {
-                DEBUGGER.debug("Name: {}", name);
-                DEBUGGER.debug("Lookup: {}", lookup);
-            }
-
-            if (StringUtils.isNotEmpty(request.getResolverHost()))
-            {
-                resolver = new SimpleResolver(request.getResolverHost());
+                List<List<String>> responseData = NetworkUtils.executeDNSLookup(request.getResolverHost(), dnsRecord.getRecordName(), dnsRecord.getRecordType().toString(), request.getSearchPath());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("SimpleResolver: {}", resolver);
+                    DEBUGGER.debug("responseData: {}", responseData);
                 }
 
-                lookup.setResolver(resolver);
-	            lookup.setCache(null);
-	
-	            if (request.getSearchPath() != null)
-	            {
-	                lookup.setSearchPath(request.getSearchPath());
-	            }
-	
-	            if (DEBUG)
-	            {
-	                DEBUGGER.debug("Lookup: {}", lookup);
-	            }
-	
-	            recordList = lookup.run();
-	
-	            if (DEBUG)
-	            {
-	                if (recordList != null)
-	                {
-	                    for (Record record : recordList)
-	                    {
-	                        DEBUGGER.debug("Record: {}", record);
-	                    }
-	                }
-	            }
-	
-	            if (lookup.getResult() == Lookup.SUCCESSFUL)
-	            {
-	                if ((recordList != null) && (recordList.length == 1))
-	                {
-	                    Record record = recordList[0];
-	
-	                    if (DEBUG)
-	                    {
-	                        DEBUGGER.debug("Record: {}", record);
-	                    }
-	
-	                    DNSRecord responseRecord = new DNSRecord();
-	                    responseRecord.setRecordAddresses(new ArrayList<String>(Arrays.asList(record.rdataToString())));
-	                    responseRecord.setRecordName(record.getName().toString());
-	                    responseRecord.setRecordType(DNSRecordType.valueOf(Type.string(record.getType())));
-	
-	                    if (DEBUG)
-	                    {
-	                        DEBUGGER.debug("responseRecord: {}", responseRecord);
-	                    }
-	
-	                    response.setDnsRecord(responseRecord);
-	                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
-	
-	                    if (DEBUG)
-	                    {
-	                        DEBUGGER.debug("DNSServiceResponse: {}", response);
-	                    }
-	                }
-	                else
-	                {
-	                    List<DNSRecord> responseList = new ArrayList<DNSRecord>();
-	
-	                    if ((recordList != null) && (recordList.length != 0))
-	                    {
-	                        for (Record record : recordList)
-	                        {
-	                            if (DEBUG)
-	                            {
-	                                DEBUGGER.debug("Record: {}", record);
-	                            }
-	
-	                            DNSRecord rec = new DNSRecord();
-	                            rec.setRecordAddresses(new ArrayList<String>(Arrays.asList(record.rdataToString())));
-	                            rec.setRecordName(record.getName().toString());
-	                            rec.setRecordType(DNSRecordType.valueOf(Type.string(record.getType())));
-	
-	                            if (DEBUG)
-	                            {
-	                                DEBUGGER.debug("DNSRecord: {}", rec);
-	                            }
-	
-	                            responseList.add(rec);
-	                        }
-	
-	                        if (DEBUG)
-	                        {
-	                            DEBUGGER.debug("responseList: {}", responseList);
-	                        }
-	
-	                        response.setDnsRecords(responseList);
-	                        response.setRequestStatus(CoreServicesStatus.SUCCESS);
-	                    }
-	                    else
-	                    {
-	                        response.setRequestStatus(CoreServicesStatus.FAILURE);
-	                    }
-	                }
-	
-	                if (DEBUG)
-	                {
-	                    DEBUGGER.debug("DNSServiceResponse: {}", response);
-	                }
-	            }
+                List<DNSRecord> responseRecords = new ArrayList<DNSRecord>();
+
+                for (List<String> responseInfo : responseData)
+                {
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("responseInfo: {}", responseInfo);
+                    }
+
+                    DNSRecord responseRecord = new DNSRecord();
+                    responseRecord.setRecordAddress(responseInfo.get(0));
+                    responseRecord.setRecordName(responseInfo.get(1));
+                    responseRecord.setRecordType(DNSRecordType.valueOf(responseInfo.get(2)));
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("responseRecord: {}", responseRecord);
+                    }
+
+                    responseRecords.add(responseRecord);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("responseRecords: {}", responseRecords);
+                    }
+                }
+
+                response.setDnsRecords(responseRecords);
+                response.setRequestStatus(CoreServicesStatus.SUCCESS);
             }
             else
             {
@@ -358,6 +135,8 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
                 if ((serverList != null) && (serverList.size() != 0))
                 {
+                	List<DNSRecord> responseRecords = new ArrayList<DNSRecord>();
+
                     for (Object[] data : serverList)
                     {
                         if (DEBUG)
@@ -372,118 +151,41 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                             DEBUGGER.debug("serverName: {}", serverName);
                         }
 
-                        resolver = new SimpleResolver(request.getResolverHost());
+                        List<List<String>> responseData = NetworkUtils.executeDNSLookup(serverName, dnsRecord.getRecordName(), dnsRecord.getRecordType().toString(), request.getSearchPath());
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("SimpleResolver: {}", resolver);
+                            DEBUGGER.debug("responseData: {}", responseData);
                         }
 
-                        lookup.setResolver(resolver);
-                        lookup.setCache(null);
-
-                        if (request.getSearchPath() != null)
+                        for (List<String> responseInfo : responseData)
                         {
-                            lookup.setSearchPath(request.getSearchPath());
-                        }
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Lookup: {}", lookup);
-                        }
-
-                        recordList = lookup.run();
-
-                        if (DEBUG)
-                        {
-                            if (recordList != null)
+                            if (DEBUG)
                             {
-                                for (Record record : recordList)
-                                {
-                                    DEBUGGER.debug("Record: {}", record);
-                                }
+                                DEBUGGER.debug("responseInfo: {}", responseInfo);
                             }
-                        }
 
-                        if (lookup.getResult() == Lookup.SUCCESSFUL)
-                        {
-                            if ((recordList != null) && (recordList.length == 1))
-                            {
-                                Record record = recordList[0];
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("Record: {}", record);
-                                }
-
-                                DNSRecord responseRecord = new DNSRecord();
-                                responseRecord.setRecordAddresses(new ArrayList<String>(Arrays.asList(record.rdataToString())));
-                                responseRecord.setRecordName(record.getName().toString());
-                                responseRecord.setRecordType(DNSRecordType.valueOf(Type.string(record.getType())));
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("responseRecord: {}", responseRecord);
-                                }
-
-                                response.setDnsRecord(responseRecord);
-                                response.setRequestStatus(CoreServicesStatus.SUCCESS);
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("DNSServiceResponse: {}", response);
-                                }
-                            }
-                            else
-                            {
-                                List<DNSRecord> responseList = new ArrayList<DNSRecord>();
-
-                                if ((recordList != null) && (recordList.length != 0))
-                                {
-                                    for (Record record : recordList)
-                                    {
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("Record: {}", record);
-                                        }
-
-                                        DNSRecord rec = new DNSRecord();
-                                        rec.setRecordAddresses(new ArrayList<String>(Arrays.asList(record.rdataToString())));
-                                        rec.setRecordName(record.getName().toString());
-                                        rec.setRecordType(DNSRecordType.valueOf(Type.string(record.getType())));
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("DNSRecord: {}", rec);
-                                        }
-
-                                        responseList.add(rec);
-                                    }
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("responseList: {}", responseList);
-                                    }
-
-                                    response.setDnsRecords(responseList);
-                                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                                }
-                                else
-                                {
-                                    response.setRequestStatus(CoreServicesStatus.FAILURE);
-                                }
-                            }
+                            DNSRecord responseRecord = new DNSRecord();
+                            responseRecord.setRecordAddress(responseInfo.get(0));
+                            responseRecord.setRecordName(responseInfo.get(1));
+                            responseRecord.setRecordType(DNSRecordType.valueOf(responseInfo.get(2)));
 
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("DNSServiceResponse: {}", response);
+                                DEBUGGER.debug("responseRecord: {}", responseRecord);
+                            }
+
+                            responseRecords.add(responseRecord);
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("responseRecords: {}", responseRecords);
                             }
                         }
-                        else
-                        {
-                        	response.setRequestStatus(CoreServicesStatus.FAILURE);
-                        }
                     }
+
+                    response.setDnsRecords(responseRecords);
+                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
                 }
                 else
                 {
@@ -491,17 +193,11 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 }
             }
         }
-        catch (TextParseException tpx)
+        catch (UtilityException ux)
         {
-            ERROR_RECORDER.error(tpx.getMessage(), tpx);
+            ERROR_RECORDER.error(ux.getMessage(), ux);
 
-            throw new DNSServiceException(tpx.getMessage(), tpx);
-        }
-        catch (UnknownHostException uhx)
-        {
-            ERROR_RECORDER.error(uhx.getMessage(), uhx);
-
-            throw new DNSServiceException(uhx.getMessage(), uhx);
+            throw new DNSServiceException(ux.getMessage(), ux);
         }
         catch (SQLException sqx)
         {
@@ -811,7 +507,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
         	if (DEBUG)
         	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+        		DEBUGGER.debug("AccessControlServiceResponse: {}", accessResponse);
         	}
 
             if (!(accessResponse.getIsUserAuthorized()))
@@ -877,6 +573,140 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 auditEntry.setAuditType(AuditType.PUSHDNSRECORD);
                 auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
+        }
+
+        return response;
+    }
+
+	/**
+	 * @see com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor#addRecordToEntry(DNSServiceRequest)
+	 */
+	public DNSServiceResponse addRecordToEntry(final DNSServiceRequest request) throws DNSServiceException
+    {
+        final String methodName = IDNSServiceRequestProcessor.CNAME + "#addRecordToEntry(final DNSServiceRequest request) throws DNSServiceException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("DNSServiceRequest: {}", request);
+        }
+
+        final DNSServiceResponse response = new DNSServiceResponse();
+        final DNSEntry dnsEntry = request.getDnsEntry();
+        final UserAccount userAccount = request.getUserAccount();
+        final RequestHostInfo reqInfo = request.getRequestInfo();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("DNSEntry: {}", dnsEntry);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+        }
+
+        try
+        {
+            // this will require admin and service authorization
+        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+        	accessRequest.setUserAccount(userAccount);
+        	accessRequest.setServiceGuid(request.getServiceId());
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+        	}
+
+        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+        	}
+
+            if (!(accessResponse.getIsUserAuthorized()))
+            {
+                // unauthorized
+            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+
+                // audit
+                try
+                {
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                    auditEntry.setAuthorized(Boolean.FALSE);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
+                }
+                catch (AuditServiceException asx)
+                {
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                }
+
+                return response;
+            }
+
+            // build me
+        }
+        catch (SecurityException sx)
+        {
+            ERROR_RECORDER.error(sx.getMessage(), sx);
+
+            throw new DNSServiceException(sx.getMessage(), sx);
+        }
+        catch (AccessControlServiceException acsx)
+        {
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
+
+            throw new DNSServiceException(acsx.getMessage(), acsx);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 

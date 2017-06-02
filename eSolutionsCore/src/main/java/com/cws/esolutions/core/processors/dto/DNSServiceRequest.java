@@ -53,6 +53,7 @@ public class DNSServiceRequest implements Serializable
     private String applicationId = null;
     private String applicationName = null;
     private UserAccount userAccount = null;
+    private Boolean useSystemResolver = true;
     private List<DNSEntry> dnsEntries = null;
     private DNSRequestType requestType = null;
     private RequestHostInfo requestInfo = null;
@@ -210,6 +211,19 @@ public class DNSServiceRequest implements Serializable
         }
 
         this.searchPath = value;
+    }
+
+    public final void setUseSystemResolver(final Boolean value)
+    {
+        final String methodName = DNSServiceRequest.CNAME + "#setUseSystemResolver(final Boolean value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.useSystemResolver = value;
     }
 
     public final void setResolverHost(final String value)
@@ -399,6 +413,19 @@ public class DNSServiceRequest implements Serializable
         }
 
         return this.searchURL;
+    }
+
+    public final Boolean getUseSystemResolver()
+    {
+        final String methodName = DNSServiceRequest.CNAME + "#getUseSystemResolver()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.useSystemResolver);
+        }
+
+        return this.useSystemResolver;
     }
 
     public final String getResolverHost()

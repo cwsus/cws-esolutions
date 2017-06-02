@@ -26,6 +26,9 @@ package com.cws.esolutions.core.utils;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import org.junit.Test;
+
+import java.util.List;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Assert;
@@ -40,7 +43,7 @@ public class NetworkUtilsTest
     {
         try
         {
-            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "logging/logging.xml", false, false);
+            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", false, false);
         }
         catch (Exception ex)
         {
@@ -56,6 +59,24 @@ public class NetworkUtilsTest
         try
         {
             NetworkUtils.executeTelnetRequest("chibcarray.us.hsbc", 8080, 10000);
+        }
+        catch (UtilityException ux)
+        {
+            Assert.fail(ux.getMessage());
+        }
+    }
+
+    @Test
+    public void executeDNSLookup()
+    {
+        try
+        {
+        	List<List<String>> responseData = NetworkUtils.executeDNSLookup(null, "google.com", "SOA", null);
+
+        	for (List<String> response : responseData)
+        	{
+        		System.out.println(response);
+        	}
         }
         catch (UtilityException ux)
         {

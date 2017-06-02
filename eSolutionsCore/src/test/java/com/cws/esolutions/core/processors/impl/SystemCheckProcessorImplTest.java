@@ -52,17 +52,17 @@ public class SystemCheckProcessorImplTest
     @Before
     public void setUp()
     {
+        hostInfo.setHostAddress("junit");
+        hostInfo.setHostName("junit");
+
+        userAccount.setStatus(LoginStatus.SUCCESS);
+        userAccount.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
+        userAccount.setUsername("khuntly");
+
         try
         {
-            hostInfo.setHostAddress("junit");
-            hostInfo.setHostName("junit");
-
-            userAccount.setStatus(LoginStatus.SUCCESS);
-            userAccount.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
-            userAccount.setUsername("khuntly");
-
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", false);
-            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "logging/logging.xml", true, true);
+            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, true);
         }
         catch (Exception ex)
         {
@@ -84,6 +84,8 @@ public class SystemCheckProcessorImplTest
         request.setUserAccount(userAccount);
         request.setSourceServer(source);
         request.setPortNumber(61616);
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+        request.setApplicationName("eSolutions");
 
         try
         {
@@ -113,6 +115,8 @@ public class SystemCheckProcessorImplTest
         request.setSourceServer(source);
         request.setTargetServer(target);
         request.setPortNumber(8080);
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+        request.setApplicationName("eSolutions");
 
         try
         {
@@ -137,6 +141,8 @@ public class SystemCheckProcessorImplTest
         request.setRequestInfo(hostInfo);
         request.setUserAccount(userAccount);
         request.setTargetServer(target);
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+        request.setApplicationName("eSolutions");
 
         try
         {

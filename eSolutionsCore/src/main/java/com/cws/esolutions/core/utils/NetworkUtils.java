@@ -24,20 +24,29 @@ package com.cws.esolutions.core.utils;
  * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
  */
+import java.net.URL;
+import java.net.URI;
 import java.util.List;
 import java.net.Socket;
 import org.slf4j.Logger;
+import java.util.Arrays;
+import org.xbill.DNS.Name;
+import org.xbill.DNS.Type;
 import java.util.Hashtable;
 import java.util.ArrayList;
 import java.io.PrintWriter;
 import java.io.IOException;
+import org.xbill.DNS.Lookup;
 import com.jcraft.jsch.JSch;
 import java.net.InetAddress;
+import org.xbill.DNS.Record;
 import java.io.BufferedReader;
+import java.security.Security;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.Session;
 import java.io.FileInputStream;
 import org.slf4j.LoggerFactory;
+import org.apache.http.HttpHost;
 import java.io.FileOutputStream;
 import java.net.SocketException;
 import java.io.InputStreamReader;
@@ -47,24 +56,31 @@ import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.ChannelExec;
+import java.net.URISyntaxException;
+import org.xbill.DNS.SimpleResolver;
 import java.util.concurrent.TimeUnit;
 import java.net.UnknownHostException;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
+import org.apache.http.auth.AuthScope;
 import org.apache.commons.io.FileUtils;
+import org.xbill.DNS.TextParseException;
+import org.apache.http.auth.NTCredentials;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpVersion;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.NTCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.commons.httpclient.auth.AuthPolicy;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.commons.httpclient.params.HttpClientParams;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.http.impl.client.SystemDefaultCredentialsProvider;
 
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.CoreServiceConstants;
@@ -706,20 +722,22 @@ public final class NetworkUtils
      * @return A byte array containing the response data
      * @throws UtilityException {@link com.cws.esolutions.core.utils.exception.UtilityException} if an error occurs processing
      */
-    public static final synchronized byte[] executeHttpConnection(final String hostName, final String method) throws UtilityException
+    public static final synchronized Object executeHttpConnection(final URL hostName, final String methodType) throws UtilityException
     {
-        final String methodName = NetworkUtils.CNAME + "#executeHttpConnection(final String hostName, final String method) throws UtilityException";
+        final String methodName = NetworkUtils.CNAME + "#executeHttpConnection(final URL hostName, final String methodType) throws UtilityException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", hostName);
-            DEBUGGER.debug("Value: {}", method);
+            DEBUGGER.debug("Value: {}", methodType);
         }
 
-        HttpMethod httpMethod = null;
+        RequestConfig requestConfig = null;
+        CloseableHttpClient httpClient = null;
+        CredentialsProvider credsProvider = null;
+        CloseableHttpResponse httpResponse = null;
 
-        final HttpClient httpClient = new HttpClient();
         final HttpClientParams httpParams = new HttpClientParams();
         final HTTPConfig httpConfig = appBean.getConfigData().getHttpConfig();
         final ProxyConfig proxyConfig = appBean.getConfigData().getProxyConfig();
@@ -733,6 +751,12 @@ public final class NetworkUtils
         }
         try
         {
+            final URI requestURI = new URIBuilder()
+        		.setScheme(hostName.getProtocol())
+        		.setHost(hostName.getHost())
+        		.setPort(hostName.getPort())
+        		.build();
+
             if (StringUtils.isNotEmpty(httpConfig.getTrustStoreFile()))
             {
                 System.setProperty("javax.net.ssl.trustStoreType",
@@ -757,19 +781,6 @@ public final class NetworkUtils
                         appBean.getConfigData().getSystemConfig().getEncoding()));
             }
 
-            httpParams.setSoTimeout(httpConfig.getSoTimeout());
-            httpParams.setVersion(HttpVersion.parse(httpConfig.getHttpVersion()));
-            httpParams.setParameter("http.socket.linger", (int) TimeUnit.SECONDS.toMillis(httpConfig.getSocketLinger()));
-            httpParams.setParameter("http.socket.timeout", (int) TimeUnit.SECONDS.toMillis(httpConfig.getSocketTimeout()));
-            httpParams.setParameter("http.connection.timeout", (int) TimeUnit.SECONDS.toMillis(httpConfig.getConnTimeout()));
-            httpParams.setParameter("http.connection-manager.timeout", TimeUnit.SECONDS.toMillis(httpConfig.getConnMgrTimeout()));
-            httpParams.setParameter("http.connection.stalecheck", httpConfig.getStaleCheck());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("httpParams: {}", httpParams);
-            }
-
             if (proxyConfig.isProxyServiceRequired())
             {
                 if (DEBUG)
@@ -779,9 +790,6 @@ public final class NetworkUtils
 
                 if (StringUtils.isNotEmpty(proxyConfig.getProxyServerName()))
                 {
-                    httpClient.getHostConfiguration().setProxy(proxyConfig.getProxyServerName(),
-                            proxyConfig.getProxyServerPort());
-
                     if (proxyConfig.isProxyAuthRequired())
                     {
                         List<String> authList = new ArrayList<String>();
@@ -794,11 +802,17 @@ public final class NetworkUtils
                             DEBUGGER.debug("authList: {}", authList);
                         }
 
-                        httpParams.setParameter(AuthPolicy.AUTH_SCHEME_PRIORITY, authList);
+                        requestConfig = RequestConfig.custom()
+                    		.setConnectionRequestTimeout((int) TimeUnit.SECONDS.toMillis(httpConfig.getConnTimeout()))
+                        	.setConnectTimeout((int) TimeUnit.SECONDS.toMillis(httpConfig.getConnTimeout()))
+                        	.setContentCompressionEnabled(Boolean.TRUE)
+                        	.setProxy(new HttpHost(proxyConfig.getProxyServerName(), proxyConfig.getProxyServerPort()))
+                        	.setProxyPreferredAuthSchemes(authList)
+                        	.build();
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("httpParams: {}", httpParams);
+                            DEBUGGER.debug("requestConfig: {}", requestConfig);
                         }
 
                         String proxyPwd = PasswordUtils.decryptText(proxyConfig.getProxyPassword(), proxyConfig.getProxyPwdSalt().length(),
@@ -813,24 +827,15 @@ public final class NetworkUtils
 
                         if (StringUtils.equals(NetworkUtils.PROXY_AUTH_TYPE_BASIC, proxyConfig.getProxyAuthType()))
                         {
-
-                            httpClient.getState().setProxyCredentials(new AuthScope(
-                                proxyConfig.getProxyServerName(),
-                                proxyConfig.getProxyServerPort(),
-                                proxyConfig.getProxyServerRealm()),
-                                new UsernamePasswordCredentials(proxyConfig.getProxyUserId(), proxyPwd));
+                            credsProvider = new SystemDefaultCredentialsProvider();
+                            credsProvider.setCredentials(new AuthScope(proxyConfig.getProxyServerName(), proxyConfig.getProxyServerPort()),
+                        		new UsernamePasswordCredentials(proxyConfig.getProxyUserId(), proxyPwd));
                         }
                         else if (StringUtils.equals(NetworkUtils.PROXY_AUTH_TYPE_NTLM, proxyConfig.getProxyAuthType()))
                         {
-                            httpClient.getState().setProxyCredentials(new AuthScope(
-                                proxyConfig.getProxyServerName(),
-                                proxyConfig.getProxyServerPort(),
-                                proxyConfig.getProxyServerRealm()),
-                                new NTCredentials(
-                                    proxyConfig.getProxyUserId(),
-                                    proxyPwd,
-                                    InetAddress.getLocalHost().getHostName(),
-                                    proxyConfig.getProxyAuthDomain()));
+                            credsProvider = new SystemDefaultCredentialsProvider();
+                            credsProvider.setCredentials(new AuthScope(proxyConfig.getProxyServerName(), proxyConfig.getProxyServerPort()),
+                            	new NTCredentials(proxyConfig.getProxyUserId(), proxyPwd, InetAddress.getLocalHost().getHostName(), proxyConfig.getProxyAuthDomain()));
                         }
 
                         if (DEBUG)
@@ -847,12 +852,26 @@ public final class NetworkUtils
 
             synchronized(new Object())
             {
-                httpClient.setParams(httpParams);
+                httpClient = HttpClients.custom()
+                    .setDefaultCredentialsProvider(credsProvider)
+                    .build();
 
-                httpMethod = (StringUtils.equalsIgnoreCase(method, "POST")) ? new PostMethod(hostName) : new GetMethod(hostName);
+                if (StringUtils.equalsIgnoreCase(methodType, "POST"))
+                {
+                	HttpPost httpMethod = new HttpPost(requestURI);
+                	httpMethod.setConfig(requestConfig);
 
-                // Set this to the information for accessing the aforementioned target URL
-                int responseCode = httpClient.executeMethod(httpMethod);
+                	httpResponse = httpClient.execute(httpMethod);
+                }
+                else
+                {
+                	HttpGet httpMethod = new HttpGet(requestURI);
+                	httpMethod.setConfig(requestConfig);
+
+                	httpResponse = httpClient.execute(httpMethod);
+                }
+
+                int responseCode = httpResponse.getStatusLine().getStatusCode();
 
                 if (DEBUG)
                 {
@@ -866,7 +885,7 @@ public final class NetworkUtils
                     throw new HttpException("HTTP Response Code received NOT 200: " + responseCode);
                 }
 
-                return httpMethod.getResponseBody();
+                return httpResponse.getEntity().toString();
             }
         }
         catch (ConnectException cx)
@@ -885,11 +904,19 @@ public final class NetworkUtils
         {
             throw new UtilityException(iox.getMessage(), iox);
         }
+        catch (URISyntaxException usx)
+        {
+        	throw new UtilityException(usx.getMessage(), usx);
+		}
         finally
         {
-            if (httpMethod != null)
+            if (httpResponse != null)
             {
-                httpMethod.releaseConnection();
+            	try
+            	{
+            		httpResponse.close();
+            	}
+            	catch (IOException iox) {} // dont do anything with it
             }
         }
     }
@@ -1015,5 +1042,219 @@ public final class NetworkUtils
         }
 
         return resObject;
+    }
+
+    /**
+     * Performs a DNS lookup of a given name and type against a provided server
+     * (or if no server is provided, the default system resolver).
+     *
+     * If an error occurs during the lookup, a <code>UtilityException</code> is
+     * thrown containing the error response text.
+     * 
+     * @param resolverHost - The target host to use for resolution. Can be null, if not provided the
+     * the default system resolver is used.
+     * @param recordName - The DNS hostname/IP address to lookup.
+     * @param recordType - The type of record to look up.
+     * @param searchList - A search list to utilize if a short name is provided.
+     * @return <code>List<List<String>></code> as output from the request
+     * @throws UtilityException {@link com.cws.esolutions.core.utils.exception.UtilityException} if an error occurs processing
+     */
+    public static final synchronized List<List<String>> executeDNSLookup(final String resolverHost, final String recordName, final String recordType, final String[] searchList) throws UtilityException
+    {
+        final String methodName = NetworkUtils.CNAME + "#executeDNSLookup(final String resolverHost, final String recordName, final String recordType, final String[] searchList) throws UtilityException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("String: {}", resolverHost);
+            DEBUGGER.debug("String: {}", recordName);
+            DEBUGGER.debug("String: {}", recordType);
+            DEBUGGER.debug("String: {}", (Object) searchList);
+        }
+
+        Lookup lookup = null;
+        Record[] recordList = null;
+        SimpleResolver resolver = null;
+        List<List<String>> response = null;
+
+        final String currentTimeout = Security.getProperty("networkaddress.cache.ttl");
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("currentTimeout: {}", currentTimeout);
+        }
+
+        try
+        {
+            // no authorization required for service lookup
+            Name name = Name.fromString(recordName);
+            lookup = new Lookup(name, Type.value(recordType));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Name: {}", name);
+                DEBUGGER.debug("Lookup: {}", lookup);
+            }
+
+            if (StringUtils.isNotEmpty(resolverHost))
+            {
+                resolver = new SimpleResolver(resolverHost);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("SimpleResolver: {}", resolver);
+                }
+            }
+            else
+            {
+                resolver = new SimpleResolver();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("SimpleResolver: {}", resolver);
+                }
+            }
+
+            lookup.setResolver(resolver);
+            lookup.setCache(null);
+
+            if (searchList != null)
+            {
+                lookup.setSearchPath(searchList);
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Lookup: {}", lookup);
+            }
+
+            recordList = lookup.run();
+
+            if (DEBUG)
+            {
+                if (recordList != null)
+                {
+                    for (Record record : recordList)
+                    {
+                        DEBUGGER.debug("Record: {}", record);
+                    }
+                }
+            }
+
+            if (lookup.getResult() == Lookup.SUCCESSFUL)
+            {
+            	response = new ArrayList<List<String>>();
+
+                if ((recordList != null) && (recordList.length == 1))
+                {
+                    Record record = recordList[0];
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Record: {}", record);
+                    }
+
+                    String responseAddress = record.rdataToString();
+                    String responseName = record.getName().toString();
+                    String responseType = Type.string(record.getType());
+
+                    List<String> lookupData = new ArrayList<String>(
+                    		Arrays.asList(
+                    				responseAddress,
+                    				responseName,
+                    				responseType));
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("responseAddress: {}", responseAddress);
+                        DEBUGGER.debug("responseName: {}", responseName);
+                        DEBUGGER.debug("responseType: {}", responseType);
+                    }
+
+                    response.add(lookupData);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("response: {}", response);
+                    }
+                }
+                else
+                {
+                    if ((recordList != null) && (recordList.length != 0))
+                    {
+                        for (Record record : recordList)
+                        {
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("Record: {}", record);
+                            }
+
+                            String responseAddress = record.rdataToString();
+                            String responseName = record.getName().toString();
+                            String responseType = Type.string(record.getType());
+
+                            List<String> lookupData = new ArrayList<String>(
+                            		Arrays.asList(
+                            				responseAddress,
+                            				responseName,
+                            				responseType));
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("responseAddress: {}", responseAddress);
+                                DEBUGGER.debug("responseName: {}", responseName);
+                                DEBUGGER.debug("responseType: {}", responseType);
+                            }
+
+                            response.add(lookupData);
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("response: {}", response);
+                            }
+                        }
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("response: {}", response);
+                        }
+                    }
+                    else
+                    {
+                    	throw new UtilityException("No results were found for the provided information.");
+                    }
+                }
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("response: {}", response);
+                }
+            }
+            else
+            {
+            	throw new UtilityException("An error occurred during the lookup. The response obtained is: " + lookup.getErrorString()); 
+            }
+        }
+        catch (TextParseException tpx)
+        {
+            ERROR_RECORDER.error(tpx.getMessage(), tpx);
+
+            throw new UtilityException(tpx.getMessage(), tpx);
+        }
+        catch (UnknownHostException uhx)
+        {
+            ERROR_RECORDER.error(uhx.getMessage(), uhx);
+
+            throw new UtilityException(uhx.getMessage(), uhx);
+        }
+        finally
+        {
+            // reset java dns timeout
+            try
+            {
+                Security.setProperty("networkaddress.cache.ttl", currentTimeout);
+            }
+            catch (NullPointerException npx) {}
+        }
+
+        return response;
     }
 }

@@ -24,6 +24,7 @@ package com.cws.esolutions.core.main;
  * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
  */
+import java.net.URL;
 import java.util.List;
 import java.util.Arrays;
 import org.slf4j.Logger;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import java.net.MalformedURLException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.OptionGroup;
@@ -311,7 +313,7 @@ public final class NetworkUtility
                     throw new CoreServiceException("No HTTP method was provided. Unable to process request.");
                 }
 
-                NetworkUtils.executeHttpConnection(commandLine.getOptionValue("hostname"), commandLine.getOptionValue("method"));
+                NetworkUtils.executeHttpConnection(new URL(commandLine.getOptionValue("hostname")), commandLine.getOptionValue("method"));
             }
             else if (commandLine.hasOption("copyFiles"))
             {
@@ -388,5 +390,11 @@ public final class NetworkUtility
 
             System.err.println("An error occurred during processing: " + csx.getMessage());
         }
+        catch (MalformedURLException mux)
+        {
+            ERROR_RECORDER.error(mux.getMessage(), mux);
+
+            System.err.println("An error occurred during processing: " + mux.getMessage());
+		}
     }
 }

@@ -54,17 +54,17 @@ public class ApplicationManagementProcessorImplTest
 
     @Before public void setUp()
     {
+        hostInfo.setHostAddress("junit");
+        hostInfo.setHostName("junit");
+
+        userAccount.setStatus(LoginStatus.SUCCESS);
+        userAccount.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
+        userAccount.setUsername("khuntly");
+
         try
         {
-            hostInfo.setHostAddress("junit");
-            hostInfo.setHostName("junit");
-
-            userAccount.setStatus(LoginStatus.SUCCESS);
-            userAccount.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
-            userAccount.setUsername("khuntly");
-
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", false);
-            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "logging/logging.xml", true, true);
+            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, true);
         }
         catch (Exception ex)
         {
@@ -103,6 +103,8 @@ public class ApplicationManagementProcessorImplTest
         request.setServiceId("96E4E53E-FE87-446C-AF03-0F5BC6527B9D");
         request.setRequestInfo(hostInfo);
         request.setUserAccount(userAccount);
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+        request.setApplicationName("eSolutions");
 
         try
         {
@@ -126,6 +128,8 @@ public class ApplicationManagementProcessorImplTest
         request.setServiceId("96E4E53E-FE87-446C-AF03-0F5BC6527B9D");
         request.setRequestInfo(hostInfo);
         request.setUserAccount(userAccount);
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+        request.setApplicationName("eSolutions");
 
         try
         {
@@ -145,6 +149,8 @@ public class ApplicationManagementProcessorImplTest
         request.setServiceId("96E4E53E-FE87-446C-AF03-0F5BC6527B9D");
         request.setRequestInfo(hostInfo);
         request.setUserAccount(userAccount);
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+        request.setApplicationName("eSolutions");
 
         try
         {
@@ -168,6 +174,8 @@ public class ApplicationManagementProcessorImplTest
         request.setServiceId("96E4E53E-FE87-446C-AF03-0F5BC6527B9D");
         request.setRequestInfo(hostInfo);
         request.setUserAccount(userAccount);
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+        request.setApplicationName("eSolutions");
 
         try
         {

@@ -61,15 +61,15 @@ public class DNSServiceRequestImplTest
     @Before
     public void setUp()
     {
+        hostInfo.setHostAddress("junit");
+        hostInfo.setHostName("junit");
+
+        userAccount.setStatus(LoginStatus.SUCCESS);
+        userAccount.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
+        userAccount.setUsername("khuntly");
+
         try
         {
-            hostInfo.setHostAddress("junit");
-            hostInfo.setHostName("junit");
-
-            userAccount.setStatus(LoginStatus.SUCCESS);
-            userAccount.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
-            userAccount.setUsername("khuntly");
-
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", false);
             CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, false);
         }
@@ -86,15 +86,17 @@ public class DNSServiceRequestImplTest
     {
         DNSRecord record = new DNSRecord();
         record.setRecordName("google.com");
-        record.setRecordType(DNSRecordType.SOA);
+        record.setRecordType(DNSRecordType.A);
 
         DNSServiceRequest request = new DNSServiceRequest();
-        request.setResolverHost("8.8.4.4");
+        request.setUseSystemResolver(Boolean.TRUE);
         request.setRecord(record);
         request.setRequestInfo(hostInfo);
         request.setRequestType(DNSRequestType.LOOKUP);
         request.setServiceId("B52B1DE9-37A4-4554-B85E-2EA28C4EE3DD");
         request.setUserAccount(userAccount);
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+        request.setApplicationName("eSolutions");
 
         try
         {
@@ -108,146 +110,6 @@ public class DNSServiceRequestImplTest
             Assert.fail(dnsx.getMessage());
         }
     }
-
-    /*@Test
-    public void createNewService()
-    {
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMdd00");
-
-        DNSRecord apexns1 = new DNSRecord();
-        apexns1.setRecordType(DNSRecordType.NS);
-        apexns1.setPrimaryAddress(new ArrayList<String>(Arrays.asList("prodns1.caspersbox.com")));
-        apexns1.setRecordClass("IN");
-
-        DNSRecord apexns2 = new DNSRecord();
-        apexns2.setRecordType(DNSRecordType.NS);
-        apexns2.setPrimaryAddress(new ArrayList<String>(Arrays.asList("prodns2.caspersbox.com")));
-        apexns2.setRecordClass("IN");
-
-        DNSRecord apexns3 = new DNSRecord();
-        apexns3.setRecordType(DNSRecordType.NS);
-        apexns3.setPrimaryAddress(new ArrayList<String>(Arrays.asList("prodns3.caspersbox.com")));
-        apexns3.setRecordClass("IN");
-
-        DNSRecord apexns4 = new DNSRecord();
-        apexns4.setRecordType(DNSRecordType.NS);
-        apexns4.setPrimaryAddress(new ArrayList<String>(Arrays.asList("prodns4.caspersbox.com")));
-        apexns4.setRecordClass("IN");
-
-        DNSRecord rp = new DNSRecord();
-        rp.setRecordClass("IN");
-        rp.setRecordType(DNSRecordType.RP);
-        rp.setPrimaryAddress(new ArrayList<String>(Arrays.asList("dnsadmins.caspersbox.com")));
-
-        DNSRecord apexAddress1 = new DNSRecord();
-        apexAddress1.setRecordType(DNSRecordType.A);
-        apexAddress1.setPrimaryAddress(new ArrayList<String>(Arrays.asList("127.0.0.1")));
-        apexAddress1.setRecordClass("IN");
-
-        DNSRecord apexAddress2 = new DNSRecord();
-        apexAddress2.setRecordType(DNSRecordType.A);
-        apexAddress2.setPrimaryAddress(new ArrayList<String>(Arrays.asList("127.0.0.2")));
-        apexAddress2.setRecordClass("IN");
-
-        DNSRecord mxRecord = new DNSRecord();
-        mxRecord.setRecordClass("IN");
-        mxRecord.setRecordType(DNSRecordType.MX);
-        mxRecord.setRecordPriority(10);
-        mxRecord.setPrimaryAddress(new ArrayList<String>(Arrays.asList("mail.example.com")));
-
-        List<DNSRecord> apexRecords = new ArrayList<DNSRecord>(
-                Arrays.asList(
-                        apexns1,
-                        apexns2,
-                        apexns3,
-                        apexns4,
-                        rp,
-                        apexAddress1,
-                        apexAddress2,
-                        mxRecord));
-
-        DNSRecord cnameRecord = new DNSRecord();
-        cnameRecord.setRecordType(DNSRecordType.CNAME);
-        cnameRecord.setPrimaryAddress(new ArrayList<String>(Arrays.asList("example.com.")));
-        cnameRecord.setRecordClass("IN");
-        cnameRecord.setRecordName("www");
-
-        DNSRecord aRecord = new DNSRecord();
-        aRecord.setRecordName("test");
-        aRecord.setRecordClass("IN");
-        aRecord.setRecordType(DNSRecordType.A);
-        aRecord.setPrimaryAddress(new ArrayList<String>(Arrays.asList("127.0.2.1")));
-
-        DNSRecord aRecord1 = new DNSRecord();
-        aRecord1.setRecordName("another");
-        aRecord1.setRecordClass("IN");
-        aRecord1.setRecordType(DNSRecordType.A);
-        aRecord1.setPrimaryAddress(new ArrayList<String>(Arrays.asList("127.0.2.1", "182.1.32.1", "49.49.1.3")));
-
-        DNSRecord txtRecord = new DNSRecord();
-        txtRecord.setRecordName("_domainkey");
-        txtRecord.setRecordClass("IN");
-        txtRecord.setRecordType(DNSRecordType.TXT);
-        txtRecord.setPrimaryAddress(new ArrayList<String>(Arrays.asList("DomainKey-Signature: a=rsa-sha1;s=newyork;d=example.com;c=simple;q=dns;b=dydVyOfAKCdLXdJOc8G2q8LoXSlEniSbav+yuU4zGffruD00lszZVoG4ZHRNiYzR;")));
-
-        DNSRecord mailRecord = new DNSRecord();
-        mailRecord.setMailRecord(true);
-        mailRecord.setRecordName("mail");
-        mailRecord.setRecordClass("IN");
-        mailRecord.setRecordType(DNSRecordType.A);
-        mailRecord.setPrimaryAddress(new ArrayList<String>(Arrays.asList("172.1.6.1", "172.1.2.3", "172.4.3.1")));
-        mailRecord.setSpfRecord("v=spf1 ip4:192.168.10.0/24 mx ?all");
-
-        // _service._proto.name. TTL class SRV priority weight port target.
-        DNSRecord srvRecord = new DNSRecord();
-        srvRecord.setRecordService("ldap");
-        srvRecord.setRecordProtocol("tcp");
-        srvRecord.setRecordName("example.com");
-        srvRecord.setRecordLifetime(900);
-        srvRecord.setRecordClass("IN");
-        srvRecord.setRecordType(DNSRecordType.SRV);
-        srvRecord.setRecordPriority(100);
-        srvRecord.setRecordWeight(10);
-        srvRecord.setRecordPort(10389);
-        srvRecord.setPrimaryAddress(new ArrayList<String>(Arrays.asList("ldap.server.com")));
-
-        List<DNSRecord> subRecords = new ArrayList<DNSRecord>(
-                Arrays.asList(
-                        cnameRecord,
-                        aRecord,
-                        aRecord1,
-                        txtRecord,
-                        srvRecord,
-                        mailRecord));
-
-        DNSEntry entry = new DNSEntry();
-        entry.setApex("example.com");
-        entry.setMaster("prodns.caspersbox.com");
-        entry.setOwner("hostmaster.caspersbox.com");
-        entry.setSerialNumber(sdf.format(cal.getTime())); // this would be generated, not static
-        entry.setApexRecords(apexRecords);
-        entry.setSubRecords(subRecords);
-
-        DNSServiceRequest request = new DNSServiceRequest();
-        request.setDnsEntry(entry); // first entry is the apex
-        request.setRequestInfo(hostInfo);
-        request.setRequestType(DNSRequestType.ADD);
-        request.setServiceId("B52B1DE9-37A4-4554-B85E-2EA28C4EE3DD");
-        request.setUserAccount(userAccount);
-        request.setChangeRequest("CR1727171");
-        request.setServiceRegion(ServiceRegion.DEV);
-
-        try
-        {
-            DNSServiceResponse response = dnsService.createNewService(request);
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-        }
-        catch (DNSServiceException dnsx)
-        {
-            Assert.fail(dnsx.getMessage());
-        }
-    }*/
 
     @Test
     public void createNewService()
@@ -379,29 +241,29 @@ public class DNSServiceRequestImplTest
 
         // apex records
         entry.setApexRecords(new ArrayList<DNSRecord>(
-        		Arrays.asList(
-        				nsRecord1,
-        				nsRecord2,
-        				nsRecord3,
-        				nsRecord4,
-        				rpRecord,
-        				apexAddress1,
-        				apexAddress2,
-        				mxRecord,
-        				spfRecord)));
+    		Arrays.asList(
+				nsRecord1,
+				nsRecord2,
+				nsRecord3,
+				nsRecord4,
+				rpRecord,
+				apexAddress1,
+				apexAddress2,
+				mxRecord,
+				spfRecord)));
 
         // subrecords
         entry.setSubRecords(new ArrayList<DNSRecord>(
-        		Arrays.asList(
-        				cnameRecord,
-        				aRecord,
-        				mxAddress,
-        				domainKeyRecord,
-        				dkimRecord,
-        				srvRecord,
-        				otherRecord,
-        				otherRecord1)));
-        
+    		Arrays.asList(
+				cnameRecord,
+				aRecord,
+				mxAddress,
+				domainKeyRecord,
+				dkimRecord,
+				srvRecord,
+				otherRecord,
+				otherRecord1)));
+
         DNSServiceRequest request = new DNSServiceRequest();
         request.setDnsEntry(entry); // first entry is the apex
         request.setRequestInfo(hostInfo);
@@ -410,6 +272,8 @@ public class DNSServiceRequestImplTest
         request.setUserAccount(userAccount);
         request.setChangeRequest("CR1727171");
         request.setServiceRegion(ServiceRegion.DEV);
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+        request.setApplicationName("eSolutions");
 
         try
         {
