@@ -73,7 +73,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.client.CredentialsProvider;
-import org.apache.commons.httpclient.HttpException;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.commons.httpclient.auth.AuthPolicy;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -538,60 +537,56 @@ public final class NetworkUtils
                 DEBUGGER.debug("FTPClient: {}", client);
             }
 
-            if (client.isConnected())
+            if (!(client.isConnected()))
             {
-                boolean isAuthenticated = false;
+            	throw new IOException("Failed to authenticate to remote host with the provided information");
+            }
 
-                if (StringUtils.isNotBlank(ftpConfig.getFtpAccount()))
-                {
-                    isAuthenticated = client.login((StringUtils.isNotEmpty(ftpConfig.getFtpAccount())) ? ftpConfig.getFtpAccount() : System.getProperty("user.name"),
-                        PasswordUtils.decryptText(ftpConfig.getFtpPassword(), ftpConfig.getFtpSalt().length(),
-                            secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                            secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                            appBean.getConfigData().getSystemConfig().getEncoding()));
-                }
-                else
-                {
-                    isAuthenticated = client.login(ftpConfig.getFtpAccount(), null);
-                }
+        	boolean isAuthenticated = false;
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isAuthenticated: {}", isAuthenticated);
-                }
-
-                if (isAuthenticated)
-                {
-                    client.enterLocalPassiveMode();
-
-                    if (!(FileUtils.getFile(sourceFile).exists()))
-                    {
-                        throw new IOException("File " + sourceFile + " does not exist. Skipping");
-                    }
-
-                    if (isUpload)
-                    {
-                        client.storeFile(targetFile, new FileInputStream(FileUtils.getFile(sourceFile)));
-                    }
-                    else
-                    {
-                        client.retrieveFile(sourceFile, new FileOutputStream(targetFile));
-                    }
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Reply: {}", client.getReplyCode());
-                        DEBUGGER.debug("Reply: {}", client.getReplyString());
-                    }
-                }
-                else
-                {
-                    throw new IOException("Failed to authenticate to remote host with the provided information");
-                }
+            if (StringUtils.isNotBlank(ftpConfig.getFtpAccount()))
+            {
+                isAuthenticated = client.login((StringUtils.isNotEmpty(ftpConfig.getFtpAccount())) ? ftpConfig.getFtpAccount() : System.getProperty("user.name"),
+                    PasswordUtils.decryptText(ftpConfig.getFtpPassword(), ftpConfig.getFtpSalt().length(),
+                        secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                        secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                        appBean.getConfigData().getSystemConfig().getEncoding()));
             }
             else
             {
-                throw new IOException("Failed to connect to FTP server: " + targetHost);
+                isAuthenticated = client.login(ftpConfig.getFtpAccount(), null);
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isAuthenticated: {}", isAuthenticated);
+            }
+
+            if (!(isAuthenticated))
+            {
+            	throw new IOException("Failed to connect to FTP server: " + targetHost);
+            }
+
+            client.enterLocalPassiveMode();
+
+            if (!(FileUtils.getFile(sourceFile).exists()))
+            {
+                throw new IOException("File " + sourceFile + " does not exist. Skipping");
+            }
+
+            if (isUpload)
+            {
+                client.storeFile(targetFile, new FileInputStream(FileUtils.getFile(sourceFile)));
+            }
+            else
+            {
+                client.retrieveFile(sourceFile, new FileOutputStream(targetFile));
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Reply: {}", client.getReplyCode());
+                DEBUGGER.debug("Reply: {}", client.getReplyString());
             }
         }
         catch (IOException iox)
@@ -649,34 +644,30 @@ public final class NetworkUtils
         {
             synchronized(new Object())
             {
-                if (InetAddress.getByName(hostName) != null)
+                if (InetAddress.getByName(hostName) == null)
                 {
-                    InetSocketAddress socketAddress = new InetSocketAddress(hostName, portNumber);
-
-                    socket = new Socket();
-                    socket.setSoTimeout((int) TimeUnit.SECONDS.toMillis(timeout));
-                    socket.setSoLinger(false, 0);
-                    socket.setKeepAlive(false);
-                    socket.connect(socketAddress, (int) TimeUnit.SECONDS.toMillis(timeout));
-
-                    if (socket.isConnected())
-                    {
-                        PrintWriter pWriter = new PrintWriter(socket.getOutputStream(), true);
-
-                        pWriter.println(NetworkUtils.TERMINATE_TELNET + NetworkUtils.CRLF);
-
-                        pWriter.flush();
-                        pWriter.close();
-                    }
-                    else
-                    {
-                        throw new ConnectException("Failed to connect to host " + hostName + " on port " + portNumber);
-                    }
+                	throw new UnknownHostException("No host was found in DNS for the given name: " + hostName);
                 }
-                else
+
+                InetSocketAddress socketAddress = new InetSocketAddress(hostName, portNumber);
+
+                socket = new Socket();
+                socket.setSoTimeout((int) TimeUnit.SECONDS.toMillis(timeout));
+                socket.setSoLinger(false, 0);
+                socket.setKeepAlive(false);
+                socket.connect(socketAddress, (int) TimeUnit.SECONDS.toMillis(timeout));
+
+                if (!(socket.isConnected()))
                 {
-                    throw new UnknownHostException("No host was found in DNS for the given name: " + hostName);
+                	throw new ConnectException("Failed to connect to host " + hostName + " on port " + portNumber);
                 }
+
+                PrintWriter pWriter = new PrintWriter(socket.getOutputStream(), true);
+
+                pWriter.println(NetworkUtils.TERMINATE_TELNET + NetworkUtils.CRLF);
+
+                pWriter.flush();
+                pWriter.close();
             }
         }
         catch (ConnectException cx)
@@ -788,65 +779,63 @@ public final class NetworkUtils
                     DEBUGGER.debug("ProxyConfig: {}", proxyConfig);
                 }
 
-                if (StringUtils.isNotEmpty(proxyConfig.getProxyServerName()))
+                if (StringUtils.isEmpty(proxyConfig.getProxyServerName()))
                 {
-                    if (proxyConfig.isProxyAuthRequired())
-                    {
-                        List<String> authList = new ArrayList<String>();
-                        authList.add(AuthPolicy.BASIC);
-                        authList.add(AuthPolicy.DIGEST);
-                        authList.add(AuthPolicy.NTLM);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("authList: {}", authList);
-                        }
-
-                        requestConfig = RequestConfig.custom()
-                    		.setConnectionRequestTimeout((int) TimeUnit.SECONDS.toMillis(httpConfig.getConnTimeout()))
-                        	.setConnectTimeout((int) TimeUnit.SECONDS.toMillis(httpConfig.getConnTimeout()))
-                        	.setContentCompressionEnabled(Boolean.TRUE)
-                        	.setProxy(new HttpHost(proxyConfig.getProxyServerName(), proxyConfig.getProxyServerPort()))
-                        	.setProxyPreferredAuthSchemes(authList)
-                        	.build();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("requestConfig: {}", requestConfig);
-                        }
-
-                        String proxyPwd = PasswordUtils.decryptText(proxyConfig.getProxyPassword(), proxyConfig.getProxyPwdSalt().length(),
-                            secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                            secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                            appBean.getConfigData().getSystemConfig().getEncoding());
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("proxyPwd: {}", proxyPwd);
-                        }
-
-                        if (StringUtils.equals(NetworkUtils.PROXY_AUTH_TYPE_BASIC, proxyConfig.getProxyAuthType()))
-                        {
-                            credsProvider = new SystemDefaultCredentialsProvider();
-                            credsProvider.setCredentials(new AuthScope(proxyConfig.getProxyServerName(), proxyConfig.getProxyServerPort()),
-                        		new UsernamePasswordCredentials(proxyConfig.getProxyUserId(), proxyPwd));
-                        }
-                        else if (StringUtils.equals(NetworkUtils.PROXY_AUTH_TYPE_NTLM, proxyConfig.getProxyAuthType()))
-                        {
-                            credsProvider = new SystemDefaultCredentialsProvider();
-                            credsProvider.setCredentials(new AuthScope(proxyConfig.getProxyServerName(), proxyConfig.getProxyServerPort()),
-                            	new NTCredentials(proxyConfig.getProxyUserId(), proxyPwd, InetAddress.getLocalHost().getHostName(), proxyConfig.getProxyAuthDomain()));
-                        }
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("httpClient: {}", httpClient);
-                        }
-                    }
+                	throw new UtilityException("Configuration states proxy usage is required, but no proxy is configured.");
                 }
-                else
+
+                if (proxyConfig.isProxyAuthRequired())
                 {
-                    throw new HttpException("Configuration states proxy usage is required, but no proxy is configured.");
+                    List<String> authList = new ArrayList<String>();
+                    authList.add(AuthPolicy.BASIC);
+                    authList.add(AuthPolicy.DIGEST);
+                    authList.add(AuthPolicy.NTLM);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("authList: {}", authList);
+                    }
+
+                    requestConfig = RequestConfig.custom()
+                		.setConnectionRequestTimeout((int) TimeUnit.SECONDS.toMillis(httpConfig.getConnTimeout()))
+                    	.setConnectTimeout((int) TimeUnit.SECONDS.toMillis(httpConfig.getConnTimeout()))
+                    	.setContentCompressionEnabled(Boolean.TRUE)
+                    	.setProxy(new HttpHost(proxyConfig.getProxyServerName(), proxyConfig.getProxyServerPort()))
+                    	.setProxyPreferredAuthSchemes(authList)
+                    	.build();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("requestConfig: {}", requestConfig);
+                    }
+
+                    String proxyPwd = PasswordUtils.decryptText(proxyConfig.getProxyPassword(), proxyConfig.getProxyPwdSalt().length(),
+                        secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                        secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                        appBean.getConfigData().getSystemConfig().getEncoding());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("proxyPwd: {}", proxyPwd);
+                    }
+
+                    if (StringUtils.equals(NetworkUtils.PROXY_AUTH_TYPE_BASIC, proxyConfig.getProxyAuthType()))
+                    {
+                        credsProvider = new SystemDefaultCredentialsProvider();
+                        credsProvider.setCredentials(new AuthScope(proxyConfig.getProxyServerName(), proxyConfig.getProxyServerPort()),
+                    		new UsernamePasswordCredentials(proxyConfig.getProxyUserId(), proxyPwd));
+                    }
+                    else if (StringUtils.equals(NetworkUtils.PROXY_AUTH_TYPE_NTLM, proxyConfig.getProxyAuthType()))
+                    {
+                        credsProvider = new SystemDefaultCredentialsProvider();
+                        credsProvider.setCredentials(new AuthScope(proxyConfig.getProxyServerName(), proxyConfig.getProxyServerPort()),
+                        	new NTCredentials(proxyConfig.getProxyUserId(), proxyPwd, InetAddress.getLocalHost().getHostName(), proxyConfig.getProxyAuthDomain()));
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("httpClient: {}", httpClient);
+                    }
                 }
             }
 
@@ -882,7 +871,7 @@ public final class NetworkUtils
                 {
                     ERROR_RECORDER.error("HTTP Response Code received NOT 200: " + responseCode);
 
-                    throw new HttpException("HTTP Response Code received NOT 200: " + responseCode);
+                    throw new UtilityException("HTTP Response Code received NOT 200: " + responseCode);
                 }
 
                 return httpResponse.getEntity().toString();
@@ -959,50 +948,46 @@ public final class NetworkUtils
         {
             synchronized(new Object())
             {
-                if (InetAddress.getByName(hostName) != null)
+                if (StringUtils.isEmpty(InetAddress.getByName(hostName).toString()))
                 {
-                    InetSocketAddress socketAddress = new InetSocketAddress(hostName, portNumber);
-
-                    socket = new Socket();
-                    socket.setSoTimeout((int) TimeUnit.SECONDS.toMillis(timeout));
-                    socket.setSoLinger(false, 0);
-                    socket.setKeepAlive(false);
-                    socket.connect(socketAddress, (int) TimeUnit.SECONDS.toMillis(timeout));
-
-                    if (socket.isConnected())
-                    {
-                        ObjectOutputStream objectOut = new ObjectOutputStream(socket.getOutputStream());
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("ObjectOutputStream: {}", objectOut);
-                        }
-
-                        objectOut.writeObject(object);
-
-                        resObject = new ObjectInputStream(socket.getInputStream()).readObject();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("resObject: {}", resObject);
-                        }
-
-                        PrintWriter pWriter = new PrintWriter(socket.getOutputStream(), true);
-
-                        pWriter.println(NetworkUtils.TERMINATE_TELNET + NetworkUtils.CRLF);
-
-                        pWriter.flush();
-                        pWriter.close();
-                    }
-                    else
-                    {
-                        throw new ConnectException("Failed to connect to host " + hostName + " on port " + portNumber);
-                    }
+                	throw new UnknownHostException("No host was found in DNS for the given name: " + hostName);
                 }
-                else
+
+                InetSocketAddress socketAddress = new InetSocketAddress(hostName, portNumber);
+
+                socket = new Socket();
+                socket.setSoTimeout((int) TimeUnit.SECONDS.toMillis(timeout));
+                socket.setSoLinger(false, 0);
+                socket.setKeepAlive(false);
+                socket.connect(socketAddress, (int) TimeUnit.SECONDS.toMillis(timeout));
+
+                if (!(socket.isConnected()))
                 {
-                    throw new UnknownHostException("No host was found in DNS for the given name: " + hostName);
+                	throw new ConnectException("Failed to connect to host " + hostName + " on port " + portNumber);
                 }
+
+                ObjectOutputStream objectOut = new ObjectOutputStream(socket.getOutputStream());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ObjectOutputStream: {}", objectOut);
+                }
+
+                objectOut.writeObject(object);
+
+                resObject = new ObjectInputStream(socket.getInputStream()).readObject();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("resObject: {}", resObject);
+                }
+
+                PrintWriter pWriter = new PrintWriter(socket.getOutputStream(), true);
+
+                pWriter.println(NetworkUtils.TERMINATE_TELNET + NetworkUtils.CRLF);
+
+                pWriter.flush();
+                pWriter.close();
             }
         }
         catch (ConnectException cx)
@@ -1073,8 +1058,12 @@ public final class NetworkUtils
         }
 
         Lookup lookup = null;
+        String responseName = null;
+        String responseType = null;
         Record[] recordList = null;
+        String responseAddress = null;
         SimpleResolver resolver = null;
+        List<String> lookupData = null;
         List<List<String>> response = null;
 
         final String currentTimeout = Security.getProperty("networkaddress.cache.ttl");
@@ -1134,31 +1123,40 @@ public final class NetworkUtils
             {
                 if (recordList != null)
                 {
-                    for (Record record : recordList)
+                    for (Record dRecord : recordList)
                     {
-                        DEBUGGER.debug("Record: {}", record);
+                        DEBUGGER.debug("Record: {}", dRecord);
                     }
                 }
             }
 
-            if (lookup.getResult() == Lookup.SUCCESSFUL)
+            if (lookup.getResult() != Lookup.SUCCESSFUL)
             {
-            	response = new ArrayList<List<String>>();
+            	throw new UtilityException("An error occurred during the lookup. The response obtained is: " + lookup.getErrorString());
+            }
 
-                if ((recordList != null) && (recordList.length == 1))
-                {
-                    Record record = recordList[0];
+        	response = new ArrayList<List<String>>();
+
+        	if ((recordList == null) || (recordList.length == 0))
+        	{
+        		throw new UtilityException("No results were found for the provided information.");
+        	}
+
+        	switch (recordList.length)
+        	{
+        		case 1:
+                    Record sRecord = recordList[0];
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("Record: {}", record);
+                        DEBUGGER.debug("Record: {}", sRecord);
                     }
 
-                    String responseAddress = record.rdataToString();
-                    String responseName = record.getName().toString();
-                    String responseType = Type.string(record.getType());
+                    responseAddress = sRecord.rdataToString();
+                    responseName = sRecord.getName().toString();
+                    responseType = Type.string(sRecord.getType());
 
-                    List<String> lookupData = new ArrayList<String>(
+                    lookupData = new ArrayList<String>(
                     		Arrays.asList(
                     				responseAddress,
                     				responseName,
@@ -1172,65 +1170,45 @@ public final class NetworkUtils
 
                     response.add(lookupData);
 
-                    if (DEBUG)
+                    break;
+        		default:
+                    for (Record mRecord : recordList)
                     {
-                        DEBUGGER.debug("response: {}", response);
-                    }
-                }
-                else
-                {
-                    if ((recordList != null) && (recordList.length != 0))
-                    {
-                        for (Record record : recordList)
+                        if (DEBUG)
                         {
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Record: {}", record);
-                            }
-
-                            String responseAddress = record.rdataToString();
-                            String responseName = record.getName().toString();
-                            String responseType = Type.string(record.getType());
-
-                            List<String> lookupData = new ArrayList<String>(
-                            		Arrays.asList(
-                            				responseAddress,
-                            				responseName,
-                            				responseType));
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("responseAddress: {}", responseAddress);
-                                DEBUGGER.debug("responseName: {}", responseName);
-                                DEBUGGER.debug("responseType: {}", responseType);
-                            }
-
-                            response.add(lookupData);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("response: {}", response);
-                            }
+                            DEBUGGER.debug("Record: {}", mRecord);
                         }
+
+                        responseAddress = mRecord.rdataToString();
+                        responseName = mRecord.getName().toString();
+                        responseType = Type.string(mRecord.getType());
+
+                        lookupData = new ArrayList<String>(
+                        		Arrays.asList(
+                        				responseAddress,
+                        				responseName,
+                        				responseType));
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("responseAddress: {}", responseAddress);
+                            DEBUGGER.debug("responseName: {}", responseName);
+                            DEBUGGER.debug("responseType: {}", responseType);
+                        }
+
+                        response.add(lookupData);
 
                         if (DEBUG)
                         {
                             DEBUGGER.debug("response: {}", response);
                         }
                     }
-                    else
-                    {
-                    	throw new UtilityException("No results were found for the provided information.");
-                    }
-                }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("response: {}", response);
-                }
-            }
-            else
+                    break;
+        	}
+
+            if (DEBUG)
             {
-            	throw new UtilityException("An error occurred during the lookup. The response obtained is: " + lookup.getErrorString()); 
+                DEBUGGER.debug("response: {}", response);
             }
         }
         catch (TextParseException tpx)

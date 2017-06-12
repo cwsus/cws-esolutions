@@ -44,8 +44,7 @@ public class MQUtilsTest
 {
     CoreServiceBean bean = CoreServiceBean.getInstance();
 
-    @Before
-    public void setUp()
+    @Before public void setUp()
     {
         try
         {
@@ -59,8 +58,7 @@ public class MQUtilsTest
         }
     }
 
-    @Test
-    public void sendMqMessage()
+    @Test public void sendMqMessage()
     {
         SystemManagerRequest system = new SystemManagerRequest();
         system.setMgmtType(SystemManagementType.SYSTEMCHECK);
@@ -88,8 +86,7 @@ public class MQUtilsTest
         }
     }
 
-    @Test
-    public void getMqMessage()
+    @Test public void getMqMessage()
     {
         try
         {
@@ -109,8 +106,7 @@ public class MQUtilsTest
         }
     }
 
-    @After
-    public void tearDown()
+    @After public void tearDown()
     {
         CoreServiceInitializer.shutdown();
     }

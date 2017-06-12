@@ -55,8 +55,7 @@ public class ServerManagementProcessorImplTest
 
     private static final IServerManagementProcessor processor = new ServerManagementProcessorImpl();
 
-    @Before
-    public void setUp()
+    @Before public void setUp()
     {
         hostInfo.setHostAddress("junit");
         hostInfo.setHostName("junit");
@@ -78,8 +77,7 @@ public class ServerManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void addNewServerAsDmgr()
+    @Test public void addNewServerAsDmgr()
     {
         for (int x = 0; x < 3; x++)
         {
@@ -148,8 +146,7 @@ public class ServerManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void addServerAsDevAppServer()
+    @Test public void addServerAsDevAppServer()
     {
         Server dmgrServer = new Server();
         dmgrServer.setServerGuid("bc55f443-202b-4f7c-9118-47dd80500ffb");
@@ -207,8 +204,7 @@ public class ServerManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void addServerAsDevWebServer()
+    @Test public void addServerAsDevWebServer()
     {
         for (int x = 0; x < 4; x++)
         {
@@ -262,8 +258,7 @@ public class ServerManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void addServerAsQaAppServer()
+    @Test public void addServerAsQaAppServer()
     {
         Server dmgrServer = new Server();
         dmgrServer.setServerGuid("dac2e765-109e-4385-8563-aab66d6713f9");
@@ -321,8 +316,7 @@ public class ServerManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void addServerAsQaWebServer()
+    @Test public void addServerAsQaWebServer()
     {
         for (int x = 0; x < 4; x++)
         {
@@ -376,8 +370,7 @@ public class ServerManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void addServerAsPrdAppServer()
+    @Test public void addServerAsPrdAppServer()
     {
         Server dmgrServer = new Server();
         dmgrServer.setServerGuid("fde6d6e9-8bac-4a82-99c6-ef225945d846");
@@ -435,8 +428,7 @@ public class ServerManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void addServerAsPrdWebServer()
+    @Test public void addServerAsPrdWebServer()
     {
         for (int x = 0; x < 4; x++)
         {
@@ -490,8 +482,7 @@ public class ServerManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void addServerAsDevMasterDnsServer()
+    @Test public void addServerAsDevMasterDnsServer()
     {
         String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
@@ -542,8 +533,7 @@ public class ServerManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void addServerAsQaMasterDnsServer()
+    @Test public void addServerAsQaMasterDnsServer()
     {
         String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
@@ -594,8 +584,7 @@ public class ServerManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void addServerAsPrdMasterDnsServer()
+    @Test public void addServerAsPrdMasterDnsServer()
     {
         String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
@@ -646,8 +635,7 @@ public class ServerManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void addServerAsDevSlaveDnsServer()
+    @Test public void addServerAsDevSlaveDnsServer()
     {
         for (int x = 0; x < 4; x++)
         {
@@ -701,8 +689,7 @@ public class ServerManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void addServerAsQaSlaveDnsServer()
+    @Test public void addServerAsQaSlaveDnsServer()
     {
         for (int x = 0; x < 4; x++)
         {
@@ -756,8 +743,7 @@ public class ServerManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void addServerAsPrdSlaveDnsServer()
+    @Test public void addServerAsPrdSlaveDnsServer()
     {
         for (int x = 0; x < 4; x++)
         {
@@ -811,8 +797,7 @@ public class ServerManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void addNewServerAsDevMqServer()
+    @Test public void addNewServerAsDevMqServer()
     {
         String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
@@ -866,8 +851,7 @@ public class ServerManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void addNewServerAsQaMqServer()
+    @Test public void addNewServerAsQaMqServer()
     {
         String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
@@ -921,8 +905,7 @@ public class ServerManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void addNewServerAsPrdMqServer()
+    @Test public void addNewServerAsPrdMqServer()
     {
         String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
@@ -976,8 +959,7 @@ public class ServerManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void addNewServerAsDevVmgr()
+    @Test public void addNewServerAsDevVmgr()
     {
         String hostname = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
         Service service = new Service();
@@ -1028,8 +1010,7 @@ public class ServerManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void addNewServerAsQaVmgr()
+    @Test public void addNewServerAsQaVmgr()
     {
         String hostname = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
@@ -1081,8 +1062,7 @@ public class ServerManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void addNewServerAsPrdVmgr()
+    @Test public void addNewServerAsPrdVmgr()
     {
         String hostname = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
@@ -1135,8 +1115,7 @@ public class ServerManagementProcessorImplTest
     }
 
     /*
-    @Test
-    public void updateServerData()
+    @Test public void updateServerData()
     {
         Server server = new Server();
         server.setAssignedEngineer(userAccount);
@@ -1176,8 +1155,7 @@ public class ServerManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void listServersByAttribute()
+    @Test public void listServersByAttribute()
     {
         ServerManagementRequest request = new ServerManagementRequest();
         request.setRequestInfo(hostInfo);
@@ -1199,8 +1177,7 @@ public class ServerManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void getServerData()
+    @Test public void getServerData()
     {
         Server server = new Server();
         server.setServerGuid("85ab3069-fd3c-4490-a4ba-0c59b7cebab2");
@@ -1226,8 +1203,7 @@ public class ServerManagementProcessorImplTest
     }
     */
 
-    @After
-    public void tearDown()
+    @After public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
         CoreServiceInitializer.shutdown();

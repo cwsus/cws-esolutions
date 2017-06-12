@@ -58,8 +58,7 @@ public class DNSServiceRequestImplTest
 
     private static final IDNSServiceRequestProcessor dnsService = new DNSServiceRequestProcessorImpl();
 
-    @Before
-    public void setUp()
+    @Before public void setUp()
     {
         hostInfo.setHostAddress("junit");
         hostInfo.setHostName("junit");
@@ -81,8 +80,7 @@ public class DNSServiceRequestImplTest
         }
     }
 
-    @Test
-    public void performLookup()
+    @Test public void performLookup()
     {
         DNSRecord record = new DNSRecord();
         record.setRecordName("www.google.com");
@@ -110,8 +108,7 @@ public class DNSServiceRequestImplTest
         }
     }
 
-    @Test
-    public void createNewService()
+    @Test public void createNewService()
     {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMdd00");
@@ -277,7 +274,7 @@ public class DNSServiceRequestImplTest
         try
         {
             DNSServiceResponse response = dnsService.createNewService(request);
-System.out.println(response.toString());
+
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
         catch (DNSServiceException dnsx)
@@ -286,8 +283,7 @@ System.out.println(response.toString());
         }
     }
 
-    @After
-    public void tearDown()
+    @After public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
         CoreServiceInitializer.shutdown();

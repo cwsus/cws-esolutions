@@ -49,8 +49,7 @@ public class SystemCheckProcessorImplTest
 
     private static final ISystemCheckProcessor processor = new SystemCheckProcessorImpl();
 
-    @Before
-    public void setUp()
+    @Before public void setUp()
     {
         hostInfo.setHostAddress("junit");
         hostInfo.setHostName("junit");
@@ -72,8 +71,7 @@ public class SystemCheckProcessorImplTest
         }
     }
 
-    @Test
-    public void runNetstatCheck()
+    @Test public void runNetstatCheck()
     {
         Server source = new Server();
         source.setOperHostName("localhost");
@@ -99,8 +97,7 @@ public class SystemCheckProcessorImplTest
         }
     }
 
-    @Test
-    public void runTelnetCheck()
+    @Test public void runTelnetCheck()
     {
         Server source = new Server();
         source.setOperHostName("localhost");
@@ -130,8 +127,7 @@ public class SystemCheckProcessorImplTest
         }
     }
 
-    @Test
-    public void runRemoteDateCheck()
+    @Test public void runRemoteDateCheck()
     {
         Server target = new Server();
         target.setOperHostName("localhost");
@@ -156,8 +152,7 @@ public class SystemCheckProcessorImplTest
         }
     }
 
-    @After
-    public void tearDown()
+    @After public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
         CoreServiceInitializer.shutdown();

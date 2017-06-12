@@ -170,76 +170,69 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 DEBUGGER.debug("validator: {}", validator);
             }
 
-            if ((validator == null) || (validator.size() == 0))
+            if ((validator != null) && (validator.size() != 0))
             {
-                // project does't already exist. we can add it
-                // we are NOT adding any applications to the project YET
-                // if there are any to add we'll do that later (its a
-                // different table in the database)
-                if ((application.getPlatforms() != null) && (application.getPlatforms().size() != 0))
-                {
-                    List<String> platforms = new ArrayList<String>();
-
-                    for (Service targetPlatform : application.getPlatforms())
-                    {
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Service: {}", targetPlatform);
-                        }
-
-                        // make sure its a valid platform
-                        if (serviceDao.getService(targetPlatform.getGuid()) == null)
-                        {
-                            throw new ApplicationManagementException("Provided platform is not valid. Cannot continue.");
-                        }
-
-                        platforms.add(targetPlatform.getGuid());
-                    }
-
-                    // ok, good platform. we can add the application in
-                    List<Object> appDataList = new ArrayList<Object>(
-                            Arrays.asList(
-                                    applGuid,
-                                    application.getName(),
-                                    application.getVersion(),
-                                    application.getInstallPath(),
-                                    application.getPackageLocation(),
-                                    application.getPackageInstaller(),
-                                    application.getInstallerOptions(),
-                                    application.getLogsDirectory(),
-                                    application.getPlatforms().toString()));
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("appDataList: {}", appDataList);
-                    }
-
-                    boolean isApplicationAdded = appDAO.addApplication(appDataList);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("isApplicationAdded: {}", isApplicationAdded);
-                    }
-
-                    if (isApplicationAdded)
-                    {
-                        response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    }
-                    else
-                    {
-                        response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    }
-                }
-                else
-                {
-                    throw new ApplicationManagementException("No platform was assigned to the given application. Cannot continue.");
-                }
+            	throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_APPLICATION_EXISTS));
             }
-            else
+
+            // project does't already exist. we can add it
+            // we are NOT adding any applications to the project YET
+            // if there are any to add we'll do that later (its a
+            // different table in the database)
+            if ((application.getPlatforms() == null) || (application.getPlatforms().size() == 0))
             {
-                // project already exists
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
+            	throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_NO_PLATFORM_PROVIDED));
             }
+
+            List<String> platforms = new ArrayList<String>();
+
+            for (Service targetPlatform : application.getPlatforms())
+            {
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Service: {}", targetPlatform);
+                }
+
+                // make sure its a valid platform
+                if (serviceDao.getService(targetPlatform.getGuid()) == null)
+                {
+                    throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_INVALID_PLATFORM));
+                }
+
+                platforms.add(targetPlatform.getGuid());
+            }
+
+            // ok, good platform. we can add the application in
+            List<Object> appDataList = new ArrayList<Object>(
+                    Arrays.asList(
+                            applGuid,
+                            application.getName(),
+                            application.getVersion(),
+                            application.getInstallPath(),
+                            application.getPackageLocation(),
+                            application.getPackageInstaller(),
+                            application.getInstallerOptions(),
+                            application.getLogsDirectory(),
+                            application.getPlatforms().toString()));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("appDataList: {}", appDataList);
+            }
+
+            boolean isApplicationAdded = appDAO.addApplication(appDataList);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isApplicationAdded: {}", isApplicationAdded);
+            }
+
+            if (!(isApplicationAdded))
+            {
+            	throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_ADD_APPLICATION_FAILED));
+            }
+
+            response.setRequestStatus(CoreServicesStatus.SUCCESS);
 
             if (DEBUG)
             {
@@ -403,14 +396,12 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 DEBUGGER.debug("isComplete: {}", isComplete);
             }
 
-            if (isComplete)
+            if (!(isComplete))
             {
-                response.setRequestStatus(CoreServicesStatus.SUCCESS);
+            	throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_UPDATE_APPLICATION_FAILED));
             }
-            else
-            {
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
-            }
+            
+            response.setRequestStatus(CoreServicesStatus.SUCCESS);
 
             if (DEBUG)
             {
@@ -557,14 +548,12 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 DEBUGGER.debug("isComplete: {}", isComplete);
             }
 
-            if (isComplete)
+            if (!(isComplete))
             {
-                response.setRequestStatus(CoreServicesStatus.SUCCESS);
+            	throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_DELETE_APPLICATION_FAILED));
             }
-            else
-            {
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
-            }
+
+            response.setRequestStatus(CoreServicesStatus.SUCCESS);
 
             if (DEBUG)
             {
@@ -711,43 +700,35 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 DEBUGGER.debug("List<String[]>: {}", appData);
             }
 
-            if ((appData != null) && (appData.size() != 0))
+            if ((appData == null) || (appData.size() == 0))
             {
-                List<Application> appList = new ArrayList<Application>();
+            	throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_LIST_APPLICATIONS_FAILED));
+            }
 
-                for (String[] array : appData)
-                {
-                    Application app = new Application();
-                    app.setGuid(array[0]); // T1.APPLICATION_GUID
-                    app.setName(array[1]); // T1.APPLICATION_NAME
+            List<Application> appList = new ArrayList<Application>();
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Application: {}", app);
-                    }
-
-                    appList.add(app);
-                }
+            for (String[] array : appData)
+            {
+                Application app = new Application();
+                app.setGuid(array[0]); // T1.APPLICATION_GUID
+                app.setName(array[1]); // T1.APPLICATION_NAME
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("List<Application>: {}", appList);
+                    DEBUGGER.debug("Application: {}", app);
                 }
 
-                // response.setEntryCount(value); // TODO
-                response.setApplicationList(appList);
-                response.setRequestStatus(CoreServicesStatus.SUCCESS);
-            }
-            else
-            {
-                // no data
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
+                appList.add(app);
             }
 
             if (DEBUG)
             {
-                DEBUGGER.debug("ApplicationManagementResponse: {}", response);
+                DEBUGGER.debug("List<Application>: {}", appList);
             }
+
+            // response.setEntryCount(value); // TODO
+            response.setApplicationList(appList);
+            response.setRequestStatus(CoreServicesStatus.SUCCESS);
 
             if (DEBUG)
             {
@@ -894,44 +875,36 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 DEBUGGER.debug("List<String[]>: {}", appData);
             }
 
-            if ((appData != null) && (appData.size() != 0))
+            if ((appData == null) || (appData.size() == 0))
             {
-                List<Application> appList = new ArrayList<Application>();
+            	throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_LIST_APPLICATIONS_FAILED));
+            }
 
-                for (Object[] array : appData)
-                {
-                    Application app = new Application();
-                    app.setGuid((String) array[0]); // T1.APPLICATION_GUID
-                    app.setName((String) array[1]); // T1.APPLICATION_NAME
-                    app.setScore(new Double(array[2].toString()));
+            List<Application> appList = new ArrayList<Application>();
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Application: {}", app);
-                    }
-
-                    appList.add(app);
-                }
+            for (Object[] array : appData)
+            {
+                Application app = new Application();
+                app.setGuid((String) array[0]); // T1.APPLICATION_GUID
+                app.setName((String) array[1]); // T1.APPLICATION_NAME
+                app.setScore(new Double(array[2].toString()));
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("List<Application>: {}", appList);
+                    DEBUGGER.debug("Application: {}", app);
                 }
 
-                // response.setEntryCount(value); // TODO
-                response.setApplicationList(appList);
-                response.setRequestStatus(CoreServicesStatus.SUCCESS);
-            }
-            else
-            {
-                // no data
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
+                appList.add(app);
             }
 
             if (DEBUG)
             {
-                DEBUGGER.debug("ApplicationManagementResponse: {}", response);
+                DEBUGGER.debug("List<Application>: {}", appList);
             }
+
+            // response.setEntryCount(value); // TODO
+            response.setApplicationList(appList);
+            response.setRequestStatus(CoreServicesStatus.SUCCESS);
 
             if (DEBUG)
             {
@@ -1078,38 +1051,34 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 DEBUGGER.debug("appData: {}", appData);
             }
 
-            if ((appData != null) && (appData.size() != 0))
+            if ((appData == null) || (appData.size() == 0))
             {
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("List<Object>: {}", appData);
-                }
-
-                // then put it all together
-                Application resApplication = new Application();
-                resApplication.setGuid((String) appData.get(0)); // GUID
-                resApplication.setName((String) appData.get(1)); // NAME
-                resApplication.setVersion(new Double(appData.get(2).toString())); // VERSION
-                resApplication.setInstallPath((String) appData.get(3)); // INSTALLATION_PATH
-                resApplication.setPackageLocation((String) appData.get(4)); // PACKAGE_LOCATION
-                resApplication.setPackageInstaller((String) appData.get(5)); // PACKAGE_INSTALLER
-                resApplication.setInstallerOptions((String) appData.get(6)); // INSTALLER_OPTIONS
-                resApplication.setLogsDirectory((String) appData.get(7)); // INSTALL_PATH
-                
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Application: {}", resApplication);
-                }
-
-                response.setApplication(resApplication);
-                response.setRequestStatus(CoreServicesStatus.SUCCESS);
+            	throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_NO_APPLICATION_DATA_FOUND));
             }
-            else
+
+            if (DEBUG)
             {
-                ERROR_RECORDER.error("No applications were located for the provided data.");
-
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
+                DEBUGGER.debug("List<Object>: {}", appData);
             }
+
+            // then put it all together
+            Application resApplication = new Application();
+            resApplication.setGuid((String) appData.get(0)); // GUID
+            resApplication.setName((String) appData.get(1)); // NAME
+            resApplication.setVersion(new Double(appData.get(2).toString())); // VERSION
+            resApplication.setInstallPath((String) appData.get(3)); // INSTALLATION_PATH
+            resApplication.setPackageLocation((String) appData.get(4)); // PACKAGE_LOCATION
+            resApplication.setPackageInstaller((String) appData.get(5)); // PACKAGE_INSTALLER
+            resApplication.setInstallerOptions((String) appData.get(6)); // INSTALLER_OPTIONS
+            resApplication.setLogsDirectory((String) appData.get(7)); // INSTALL_PATH
+            
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Application: {}", resApplication);
+            }
+
+            response.setApplication(resApplication);
+            response.setRequestStatus(CoreServicesStatus.SUCCESS);
 
             if (DEBUG)
             {
@@ -1259,129 +1228,115 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 DEBUGGER.debug("appData: {}", appData);
             }
 
-            if ((appData != null) && (appData.size() != 0))
+            if ((appData == null) || (appData.size() == 0))
             {
-                FileManagerRequest fileRequest = new FileManagerRequest();
+            	throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_NO_APPLICATION_DATA_FOUND));
+            }
 
-                if (StringUtils.isEmpty(request.getRequestFile()))
-                {
-                    fileRequest.setRequestFile((String) appData.get(3)); // TODO: this should be the root dir
-                }
-                else
-                {
-                    fileRequest.setRequestFile(appData.get(3) + "/" + request.getRequestFile());
-                }
+            FileManagerRequest fileRequest = new FileManagerRequest();
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("FileManagerRequest: {}", fileRequest);
-                }
-
-                AgentRequest agentRequest = new AgentRequest();
-                agentRequest.setAppName(appConfig.getAppName());
-                agentRequest.setRequestPayload(fileRequest);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AgentRequest: {}", agentRequest);
-                }
-
-                String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(),
-                        new ArrayList<String>(
-                                Arrays.asList(
-                                        agentConfig.getUsername(),
-                                        agentConfig.getPassword(),
-                                        agentConfig.getSalt())),
-                                        agentConfig.getRequestQueue(),
-                                        server.getOperHostName(),
-                                        agentRequest);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("correlator: {}", correlator);
-                }
-
-                if (StringUtils.isNotEmpty(correlator))
-                {
-                    agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
-                            new ArrayList<String>(
-                                    Arrays.asList(
-                                            agentConfig.getUsername(),
-                                            agentConfig.getPassword(),
-                                            agentConfig.getSalt())),
-                                            agentConfig.getRequestQueue(),
-                                            agentConfig.getTimeout(),
-                                            correlator);
-                }
-                else
-                {
-                    response.setRequestStatus(CoreServicesStatus.FAILURE);
-
-                    return response;
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AgentResponse: {}", agentResponse);
-                }
-
-                if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
-                {
-                    FileManagerResponse fileResponse = (FileManagerResponse) agentResponse.getResponsePayload();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("FileManagerResponse: {}", fileResponse);
-                    }
-
-                    if (fileResponse.getRequestStatus() == AgentStatus.SUCCESS)
-                    {
-                        if ((fileResponse.getFileData() != null) && (fileResponse.getFileData().length != 0))
-                        {
-                            byte[] fileData = fileResponse.getFileData();
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("fileData: {}", fileData);
-                            }
-
-                            response.setFileData(fileData);
-                        }
-                        else
-                        {
-                            // just a directory listing
-                            List<String> fileList = fileResponse.getDirListing();
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("fileList: {}", fileList);
-                            }
-
-                            response.setFileList(fileList);
-                        }
-
-                        response.setApplication(application);
-                        response.setCurrentPath(request.getRequestFile());
-                        response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    }
-                    else
-                    {
-                        response.setApplication(application);
-                        response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    }
-                }
-                else
-                {
-                    response.setApplication(application);
-                    response.setRequestStatus(CoreServicesStatus.FAILURE);
-                }
+            if (StringUtils.isEmpty(request.getRequestFile()))
+            {
+                fileRequest.setRequestFile((String) appData.get(3)); // TODO: this should be the root dir
             }
             else
             {
-                ERROR_RECORDER.error("No application data was located and no target was found on the request. Cannot continue.");
-
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
+                fileRequest.setRequestFile(appData.get(3) + "/" + request.getRequestFile());
             }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("FileManagerRequest: {}", fileRequest);
+            }
+
+            AgentRequest agentRequest = new AgentRequest();
+            agentRequest.setAppName(appConfig.getAppName());
+            agentRequest.setRequestPayload(fileRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AgentRequest: {}", agentRequest);
+            }
+
+            String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(),
+                    new ArrayList<String>(
+                            Arrays.asList(
+                                    agentConfig.getUsername(),
+                                    agentConfig.getPassword(),
+                                    agentConfig.getSalt())),
+                                    agentConfig.getRequestQueue(),
+                                    server.getOperHostName(),
+                                    agentRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("correlator: {}", correlator);
+            }
+
+            if (StringUtils.isEmpty(correlator))
+            {
+            	throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_MQ_AGENT_FAILED));
+            }
+            
+            agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
+                    new ArrayList<String>(
+                            Arrays.asList(
+                                    agentConfig.getUsername(),
+                                    agentConfig.getPassword(),
+                                    agentConfig.getSalt())),
+                                    agentConfig.getRequestQueue(),
+                                    agentConfig.getTimeout(),
+                                    correlator);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AgentResponse: {}", agentResponse);
+            }
+
+            if (agentResponse.getRequestStatus() != AgentStatus.SUCCESS)
+            {
+            	throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_AGENT_REQUEST_FAILED));
+            }
+
+            FileManagerResponse fileResponse = (FileManagerResponse) agentResponse.getResponsePayload();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("FileManagerResponse: {}", fileResponse);
+            }
+
+            if (fileResponse.getRequestStatus() != AgentStatus.SUCCESS)
+            {
+            	throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_AGENT_REQUEST_FAILED));
+            }
+
+            if ((fileResponse.getFileData() != null) && (fileResponse.getFileData().length != 0))
+            {
+                byte[] fileData = fileResponse.getFileData();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("fileData: {}", fileData);
+                }
+
+                response.setFileData(fileData);
+            }
+            else
+            {
+                // just a directory listing
+                List<String> fileList = fileResponse.getDirListing();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("fileList: {}", fileList);
+                }
+
+                response.setFileList(fileList);
+            }
+
+            response.setApplication(application);
+            response.setCurrentPath(request.getRequestFile());
+            response.setRequestStatus(CoreServicesStatus.SUCCESS);
 
             if (DEBUG)
             {

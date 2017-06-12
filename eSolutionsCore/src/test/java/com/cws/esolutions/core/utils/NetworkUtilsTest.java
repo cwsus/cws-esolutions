@@ -38,8 +38,7 @@ import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 
 public class NetworkUtilsTest
 {
-    @Before
-    public void setUp()
+    @Before public void setUp()
     {
         try
         {
@@ -53,8 +52,7 @@ public class NetworkUtilsTest
         }
     }
 
-    @Test
-    public void executeTelnetRequest()
+    @Test public void executeTelnetRequest()
     {
         try
         {
@@ -66,8 +64,7 @@ public class NetworkUtilsTest
         }
     }
 
-    @Test
-    public void executeDNSLookup()
+    @Test public void executeDNSLookup()
     {
         try
         {
@@ -84,8 +81,7 @@ public class NetworkUtilsTest
         }
     }
 
-    @After
-    public void tearDown()
+    @After public void tearDown()
     {
         CoreServiceInitializer.shutdown();
     }

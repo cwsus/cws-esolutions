@@ -46,8 +46,7 @@ public class ServiceMessagingProcessorImplTest
 
     private static final IWebMessagingProcessor processor = new ServiceMessagingProcessorImpl();
 
-	@Before
-	public void setUp() throws Exception
+	@Before public void setUp() throws Exception
 	{
         hostInfo.setHostAddress("junit");
         hostInfo.setHostName("junit");
@@ -69,8 +68,7 @@ public class ServiceMessagingProcessorImplTest
         }
 	}
 
-	@Test
-	public void testAddNewMessage()
+	@Test public void testAddNewMessage()
 	{
 		MessagingRequest request = new MessagingRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -86,8 +84,7 @@ public class ServiceMessagingProcessorImplTest
 		}
 	}
 
-	@Test
-	public void testUpdateExistingMessage()
+	@Test public void testUpdateExistingMessage()
 	{
 		MessagingRequest request = new MessagingRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -103,8 +100,7 @@ public class ServiceMessagingProcessorImplTest
 		}
 	}
 
-	@Test
-	public void testShowMessages()
+	@Test public void testShowMessages()
 	{
 		MessagingRequest request = new MessagingRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -120,8 +116,7 @@ public class ServiceMessagingProcessorImplTest
 		}
 	}
 
-	@Test
-	public void testShowAlertMessages()
+	@Test public void testShowAlertMessages()
 	{
 		MessagingRequest request = new MessagingRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -137,8 +132,7 @@ public class ServiceMessagingProcessorImplTest
 		}
 	}
 
-	@Test
-	public void testShowMessage()
+	@Test public void testShowMessage()
 	{
 		MessagingRequest request = new MessagingRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -154,8 +148,7 @@ public class ServiceMessagingProcessorImplTest
 		}
 	}
 
-	@After
-	public void tearDown() throws Exception
+	@After public void tearDown() throws Exception
 	{
         SecurityServiceInitializer.shutdown();
         CoreServiceInitializer.shutdown();

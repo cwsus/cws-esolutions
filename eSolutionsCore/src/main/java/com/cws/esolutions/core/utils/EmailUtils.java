@@ -350,151 +350,144 @@ public final class EmailUtils
                 DEBUGGER.debug("mailStore: {}", mailStore);
             }
 
-            if (mailStore.isConnected())
+            if (!(mailStore.isConnected()))
             {
-                mailFolder = mailStore.getFolder("inbox");
-                archiveFolder = mailStore.getFolder("archive");
-
-                if (mailFolder.exists())
-                {
-                    mailFolder.open(Folder.READ_WRITE);
-
-                    if ((mailFolder.isOpen()) && (mailFolder.hasNewMessages()))
-                    {
-                        if (!(archiveFolder.exists()))
-                        {
-                            archiveFolder.create(Folder.HOLDS_MESSAGES);
-                        }
-
-                        Message[] mailMessages = mailFolder.getMessages();
-
-                        if (mailMessages.length != 0)
-                        {
-                            emailMessages = new ArrayList<EmailMessage>();
-
-                            for (Message message : mailMessages)
-                            {
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("MailMessage: {}", message);
-                                }
-
-                                // validate the message here
-                                String messageId = message.getHeader("Message-ID")[0];
-                                Long messageDate = message.getReceivedDate().getTime();
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("messageId: {}", messageId);
-                                    DEBUGGER.debug("messageDate: {}", messageDate);
-                                }
-
-                                // only get emails for the last 24 hours
-                                // this should prevent us from pulling too
-                                // many emails
-                                if (messageDate >= TIME_PERIOD)
-                                {
-                                    // process it
-                                    Multipart attachment = (Multipart) message.getContent();
-                                    Map<String, InputStream> attachmentList = new HashMap<String, InputStream>();
-
-                                    for (int x = 0; x < attachment.getCount(); x++)
-                                    {
-                                        BodyPart bodyPart = attachment.getBodyPart(x);
-
-                                        if (!(Part.ATTACHMENT.equalsIgnoreCase(bodyPart.getDisposition())))
-                                        {
-                                            continue;
-                                        }
-
-                                        attachmentList.put(bodyPart.getFileName(), bodyPart.getInputStream());
-                                    }
-
-                                    List<String> toList = new ArrayList<String>();
-                                    List<String> ccList = new ArrayList<String>();
-                                    List<String> bccList = new ArrayList<String>();
-                                    List<String> fromList = new ArrayList<String>();
-
-                                    for (Address from : message.getFrom())
-                                    {
-                                        fromList.add(from.toString());
-                                    }
-
-                                    if ((message.getRecipients(RecipientType.TO) != null) && (message.getRecipients(RecipientType.TO).length != 0))
-                                    {
-                                        for (Address to : message.getRecipients(RecipientType.TO))
-                                        {
-                                            toList.add(to.toString());
-                                        }
-                                    }
-
-                                    if ((message.getRecipients(RecipientType.CC) != null) && (message.getRecipients(RecipientType.CC).length != 0))
-                                    {
-                                        for (Address cc : message.getRecipients(RecipientType.CC))
-                                        {
-                                            ccList.add(cc.toString());
-                                        }
-                                    }
-
-                                    if ((message.getRecipients(RecipientType.BCC) != null) && (message.getRecipients(RecipientType.BCC).length != 0))
-                                    {
-                                        for (Address bcc : message.getRecipients(RecipientType.BCC))
-                                        {
-                                            bccList.add(bcc.toString());
-                                        }
-                                    }
-
-                                    EmailMessage emailMessage = new EmailMessage();
-                                    emailMessage.setMessageTo(toList);
-                                    emailMessage.setMessageCC(ccList);
-                                    emailMessage.setMessageBCC(bccList);
-                                    emailMessage.setEmailAddr(fromList);
-                                    emailMessage.setMessageAttachments(attachmentList);
-                                    emailMessage.setMessageDate(message.getSentDate());
-                                    emailMessage.setMessageSubject(message.getSubject());
-                                    emailMessage.setMessageBody(message.getContent().toString());
-                                    emailMessage.setMessageSources(message.getHeader("Received"));
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("emailMessage: {}", emailMessage);
-                                    }
-
-                                    emailMessages.add(emailMessage);
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("emailMessages: {}", emailMessages);
-                                    }
-                                }
-
-                                // archive it
-                                archiveFolder.open(Folder.READ_WRITE);
-
-                                if (archiveFolder.isOpen())
-                                {
-                                    mailFolder.copyMessages(new Message[] { message }, archiveFolder);
-                                    message.setFlag(Flags.Flag.DELETED, true);
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // cant open folder
-                        throw new MessagingException("Failed to open requested folder. Cannot continue");
-                    }
-                }
-                else
-                {
-                    // folder doesnt exist
-                    throw new MessagingException("Requested folder does not exist. Cannot continue.");
-                }
+            	throw new MessagingException("Failed to connect to mail service. Cannot continue.");
             }
-            else
+
+            mailFolder = mailStore.getFolder("inbox");
+            archiveFolder = mailStore.getFolder("archive");
+
+            if (!(mailFolder.exists()))
             {
-                // couldnt connect to service
-                throw new MessagingException("Failed to connect to mail service. Cannot continue.");
+            	throw new MessagingException("Requested folder does not exist. Cannot continue.");
+            }
+
+            mailFolder.open(Folder.READ_WRITE);
+
+            if ((!(mailFolder.isOpen())) || (!(mailFolder.hasNewMessages())))
+            {
+            	throw new MessagingException("Failed to open requested folder. Cannot continue");
+            }
+
+            if (!(archiveFolder.exists()))
+            {
+                archiveFolder.create(Folder.HOLDS_MESSAGES);
+            }
+
+            Message[] mailMessages = mailFolder.getMessages();
+
+            if (mailMessages.length == 0)
+            {
+            	throw new MessagingException("No messages were found in the provided store.");
+            }
+
+            emailMessages = new ArrayList<EmailMessage>();
+
+            for (Message message : mailMessages)
+            {
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("MailMessage: {}", message);
+                }
+
+                // validate the message here
+                String messageId = message.getHeader("Message-ID")[0];
+                Long messageDate = message.getReceivedDate().getTime();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("messageId: {}", messageId);
+                    DEBUGGER.debug("messageDate: {}", messageDate);
+                }
+
+                // only get emails for the last 24 hours
+                // this should prevent us from pulling too
+                // many emails
+                if (messageDate >= TIME_PERIOD)
+                {
+                    // process it
+                    Multipart attachment = (Multipart) message.getContent();
+                    Map<String, InputStream> attachmentList = new HashMap<String, InputStream>();
+
+                    for (int x = 0; x < attachment.getCount(); x++)
+                    {
+                        BodyPart bodyPart = attachment.getBodyPart(x);
+
+                        if (!(Part.ATTACHMENT.equalsIgnoreCase(bodyPart.getDisposition())))
+                        {
+                            continue;
+                        }
+
+                        attachmentList.put(bodyPart.getFileName(), bodyPart.getInputStream());
+                    }
+
+                    List<String> toList = new ArrayList<String>();
+                    List<String> ccList = new ArrayList<String>();
+                    List<String> bccList = new ArrayList<String>();
+                    List<String> fromList = new ArrayList<String>();
+
+                    for (Address from : message.getFrom())
+                    {
+                        fromList.add(from.toString());
+                    }
+
+                    if ((message.getRecipients(RecipientType.TO) != null) && (message.getRecipients(RecipientType.TO).length != 0))
+                    {
+                        for (Address to : message.getRecipients(RecipientType.TO))
+                        {
+                            toList.add(to.toString());
+                        }
+                    }
+
+                    if ((message.getRecipients(RecipientType.CC) != null) && (message.getRecipients(RecipientType.CC).length != 0))
+                    {
+                        for (Address cc : message.getRecipients(RecipientType.CC))
+                        {
+                            ccList.add(cc.toString());
+                        }
+                    }
+
+                    if ((message.getRecipients(RecipientType.BCC) != null) && (message.getRecipients(RecipientType.BCC).length != 0))
+                    {
+                        for (Address bcc : message.getRecipients(RecipientType.BCC))
+                        {
+                            bccList.add(bcc.toString());
+                        }
+                    }
+
+                    EmailMessage emailMessage = new EmailMessage();
+                    emailMessage.setMessageTo(toList);
+                    emailMessage.setMessageCC(ccList);
+                    emailMessage.setMessageBCC(bccList);
+                    emailMessage.setEmailAddr(fromList);
+                    emailMessage.setMessageAttachments(attachmentList);
+                    emailMessage.setMessageDate(message.getSentDate());
+                    emailMessage.setMessageSubject(message.getSubject());
+                    emailMessage.setMessageBody(message.getContent().toString());
+                    emailMessage.setMessageSources(message.getHeader("Received"));
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("emailMessage: {}", emailMessage);
+                    }
+
+                    emailMessages.add(emailMessage);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("emailMessages: {}", emailMessages);
+                    }
+                }
+
+                // archive it
+                archiveFolder.open(Folder.READ_WRITE);
+
+                if (archiveFolder.isOpen())
+                {
+                    mailFolder.copyMessages(new Message[] { message }, archiveFolder);
+                    message.setFlag(Flags.Flag.DELETED, true);
+                }
             }
         }
         catch (IOException iox)

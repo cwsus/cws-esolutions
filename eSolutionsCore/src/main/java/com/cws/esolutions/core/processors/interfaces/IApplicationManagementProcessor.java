@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.interfaces;
+
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.interfaces
@@ -27,6 +28,7 @@ package com.cws.esolutions.core.processors.interfaces;
  */
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.ResourceBundle;
 
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.CoreServiceConstants;
@@ -58,7 +60,21 @@ public interface IApplicationManagementProcessor
     static final String CNAME = IApplicationManagementProcessor.class.getName();
     static final AgentConfig agentConfig = appBean.getConfigData().getAgentConfig();
     static final IAccessControlService accessControl = new AccessControlServiceImpl();
-    static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();    
+    static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
+
+    // NLS
+    static final ResourceBundle bundle = ResourceBundle.getBundle("eSolutionsCore/nls/processors/ApplicationManagementProcessorImpl");
+    static final String MESSAGE_INVALID_PLATFORM = "invalid.platform.provided";
+    static final String MESSAGE_NO_PLATFORM_PROVIDED = "no.platform.provided";
+    static final String MESSAGE_NO_APPLICATIONS_FOUND = "no.applications.found";
+    static final String MESSAGE_NO_APPLICATION_DATA_FOUND = "no.application.data.found";
+    static final String MESSAGE_MQ_AGENT_FAILED = "agent.message.send.failed";
+    static final String MESSAGE_AGENT_REQUEST_FAILED = "message.agent.request.failed";
+    static final String MESSAGE_APPLICATION_EXISTS = "message.application.exists";
+    static final String MESSAGE_ADD_APPLICATION_FAILED = "message.add.application.failed";
+    static final String MESSAGE_UPDATE_APPLICATION_FAILED = "message.update.application.failed";
+    static final String MESSAGE_DELETE_APPLICATION_FAILED = "message.delete.application.failed";
+    static final String MESSAGE_LIST_APPLICATIONS_FAILED = "message.list.applications.failed";
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

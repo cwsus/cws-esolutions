@@ -47,8 +47,7 @@ public class EmailUtilsTest
 {
     private static final CoreServiceBean bean = CoreServiceBean.getInstance();
 
-    @Before
-    public void setUp()
+    @Before public void setUp()
     {
         try
         {
@@ -69,8 +68,7 @@ public class EmailUtilsTest
         }
     }
 
-    @Test
-    public void sendEmailMessage()
+    @Test public void sendEmailMessage()
     {
         EmailMessage message = new EmailMessage();
         message.setIsAlert(false);
@@ -91,8 +89,7 @@ public class EmailUtilsTest
         }
     }
 
-    @Test
-    public void sendEmailMessageWithAttachment()
+    @Test public void sendEmailMessageWithAttachment()
     {
         try
         {
@@ -127,8 +124,7 @@ public class EmailUtilsTest
         }
     }
 
-    @Test
-    public void sendEmailMessageAsSMS()
+    @Test public void sendEmailMessageAsSMS()
     {
         EmailMessage message = new EmailMessage();
         message.setIsAlert(false);
@@ -150,8 +146,7 @@ public class EmailUtilsTest
     }
 
     /*
-    @Test
-    public final void readEmailMessages()
+    @Test public final void readEmailMessages()
     {
         try
         {
@@ -164,8 +159,7 @@ public class EmailUtilsTest
     }
     */
 
-    @After
-    public void tearDown()
+    @After public void tearDown()
     {
         CoreServiceInitializer.shutdown();
     }

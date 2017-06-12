@@ -58,8 +58,7 @@ public class ServiceManagementProcessorImplTest
 
     private static final IServiceManagementProcessor processor = new ServiceManagementProcessorImpl();
 
-    @Before
-    public void setUp()
+    @Before public void setUp()
     {
         hostInfo.setHostAddress("junit");
         hostInfo.setHostName("junit");
@@ -82,8 +81,7 @@ public class ServiceManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void addNewServiceAsPlatform()
+    @Test public void addNewServiceAsPlatform()
     {
         List<String> devServers = new ArrayList<String>(
             Arrays.asList(
@@ -216,8 +214,7 @@ public class ServiceManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void addNewServiceAsDatacenter()
+    @Test public void addNewServiceAsDatacenter()
     {
         Service service = new Service();
         service.setType(ServiceType.DATACENTER);
@@ -247,8 +244,7 @@ public class ServiceManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void listServicesForPlatforms()
+    @Test public void listServicesForPlatforms()
     {
         ServiceManagementRequest request = new ServiceManagementRequest();
         request.setRequestInfo(hostInfo);
@@ -269,8 +265,7 @@ public class ServiceManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void listServicesForDatacenters()
+    @Test public void listServicesForDatacenters()
     {
         ServiceManagementRequest request = new ServiceManagementRequest();
         request.setRequestInfo(hostInfo);
@@ -291,8 +286,7 @@ public class ServiceManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void getServiceByAttribute()
+    @Test public void getServiceByAttribute()
     {
         Service service = new Service();
         service.setName("BBFvgNHa");
@@ -317,8 +311,7 @@ public class ServiceManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void getServiceDataForPlatform()
+    @Test public void getServiceDataForPlatform()
     {
         Service platform = new Service();
         platform.setGuid("046119de-9dc0-406d-bf4f-32f32b199f5c");
@@ -343,8 +336,7 @@ public class ServiceManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void getServiceDataForDatacenter()
+    @Test public void getServiceDataForDatacenter()
     {
         Service datacenter = new Service();
         datacenter.setGuid("046119de-9dc0-406d-bf4f-32f32b199f5c");
@@ -369,8 +361,7 @@ public class ServiceManagementProcessorImplTest
         }
     }
 
-    @After
-    public void tearDown()
+    @After public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
         CoreServiceInitializer.shutdown();
