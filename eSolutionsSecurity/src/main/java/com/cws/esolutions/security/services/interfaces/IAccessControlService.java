@@ -23,7 +23,7 @@ package com.cws.esolutions.security.services.interfaces;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +40,7 @@ import com.cws.esolutions.security.services.exception.AccessControlServiceExcept
  * API allowing access control to functionality for role-based
  * or group-based functions.
  *
- * @author khuntly
+ * @author cws-khuntly
  * @version 1.0
  */
 public interface IAccessControlService

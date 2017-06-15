@@ -23,7 +23,7 @@ package com.cws.esolutions.core.listeners;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import java.net.URL;
 import java.util.Map;
@@ -52,7 +52,7 @@ import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 /**
- * @author khuntly
+ * @author cws-khuntly
  * @version 1.0
  */
 public class CoreServiceInitializer

@@ -23,7 +23,7 @@ package com.cws.esolutions.core.exception;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -31,7 +31,7 @@ package com.cws.esolutions.core.exception;
  * application information.
  *
  * @see java.lang.Exception
- * @author khuntly
+ * @author cws-khuntly
  * @version 1.0
  */
 public class CoreServiceException extends Exception

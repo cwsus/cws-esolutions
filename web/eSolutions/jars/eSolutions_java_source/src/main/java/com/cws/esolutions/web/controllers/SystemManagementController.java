@@ -19,7 +19,7 @@ package com.cws.esolutions.web.controllers;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import java.util.List;
 import org.slf4j.Logger;
@@ -62,7 +62,7 @@ import com.cws.esolutions.core.processors.exception.ServiceManagementException;
 import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
 import com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor;
 /**
- * @author khuntly
+ * @author cws-khuntly
  * @version 1.0
  * @see org.springframework.stereotype.Controller
  */

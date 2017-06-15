@@ -23,7 +23,7 @@ package com.cws.esolutions.security.dao.reference.interfaces;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import java.util.List;
 import org.slf4j.Logger;
@@ -37,7 +37,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  * API allowing data access for user security information, such as salt
  * or reset data.
  *
- * @author khuntly
+ * @author cws-khuntly
  * @version 1.0
  */
 public interface IUserSecurityInformationDAO

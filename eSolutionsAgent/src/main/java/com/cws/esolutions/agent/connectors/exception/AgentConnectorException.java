@@ -23,7 +23,7 @@ package com.cws.esolutions.agent.connectors.exception;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import com.cws.esolutions.agent.exception.AgentException;
 /**
@@ -33,12 +33,12 @@ import com.cws.esolutions.agent.exception.AgentException;
  *
  * TODO: Add class description
  *
- * @author 35033355
+ * @author cws-khuntly
  * @version 1.0
  *
  * History
  * ----------------------------------------------------------------------------
- * 35033355 @ Dec 2, 2014 10:14:17 AM
+ * cws-khuntly @ Dec 2, 2014 10:14:17 AM
  *     Created.
  */
 public class AgentConnectorException extends AgentException

@@ -19,10 +19,10 @@ package com.cws.esolutions.core.processors.enums;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * 35033355              Jan 2, 2014                         Created.
+ * cws-khuntly              Jan 2, 2014                         Created.
  */
 /**
- * @author khuntly
+ * @author cws-khuntly
  * @version 1.0
  */
 public enum ServiceType

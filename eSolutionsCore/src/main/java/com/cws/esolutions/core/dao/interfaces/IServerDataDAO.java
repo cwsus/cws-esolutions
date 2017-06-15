@@ -23,7 +23,7 @@ package com.cws.esolutions.core.dao.interfaces;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import java.util.List;
 import org.slf4j.Logger;
@@ -38,7 +38,7 @@ import com.cws.esolutions.core.CoreServiceConstants;
  * into the asset management database to obtain, modify and remove
  * application information.
  *
- * @author khuntly
+ * @author cws-khuntly
  * @version 1.0
  */
 public interface IServerDataDAO

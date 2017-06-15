@@ -23,7 +23,7 @@ package com.cws.esolutions.core.processors.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import java.util.List;
 import java.util.UUID;
@@ -220,17 +220,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 DEBUGGER.debug("appDataList: {}", appDataList);
             }
 
-            boolean isApplicationAdded = appDAO.addApplication(appDataList);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("isApplicationAdded: {}", isApplicationAdded);
-            }
-
-            if (!(isApplicationAdded))
-            {
-            	throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_ADD_APPLICATION_FAILED));
-            }
+            appDAO.addApplication(appDataList);
 
             response.setRequestStatus(CoreServicesStatus.SUCCESS);
 
@@ -389,17 +379,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 DEBUGGER.debug("appDataList: {}", appDataList);
             }
 
-            boolean isComplete = appDAO.updateApplication(appDataList);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("isComplete: {}", isComplete);
-            }
-
-            if (!(isComplete))
-            {
-            	throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_UPDATE_APPLICATION_FAILED));
-            }
+            appDAO.updateApplication(appDataList);
             
             response.setRequestStatus(CoreServicesStatus.SUCCESS);
 
@@ -541,17 +521,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 return response;
             }
 
-            boolean isComplete = appDAO.removeApplication(application.getGuid());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("isComplete: {}", isComplete);
-            }
-
-            if (!(isComplete))
-            {
-            	throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_DELETE_APPLICATION_FAILED));
-            }
+            appDAO.removeApplication(application.getGuid());
 
             response.setRequestStatus(CoreServicesStatus.SUCCESS);
 

@@ -23,7 +23,7 @@ package com.cws.esolutions.agent;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
 import javax.jms.Session;
@@ -39,7 +39,7 @@ import com.cws.esolutions.agent.config.xml.ConfigurationData;
  * into the asset management database to obtain, modify and remove
  * application information.
  *
- * @author khuntly
+ * @author cws-khuntly
  * @version 1.0
  */
 public class AgentBean

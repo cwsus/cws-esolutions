@@ -14,12 +14,12 @@
  * com.cws.us.esolutions.service-management/jsp/html/en
  * ServiceMgmt_DefaultHandler.jsp
  *
- * @author kh05451
+ * @author cws-khuntly
  * @version 1.0
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Jan 16, 2013 11:53:26 AM
+ * cws-khuntly @ Jan 16, 2013 11:53:26 AM
  *     Created.
  */
 --%>

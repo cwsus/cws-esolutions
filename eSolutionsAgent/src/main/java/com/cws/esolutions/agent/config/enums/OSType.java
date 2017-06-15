@@ -19,13 +19,13 @@ package com.cws.esolutions.agent.config.enums;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * 35033355              Jan 3, 2014                         Created.
+ * cws-khuntly              Jan 3, 2014                         Created.
  */
 
 /**
  * TODO: Add class information/description
  *
- * @author 35033355
+ * @author cws-khuntly
  * @version 1.0
  */
 public enum OSType

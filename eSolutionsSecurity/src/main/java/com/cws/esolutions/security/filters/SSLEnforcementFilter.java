@@ -23,7 +23,7 @@ package com.cws.esolutions.security.filters;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import java.util.Set;
 import java.util.Arrays;

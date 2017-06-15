@@ -119,8 +119,8 @@
             <datasource>jdbc:mysql://127.0.0.1/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
             <dsUser>appuser</dsUser>
-            <dsPass>gs7NHN8ILKEogAlCXaXyWGEkYgSrTG6a2xemMntLMy9zmaOYxNwhBtJ4s0j6Nv+bAT3hLhkz41Z4bkjuHxt1+HobG5CDgnKZqL91jCvBvKo=</dsPass>
-            <salt>VY772zetrNG3qfttpqoUWKM86J7KEpT6ii83YmPE70jnUh3tbPFOURSJJTLCgJol</salt>
+            <dsPass>ami8+6beMei9zMTADAlHlg6iVqGEwrZp3UUPclDWi57ilw2kDIr9hGyvOivhO1Tu8K0npKrRlg0unzjVqhY9ernjIVtG44ZJeNjkLiVZ3vo=</dsPass>
+            <salt>ENNAhjkAm9AZmpOPrMbAuqVyETKPTjLkXYpNX6tRL950AO6HoQzvY7fjOvTeBgVz</salt>
             <connectTimeout>10</connectTimeout>
             <autoReconnect>true</autoReconnect>
         </DataSourceManager>
@@ -129,8 +129,8 @@
             <datasource>jdbc:mysql://127.0.0.1/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
             <dsUser>appuser</dsUser>
-            <dsPass>gs7NHN8ILKEogAlCXaXyWGEkYgSrTG6a2xemMntLMy9zmaOYxNwhBtJ4s0j6Nv+bAT3hLhkz41Z4bkjuHxt1+HobG5CDgnKZqL91jCvBvKo=</dsPass>
-            <salt>VY772zetrNG3qfttpqoUWKM86J7KEpT6ii83YmPE70jnUh3tbPFOURSJJTLCgJol</salt>
+            <dsPass>o7jOZqxB0waoa0qKUBSwPkQR3vgm78jm/Q9zZkqysSaEeFlBEzm+qRZhHnGLeCab6V8twuMVeA08eT1CG4NO8/y/TLHQTeg4AbVCGRE4HTY=</dsPass>
+            <salt>hg4Q1qymhVY5ZICwyXuYFvdegQVyrAbAwgUINiVVsAZaM3ytFYH376JBL60hQXBy</salt>
             <connectTimeout>10</connectTimeout>
             <autoReconnect>true</autoReconnect>
         </DataSourceManager>

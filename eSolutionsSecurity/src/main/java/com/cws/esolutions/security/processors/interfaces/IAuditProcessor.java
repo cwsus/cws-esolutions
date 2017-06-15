@@ -23,7 +23,7 @@ package com.cws.esolutions.security.processors.interfaces;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +41,7 @@ import com.cws.esolutions.security.processors.exception.AuditServiceException;
 /**
  * API allowing audit processing, if enabled.
  *
- * @author khuntly
+ * @author cws-khuntly
  * @version 1.0
  */
 public interface IAuditProcessor

@@ -23,11 +23,13 @@ package com.cws.esolutions.core.dao.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import java.sql.Types;
 import java.util.List;
+import java.util.Map;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.sql.ResultSet;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -36,9 +38,11 @@ import java.sql.CallableStatement;
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO;
+import com.cws.esolutions.core.utils.SQLUtils;
+import com.cws.esolutions.core.utils.exception.UtilityException;
 /**
  * @see com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO
- * @author 35033355
+ * @author cws-khuntly
  * @version 1.0
  */
 public class ApplicationDataDAOImpl implements IApplicationDataDAO
@@ -46,7 +50,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
     /**
      * @see com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO#addApplication(java.util.List)
      */
-    public synchronized boolean addApplication(final List<Object> value) throws SQLException
+    public synchronized void addApplication(final List<Object> value) throws SQLException
     {
         final String methodName = IApplicationDataDAO.CNAME + "#addApplication(final List<Object> value) throws SQLException";
         
@@ -56,67 +60,31 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
             DEBUGGER.debug("Value: {}", value);
         }
 
-        Connection sqlConn = null;
-        boolean isComplete = false;
-        CallableStatement stmt = null;
+    	Map<Integer, Object> params = new HashMap<Integer, Object>();
+    	params.put(1, (String) value.get(0));
+    	params.put(2, (String) value.get(1));
+    	params.put(3, (Double) value.get(2));
+    	params.put(4, (String) value.get(3));
+    	params.put(5, (String) value.get(4));
+    	params.put(6, (String) value.get(5));
+    	params.put(7, (String) value.get(6));
+    	params.put(8, (String) value.get(7));
+    	params.put(9, (String) value.get(8));
 
         try
         {
-            sqlConn = dataSource.getConnection();
-
-            if (sqlConn.isClosed())
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-
-            sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL insertNewApplication(?, ?, ?, ?, ?, ?, ?, ?, ?)}");
-            stmt.setString(1, (String) value.get(0)); // appGuid
-            stmt.setString(2, (String) value.get(1)); // appName
-            stmt.setDouble(3, new Double(value.get(2).toString())); // appVersion
-            stmt.setString(4, (String) value.get(3)); // installPath
-            stmt.setString(5, (String) value.get(4)); // packageLocation
-            stmt.setString(6, (String) value.get(5)); // packageInstaller
-            stmt.setString(7, (String) value.get(6)); // installerOptions (can be null)
-            stmt.setString(8, (String) value.get(7)); // logsDirectory
-            stmt.setString(9, (String) value.get(8)); // platformGuid
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
-            }
-
-            isComplete = (!(stmt.execute()));
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("isComplete: {}", isComplete);
-            }
+        	SQLUtils.addOrDeleteData("{CALL insertNewApplication(?, ?, ?, ?, ?, ?, ?, ?, ?)}", params);
         }
-        catch (SQLException sqx)
+        catch (UtilityException ux)
         {
-            throw new SQLException(sqx.getMessage(), sqx);
+            throw new SQLException(ux.getMessage(), ux);
         }
-        finally
-        {
-            if (stmt != null)
-            {
-                stmt.close();
-            }
-
-            if ((sqlConn != null) && (!(sqlConn.isClosed())))
-            {
-                sqlConn.close();
-            }
-        }
-
-        return isComplete;
     }
 
     /**
      * @see com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO#updateApplication(java.util.List)
      */
-    public synchronized boolean updateApplication(final List<Object> value) throws SQLException
+    public synchronized void updateApplication(final List<Object> value) throws SQLException
     {
         final String methodName = IApplicationDataDAO.CNAME + "#updateApplication(final List<Object> value) throws SQLException";
         
@@ -126,67 +94,30 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
             DEBUGGER.debug("Value: {}", value);
         }
 
-        Connection sqlConn = null;
-        boolean isComplete = false;
-        CallableStatement stmt = null;
-
+        Map<Integer, Object> params = new HashMap<Integer, Object>();
+    	params.put(1, (String) value.get(0));
+    	params.put(2, (String) value.get(1));
+    	params.put(3, (Double) value.get(2));
+    	params.put(4, (String) value.get(3));
+    	params.put(5, (String) value.get(4));
+    	params.put(6, (String) value.get(5));
+    	params.put(7, (String) value.get(6));
+    	params.put(8, (String) value.get(7));
+    	params.put(9, (String) value.get(8));
         try
         {
-            sqlConn = dataSource.getConnection();
-
-            if (sqlConn.isClosed())
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-
-            sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL updateApplicationData(?, ?, ?, ?, ?, ?, ?, ?, ?)}");
-            stmt.setString(1, (String) value.get(0)); // appGuid
-            stmt.setString(2, (String) value.get(1)); // appName
-            stmt.setDouble(3, new Double(value.get(2).toString())); // appVersion
-            stmt.setString(4, (String) value.get(3)); // installPath
-            stmt.setString(5, (String) value.get(4)); // packageLocation
-            stmt.setString(6, (String) value.get(5)); // packageInstaller
-            stmt.setString(7, (String) value.get(6)); // installerOptions (can be null)
-            stmt.setString(8, (String) value.get(7)); // logsDirectory
-            stmt.setString(9, (String) value.get(8)); // platformGuid
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
-            }
-
-            isComplete = (!(stmt.execute()));
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("isComplete: {}", isComplete);
-            }
+            SQLUtils.addOrDeleteData("{CALL updateApplicationData(?, ?, ?, ?, ?, ?, ?, ?, ?)}", params);
         }
-        catch (SQLException sqx)
+        catch (UtilityException ux)
         {
-            throw new SQLException(sqx.getMessage(), sqx);
+            throw new SQLException(ux.getMessage(), ux);
         }
-        finally
-        {
-            if (stmt != null)
-            {
-                stmt.close();
-            }
-
-            if ((sqlConn != null) && (!(sqlConn.isClosed())))
-            {
-                sqlConn.close();
-            }
-        }
-
-        return isComplete;
     }
 
     /**
      * @see com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO#removeApplication(java.lang.String)
      */
-    public synchronized boolean removeApplication(final String value) throws SQLException
+    public synchronized void removeApplication(final String value) throws SQLException
     {
         final String methodName = IApplicationDataDAO.CNAME + "#removeApplication(final String value) throws SQLException";
         
@@ -196,53 +127,17 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
             DEBUGGER.debug("Value: {}", value);
         }
 
-        Connection sqlConn = null;
-        boolean isComplete = false;
-        CallableStatement stmt = null;
+        Map<Integer, Object> params = new HashMap<Integer, Object>();
+    	params.put(1, value);
 
         try
         {
-            sqlConn = dataSource.getConnection();
-
-            if (sqlConn.isClosed())
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-
-            sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL removeApplicationData(?)}");
-            stmt.setString(1, value); // systemGuid
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
-            }
-
-            isComplete = (!(stmt.execute()));
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("isComplete: {}", isComplete);
-            }
+        	SQLUtils.addOrDeleteData("{CALL removeApplicationData(?)}", params);
         }
-        catch (SQLException sqx)
+        catch (UtilityException ux)
         {
-            throw new SQLException(sqx.getMessage(), sqx);
+            throw new SQLException(ux.getMessage(), ux);
         }
-        finally
-        {
-            if (stmt != null)
-            {
-                stmt.close();
-            }
-
-            if ((sqlConn != null) && (!(sqlConn.isClosed())))
-            {
-                sqlConn.close();
-            }
-        }
-
-        return isComplete;
     }
 
     /**

@@ -73,7 +73,7 @@
     <ssh-config>
         <timeout>15000</timeout> <!-- connect timeout in milliseconds (defaults to 10 seconds (10000) if not set here) -->
         <sshProperties>/eSolutionsCore/config/ssh.properties</sshProperties> <!-- full path to properties file containing ssh props (like StrictHostKeyChecking, etc) -->
-        <sshAccount>kh05451</sshAccount> <!-- username to use for authentication -->
+        <sshAccount>cws-khuntly</sshAccount> <!-- username to use for authentication -->
         <sshSalt />
         <sshPassword />
         <sshKey>/opt/cws/eSolutions/.ssh/id_rsa</sshKey> <!-- path to the ssh private key -->

@@ -23,7 +23,7 @@ package com.cws.esolutions.core.dao.interfaces;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import java.util.List;
 
@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.CoreServiceConstants;
 /**
- * @author khuntly
+ * @author cws-khuntly
  * @version 1.0
  */
 public interface IWebMessagingDAO

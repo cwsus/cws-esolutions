@@ -23,7 +23,7 @@ package com.cws.esolutions.security.dao.keymgmt.interfaces;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
 import java.security.KeyPair;
@@ -43,7 +43,7 @@ import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDA
  * {@link com.cws.esolutions.security.dao.keymgmt.factory.KeyManagementFactory}
  * to provide functionality for LDAP, SQL and file-based key repositories.
  *
- * @author khuntly
+ * @author cws-khuntly
  * @version 1.0
  */
 public interface KeyManager

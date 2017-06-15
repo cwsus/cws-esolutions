@@ -23,7 +23,7 @@ package com.cws.esolutions.core.utils;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import java.util.Map;
 import org.junit.Test;
@@ -50,22 +50,15 @@ public class EmailUtilsTest
     @Before public void setUp()
     {
         try
-        {
-        	try
-        	{
-        		CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", false, false);
-        	}
-        	catch (Exception ex)
-        	{
-        		ex.printStackTrace();
-        	}
-        }
-        catch (Exception ex)
-        {
+    	{
+    		CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", false, false);
+    	}
+    	catch (Exception ex)
+    	{
             Assert.fail(ex.getMessage());
 
             System.exit(-1);
-        }
+    	}
     }
 
     @Test public void sendEmailMessage()
@@ -73,10 +66,10 @@ public class EmailUtilsTest
         EmailMessage message = new EmailMessage();
         message.setIsAlert(false);
         message.setMessageSubject("Test Message");
-        message.setMessageBCC(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
-        message.setMessageCC(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
-        message.setMessageTo(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
-        message.setEmailAddr(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
+        message.setMessageBCC(new ArrayList<String>(Arrays.asList("cws-khuntly")));
+        message.setMessageCC(new ArrayList<String>(Arrays.asList("cws-khuntly")));
+        message.setMessageTo(new ArrayList<String>(Arrays.asList("cws-khuntly")));
+        message.setEmailAddr(new ArrayList<String>(Arrays.asList("cws-khuntly")));
         message.setMessageBody("This is a test message");
 
         try
@@ -105,10 +98,10 @@ public class EmailUtilsTest
             EmailMessage message = new EmailMessage();
             message.setIsAlert(false);
             message.setMessageSubject("Test Message");
-            message.setMessageBCC(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
-            message.setMessageCC(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
-            message.setMessageTo(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
-            message.setEmailAddr(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
+            message.setMessageBCC(new ArrayList<String>(Arrays.asList("cws-khuntly")));
+            message.setMessageCC(new ArrayList<String>(Arrays.asList("cws-khuntly")));
+            message.setMessageTo(new ArrayList<String>(Arrays.asList("cws-khuntly")));
+            message.setEmailAddr(new ArrayList<String>(Arrays.asList("cws-khuntly")));
             message.setMessageBody("This is a test message");
             message.setMessageAttachments(attachments);
 
@@ -129,10 +122,10 @@ public class EmailUtilsTest
         EmailMessage message = new EmailMessage();
         message.setIsAlert(false);
         message.setMessageSubject("Test Message");
-        message.setMessageBCC(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
-        message.setMessageCC(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
+        message.setMessageBCC(new ArrayList<String>(Arrays.asList("cws-khuntly")));
+        message.setMessageCC(new ArrayList<String>(Arrays.asList("cws-khuntly")));
         message.setMessageTo(new ArrayList<String>(Arrays.asList("7163415669@vmobl.com")));
-        message.setEmailAddr(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
+        message.setEmailAddr(new ArrayList<String>(Arrays.asList("cws-khuntly")));
         message.setMessageBody("This is a test message");
 
         try

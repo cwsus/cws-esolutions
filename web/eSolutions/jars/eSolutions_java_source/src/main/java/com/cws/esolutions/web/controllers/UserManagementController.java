@@ -19,7 +19,7 @@ package com.cws.esolutions.web.controllers;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import java.util.Date;
 import java.util.List;
@@ -68,7 +68,7 @@ import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 /**
- * @author khuntly
+ * @author cws-khuntly
  * @version 1.0
  * @see org.springframework.stereotype.Controller
  */

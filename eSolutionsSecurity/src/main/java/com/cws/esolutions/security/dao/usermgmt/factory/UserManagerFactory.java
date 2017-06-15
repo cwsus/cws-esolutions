@@ -23,7 +23,7 @@ package com.cws.esolutions.security.dao.usermgmt.factory;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +35,7 @@ import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
  * into the asset management database to obtain, modify and remove
  * application information.
  *
- * @author khuntly
+ * @author cws-khuntly
  * @version 1.0
  */
 public class UserManagerFactory

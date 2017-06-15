@@ -23,7 +23,7 @@ package com.cws.esolutions.security.dao.usermgmt.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import java.util.UUID;
 import org.junit.Test;
@@ -110,7 +110,7 @@ public class LDAPUserManagerTest
     {
         try
         {
-            Assert.assertFalse(manager.searchUsers("35033355@HSBC").isEmpty());
+            Assert.assertFalse(manager.searchUsers("cws-khuntly@HSBC").isEmpty());
         }
         catch (UserManagementException umx)
         {
@@ -122,7 +122,7 @@ public class LDAPUserManagerTest
     {
         try
         {
-            Assert.assertFalse(manager.loadUserAccount("35033355").isEmpty());
+            Assert.assertFalse(manager.loadUserAccount("cws-khuntly").isEmpty());
         }
         catch (UserManagementException umx)
         {

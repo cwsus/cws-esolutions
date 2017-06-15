@@ -23,7 +23,7 @@ package com.cws.esolutions.security.processors.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import org.junit.Test;
 import org.junit.After;
@@ -141,7 +141,7 @@ public class AccountResetProcessorImplTest
         UserAccount account = new UserAccount();
         account.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
         account.setUsername("junit");
-        account.setEmailAddr("kmhuntly@gmail.com");
+        account.setEmailAddr("cws-khuntly");
 
         AccountResetRequest request = new AccountResetRequest();
         request.setApplicationName("esolutions");

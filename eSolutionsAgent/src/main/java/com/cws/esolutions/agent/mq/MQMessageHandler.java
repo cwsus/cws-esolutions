@@ -23,7 +23,7 @@ package com.cws.esolutions.agent.mq;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
 import javax.jms.Session;
@@ -47,7 +47,7 @@ import com.cws.esolutions.agent.processors.interfaces.IAgentRequestProcessor;
 /**
  * TODO: Add class information/description
  *
- * @author 35033355
+ * @author cws-khuntly
  * @version 1.0
  */
 public class MQMessageHandler implements MessageListener

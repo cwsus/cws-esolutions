@@ -23,7 +23,7 @@ package com.cws.esolutions.security.processors.interfaces;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   03/28/2017 01:41:00             Created.
+ * cws-khuntly   03/28/2017 01:41:00             Created.
  */
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +44,7 @@ import com.cws.esolutions.security.processors.exception.CertificateRequestExcept
 /**
  * API allowing user authentication request processing.
  *
- * @author khuntly
+ * @author cws-khuntly
  * @version 1.0
  */
 public interface ICertificateRequestProcessor

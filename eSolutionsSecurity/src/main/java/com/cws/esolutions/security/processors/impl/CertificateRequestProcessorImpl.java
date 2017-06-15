@@ -23,7 +23,7 @@ package com.cws.esolutions.security.processors.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   03/28/2017 01:41:00             Created.
+ * cws-khuntly   03/28/2017 01:41:00             Created.
  */
 import java.io.File;
 import java.util.List;
@@ -48,7 +48,7 @@ import com.cws.esolutions.security.processors.exception.CertificateRequestExcept
 import com.cws.esolutions.security.processors.interfaces.ICertificateRequestProcessor;
 import com.cws.esolutions.security.dao.certmgmt.exception.CertificateManagementException;
 /**
- * @author khuntly
+ * @author cws-khuntly
  * @version 1.0
  * @see com.cws.esolutions.security.processors.interfaces.ICertificateRequestProcessor
  */

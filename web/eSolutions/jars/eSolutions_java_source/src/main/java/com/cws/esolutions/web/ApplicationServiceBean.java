@@ -12,7 +12,7 @@ package com.cws.esolutions.web;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import java.util.Map;
 import org.slf4j.Logger;
@@ -25,7 +25,7 @@ import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.web.validators.EmailAddressValidator;
 import com.cws.esolutions.web.validators.EmailMessageValidator;
 /**
- * @author khuntly
+ * @author cws-khuntly
  * @version 1.0
  */
 public class ApplicationServiceBean implements Serializable

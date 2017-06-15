@@ -19,7 +19,7 @@ package com.cws.esolutions.security.services.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import org.junit.Test;
 import org.junit.After;

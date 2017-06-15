@@ -23,7 +23,7 @@ package com.cws.esolutions.security.processors.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import java.io.File;
 import org.junit.Test;
@@ -41,7 +41,7 @@ import com.cws.esolutions.security.processors.dto.CertificateResponse;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.processors.interfaces.ICertificateRequestProcessor;
 /**
- * @author khuntly
+ * @author cws-khuntly
  * @version 1.0
  */
 public final class CertificateRequestProcessorTest

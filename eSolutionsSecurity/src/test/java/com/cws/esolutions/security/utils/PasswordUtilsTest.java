@@ -23,7 +23,7 @@ package com.cws.esolutions.security.utils;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import org.junit.Test;
 import org.junit.After;
@@ -56,7 +56,7 @@ public class PasswordUtilsTest
     @Test public void twoWayEncrypt()
     {
     	String password = "appuser10";
-    	String salt = "VY772zetrNG3qfttpqoUWKM86J7KEpT6ii83YmPE70jnUh3tbPFOURSJJTLCgJol";
+    	String salt = "hg4Q1qymhVY5ZICwyXuYFvdegQVyrAbAwgUINiVVsAZaM3ytFYH376JBL60hQXBy";
     	String expected = "zuPztAohr1mI5PiX7spywPRdku78+SlBrp1EDGJde7EQB47sw0hWQH24EQpEt5KEornnV+xnXqX917LzBDmB3Nl09klCiMlkeKhP5/3uuKc=";
 
     	String response = PasswordUtils.encryptText(password, salt,
@@ -71,9 +71,10 @@ public class PasswordUtilsTest
     @Test public void twoWayDecrypt()
     {
     	String expected = "appuser10";
-    	String salt = "VY772zetrNG3qfttpqoUWKM86J7KEpT6ii83YmPE70jnUh3tbPFOURSJJTLCgJol";
-    	String encrypted = "zuPztAohr1mI5PiX7spywPRdku78+SlBrp1EDGJde7EQB47sw0hWQH24EQpEt5KEornnV+xnXqX917LzBDmB3Nl09klCiMlkeKhP5/3uuKc=";
-
+    	String encrypted = "SuzB0dLk3m8MHkOKGw1Epv9fVXMXKvMmfEmGuQleSkQmInPRwipCYSg2MJ2ycaxZoHcx7VB9kQFErFLKZOFnFBsRO9aorovlw3oLjzSlwpg=";
+		String salt = "VY772zetrNG3qfttpqoUWKM86J7KEpT6ii83YmPE70jnUh3tbPFOURSJJTLCgJol";
+    	
+    	
     	String response = PasswordUtils.decryptText(encrypted, salt.length(),
     			bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
     			bean.getConfigData().getSecurityConfig().getEncryptionInstance(),

@@ -22,7 +22,7 @@ package com.cws.esolutions.security.config.enums;
  * History
  *
  * ----------------------------------------------------------------------------
- * 35033355 @ Jul 28, 2014 9:17:45 AM
+ * cws-khuntly @ Jul 28, 2014 9:17:45 AM
  *     Created.
  */
 public enum RepositoryConnectionType

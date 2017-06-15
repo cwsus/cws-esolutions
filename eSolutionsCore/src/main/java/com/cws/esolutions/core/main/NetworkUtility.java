@@ -21,7 +21,7 @@ package com.cws.esolutions.core.main;
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Jan 4, 2013 3:36:54 PM
+ * cws-khuntly @ Jan 4, 2013 3:36:54 PM
  *     Created.
  */
 import java.net.URL;
@@ -58,7 +58,7 @@ import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
  * into the asset management database to obtain, modify and remove
  * application information.
  *
- * @author khuntly
+ * @author cws-khuntly
  * @version 1.0
  */
 @SuppressWarnings("static-access")

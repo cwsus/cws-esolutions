@@ -23,7 +23,7 @@ package com.cws.esolutions.core.processors.dto;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
 import java.io.Serializable;
@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 /**
- * @author khuntly
+ * @author cws-khuntly
  * @version 1.0
  * @see java.io.Serializable
  */

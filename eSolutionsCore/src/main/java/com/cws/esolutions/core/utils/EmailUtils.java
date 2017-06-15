@@ -21,7 +21,7 @@ package com.cws.esolutions.core.utils;
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Jan 4, 2013 3:36:54 PM
+ * cws-khuntly @ Jan 4, 2013 3:36:54 PM
  *     Created.
  */
 import java.util.Map;
@@ -65,7 +65,7 @@ import com.cws.esolutions.core.utils.dto.EmailMessage;
  * into the asset management database to obtain, modify and remove
  * application information.
  *
- * @author khuntly
+ * @author cws-khuntly
  * @version 1.0
  */
 public final class EmailUtils
@@ -90,12 +90,12 @@ public final class EmailUtils
      * $Author: $
      * $Date: $
      * $Revision: $
-     * @author kmhuntly@gmail.com
+     * @author cws-khuntly
      * @version 1.0
      *
      * History
      * ----------------------------------------------------------------------------
-     * kh05451 @ Dec 26, 2012 12:54:17 PM
+     * cws-khuntly @ Dec 26, 2012 12:54:17 PM
      *     Created.
      */
     public static final class SMTPAuthenticator extends Authenticator

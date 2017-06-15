@@ -23,7 +23,7 @@ package com.cws.esolutions.security.processors.dto;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   03/28/2017 01:41:00             Created.
+ * cws-khuntly   03/28/2017 01:41:00             Created.
  */
 import java.io.File;
 import org.slf4j.Logger;
@@ -35,7 +35,7 @@ import java.lang.reflect.Field;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 /**
- * @author khuntly
+ * @author cws-khuntly
  * @version 1.0
  * @see java.io.Serializable
  */

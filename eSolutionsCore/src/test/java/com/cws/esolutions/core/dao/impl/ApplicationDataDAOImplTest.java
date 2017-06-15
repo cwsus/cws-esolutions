@@ -17,13 +17,13 @@ package com.cws.esolutions.core.dao.impl;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.dao.impl
- * File: ApplicationDataDAOImplTest.java
+ * File: java
  *
  * History
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import java.util.List;
 import org.junit.Test;
@@ -36,17 +36,24 @@ import java.sql.SQLException;
 
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO;
-
+import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
+/**
+ * @see com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO
+ * @author cws-khuntly
+ * @version 1.0
+ */
 public class ApplicationDataDAOImplTest
 {
-    private String guid = "828f58b4-55f8-473a-9d75-17ae6cad3f6b";
+    private String appGuid = "828f58b4-55f8-473a-9d75-17ae6cad3f6b";
+    private String platformGuid = "0e78acfe-eb16-4a40-9e6a-b79a3def9b4c";
     private static final IApplicationDataDAO dao = new ApplicationDataDAOImpl();
 
     @Before public void setUp()
     {
         try
         {
-        	CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "logging/logging.xml", true, false);
+        	SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
+        	CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, true);
         }
         catch (Exception ex)
         {
@@ -60,22 +67,22 @@ public class ApplicationDataDAOImplTest
     {
         List<Object> appData = new ArrayList<Object>(
                 Arrays.asList(
-                        this.guid,
+                		this.appGuid,
                         "eSolutions",
-                        "c0b20624-0a0c-4cf6-a8dc-62efc5a46e18",
-                        "CWS",
-                        "1.0",
-                        "/appvol/ATS70/eSolutions/applogs",
-                        "2aa547e9-3a6e-4720-95d9-6521c862ef2a",
+                        1.0,
                         "/appvol/ATS70/eSolutions/eSolutions_web_source-1.0.war",
-                        "/appvol/ATS70/eSolutions/syslogs/"));
-
+                        "/nas/installer/eSolutions_web_source-1.0.war",
+                        "/nas/installer/runAppInstall.sh",
+                        "",
+                        "/appvol/ATS70/eSolutions/syslogs/",
+                        this.platformGuid));
         try
         {
-            Assert.assertTrue(ApplicationDataDAOImplTest.dao.addApplication(appData));
+            dao.addApplication(appData);
         }
         catch (SQLException sqx)
         {
+        	sqx.printStackTrace();
             Assert.fail(sqx.getMessage());
         }
     }
@@ -84,19 +91,19 @@ public class ApplicationDataDAOImplTest
     {
         List<Object> appData = new ArrayList<Object>(
                 Arrays.asList(
-                        this.guid,
+                		this.appGuid,
                         "eSolutions",
-                        "c0b20624-0a0c-4cf6-a8dc-62efc5a46e18",
-                        "CWS",
-                        "1.1",
-                        "/appvol/ATS70/eSolutions/applogs",
-                        "2aa547e9-3a6e-4720-95d9-6521c862ef2a",
+                        2.0,
                         "/appvol/ATS70/eSolutions/eSolutions_web_source-1.0.war",
-                        "/appvol/ATS70/eSolutions/syslogs/"));
+                        "/nas/installer/eSolutions_web_source-1.0.war",
+                        "/nas/installer/runAppInstall.sh",
+                        "",
+                        "/appvol/ATS70/eSolutions/syslogs/",
+                        this.platformGuid));
 
         try
         {
-            Assert.assertTrue(ApplicationDataDAOImplTest.dao.addApplication(appData));
+            dao.addApplication(appData);
         }
         catch (SQLException sqx)
         {
@@ -108,7 +115,7 @@ public class ApplicationDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(ApplicationDataDAOImplTest.dao.listApplications(0));
+            Assert.assertNotNull(dao.listApplications(0));
         }
         catch (SQLException sqx)
         {
@@ -120,7 +127,7 @@ public class ApplicationDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(ApplicationDataDAOImplTest.dao.getApplication(this.guid));
+            Assert.assertNotNull(dao.getApplication(this.appGuid));
         }
         catch (SQLException sqx)
         {
@@ -132,7 +139,7 @@ public class ApplicationDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(ApplicationDataDAOImplTest.dao.getApplicationsByAttribute("eSolutions", 0));
+            Assert.assertNotNull(dao.getApplicationsByAttribute("eSolutions", 0));
         }
         catch (SQLException sqx)
         {
@@ -144,7 +151,7 @@ public class ApplicationDataDAOImplTest
     {
         try
         {
-            Assert.assertTrue(ApplicationDataDAOImplTest.dao.removeApplication(this.guid));
+            dao.removeApplication(this.appGuid);
         }
         catch (SQLException sqx)
         {

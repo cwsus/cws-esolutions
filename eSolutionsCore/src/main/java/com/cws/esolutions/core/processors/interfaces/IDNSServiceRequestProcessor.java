@@ -23,7 +23,7 @@ package com.cws.esolutions.core.processors.interfaces;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +43,7 @@ import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 /**
  * API allowing DNS service management and data retrieval
  *
- * @author khuntly
+ * @author cws-khuntly
  * @version 1.0
  */
 public interface IDNSServiceRequestProcessor

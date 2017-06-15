@@ -21,7 +21,7 @@ package com.cws.esolutions.security.exception;
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Jan 4, 2013 3:36:54 PM
+ * cws-khuntly @ Jan 4, 2013 3:36:54 PM
  *     Created.
  */
 import com.unboundid.ldap.sdk.ResultCode;
