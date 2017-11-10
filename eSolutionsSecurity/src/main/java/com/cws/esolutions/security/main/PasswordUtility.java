@@ -19,7 +19,11 @@ import java.io.File;
 import java.util.List;
 import java.util.Arrays;
 import org.slf4j.Logger;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -75,7 +79,7 @@ public class PasswordUtility
             .withArgName("entry")
             .withDescription("Name for the entry")
             .withType(String.class)
-            .isRequired(false)
+            .isRequired(true)
             .create();
 
         Option usernameOption = OptionBuilder.withLongOpt("username")
@@ -83,7 +87,7 @@ public class PasswordUtility
             .withArgName("username")
             .withDescription("Username for the entry")
             .withType(String.class)
-            .isRequired(false)
+            .isRequired(true)
             .create();
 
         Option passwordOption = OptionBuilder.withLongOpt("password")
@@ -98,8 +102,15 @@ public class PasswordUtility
             .hasArg(false)
             .withDescription("Store the entry in the data files")
             .isRequired(false)
-            .withType(String.class)
+            .withType(Boolean.class)
             .create();
+
+        Option replaceEntry = OptionBuilder.withLongOpt("replace")
+        		.hasArg(false)
+        		.withDescription("Replace an existing entry")
+        		.isRequired(false)
+        		.withType(Boolean.class)
+        		.create();
 
         Option encryptOption = OptionBuilder.withLongOpt("encrypt")
             .hasArg(false)
@@ -108,6 +119,7 @@ public class PasswordUtility
             .withArgName("password")
             .withArgName("store")
             .withDescription("Encrypt the provided string")
+            .withType(Boolean.class)
             .isRequired(false)
             .create();
 
@@ -116,14 +128,15 @@ public class PasswordUtility
             .addOption(entryNameOption)
             .addOption(usernameOption)
             .addOption(passwordOption)
-            .addOption(writeToFile);
+            .addOption(writeToFile)
+            .addOption(replaceEntry);
 
         Option decryptOption = OptionBuilder.withLongOpt("decrypt")
             .hasArg(false)
             .withArgName("entry")
             .withArgName("username")
             .withDescription("Decrypt the provided string")
-            .withType(String.class)
+            .withType(Boolean.class)
             .isRequired(false)
             .create();
 
@@ -141,6 +154,11 @@ public class PasswordUtility
     {
         final String methodName = PasswordUtility.CNAME + "#main(final String[] args)";
 
+        if (DEBUG)
+        {
+        	DEBUGGER.debug("Value: {}", methodName);
+        }
+
         if (args.length == 0)
         {
             HelpFormatter usage = new HelpFormatter();
@@ -149,6 +167,9 @@ public class PasswordUtility
             System.exit(1);
         }
 
+        BufferedReader bReader = null;
+        BufferedWriter bWriter = null;
+
         try
         {
             // load service config first !!
@@ -156,7 +177,6 @@ public class PasswordUtility
 
             if (DEBUG)
             {
-                DEBUGGER.debug(methodName);
                 DEBUGGER.debug("Options options: {}", options);
 
                 for (String arg : args)
@@ -201,8 +221,8 @@ public class PasswordUtility
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("String entryName: {}", passwordFile);
-                    DEBUGGER.debug("String username: {}", saltFile);
+                    DEBUGGER.debug("File passwordFile: {}", passwordFile);
+                    DEBUGGER.debug("File saltFile: {}", saltFile);
                 }
 
                 String entryName = commandLine.getOptionValue("entry");
@@ -238,6 +258,11 @@ public class PasswordUtility
 
                         boolean saltFileExists = (saltFile.exists()) ? true : saltFile.createNewFile();
 
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("saltFileExists: {}", saltFileExists);
+                        }
+
                         // write the salt out first
                         if (!(saltFileExists))
                         {
@@ -249,6 +274,63 @@ public class PasswordUtility
                         if (!(passwordFileExists))
                         {
                             throw new IOException("Unable to create password file");
+                        }
+
+                        if (commandLine.hasOption("replace"))
+                        {
+                        	File[] files = new File[] { saltFile, passwordFile };
+
+                            if (DEBUG)
+                            {
+                            	DEBUGGER.debug("File[] files: {}", (Object) files);
+                            }
+
+                        	for (File file : files)
+                        	{
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("File: {}", file);
+                                }
+
+                                String currentLine = null;
+                                File tmpFile = new File(FileUtils.getTempDirectory() + "/" + "tmpFile");
+
+                                if (DEBUG)
+                                {
+                                	DEBUGGER.debug("File tmpFile: {}", tmpFile);
+                                }
+
+                            	bReader = new BufferedReader(new FileReader(file));
+                            	bWriter = new BufferedWriter(new FileWriter(tmpFile));
+
+                            	while ((currentLine = bReader.readLine()) !=  null)
+                            	{
+                                    if (DEBUG)
+                                    {
+                                    	DEBUGGER.debug("currentLine: {}", currentLine);
+                                    }
+
+                            		String lineEntry = currentLine.trim().split(",")[0];
+
+                                    if (DEBUG)
+                                    {
+                                    	DEBUGGER.debug("lineEntry: {}", lineEntry);
+                                    }
+
+                            		if (!(StringUtils.equals(lineEntry, entryName)))
+                            		{
+                            			bWriter.write(currentLine + System.getProperty("line.separator"));
+
+                            			bWriter.flush();
+                            		}
+                            	}
+
+                            	bWriter.close();
+
+                            	FileUtils.deleteQuietly(file);
+                            	FileUtils.copyFile(tmpFile, file);
+                            	FileUtils.deleteQuietly(tmpFile);
+                        	}
                         }
 
                         FileUtils.writeStringToFile(saltFile, entryName + "," + encodedUserName + "," + salt + System.getProperty("line.separator"), true);
@@ -461,6 +543,22 @@ public class PasswordUtility
             System.err.println("An error occurred during processing: " + ssx.getMessage());
 
             System.exit(1);
+        }
+        finally
+        {
+        	try
+        	{
+	        	if (bReader != null)
+	        	{
+	        		bReader.close();
+	        	}
+
+	        	if (bWriter != null)
+	        	{
+	        		bReader.close();
+	        	}
+        	}
+        	catch (IOException iox) {}
         }
 
         System.exit(0);
