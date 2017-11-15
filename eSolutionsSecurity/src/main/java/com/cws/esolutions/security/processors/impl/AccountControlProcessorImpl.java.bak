@@ -274,12 +274,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             throw new AccountControlException(sqx.getMessage(), sqx);
         }
-        catch (SecurityException sx)
-        {
-            ERROR_RECORDER.error(sx.getMessage(), sx);
-
-            throw new AccountControlException(sx.getMessage(), sx);
-		}
         finally
         {
             // audit
@@ -1013,12 +1007,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             throw new AccountControlException(umx.getMessage(), umx);
         }
-        catch (SecurityException sx)
-        {
-            ERROR_RECORDER.error(sx.getMessage(), sx);
-
-            throw new AccountControlException(sx.getMessage(), sx);
-		}
         finally
         {
             // audit

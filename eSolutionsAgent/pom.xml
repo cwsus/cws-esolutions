@@ -15,7 +15,7 @@
     <description>eSolutions Agent software - listener on target nodes for action</description>
 
     <scm>
-        <url>https://github.com/cwsus/cws-esolutions/tree/emailops/eSolutionsAgent</url>
+        <url>https://github.com/cwsus/cws-esolutions/eSolutionsAgent</url>
     </scm>
 
     <properties>

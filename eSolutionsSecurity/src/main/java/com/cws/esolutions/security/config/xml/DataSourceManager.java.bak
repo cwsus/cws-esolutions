@@ -44,11 +44,11 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 @XmlAccessorType(XmlAccessType.NONE)
 public final class DataSourceManager implements Serializable
 {
+    private String salt = null;
     private String dsName = null;
     private String driver = null;
     private String dsUser = null;
     private String dsPass = null;
-    private String dsSalt = null;
     private String datasource = null;
     private int connectTimeout = 10000; // default to 10 seconds
     private boolean autoReconnect = true; // default to true
@@ -125,9 +125,9 @@ public final class DataSourceManager implements Serializable
         this.dsPass = value;
     }
 
-    public final void setDsSalt(final String value)
+    public final void setSalt(final String value)
     {
-        final String methodName = DataSourceManager.CNAME + "#setDsSalt(final String value)";
+        final String methodName = DataSourceManager.CNAME + "#setSalt(final String value)";
 
         if (DEBUG)
         {
@@ -135,7 +135,7 @@ public final class DataSourceManager implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.dsSalt = value;
+        this.salt = value;
     }
 
     public final void setConnectTimeout(final int value)
@@ -234,18 +234,18 @@ public final class DataSourceManager implements Serializable
         return this.dsPass;
     }
 
-    @XmlElement(name = "dsSalt")
-    public final String getDsSalt()
+    @XmlElement(name = "salt")
+    public final String getSalt()
     {
-        final String methodName = DataSourceManager.CNAME + "#getDsSalt()";
+        final String methodName = DataSourceManager.CNAME + "#getSalt()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.dsSalt);
+            DEBUGGER.debug("Value: {}", this.salt);
         }
 
-        return this.dsSalt;
+        return this.salt;
     }
 
     @XmlElement(name = "connectTimeout")

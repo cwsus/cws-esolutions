@@ -175,8 +175,8 @@ public final class DAOInitializer
                         case CONNECTION_TYPE_SSL:
                             sslUtil = new SSLUtil(new TrustStoreTrustManager(
                                     connProps.getProperty(DAOInitializer.TRUST_FILE),
-                                    PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.TRUST_PASS), connProps.getProperty(DAOInitializer.TRUST_SALT),
-                                    		secConfig.getSecretAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
+                                    PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.TRUST_PASS),
+                                            connProps.getProperty(DAOInitializer.TRUST_SALT).length(),
                                             secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), 
                                             systemConfig.getEncoding()).toCharArray(),
                                     connProps.getProperty(DAOInitializer.TRUST_TYPE),
@@ -227,13 +227,13 @@ public final class DAOInitializer
                             }
 
                             sslUtil = new SSLUtil(new TrustStoreTrustManager(
-                                    connProps.getProperty(DAOInitializer.TRUST_FILE),
-                                    PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.TRUST_PASS), connProps.getProperty(DAOInitializer.TRUST_SALT),
-                                    		secConfig.getSecretAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
-                                            secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), 
-                                            systemConfig.getEncoding()).toCharArray(),
-                                    connProps.getProperty(DAOInitializer.TRUST_TYPE),
-                                    true));
+                                connProps.getProperty(DAOInitializer.TRUST_FILE),
+                                PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.TRUST_PASS),
+                                        connProps.getProperty(DAOInitializer.TRUST_SALT).length(),
+                                        secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
+                                        systemConfig.getEncoding()).toCharArray(),
+                                connProps.getProperty(DAOInitializer.TRUST_TYPE),
+                                true));
 
                             if (DEBUG)
                             {
@@ -262,10 +262,10 @@ public final class DAOInitializer
                             }
 
                             BindRequest bindRequest = new SimpleBindRequest(connProps.getProperty(DAOInitializer.REPOSITORY_USER),
-                                    PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.TRUST_PASS), connProps.getProperty(DAOInitializer.TRUST_SALT),
-                                    		secConfig.getSecretAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
-                                            secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), 
-                                            systemConfig.getEncoding()));
+                                PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.REPOSITORY_PASS),
+                                    connProps.getProperty(DAOInitializer.REPOSITORY_SALT).length(),
+                                    secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
+                                    systemConfig.getEncoding()));
 
                             if (DEBUG)
                             {
@@ -324,9 +324,11 @@ public final class DAOInitializer
                         dataSource.setUrl(connProps.getProperty(DAOInitializer.REPOSITORY_HOST));
                         dataSource.setUsername(connProps.getProperty(DAOInitializer.REPOSITORY_USER));
                         dataSource.setPassword(PasswordUtils.decryptText(
-                                connProps.getProperty(DAOInitializer.REPOSITORY_PASS), connProps.getProperty(DAOInitializer.REPOSITORY_SALT),
-                                secConfig.getSecretAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
-                                secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), systemConfig.getEncoding()));
+                                connProps.getProperty(DAOInitializer.REPOSITORY_PASS),
+                                connProps.getProperty(DAOInitializer.REPOSITORY_SALT).length(),
+                                secConfig.getEncryptionAlgorithm(),
+                                secConfig.getEncryptionInstance(),
+                                systemConfig.getEncoding()));
 
                         bean.setAuthDataSource(dataSource);
                     }

@@ -15,7 +15,7 @@
     <description>Core application software utilized by all applications in the eSolutions software suite</description>
 
     <scm>
-        <url>https://github.com/cwsus/cws-esolutions/tree/emailops/eSolutionsCore</url>
+        <url>https://github.com/cwsus/cws-esolutions/eSolutionsCore</url>
     </scm>
 
     <properties>

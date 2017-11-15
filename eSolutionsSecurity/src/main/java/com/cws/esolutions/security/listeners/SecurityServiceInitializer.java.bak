@@ -159,11 +159,9 @@ public class SecurityServiceInitializer
                             dataSource.setUrl(mgr.getDataSource());
                             dataSource.setUsername(mgr.getDsUser());
                             dataSource.setConnectionProperties(sBuilder.toString());
-                            dataSource.setPassword(PasswordUtils.decryptText(mgr.getDsPass(), mgr.getDsSalt(),
-                            		configData.getSecurityConfig().getSecretAlgorithm(),
-                            		configData.getSecurityConfig().getIterations(),
-                            		configData.getSecurityConfig().getKeyBits(),
-                            		configData.getSecurityConfig().getEncryptionAlgorithm(),
+                            dataSource.setPassword(PasswordUtils.decryptText(
+                                    mgr.getDsPass(), mgr.getSalt().length(),
+                                    configData.getSecurityConfig().getEncryptionAlgorithm(),
                                     configData.getSecurityConfig().getEncryptionInstance(),
                                     configData.getSystemConfig().getEncoding()));
 
@@ -200,11 +198,6 @@ public class SecurityServiceInitializer
             mux.printStackTrace();
             throw new SecurityServiceException(mux.getMessage(), mux);
         }
-        catch (SecurityException sx)
-        {
-            sx.printStackTrace();
-            throw new SecurityServiceException(sx.getMessage(), sx);
-		}
     }
 
     /**

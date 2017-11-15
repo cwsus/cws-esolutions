@@ -157,12 +157,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
             throw new AccountChangeException(umx.getMessage(), umx);
         }
-        catch (SecurityException sx)
-        {
-            ERROR_RECORDER.error(sx.getMessage(), sx);
-
-            throw new AccountChangeException(sx.getMessage(), sx);
-		}
         finally
         {
             // audit
@@ -299,12 +293,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
             throw new AccountChangeException(umx.getMessage(), umx);
         }
-        catch (SecurityException sx)
-        {
-            ERROR_RECORDER.error(sx.getMessage(), sx);
-
-            throw new AccountChangeException(sx.getMessage(), sx);
-		}
         finally
         {
             // audit
@@ -751,12 +739,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
             throw new AccountChangeException(ax.getMessage(), ax);
         }
-        catch (SecurityException sx)
-        {
-            ERROR_RECORDER.error(sx.getMessage(), sx);
-
-            throw new AccountChangeException(sx.getMessage(), sx);
-		}
         finally
         {
             // audit
@@ -987,13 +969,10 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                     }
 
                     boolean isComplete = userManager.modifyOtpSecret(userAccount.getUsername(), true,
-                            PasswordUtils.encryptText(secret, otpSalt,
-                            		secBean.getConfigData().getSecurityConfig().getSecretAlgorithm(),
-                            		secBean.getConfigData().getSecurityConfig().getIterations(),
-                            		secBean.getConfigData().getSecurityConfig().getKeyBits(),
-                            		secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                            		secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                            		secBean.getConfigData().getSystemConfig().getEncoding()));
+                        PasswordUtils.encryptText(secret, otpSalt,
+                                secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                                secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                                secBean.getConfigData().getSystemConfig().getEncoding()));
 
                     if (DEBUG)
                     {

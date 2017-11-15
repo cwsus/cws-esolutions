@@ -229,10 +229,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
             throw new AuthenticationException(sqx.getMessage(), sqx);
         }
-        catch (SecurityException sx)
-        {
-        	ERROR_RECORDER.error(sx.getMessage(), sx);
-		}
         finally
         {
             // audit
@@ -308,11 +304,8 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             }
 
             boolean isAuthorized = PasswordUtils.validateOtpValue(secConfig.getOtpVariance(), secConfig.getOtpAlgorithm(),
-                    PasswordUtils.decryptText(otpSecret, otpSalt,
-                    		secBean.getConfigData().getSecurityConfig().getSecretAlgorithm(),
-                    		secBean.getConfigData().getSecurityConfig().getIterations(),
-                    		secBean.getConfigData().getSecurityConfig().getKeyBits(),
-                    		secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                    PasswordUtils.decryptText(otpSecret, otpSalt.length(),
+                            secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
                             secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
                             secBean.getConfigData().getSystemConfig().getEncoding()),
                     secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),

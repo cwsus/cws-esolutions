@@ -85,6 +85,7 @@ public final class CertificateRequestProcessorTest
     	try
     	{
     		CertificateResponse response = processor.listActiveRequests(request);
+    		System.out.println(response.toString());
     		Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
     	}
     	catch (Exception ex)

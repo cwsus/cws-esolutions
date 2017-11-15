@@ -55,40 +55,64 @@ public class PasswordUtilsTest
 
     @Test public void twoWayEncrypt()
     {
-    	String password = "appuser10";
-    	String salt = "hg4Q1qymhVY5ZICwyXuYFvdegQVyrAbAwgUINiVVsAZaM3ytFYH376JBL60hQXBy";
-    	String expected = "zuPztAohr1mI5PiX7spywPRdku78+SlBrp1EDGJde7EQB47sw0hWQH24EQpEt5KEornnV+xnXqX917LzBDmB3Nl09klCiMlkeKhP5/3uuKc=";
+    	final String password = "appuser10";
+    	final String salt = "hg4Q1qymhVY5ZICwyXuYFvdegQVyrAbg";
+    	final String expected = "zuPztAohr1mI5PiX7spywPRdku78+SlBrp1EDGJde7EQB47sw0hWQH24EQpEt5KEornnV+xnXqX917LzBDmB3Nl09klCiMlkeKhP5/3uuKc=";
 
-    	String response = PasswordUtils.encryptText(password, salt,
-    			bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-    			bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-    			bean.getConfigData().getSystemConfig().getEncoding());
-
-    	System.out.println(response);
-        Assert.assertEquals(response, expected);
+    	try
+    	{
+    		Assert.assertEquals(expected, PasswordUtils.encryptText(password, salt,
+    				bean.getConfigData().getSecurityConfig().getSecretAlgorithm(),
+    				bean.getConfigData().getSecurityConfig().getIterations(),
+    				bean.getConfigData().getSecurityConfig().getKeyBits(),
+    				bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+	    			bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+	    			bean.getConfigData().getSystemConfig().getEncoding()));
+    	}
+    	catch (SecurityException sx)
+    	{
+    		sx.printStackTrace();
+    		Assert.fail();
+    	}
     }
 
     @Test public void twoWayDecrypt()
     {
-    	String expected = "appuser10";
-    	String encrypted = "SuzB0dLk3m8MHkOKGw1Epv9fVXMXKvMmfEmGuQleSkQmInPRwipCYSg2MJ2ycaxZoHcx7VB9kQFErFLKZOFnFBsRO9aorovlw3oLjzSlwpg=";
-		String salt = "VY772zetrNG3qfttpqoUWKM86J7KEpT6ii83YmPE70jnUh3tbPFOURSJJTLCgJol";
-    	
-    	
-    	String response = PasswordUtils.decryptText(encrypted, salt.length(),
-    			bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-    			bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-    			bean.getConfigData().getSystemConfig().getEncoding());
+    	final String expected = "appuser10";
+    	final String encrypted = "0nH+aXnmGNj9EMatwGI+bYFB9l3J9ky9dtxQKq0aVpwpVhrKlXDLD5lwQUIALZvx";
+    	final String salt = "hg4Q1qymhVY5ZICwyXuYFvdegQVyrAbg";
 
-        Assert.assertEquals(expected, response);
+    	try
+		{
+    		Assert.assertEquals(expected, PasswordUtils.decryptText(encrypted, salt,
+    				bean.getConfigData().getSecurityConfig().getSecretAlgorithm(),
+    				bean.getConfigData().getSecurityConfig().getIterations(),
+    				bean.getConfigData().getSecurityConfig().getKeyBits(),
+    				bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+	    			bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+	    			bean.getConfigData().getSystemConfig().getEncoding()));
+		}
+		catch (Exception sx)
+		{
+			sx.printStackTrace();
+			Assert.fail();
+		}
     }
 
     @Test public void validateOtpValue()
     {
-        Assert.assertTrue(PasswordUtils.validateOtpValue(bean.getConfigData().getSecurityConfig().getOtpVariance(),
-                bean.getConfigData().getSecurityConfig().getOtpAlgorithm(),
-                bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                "the secret", 0));
+    	try
+		{
+            Assert.assertTrue(PasswordUtils.validateOtpValue(bean.getConfigData().getSecurityConfig().getOtpVariance(),
+                    bean.getConfigData().getSecurityConfig().getOtpAlgorithm(),
+                    bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                    "the secret", 0));
+		}
+		catch (SecurityException sx)
+		{
+			sx.printStackTrace();
+			Assert.fail();
+		}
     }
 
     @After public void tearDown()
