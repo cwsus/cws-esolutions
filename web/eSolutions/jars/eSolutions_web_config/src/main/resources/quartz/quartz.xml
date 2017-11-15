@@ -42,7 +42,6 @@
                     <key>isAuthenticated</key>
                     <value>false</value>
                 </entry>
-                <!--
                 <entry>
                     <key>username</key>
                     <value>kmhuntly</value>
@@ -55,7 +54,30 @@
                     <key>salt</key>
                     <value>salt</value>
                 </entry>
-                -->
+                <entry>
+                    <key>secretAlgorithm</key>
+                    <value>PBKDF2WithHmacSHA1</value>
+                </entry>
+                <entry>
+                    <key>iterations</key>
+                    <value>65535</value>
+                </entry>
+                <entry>
+                    <key>keyBits</key>
+                    <value>256</value>
+                </entry>
+                <entry>
+                    <key>algorithm</key>
+                    <value>AES</value>
+                </entry>
+                <entry>
+                    <key>instance</key>
+                    <value>AES/CBC/PKCS5Padding</value>
+                </entry>
+                <entry>
+                    <key>encoding</key>
+                    <value>UTF-8</value>
+                </entry>
                 <entry>
                     <key>messageSubject</key>
                     <value>Your password is about to expire</value>

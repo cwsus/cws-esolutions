@@ -421,7 +421,7 @@ public final class DAOInitializer
                             DEBUGGER.debug("BasicDataSource: {}", dataSource);
                         }
 
-                        if ((dataSource != null ) && (!(dataSource.isClosed())))
+                        if ((dataSource != null) && (!(dataSource.isClosed())))
                         {
                             dataSource.close();
                         }

@@ -14,6 +14,7 @@
         <passwordMaxLength>64</passwordMaxLength> <!--  maximum allowed password length (0 or null -> no limit)-->
         <authAlgorithm>SHA-512</authAlgorithm>
         <otpAlgorithm>HmacSHA1</otpAlgorithm>
+        <keyBits>256</keyBits>
         <secretKeyAlgorithm>PBKDF2WithHmacSHA1</secretKeyAlgorithm>
         <encryptionAlgorithm>AES</encryptionAlgorithm>
         <encryptionInstance>AES/CBC/PKCS5Padding</encryptionInstance>

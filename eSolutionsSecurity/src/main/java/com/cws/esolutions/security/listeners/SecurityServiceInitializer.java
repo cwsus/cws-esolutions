@@ -247,7 +247,7 @@ public class SecurityServiceInitializer
                         DEBUGGER.debug("BasicDataSource: {}", dataSource);
                     }
 
-                    if ((dataSource != null ) && (!(dataSource.isClosed())))
+                    if ((dataSource != null) && (!(dataSource.isClosed())))
                     {
                         dataSource.close();
                     }

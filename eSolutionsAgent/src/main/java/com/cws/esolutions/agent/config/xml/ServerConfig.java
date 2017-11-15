@@ -26,12 +26,9 @@ package com.cws.esolutions.agent.config.xml;
  * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
-
 import java.io.Serializable;
 import java.lang.reflect.Field;
-
 import org.slf4j.LoggerFactory;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -50,7 +47,9 @@ import com.cws.esolutions.agent.AgentConstants;
 @XmlAccessorType(XmlAccessType.NONE)
 public final class ServerConfig implements Serializable
 {
+	private int keyBits = 256;
     private String salt = null;
+    private int iterations = 65535; // default to 65535
     private String clientId = null;
     private int connectTimeout = 0;
     private String username = null;
@@ -59,8 +58,9 @@ public final class ServerConfig implements Serializable
     private String requestQueue = null;
     private String responseQueue = null;
     private String connectionName = null;
-    private String encryptionInstance = "AES";
     private String encryptionAlgorithm = "AES";
+    private String secretAlgorithm = "PBKDF2WithHmacSHA512";
+    private String encryptionInstance = "AES/CBC/PKCS5Padding";
 
     private static final String CNAME = ServerConfig.class.getName();
     private static final long serialVersionUID = 9144720470986353417L;
@@ -210,6 +210,45 @@ public final class ServerConfig implements Serializable
         }
 
         this.encryptionAlgorithm = value;
+    }
+
+    public final void setKeyBits(final int value)
+    {
+        final String methodName = ServerConfig.CNAME + "#setKeyBits(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.keyBits = value;
+    }
+
+    public final void setIteratons(final int value)
+    {
+        final String methodName = ServerConfig.CNAME + "#setIterations(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.iterations = value;
+    }
+
+    public final void setSecretAlgorithm(final String value)
+    {
+        final String methodName = ServerConfig.CNAME + "#setSecretAlgorithm(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.secretAlgorithm = value;
     }
 
     @XmlElement(name = "connectionName")
@@ -364,6 +403,48 @@ public final class ServerConfig implements Serializable
         }
 
         return this.encryptionInstance;
+    }
+
+    @XmlElement(name = "keyBits")
+    public final int getKeyBits()
+    {
+        final String methodName = ServerConfig.CNAME + "#etKeyBits()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.keyBits);
+        }
+
+        return this.keyBits;
+    }
+
+    @XmlElement(name = "iterations")
+    public final int getIterations()
+    {
+        final String methodName = ServerConfig.CNAME + "#getIterations()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.iterations);
+        }
+
+        return this.iterations;
+    }
+
+    @XmlElement(name = "secretAlgorithm")
+    public final String getSecretAlgorithm()
+    {
+        final String methodName = ServerConfig.CNAME + "#getSecretAlgorithm()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.secretAlgorithm);
+        }
+
+        return this.secretAlgorithm;
     }
 
     @Override

@@ -202,7 +202,10 @@ public final class NetworkUtils
                         break;
                     default:
                         jsch.addIdentity(FileUtils.getFile(sshConfig.getSshKey()).toString(),
-                            PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length(),
+                            PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt(),
+                            	secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                            	secBean.getConfigData().getSecurityConfig().getIterations(),
+                            	secBean.getConfigData().getSecurityConfig().getKeyBits(),
                                 secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
                                 secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
                                 appBean.getConfigData().getSystemConfig().getEncoding()));
@@ -212,10 +215,13 @@ public final class NetworkUtils
             }
             else
             {
-                session.setPassword(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length(),
-                    secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                    secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                    appBean.getConfigData().getSystemConfig().getEncoding()));
+                session.setPassword(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt(),
+                    	secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                    	secBean.getConfigData().getSecurityConfig().getIterations(),
+                    	secBean.getConfigData().getSecurityConfig().getKeyBits(),
+                    	secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                    	secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                    	appBean.getConfigData().getSystemConfig().getEncoding()));
             }
 
             session.connect((int) TimeUnit.SECONDS.toMillis(appBean.getConfigData().getSshConfig().getTimeout()));
@@ -389,20 +395,26 @@ public final class NetworkUtils
                         break;
                     default:
                         jsch.addIdentity(FileUtils.getFile(sshConfig.getSshKey()).toString(),
-                            PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length(),
-                                secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                                secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                                appBean.getConfigData().getSystemConfig().getEncoding()));
+                            PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt(),
+                                	secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                                	secBean.getConfigData().getSecurityConfig().getIterations(),
+                                	secBean.getConfigData().getSecurityConfig().getKeyBits(),
+	                                secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+	                                secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+	                                appBean.getConfigData().getSystemConfig().getEncoding()));
 
                         break;
                 }
             }
             else
             {
-                session.setPassword(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt().length(),
-                    secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                    secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                    appBean.getConfigData().getSystemConfig().getEncoding()));
+                session.setPassword(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt(),
+                    	secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                    	secBean.getConfigData().getSecurityConfig().getIterations(),
+                    	secBean.getConfigData().getSecurityConfig().getKeyBits(),
+                    	secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                    	secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                    	appBean.getConfigData().getSystemConfig().getEncoding()));
             }
 
             session.connect((int) TimeUnit.SECONDS.toMillis(appBean.getConfigData().getSshConfig().getTimeout()));
@@ -547,10 +559,13 @@ public final class NetworkUtils
             if (StringUtils.isNotBlank(ftpConfig.getFtpAccount()))
             {
                 isAuthenticated = client.login((StringUtils.isNotEmpty(ftpConfig.getFtpAccount())) ? ftpConfig.getFtpAccount() : System.getProperty("user.name"),
-                    PasswordUtils.decryptText(ftpConfig.getFtpPassword(), ftpConfig.getFtpSalt().length(),
-                        secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                        secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                        appBean.getConfigData().getSystemConfig().getEncoding()));
+                    PasswordUtils.decryptText(ftpConfig.getFtpPassword(), ftpConfig.getFtpSalt(),
+                        	secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                        	secBean.getConfigData().getSecurityConfig().getIterations(),
+                        	secBean.getConfigData().getSecurityConfig().getKeyBits(),
+                        	secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                        	secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                        	appBean.getConfigData().getSystemConfig().getEncoding()));
             }
             else
             {
@@ -754,10 +769,13 @@ public final class NetworkUtils
                         (StringUtils.isNotEmpty(httpConfig.getTrustStoreType()) ? httpConfig.getTrustStoreType() : "jks"));
                 System.setProperty("javax.net.ssl.trustStore", httpConfig.getTrustStoreFile());
                 System.setProperty("javax.net.ssl.trustStorePassword",
-                    PasswordUtils.decryptText(httpConfig.getTrustStorePass(), httpConfig.getTrustStoreSalt().length(),
-                        secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                        secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                        appBean.getConfigData().getSystemConfig().getEncoding()));
+                    PasswordUtils.decryptText(httpConfig.getTrustStorePass(), httpConfig.getTrustStoreSalt(),
+                        	secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                        	secBean.getConfigData().getSecurityConfig().getIterations(),
+                        	secBean.getConfigData().getSecurityConfig().getKeyBits(),
+	                        secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+	                        secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+	                        appBean.getConfigData().getSystemConfig().getEncoding()));
             }
 
             if (StringUtils.isNotEmpty(httpConfig.getKeyStoreFile()))
@@ -766,10 +784,13 @@ public final class NetworkUtils
                     (StringUtils.isNotEmpty(httpConfig.getKeyStoreType()) ? httpConfig.getKeyStoreType() : "jks"));
                 System.setProperty("javax.net.ssl.keyStore", httpConfig.getKeyStoreFile());
                 System.setProperty("javax.net.ssl.keyStorePassword",
-                    PasswordUtils.decryptText(httpConfig.getKeyStorePass(), httpConfig.getKeyStoreSalt().length(),
-                        secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                        secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                        appBean.getConfigData().getSystemConfig().getEncoding()));
+                    PasswordUtils.decryptText(httpConfig.getKeyStorePass(), httpConfig.getKeyStoreSalt(),
+                        	secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                        	secBean.getConfigData().getSecurityConfig().getIterations(),
+                        	secBean.getConfigData().getSecurityConfig().getKeyBits(),
+	                        secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+	                        secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+	                        appBean.getConfigData().getSystemConfig().getEncoding()));
             }
 
             if (proxyConfig.isProxyServiceRequired())
@@ -809,10 +830,13 @@ public final class NetworkUtils
                         DEBUGGER.debug("requestConfig: {}", requestConfig);
                     }
 
-                    String proxyPwd = PasswordUtils.decryptText(proxyConfig.getProxyPassword(), proxyConfig.getProxyPwdSalt().length(),
-                        secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                        secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                        appBean.getConfigData().getSystemConfig().getEncoding());
+                    String proxyPwd = PasswordUtils.decryptText(proxyConfig.getProxyPassword(), proxyConfig.getProxyPwdSalt(),
+                        	secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                        	secBean.getConfigData().getSecurityConfig().getIterations(),
+                        	secBean.getConfigData().getSecurityConfig().getKeyBits(),
+	                        secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+	                        secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+	                        appBean.getConfigData().getSystemConfig().getEncoding());
 
                     if (DEBUG)
                     {

@@ -103,6 +103,9 @@ public class CheckEmailMessages implements Job
             String name = (String) props.get("userAccount");
             String pass = (String) props.get("userPass");
             String salt = (String) props.get("salt");
+            String secretAlgorithm = (String) props.get("secretAlgorithm");
+            int iterations = (int) props.get("iterations");
+            int keyBits = (int) props.get("keyBits");
             String algorithm = (String) props.get("algorithm");
             String instance = (String) props.get("instance");
             String encoding = (String) props.get("encoding");
@@ -111,7 +114,7 @@ public class CheckEmailMessages implements Job
                     new ArrayList<String>(
                             Arrays.asList(
                                     name,
-                                    PasswordUtils.decryptText(pass, salt.length(),
+                                    PasswordUtils.decryptText(pass, salt, secretAlgorithm, iterations, keyBits,
                                             algorithm, instance, encoding))));
 
             if (DEBUG)
