@@ -21,52 +21,21 @@ package com.cws.esolutions.web.controllers;
  * ----------------------------------------------------------------------------
  * cws-khuntly   		06/11/2019 13:32:00             Created.
  */
-import java.util.Map;
-import java.util.List;
-import java.util.UUID;
-import java.util.Arrays;
 import org.slf4j.Logger;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.io.IOException;
 import java.util.Enumeration;
 import org.slf4j.LoggerFactory;
-import org.apache.commons.io.IOUtils;
 import javax.servlet.http.HttpSession;
-import org.apache.commons.lang.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.web.ApplicationServiceBean;
-import com.cws.esolutions.core.processors.dto.Server;
-import com.cws.esolutions.core.processors.dto.Service;
 import com.cws.esolutions.core.processors.dto.Application;
-import com.cws.esolutions.core.processors.enums.ServiceType;
-import com.cws.esolutions.web.validators.ApplicationValidator;
-import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
-import com.cws.esolutions.core.processors.dto.ServiceManagementRequest;
-import com.cws.esolutions.core.processors.dto.ServiceManagementResponse;
-import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
-import com.cws.esolutions.core.processors.dto.ApplicationManagementResponse;
-import com.cws.esolutions.core.processors.impl.ServiceManagementProcessorImpl;
-import com.cws.esolutions.core.processors.exception.ServiceManagementException;
-import com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor;
-import com.cws.esolutions.core.processors.impl.ApplicationManagementProcessorImpl;
-import com.cws.esolutions.core.processors.exception.ApplicationManagementException;
-import com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor;
 /**
  * @author cws-khuntly
  * @version 1.0
@@ -82,7 +51,6 @@ public class DisplayHeadersController
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
 
     public final void setDefaultPage(final String value)
     {
@@ -100,7 +68,7 @@ public class DisplayHeadersController
     @RequestMapping(value = "/default", method = RequestMethod.GET)
     public final ModelAndView showDefaultPage()
     {
-        final String methodName = ApplicationManagementController.CNAME + "#showDefaultPage()";
+        final String methodName = DisplayHeadersController.CNAME + "#showDefaultPage()";
 
         if (DEBUG)
         {
@@ -154,13 +122,6 @@ public class DisplayHeadersController
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
-        }
-
-        if (!(this.appConfig.getServices().get(this.serviceName)))
-        {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
-
-        	return mView;
         }
 
         mView.addObject(Constants.COMMAND, new Application());
