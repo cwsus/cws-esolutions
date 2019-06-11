@@ -26,12 +26,10 @@ package com.cws.esolutions.core.dao.impl;
  * cws-khuntly   11/23/2008 22:39:20             Created.
  */
 import java.util.List;
-
 import org.junit.Test;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
