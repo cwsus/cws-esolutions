@@ -70,6 +70,7 @@
         <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
     </listener>
 
+    <!-- NOTE: This can only be applied in a tomcat environment!! -->
     <filter id="CsrfPreventionFilter">
         <filter-name>CsrfPreventionFilter</filter-name>
         <filter-class>org.apache.catalina.filters.CsrfPreventionFilter</filter-class>
