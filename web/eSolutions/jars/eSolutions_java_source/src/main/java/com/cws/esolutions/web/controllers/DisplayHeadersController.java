@@ -13,13 +13,13 @@ package com.cws.esolutions.web.controllers;
 /*
  * Project: eSolutions_java_source
  * Package: com.cws.esolutions.web.controllers
- * File: ApplicationManagementController.java
+ * File: DisplayHeadersController.java
  *
  * History
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   11/23/2008 22:39:20             Created.
+ * cws-khuntly   		06/11/2019 13:32:00             Created.
  */
 import java.util.Map;
 import java.util.List;

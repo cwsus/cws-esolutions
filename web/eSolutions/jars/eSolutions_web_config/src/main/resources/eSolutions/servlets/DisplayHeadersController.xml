@@ -17,6 +17,6 @@
             <ref bean="coreConfig" />
         </property>
         <property name="serviceId" value="173b0fcb-f2b2-48b1-a374-2921283357a1" />
-        <property name="defaultPage" value="System_DisplayHeaders" />
+        <property name="defaultPage" value="System_DisplayHeadersPage" />
     </bean>
 </beans>
