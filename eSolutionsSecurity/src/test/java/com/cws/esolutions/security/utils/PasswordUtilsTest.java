@@ -57,7 +57,7 @@ public class PasswordUtilsTest
     {
     	final String password = "appuser10";
     	final String salt = "hg4Q1qymhVY5ZICwyXuYFvdegQVyrAbg";
-    	final String expected = "zuPztAohr1mI5PiX7spywPRdku78+SlBrp1EDGJde7EQB47sw0hWQH24EQpEt5KEornnV+xnXqX917LzBDmB3Nl09klCiMlkeKhP5/3uuKc=";
+    	final String expected = "T25jNUFNZVp6TzlmZ3B3ZkNoeWdsQT09OnhscWh2VzFyTUtYRkErZDE4V3d1Nmc9PQ==";
 
     	try
     	{
@@ -79,7 +79,7 @@ public class PasswordUtilsTest
     @Test public void twoWayDecrypt()
     {
     	final String expected = "appuser10";
-    	final String encrypted = "0nH+aXnmGNj9EMatwGI+bYFB9l3J9ky9dtxQKq0aVpwpVhrKlXDLD5lwQUIALZvx";
+    	final String encrypted = "T25jNUFNZVp6TzlmZ3B3ZkNoeWdsQT09OnhscWh2VzFyTUtYRkErZDE4V3d1Nmc9PQ==";
     	final String salt = "hg4Q1qymhVY5ZICwyXuYFvdegQVyrAbg";
 
     	try
