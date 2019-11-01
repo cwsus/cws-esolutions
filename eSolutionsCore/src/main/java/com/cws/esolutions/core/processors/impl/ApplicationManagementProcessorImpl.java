@@ -857,7 +857,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 Application app = new Application();
                 app.setGuid((String) array[0]); // T1.APPLICATION_GUID
                 app.setName((String) array[1]); // T1.APPLICATION_NAME
-                app.setScore(new Double(array[2].toString()));
+                app.setScore((Double) array[2]);
 
                 if (DEBUG)
                 {
@@ -1035,7 +1035,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             Application resApplication = new Application();
             resApplication.setGuid((String) appData.get(0)); // GUID
             resApplication.setName((String) appData.get(1)); // NAME
-            resApplication.setVersion(new Double(appData.get(2).toString())); // VERSION
+            resApplication.setVersion((Double) appData.get(2)); // VERSION
             resApplication.setInstallPath((String) appData.get(3)); // INSTALLATION_PATH
             resApplication.setPackageLocation((String) appData.get(4)); // PACKAGE_LOCATION
             resApplication.setPackageInstaller((String) appData.get(5)); // PACKAGE_INSTALLER

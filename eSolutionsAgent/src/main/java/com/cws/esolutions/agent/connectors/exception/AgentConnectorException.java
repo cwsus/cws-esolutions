@@ -31,7 +31,7 @@ import com.cws.esolutions.agent.exception.AgentException;
  * com.cws.esolutions.agent.connectors.exception
  * AgentConnectorException.java
  *
- * TODO: Add class description
+ * AgentConnectorException
  *
  * @author cws-khuntly
  * @version 1.0
@@ -47,7 +47,7 @@ public class AgentConnectorException extends AgentException
 
     /**
      * 
-     * TODO: Add in the method description/comments
+     * Exception for AgentConnector
      *
      * @param message - The message for the exception
      */
@@ -58,7 +58,7 @@ public class AgentConnectorException extends AgentException
 
     /**
      * 
-     * TODO: Add in the method description/comments
+     * Exception for AgentConnector
      *
      * @param throwable - The throwable for the exception
      */
@@ -69,7 +69,7 @@ public class AgentConnectorException extends AgentException
 
     /**
      * 
-     * TODO: Add in the method description/comments
+     * Exception for AgentConnector
      *
      * @param message - The message for the exception
      * @param throwable - The throwable for the exception

@@ -62,7 +62,7 @@ public class SQLUtilsTest {
     	Map<Integer, Object> params = new HashMap<Integer, Object>();
     	params.put(1, "cf60680d-60d6-4046-802e-8a7dad7c80fe");
     	params.put(2, "mynewapp2");
-    	params.put(3, new Double(1.0));
+    	params.put(3, 1.0);
     	params.put(4, "/appvol/WAS70/mynewapp2");
     	params.put(5, "/nas/apps/mynewapp2");
     	params.put(6, "mynewapp2.war");

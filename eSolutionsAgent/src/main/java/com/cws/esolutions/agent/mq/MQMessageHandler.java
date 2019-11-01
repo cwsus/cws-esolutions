@@ -45,7 +45,7 @@ import com.cws.esolutions.agent.exception.AgentException;
 import com.cws.esolutions.agent.processors.impl.AgentRequestProcessorImpl;
 import com.cws.esolutions.agent.processors.interfaces.IAgentRequestProcessor;
 /**
- * TODO: Add class information/description
+ * MQ Message Handling class
  *
  * @author cws-khuntly
  * @version 1.0

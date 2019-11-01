@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.dao.keymgmt.factory;
+import java.lang.reflect.InvocationTargetException;
+
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security.dao.keymgmt.factory
@@ -69,7 +71,8 @@ public class KeyManagementFactory
         {
             try
             {
-                keyManager = (KeyManager) Class.forName(className).newInstance();
+            	keyManager = KeyManager.class.getDeclaredConstructor(Class.forName(className)).newInstance();
+                // keyManager = (KeyManager) Class.forName(className).newInstance();
 
                 if (DEBUG)
                 {
@@ -88,6 +91,22 @@ public class KeyManagementFactory
             {
                 ERROR_RECORDER.error(cnx.getMessage(), cnx);
             }
+            catch (IllegalArgumentException iax)
+            {
+            	ERROR_RECORDER.error(iax.getMessage(), iax);
+			}
+            catch (InvocationTargetException itx)
+            {
+				ERROR_RECORDER.error(itx.getMessage(), itx);
+			}
+            catch (NoSuchMethodException nsx)
+            {
+				ERROR_RECORDER.error(nsx.getMessage(), nsx);
+			}
+            catch (SecurityException sx)
+            {
+				ERROR_RECORDER.error(sx.getMessage(), sx);
+			}
         }
 
         return keyManager;

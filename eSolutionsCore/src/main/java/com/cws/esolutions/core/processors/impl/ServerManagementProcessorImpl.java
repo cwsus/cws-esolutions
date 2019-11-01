@@ -911,7 +911,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                     Server server = new Server();
                     server.setServerGuid((String) data[0]); // SYSTEM_GUID
                     server.setOperHostName((String) data[1]); // OPER_HOSTNAME
-                    server.setScore(new Double(data[2].toString()));
+                    server.setScore((Double) data[2]);
 
                     if (DEBUG)
                     {

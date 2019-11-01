@@ -27,6 +27,7 @@ package com.cws.esolutions.agent.connectors.factory;
  */
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.lang.reflect.InvocationTargetException;
 
 import com.cws.esolutions.agent.AgentConstants;
 import com.cws.esolutions.agent.connectors.interfaces.AgentConnector;
@@ -68,7 +69,8 @@ public class AgentConnectorFactory
         {
             try
             {
-                agentConnector = (AgentConnector) Class.forName(className).newInstance();
+            	agentConnector = AgentConnector.class.getDeclaredConstructor(Class.forName(className)).newInstance();
+                // agentConnector = (AgentConnector) Class.forName(className).newInstance();
 
                 if (DEBUG)
                 {
@@ -87,6 +89,22 @@ public class AgentConnectorFactory
             {
                 ERROR_RECORDER.error(cnx.getMessage(), cnx);
             }
+            catch (IllegalArgumentException iax)
+            {
+            	ERROR_RECORDER.error(iax.getMessage(), iax);
+			}
+            catch (InvocationTargetException itx)
+            {
+				ERROR_RECORDER.error(itx.getMessage(), itx);
+			}
+            catch (NoSuchMethodException nsx)
+            {
+				ERROR_RECORDER.error(nsx.getMessage(), nsx);
+			}
+            catch (SecurityException sx)
+            {
+				ERROR_RECORDER.error(sx.getMessage(), sx);
+			}
         }
 
         return agentConnector;

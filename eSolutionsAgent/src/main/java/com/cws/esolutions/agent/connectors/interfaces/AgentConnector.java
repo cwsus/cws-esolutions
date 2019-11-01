@@ -32,7 +32,7 @@ import com.cws.esolutions.agent.connectors.exception.AgentConnectorException;
  * com.cws.esolutions.agent.connectors.interfaces
  * AgentConnector.java
  *
- * TODO: Add class description
+ * AgentConnector public interface
  *
  * @author cws-khuntly
  * @version 1.0
@@ -46,7 +46,7 @@ public interface AgentConnector
 {
     /**
      * 
-     * TODO: Add in the method description/comments
+     * Obtains a JMX connection interface for a provided system
      *
      * @param mbeanName - The mbean to load
      * @param jmxConfig - The JMX configuration to use

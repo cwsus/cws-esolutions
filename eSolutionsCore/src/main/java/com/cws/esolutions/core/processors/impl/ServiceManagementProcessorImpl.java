@@ -1050,7 +1050,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                     Service resService = new Service();
                     service.setGuid((String) data[0]);
                     service.setName((String) data[1]);
-                    service.setScore(new Double(data[2].toString()));
+                    service.setScore((Double) data[2]);
 
                     if (DEBUG)
                     {

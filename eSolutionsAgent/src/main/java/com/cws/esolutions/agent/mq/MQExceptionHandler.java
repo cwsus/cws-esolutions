@@ -32,7 +32,7 @@ import javax.jms.ExceptionListener;
 
 import com.cws.esolutions.agent.AgentConstants;
 /**
- * TODO: Add class information/description
+ * MQ Exception Handler
  *
  * @author cws-khuntly
  * @version 1.0

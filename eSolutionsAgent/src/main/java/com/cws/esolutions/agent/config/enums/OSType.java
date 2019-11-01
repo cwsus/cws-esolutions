@@ -23,7 +23,7 @@ package com.cws.esolutions.agent.config.enums;
  */
 
 /**
- * TODO: Add class information/description
+ * ENUM values for OS types
  *
  * @author cws-khuntly
  * @version 1.0

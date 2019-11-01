@@ -27,6 +27,7 @@ package com.cws.esolutions.security.dao.userauth.factory;
  */
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.lang.reflect.InvocationTargetException;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
@@ -68,7 +69,8 @@ public class AuthenticatorFactory
         {
             try
             {
-                authenticator = (Authenticator) Class.forName(className).newInstance();
+            	authenticator = Authenticator.class.getDeclaredConstructor(Class.forName(className)).newInstance();
+                // authenticator = (Authenticator) Class.forName(className).newInstance();
 
                 if (DEBUG)
                 {
@@ -87,6 +89,22 @@ public class AuthenticatorFactory
             {
                 ERROR_RECORDER.error(cnx.getMessage(), cnx);
             }
+            catch (IllegalArgumentException iax)
+            {
+            	ERROR_RECORDER.error(iax.getMessage(), iax);
+			}
+            catch (InvocationTargetException itx)
+            {
+				ERROR_RECORDER.error(itx.getMessage(), itx);
+			}
+            catch (NoSuchMethodException nsx)
+            {
+				ERROR_RECORDER.error(nsx.getMessage(), nsx);
+			}
+            catch (SecurityException sx)
+            {
+				ERROR_RECORDER.error(sx.getMessage(), sx);
+			}
         }
 
         return authenticator;
