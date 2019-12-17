@@ -25,7 +25,7 @@
         <taglibs.version>1.1.2</taglibs.version>
         <jstl.version>1.1.2</jstl.version>
         <jsp-api.version>2.0</jsp-api.version>
-        <spring.version>4.0.0.RELEASE</spring.version>
+        <spring.version>4.3.17</spring.version>
         <tiles.version>2.2.2</tiles.version>
         <eSolutionsCore.version>1.0-SNAPSHOT</eSolutionsCore.version>
         <eSolutionsSecurity.version>1.0-SNAPSHOT</eSolutionsSecurity.version>
