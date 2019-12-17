@@ -32,8 +32,9 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
-import com.cws.esolutions.security.config.xml.UserReturningAttributes;
 import com.cws.esolutions.security.config.xml.RepositoryConfig;
+import com.cws.esolutions.security.config.xml.UserReturningAttributes;
+import com.cws.esolutions.security.config.xml.PasswordRepositoryConfig;
 import com.cws.esolutions.security.config.xml.SecurityReturningAttributes;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 /**
@@ -51,6 +52,7 @@ public interface Authenticator
     static final RepositoryConfig repoConfig = svcBean.getConfigData().getRepoConfig();
     static final UserReturningAttributes userAttributes = repoConfig.getUserAttributes();
     static final SecurityReturningAttributes securityAttributes = repoConfig.getSecurityAttributes();
+    static final PasswordRepositoryConfig passwordConfig = svcBean.getConfigData().getPasswordRepo();
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

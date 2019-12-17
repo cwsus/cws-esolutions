@@ -6,11 +6,12 @@
 ##
 ## Catalina specifics
 ##
-typeset CATALINA_HOME="{{ catalina_home }}"
-typeset CATALINA_BASE="{{ catalina_base }}"
-typeset CATALINA_TMPDIR="${CATALINA_HOME}/tmp"
-typeset CATALINA_OUT="${CATALINA_HOME}/logs/stdout"
-typeset CATALINA_PID="${CATALINA_HOME}/logs/catalina.pid"
+typeset CATALINA_HOME="/opt/app/Apache/Tomcat/current";
+typeset CATALINA_BASE="/opt/app/Apache/Tomcat/current";
+typeset CATALINA_TMPDIR="${CATALINA_HOME}/tmp";
+typeset CATALINA_OUT="${CATALINA_HOME}/logs/stdout";
+typeset CATALINA_PID="${CATALINA_HOME}/logs/catalina.pid";
+typeset LOG_ROOT="${CATALINA_HOME}/logs";
 
 ##
 ## catalina options
@@ -20,8 +21,8 @@ typeset CATALINA_OPTS="";
 ##
 ## Java specifics
 ##
-typeset JAVA_HOME="/usr/java/latest"
-typeset JRE_HOME="/usr/java/latest/jre"
+typeset JAVA_HOME="/usr/java/latest";
+typeset JRE_HOME="/usr/java/latest/jre";
 
 ##
 ## JMX
@@ -53,6 +54,6 @@ typeset JAVA_OPTS="${JAVA_OPTS} -Djava.net.preferIPv4Stack=true -Djava.awt.headl
 ##
 ## i guess theres a java tools options ??
 ##
-typeset JAVA_TOOL_OPTIONS="-Xdebug ${JAVA_TOOL_OPTIONS} -XX:OnError=\"kill -3 %p\"";
-typeset JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,address=${LISTEN_ADDR}:${PORT_NUM},timeout=900000,suspend=n";
+typeset JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS} -Xdebug -XX:OnError=\"kill -3 %p\"";
+typeset JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS} -agentlib:jdwp=transport=dt_socket,server=y,address=${LISTEN_ADDR}:${PORT_NUM},timeout=900000,suspend=n";
 typeset JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS} -XX:OnOutOfMemoryError=\"kill -3 %p; jmap -dump:format=b,file=${LOG_ROOT}/heap-%p.dmp %p\"";

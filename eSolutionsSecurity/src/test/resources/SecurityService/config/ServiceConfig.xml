@@ -26,53 +26,14 @@
         <smsCodeLength>8</smsCodeLength> <!-- how long should the sms reset id be ? -->
         <resetTimeout>30</resetTimeout> <!-- reset timeout length (minutes) -->
         <authConfig>/opt/cws/eSolutions/etc/repository.properties</authConfig>
-        <authManager>com.cws.esolutions.security.dao.userauth.impl.LDAPAuthenticator</authManager>
-        <userManager>com.cws.esolutions.security.dao.usermgmt.impl.LDAPUserManager</userManager>
+        <authManager>com.cws.esolutions.security.dao.userauth.impl.FileAuthenticator</authManager>
+        <userManager>com.cws.esolutions.security.dao.usermgmt.impl.FileUserManager</userManager>
     </security-config>
 
     <!-- this should correlate back to the data obtained from -->
     <!-- the authentication repository. the objects below -->
     <!-- are the *minimum* required to populate the user object -->
-    <repository-config>
-        <baseObjectClass>userProxy</baseObjectClass>
-        <repositoryBaseDN>organizationName=CWS US,dc=caspersbox,dc=com</repositoryBaseDN>
-        <repositoryUserBase>organizationName=CWS US,dc=caspersbox,dc=com</repositoryUserBase>
-        <repositoryRoleBase>organizationalUnitName=Groups,organizationName=CWS US,dc=caspersbox,dc=com</repositoryRoleBase>
-        <userReturningAttributes>
-            <commonName>cn</commonName>
-            <userId>uid</userId>
-            <surname>sn</surname>
-            <givenName>givenName</givenName>
-            <emailAddr>mail</emailAddr>
-            <displayName>displayName</displayName>
-            <telephoneNumber>telephoneNumber</telephoneNumber>
-            <returningAttributes>
-                <attributeName>cn</attributeName>
-                <attributeName>uid</attributeName>
-                <attributeName>sn</attributeName>
-                <attributeName>givenName</attributeName>
-                <attributeName>displayName</attributeName>
-                <attributeName>cwsrole</attributeName>
-                <attributeName>cwsfailedpwdcount</attributeName>
-                <attributeName>cwslastlogin</attributeName>
-                <attributeName>cwsexpirydate</attributeName>
-                <attributeName>cwsissuspended</attributeName>
-                <attributeName>cwsisolrsetup</attributeName>
-                <attributeName>cwsisolrlocked</attributeName>
-                <attributeName>telephoneNumber</attributeName>
-                <attributeName>pager</attributeName>
-            </returningAttributes>
-        </userReturningAttributes>
-
-        <securityReturningAttributes>
-            <userPassword>userPassword</userPassword>
-            <secret>secret</secret>
-            <secQuestionOne>secQuestionOne</secQuestionOne>
-            <secQuestionTwo>secQuestionTwo</secQuestionTwo>
-            <secAnswerOne>secAnswerOne</secAnswerOne>
-            <secAnswerTwo>secAnswerTwo</secAnswerTwo>
-        </securityReturningAttributes>
-    </repository-config>
+    <repository-config />
 
     <password-repository>
         <passwordFile>/opt/cws/eSolutions/etc/password.properties</passwordFile>
@@ -85,7 +46,7 @@
         <signatureAlgorithm>SHA512withRSA</signatureAlgorithm>
         <keySize>4096</keySize> <!-- if algorithm is DSA, this MUST be 1024: http://docs.oracle.com/javase/6/docs/technotes/guides/security/SunProviders.html -->
         <keyDirectory>/opt/cws/eSolutions/keys</keyDirectory> <!-- this is ONLY required if you're using a file-based keymanager -->
-        <keyManager>com.cws.esolutions.security.dao.keymgmt.impl.SQLKeyManager</keyManager>
+        <keyManager>com.cws.esolutions.security.dao.keymgmt.impl.FileKeyManager</keyManager>
     </key-config>
 
 	<certificate-config>

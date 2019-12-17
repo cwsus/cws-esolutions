@@ -1,16 +1,16 @@
-"## Rewrite rules for {{ vhost }}"
-RewriteCond %{HTTP:DECRYPTED} True
-"RewriteCond %{REQUEST_URI} .*(jsp|jsv|wml|chtml) [OR,NC]"
-"RewriteCond %{REQUEST_URI} !^.*(gif|jpg|css|js|pdf|swf|ico) [NC]"
-"RewriteCond %{REQUEST_URI} !^/error/{{ vhost }}/errHandler.htm"
-"RewriteCond %{REQUEST_URI} !^/error/{{ vhost }}/.*(gif|jpg|css|js|pdf|swf|ico) [NC]"
-"RewriteCond %{REQUEST_URI} !^/html/.*(htm|html|js|pdf|swf|ico|gif|jpg|css) [NC]"
-""RewriteCond %{REQUEST_URI} !^/{{ vhost }}/login.*"
-"RewriteCond %{REQUEST_URI} !^/{{ vhost }}/olr.*"
-"RewriteCond %{REQUEST_URI} !^/{{ vhost }}/userauthorization.*"
-"RewriteCond %{REQUEST_URI} !^/{{ vhost }}/error.*"
-"RewriteCond %{REQUEST_URI} !^/{{ vhost }}/help.*"
-"RewriteRule ^/.* https://%{HTTP_HOST}/{{ vhost }}/login [L,R=permanent]"
+## Rewrite rules for {{ vhost }}
+RewriteCond %{HTTPS} on
+RewriteCond %{REQUEST_URI} .*(jsp|jsv|wml|chtml) [OR,NC]
+RewriteCond %{REQUEST_URI} !^.*(gif|jpg|css|js|pdf|swf|ico) [NC]
+RewriteCond %{REQUEST_URI} !^/error/{{ vhost }}/errHandler.htm
+RewriteCond %{REQUEST_URI} !^/error/{{ vhost }}/.*(gif|jpg|css|js|pdf|swf|ico) [NC]
+RewriteCond %{REQUEST_URI} !^/html/.*(htm|html|js|pdf|swf|ico|gif|jpg|css) [NC]
+RewriteCond %{REQUEST_URI} !^/{{ vhost }}/login.*
+RewriteCond %{REQUEST_URI} !^/{{ vhost }}/olr.*
+RewriteCond %{REQUEST_URI} !^/{{ vhost }}/userauthorization.*
+RewriteCond %{REQUEST_URI} !^/{{ vhost }}/error.*
+RewriteCond %{REQUEST_URI} !^/{{ vhost }}/help.*
+RewriteRule ^/.* https://%{HTTP_HOST}/{{ vhost }}/login [L,R=permanent]
 
 RewriteCond %{HTTPS} off
-"RewriteRule ^/.* https://%{HTTP_HOST}/{{ vhost }}/login [L,R=permanent]"
+RewriteRule ^/.* https://%{HTTP_HOST}/{{ vhost }}/login [L,R=permanent]
