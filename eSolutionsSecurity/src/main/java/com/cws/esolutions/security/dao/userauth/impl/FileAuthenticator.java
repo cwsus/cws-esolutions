@@ -17,17 +17,19 @@ package com.cws.esolutions.security.dao.userauth.impl;
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security.dao.userauth.impl
- * File: LDAPAuthenticator.java
+ * File: FileAuthenticator.java
  *
  * History
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   11/23/2008 22:39:20             Created.
+ * cws-khuntly   		12/17/2019 22:39:20             Created.
  */
+import java.io.File;
 import java.util.List;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.io.FileNotFoundException;
 
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
@@ -53,30 +55,47 @@ public class FileAuthenticator implements Authenticator
         }
 
         List<Object> userAccount = null;
-        Scanner scanner = new Scanner(passwordConfig.getPasswordFile());
+        Scanner scanner = null;
 
-        if (DEBUG)
+        try
         {
-        	DEBUGGER.debug("Scanner: {}", scanner);
-        }
+        	scanner = new Scanner(new File(passwordConfig.getPasswordFile()));
 
-    	while (scanner.hasNext())
-    	{
-    		String lineEntry = scanner.nextLine();
+	        if (DEBUG)
+	        {
+	        	DEBUGGER.debug("Scanner: {}", scanner);
+	        }
 
-    		if (DEBUG)
-    		{
-    			DEBUGGER.debug("lineEntry: {}", lineEntry);
-    		}
+	    	while (scanner.hasNext())
+	    	{
+	    		String lineEntry = scanner.nextLine();
+
+	    		if (DEBUG)
+	    		{
+	    			DEBUGGER.debug("lineEntry: {}", lineEntry);
+	    		}
     		
-    		if (lineEntry.contains(username) && lineEntry.contains(password))
-    		{
-    			String[] userAttributes = lineEntry.split(":");
+	    		if (lineEntry.contains(username) && lineEntry.contains(password))
+	    		{
+	    			String[] userAttributes = lineEntry.split(":");
 
-    			userAccount = new ArrayList<Object>();
-    			userAccount.add(userAttributes);
-    		}
-    	}
+	        		if (DEBUG)
+	        		{
+	        			for (int x = 0; x != userAttributes.length; x++)
+	        			{
+	        				DEBUGGER.debug("userAttributes: {}", (Object) userAttributes[x]);
+	        			}
+	        		}
+
+	    			userAccount = new ArrayList<Object>();
+	    			userAccount.add(userAttributes);
+	    		}
+	    	}
+        }
+        catch (FileNotFoundException fnfx)
+        {
+        	throw new AuthenticatorException(fnfx.getMessage(), fnfx);
+        }
 
         return userAccount;
     }

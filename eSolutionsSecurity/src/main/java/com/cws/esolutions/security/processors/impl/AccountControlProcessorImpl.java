@@ -757,8 +757,8 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         resAccount.setPagerNumber((userData.get(6) == null) ? SecurityServiceConstants.NOT_SET : (String) userData.get(6));
                         resAccount.setTelephoneNumber((userData.get(7) == null) ? SecurityServiceConstants.NOT_SET : (String) userData.get(7));
                         resAccount.setFailedCount(((userData.get(9) == null) ? 0 : (Integer) userData.get(9)));
-                        resAccount.setLastLogin(((userData.get(10) == null) ? new Date(1L) : new Date((Long) userData.get(10))));
-                        resAccount.setExpiryDate(((userData.get(11) == null) ? new Date(System.currentTimeMillis()) : (Date) userData.get(11)));
+                        resAccount.setLastLogin(((userData.get(10) == null) ? new Date(System.currentTimeMillis()).getTime() : (long) userData.get(10)));
+                        resAccount.setExpiryDate(((userData.get(11) == null) ? new Date(System.currentTimeMillis()).getTime() : (long) userData.get(11)));
                         resAccount.setSuspended(((userData.get(12) == null) ? Boolean.FALSE : (Boolean) userData.get(12)));
                         resAccount.setOlrSetup(((userData.get(13) == null) ? Boolean.FALSE : (Boolean) userData.get(13)));
                         resAccount.setOlrLocked(((userData.get(14) == null) ? Boolean.FALSE : (Boolean) userData.get(14)));

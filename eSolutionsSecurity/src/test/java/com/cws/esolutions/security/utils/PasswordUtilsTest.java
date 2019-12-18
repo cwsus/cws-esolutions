@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.utils;
+
+import org.junit.Test;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Assert;
+
+import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.security.utils.PasswordUtils;
+import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security.utils
@@ -23,16 +32,8 @@ package com.cws.esolutions.security.utils;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   11/23/2008 22:39:20             Created.
+ * cws-khuntly   		11/23/2008 22:39:20             Created.
  */
-import org.junit.Test;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Assert;
-
-import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.utils.PasswordUtils;
-import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 
 public class PasswordUtilsTest
 {

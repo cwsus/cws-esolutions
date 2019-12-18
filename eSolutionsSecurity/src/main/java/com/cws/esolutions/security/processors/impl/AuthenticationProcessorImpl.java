@@ -147,8 +147,8 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             userAccount.setGuid((String) authObject.get(0));
             userAccount.setUsername((String) authObject.get(1));
             userAccount.setFailedCount((Integer) authObject.get(3));
-            userAccount.setLastLogin((Date) authObject.get(4));
-            userAccount.setExpiryDate((Date) authObject.get(5));
+            userAccount.setLastLogin((long) authObject.get(4));
+            userAccount.setExpiryDate((long) authObject.get(5));
             userAccount.setSurname((String) authObject.get(6));
             userAccount.setGivenName((String) authObject.get(7));
             userAccount.setDisplayName((String) authObject.get(8));
@@ -166,8 +166,8 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             }
 
             // have a user account, run with it
-            if ((userAccount.getExpiryDate().before(new Date(System.currentTimeMillis())))
-                    || (userAccount.getExpiryDate().equals(new Date(System.currentTimeMillis()))))
+            if (userAccount.getExpiryDate() < new Date(System.currentTimeMillis()).getTime()
+                    || userAccount.getExpiryDate() == new Date(System.currentTimeMillis()).getTime())
             {
                 userAccount.setStatus(LoginStatus.EXPIRED);
 
@@ -343,8 +343,8 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             userAccount.setPagerNumber((String) userData.get(6));
             userAccount.setTelephoneNumber((String) userData.get(7));
             userAccount.setFailedCount((Integer) userData.get(8));
-            userAccount.setLastLogin((Date) userData.get(9));
-            userAccount.setExpiryDate((Date) userData.get(10));
+            userAccount.setLastLogin((long) userData.get(9));
+            userAccount.setExpiryDate((long) userData.get(10));
             userAccount.setSuspended((Boolean) userData.get(11));
             userAccount.setOlrSetup((Boolean) userData.get(12));
             userAccount.setOlrLocked((Boolean) userData.get(13));
@@ -356,8 +356,8 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             }
 
             // have a user account, run with it
-            if ((userAccount.getExpiryDate().before(new Date(System.currentTimeMillis())))
-                    || (userAccount.getExpiryDate().equals(new Date(System.currentTimeMillis()))))
+            if (userAccount.getExpiryDate() < new Date(System.currentTimeMillis()).getTime()
+                    || userAccount.getExpiryDate() == new Date(System.currentTimeMillis()).getTime())
             {
                 userAccount.setStatus(LoginStatus.EXPIRED);
 

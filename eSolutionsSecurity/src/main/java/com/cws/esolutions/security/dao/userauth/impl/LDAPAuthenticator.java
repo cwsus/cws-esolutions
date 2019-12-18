@@ -95,7 +95,7 @@ public class LDAPAuthenticator implements Authenticator
             }
 
             Filter searchFilter = Filter.create("(&(objectClass=" + repoConfig.getBaseObject() + ")" +
-                "(&(" + userAttributes.getUserId() + "=" + username+ ")))");
+                "(&(" + userAttributes.getUserId() + "=" + username + ")))");
 
             if (DEBUG)
             {
