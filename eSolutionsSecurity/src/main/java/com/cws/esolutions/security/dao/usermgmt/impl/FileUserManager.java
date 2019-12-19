@@ -25,12 +25,11 @@ package com.cws.esolutions.security.dao.usermgmt.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly   11/23/2008 22:39:20             Created.
  */
+import java.io.File;
 import java.util.List;
-import java.util.Arrays;
-import java.util.ArrayList;
-import org.apache.commons.lang.StringUtils;
+import java.util.Scanner;
+import java.io.FileNotFoundException;
 
-import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 /**
@@ -54,6 +53,56 @@ public class FileUserManager implements UserManager
             DEBUGGER.debug("Value: {}", userGuid);
         }
 
+        Scanner scanner = null;
+        boolean isValid = false;
+
+        try
+        {
+        	scanner = new Scanner(new File(passwordConfig.getPasswordFile()));
+
+	        if (DEBUG)
+	        {
+	        	DEBUGGER.debug("Scanner: {}", scanner);
+	        }
+
+	    	while (scanner.hasNext())
+	    	{
+	    		String lineEntry = scanner.nextLine();
+
+	    		if (DEBUG)
+	    		{
+	    			DEBUGGER.debug("lineEntry: {}", lineEntry);
+	    		}
+    		
+	    		if (lineEntry.contains(userId) && lineEntry.contains(userGuid))
+	    		{
+	    			String[] userAttributes = lineEntry.split(":");
+
+	        		if (DEBUG)
+	        		{
+	        			for (int x = 0; x != userAttributes.length; x++)
+	        			{
+	        				DEBUGGER.debug("userAttributes: {}", (Object) userAttributes[x]);
+	        			}
+	        		}
+
+	    			isValid = true;
+	    		}
+	    	}
+        }
+        catch (FileNotFoundException fnfx)
+        {
+        	throw new UserManagementException(fnfx.getMessage(), fnfx);
+        }
+        finally
+        {
+        	try
+        	{
+        		scanner.close();
+        	}
+        	catch (IllegalStateException isx) {} // dont do anything with it
+        }
+
         return isValid;
     }
 
@@ -71,6 +120,8 @@ public class FileUserManager implements UserManager
             DEBUGGER.debug("Value: {}", roles);
         }
 
+        boolean isComplete = false;
+
         return isComplete;
     }
 
@@ -86,6 +137,8 @@ public class FileUserManager implements UserManager
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("userId: {}", userId);
         }
+
+        boolean isComplete = false;
 
         return isComplete;
     }
@@ -103,6 +156,8 @@ public class FileUserManager implements UserManager
             DEBUGGER.debug("Value: {}", searchData);
         }
 
+        List<String[]> results = null;
+
         return results;
     }
 
@@ -119,6 +174,8 @@ public class FileUserManager implements UserManager
             DEBUGGER.debug("Value: {}", userGuid);
         }
 
+        List<Object> userAccount = null;
+
         return userAccount;
     }
 
@@ -133,6 +190,8 @@ public class FileUserManager implements UserManager
         {
             DEBUGGER.debug(methodName);
         }
+
+        List<String[]> results = null;
 
         return results;
     }
@@ -151,6 +210,8 @@ public class FileUserManager implements UserManager
             DEBUGGER.debug("Value: {}", value);
         }
 
+        boolean isComplete = false;
+
         return isComplete;
     }
 
@@ -167,6 +228,8 @@ public class FileUserManager implements UserManager
             DEBUGGER.debug("Value: {}", userId);
             DEBUGGER.debug("Values: {}", values);
         }
+
+        boolean isComplete = false;
 
         return isComplete;
     }
@@ -185,6 +248,8 @@ public class FileUserManager implements UserManager
             DEBUGGER.debug("Value: {}", isSuspended);
         }
 
+        boolean isComplete = false;
+
         return isComplete;
     }
 
@@ -202,6 +267,8 @@ public class FileUserManager implements UserManager
             DEBUGGER.debug("Value: {}", values);
         }
 
+        boolean isComplete = false;
+
         return isComplete;
     }
 
@@ -218,6 +285,8 @@ public class FileUserManager implements UserManager
             DEBUGGER.debug("Value: {}", userId);
             DEBUGGER.debug("Value: {}", isLocked);
         }
+
+        boolean isComplete = false;
 
         return isComplete;
     }
@@ -237,7 +306,9 @@ public class FileUserManager implements UserManager
             DEBUGGER.debug("Value: {}", increment);
         }
 
-        return lockStatus;
+        boolean isComplete = false;
+
+        return isComplete;
     }
 
     /**
@@ -252,6 +323,8 @@ public class FileUserManager implements UserManager
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("userId: {}", userId);
         }
+
+        boolean isComplete = false;
 
         return isComplete;
     }
@@ -269,6 +342,8 @@ public class FileUserManager implements UserManager
             DEBUGGER.debug("userId: {}", userId);
         }
 
+        boolean isComplete = false;
+
         return isComplete;
     }
 
@@ -284,6 +359,8 @@ public class FileUserManager implements UserManager
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("userId: {}", userId);
         }
+
+        boolean isComplete = false;
 
         return isComplete;
     }

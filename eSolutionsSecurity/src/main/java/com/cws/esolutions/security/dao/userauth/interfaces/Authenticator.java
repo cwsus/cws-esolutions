@@ -48,8 +48,8 @@ import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException
 public interface Authenticator
 {
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
-    static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
     static final RepositoryConfig repoConfig = svcBean.getConfigData().getRepoConfig();
+    static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
     static final UserReturningAttributes userAttributes = repoConfig.getUserAttributes();
     static final SecurityReturningAttributes securityAttributes = repoConfig.getSecurityAttributes();
     static final PasswordRepositoryConfig passwordConfig = svcBean.getConfigData().getPasswordRepo();

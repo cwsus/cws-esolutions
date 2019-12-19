@@ -6,12 +6,15 @@
 ##
 ## Catalina specifics
 ##
-typeset CATALINA_HOME="/opt/app/Apache/Tomcat/current";
-typeset CATALINA_BASE="/opt/app/Apache/Tomcat/current";
+typeset CATALINA_HOME="/opt/Apache/Tomcat/current";
+typeset CATALINA_BASE="/opt/Apache/Tomcat/current";
 typeset CATALINA_TMPDIR="${CATALINA_HOME}/tmp";
 typeset CATALINA_OUT="${CATALINA_HOME}/logs/stdout";
 typeset CATALINA_PID="${CATALINA_HOME}/logs/catalina.pid";
 typeset LOG_ROOT="${CATALINA_HOME}/logs";
+typeset -i JMXREMOTE_PORT=9000;
+typeset -i JDWP_PORT=9001;
+typeset LISTEN_ADDR=$(/sbin/ip addr show | grep inet | grep -v inet6 | awk '{print $2}' | grep -v 127.0.0.1 | cut -d "/" -f 1);
 
 ##
 ## catalina options
@@ -27,9 +30,9 @@ typeset JRE_HOME="/usr/java/latest/jre";
 ##
 ## JMX
 ##
-typeset JMX_OPTIONS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=${JMX_PORT}";
+typeset JMX_OPTIONS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=${JMXREMOTE_PORT}";
 typeset JMX_OPTIONS="${JMX_OPTIONS} -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=true";
-typeset JMX_OPTIONS="${JMX_OPTIONS} -Dcom.sun.management.jmxremote.password.file=${JMX_AUTH_FILE}";
+typeset JMX_OPTIONS="${JMX_OPTIONS} -Dcom.sun.management.jmxremote.password.file=${CATALINA_HOME}/conf/jmxremote.password";
 
 typeset DEBUG_OPTS="-Djava.security.debug=all -Djavax.net.debug=all";
 

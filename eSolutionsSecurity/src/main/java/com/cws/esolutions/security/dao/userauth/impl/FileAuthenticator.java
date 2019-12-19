@@ -54,8 +54,8 @@ public class FileAuthenticator implements Authenticator
             DEBUGGER.debug("String: {}", username);
         }
 
-        List<Object> userAccount = null;
         Scanner scanner = null;
+        List<Object> userAccount = null;
 
         try
         {
@@ -95,6 +95,14 @@ public class FileAuthenticator implements Authenticator
         catch (FileNotFoundException fnfx)
         {
         	throw new AuthenticatorException(fnfx.getMessage(), fnfx);
+        }
+        finally
+        {
+        	try
+        	{
+        		scanner.close();
+        	}
+        	catch (IllegalStateException isx) {} // dont do anything with it
         }
 
         return userAccount;
