@@ -102,6 +102,7 @@
                 <value>classpath:nls/UserAccountServlet/UserAccountServlet</value>
                 <value>classpath:nls/UserManagementServlet/UserManagementServlet</value>
                 <value>classpath:nls/UserManagementServlet/CertificateManagementServlet</value>
+                <value>classpath:nls/SetupServlet/SetupServlet</value>
                 <value>classpath:nls/theme/resources</value>
             </list>
         </property>

@@ -50,4 +50,5 @@
     <import resource="classpath:eSolutions/servlets/UserManagementController.xml" />
     <import resource="classpath:eSolutions/servlets/CertificateManagementController.xml" />
     <import resource="classpath:eSolutions/servlets/DisplayHeadersController.xml" />
+    <import resource="classpath:eSolutions/servlets/SetupController.xml" />
 </beans>
