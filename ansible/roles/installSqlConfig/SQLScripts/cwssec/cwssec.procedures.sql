@@ -44,6 +44,7 @@ DROP PROCEDURE IF EXISTS `CWSSEC`.`removeServiceFromUser` //
 DROP PROCEDURE IF EXISTS `CWSSEC`.`isUserAuthorizedForService` //
 DROP PROCEDURE IF EXISTS `CWSSEC`.`retrAuthorizedServices` //
 DROP PROCEDURE IF EXISTS `CWSSEC`.`listServicesForUser` //
+DROP PROCEDURE IF EXISTS `CWSSEC`.`performSuccessfulLogin` //
 
 CREATE PROCEDURE `CWSSEC`.`getUserByAttribute`(
     IN attributeName VARCHAR(100)
@@ -706,6 +707,26 @@ BEGIN
     WHERE cn = userGuid;
 END //
 COMMIT //
+
+CREATE PROCEDURE `CWSSEC`.`performSuccessfulLogin`(
+    IN userId VARCHAR(45),
+    IN userGuid VARCHAR(128),
+    IN lockCounter MEDIUMINT,
+    IN loginTimestamp TIMESTAMP
+)
+BEGIN
+    UPDATE USERS
+    SET
+        CWSFAILEDPWDCOUNT = lockCounter,
+        CWSLASTLOGIN = CURRENT_TIMESTAMP
+    WHERE CN = userGuid
+    AND UID = userId;
+
+    COMMIT;
+END //
+COMMIT //
+
+
 
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */ //
 
