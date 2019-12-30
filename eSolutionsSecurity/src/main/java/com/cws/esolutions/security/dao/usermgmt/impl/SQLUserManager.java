@@ -1274,4 +1274,80 @@ public class SQLUserManager implements UserManager
 
         return isComplete;
     }
+
+	/**
+	 * @see com.cws.esolutions.security.dao.usermgmt.interfaces#performSuccessfulLogin(java.lang.String, java.lang.String, java.lang.int, java.lang.long)
+	 */
+	public boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final long timestamp) throws UserManagementException
+	{
+        final String methodName = SQLUserManager.CNAME + "#modifyUserSecurity(final String userId, final String guid, final int lockCount, final long timestamp) throws UserManagementException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", userId);
+            DEBUGGER.debug("Value: {}", guid);
+            DEBUGGER.debug("Value: {}", lockCount);
+            DEBUGGER.debug("Value: {}", timestamp);
+        }
+
+        Connection sqlConn = null;
+        boolean isComplete = false;
+        CallableStatement stmt = null;
+
+        try
+        {
+            sqlConn = SQLUserManager.dataSource.getConnection();
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+
+            // first make sure the existing password is proper
+            // then make sure the new password doesnt match the existing password
+            stmt = sqlConn.prepareCall("{ CALL updateLastLogin(?, ?, ?, ?) }");
+            stmt.setString(1, userId);
+            stmt.setString(2, guid);
+            stmt.setInt(3, lockCount);
+            stmt.setLong(4, timestamp);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("CallableStatement: {}", stmt);
+            }
+
+            if (stmt.executeUpdate() == 1)
+            {
+                isComplete = true;
+            }
+        }
+        catch (SQLException sqx)
+        {
+            throw new UserManagementException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            try
+            {
+                if (stmt != null)
+                {
+                    stmt.close();
+                }
+
+                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                {
+                    sqlConn.close();
+                }
+            }
+            catch (SQLException sqx)
+            {
+                throw new UserManagementException(sqx.getMessage(), sqx);
+            }
+        }
+
+        return isComplete;
+	}
 }

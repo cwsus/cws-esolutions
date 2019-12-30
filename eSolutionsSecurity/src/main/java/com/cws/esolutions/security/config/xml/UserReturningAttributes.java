@@ -46,11 +46,14 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 @XmlAccessorType(XmlAccessType.NONE)
 public final class UserReturningAttributes implements Serializable
 {
+	private int lockCount = 0;
     private String userId = null;
     private String surname = null;
+    private String userGuid = null;
     private String memberOf = null;
     private String emailAddr = null;
     private String givenName = null;
+    private Long lastLoginDate = -1L;
     private String commonName = null;
     private String displayName = null;
     private String telephoneNumber = null;
@@ -87,6 +90,19 @@ public final class UserReturningAttributes implements Serializable
         }
         
         this.userId = value;
+    }
+
+    public final void setUserGuid(final String value)
+    {
+        final String methodName = UserReturningAttributes.CNAME + "#setUserGuid(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+        
+        this.userGuid = value;
     }
 
     public final void setSurname(final String value)
@@ -180,6 +196,32 @@ public final class UserReturningAttributes implements Serializable
         this.returningAttributes = value;
     }
 
+    public final void setLastLoginDate(final Long value)
+    {
+        final String methodName = UserReturningAttributes.CNAME + "#setLastLoginDate(final Long value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.lastLoginDate = value;
+    }
+
+    public final void setLockCount(final int value)
+    {
+        final String methodName = UserReturningAttributes.CNAME + "#setLockCount(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.lockCount = value;
+    }
+
     @XmlElement(name = "commonName")
     public final String getCommonName()
     {
@@ -192,6 +234,48 @@ public final class UserReturningAttributes implements Serializable
         }
         
         return this.commonName;
+    }
+
+    @XmlElement(name = "userGuid")
+    public final String getUserGuid()
+    {
+        final String methodName = UserReturningAttributes.CNAME + "#getUserGuid()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.userGuid);
+        }
+        
+        return this.userGuid;
+    }
+
+    @XmlElement(name = "cwslastlogin")
+    public final Long getLastLoginDate()
+    {
+        final String methodName = UserReturningAttributes.CNAME + "#getLastLoginDate()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.lastLoginDate);
+        }
+        
+        return this.lastLoginDate;
+    }
+
+    @XmlElement(name = "cwslastlogin")
+    public final int getLockCount()
+    {
+        final String methodName = UserReturningAttributes.CNAME + "#getLockCount()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.lockCount);
+        }
+        
+        return this.lockCount;
     }
 
     @XmlElement(name = "userId")

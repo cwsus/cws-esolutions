@@ -166,8 +166,8 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             }
 
             // have a user account, run with it
-            if (userAccount.getExpiryDate() < new Date(System.currentTimeMillis()).getTime()
-                    || userAccount.getExpiryDate() == new Date(System.currentTimeMillis()).getTime())
+            if (userAccount.getExpiryDate() < System.currentTimeMillis()
+                    || userAccount.getExpiryDate() == System.currentTimeMillis())
             {
                 userAccount.setStatus(LoginStatus.EXPIRED);
 
@@ -176,6 +176,9 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             }
             else
             {
+            	userManager.performSuccessfulLogin(authUser.getUsername(), authUser.getGuid(), authUser.getFailedCount(), System.currentTimeMillis());
+
+            	userAccount.setLastLogin(System.currentTimeMillis());
                 userAccount.setStatus(LoginStatus.SUCCESS);
 
                 response.setRequestStatus(SecurityRequestStatus.SUCCESS);
@@ -184,6 +187,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
             if (DEBUG)
             {
+            	DEBUGGER.debug("UserAccount: {}", userAccount);
                 DEBUGGER.debug("AuthenticationResponse: {}", response);
             }
         }

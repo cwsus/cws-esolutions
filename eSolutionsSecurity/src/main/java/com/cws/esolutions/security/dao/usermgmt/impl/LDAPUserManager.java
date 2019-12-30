@@ -1599,4 +1599,92 @@ public class LDAPUserManager implements UserManager
 
         return isComplete;
     }
+
+	@Override
+	public boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final long timestamp) throws UserManagementException
+	{
+        final String methodName = LDAPUserManager.CNAME + "#performSuccessfulLogin(final String userId, final String guid, final int lockCount, final long timestamp) throws UserManagementException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", userId);
+            DEBUGGER.debug("Value: {}", guid);
+            DEBUGGER.debug("Value: {}", timestamp);
+        }
+
+        boolean isComplete = false;
+        LDAPConnection ldapConn = null;
+        LDAPConnectionPool ldapPool = null;
+
+        try
+        {
+            ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPConnectionPool: {}", ldapPool);
+            }
+
+            if (ldapPool.isClosed())
+            {
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+
+            ldapConn = ldapPool.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+            }
+
+            if (!(ldapConn.isConnected()))
+            {
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+
+            List<Modification> modifyList = new ArrayList<Modification>(
+                Arrays.asList(
+                    new Modification(ModificationType.REPLACE, securityAttributes.getLastLogin(), String.valueOf(timestamp)),
+                    new Modification(ModificationType.REPLACE, securityAttributes.getLockCount(), String.valueOf(0))));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("modifyList: {}", modifyList);
+            }
+
+            LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(new StringBuilder()
+                .append(userAttributes.getUserId() + "=" + userId + ",")
+                .append(userAttributes.getUserGuid() + "=" + guid + ",")
+                .append(repoConfig.getRepositoryUserBase() + "," + repoConfig.getRepositoryBaseDN()).toString(), modifyList));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPResult: {}", ldapResult);
+            }
+
+            if (ldapResult.getResultCode() == ResultCode.SUCCESS)
+            {
+                isComplete = true;
+            }
+        }
+        catch (LDAPException lx)
+        {
+            throw new UserManagementException(lx.getMessage(), lx);
+        }
+        catch (ConnectException cx)
+        {
+            throw new UserManagementException(cx.getMessage(), cx);
+        }
+        finally
+        {
+            if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
+            {
+                ldapConn.close();
+                ldapPool.releaseConnection(ldapConn);
+            }
+        }
+
+        return isComplete;
+	}
 }

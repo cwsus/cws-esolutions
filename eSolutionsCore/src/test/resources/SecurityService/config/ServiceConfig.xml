@@ -41,6 +41,7 @@
         <userReturningAttributes>
             <commonName>cn</commonName>
             <userId>uid</userId>
+            <userGuid>guid</userGuid>
             <surname>sn</surname>
             <givenName>givenName</givenName>
             <emailAddr>mail</emailAddr>

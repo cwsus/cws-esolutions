@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.dao.usermgmt.impl;
+import java.io.BufferedReader;
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security.dao.usermgmt.impl
@@ -29,6 +30,9 @@ import java.io.File;
 import java.util.List;
 import java.util.Scanner;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
 
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
@@ -364,4 +368,95 @@ public class FileUserManager implements UserManager
 
         return isComplete;
     }
+
+    /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyLastLogin(java.lang.String, java.util.String, java.util.Long)
+     */
+	public synchronized boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final long timestamp) throws UserManagementException
+	{
+        final String methodName = FileUserManager.CNAME + "#performSuccessfulLogin(final String userId, final String guid, final int lockCount, final long timestamp) throws UserManagementException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", userId);
+            DEBUGGER.debug("Value: {}", guid);
+            DEBUGGER.debug("Value: {}", lockCount);
+            DEBUGGER.debug("Value: {}", timestamp);
+        }
+
+    	String lineEntry = null;
+    	String inputString = null;
+    	boolean isComplete = false;
+    	StringBuffer sBuffer = null;
+    	BufferedReader bReader = null;
+    	FileOutputStream fileOut = null;
+    	File textFile = new File(passwordConfig.getPasswordFile());
+
+		try
+		{
+			bReader = new BufferedReader(new FileReader(textFile));
+			sBuffer = new StringBuffer();
+			lineEntry = null;
+
+			while ((lineEntry = bReader.readLine()) != null)
+			{
+				if (DEBUG)
+				{
+					DEBUGGER.debug("lineEntry: {}", lineEntry);
+				}
+
+				sBuffer.append(lineEntry);
+				sBuffer.append(System.lineSeparator());
+			}
+
+			inputString = sBuffer.toString();
+
+			if (DEBUG)
+			{
+				DEBUGGER.debug("inputString: {}", inputString);
+			}
+
+			if ((inputString.contains(userId)) && inputString.contains(guid))
+			{
+				inputString = inputString.replace(String.valueOf(timestamp), String.valueOf(System.currentTimeMillis()));
+				inputString = inputString.replace(String.valueOf(lockCount), String.valueOf(0));
+			}
+
+			fileOut = new FileOutputStream(textFile);
+			fileOut.write(inputString.getBytes());
+
+			isComplete = true;
+		}
+		catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			try
+			{
+				if (fileOut != null)
+				{
+					fileOut.flush();
+					fileOut.close();
+				}
+
+				if (bReader != null)
+				{
+					bReader.close();
+				}
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+
+		return isComplete;
+	}
 }

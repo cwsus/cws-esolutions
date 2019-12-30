@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.net.ConnectException;
 import com.unboundid.ldap.sdk.Filter;
 import com.unboundid.ldap.sdk.ResultCode;
-import com.unboundid.ldap.sdk.BindResult;
 import com.unboundid.ldap.sdk.BindRequest;
 import com.unboundid.ldap.sdk.SearchScope;
 import com.unboundid.ldap.sdk.SearchResult;
@@ -136,13 +135,6 @@ public class LDAPAuthenticator implements Authenticator
             if (DEBUG)
             {
                 DEBUGGER.debug("BindRequest: {}", bindRequest);
-            }
-
-            BindResult bindResult = ldapConn.bind(bindRequest);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("BindResult: {}", bindResult);
             }
 
             userAccount = new ArrayList<Object>();

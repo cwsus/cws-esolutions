@@ -211,6 +211,18 @@ public interface UserManager
     boolean modifyUserLock(final String userId, final boolean isLocked, final int increment) throws UserManagementException;
 
     /**
+     * Allows an administrator to lock or unlock a user account as desired.
+     *
+     * @param userId - The username to perform the modification against
+     * @param guid - The Globally Unique Identifier for the account in the repository
+     * @param lockCount - The (current) lock count value for the account
+     * @param timestamp - The timestamp to use for the last login
+     * @return <code>true</code> if the process completes, <code>false</code> otherwise
+     * @throws UserManagementException if an exception occurs during processing
+     */
+    boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final long timestamp) throws UserManagementException;
+
+    /**
      * Allows administrators and users alike to modify their password, either via an Online Reset
      * request or via accounting screens upon request.
      *
