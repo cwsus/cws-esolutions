@@ -3,12 +3,6 @@
     ProxyVia                     block
     ProxyTimeout                 30
     ProxyErrorOverride           on
-    ProxyPass                    "/{{ vhost }}/ ajp://{{ tomcatHostName }}/{{ vhost }}/"
-    ProxyPassReverse             "/{{ vhost }}/ ajp://{{ tomcatHostName }}/{{ vhost }}/"
-
-    <Proxy "/{{ vhost }}/"">
-        Order                    deny,allow
-        Deny                     from all
-        Allow                    "{{ allowed_networks }}"
-    </Proxy>
+    ProxyPass                    "/cwsna.ddns.net/ ajp://172.30.0.55/cwsna.ddns.net/"
+    ProxyPassReverse             "/cwsna.ddns.net/ ajp://172.30.0.55/cwsna.ddns.net/"
 </IfModule>

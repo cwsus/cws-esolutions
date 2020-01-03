@@ -15,9 +15,9 @@
         <authAlgorithm>SHA-512</authAlgorithm> <!-- MessageDigest: http://docs.oracle.com/javase/6/docs/technotes/guides/security/StandardNames.html#MessageDigest -->
         <otpAlgorithm>HmacSHA1</otpAlgorithm>
         <keyBits>256</keyBits>
-        <secretKeyAlgorithm>PBKDF2WithHmacSHA1</secretKeyAlgorithm>
-        <encryptionAlgorithm>AES</encryptionAlgorithm>
-        <encryptionInstance>AES/CBC/PKCS5Padding</encryptionInstance>
+        <secretKeyAlgorithm>PBKDF2WithHmacSHA1</secretKeyAlgorithm> <!-- Secret Instance used by PasswordUtils -->
+        <encryptionAlgorithm>AES</encryptionAlgorithm> <!-- Algorithm used for PasswordUtils (both encrypt/decrypt -->
+        <encryptionInstance>AES/CBC/PKCS5Padding</encryptionInstance> <!-- Cipher instance used for PasswordUtils -->
         <saltLength>32</saltLength> <!-- salt string length (bigger is better) -->
         <performAudit>true</performAudit> <!-- should we audit stuff ? (default true) -->
         <enableSecurity>true</enableSecurity>

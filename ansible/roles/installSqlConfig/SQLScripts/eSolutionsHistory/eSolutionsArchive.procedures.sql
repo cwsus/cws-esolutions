@@ -2,55 +2,55 @@ DELIMITER //
 
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ //
 
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`getArticleByAttribute` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`insertRecord` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`retrTopArticles` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`retrArticle` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`addNewArticle` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`updateArticle` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`updateArticleStatus` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`getArticleCount` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`retrPendingArticles` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`getRecordByAttribute` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`insertApex` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`insertRecord` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`getApplicationCount` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`listApplications` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`getApplicationData` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`removeApplicationData` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`updateApplicationData` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`insertNewApplication` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`getApplicationByAttribute` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`getServerByAttribute` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`validateServerHostName` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`insertNewServer` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`updateServerData` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`retireServer` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`getServerCount` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`getServerList` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`retrServerData` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`getRetiredServers` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`getDataCenterByAttribute` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`addNewDatacenter` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`removeDataCenter` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`getDatacenterCount` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`listDataCenters` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`retrDataCenter` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`getMessagesByAttribute` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`submitSvcMessage` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`updateServiceMessage` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`retrServiceMessage` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`retrServiceMessages` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`retrAlertMessages` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`getPlatformByAttribute` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`addNewPlatform` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`updatePlatformData` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`removePlatformData` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`getPlatformData` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`getPlatformCount` //
-DROP PROCEDURE IF EXISTS `eSolutionsArchive`.`listPlatforms` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`getArticleByAttribute` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`insertRecord` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`retrTopArticles` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`retrArticle` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`addNewArticle` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`updateArticle` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`updateArticleStatus` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`getArticleCount` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`retrPendingArticles` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`getRecordByAttribute` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`insertApex` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`insertRecord` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`getApplicationCount` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`listApplications` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`getApplicationData` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`removeApplicationData` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`updateApplicationData` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`insertNewApplication` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`getApplicationByAttribute` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`getServerByAttribute` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`validateServerHostName` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`insertNewServer` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`updateServerData` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`retireServer` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`getServerCount` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`getServerList` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`retrServerData` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`getRetiredServers` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`getDataCenterByAttribute` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`addNewDatacenter` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`removeDataCenter` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`getDatacenterCount` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`listDataCenters` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`retrDataCenter` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`getMessagesByAttribute` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`submitSvcMessage` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`updateServiceMessage` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`retrServiceMessage` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`retrServiceMessages` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`retrAlertMessages` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`getPlatformByAttribute` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`addNewPlatform` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`updatePlatformData` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`removePlatformData` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`getPlatformData` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`getPlatformCount` //
+DROP PROCEDURE IF EXISTS `ESOLUTIONSSVC_HIST`.`listPlatforms` //
 
-CREATE PROCEDURE `eSolutionsArchive`.`getArticleByAttribute`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`getArticleByAttribute`(
     IN searchTerms VARCHAR(100),
     IN startRow INT
 )
@@ -72,7 +72,7 @@ BEGIN
         MODIFIED_BY,
     MATCH (ID, KEYWORDS, TITLE, SYMPTOMS, CAUSE, RESOLUTION)
     AGAINST (+searchTerms WITH QUERY EXPANSION)
-    FROM `eSolutionsArchive`.`articles`
+    FROM `ESOLUTIONSSVC_HIST`.`articles`
     WHERE MATCH (ID, KEYWORDS, TITLE, SYMPTOMS, CAUSE, RESOLUTION)
     AGAINST (+searchTerms IN BOOLEAN MODE)
     AND STATUS = 'APPROVED'
@@ -80,7 +80,7 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`retrTopArticles`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`retrTopArticles`(
 )
 BEGIN
     SELECT
@@ -159,7 +159,7 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`addNewArticle`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`addNewArticle`(
     IN articleId VARCHAR(45),
     IN author VARCHAR(45),
     IN keywords VARCHAR(100),
@@ -169,7 +169,7 @@ CREATE PROCEDURE `eSolutionsArchive`.`addNewArticle`(
     IN resolution TEXT
 )
 BEGIN
-    INSERT INTO `eSolutionsArchive`.`articles`
+    INSERT INTO `ESOLUTIONSSVC_HIST`.`articles`
     (
         HITS, ID, CREATE_DATE, AUTHOR,
         KEYWORDS, TITLE, SYMPTOMS, CAUSE,
@@ -185,7 +185,7 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`updateArticle`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`updateArticle`(
     IN articleId VARCHAR(45),
     IN keywords VARCHAR(100),
     IN title VARCHAR(100),
@@ -195,7 +195,7 @@ CREATE PROCEDURE `eSolutionsArchive`.`updateArticle`(
     IN modifiedBy VARCHAR(45)
 )
 BEGIN
-    UPDATE `eSolutionsArchive`.`articles`
+    UPDATE `ESOLUTIONSSVC_HIST`.`articles`
     SET
         KEYWORDS = keywords,
         TITLE = title,
@@ -211,13 +211,13 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`updateArticleStatus`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`updateArticleStatus`(
     IN articleId VARCHAR(45),
     IN modifiedBy VARCHAR(45),
     IN articleStatus VARCHAR(15)
 )
 BEGIN
-    UPDATE `eSolutionsArchive`.`articles`
+    UPDATE `ESOLUTIONSSVC_HIST`.`articles`
     SET
         STATUS = articleStatus,
         MODIFIED_BY = modifiedBy,
@@ -230,18 +230,18 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`getArticleCount`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`getArticleCount`(
     IN reqType VARCHAR(45)
 )
 BEGIN
     SELECT COUNT(*)
-    FROM `eSolutionsArchive`.`articles`
+    FROM `ESOLUTIONSSVC_HIST`.`articles`
     WHERE STATUS = reqType
     AND AUTHOR != requestorId;
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`retrPendingArticles`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`retrPendingArticles`(
     IN requestorId VARCHAR(100),
     IN startRow INT
 )
@@ -261,7 +261,7 @@ BEGIN
         REVIEW_DATE,
         MODIFIED_DATE,
         MODIFIED_BY
-    FROM `eSolutionsArchive`.`articles`
+    FROM `ESOLUTIONSSVC_HIST`.`articles`
     WHERE STATUS IN ('NEW', 'REJECTED', 'REVIEW')
     AND AUTHOR != requestorId
     ORDER BY CREATE_DATE DESC
@@ -269,7 +269,7 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`getRecordByAttribute`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`getRecordByAttribute`(
     IN attributeName VARCHAR(126)
 )
 BEGIN
@@ -298,14 +298,14 @@ BEGIN
         TERTIARY_TARGET,
     MATCH (`ZONE_FILE`, `ORIGIN`, `HOSTNAME`, `OWNER`, `CLASS_TYPE`, `SERVICE`, `PRIMARY_TARGET`)
     AGAINST (+attributeName WITH QUERY EXPANSION)
-    FROM `eSolutionsArchive`.`dns_service`
+    FROM `ESOLUTIONSSVC_HIST`.`dns_service`
     WHERE MATCH (`ZONE_FILE`, `ORIGIN`, `HOSTNAME`, `OWNER`, `CLASS_TYPE`, `SERVICE`, `PRIMARY_TARGET`)
     AGAINST (+attributeName IN BOOLEAN MODE)
     ORDER BY APEX_RECORD DESC, ORIGIN ASC;
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`insertApex`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`insertApex`(
     IN zoneFile VARCHAR(128),
     IN origin VARCHAR(126),
     IN timeToLive INTEGER(12),
@@ -319,7 +319,7 @@ CREATE PROCEDURE `eSolutionsArchive`.`insertApex`(
     IN cacheTime INTEGER(12)
 )
 BEGIN
-    INSERT INTO `eSolutionsArchive`.`dns_service`
+    INSERT INTO `ESOLUTIONSSVC_HIST`.`dns_service`
     (
         ZONE_FILE, APEX_RECORD, ORIGIN,
         TIMETOLIVE, HOSTNAME, OWNER, HOSTMASTER,
@@ -336,7 +336,7 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`insertRecord`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`insertRecord`(
     IN zoneFile VARCHAR(128),
     IN origin VARCHAR(126),
     IN hostname VARCHAR(126),
@@ -352,7 +352,7 @@ CREATE PROCEDURE `eSolutionsArchive`.`insertRecord`(
     IN tertiary VARCHAR(255)
 )
 BEGIN
-    INSERT INTO `eSolutionsArchive`.`dns_service`
+    INSERT INTO `ESOLUTIONSSVC_HIST`.`dns_service`
     (
         ZONE_FILE, APEX_RECORD, ORIGIN,
         HOSTNAME, CLASS_NAME, CLASS_TYPE, PORT, WEIGHT,
@@ -371,7 +371,7 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`getApplicationByAttribute`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`getApplicationByAttribute`(
     IN attributeName VARCHAR(100),
     IN startRow INT
 )
@@ -381,7 +381,7 @@ BEGIN
         NAME,
     MATCH (`NAME`)
     AGAINST (+attributeName WITH QUERY EXPANSION)
-    FROM `eSolutionsArchive`.`installed_applications`
+    FROM `ESOLUTIONSSVC_HIST`.`installed_applications`
     WHERE MATCH (`NAME`)
     AGAINST (+attributeName IN BOOLEAN MODE)
     AND APP_OFFLINE_DATE IS NULL
@@ -389,7 +389,7 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`insertNewApplication`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`insertNewApplication`(
     IN appGuid VARCHAR(128),
     IN appName VARCHAR(45),
     IN appVersion DECIMAL(30, 2),
@@ -401,7 +401,7 @@ CREATE PROCEDURE `eSolutionsArchive`.`insertNewApplication`(
     IN platformGuid TEXT
 )
 BEGIN
-    INSERT INTO `eSolutionsArchive`.`installed_applications`
+    INSERT INTO `ESOLUTIONSSVC_HIST`.`installed_applications`
     (
         GUID, NAME, VERSION, INSTALLATION_PATH, PACKAGE_LOCATION, PACKAGE_INSTALLER,
         INSTALLER_OPTIONS, LOGS_DIRECTORY, PLATFORM_GUID, APP_ONLINE_DATE
@@ -416,7 +416,7 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`updateApplicationData`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`updateApplicationData`(
     IN appGuid VARCHAR(128),
     IN appName VARCHAR(45),
     IN appVersion DECIMAL(30, 2),
@@ -428,7 +428,7 @@ CREATE PROCEDURE `eSolutionsArchive`.`updateApplicationData`(
     IN platformGuid TEXT
 )
 BEGIN
-    UPDATE `eSolutionsArchive`.`installed_applications`
+    UPDATE `ESOLUTIONSSVC_HIST`.`installed_applications`
     SET
         NAME = appName,
         VERSION = appVersion,
@@ -444,11 +444,11 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`removeApplicationData`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`removeApplicationData`(
     IN appGuid VARCHAR(128)
 )
 BEGIN
-    UPDATE `eSolutionsArchive`.`installed_applications`
+    UPDATE `ESOLUTIONSSVC_HIST`.`installed_applications`
     SET APP_OFFLINE_DATE = CURRENT_TIMESTAMP()
     WHERE GUID = appGuid;
 
@@ -456,7 +456,7 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`getApplicationData`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`getApplicationData`(
     IN appGuid VARCHAR(128)
 )
 BEGIN
@@ -470,35 +470,35 @@ BEGIN
         INSTALLER_OPTIONS,
         LOGS_DIRECTORY,
         PLATFORM_GUID
-    FROM `eSolutionsArchive`.`installed_applications`
+    FROM `ESOLUTIONSSVC_HIST`.`installed_applications`
     WHERE GUID = appGuid
     AND APP_OFFLINE_DATE IS NULL;
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`getApplicationCount`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`getApplicationCount`(
 )
 BEGIN
     SELECT COUNT(*)
-    FROM `eSolutionsArchive`.`installed_applications`
+    FROM `ESOLUTIONSSVC_HIST`.`installed_applications`
     WHERE APP_OFFLINE_DATE IS NULL;
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`listApplications`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`listApplications`(
     IN startRow INT
 )
 BEGIN
     SELECT
         GUID,
         NAME
-    FROM `eSolutionsArchive`.`installed_applications`
+    FROM `ESOLUTIONSSVC_HIST`.`installed_applications`
     WHERE APP_OFFLINE_DATE IS NULL
     LIMIT startRow, 20;
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`getServerByAttribute`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`getServerByAttribute`(
     IN attributeName VARCHAR(100),
     IN startRow INT
 )
@@ -512,8 +512,8 @@ BEGIN
         T2.NAME,
     MATCH (T1.GUID, T1.SYSTEM_OSTYPE, T1.STATUS, T1.REGION, T1.NWPARTITION, T1.DATACENTER_GUID, T1.SYSTYPE, T1.OPER_HOSTNAME, T1.ASSIGNED_ENGINEER, T1.OWNING_DMGR)
     AGAINST (attributeName WITH QUERY EXPANSION)
-    FROM `eSolutionsArchive`.`installed_systems` T1
-    INNER JOIN `eSolutionsArchive`.`service_datacenters` T2
+    FROM `ESOLUTIONSSVC_HIST`.`installed_systems` T1
+    INNER JOIN `ESOLUTIONSSVC_HIST`.`service_datacenters` T2
     ON T1.DATACENTER_GUID = T2.GUID
     WHERE MATCH (T1.GUID, T1.SYSTEM_OSTYPE, T1.STATUS, T1.REGION, T1.NWPARTITION, T1.DATACENTER_GUID, T1.SYSTYPE, T1.OPER_HOSTNAME, T1.ASSIGNED_ENGINEER, T1.OWNING_DMGR)
     AGAINST (attributeName IN BOOLEAN MODE)
@@ -522,17 +522,17 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`validateServerHostName`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`validateServerHostName`(
     IN operHostname VARCHAR(128)
 )
 BEGIN
     SELECT COUNT(*)
-    FROM `eSolutionsArchive`.`installed_systems`
+    FROM `ESOLUTIONSSVC_HIST`.`installed_systems`
     WHERE OPER_HOSTNAME = operHostname;
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`insertNewServer`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`insertNewServer`(
     IN systemGuid VARCHAR(128),
     IN systemOs VARCHAR(45),
     IN systemStatus VARCHAR(45),
@@ -566,12 +566,12 @@ CREATE PROCEDURE `eSolutionsArchive`.`insertNewServer`(
 BEGIN
     IF dmgrPort = 0
     THEN
-        INSERT INTO `eSolutionsArchive`.`installed_systems`
+        INSERT INTO `ESOLUTIONSSVC_HIST`.`installed_systems`
         (GUID, SYSTEM_OSTYPE, STATUS, REGION, NWPARTITION, DATACENTER_GUID, SYSTYPE, DOMAIN_NAME, CPU_TYPE, CPU_COUNT, SERVER_RACK, RACK_POSITION, SERVER_MODEL, SERIAL_NUMBER, INSTALLED_MEMORY, OPER_IP, OPER_HOSTNAME, MGMT_IP, MGMT_HOSTNAME, BKUP_IP, BKUP_HOSTNAME, NAS_IP, NAS_HOSTNAME, NAT_ADDR, COMMENTS, ASSIGNED_ENGINEER, ADD_DATE, MGR_ENTRY, OWNING_DMGR)
         VALUES
         (systemGuid, systemOs, systemStatus, systemRegion, networkPartition, datacenter, systemType, domainName, cpuType, cpuCount, serverRack, rackPosition, serverModel, serialNumber, installedMemory, operIp, operHostname, mgmtIp, mgmtHostname, backupIp, backupHostname, nasIp, nasHostname, natAddr, systemComments, engineer, NOW(), mgrEntry, owningDmgr);
     ELSE
-        INSERT INTO `eSolutionsArchive`.`installed_systems`
+        INSERT INTO `ESOLUTIONSSVC_HIST`.`installed_systems`
         (GUID, SYSTEM_OSTYPE, STATUS, REGION, NWPARTITION, DATACENTER_GUID, SYSTYPE, DOMAIN_NAME, CPU_TYPE, CPU_COUNT, SERVER_RACK, RACK_POSITION, SERVER_MODEL, SERIAL_NUMBER, INSTALLED_MEMORY, OPER_IP, OPER_HOSTNAME, MGMT_IP, MGMT_HOSTNAME, BKUP_IP, BKUP_HOSTNAME, NAS_IP, NAS_HOSTNAME, NAT_ADDR, COMMENTS, ASSIGNED_ENGINEER, ADD_DATE, MGR_ENTRY, DMGR_PORT, OWNING_DMGR)
         VALUES
         (systemGuid, systemOs, systemStatus, systemRegion, networkPartition, datacenter, systemType, domainName, cpuType, cpuCount, serverRack, rackPosition, serverModel, serialNumber, installedMemory, operIp, operHostname, mgmtIp, mgmtHostname, backupIp, backupHostname, nasIp, nasHostname, natAddr, systemComments, engineer, NOW(), mgrEntry, dmgrPort, owningDmgr);
@@ -581,7 +581,7 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`updateServerData`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`updateServerData`(
     IN systemGuid VARCHAR(128),
     IN systemOs VARCHAR(45),
     IN systemStatus VARCHAR(45),
@@ -613,7 +613,7 @@ CREATE PROCEDURE `eSolutionsArchive`.`updateServerData`(
     IN owningDmgr VARCHAR(255)
 )
 BEGIN
-    UPDATE `eSolutionsArchive`.`installed_systems`
+    UPDATE `ESOLUTIONSSVC_HIST`.`installed_systems`
     SET
         SYSTEM_OSTYPE = systemOs,
         STATUS = systemStatus,
@@ -649,16 +649,16 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`getServerCount`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`getServerCount`(
 )
 BEGIN
     SELECT COUNT(*)
-    FROM `eSolutionsArchive`.`installed_systems`
+    FROM `ESOLUTIONSSVC_HIST`.`installed_systems`
     WHERE DELETE_DATE IS NULL;
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`getServerList`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`getServerList`(
     IN startRow INT
 )
 BEGIN
@@ -670,15 +670,15 @@ BEGIN
         T1.OWNING_DMGR,
         T2.GUID,
         T2.NAME
-    FROM `eSolutionsArchive`.`installed_systems`
-    INNER JOIN `eSolutionsArchive`.`service_datacenters` T2
+    FROM `ESOLUTIONSSVC_HIST`.`installed_systems`
+    INNER JOIN `ESOLUTIONSSVC_HIST`.`service_datacenters` T2
     ON T1.DATACENTER_GUID = T2.GUID
     WHERE DELETE_DATE IS NULL
     LIMIT startRow, 20;
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`retrServerData`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`retrServerData`(
     IN serverGuid VARCHAR(128)
 )
 BEGIN
@@ -715,36 +715,36 @@ BEGIN
         T1.MGR_ENTRY,
         T2.GUID,
         T2.NAME
-    FROM `eSolutionsArchive`.`installed_systems` T1
-    INNER JOIN `eSolutionsArchive`.`service_datacenters` T2
+    FROM `ESOLUTIONSSVC_HIST`.`installed_systems` T1
+    INNER JOIN `ESOLUTIONSSVC_HIST`.`service_datacenters` T2
     ON T1.DATACENTER_GUID = T2.GUID
     WHERE T1.GUID = serverGuid
     AND DELETE_DATE IS NULL;
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`getRetiredServers`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`getRetiredServers`(
 )
 BEGIN
     SELECT GUID
-    FROM `eSolutionsArchive`.`installed_systems`
+    FROM `ESOLUTIONSSVC_HIST`.`installed_systems`
     WHERE DELETE_DATE IS NOT NULL;
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`retireServer`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`retireServer`(
     IN guid VARCHAR(128)
 )
 BEGIN
     INSERT INTO eSolutionsArchive_hist.installed_systems
     SELECT *
-    FROM eSolutionsArchive.installed_systems
+    FROM ESOLUTIONSSVC_HIST.installed_systems
     WHERE GUID = guid
     AND DELETE_DATE IS NOT NULL;
 
     COMMIT;
 
-    DELETE FROM eSolutionsArchive.installed_systems
+    DELETE FROM ESOLUTIONSSVC_HIST.installed_systems
     WHERE GUID = guid
     AND DELETE_DATE IS NOT NULL;
 
@@ -752,7 +752,7 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`getDataCenterByAttribute`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`getDataCenterByAttribute`(
     IN attributeName VARCHAR(100),
     IN startRow INT
 )
@@ -764,21 +764,21 @@ BEGIN
         DESCRIPTION,
     MATCH (`GUID`, `NAME`, `STATUS`)
     AGAINST (+attributeName WITH QUERY EXPANSION)
-    FROM `eSolutionsArchive`.`service_datacenters`
+    FROM `ESOLUTIONSSVC_HIST`.`service_datacenters`
     WHERE MATCH (`GUID`, `NAME`, `STATUS`)
     AGAINST (+attributeName IN BOOLEAN MODE)
     LIMIT startRow, 20;
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`addNewDatacenter`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`addNewDatacenter`(
     IN datacenterGuid VARCHAR(128),
     IN datacenterName VARCHAR(45),
     IN datacenterStatus VARCHAR(45),
     IN datacenterDesc TEXT
 )
 BEGIN
-    INSERT INTO `eSolutionsArchive`.`service_datacenters`
+    INSERT INTO `ESOLUTIONSSVC_HIST`.`service_datacenters`
     (GUID, NAME, STATUS, DESCRIPTION)
     VALUES
     (datacenterGuid, datacenterName, datacenterStatus, datacenterDesc);
@@ -787,11 +787,11 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`removeDataCenter`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`removeDataCenter`(
     IN datacenterGuid VARCHAR(128)
 )
 BEGIN
-    UPDATE `eSolutionsArchive`.`service_datacenters`
+    UPDATE `ESOLUTIONSSVC_HIST`.`service_datacenters`
     SET STATUS = 'INACTIVE'
     WHERE GUID = datacenterGuid;
 
@@ -800,16 +800,16 @@ END //
 COMMIT //
 
 
-CREATE PROCEDURE `eSolutionsArchive`.`getDatacenterCount`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`getDatacenterCount`(
 )
 BEGIN
     SELECT COUNT(*)
-    FROM `eSolutionsArchive`.`service_datacenters`
+    FROM `ESOLUTIONSSVC_HIST`.`service_datacenters`
     WHERE STATUS = 'ACTIVE';
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`listDataCenters`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`listDataCenters`(
     IN startRow INT
 )
 BEGIN
@@ -818,13 +818,13 @@ BEGIN
         NAME,
         STATUS,
         DESCRIPTION
-    FROM `eSolutionsArchive`.`service_datacenters`
+    FROM `ESOLUTIONSSVC_HIST`.`service_datacenters`
     WHERE STATUS = 'ACTIVE'
     LIMIT startRow, 20;
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`retrDataCenter`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`retrDataCenter`(
     IN datacenterGuid VARCHAR(128)
 )
 BEGIN
@@ -833,13 +833,13 @@ BEGIN
         NAME,
         STATUS,
         DESCRIPTION
-    FROM `eSolutionsArchive`.`service_datacenters`
+    FROM `ESOLUTIONSSVC_HIST`.`service_datacenters`
     WHERE GUID = datacenterGuid
     AND STATUS = 'ACTIVE';
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`getMessagesByAttribute`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`getMessagesByAttribute`(
     IN searchTerms VARCHAR(100)
 )
 BEGIN
@@ -857,7 +857,7 @@ BEGIN
         MODIFIED_BY,
     MATCH (`ID`, `TITLE`, `MESSAGE`, `AUTHOR`)
     AGAINST (+searchTerms WITH QUERY EXPANSION)
-    FROM `eSolutionsArchive`.`service_messages`
+    FROM `ESOLUTIONSSVC_HIST`.`service_messages`
     WHERE MATCH (`ID`, `TITLE`, `MESSAGE`, `AUTHOR`)
     AGAINST (+searchTerms IN BOOLEAN MODE)
     AND ACTIVE  = TRUE
@@ -866,7 +866,7 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`submitSvcMessage`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`submitSvcMessage`(
     IN messageId VARCHAR(128),
     IN messageTitle VARCHAR(100),
     IN messageText TEXT,
@@ -877,7 +877,7 @@ CREATE PROCEDURE `eSolutionsArchive`.`submitSvcMessage`(
     IN expiryDate BIGINT
 )
 BEGIN
-    INSERT INTO `eSolutionsArchive`.`service_messages`
+    INSERT INTO `ESOLUTIONSSVC_HIST`.`service_messages`
     (
         ID, TITLE, MESSAGE, AUTHOR, SUBMIT_DATE, ACTIVE , ALERT, EXPIRES, EXPIRES_ON
     )
@@ -890,7 +890,7 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`updateServiceMessage`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`updateServiceMessage`(
     IN messageId VARCHAR(128),
     IN messageTitle VARCHAR(100),
     IN messageText TEXT,
@@ -901,7 +901,7 @@ CREATE PROCEDURE `eSolutionsArchive`.`updateServiceMessage`(
     IN modifyAuthor VARCHAR(45)
 )
 BEGIN
-    UPDATE `eSolutionsArchive`.`service_messages`
+    UPDATE `ESOLUTIONSSVC_HIST`.`service_messages`
     SET
         TITLE = messageTitle,
         MESSAGE = messageText,
@@ -917,7 +917,7 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`retrServiceMessage`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`retrServiceMessage`(
     IN requestId VARCHAR(45)
 )
 BEGIN
@@ -933,12 +933,12 @@ BEGIN
         EXPIRES_ON,
         MODIFIED_ON,
         MODIFIED_BY
-    FROM `eSolutionsArchive`.`service_messages`
+    FROM `ESOLUTIONSSVC_HIST`.`service_messages`
     WHERE ID = requestId;
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`retrServiceMessages`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`retrServiceMessages`(
 )
 BEGIN
     SELECT
@@ -953,7 +953,7 @@ BEGIN
         EXPIRES_ON,
         MODIFIED_ON,
         MODIFIED_BY
-    FROM `eSolutionsArchive`.`service_messages`
+    FROM `ESOLUTIONSSVC_HIST`.`service_messages`
     WHERE ACTIVE  = TRUE
     AND ALERT = FALSE
     AND (EXPIRES_ON > NOW() OR EXPIRES_ON = '0000-00-00 00:00:00' OR EXPIRES = FALSE)
@@ -961,7 +961,7 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`retrAlertMessages`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`retrAlertMessages`(
 )
 BEGIN
     SELECT
@@ -976,7 +976,7 @@ BEGIN
         EXPIRES_ON,
         MODIFIED_ON,
         MODIFIED_BY
-    FROM `eSolutionsArchive`.`service_messages`
+    FROM `ESOLUTIONSSVC_HIST`.`service_messages`
     WHERE ACTIVE  = TRUE
     AND ALERT = TRUE
     AND (EXPIRES_ON > NOW() OR EXPIRES_ON = '0000-00-00 00:00:00' OR EXPIRES = FALSE)
@@ -984,7 +984,7 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`getPlatformByAttribute`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`getPlatformByAttribute`(
     IN attributeName VARCHAR(100),
     IN startRow INT
 )
@@ -994,7 +994,7 @@ BEGIN
         NAME,
     MATCH (`NAME`, `REGION`, `NWPARTITION`)
     AGAINST (+attributeName WITH QUERY EXPANSION)
-    FROM `eSolutionsArchive`.`service_platforms`
+    FROM `ESOLUTIONSSVC_HIST`.`service_platforms`
     WHERE MATCH (`NAME`, `REGION`, `NWPARTITION`)
     AGAINST (+attributeName IN BOOLEAN MODE)
     AND STATUS = 'ACTIVE'
@@ -1002,7 +1002,7 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`addNewPlatform`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`addNewPlatform`(
     IN guid VARCHAR(128),
     IN name VARCHAR(128),
     IN region VARCHAR(15),
@@ -1012,14 +1012,14 @@ CREATE PROCEDURE `eSolutionsArchive`.`addNewPlatform`(
     IN description TEXT
 )
 BEGIN
-    INSERT INTO `eSolutionsArchive`.`service_platforms` (GUID, NAME, REGION, NWPARTITION, STATUS, SERVERS, DESCRIPTION)
+    INSERT INTO `ESOLUTIONSSVC_HIST`.`service_platforms` (GUID, NAME, REGION, NWPARTITION, STATUS, SERVERS, DESCRIPTION)
     VALUES (guid, name, region, nwpartition, status, servers, description);
 
     COMMIT;
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`updatePlatformData`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`updatePlatformData`(
     IN guid VARCHAR(128),
     IN name VARCHAR(128),
     IN region VARCHAR(15),
@@ -1029,7 +1029,7 @@ CREATE PROCEDURE `eSolutionsArchive`.`updatePlatformData`(
     IN description TEXT
 )
 BEGIN
-    UPDATE `eSolutionsArchive`.`service_platforms`
+    UPDATE `ESOLUTIONSSVC_HIST`.`service_platforms`
     SET
         NAME = name,
         REGION = region,
@@ -1043,11 +1043,11 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`removePlatformData`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`removePlatformData`(
     IN platformGuid VARCHAR(128)
 )
 BEGIN
-    UPDATE `eSolutionsArchive`.`service_platforms`
+    UPDATE `ESOLUTIONSSVC_HIST`.`service_platforms`
     SET STATUS = 'INACTIVE'
     WHERE GUID = platformGuid;
 
@@ -1055,7 +1055,7 @@ BEGIN
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`getPlatformData`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`getPlatformData`(
     IN guid VARCHAR(128)
 )
 BEGIN
@@ -1067,29 +1067,29 @@ BEGIN
         STATUS,
         SERVERS,
         DESCRIPTION
-    FROM `eSolutionsArchive`.`service_platforms`
+    FROM `ESOLUTIONSSVC_HIST`.`service_platforms`
     WHERE GUID = guid
     AND STATUS = 'ACTIVE';
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`getPlatformCount`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`getPlatformCount`(
 )
 BEGIN
     SELECT COUNT(*)
-    FROM `eSolutionsArchive`.`service_platforms`
+    FROM `ESOLUTIONSSVC_HIST`.`service_platforms`
     WHERE STATUS = 'ACTIVE';
 END //
 COMMIT //
 
-CREATE PROCEDURE `eSolutionsArchive`.`listPlatforms`(
+CREATE PROCEDURE `ESOLUTIONSSVC_HIST`.`listPlatforms`(
     IN startRow INT
 )
 BEGIN
     SELECT
         GUID,
         NAME
-    FROM `eSolutionsArchive`.`service_platforms`
+    FROM `ESOLUTIONSSVC_HIST`.`service_platforms`
     WHERE STATUS = 'ACTIVE'
     LIMIT startRow, 20;
 END //

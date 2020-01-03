@@ -67,9 +67,9 @@ public final class SecurityConfig implements Serializable
     private String applicationName = null; // only required if its not already fed
     private UserAccount svcAccount = null; // service account, if necessary
     private boolean smsResetEnabled = false;
-    private String encryptionAlgorithm = "AES";
-    private String secretAlgorithm = "PBKDF2WithHmacSHA512";
-    private String encryptionInstance = "AES/CBC/PKCS5Padding";
+    private String encryptionAlgorithm = "AES"; // algorithm
+    private String secretAlgorithm = "PBKDF2WithHmacSHA512"; // secret instance
+    private String encryptionInstance = "AES/CBC/PKCS5Padding";  // cipher instance
 
     private static final long serialVersionUID = -338675198961732554L;
     private static final String CNAME = SecurityConfig.class.getName();
