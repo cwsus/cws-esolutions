@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 - 2013 By: CWS, Inc.
+ * Copyright (c) 2009 - 2020 CaspersBox Web Services
  * 
  * All rights reserved. These materials are confidential and
  * proprietary to CaspersBox Web Services N.A and no part of
