@@ -220,7 +220,7 @@ public interface UserManager
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException if an exception occurs during processing
      */
-    boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final long timestamp) throws UserManagementException;
+    boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final Long timestamp) throws UserManagementException;
 
     /**
      * Allows administrators and users alike to modify their password, either via an Online Reset

@@ -1600,10 +1600,12 @@ public class LDAPUserManager implements UserManager
         return isComplete;
     }
 
-	@Override
-	public boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final long timestamp) throws UserManagementException
+	/**
+	 * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#performSuccessfulLogin(java.lang.String, java.lang.String, java.lang.int, java.lang.Long)
+	 */
+	public boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final Long timestamp) throws UserManagementException
 	{
-        final String methodName = LDAPUserManager.CNAME + "#performSuccessfulLogin(final String userId, final String guid, final int lockCount, final long timestamp) throws UserManagementException";
+        final String methodName = LDAPUserManager.CNAME + "#performSuccessfulLogin(final String userId, final String guid, final int lockCount, final Long timestamp) throws UserManagementException";
 
         if (DEBUG)
         {

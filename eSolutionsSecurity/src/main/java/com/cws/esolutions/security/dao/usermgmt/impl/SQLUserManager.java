@@ -1276,11 +1276,11 @@ public class SQLUserManager implements UserManager
     }
 
 	/**
-	 * @see com.cws.esolutions.security.dao.usermgmt.interfaces#performSuccessfulLogin(java.lang.String, java.lang.String, java.lang.int, java.lang.long)
+	 * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#performSuccessfulLogin(java.lang.String, java.lang.String, java.lang.int, java.lang.Long)
 	 */
-	public boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final long timestamp) throws UserManagementException
+	public boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final Long timestamp) throws UserManagementException
 	{
-        final String methodName = SQLUserManager.CNAME + "#modifyUserSecurity(final String userId, final String guid, final int lockCount, final long timestamp) throws UserManagementException";
+        final String methodName = SQLUserManager.CNAME + "#modifyUserSecurity(final String userId, final String guid, final int lockCount, final Long timestamp) throws UserManagementException";
 
         if (DEBUG)
         {

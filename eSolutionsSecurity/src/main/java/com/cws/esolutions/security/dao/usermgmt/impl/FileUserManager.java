@@ -370,11 +370,11 @@ public class FileUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyLastLogin(java.lang.String, java.util.String, java.util.Long)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#performSuccessfulLogin(java.lang.String, java.lang.String, java.lang.int, java.util.Long)
      */
-	public synchronized boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final long timestamp) throws UserManagementException
+	public synchronized boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final Long timestamp) throws UserManagementException
 	{
-        final String methodName = FileUserManager.CNAME + "#performSuccessfulLogin(final String userId, final String guid, final int lockCount, final long timestamp) throws UserManagementException";
+        final String methodName = FileUserManager.CNAME + "#performSuccessfulLogin(final String userId, final String guid, final int lockCount, final Long timestamp) throws UserManagementException";
 
         if (DEBUG)
         {
