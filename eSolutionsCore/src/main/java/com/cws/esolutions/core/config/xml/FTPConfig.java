@@ -23,7 +23,7 @@ package com.cws.esolutions.core.config.xml;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   11/23/2008 22:39:20             Created.
+ * cws-khuntly   		11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
 import java.io.Serializable;
@@ -40,7 +40,7 @@ import com.cws.esolutions.core.CoreServiceConstants;
  * @version 1.0
  * @see java.io.Serializable
  */
-@XmlRootElement(name = "ssh-config")
+@XmlRootElement(name = "ftp-config")
 @XmlAccessorType(XmlAccessType.NONE)
 public final class FTPConfig implements Serializable
 {

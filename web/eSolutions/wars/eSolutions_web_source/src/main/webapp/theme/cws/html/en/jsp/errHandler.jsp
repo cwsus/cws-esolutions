@@ -1,25 +1,41 @@
 <%--
-/**
- * Copyright 2008 - 2009 CaspersBox Web Services
- * All rights reserved.
+/*
+ * Copyright (c) 2009 - 2013 By: CWS, Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
  */
 --%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%--
-/*
- * Default.jsp
- * Default theme file for application display. Only used when the
- * doGet() method is invoked on the ServiceRequestServlet.
+/**
+ * Project: eSolutions_web_source
+ * Package: theme\cws\html\en\jsp
+ * File: errHandler.jsp
+ *
+ * @author cws-khuntly
+ * @version 1.0
  *
  * History
  *
- * Author               Date                           Comments
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * Kevin Huntly         11/23/2008 22:39:20            Created.
- * Kevin Huntly         12/22/2009 14:58:03            Added escape chars
+ * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 --%>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <%@page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" isThreadSafe="true" isErrorPage="true" %>
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">

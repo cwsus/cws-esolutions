@@ -23,7 +23,7 @@ package com.cws.esolutions.security.services.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   11/23/2008 22:39:20             Created.
+ * cws-khuntly   		11/23/2008 22:39:20             Created.
  */
 import java.util.List;
 import java.sql.SQLException;

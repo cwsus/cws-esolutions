@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.main;
-
+/*
+ * Project: eSolutionsSecurity
+ * Package: com.cws.esolutions.security.listeners
+ * File: SecurityServiceInitializer.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * cws-khuntly			11/23/2008 22:39:20             Created.
+ */
 import java.io.File;
 import org.slf4j.Logger;
 import java.io.FileReader;
@@ -52,9 +62,9 @@ import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
  *
  * History
  *
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly @ Jul 28, 2014 1:27:05 PM
- *     Created.
+ * cws-khuntly   		11/23/2008 22:39:20             Created.
  */
 @SuppressWarnings("static-access")
 public class PasswordUtility

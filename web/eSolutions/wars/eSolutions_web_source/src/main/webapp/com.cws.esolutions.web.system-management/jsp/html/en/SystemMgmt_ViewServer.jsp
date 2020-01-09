@@ -1,30 +1,35 @@
 <%--
-/**
- * Copyright (c) 2009 - 2017 CaspersBox Web Services
+/*
+ * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
- * All rights reserved. These materials are confidential and
- * proprietary to CaspersBox Web Services N.A and no part of
- * these materials should be reproduced, published in any form
- * by any means, electronic or mechanical, including photocopy
- * or any information storage or retrieval system not should
- * the materials be disclosed to third parties without the
- * express written authorization of CaspersBox Web Services, N.A.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * eSolutions_web_source
- * com.cws.us.esolutions.system-management/jsp/html/en
- * SystemManagement_ViewServer.jsp
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * $Id$
- * $Author$
- * $Date$
- * $Revision$
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+--%>
+<%--
+/**
+ * Project: eSolutions_web_source
+ * Package: com.cws.esolutions.web.system-management\jsp\html\en
+ * File: SystemMgmt_ViewServer.jsp
+ *
  * @author cws-khuntly
  * @version 1.0
  *
  * History
+ *
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly @ Jan 16, 2013 11:53:26 AM
- *     Created.
+ * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 --%>
 
@@ -153,13 +158,13 @@
                 <td>${server.serverModel} - ${server.serialNumber}</td>
             </tr>
             <c:if test="${not empty fn:trim(server.serverRack)}">
-	            <tr>
-	                <td><label id="txtServerRack"><spring:message code="system.mgmt.server.rack" /></label></td>
-	                <td>${server.serverRack}</td>
-	                <td><label id="txtRackPosition"><spring:message code="system.mgmt.rack.position" /></label></td>
-	                <td>${server.rackPosition}</td>
-	            </tr>
-	        </c:if>
+                <tr>
+                    <td><label id="txtServerRack"><spring:message code="system.mgmt.server.rack" /></label></td>
+                    <td>${server.serverRack}</td>
+                    <td><label id="txtRackPosition"><spring:message code="system.mgmt.rack.position" /></label></td>
+                    <td>${server.rackPosition}</td>
+                </tr>
+            </c:if>
         </table>
         <table>
             <tr>
@@ -169,35 +174,35 @@
                 <td>${server.operIpAddress}</td>
             </tr>
             <c:if test="${not empty fn:trim(server.mgmtHostName)}">
-	            <tr>
-	                <td><label id="txtMgmtHostname"><spring:message code="system.mgmt.mgmt.name" /></label></td>
-	                <td>${server.mgmtHostName}</td>
-	                <td><label id="txtMgmtAddress"><spring:message code="system.mgmt.mgmt.address" /></label></td>
-	                <td>${server.mgmtIpAddress}</td>
-	            </tr>
+                <tr>
+                    <td><label id="txtMgmtHostname"><spring:message code="system.mgmt.mgmt.name" /></label></td>
+                    <td>${server.mgmtHostName}</td>
+                    <td><label id="txtMgmtAddress"><spring:message code="system.mgmt.mgmt.address" /></label></td>
+                    <td>${server.mgmtIpAddress}</td>
+                </tr>
             </c:if>
             <c:if test="${not empty fn:trim(server.bkHostName)}">
-	            <tr>
-	                <td><label id="txtBackupHostname"><spring:message code="system.mgmt.backup.name" /></label></td>
-	                <td>${server.bkHostName}</td>
-	                <td><label id="txtBackupAddress"><spring:message code="system.mgmt.backup.address" /></label></td>
-	                <td>${server.bkIpAddress}</td>
-	            </tr>
+                <tr>
+                    <td><label id="txtBackupHostname"><spring:message code="system.mgmt.backup.name" /></label></td>
+                    <td>${server.bkHostName}</td>
+                    <td><label id="txtBackupAddress"><spring:message code="system.mgmt.backup.address" /></label></td>
+                    <td>${server.bkIpAddress}</td>
+                </tr>
             </c:if>
             <c:if test="${not empty fn:trim(server.nasHostName)}">
-	            <tr>
-	                <td><label id="txtNasHostname"><spring:message code="system.mgmt.nas.name" /></label></td>
-	                <td>${server.nasHostName}</td>
-	                <td><label id="txtNasAddress"><spring:message code="system.mgmt.nas.address" /></label></td>
-	                <td>${server.nasIpAddress}</td>
-	            </tr>
+                <tr>
+                    <td><label id="txtNasHostname"><spring:message code="system.mgmt.nas.name" /></label></td>
+                    <td>${server.nasHostName}</td>
+                    <td><label id="txtNasAddress"><spring:message code="system.mgmt.nas.address" /></label></td>
+                    <td>${server.nasIpAddress}</td>
+                </tr>
             </c:if>
             <c:if test="${not empty fn:trim(server.natAddress)}">
-	            <tr>
-	                <td><label id="txtNatAddress"><spring:message code="system.mgmt.nat.address" /></label></td>
-	                <td>${server.natAddress}</td>
-	            </tr>
-	        </c:if>
+                <tr>
+                    <td><label id="txtNatAddress"><spring:message code="system.mgmt.nat.address" /></label></td>
+                    <td>${server.natAddress}</td>
+                </tr>
+            </c:if>
         </table>
         <table>
             <tr>

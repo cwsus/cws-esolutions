@@ -20,9 +20,10 @@ package com.cws.esolutions.core.main;
  * File: EmailUtility.java
  *
  * History
+ *
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly @ Jan 4, 2013 3:36:54 PM
- *     Created.
+ * cws-khuntly   		11/23/2008 22:39:20             Created.
  */
 import java.net.URL;
 import org.slf4j.Logger;

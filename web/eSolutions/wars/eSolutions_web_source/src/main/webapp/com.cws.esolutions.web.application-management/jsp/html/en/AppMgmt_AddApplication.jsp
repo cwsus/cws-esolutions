@@ -1,30 +1,35 @@
 <%--
-/**
- * Copyright (c) 2009 - 2017 CaspersBox Web Services
+/*
+ * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
- * All rights reserved. These materials are confidential and
- * proprietary to CaspersBox Web Services N.A and no part of
- * these materials should be reproduced, published in any form
- * by any means, electronic or mechanical, including photocopy
- * or any information storage or retrieval system not should
- * the materials be disclosed to third parties without the
- * express written authorization of CaspersBox Web Services, N.A.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * eSolutions_web_source
- * com.cws.us.esolutions.application-management/jsp/html/en
- * AppMgmt_AddApplication.jsp
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * $Id$
- * $Author$
- * $Date$
- * $Revision$
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+--%>
+<%--
+/**
+ * Project: eSolutions_web_source
+ * Package: com.cws.esolutions.web.application-management\jsp\html\en
+ * File: AppMgmt_AddApplication.jsp
+ *
  * @author cws-khuntly
  * @version 1.0
  *
  * History
+ *
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly @ Jan 16, 2013 11:53:26 AM
- *     Created.
+ * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 --%>
 

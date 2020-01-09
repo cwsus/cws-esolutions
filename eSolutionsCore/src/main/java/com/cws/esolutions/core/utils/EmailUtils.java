@@ -20,9 +20,10 @@ package com.cws.esolutions.core.utils;
  * File: EmailUtils.java
  *
  * History
+ *
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly @ Jan 4, 2013 3:36:54 PM
- *     Created.
+ * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.Map;
 import java.util.List;

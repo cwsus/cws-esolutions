@@ -17,14 +17,13 @@ package com.cws.esolutions.security.quartz;
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security.quartz
- * File: /
-public class ResetRequestReaper.java
+ * File: ResetRequestReaper.java
  *
  * History
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   11/23/2008 22:39:20             Created.
+ * cws-khuntly   		11/23/2008 22:39:20             Created.
  */
 import java.util.List;
 import org.quartz.Job;
