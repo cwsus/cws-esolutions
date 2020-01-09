@@ -17,22 +17,6 @@
  *
  */
 -->
-<!--
-/**
- * Project: eSolutions_web_config
- * Package: eSolutionsCore\config
- * File: ServiceConfig.xml
- *
- * @author cws-khuntly
- * @version 1.0
- *
- * History
- *
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * cws-khuntly          11/23/2008 22:39:20             Created.
- */
--->
 <configuration>
     <application-config>
         <appName>eSolutionsCore</appName>
