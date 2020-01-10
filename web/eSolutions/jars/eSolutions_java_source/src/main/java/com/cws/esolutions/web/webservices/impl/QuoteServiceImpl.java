@@ -17,8 +17,8 @@
 package com.cws.esolutions.web.webservices.impl;
 /*
  * Project: eSolutions_java_source
- * Package: com.cws.esolutions.web.validators
- * File: RandomQuoteServiceImpl.java
+ * Package: com.cws.esolutions.web.webservices.impl
+ * File: QuoteServiceImpl.java
  *
  * History
  *
