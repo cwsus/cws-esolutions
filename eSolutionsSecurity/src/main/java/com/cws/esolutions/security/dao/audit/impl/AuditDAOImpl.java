@@ -40,6 +40,9 @@ public class AuditDAOImpl implements IAuditDAO
 {
 	private static final String CNAME = AuditDAOImpl.class.getName();
 
+	/**
+	 * @see com.cws.esolutions.security.dao.audit.interfaces.IAuditDAO#auditRequestedOperation(java.util.List)
+	 */
     public synchronized void auditRequestedOperation(final List<String> auditRequest) throws SQLException
     {
         final String methodName = AuditDAOImpl.CNAME + "#auditRequestedOperation(final List<String> auditRequest) throws SQLException";
@@ -104,6 +107,9 @@ public class AuditDAOImpl implements IAuditDAO
         }
     }
 
+    /**
+     * @see com.cws.esolutions.security.dao.audit.interfaces.IAuditDAO#getAuditInterval(String, int)
+     */
     public synchronized List<Object> getAuditInterval(final String guid, final int startRow) throws SQLException
     {
         final String methodName = AuditDAOImpl.CNAME + "#getAuditInterval(final String guid, final int startRow) throws SQLException";

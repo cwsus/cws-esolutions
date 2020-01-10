@@ -23,7 +23,7 @@ package com.cws.esolutions.security.dao.usermgmt.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly            11/23/2008 22:39:20             Created.
+ * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
 import java.util.Arrays;
@@ -47,7 +47,7 @@ public class SQLUserManager implements UserManager
     private static final DataSource dataSource = svcBean.getDataSources().get(SecurityServiceConstants.INIT_SECURITYDS_MANAGER);
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#validateUserAccount(java.lang.String, java.lang.String)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#validateUserAccount(String, String)
      */
     public synchronized boolean validateUserAccount(final String userId, final String userGuid) throws UserManagementException
     {

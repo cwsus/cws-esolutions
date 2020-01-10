@@ -59,14 +59,14 @@ import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 /**
- * @see com.cws.esolutions.security.processors.interfaces.AccountChangeProcessorImpl
+ * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor
  */
 public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 {
 	private static final String CNAME = AccountChangeProcessorImpl.class.getName();
 
 	/**
-     * @see com.cws.esolutions.security.processors.interfaces.AccountChangeProcessorImpl#changeUserEmail(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#changeUserEmail(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
      */
     public AccountChangeResponse changeUserEmail(final AccountChangeRequest request) throws AccountChangeException
     {
@@ -203,7 +203,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
     }
 
     /**
-     * @see com.cws.esolutions.security.processors.interfaces.AccountChangeProcessorImpl#changeUserContact(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#changeUserContact(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
      */
     public AccountChangeResponse changeUserContact(final AccountChangeRequest request) throws AccountChangeException
     {
@@ -345,7 +345,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
     }
 
     /**
-     * @see com.cws.esolutions.security.processors.interfaces.AccountChangeProcessorImpl#changeUserPassword(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#changeUserPassword(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
      */
     public AccountChangeResponse changeUserPassword(final AccountChangeRequest request) throws AccountChangeException
     {
@@ -563,7 +563,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
     }
 
     /**
-     * @see com.cws.esolutions.security.processors.interfaces.AccountChangeProcessorImpl#changeUserSecurity(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#changeUserSecurity(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
      */
     public AccountChangeResponse changeUserSecurity(final AccountChangeRequest request) throws AccountChangeException
     {
@@ -797,7 +797,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
     }
 
     /**
-     * @see com.cws.esolutions.security.processors.interfaces.AccountChangeProcessorImpl#changeUserKeys(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#changeUserKeys(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
      */
     public AccountChangeResponse changeUserKeys(final AccountChangeRequest request) throws AccountChangeException
     {
@@ -912,7 +912,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
     }
 
     /**
-     * @see com.cws.esolutions.security.processors.interfaces.AccountChangeProcessorImpl#enableOtpAuth(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#enableOtpAuth(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
      */
     public AccountChangeResponse enableOtpAuth(final AccountChangeRequest request) throws AccountChangeException
     {
@@ -1105,7 +1105,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
     }
 
     /**
-     * @see com.cws.esolutions.security.processors.interfaces.AccountChangeProcessorImpl#disableOtpAuth(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#disableOtpAuth(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
      */
     public AccountChangeResponse disableOtpAuth(final AccountChangeRequest request) throws AccountChangeException
     {
