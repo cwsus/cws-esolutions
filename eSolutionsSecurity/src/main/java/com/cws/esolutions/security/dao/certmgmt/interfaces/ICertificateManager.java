@@ -23,7 +23,7 @@ package com.cws.esolutions.security.dao.certmgmt.interfaces;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import java.io.File;
 import java.util.List;
@@ -42,7 +42,7 @@ import com.cws.esolutions.security.dao.certmgmt.exception.CertificateManagementE
  */
 public interface ICertificateManager
 {
-	static final String CNAME = ICertificateManager.class.getName();
+    static final String CNAME = ICertificateManager.class.getName();
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
     static final CertificateConfig certConfig = svcBean.getConfigData().getCertConfig();
     

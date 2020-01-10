@@ -23,7 +23,7 @@ package com.cws.esolutions.security.dao.userauth.exception;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import com.unboundid.ldap.sdk.ResultCode;
 import com.cws.esolutions.security.exception.SecurityServiceException;

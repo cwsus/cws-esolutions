@@ -23,7 +23,7 @@ package com.cws.esolutions.security.config.xml;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import java.util.List;
 import org.slf4j.Logger;
@@ -46,7 +46,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 @XmlAccessorType(XmlAccessType.NONE)
 public final class UserReturningAttributes implements Serializable
 {
-	private int lockCount = 0;
+    private int lockCount = 0;
     private String userId = null;
     private String surname = null;
     private String userGuid = null;

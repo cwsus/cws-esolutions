@@ -23,7 +23,7 @@ package com.cws.esolutions.core.utils;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import java.util.Map;
 import org.slf4j.Logger;
@@ -250,7 +250,7 @@ public class SQLUtils
             }
             catch (SQLException sqx)
             {
-            	ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                ERROR_RECORDER.error(sqx.getMessage(), sqx);
             }
         }
         

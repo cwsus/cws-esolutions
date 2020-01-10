@@ -23,7 +23,7 @@ package com.cws.esolutions.core.processors.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import java.util.List;
 import java.util.ArrayList;
@@ -135,7 +135,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
                 if ((serverList != null) && (serverList.size() != 0))
                 {
-                	List<DNSRecord> responseRecords = new ArrayList<DNSRecord>();
+                    List<DNSRecord> responseRecords = new ArrayList<DNSRecord>();
 
                     for (Object[] data : serverList)
                     {
@@ -247,26 +247,26 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
                 try
@@ -311,7 +311,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
             if (DEBUG)
             {
-            	DEBUGGER.debug("apexRecords: {}", apexRecords);
+                DEBUGGER.debug("apexRecords: {}", apexRecords);
             }
 
             StringBuilder pBuilder = new StringBuilder()
@@ -327,88 +327,88 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
             for (DNSRecord record : apexRecords)
             {
-            	if (DEBUG)
-            	{
-            		DEBUGGER.debug("DNSRecord: {}", record);
-            	}
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("DNSRecord: {}", record);
+                }
 
-            	switch (record.getRecordType())
-            	{
-            		case MX:
-            			pBuilder.append("       " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordPriority() + "    " + record.getRecordAddress() + CoreServiceConstants.LINE_BREAK);
+                switch (record.getRecordType())
+                {
+                    case MX:
+                        pBuilder.append("       " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordPriority() + "    " + record.getRecordAddress() + CoreServiceConstants.LINE_BREAK);
 
-            			break;
-            		default:
-            			pBuilder.append("       " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordAddress() + CoreServiceConstants.LINE_BREAK);
+                        break;
+                    default:
+                        pBuilder.append("       " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordAddress() + CoreServiceConstants.LINE_BREAK);
 
-            			break;
-            	}
+                        break;
+                }
             }
 
             if ((entry.getSubRecords() != null) && (entry.getSubRecords().size() != 0))
             {
-            	pBuilder.append(CoreServiceConstants.LINE_BREAK);
-            	pBuilder.append("$ORIGIN " + entry.getSiteName() + "." + CoreServiceConstants.LINE_BREAK); // always put the site name as the initial origin
+                pBuilder.append(CoreServiceConstants.LINE_BREAK);
+                pBuilder.append("$ORIGIN " + entry.getSiteName() + "." + CoreServiceConstants.LINE_BREAK); // always put the site name as the initial origin
 
                 for (DNSRecord record : entry.getSubRecords())
                 {
-                	if (DEBUG)
-                	{
-                		DEBUGGER.debug("DNSRecord: {}", record);
-                	}
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("DNSRecord: {}", record);
+                    }
 
-                	if (!(StringUtils.equals(record.getRecordOrigin(), ".")) || StringUtils.equals(record.getRecordOrigin(), entry.getSiteName()))
-                	{
-                		if (!(StringUtils.contains(pBuilder.toString(), record.getRecordOrigin())))
-                		{
-                			pBuilder.append(CoreServiceConstants.LINE_BREAK);
-                			pBuilder.append("$ORIGIN " + record.getRecordOrigin() + "." + CoreServiceConstants.LINE_BREAK);
-                		}
-                	}
+                    if (!(StringUtils.equals(record.getRecordOrigin(), ".")) || StringUtils.equals(record.getRecordOrigin(), entry.getSiteName()))
+                    {
+                        if (!(StringUtils.contains(pBuilder.toString(), record.getRecordOrigin())))
+                        {
+                            pBuilder.append(CoreServiceConstants.LINE_BREAK);
+                            pBuilder.append("$ORIGIN " + record.getRecordOrigin() + "." + CoreServiceConstants.LINE_BREAK);
+                        }
+                    }
 
-                	switch (record.getRecordType())
-                	{
-                		case MX:
-                			pBuilder.append("       " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordPriority() + "    " + record.getRecordAddress() + CoreServiceConstants.LINE_BREAK);
+                    switch (record.getRecordType())
+                    {
+                        case MX:
+                            pBuilder.append("       " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordPriority() + "    " + record.getRecordAddress() + CoreServiceConstants.LINE_BREAK);
 
-                			break;
-                		case SRV:
-                			if (StringUtils.isNotEmpty(record.getRecordName()))
-                			{
-                				pBuilder.append(record.getRecordService() + "." + record.getRecordProtocol() + "    " + record.getRecordName() + "    " +
-                						record.getRecordLifetime() + "    " + record.getRecordClass() + "    " + record.getRecordType() + "    " +
-                						record.getRecordPriority() + "    " + record.getRecordWeight() + "    " + record.getRecordPort() + "    " + record.getRecordAddress() + CoreServiceConstants.LINE_BREAK);
-                			}
-                			else
-                			{
-                				pBuilder.append(record.getRecordService() + "." + record.getRecordProtocol() + "    " + record.getRecordLifetime() + "    " +
-                						record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordPriority() + "    " +
-                						record.getRecordWeight() + "    " + record.getRecordPort() + "    " + record.getRecordAddress() + CoreServiceConstants.LINE_BREAK);
-                			}
+                            break;
+                        case SRV:
+                            if (StringUtils.isNotEmpty(record.getRecordName()))
+                            {
+                                pBuilder.append(record.getRecordService() + "." + record.getRecordProtocol() + "    " + record.getRecordName() + "    " +
+                                        record.getRecordLifetime() + "    " + record.getRecordClass() + "    " + record.getRecordType() + "    " +
+                                        record.getRecordPriority() + "    " + record.getRecordWeight() + "    " + record.getRecordPort() + "    " + record.getRecordAddress() + CoreServiceConstants.LINE_BREAK);
+                            }
+                            else
+                            {
+                                pBuilder.append(record.getRecordService() + "." + record.getRecordProtocol() + "    " + record.getRecordLifetime() + "    " +
+                                        record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordPriority() + "    " +
+                                        record.getRecordWeight() + "    " + record.getRecordPort() + "    " + record.getRecordAddress() + CoreServiceConstants.LINE_BREAK);
+                            }
 
-                			break;
-                		default:
-                        	if ((record.getRecordAddress() != null) && (record.getRecordAddresses() == null))
-                        	{
-                        		pBuilder.append(record.getRecordName() + "    " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordAddress() + CoreServiceConstants.LINE_BREAK);
-                        	}
-                        	else
-                        	{
-                        		pBuilder.append(record.getRecordName() + "    " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordAddresses().get(0) + CoreServiceConstants.LINE_BREAK);
+                            break;
+                        default:
+                            if ((record.getRecordAddress() != null) && (record.getRecordAddresses() == null))
+                            {
+                                pBuilder.append(record.getRecordName() + "    " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordAddress() + CoreServiceConstants.LINE_BREAK);
+                            }
+                            else
+                            {
+                                pBuilder.append(record.getRecordName() + "    " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordAddresses().get(0) + CoreServiceConstants.LINE_BREAK);
 
-	    	                	for (int x = 1; x != record.getRecordAddresses().size(); x++)
-	    	                    {
-	    	                		if (DEBUG)
-	    	                    	{
-	    	                			DEBUGGER.debug("recordAddress: {}: ", record.getRecordAddresses().get(x));
-	    	                    	}
-	    	
-	    	                		pBuilder.append("    " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordAddresses().get(x) + CoreServiceConstants.LINE_BREAK);
-	    	                    }
-                        	}
+                                for (int x = 1; x != record.getRecordAddresses().size(); x++)
+                                {
+                                    if (DEBUG)
+                                    {
+                                        DEBUGGER.debug("recordAddress: {}: ", record.getRecordAddresses().get(x));
+                                    }
+            
+                                    pBuilder.append("    " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordAddresses().get(x) + CoreServiceConstants.LINE_BREAK);
+                                }
+                            }
 
-                			break;
-                	}
+                            break;
+                    }
                 }
             }
 
@@ -494,26 +494,26 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
                 try
@@ -600,10 +600,10 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
         return response;
     }
 
-	/**
-	 * @see com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor#addRecordToEntry(DNSServiceRequest)
-	 */
-	public DNSServiceResponse addRecordToEntry(final DNSServiceRequest request) throws DNSServiceException
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor#addRecordToEntry(DNSServiceRequest)
+     */
+    public DNSServiceResponse addRecordToEntry(final DNSServiceRequest request) throws DNSServiceException
     {
         final String methodName = IDNSServiceRequestProcessor.CNAME + "#addRecordToEntry(final DNSServiceRequest request) throws DNSServiceException";
 
@@ -628,26 +628,26 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
                 try
@@ -761,26 +761,26 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
                 try

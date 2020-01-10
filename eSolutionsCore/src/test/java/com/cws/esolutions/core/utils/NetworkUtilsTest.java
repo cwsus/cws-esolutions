@@ -66,12 +66,12 @@ public class NetworkUtilsTest
     {
         try
         {
-        	List<List<String>> responseData = NetworkUtils.executeDNSLookup(null, "google.com", "SOA", null);
+            List<List<String>> responseData = NetworkUtils.executeDNSLookup(null, "google.com", "SOA", null);
 
-        	for (List<String> response : responseData)
-        	{
-        		System.out.println(response);
-        	}
+            for (List<String> response : responseData)
+            {
+                System.out.println(response);
+            }
         }
         catch (UtilityException ux)
         {

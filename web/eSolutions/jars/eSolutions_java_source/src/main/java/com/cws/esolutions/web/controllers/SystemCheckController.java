@@ -244,9 +244,9 @@ public class SystemCheckController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         try
@@ -381,9 +381,9 @@ public class SystemCheckController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         RequestHostInfo reqInfo = new RequestHostInfo();
@@ -477,9 +477,9 @@ public class SystemCheckController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         Server server = new Server();
@@ -564,9 +564,9 @@ public class SystemCheckController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         Server server = new Server();
@@ -652,9 +652,9 @@ public class SystemCheckController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         this.validator.validate(request, bindResult);
@@ -784,9 +784,9 @@ public class SystemCheckController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         this.validator.validate(request, bindResult);
@@ -920,9 +920,9 @@ public class SystemCheckController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         this.validator.validate(request, bindResult);

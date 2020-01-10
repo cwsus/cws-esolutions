@@ -23,7 +23,7 @@ package com.cws.esolutions.security.listeners;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly			11/23/2008 22:39:20             Created.
+ * cws-khuntly            11/23/2008 22:39:20             Created.
  */
 import java.net.URL;
 import java.util.Map;
@@ -159,10 +159,10 @@ public class SecurityServiceInitializer
                             dataSource.setUsername(mgr.getDsUser());
                             dataSource.setConnectionProperties(sBuilder.toString());
                             dataSource.setPassword(PasswordUtils.decryptText(mgr.getDsPass(), mgr.getDsSalt(),
-                            		configData.getSecurityConfig().getSecretAlgorithm(),
-                            		configData.getSecurityConfig().getIterations(),
-                            		configData.getSecurityConfig().getKeyBits(),
-                            		configData.getSecurityConfig().getEncryptionAlgorithm(),
+                                    configData.getSecurityConfig().getSecretAlgorithm(),
+                                    configData.getSecurityConfig().getIterations(),
+                                    configData.getSecurityConfig().getKeyBits(),
+                                    configData.getSecurityConfig().getEncryptionAlgorithm(),
                                     configData.getSecurityConfig().getEncryptionInstance(),
                                     configData.getSystemConfig().getEncoding()));
 
@@ -203,7 +203,7 @@ public class SecurityServiceInitializer
         {
             sx.printStackTrace();
             throw new SecurityServiceException(sx.getMessage(), sx);
-		}
+        }
     }
 
     /**

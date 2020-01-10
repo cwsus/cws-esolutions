@@ -204,9 +204,9 @@ public final class NetworkUtils
                     default:
                         jsch.addIdentity(FileUtils.getFile(sshConfig.getSshKey()).toString(),
                             PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt(),
-                            	secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                            	secBean.getConfigData().getSecurityConfig().getIterations(),
-                            	secBean.getConfigData().getSecurityConfig().getKeyBits(),
+                                secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                                secBean.getConfigData().getSecurityConfig().getIterations(),
+                                secBean.getConfigData().getSecurityConfig().getKeyBits(),
                                 secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
                                 secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
                                 appBean.getConfigData().getSystemConfig().getEncoding()));
@@ -217,12 +217,12 @@ public final class NetworkUtils
             else
             {
                 session.setPassword(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt(),
-                    	secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                    	secBean.getConfigData().getSecurityConfig().getIterations(),
-                    	secBean.getConfigData().getSecurityConfig().getKeyBits(),
-                    	secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                    	secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                    	appBean.getConfigData().getSystemConfig().getEncoding()));
+                        secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                        secBean.getConfigData().getSecurityConfig().getIterations(),
+                        secBean.getConfigData().getSecurityConfig().getKeyBits(),
+                        secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                        secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                        appBean.getConfigData().getSystemConfig().getEncoding()));
             }
 
             session.connect((int) TimeUnit.SECONDS.toMillis(appBean.getConfigData().getSshConfig().getTimeout()));
@@ -397,12 +397,12 @@ public final class NetworkUtils
                     default:
                         jsch.addIdentity(FileUtils.getFile(sshConfig.getSshKey()).toString(),
                             PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt(),
-                                	secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                                	secBean.getConfigData().getSecurityConfig().getIterations(),
-                                	secBean.getConfigData().getSecurityConfig().getKeyBits(),
-	                                secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-	                                secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-	                                appBean.getConfigData().getSystemConfig().getEncoding()));
+                                    secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                                    secBean.getConfigData().getSecurityConfig().getIterations(),
+                                    secBean.getConfigData().getSecurityConfig().getKeyBits(),
+                                    secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                                    secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                                    appBean.getConfigData().getSystemConfig().getEncoding()));
 
                         break;
                 }
@@ -410,12 +410,12 @@ public final class NetworkUtils
             else
             {
                 session.setPassword(PasswordUtils.decryptText(sshConfig.getSshPassword(), sshConfig.getSshSalt(),
-                    	secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                    	secBean.getConfigData().getSecurityConfig().getIterations(),
-                    	secBean.getConfigData().getSecurityConfig().getKeyBits(),
-                    	secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                    	secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                    	appBean.getConfigData().getSystemConfig().getEncoding()));
+                        secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                        secBean.getConfigData().getSecurityConfig().getIterations(),
+                        secBean.getConfigData().getSecurityConfig().getKeyBits(),
+                        secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                        secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                        appBean.getConfigData().getSystemConfig().getEncoding()));
             }
 
             session.connect((int) TimeUnit.SECONDS.toMillis(appBean.getConfigData().getSshConfig().getTimeout()));
@@ -552,21 +552,21 @@ public final class NetworkUtils
 
             if (!(client.isConnected()))
             {
-            	throw new IOException("Failed to authenticate to remote host with the provided information");
+                throw new IOException("Failed to authenticate to remote host with the provided information");
             }
 
-        	boolean isAuthenticated = false;
+            boolean isAuthenticated = false;
 
             if (StringUtils.isNotBlank(ftpConfig.getFtpAccount()))
             {
                 isAuthenticated = client.login((StringUtils.isNotEmpty(ftpConfig.getFtpAccount())) ? ftpConfig.getFtpAccount() : System.getProperty("user.name"),
                     PasswordUtils.decryptText(ftpConfig.getFtpPassword(), ftpConfig.getFtpSalt(),
-                        	secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                        	secBean.getConfigData().getSecurityConfig().getIterations(),
-                        	secBean.getConfigData().getSecurityConfig().getKeyBits(),
-                        	secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                        	secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                        	appBean.getConfigData().getSystemConfig().getEncoding()));
+                            secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                            secBean.getConfigData().getSecurityConfig().getIterations(),
+                            secBean.getConfigData().getSecurityConfig().getKeyBits(),
+                            secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                            secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                            appBean.getConfigData().getSystemConfig().getEncoding()));
             }
             else
             {
@@ -580,7 +580,7 @@ public final class NetworkUtils
 
             if (!(isAuthenticated))
             {
-            	throw new IOException("Failed to connect to FTP server: " + targetHost);
+                throw new IOException("Failed to connect to FTP server: " + targetHost);
             }
 
             client.enterLocalPassiveMode();
@@ -662,7 +662,7 @@ public final class NetworkUtils
             {
                 if (InetAddress.getByName(hostName) == null)
                 {
-                	throw new UnknownHostException("No host was found in DNS for the given name: " + hostName);
+                    throw new UnknownHostException("No host was found in DNS for the given name: " + hostName);
                 }
 
                 InetSocketAddress socketAddress = new InetSocketAddress(hostName, portNumber);
@@ -675,7 +675,7 @@ public final class NetworkUtils
 
                 if (!(socket.isConnected()))
                 {
-                	throw new ConnectException("Failed to connect to host " + hostName + " on port " + portNumber);
+                    throw new ConnectException("Failed to connect to host " + hostName + " on port " + portNumber);
                 }
 
                 PrintWriter pWriter = new PrintWriter(socket.getOutputStream(), true);
@@ -759,10 +759,10 @@ public final class NetworkUtils
         try
         {
             final URI requestURI = new URIBuilder()
-        		.setScheme(hostName.getProtocol())
-        		.setHost(hostName.getHost())
-        		.setPort(hostName.getPort())
-        		.build();
+                .setScheme(hostName.getProtocol())
+                .setHost(hostName.getHost())
+                .setPort(hostName.getPort())
+                .build();
 
             if (StringUtils.isNotEmpty(httpConfig.getTrustStoreFile()))
             {
@@ -771,12 +771,12 @@ public final class NetworkUtils
                 System.setProperty("javax.net.ssl.trustStore", httpConfig.getTrustStoreFile());
                 System.setProperty("javax.net.ssl.trustStorePassword",
                     PasswordUtils.decryptText(httpConfig.getTrustStorePass(), httpConfig.getTrustStoreSalt(),
-                        	secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                        	secBean.getConfigData().getSecurityConfig().getIterations(),
-                        	secBean.getConfigData().getSecurityConfig().getKeyBits(),
-	                        secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-	                        secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-	                        appBean.getConfigData().getSystemConfig().getEncoding()));
+                            secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                            secBean.getConfigData().getSecurityConfig().getIterations(),
+                            secBean.getConfigData().getSecurityConfig().getKeyBits(),
+                            secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                            secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                            appBean.getConfigData().getSystemConfig().getEncoding()));
             }
 
             if (StringUtils.isNotEmpty(httpConfig.getKeyStoreFile()))
@@ -786,12 +786,12 @@ public final class NetworkUtils
                 System.setProperty("javax.net.ssl.keyStore", httpConfig.getKeyStoreFile());
                 System.setProperty("javax.net.ssl.keyStorePassword",
                     PasswordUtils.decryptText(httpConfig.getKeyStorePass(), httpConfig.getKeyStoreSalt(),
-                        	secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                        	secBean.getConfigData().getSecurityConfig().getIterations(),
-                        	secBean.getConfigData().getSecurityConfig().getKeyBits(),
-	                        secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-	                        secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-	                        appBean.getConfigData().getSystemConfig().getEncoding()));
+                            secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                            secBean.getConfigData().getSecurityConfig().getIterations(),
+                            secBean.getConfigData().getSecurityConfig().getKeyBits(),
+                            secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                            secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                            appBean.getConfigData().getSystemConfig().getEncoding()));
             }
 
             if (proxyConfig.isProxyServiceRequired())
@@ -803,7 +803,7 @@ public final class NetworkUtils
 
                 if (StringUtils.isEmpty(proxyConfig.getProxyServerName()))
                 {
-                	throw new UtilityException("Configuration states proxy usage is required, but no proxy is configured.");
+                    throw new UtilityException("Configuration states proxy usage is required, but no proxy is configured.");
                 }
 
                 if (proxyConfig.isProxyAuthRequired())
@@ -819,12 +819,12 @@ public final class NetworkUtils
                     }
 
                     requestConfig = RequestConfig.custom()
-                		.setConnectionRequestTimeout((int) TimeUnit.SECONDS.toMillis(httpConfig.getConnTimeout()))
-                    	.setConnectTimeout((int) TimeUnit.SECONDS.toMillis(httpConfig.getConnTimeout()))
-                    	.setContentCompressionEnabled(Boolean.TRUE)
-                    	.setProxy(new HttpHost(proxyConfig.getProxyServerName(), proxyConfig.getProxyServerPort()))
-                    	.setProxyPreferredAuthSchemes(authList)
-                    	.build();
+                        .setConnectionRequestTimeout((int) TimeUnit.SECONDS.toMillis(httpConfig.getConnTimeout()))
+                        .setConnectTimeout((int) TimeUnit.SECONDS.toMillis(httpConfig.getConnTimeout()))
+                        .setContentCompressionEnabled(Boolean.TRUE)
+                        .setProxy(new HttpHost(proxyConfig.getProxyServerName(), proxyConfig.getProxyServerPort()))
+                        .setProxyPreferredAuthSchemes(authList)
+                        .build();
 
                     if (DEBUG)
                     {
@@ -832,12 +832,12 @@ public final class NetworkUtils
                     }
 
                     String proxyPwd = PasswordUtils.decryptText(proxyConfig.getProxyPassword(), proxyConfig.getProxyPwdSalt(),
-                        	secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                        	secBean.getConfigData().getSecurityConfig().getIterations(),
-                        	secBean.getConfigData().getSecurityConfig().getKeyBits(),
-	                        secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-	                        secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-	                        appBean.getConfigData().getSystemConfig().getEncoding());
+                            secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                            secBean.getConfigData().getSecurityConfig().getIterations(),
+                            secBean.getConfigData().getSecurityConfig().getKeyBits(),
+                            secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                            secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                            appBean.getConfigData().getSystemConfig().getEncoding());
 
                     if (DEBUG)
                     {
@@ -848,13 +848,13 @@ public final class NetworkUtils
                     {
                         credsProvider = new SystemDefaultCredentialsProvider();
                         credsProvider.setCredentials(new AuthScope(proxyConfig.getProxyServerName(), proxyConfig.getProxyServerPort()),
-                    		new UsernamePasswordCredentials(proxyConfig.getProxyUserId(), proxyPwd));
+                            new UsernamePasswordCredentials(proxyConfig.getProxyUserId(), proxyPwd));
                     }
                     else if (StringUtils.equals(NetworkUtils.PROXY_AUTH_TYPE_NTLM, proxyConfig.getProxyAuthType()))
                     {
                         credsProvider = new SystemDefaultCredentialsProvider();
                         credsProvider.setCredentials(new AuthScope(proxyConfig.getProxyServerName(), proxyConfig.getProxyServerPort()),
-                        	new NTCredentials(proxyConfig.getProxyUserId(), proxyPwd, InetAddress.getLocalHost().getHostName(), proxyConfig.getProxyAuthDomain()));
+                            new NTCredentials(proxyConfig.getProxyUserId(), proxyPwd, InetAddress.getLocalHost().getHostName(), proxyConfig.getProxyAuthDomain()));
                     }
 
                     if (DEBUG)
@@ -872,17 +872,17 @@ public final class NetworkUtils
 
                 if (StringUtils.equalsIgnoreCase(methodType, "POST"))
                 {
-                	HttpPost httpMethod = new HttpPost(requestURI);
-                	httpMethod.setConfig(requestConfig);
+                    HttpPost httpMethod = new HttpPost(requestURI);
+                    httpMethod.setConfig(requestConfig);
 
-                	httpResponse = httpClient.execute(httpMethod);
+                    httpResponse = httpClient.execute(httpMethod);
                 }
                 else
                 {
-                	HttpGet httpMethod = new HttpGet(requestURI);
-                	httpMethod.setConfig(requestConfig);
+                    HttpGet httpMethod = new HttpGet(requestURI);
+                    httpMethod.setConfig(requestConfig);
 
-                	httpResponse = httpClient.execute(httpMethod);
+                    httpResponse = httpClient.execute(httpMethod);
                 }
 
                 int responseCode = httpResponse.getStatusLine().getStatusCode();
@@ -920,17 +920,17 @@ public final class NetworkUtils
         }
         catch (URISyntaxException usx)
         {
-        	throw new UtilityException(usx.getMessage(), usx);
-		}
+            throw new UtilityException(usx.getMessage(), usx);
+        }
         finally
         {
             if (httpResponse != null)
             {
-            	try
-            	{
-            		httpResponse.close();
-            	}
-            	catch (IOException iox) {} // dont do anything with it
+                try
+                {
+                    httpResponse.close();
+                }
+                catch (IOException iox) {} // dont do anything with it
             }
         }
     }
@@ -975,7 +975,7 @@ public final class NetworkUtils
             {
                 if (StringUtils.isEmpty(InetAddress.getByName(hostName).toString()))
                 {
-                	throw new UnknownHostException("No host was found in DNS for the given name: " + hostName);
+                    throw new UnknownHostException("No host was found in DNS for the given name: " + hostName);
                 }
 
                 InetSocketAddress socketAddress = new InetSocketAddress(hostName, portNumber);
@@ -988,7 +988,7 @@ public final class NetworkUtils
 
                 if (!(socket.isConnected()))
                 {
-                	throw new ConnectException("Failed to connect to host " + hostName + " on port " + portNumber);
+                    throw new ConnectException("Failed to connect to host " + hostName + " on port " + portNumber);
                 }
 
                 ObjectOutputStream objectOut = new ObjectOutputStream(socket.getOutputStream());
@@ -1157,19 +1157,19 @@ public final class NetworkUtils
 
             if (lookup.getResult() != Lookup.SUCCESSFUL)
             {
-            	throw new UtilityException("An error occurred during the lookup. The response obtained is: " + lookup.getErrorString());
+                throw new UtilityException("An error occurred during the lookup. The response obtained is: " + lookup.getErrorString());
             }
 
-        	response = new ArrayList<List<String>>();
+            response = new ArrayList<List<String>>();
 
-        	if ((recordList == null) || (recordList.length == 0))
-        	{
-        		throw new UtilityException("No results were found for the provided information.");
-        	}
+            if ((recordList == null) || (recordList.length == 0))
+            {
+                throw new UtilityException("No results were found for the provided information.");
+            }
 
-        	switch (recordList.length)
-        	{
-        		case 1:
+            switch (recordList.length)
+            {
+                case 1:
                     Record sRecord = recordList[0];
 
                     if (DEBUG)
@@ -1182,10 +1182,10 @@ public final class NetworkUtils
                     responseType = Type.string(sRecord.getType());
 
                     lookupData = new ArrayList<String>(
-                    		Arrays.asList(
-                    				responseAddress,
-                    				responseName,
-                    				responseType));
+                            Arrays.asList(
+                                    responseAddress,
+                                    responseName,
+                                    responseType));
                     if (DEBUG)
                     {
                         DEBUGGER.debug("responseAddress: {}", responseAddress);
@@ -1196,7 +1196,7 @@ public final class NetworkUtils
                     response.add(lookupData);
 
                     break;
-        		default:
+                default:
                     for (Record mRecord : recordList)
                     {
                         if (DEBUG)
@@ -1209,10 +1209,10 @@ public final class NetworkUtils
                         responseType = Type.string(mRecord.getType());
 
                         lookupData = new ArrayList<String>(
-                        		Arrays.asList(
-                        				responseAddress,
-                        				responseName,
-                        				responseType));
+                                Arrays.asList(
+                                        responseAddress,
+                                        responseName,
+                                        responseType));
                         if (DEBUG)
                         {
                             DEBUGGER.debug("responseAddress: {}", responseAddress);
@@ -1229,7 +1229,7 @@ public final class NetworkUtils
                     }
 
                     break;
-        	}
+            }
 
             if (DEBUG)
             {

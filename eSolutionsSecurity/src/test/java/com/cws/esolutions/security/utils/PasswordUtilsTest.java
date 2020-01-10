@@ -32,7 +32,7 @@ import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 
 public class PasswordUtilsTest
@@ -56,64 +56,64 @@ public class PasswordUtilsTest
 
     @Test public void twoWayEncrypt()
     {
-    	final String password = "appuser10";
-    	final String salt = "hg4Q1qymhVY5ZICwyXuYFvdegQVyrAbg";
-    	final String expected = "T25jNUFNZVp6TzlmZ3B3ZkNoeWdsQT09OnhscWh2VzFyTUtYRkErZDE4V3d1Nmc9PQ==";
+        final String password = "appuser10";
+        final String salt = "hg4Q1qymhVY5ZICwyXuYFvdegQVyrAbg";
+        final String expected = "T25jNUFNZVp6TzlmZ3B3ZkNoeWdsQT09OnhscWh2VzFyTUtYRkErZDE4V3d1Nmc9PQ==";
 
-    	try
-    	{
-    		Assert.assertEquals(expected, PasswordUtils.encryptText(password, salt,
-    				bean.getConfigData().getSecurityConfig().getSecretAlgorithm(),
-    				bean.getConfigData().getSecurityConfig().getIterations(),
-    				bean.getConfigData().getSecurityConfig().getKeyBits(),
-    				bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-	    			bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-	    			bean.getConfigData().getSystemConfig().getEncoding()));
-    	}
-    	catch (SecurityException sx)
-    	{
-    		sx.printStackTrace();
-    		Assert.fail();
-    	}
+        try
+        {
+            Assert.assertEquals(expected, PasswordUtils.encryptText(password, salt,
+                    bean.getConfigData().getSecurityConfig().getSecretAlgorithm(),
+                    bean.getConfigData().getSecurityConfig().getIterations(),
+                    bean.getConfigData().getSecurityConfig().getKeyBits(),
+                    bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                    bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                    bean.getConfigData().getSystemConfig().getEncoding()));
+        }
+        catch (SecurityException sx)
+        {
+            sx.printStackTrace();
+            Assert.fail();
+        }
     }
 
     @Test public void twoWayDecrypt()
     {
-    	final String expected = "appuser10";
-    	final String encrypted = "T25jNUFNZVp6TzlmZ3B3ZkNoeWdsQT09OnhscWh2VzFyTUtYRkErZDE4V3d1Nmc9PQ==";
-    	final String salt = "hg4Q1qymhVY5ZICwyXuYFvdegQVyrAbg";
+        final String expected = "appuser10";
+        final String encrypted = "T25jNUFNZVp6TzlmZ3B3ZkNoeWdsQT09OnhscWh2VzFyTUtYRkErZDE4V3d1Nmc9PQ==";
+        final String salt = "hg4Q1qymhVY5ZICwyXuYFvdegQVyrAbg";
 
-    	try
-		{
-    		Assert.assertEquals(expected, PasswordUtils.decryptText(encrypted, salt,
-    				bean.getConfigData().getSecurityConfig().getSecretAlgorithm(),
-    				bean.getConfigData().getSecurityConfig().getIterations(),
-    				bean.getConfigData().getSecurityConfig().getKeyBits(),
-    				bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-	    			bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-	    			bean.getConfigData().getSystemConfig().getEncoding()));
-		}
-		catch (Exception sx)
-		{
-			sx.printStackTrace();
-			Assert.fail();
-		}
+        try
+        {
+            Assert.assertEquals(expected, PasswordUtils.decryptText(encrypted, salt,
+                    bean.getConfigData().getSecurityConfig().getSecretAlgorithm(),
+                    bean.getConfigData().getSecurityConfig().getIterations(),
+                    bean.getConfigData().getSecurityConfig().getKeyBits(),
+                    bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                    bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                    bean.getConfigData().getSystemConfig().getEncoding()));
+        }
+        catch (Exception sx)
+        {
+            sx.printStackTrace();
+            Assert.fail();
+        }
     }
 
     @Test public void validateOtpValue()
     {
-    	try
-		{
+        try
+        {
             Assert.assertTrue(PasswordUtils.validateOtpValue(bean.getConfigData().getSecurityConfig().getOtpVariance(),
                     bean.getConfigData().getSecurityConfig().getOtpAlgorithm(),
                     bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
                     "the secret", 0));
-		}
-		catch (SecurityException sx)
-		{
-			sx.printStackTrace();
-			Assert.fail();
-		}
+        }
+        catch (SecurityException sx)
+        {
+            sx.printStackTrace();
+            Assert.fail();
+        }
     }
 
     @After public void tearDown()

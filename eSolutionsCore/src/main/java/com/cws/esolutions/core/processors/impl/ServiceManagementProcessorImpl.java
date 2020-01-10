@@ -23,7 +23,7 @@ package com.cws.esolutions.core.processors.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import java.util.UUID;
 import java.util.List;
@@ -86,26 +86,26 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
                 try
@@ -300,26 +300,26 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
                 try
@@ -483,26 +483,26 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
                 try
@@ -630,26 +630,26 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
                 try
@@ -803,26 +803,26 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
                 try
@@ -979,26 +979,26 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
                 try
@@ -1151,26 +1151,26 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
                 try

@@ -23,7 +23,7 @@ package com.cws.esolutions.core.exception;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly  		11/23/2008 22:39:20             Created.
+ * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -40,7 +40,7 @@ public class CoreServiceException extends Exception
 
     /**
      * @see java.lang.Exception#Exception(java.lang.String)
-	 *
+     *
      * @param message - The message for the exception
      */
     public CoreServiceException(final String message)
@@ -50,7 +50,7 @@ public class CoreServiceException extends Exception
 
     /**
      * @see java.lang.Exception#Exception(java.lang.Throwable)
-	 *
+     *
      * @param throwable - The throwable for the exception
      */
     public CoreServiceException(final Throwable throwable)
@@ -60,8 +60,8 @@ public class CoreServiceException extends Exception
 
     /**
      * @see java.lang.Exception#Exception(java.lang.String, java.lang.Throwable)
-	 *
-	 * @param message - The message for the exception
+     *
+     * @param message - The message for the exception
      * @param throwable - The throwable for the exception
      */
     public CoreServiceException(final String message, final Throwable throwable)

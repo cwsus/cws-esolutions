@@ -23,7 +23,7 @@ package com.cws.esolutions.security.processors.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import java.util.List;
 import java.util.Arrays;
@@ -162,7 +162,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             ERROR_RECORDER.error(sx.getMessage(), sx);
 
             throw new AccountChangeException(sx.getMessage(), sx);
-		}
+        }
         finally
         {
             // audit
@@ -304,7 +304,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             ERROR_RECORDER.error(sx.getMessage(), sx);
 
             throw new AccountChangeException(sx.getMessage(), sx);
-		}
+        }
         finally
         {
             // audit
@@ -756,7 +756,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             ERROR_RECORDER.error(sx.getMessage(), sx);
 
             throw new AccountChangeException(sx.getMessage(), sx);
-		}
+        }
         finally
         {
             // audit
@@ -988,12 +988,12 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                     boolean isComplete = userManager.modifyOtpSecret(userAccount.getUsername(), true,
                             PasswordUtils.encryptText(secret, otpSalt,
-                            		secBean.getConfigData().getSecurityConfig().getSecretAlgorithm(),
-                            		secBean.getConfigData().getSecurityConfig().getIterations(),
-                            		secBean.getConfigData().getSecurityConfig().getKeyBits(),
-                            		secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                            		secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                            		secBean.getConfigData().getSystemConfig().getEncoding()));
+                                    secBean.getConfigData().getSecurityConfig().getSecretAlgorithm(),
+                                    secBean.getConfigData().getSecurityConfig().getIterations(),
+                                    secBean.getConfigData().getSecurityConfig().getKeyBits(),
+                                    secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                                    secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                                    secBean.getConfigData().getSystemConfig().getEncoding()));
 
                     if (DEBUG)
                     {

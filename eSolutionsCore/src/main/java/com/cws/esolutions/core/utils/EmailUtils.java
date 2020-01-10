@@ -180,7 +180,7 @@ public final class EmailUtils
 
                 try
                 {
-                	mailProps.load(EmailUtils.class.getClassLoader().getResourceAsStream(mailConfig.getPropertyFile()));
+                    mailProps.load(EmailUtils.class.getClassLoader().getResourceAsStream(mailConfig.getPropertyFile()));
                 }
                 catch (NullPointerException npx)
                 {
@@ -353,7 +353,7 @@ public final class EmailUtils
 
             if (!(mailStore.isConnected()))
             {
-            	throw new MessagingException("Failed to connect to mail service. Cannot continue.");
+                throw new MessagingException("Failed to connect to mail service. Cannot continue.");
             }
 
             mailFolder = mailStore.getFolder("inbox");
@@ -361,14 +361,14 @@ public final class EmailUtils
 
             if (!(mailFolder.exists()))
             {
-            	throw new MessagingException("Requested folder does not exist. Cannot continue.");
+                throw new MessagingException("Requested folder does not exist. Cannot continue.");
             }
 
             mailFolder.open(Folder.READ_WRITE);
 
             if ((!(mailFolder.isOpen())) || (!(mailFolder.hasNewMessages())))
             {
-            	throw new MessagingException("Failed to open requested folder. Cannot continue");
+                throw new MessagingException("Failed to open requested folder. Cannot continue");
             }
 
             if (!(archiveFolder.exists()))
@@ -380,7 +380,7 @@ public final class EmailUtils
 
             if (mailMessages.length == 0)
             {
-            	throw new MessagingException("No messages were found in the provided store.");
+                throw new MessagingException("No messages were found in the provided store.");
             }
 
             emailMessages = new ArrayList<EmailMessage>();

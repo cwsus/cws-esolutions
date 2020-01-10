@@ -39,10 +39,10 @@
         </serviceAccount>
     </application-config>
 
-	<security-config>
-		<algorithm>AES</algorithm>
-		<instance>PBEWithMD5AndTripleDES</instance>
-	</security-config>
+    <security-config>
+        <algorithm>AES</algorithm>
+        <instance>PBEWithMD5AndTripleDES</instance>
+    </security-config>
 
     <mail-config>
         <propertyFile>eSolutionsCore/mail/MailConfig.properties</propertyFile>

@@ -52,8 +52,8 @@ public class ApplicationDataDAOImplTest
     {
         try
         {
-        	SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
-        	CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, true);
+            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
+            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, true);
         }
         catch (Exception ex)
         {
@@ -67,7 +67,7 @@ public class ApplicationDataDAOImplTest
     {
         List<Object> appData = new ArrayList<Object>(
                 Arrays.asList(
-                		this.appGuid,
+                        this.appGuid,
                         "eSolutions",
                         1.0,
                         "/appvol/ATS70/eSolutions/eSolutions_web_source-1.0.war",
@@ -82,7 +82,7 @@ public class ApplicationDataDAOImplTest
         }
         catch (SQLException sqx)
         {
-        	sqx.printStackTrace();
+            sqx.printStackTrace();
             Assert.fail(sqx.getMessage());
         }
     }
@@ -91,7 +91,7 @@ public class ApplicationDataDAOImplTest
     {
         List<Object> appData = new ArrayList<Object>(
                 Arrays.asList(
-                		this.appGuid,
+                        this.appGuid,
                         "eSolutions",
                         2.0,
                         "/appvol/ATS70/eSolutions/eSolutions_web_source-1.0.war",

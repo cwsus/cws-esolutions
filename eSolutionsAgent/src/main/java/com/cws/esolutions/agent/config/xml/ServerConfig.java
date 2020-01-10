@@ -47,7 +47,7 @@ import com.cws.esolutions.agent.AgentConstants;
 @XmlAccessorType(XmlAccessType.NONE)
 public final class ServerConfig implements Serializable
 {
-	private int keyBits = 256;
+    private int keyBits = 256;
     private String salt = null;
     private int iterations = 65535; // default to 65535
     private String clientId = null;

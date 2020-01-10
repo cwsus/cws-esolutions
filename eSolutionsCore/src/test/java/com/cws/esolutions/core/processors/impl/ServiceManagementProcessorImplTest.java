@@ -124,7 +124,7 @@ public class ServiceManagementProcessorImplTest
                 "a462e029-8854-4ff0-92de-d55535cfad08"));
 
         List<String> prdServers = new ArrayList<String>(
-    		Arrays.asList(
+            Arrays.asList(
                 "f8040ce6-86c0-4107-8a07-6ae8fd063018",
                 "a4507b8f-34f9-4e8c-aa74-45071ea0d2d3",
                 "02617e53-0906-4947-8345-7ed2eea9a155",

@@ -76,74 +76,74 @@ public final class CertificateRequestProcessorTest
 
     @Test public void listActiveRequests()
     {
-    	CertificateRequest request = new CertificateRequest();
-    	request.setHostInfo(hostInfo);
-    	request.setUserAccount(userAccount);
-    	request.setApplicationId("junit");
-    	request.setApplicationName("junit");
+        CertificateRequest request = new CertificateRequest();
+        request.setHostInfo(hostInfo);
+        request.setUserAccount(userAccount);
+        request.setApplicationId("junit");
+        request.setApplicationName("junit");
 
-    	try
-    	{
-    		CertificateResponse response = processor.listActiveRequests(request);
-    		System.out.println(response.toString());
-    		Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
-    	}
-    	catch (Exception ex)
-    	{
-			Assert.fail(ex.getMessage());
-		}
+        try
+        {
+            CertificateResponse response = processor.listActiveRequests(request);
+            System.out.println(response.toString());
+            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+        }
+        catch (Exception ex)
+        {
+            Assert.fail(ex.getMessage());
+        }
     }
 
     @Test public void generateCertificateRequest()
     {
-    	CertificateRequest request = new CertificateRequest();
-    	request.setHostInfo(hostInfo);
-    	request.setUserAccount(userAccount);
-    	request.setApplicationId("junit");
-    	request.setApplicationName("junit");
-    	request.setCommonName("test.junit.com");
-    	request.setOrganizationalUnit("junit");
-    	request.setOrganizationName("CaspersBox Web Services");
-    	request.setLocalityName("Buffalo");
-    	request.setStateName("New York");
-    	request.setCountryName("US");
-    	request.setContactEmail("secadm@caspersbox.com");
-    	request.setKeySize(2048);
-    	request.setValidityPeriod(365);
-    	request.setStorePassword("junit");
+        CertificateRequest request = new CertificateRequest();
+        request.setHostInfo(hostInfo);
+        request.setUserAccount(userAccount);
+        request.setApplicationId("junit");
+        request.setApplicationName("junit");
+        request.setCommonName("test.junit.com");
+        request.setOrganizationalUnit("junit");
+        request.setOrganizationName("CaspersBox Web Services");
+        request.setLocalityName("Buffalo");
+        request.setStateName("New York");
+        request.setCountryName("US");
+        request.setContactEmail("secadm@caspersbox.com");
+        request.setKeySize(2048);
+        request.setValidityPeriod(365);
+        request.setStorePassword("junit");
 
-    	try
-    	{
-    		CertificateResponse response = processor.generateCertificateRequest(request);
-    		Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
-    	}
-    	catch (Exception ex)
-    	{
-			Assert.fail(ex.getMessage());
-		}
+        try
+        {
+            CertificateResponse response = processor.generateCertificateRequest(request);
+            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+        }
+        catch (Exception ex)
+        {
+            Assert.fail(ex.getMessage());
+        }
     }
 
     @Test public void applyCertificateRequest()
     {
-    	CertificateRequest request = new CertificateRequest();
-    	request.setHostInfo(hostInfo);
-    	request.setUserAccount(userAccount);
-    	request.setApplicationId("junit");
-    	request.setApplicationName("junit");
-    	request.setCommonName("test.junit.com");
-    	request.setCertificateFile(new File("/opt/cws/eSolutions/certs/certificates/test.junit.com.crt"));
-    	request.setStorePassword("junit");
+        CertificateRequest request = new CertificateRequest();
+        request.setHostInfo(hostInfo);
+        request.setUserAccount(userAccount);
+        request.setApplicationId("junit");
+        request.setApplicationName("junit");
+        request.setCommonName("test.junit.com");
+        request.setCertificateFile(new File("/opt/cws/eSolutions/certs/certificates/test.junit.com.crt"));
+        request.setStorePassword("junit");
 
-    	try
-    	{
-    		CertificateResponse response = processor.applyCertificateResponse(request);
-    		Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
-    	}
-    	catch (Exception ex)
-    	{
-    		ex.printStackTrace();
-			Assert.fail(ex.getMessage());
-		}
+        try
+        {
+            CertificateResponse response = processor.applyCertificateResponse(request);
+            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+            Assert.fail(ex.getMessage());
+        }
     }
 
     @After public void tearDown()

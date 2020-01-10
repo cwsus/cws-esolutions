@@ -46,8 +46,8 @@ public class ServiceMessagingProcessorImplTest
 
     private static final IWebMessagingProcessor processor = new ServiceMessagingProcessorImpl();
 
-	@Before public void setUp() throws Exception
-	{
+    @Before public void setUp() throws Exception
+    {
         hostInfo.setHostAddress("junit");
         hostInfo.setHostName("junit");
 
@@ -57,100 +57,100 @@ public class ServiceMessagingProcessorImplTest
 
         try
         {
-        	SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", false);
-        	CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, true);
+            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", false);
+            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, true);
         }
         catch (Exception ex)
         {
-        	Assert.fail(ex.getMessage());
+            Assert.fail(ex.getMessage());
 
-        	System.exit(-1);
+            System.exit(-1);
         }
-	}
+    }
 
-	@Test public void testAddNewMessage()
-	{
-		MessagingRequest request = new MessagingRequest();
+    @Test public void testAddNewMessage()
+    {
+        MessagingRequest request = new MessagingRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setApplicationName("eSolutions");
 
-		try
-		{
-			processor.addNewMessage(request);
-		}
-		catch (MessagingServiceException msx)
-		{
-			Assert.fail(msx.getMessage());
-		}
-	}
+        try
+        {
+            processor.addNewMessage(request);
+        }
+        catch (MessagingServiceException msx)
+        {
+            Assert.fail(msx.getMessage());
+        }
+    }
 
-	@Test public void testUpdateExistingMessage()
-	{
-		MessagingRequest request = new MessagingRequest();
+    @Test public void testUpdateExistingMessage()
+    {
+        MessagingRequest request = new MessagingRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setApplicationName("eSolutions");
 
-		try
-		{
-			processor.updateExistingMessage(request);
-		}
-		catch (MessagingServiceException msx)
-		{
-			Assert.fail(msx.getMessage());
-		}
-	}
+        try
+        {
+            processor.updateExistingMessage(request);
+        }
+        catch (MessagingServiceException msx)
+        {
+            Assert.fail(msx.getMessage());
+        }
+    }
 
-	@Test public void testShowMessages()
-	{
-		MessagingRequest request = new MessagingRequest();
+    @Test public void testShowMessages()
+    {
+        MessagingRequest request = new MessagingRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setApplicationName("eSolutions");
 
-		try
-		{
-			processor.showMessage(request);
-		}
-		catch (MessagingServiceException msx)
-		{
-			Assert.fail(msx.getMessage());
-		}
-	}
+        try
+        {
+            processor.showMessage(request);
+        }
+        catch (MessagingServiceException msx)
+        {
+            Assert.fail(msx.getMessage());
+        }
+    }
 
-	@Test public void testShowAlertMessages()
-	{
-		MessagingRequest request = new MessagingRequest();
+    @Test public void testShowAlertMessages()
+    {
+        MessagingRequest request = new MessagingRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setApplicationName("eSolutions");
 
-		try
-		{
-		processor.showAlertMessages(request);
-		}
-		catch (MessagingServiceException msx)
-		{
-			Assert.fail(msx.getMessage());
-		}
-	}
+        try
+        {
+        processor.showAlertMessages(request);
+        }
+        catch (MessagingServiceException msx)
+        {
+            Assert.fail(msx.getMessage());
+        }
+    }
 
-	@Test public void testShowMessage()
-	{
-		MessagingRequest request = new MessagingRequest();
+    @Test public void testShowMessage()
+    {
+        MessagingRequest request = new MessagingRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setApplicationName("eSolutions");
 
-		try
-		{
-			processor.showMessage(request);
-		}
-		catch (MessagingServiceException msx)
-		{
-			Assert.fail(msx.getMessage());
-		}
-	}
+        try
+        {
+            processor.showMessage(request);
+        }
+        catch (MessagingServiceException msx)
+        {
+            Assert.fail(msx.getMessage());
+        }
+    }
 
-	@After public void tearDown() throws Exception
-	{
+    @After public void tearDown() throws Exception
+    {
         SecurityServiceInitializer.shutdown();
         CoreServiceInitializer.shutdown();
-	}
+    }
 }

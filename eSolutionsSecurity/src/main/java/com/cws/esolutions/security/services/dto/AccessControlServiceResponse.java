@@ -23,7 +23,7 @@ package com.cws.esolutions.security.services.dto;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
 import java.io.Serializable;
@@ -38,7 +38,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 public class AccessControlServiceResponse implements Serializable
 {
-	private Boolean isUserAuthorized = false;
+    private Boolean isUserAuthorized = false;
 
     private static final String CNAME = AccessControlServiceResponse.class.getName();
     private static final long serialVersionUID = 3314079583199404196L;
@@ -49,28 +49,28 @@ public class AccessControlServiceResponse implements Serializable
 
     public final void setIsUserAuthorized(final Boolean value)
     {
-    	final String methodName = AccessControlServiceResponse.CNAME + "#setIsUserAuthorized(final Boolean value)";
+        final String methodName = AccessControlServiceResponse.CNAME + "#setIsUserAuthorized(final Boolean value)";
 
-    	if (DEBUG)
-    	{
-    		DEBUGGER.debug(methodName);
-    		DEBUGGER.debug("Value: {}", value);
-    	}
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
 
-    	this.isUserAuthorized = value;
+        this.isUserAuthorized = value;
     }
 
     public final Boolean getIsUserAuthorized()
     {
-    	final String methodName = AccessControlServiceResponse.CNAME + "#getIsUserAuthorized()";
+        final String methodName = AccessControlServiceResponse.CNAME + "#getIsUserAuthorized()";
 
-    	if (DEBUG)
-    	{
-    		DEBUGGER.debug(methodName);
-    		DEBUGGER.debug("Value: {}", this.isUserAuthorized);
-    	}
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.isUserAuthorized);
+        }
 
-    	return this.isUserAuthorized;
+        return this.isUserAuthorized;
     }
 
     @Override

@@ -38,7 +38,7 @@
         <encryptionInstance>AES/CBC/PKCS5Padding</encryptionInstance>
         <saltLength>32</saltLength> <!-- salt string length (bigger is better) -->
         <performAudit>true</performAudit> <!-- should we audit stuff ? (default true) -->
-		<enableSecurity>true</enableSecurity>
+        <enableSecurity>true</enableSecurity>
         <resetIdLength>64</resetIdLength> <!-- reset id length (bigger is better) -->
         <smsResetEnabled>false</smsResetEnabled> <!-- do we send the reset email AND an sms ? -->
         <smsCodeLength>8</smsCodeLength> <!-- how long should the sms reset id be ? -->
@@ -101,22 +101,22 @@
         <keyManager>com.cws.esolutions.security.dao.keymgmt.impl.SQLKeyManager</keyManager>
     </key-config>
 
-	<certificate-config>
-		<rootDirectory>/opt/cws/eSolutions/certs</rootDirectory>
-		<privateKeyDirectory>/opt/cws/eSolutions/certs/private</privateKeyDirectory>
-		<publicKeyDirectory>/opt/cws/eSolutions/certs/public</publicKeyDirectory>
-		<certificateDirectory>/opt/cws/eSolutions/certs/certificates</certificateDirectory>
-		<csrDirectory>/opt/cws/eSolutions/certs/certreq</csrDirectory>
-		<storeDirectory>/opt/cws/eSolutions/certs/keystores</storeDirectory>
-    	<certificateType>X509</certificateType>
-    	<certificateAlgorithm>RSA</certificateAlgorithm>
-    	<signatureAlgorithm>SHA512withRSA</signatureAlgorithm>
-     	<certificateKeySize>2048</certificateKeySize>
-     	<rootCertificateName>CWS Root CA v1</rootCertificateName>
-     	<intermediateCertificateName>CWS Intermediate CA v1</intermediateCertificateName>
-     	<rootCertificateFile>/opt/cws/eSolutions/certs/cacerts/CWS Root CA v1.crt</rootCertificateFile>
-     	<intermediateCertificateFile>/opt/cws/eSolutions/certs/cacerts/CWS Intermediate CA v1.crt</intermediateCertificateFile>
-	</certificate-config>
+    <certificate-config>
+        <rootDirectory>/opt/cws/eSolutions/certs</rootDirectory>
+        <privateKeyDirectory>/opt/cws/eSolutions/certs/private</privateKeyDirectory>
+        <publicKeyDirectory>/opt/cws/eSolutions/certs/public</publicKeyDirectory>
+        <certificateDirectory>/opt/cws/eSolutions/certs/certificates</certificateDirectory>
+        <csrDirectory>/opt/cws/eSolutions/certs/certreq</csrDirectory>
+        <storeDirectory>/opt/cws/eSolutions/certs/keystores</storeDirectory>
+        <certificateType>X509</certificateType>
+        <certificateAlgorithm>RSA</certificateAlgorithm>
+        <signatureAlgorithm>SHA512withRSA</signatureAlgorithm>
+         <certificateKeySize>2048</certificateKeySize>
+         <rootCertificateName>CWS Root CA v1</rootCertificateName>
+         <intermediateCertificateName>CWS Intermediate CA v1</intermediateCertificateName>
+         <rootCertificateFile>/opt/cws/eSolutions/certs/cacerts/CWS Root CA v1.crt</rootCertificateFile>
+         <intermediateCertificateFile>/opt/cws/eSolutions/certs/cacerts/CWS Intermediate CA v1.crt</intermediateCertificateFile>
+    </certificate-config>
 
     <!-- only required if file-based signing is used. if this is configured then key-config MUST be configured. -->
     <file-security-config>

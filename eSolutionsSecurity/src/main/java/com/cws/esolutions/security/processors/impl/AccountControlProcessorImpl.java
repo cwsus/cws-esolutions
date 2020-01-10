@@ -23,7 +23,7 @@ package com.cws.esolutions.security.processors.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import java.util.Date;
 import java.util.List;
@@ -91,26 +91,26 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
                 // audit
                 try
@@ -279,7 +279,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             ERROR_RECORDER.error(sx.getMessage(), sx);
 
             throw new AccountControlException(sx.getMessage(), sx);
-		}
+        }
         finally
         {
             // audit
@@ -346,26 +346,26 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
                 // audit
                 try
@@ -496,26 +496,26 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
                 // audit
                 try
@@ -664,26 +664,26 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
                 // audit
                 try
@@ -874,26 +874,26 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
                 // audit
                 try
@@ -1018,7 +1018,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             ERROR_RECORDER.error(sx.getMessage(), sx);
 
             throw new AccountControlException(sx.getMessage(), sx);
-		}
+        }
         finally
         {
             // audit
@@ -1085,26 +1085,26 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
                 // audit
                 try
@@ -1248,26 +1248,26 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
                 // audit
                 try
@@ -1428,26 +1428,26 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
                 // audit
                 try
@@ -1602,26 +1602,26 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
                 // audit
                 try

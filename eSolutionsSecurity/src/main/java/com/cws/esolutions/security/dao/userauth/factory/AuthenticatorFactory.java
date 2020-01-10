@@ -23,7 +23,7 @@ package com.cws.esolutions.security.dao.userauth.factory;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +69,7 @@ public class AuthenticatorFactory
         {
             try
             {
-            	authenticator = Authenticator.class.getDeclaredConstructor(Class.forName(className)).newInstance();
+                authenticator = Authenticator.class.getDeclaredConstructor(Class.forName(className)).newInstance();
                 // authenticator = (Authenticator) Class.forName(className).newInstance();
 
                 if (DEBUG)
@@ -91,20 +91,20 @@ public class AuthenticatorFactory
             }
             catch (IllegalArgumentException iax)
             {
-            	ERROR_RECORDER.error(iax.getMessage(), iax);
-			}
+                ERROR_RECORDER.error(iax.getMessage(), iax);
+            }
             catch (InvocationTargetException itx)
             {
-				ERROR_RECORDER.error(itx.getMessage(), itx);
-			}
+                ERROR_RECORDER.error(itx.getMessage(), itx);
+            }
             catch (NoSuchMethodException nsx)
             {
-				ERROR_RECORDER.error(nsx.getMessage(), nsx);
-			}
+                ERROR_RECORDER.error(nsx.getMessage(), nsx);
+            }
             catch (SecurityException sx)
             {
-				ERROR_RECORDER.error(sx.getMessage(), sx);
-			}
+                ERROR_RECORDER.error(sx.getMessage(), sx);
+            }
         }
 
         return authenticator;

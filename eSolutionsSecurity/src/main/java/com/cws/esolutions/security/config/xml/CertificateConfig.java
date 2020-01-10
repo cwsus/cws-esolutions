@@ -45,12 +45,12 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 @XmlAccessorType(XmlAccessType.NONE)
 public final class CertificateConfig implements Serializable
 {
-	private int certKeySize = 2048;
-	private File csrDirectory = null;
-	private File rootDirectory = null;
-	private File storeDirectory = null;
-	private String certificateType = null;
-	private File publicKeyDirectory = null;
+    private int certKeySize = 2048;
+    private File csrDirectory = null;
+    private File rootDirectory = null;
+    private File storeDirectory = null;
+    private String certificateType = null;
+    private File publicKeyDirectory = null;
     private File rootCertificateFile = null;
     private File privateKeyDirectory = null;
     private File certificateDirectory = null;

@@ -50,7 +50,7 @@ public class ServerDataDAOImplTest
     {
         try
         {
-        	CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "logging/logging.xml", true, false);
+            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "logging/logging.xml", true, false);
         }
         catch (Exception ex)
         {
@@ -62,7 +62,7 @@ public class ServerDataDAOImplTest
 
     @Test public void addNewServer()
     {
-		List<Object> data = new ArrayList<Object>
+        List<Object> data = new ArrayList<Object>
         (
             Arrays.asList
             (

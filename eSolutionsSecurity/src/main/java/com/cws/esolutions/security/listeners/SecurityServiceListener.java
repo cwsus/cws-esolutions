@@ -23,7 +23,7 @@ package com.cws.esolutions.security.listeners;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import java.net.URL;
 import java.util.Map;
@@ -146,7 +146,7 @@ public class SecurityServiceListener implements ServletContextListener
                     Context initContext = new InitialContext();
                     Context envContext = (Context) initContext.lookup(SecurityServiceConstants.DS_CONTEXT);
 
-					DAOInitializer.configureAndCreateAuthConnection(new FileInputStream(FileUtils.getFile(configData.getSecurityConfig().getAuthConfig())),
+                    DAOInitializer.configureAndCreateAuthConnection(new FileInputStream(FileUtils.getFile(configData.getSecurityConfig().getAuthConfig())),
                             false, SecurityServiceListener.svcBean);
 
                     Map<String, DataSource> dsMap = new HashMap<String, DataSource>();

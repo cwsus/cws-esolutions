@@ -23,7 +23,7 @@ package com.cws.esolutions.security.utils;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
 import java.io.InputStream;
@@ -176,7 +176,7 @@ public final class DAOInitializer
                             sslUtil = new SSLUtil(new TrustStoreTrustManager(
                                     connProps.getProperty(DAOInitializer.TRUST_FILE),
                                     PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.TRUST_PASS), connProps.getProperty(DAOInitializer.TRUST_SALT),
-                                    		secConfig.getSecretAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
+                                            secConfig.getSecretAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
                                             secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), 
                                             systemConfig.getEncoding()).toCharArray(),
                                     connProps.getProperty(DAOInitializer.TRUST_TYPE),
@@ -229,7 +229,7 @@ public final class DAOInitializer
                             sslUtil = new SSLUtil(new TrustStoreTrustManager(
                                     connProps.getProperty(DAOInitializer.TRUST_FILE),
                                     PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.TRUST_PASS), connProps.getProperty(DAOInitializer.TRUST_SALT),
-                                    		secConfig.getSecretAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
+                                            secConfig.getSecretAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
                                             secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), 
                                             systemConfig.getEncoding()).toCharArray(),
                                     connProps.getProperty(DAOInitializer.TRUST_TYPE),
@@ -263,7 +263,7 @@ public final class DAOInitializer
 
                             BindRequest bindRequest = new SimpleBindRequest(connProps.getProperty(DAOInitializer.REPOSITORY_USER),
                                     PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.TRUST_PASS), connProps.getProperty(DAOInitializer.TRUST_SALT),
-                                    		secConfig.getSecretAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
+                                            secConfig.getSecretAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
                                             secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), 
                                             systemConfig.getEncoding()));
 

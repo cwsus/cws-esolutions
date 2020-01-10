@@ -178,9 +178,9 @@ public class DNSServiceRequestImplTest
         aRecord.setRecordClass(DNSRecordClass.IN);
         aRecord.setRecordType(DNSRecordType.A);
         aRecord.setRecordAddresses(new ArrayList<String>(
-    		Arrays.asList(
-				"1.2.3.4",
-				"4.3.2.1")));
+            Arrays.asList(
+                "1.2.3.4",
+                "4.3.2.1")));
 
         DNSRecord domainKeyRecord = new DNSRecord();
         domainKeyRecord.setRecordName("_domainkey");
@@ -237,28 +237,28 @@ public class DNSServiceRequestImplTest
 
         // apex records
         entry.setApexRecords(new ArrayList<DNSRecord>(
-    		Arrays.asList(
-				nsRecord1,
-				nsRecord2,
-				nsRecord3,
-				nsRecord4,
-				rpRecord,
-				apexAddress1,
-				apexAddress2,
-				mxRecord,
-				spfRecord)));
+            Arrays.asList(
+                nsRecord1,
+                nsRecord2,
+                nsRecord3,
+                nsRecord4,
+                rpRecord,
+                apexAddress1,
+                apexAddress2,
+                mxRecord,
+                spfRecord)));
 
         // subrecords
         entry.setSubRecords(new ArrayList<DNSRecord>(
-    		Arrays.asList(
-				cnameRecord,
-				aRecord,
-				mxAddress,
-				domainKeyRecord,
-				dkimRecord,
-				srvRecord,
-				otherRecord,
-				otherRecord1)));
+            Arrays.asList(
+                cnameRecord,
+                aRecord,
+                mxAddress,
+                domainKeyRecord,
+                dkimRecord,
+                srvRecord,
+                otherRecord,
+                otherRecord1)));
 
         DNSServiceRequest request = new DNSServiceRequest();
         request.setDnsEntry(entry); // first entry is the apex

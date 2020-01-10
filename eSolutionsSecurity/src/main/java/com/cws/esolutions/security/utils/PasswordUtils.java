@@ -23,7 +23,7 @@ package com.cws.esolutions.security.utils;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import javax.crypto.Mac;
 import org.slf4j.Logger;
@@ -141,12 +141,12 @@ public final class PasswordUtils
         }
         catch (InvalidKeySpecException iksx)
         {
-        	throw new SecurityException(iksx.getMessage(), iksx);
-		}
+            throw new SecurityException(iksx.getMessage(), iksx);
+        }
         catch (InvalidParameterSpecException ipsx)
         {
-        	throw new SecurityException(ipsx.getMessage(), ipsx);
-		}
+            throw new SecurityException(ipsx.getMessage(), ipsx);
+        }
 
         return encPass;
     }
@@ -239,7 +239,7 @@ public final class PasswordUtils
 
         try
         {
-        	String decoded = new String(Base64.getDecoder().decode(value));
+            String decoded = new String(Base64.getDecoder().decode(value));
             String iv = decoded.split(":")[0];
             String property = decoded.split(":")[1];
 
@@ -282,8 +282,8 @@ public final class PasswordUtils
         }
         catch (InvalidKeySpecException iksx)
         {
-        	throw new SecurityException(iksx.getMessage(), iksx);
-		}
+            throw new SecurityException(iksx.getMessage(), iksx);
+        }
 
         return decPass;
     }

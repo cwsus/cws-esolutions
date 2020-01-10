@@ -315,9 +315,9 @@ public class ServiceManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         mView.setViewName(this.defaultPage);
@@ -395,9 +395,9 @@ public class ServiceManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         try
@@ -538,9 +538,9 @@ public class ServiceManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         try
@@ -684,9 +684,9 @@ public class ServiceManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         try
@@ -830,9 +830,9 @@ public class ServiceManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         try
@@ -986,9 +986,9 @@ public class ServiceManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         try
@@ -1133,9 +1133,9 @@ public class ServiceManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         try
@@ -1277,9 +1277,9 @@ public class ServiceManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         mView.addObject(new Service());
@@ -1357,9 +1357,9 @@ public class ServiceManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         try
@@ -1500,9 +1500,9 @@ public class ServiceManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         this.validator.validate(service, bindResult);

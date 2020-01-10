@@ -23,7 +23,7 @@ package com.cws.esolutions.security.main;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly			11/23/2008 22:39:20             Created.
+ * cws-khuntly            11/23/2008 22:39:20             Created.
  */
 import java.io.File;
 import org.slf4j.Logger;
@@ -64,7 +64,7 @@ import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 @SuppressWarnings("static-access")
 public class PasswordUtility
@@ -114,11 +114,11 @@ public class PasswordUtility
             .create();
 
         Option replaceEntry = OptionBuilder.withLongOpt("replace")
-        		.hasArg(false)
-        		.withDescription("Replace an existing entry")
-        		.isRequired(false)
-        		.withType(Boolean.class)
-        		.create();
+                .hasArg(false)
+                .withDescription("Replace an existing entry")
+                .isRequired(false)
+                .withType(Boolean.class)
+                .create();
 
         Option encryptOption = OptionBuilder.withLongOpt("encrypt")
             .hasArg(false)
@@ -164,7 +164,7 @@ public class PasswordUtility
 
         if (DEBUG)
         {
-        	DEBUGGER.debug("Value: {}", methodName);
+            DEBUGGER.debug("Value: {}", methodName);
         }
 
         if (args.length == 0)
@@ -249,8 +249,8 @@ public class PasswordUtility
                 final String encodedSalt = PasswordUtils.base64Encode(salt);
                 final String encodedUserName = PasswordUtils.base64Encode(username);
                 final String encryptedPassword = PasswordUtils.encryptText(password, salt,
-                		secConfig.getSecretAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
-                		secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), systemConfig.getEncoding());
+                        secConfig.getSecretAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
+                        secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), systemConfig.getEncoding());
                 final String encodedPassword = PasswordUtils.base64Encode(encryptedPassword);
 
                 if (DEBUG)
@@ -289,15 +289,15 @@ public class PasswordUtility
 
                         if (commandLine.hasOption("replace"))
                         {
-                        	File[] files = new File[] { saltFile, passwordFile };
+                            File[] files = new File[] { saltFile, passwordFile };
 
                             if (DEBUG)
                             {
-                            	DEBUGGER.debug("File[] files: {}", (Object) files);
+                                DEBUGGER.debug("File[] files: {}", (Object) files);
                             }
 
-                        	for (File file : files)
-                        	{
+                            for (File file : files)
+                            {
                                 if (DEBUG)
                                 {
                                     DEBUGGER.debug("File: {}", file);
@@ -308,27 +308,27 @@ public class PasswordUtility
 
                                 if (DEBUG)
                                 {
-                                	DEBUGGER.debug("File tmpFile: {}", tmpFile);
+                                    DEBUGGER.debug("File tmpFile: {}", tmpFile);
                                 }
 
-                            	bReader = new BufferedReader(new FileReader(file));
-                            	bWriter = new BufferedWriter(new FileWriter(tmpFile));
+                                bReader = new BufferedReader(new FileReader(file));
+                                bWriter = new BufferedWriter(new FileWriter(tmpFile));
 
-                            	while ((currentLine = bReader.readLine()) !=  null)
-                            	{
-                            		if (!(StringUtils.equals(currentLine.trim().split(",")[0], entryName)))
-                            		{
-                            			bWriter.write(currentLine + System.getProperty("line.separator"));
-                            			bWriter.flush();
-                            		}
-                            	}
+                                while ((currentLine = bReader.readLine()) !=  null)
+                                {
+                                    if (!(StringUtils.equals(currentLine.trim().split(",")[0], entryName)))
+                                    {
+                                        bWriter.write(currentLine + System.getProperty("line.separator"));
+                                        bWriter.flush();
+                                    }
+                                }
 
-                            	bWriter.close();
+                                bWriter.close();
 
-                            	FileUtils.deleteQuietly(file);
-                            	FileUtils.copyFile(tmpFile, file);
-                            	FileUtils.deleteQuietly(tmpFile);
-                        	}
+                                FileUtils.deleteQuietly(file);
+                                FileUtils.copyFile(tmpFile, file);
+                                FileUtils.deleteQuietly(tmpFile);
+                            }
                         }
 
                         FileUtils.writeStringToFile(saltFile, entryName + "," + encodedUserName + "," + encodedSalt + System.getProperty("line.separator"), true);
@@ -385,19 +385,19 @@ public class PasswordUtility
 
                 for (String lineEntry : FileUtils.readLines(saltFile, systemConfig.getEncoding()))
                 {
-                	saltEntryName = lineEntry.split(",")[0];
+                    saltEntryName = lineEntry.split(",")[0];
 
                     if (DEBUG)
                     {
-                    	DEBUGGER.debug("String saltEntryName: {}", saltEntryName);
+                        DEBUGGER.debug("String saltEntryName: {}", saltEntryName);
                     }
 
-                	if (StringUtils.equals(saltEntryName, entryName))
-                	{
-                		saltEntryValue = PasswordUtils.base64Decode(lineEntry.split(",")[2]);
+                    if (StringUtils.equals(saltEntryName, entryName))
+                    {
+                        saltEntryValue = PasswordUtils.base64Decode(lineEntry.split(",")[2]);
 
-                		break;
-                	}
+                        break;
+                    }
                 }
 
                 if (StringUtils.isEmpty(saltEntryValue))
@@ -416,11 +416,11 @@ public class PasswordUtility
 
                     if (StringUtils.equals(passwordEntryName, saltEntryName))
                     {
-                    	String decodedPassword = PasswordUtils.base64Decode(lineEntry.split(",")[2]);
+                        String decodedPassword = PasswordUtils.base64Decode(lineEntry.split(",")[2]);
 
                         decryptedPassword = PasswordUtils.decryptText(decodedPassword, saltEntryValue,
-                        		secConfig.getSecretAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
-                        		secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), systemConfig.getEncoding());
+                                secConfig.getSecretAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
+                                secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), systemConfig.getEncoding());
 
                         break;
                     }
@@ -470,19 +470,19 @@ public class PasswordUtility
         }
         finally
         {
-        	try
-        	{
-	        	if (bReader != null)
-	        	{
-	        		bReader.close();
-	        	}
+            try
+            {
+                if (bReader != null)
+                {
+                    bReader.close();
+                }
 
-	        	if (bWriter != null)
-	        	{
-	        		bReader.close();
-	        	}
-        	}
-        	catch (IOException iox) {}
+                if (bWriter != null)
+                {
+                    bReader.close();
+                }
+            }
+            catch (IOException iox) {}
         }
 
         System.exit(0);

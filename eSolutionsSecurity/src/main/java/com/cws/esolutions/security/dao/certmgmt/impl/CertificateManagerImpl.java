@@ -23,7 +23,7 @@ package com.cws.esolutions.security.dao.certmgmt.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import java.io.File;
 import java.util.List;
@@ -181,7 +181,7 @@ public class CertificateManagerImpl implements ICertificateManager
 
                 if (DEBUG)
                 {
-                	DEBUGGER.debug("X509Certificate[]: {}", (Object) issuerCert);
+                    DEBUGGER.debug("X509Certificate[]: {}", (Object) issuerCert);
                 }
 
                 keyStore.setCertificateEntry(certConfig.getRootCertificateName(), 
@@ -208,7 +208,7 @@ public class CertificateManagerImpl implements ICertificateManager
 
                 if (DEBUG)
                 {
-                	DEBUGGER.debug("privateKeyFile: {}", privateKeyFile);
+                    DEBUGGER.debug("privateKeyFile: {}", privateKeyFile);
                 }
 
                 if (!(privateKeyFile.createNewFile()))
@@ -317,7 +317,7 @@ public class CertificateManagerImpl implements ICertificateManager
         }
         catch (FileNotFoundException fnfx)
         {
-        	throw new CertificateManagementException(fnfx.getMessage(), fnfx);
+            throw new CertificateManagementException(fnfx.getMessage(), fnfx);
         }
         catch (IOException iox)
         {
@@ -349,55 +349,55 @@ public class CertificateManagerImpl implements ICertificateManager
         }
         finally
         {
-        	if (csrFileStreamWriter != null)
-        	{
-        	    IOUtils.closeQuietly(csrFileStreamWriter);
-        	}
+            if (csrFileStreamWriter != null)
+            {
+                IOUtils.closeQuietly(csrFileStreamWriter);
+            }
 
-        	if (csrFileStream != null)
-        	{
-        	    IOUtils.closeQuietly(csrFileStream);
-        	}
+            if (csrFileStream != null)
+            {
+                IOUtils.closeQuietly(csrFileStream);
+            }
 
-        	if (csrPemWriter != null)
-        	{
-        		IOUtils.closeQuietly(csrPemWriter);
-        	}
+            if (csrPemWriter != null)
+            {
+                IOUtils.closeQuietly(csrPemWriter);
+            }
 
-        	if (publicKeyFileStream != null)
-        	{
-        	    IOUtils.closeQuietly(publicKeyFileStream);
-        	}
+            if (publicKeyFileStream != null)
+            {
+                IOUtils.closeQuietly(publicKeyFileStream);
+            }
 
-        	if (publicKeyStreamWriter != null)
-        	{
-        	    IOUtils.closeQuietly(publicKeyStreamWriter);
-        	}
+            if (publicKeyStreamWriter != null)
+            {
+                IOUtils.closeQuietly(publicKeyStreamWriter);
+            }
 
-        	if (publicKeyWriter != null)
-        	{
-        		IOUtils.closeQuietly(publicKeyWriter);
-        	}
+            if (publicKeyWriter != null)
+            {
+                IOUtils.closeQuietly(publicKeyWriter);
+            }
 
-        	if (privateKeyFileStream != null)
-        	{
-        	    IOUtils.closeQuietly(privateKeyFileStream);
-        	}
+            if (privateKeyFileStream != null)
+            {
+                IOUtils.closeQuietly(privateKeyFileStream);
+            }
 
-        	if (privateKeyStreamWriter != null)
-        	{
-        	    IOUtils.closeQuietly(privateKeyStreamWriter);
-        	}
+            if (privateKeyStreamWriter != null)
+            {
+                IOUtils.closeQuietly(privateKeyStreamWriter);
+            }
 
-        	if (privateKeyWriter != null)
-        	{
-        		IOUtils.closeQuietly(privateKeyWriter);
-        	}
+            if (privateKeyWriter != null)
+            {
+                IOUtils.closeQuietly(privateKeyWriter);
+            }
 
-        	if (keyStoreStream != null)
-        	{
-        	    IOUtils.closeQuietly(keyStoreStream);
-        	}
+            if (keyStoreStream != null)
+            {
+                IOUtils.closeQuietly(keyStoreStream);
+            }
         }
 
         return csrFile;
@@ -442,7 +442,7 @@ public class CertificateManagerImpl implements ICertificateManager
         {
             if (!(rootDirectory.exists()))
             {
-            	throw new CertificateManagementException("Root certificate directory either does not exist or cannot be written to. Cannot continue.");
+                throw new CertificateManagementException("Root certificate directory either does not exist or cannot be written to. Cannot continue.");
             }
 
             if (!(rootDirectory.canWrite()))
@@ -505,12 +505,12 @@ public class CertificateManagerImpl implements ICertificateManager
             }
 
             X509Certificate[] responseCert = new X509Certificate[] { (X509Certificate) certFactory.generateCertificate(rootCertStream),
-            		(X509Certificate) certFactory.generateCertificate(intermediateCertStream),
-            		(X509Certificate) certFactory.generateCertificate(certStream) };
+                    (X509Certificate) certFactory.generateCertificate(intermediateCertStream),
+                    (X509Certificate) certFactory.generateCertificate(certStream) };
 
             if (DEBUG)
             {
-            	DEBUGGER.debug("X509Certificate[]", (Object) responseCert);
+                DEBUGGER.debug("X509Certificate[]", (Object) responseCert);
             }
 
             storeStream = FileUtils.openOutputStream(keystoreFile);
@@ -545,34 +545,34 @@ public class CertificateManagerImpl implements ICertificateManager
         }
         catch (UnrecoverableKeyException ukx)
         {
-        	throw new CertificateManagementException(ukx.getMessage(), ukx);
-		}
+            throw new CertificateManagementException(ukx.getMessage(), ukx);
+        }
         finally
         {
-        	if (storeStream != null)
-        	{
-        	    IOUtils.closeQuietly(storeStream);
-        	}
+            if (storeStream != null)
+            {
+                IOUtils.closeQuietly(storeStream);
+            }
 
-        	if (intermediateCertStream != null)
-        	{
-        	    IOUtils.closeQuietly(intermediateCertStream);
-        	}
+            if (intermediateCertStream != null)
+            {
+                IOUtils.closeQuietly(intermediateCertStream);
+            }
 
-        	if (rootCertStream != null)
-        	{
-        	    IOUtils.closeQuietly(rootCertStream);
-        	}
+            if (rootCertStream != null)
+            {
+                IOUtils.closeQuietly(rootCertStream);
+            }
 
-        	if (certStream != null)
-        	{
-        	    IOUtils.closeQuietly(certStream);
-        	}
+            if (certStream != null)
+            {
+                IOUtils.closeQuietly(certStream);
+            }
 
-        	if (keystoreInput != null)
-        	{
-        	    IOUtils.closeQuietly(keystoreInput);
-        	}
+            if (keystoreInput != null)
+            {
+                IOUtils.closeQuietly(keystoreInput);
+            }
         }
 
         return isComplete;

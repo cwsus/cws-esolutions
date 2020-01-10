@@ -23,7 +23,7 @@ package com.cws.esolutions.security.dao.usermgmt.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly			11/23/2008 22:39:20             Created.
+ * cws-khuntly            11/23/2008 22:39:20             Created.
  */
 import java.util.List;
 import java.util.Arrays;
@@ -1275,11 +1275,11 @@ public class SQLUserManager implements UserManager
         return isComplete;
     }
 
-	/**
-	 * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#performSuccessfulLogin(java.lang.String, java.lang.String, java.lang.int, java.lang.Long)
-	 */
-	public boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final Long timestamp) throws UserManagementException
-	{
+    /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#performSuccessfulLogin(java.lang.String, java.lang.String, java.lang.int, java.lang.Long)
+     */
+    public boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final Long timestamp) throws UserManagementException
+    {
         final String methodName = SQLUserManager.CNAME + "#modifyUserSecurity(final String userId, final String guid, final int lockCount, final Long timestamp) throws UserManagementException";
 
         if (DEBUG)
@@ -1349,5 +1349,5 @@ public class SQLUserManager implements UserManager
         }
 
         return isComplete;
-	}
+    }
 }

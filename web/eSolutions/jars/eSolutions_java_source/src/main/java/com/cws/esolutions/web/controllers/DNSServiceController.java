@@ -244,9 +244,9 @@ public class DNSServiceController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         mView.addObject("serviceTypes", this.serviceTypes);
@@ -323,9 +323,9 @@ public class DNSServiceController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
             
         mView.addObject("serviceTypes", this.serviceTypes);
@@ -402,9 +402,9 @@ public class DNSServiceController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
             
         mView.addObject("serviceTypes", this.serviceTypes);
@@ -484,9 +484,9 @@ public class DNSServiceController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         try

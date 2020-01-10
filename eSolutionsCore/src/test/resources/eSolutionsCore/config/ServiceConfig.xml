@@ -22,7 +22,7 @@
         </serviceAccount>
     </application-config>
 
-	<security-config />
+    <security-config />
 
     <mail-config>
         <propertyFile>eSolutionsCore/mail/MailConfig.properties</propertyFile>

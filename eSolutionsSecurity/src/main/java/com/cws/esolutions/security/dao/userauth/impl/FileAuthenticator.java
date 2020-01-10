@@ -23,7 +23,7 @@ package com.cws.esolutions.security.dao.userauth.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		12/17/2019 22:39:20             Created.
+ * cws-khuntly           12/17/2019 22:39:20             Created.
  */
 import java.io.File;
 import java.util.List;
@@ -38,7 +38,7 @@ import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException
  */
 public class FileAuthenticator implements Authenticator
 {
-	
+    
     private static final String CNAME = FileAuthenticator.class.getName();
 
     /**
@@ -59,50 +59,50 @@ public class FileAuthenticator implements Authenticator
 
         try
         {
-        	scanner = new Scanner(new File(passwordConfig.getPasswordFile()));
+            scanner = new Scanner(new File(passwordConfig.getPasswordFile()));
 
-	        if (DEBUG)
-	        {
-	        	DEBUGGER.debug("Scanner: {}", scanner);
-	        }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Scanner: {}", scanner);
+            }
 
-	    	while (scanner.hasNext())
-	    	{
-	    		String lineEntry = scanner.nextLine();
+            while (scanner.hasNext())
+            {
+                String lineEntry = scanner.nextLine();
 
-	    		if (DEBUG)
-	    		{
-	    			DEBUGGER.debug("lineEntry: {}", lineEntry);
-	    		}
-    		
-	    		if (lineEntry.contains(username) && lineEntry.contains(password))
-	    		{
-	    			String[] userAttributes = lineEntry.split(":");
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("lineEntry: {}", lineEntry);
+                }
+            
+                if (lineEntry.contains(username) && lineEntry.contains(password))
+                {
+                    String[] userAttributes = lineEntry.split(":");
 
-	        		if (DEBUG)
-	        		{
-	        			for (int x = 0; x != userAttributes.length; x++)
-	        			{
-	        				DEBUGGER.debug("userAttributes: {}", (Object) userAttributes[x]);
-	        			}
-	        		}
+                    if (DEBUG)
+                    {
+                        for (int x = 0; x != userAttributes.length; x++)
+                        {
+                            DEBUGGER.debug("userAttributes: {}", (Object) userAttributes[x]);
+                        }
+                    }
 
-	    			userAccount = new ArrayList<Object>();
-	    			userAccount.add(userAttributes);
-	    		}
-	    	}
+                    userAccount = new ArrayList<Object>();
+                    userAccount.add(userAttributes);
+                }
+            }
         }
         catch (FileNotFoundException fnfx)
         {
-        	throw new AuthenticatorException(fnfx.getMessage(), fnfx);
+            throw new AuthenticatorException(fnfx.getMessage(), fnfx);
         }
         finally
         {
-        	try
-        	{
-        		scanner.close();
-        	}
-        	catch (IllegalStateException isx) {} // dont do anything with it
+            try
+            {
+                scanner.close();
+            }
+            catch (IllegalStateException isx) {} // dont do anything with it
         }
 
         return userAccount;

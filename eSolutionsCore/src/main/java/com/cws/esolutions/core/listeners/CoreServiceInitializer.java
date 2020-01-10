@@ -23,7 +23,7 @@ package com.cws.esolutions.core.listeners;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly  		11/23/2008 22:39:20             Created.
+ * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.net.URL;
 import java.util.Map;
@@ -77,18 +77,18 @@ public class CoreServiceInitializer
      */
     public static void initializeService(final String configFile, final String logConfig, final boolean loadSecurity, final boolean startConnections) throws CoreServiceException
     {
-    	URL xmlURL = null;
+        URL xmlURL = null;
         JAXBContext context = null;
         Unmarshaller marshaller = null;
         SecurityConfig secConfig = null;
         CoreConfigurationData configData = null;
         SecurityConfigurationData secConfigData = null;
 
-    	if (loadSecurity)
-    	{
-    		secConfigData = SecurityServiceBean.getInstance().getConfigData();
-    		secConfig = secConfigData.getSecurityConfig();
-    	}
+        if (loadSecurity)
+        {
+            secConfigData = SecurityServiceBean.getInstance().getConfigData();
+            secConfig = secConfigData.getSecurityConfig();
+        }
 
         final String serviceConfig = (StringUtils.isBlank(configFile)) ? System.getProperty("coreConfigFile") : configFile;
         final String loggingConfig = (StringUtils.isBlank(logConfig)) ? System.getProperty("coreLogConfig") : logConfig;
@@ -156,15 +156,15 @@ public class CoreServiceInitializer
                             DEBUGGER.debug("StringBuilder: {}", sBuilder);
                         }
 
-	                    BasicDataSource dataSource = new BasicDataSource();
-	                        dataSource.setDriverClassName(mgr.getDriver());
-	                        dataSource.setUrl(mgr.getDataSource());
-	                        dataSource.setUsername(mgr.getDsUser());
-	                        dataSource.setConnectionProperties(sBuilder.toString());
-	                        dataSource.setPassword(PasswordUtils.decryptText(mgr.getDsPass(), mgr.getSalt(),
-	                        		secConfig.getSecretAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
-	                        		secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
-	                                configData.getAppConfig().getEncoding()));
+                        BasicDataSource dataSource = new BasicDataSource();
+                            dataSource.setDriverClassName(mgr.getDriver());
+                            dataSource.setUrl(mgr.getDataSource());
+                            dataSource.setUsername(mgr.getDsUser());
+                            dataSource.setConnectionProperties(sBuilder.toString());
+                            dataSource.setPassword(PasswordUtils.decryptText(mgr.getDsPass(), mgr.getSalt(),
+                                    secConfig.getSecretAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
+                                    secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
+                                    configData.getAppConfig().getEncoding()));
                         if (DEBUG)
                         {
                             DEBUGGER.debug("BasicDataSource: {}", dataSource);
@@ -210,27 +210,27 @@ public class CoreServiceInitializer
 
         try
         {
-        	if ((datasources != null) && (datasources.size() != 0))
-        	{
-        		for (String key : datasources.keySet())
-        		{
-        			if (DEBUG)
-        			{
-        				DEBUGGER.debug("Key: {}", key);
-        			}
+            if ((datasources != null) && (datasources.size() != 0))
+            {
+                for (String key : datasources.keySet())
+                {
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Key: {}", key);
+                    }
 
-        			BasicDataSource dataSource = (BasicDataSource) datasources.get(key);
+                    BasicDataSource dataSource = (BasicDataSource) datasources.get(key);
 
-        			if (DEBUG)
-        			{
-        				DEBUGGER.debug("BasicDataSource: {}", dataSource);
-        			}
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("BasicDataSource: {}", dataSource);
+                    }
 
-        			if ((dataSource != null ) && (!(dataSource.isClosed())))
-        			{
-        				dataSource.close();
-        			}
-        		}
+                    if ((dataSource != null ) && (!(dataSource.isClosed())))
+                    {
+                        dataSource.close();
+                    }
+                }
             }
         }
         catch (SQLException sqx)

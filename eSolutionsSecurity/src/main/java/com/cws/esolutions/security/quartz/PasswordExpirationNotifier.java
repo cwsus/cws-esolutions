@@ -23,7 +23,7 @@ package com.cws.esolutions.security.quartz;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import java.util.Map;
 import java.util.List;
@@ -139,8 +139,8 @@ public class PasswordExpirationNotifier implements Job
                     {
                         email.setAuthenticator(new DefaultAuthenticator((String) jobData.get("username"),
                                 PasswordUtils.decryptText((String) (String) jobData.get("password"), (String) jobData.get("salt"),
-                                		secConfig.getSecretAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
-                                		secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), systemConfig.getEncoding())));
+                                        secConfig.getSecretAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
+                                        secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), systemConfig.getEncoding())));
                     }
 
                     email.setFrom((String) jobData.get("emailAddr"));
@@ -162,8 +162,8 @@ public class PasswordExpirationNotifier implements Job
                 }
                 catch (SecurityException sx)
                 {
-                	ERROR_RECORDER.error(sx.getMessage(), sx);
-				}
+                    ERROR_RECORDER.error(sx.getMessage(), sx);
+                }
             }
         }
         catch (UserManagementException umx)

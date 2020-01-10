@@ -69,7 +69,7 @@ public class AgentConnectorFactory
         {
             try
             {
-            	agentConnector = AgentConnector.class.getDeclaredConstructor(Class.forName(className)).newInstance();
+                agentConnector = AgentConnector.class.getDeclaredConstructor(Class.forName(className)).newInstance();
                 // agentConnector = (AgentConnector) Class.forName(className).newInstance();
 
                 if (DEBUG)
@@ -91,20 +91,20 @@ public class AgentConnectorFactory
             }
             catch (IllegalArgumentException iax)
             {
-            	ERROR_RECORDER.error(iax.getMessage(), iax);
-			}
+                ERROR_RECORDER.error(iax.getMessage(), iax);
+            }
             catch (InvocationTargetException itx)
             {
-				ERROR_RECORDER.error(itx.getMessage(), itx);
-			}
+                ERROR_RECORDER.error(itx.getMessage(), itx);
+            }
             catch (NoSuchMethodException nsx)
             {
-				ERROR_RECORDER.error(nsx.getMessage(), nsx);
-			}
+                ERROR_RECORDER.error(nsx.getMessage(), nsx);
+            }
             catch (SecurityException sx)
             {
-				ERROR_RECORDER.error(sx.getMessage(), sx);
-			}
+                ERROR_RECORDER.error(sx.getMessage(), sx);
+            }
         }
 
         return agentConnector;

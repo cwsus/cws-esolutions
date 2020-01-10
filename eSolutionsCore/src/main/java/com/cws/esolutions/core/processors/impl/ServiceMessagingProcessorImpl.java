@@ -23,7 +23,7 @@ package com.cws.esolutions.core.processors.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import java.util.Date;
 import java.util.List;
@@ -83,7 +83,7 @@ public class ServiceMessagingProcessorImpl implements IWebMessagingProcessor
 
         try
         {
-        	String messageId = RandomStringUtils.randomAlphanumeric(appConfig.getMessageIdLength());
+            String messageId = RandomStringUtils.randomAlphanumeric(appConfig.getMessageIdLength());
 
             if (DEBUG)
             {
@@ -195,7 +195,7 @@ public class ServiceMessagingProcessorImpl implements IWebMessagingProcessor
 
         try
         {
-        	List<Object> messageList = new ArrayList<Object>(
+            List<Object> messageList = new ArrayList<Object>(
                     Arrays.asList(
                             message.getMessageTitle(),
                             message.getMessageText(),

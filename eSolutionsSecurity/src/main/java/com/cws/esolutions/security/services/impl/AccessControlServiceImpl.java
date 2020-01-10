@@ -23,7 +23,7 @@ package com.cws.esolutions.security.services.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import java.util.List;
 import java.sql.SQLException;
@@ -76,7 +76,7 @@ public class AccessControlServiceImpl implements IAccessControlService
     
                     if (services.contains(userServiceId))
                     {
-                    	response.setIsUserAuthorized(Boolean.TRUE);
+                        response.setIsUserAuthorized(Boolean.TRUE);
                     }
                 }
                 catch (SQLException sqx)
@@ -84,12 +84,12 @@ public class AccessControlServiceImpl implements IAccessControlService
                     ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
                     response.setIsUserAuthorized(Boolean.FALSE);
-    			}
+                }
             }
         }
         else
         {
-        	response.setIsUserAuthorized(Boolean.TRUE);
+            response.setIsUserAuthorized(Boolean.TRUE);
         }
 
         return response;

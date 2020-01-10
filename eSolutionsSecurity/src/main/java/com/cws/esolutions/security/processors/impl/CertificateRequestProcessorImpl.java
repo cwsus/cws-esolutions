@@ -23,7 +23,7 @@ package com.cws.esolutions.security.processors.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		03/28/2017 01:41:00             Created.
+ * cws-khuntly           03/28/2017 01:41:00             Created.
  */
 import java.io.File;
 import java.util.List;
@@ -54,8 +54,8 @@ import com.cws.esolutions.security.dao.certmgmt.exception.CertificateManagementE
  */
 public class CertificateRequestProcessorImpl implements ICertificateRequestProcessor
 {
-	public CertificateResponse listActiveRequests(final CertificateRequest request) throws CertificateRequestException
-	{
+    public CertificateResponse listActiveRequests(final CertificateRequest request) throws CertificateRequestException
+    {
         final String methodName = ICertificateRequestProcessor.CNAME + "#listActiveRequests(final CertificateRequest request) throws CertificateRequestException";
 
         if (DEBUG)
@@ -86,10 +86,10 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
         {
             if (!(rootDirectory.canWrite()))
             {
-            	if (!(rootDirectory.mkdirs()))
-            	{
-            		throw new IOException("Root certificate directory either does not exist or cannot be written to. Cannot continue.");
-            	}
+                if (!(rootDirectory.mkdirs()))
+                {
+                    throw new IOException("Root certificate directory either does not exist or cannot be written to. Cannot continue.");
+                }
             }
 
             if (!(csrDirectory.canWrite()))
@@ -110,55 +110,55 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
 
             for (File csrFile : FileUtils.listFiles(csrDirectory, new String[] { SecurityServiceConstants.CSR_FILE_EXT.replace(".", "") }, true))
             {
-    			if (DEBUG)
-    			{
-    				DEBUGGER.debug("File: {}", csrFile);
-    			}
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("File: {}", csrFile);
+                }
 
-    			String csrFileName = csrFile.getName();
+                String csrFileName = csrFile.getName();
 
-    			if (DEBUG)
-    			{
-    				DEBUGGER.debug("csrFileName: {}", csrFileName);
-    			}
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("csrFileName: {}", csrFileName);
+                }
 
-    			for (File certFile : FileUtils.listFiles(certificateDirectory, new String[] { SecurityServiceConstants.CERTIFICATE_FILE_EXT.replace(".", "") }, true))
-    			{
-        			if (DEBUG)
-        			{
-        				DEBUGGER.debug("File: {}", certFile);
-        			}
+                for (File certFile : FileUtils.listFiles(certificateDirectory, new String[] { SecurityServiceConstants.CERTIFICATE_FILE_EXT.replace(".", "") }, true))
+                {
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("File: {}", certFile);
+                    }
 
-        			String certFileName = certFile.getName();
+                    String certFileName = certFile.getName();
 
-        			if (DEBUG)
-        			{
-        				DEBUGGER.debug("certFileName: {}", certFileName);
-        			}
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("certFileName: {}", certFileName);
+                    }
 
-        			if (!(StringUtils.equals(StringUtils.replace(csrFileName, SecurityServiceConstants.CSR_FILE_EXT, ""), StringUtils.replace(certFileName, SecurityServiceConstants.CERTIFICATE_FILE_EXT, ""))))
-        			{
-        				availableRequests.add(csrFile.toString());
+                    if (!(StringUtils.equals(StringUtils.replace(csrFileName, SecurityServiceConstants.CSR_FILE_EXT, ""), StringUtils.replace(certFileName, SecurityServiceConstants.CERTIFICATE_FILE_EXT, ""))))
+                    {
+                        availableRequests.add(csrFile.toString());
 
-                		if (DEBUG)
-                		{
-                			DEBUGGER.debug("availableRequests: {}", availableRequests);
-                		}
-        			}
-    			}
-    		}
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("availableRequests: {}", availableRequests);
+                        }
+                    }
+                }
+            }
 
-    		if (DEBUG)
-    		{
-    			DEBUGGER.debug("availableRequests: {}", availableRequests);
-    		}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("availableRequests: {}", availableRequests);
+            }
 
-        	response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-        	response.setAvailableRequests(availableRequests);
+            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+            response.setAvailableRequests(availableRequests);
         }
         catch (IOException iox)
         {
-        	ERROR_RECORDER.error(iox.getMessage(), iox);
+            ERROR_RECORDER.error(iox.getMessage(), iox);
 
             throw new CertificateRequestException(iox.getMessage(), iox);
         }
@@ -197,13 +197,13 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
         }
 
         return response;
-	}
+    }
 
-	/**
-	 * @see com.cws.esolutions.security.processors.interfaces.ICertificateRequestProcessor#generateCertificateRequest(com.cws.esolutions.security.processors.dto.CertificateRequest)
-	 */
-	public CertificateResponse generateCertificateRequest(final CertificateRequest request) throws CertificateRequestException
-	{
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.ICertificateRequestProcessor#generateCertificateRequest(com.cws.esolutions.security.processors.dto.CertificateRequest)
+     */
+    public CertificateResponse generateCertificateRequest(final CertificateRequest request) throws CertificateRequestException
+    {
         final String methodName = ICertificateRequestProcessor.CNAME + "#generateCertificateRequest(final CertificateRequest request) throws CertificateRequestException";
 
         if (DEBUG)
@@ -217,14 +217,14 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount authUser = request.getUserAccount();
         final List<String> subjectData = new ArrayList<String>(
-        		Arrays.asList(
-        				request.getCommonName(),
-        				request.getOrganizationalUnit(),
-        				request.getOrganizationName(),
-        				request.getLocalityName(),
-        				request.getStateName(),
-        				request.getCountryName(),
-        				request.getContactEmail()));
+                Arrays.asList(
+                        request.getCommonName(),
+                        request.getOrganizationalUnit(),
+                        request.getOrganizationName(),
+                        request.getLocalityName(),
+                        request.getStateName(),
+                        request.getCountryName(),
+                        request.getContactEmail()));
         final File rootDirectory = FileUtils.getFile(certConfig.getRootDirectory());
         final File privateKeyDirectory = FileUtils.getFile(certConfig.getPrivateKeyDirectory() + "/" + request.getCommonName());
         final File publicKeyDirectory = FileUtils.getFile(certConfig.getPublicKeyDirectory() + "/" + request.getCommonName());
@@ -235,22 +235,22 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
         {
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("authUser: {}", authUser);
-        	DEBUGGER.debug("subjectData: {}", subjectData);
-        	DEBUGGER.debug("rootDirectory: {}", rootDirectory);
-        	DEBUGGER.debug("privateKeyDirectory: {}", privateKeyDirectory);
-        	DEBUGGER.debug("publicKeyDirectory: {}", publicKeyDirectory);
-        	DEBUGGER.debug("csrDirectory: {}", csrDirectory);
-        	DEBUGGER.debug("storeDirectory: {}", storeDirectory);
+            DEBUGGER.debug("subjectData: {}", subjectData);
+            DEBUGGER.debug("rootDirectory: {}", rootDirectory);
+            DEBUGGER.debug("privateKeyDirectory: {}", privateKeyDirectory);
+            DEBUGGER.debug("publicKeyDirectory: {}", publicKeyDirectory);
+            DEBUGGER.debug("csrDirectory: {}", csrDirectory);
+            DEBUGGER.debug("storeDirectory: {}", storeDirectory);
         }
 
         try
         {
             if (!(rootDirectory.canWrite()))
             {
-            	if (!(rootDirectory.mkdirs()))
-            	{
-            		throw new IOException("Root certificate directory either does not exist or cannot be written to. Cannot continue.");
-            	}
+                if (!(rootDirectory.mkdirs()))
+                {
+                    throw new IOException("Root certificate directory either does not exist or cannot be written to. Cannot continue.");
+                }
             }
 
             if (!(certConfig.getRootCertificateFile().exists()))
@@ -298,49 +298,49 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
             // check if an there's an existing entry, if so just return it
             if (FileUtils.getFile(csrDirectory + "/" + request.getCommonName() + SecurityServiceConstants.CSR_FILE_EXT).exists())
             {
-        		response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-        		response.setCsrFile(FileUtils.getFile(csrDirectory + "/" + request.getCommonName() + SecurityServiceConstants.CSR_FILE_EXT));
+                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                response.setCsrFile(FileUtils.getFile(csrDirectory + "/" + request.getCommonName() + SecurityServiceConstants.CSR_FILE_EXT));
 
-        		return response;
+                return response;
             }
 
-        	File csrFile = processor.createCertificateRequest(subjectData, request.getStorePassword(), request.getValidityPeriod(), request.getKeySize());
+            File csrFile = processor.createCertificateRequest(subjectData, request.getStorePassword(), request.getValidityPeriod(), request.getKeySize());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("File: {}", csrFile);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("File: {}", csrFile);
+            }
 
-        	if (csrFile != null)
-        	{
-        		response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-        		response.setCsrFile(csrFile);
-        	}
-        	else
-        	{
-        		response.setRequestStatus(SecurityRequestStatus.FAILURE);
-        	}
+            if (csrFile != null)
+            {
+                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                response.setCsrFile(csrFile);
+            }
+            else
+            {
+                response.setRequestStatus(SecurityRequestStatus.FAILURE);
+            }
         }
         catch (IOException iox)
         {
-        	ERROR_RECORDER.error(iox.getMessage(), iox);
+            ERROR_RECORDER.error(iox.getMessage(), iox);
 
             throw new CertificateRequestException(iox.getMessage(), iox);
         }
         catch (CertificateManagementException cmx)
         {
-        	// clean up
-        	try
-        	{
-				FileUtils.forceDelete(privateKeyDirectory);
-				FileUtils.forceDelete(publicKeyDirectory);
-	        	FileUtils.forceDelete(csrDirectory);
-	        	FileUtils.forceDelete(storeDirectory);
-			}
-        	catch (IOException iox)
-        	{
-        		ERROR_RECORDER.error(iox.getMessage(), iox);
-			}
+            // clean up
+            try
+            {
+                FileUtils.forceDelete(privateKeyDirectory);
+                FileUtils.forceDelete(publicKeyDirectory);
+                FileUtils.forceDelete(csrDirectory);
+                FileUtils.forceDelete(storeDirectory);
+            }
+            catch (IOException iox)
+            {
+                ERROR_RECORDER.error(iox.getMessage(), iox);
+            }
 
             ERROR_RECORDER.error(cmx.getMessage(), cmx);
 
@@ -381,13 +381,13 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
         }
 
         return response;
-	}
+    }
 
-	/**
-	 * @see com.cws.esolutions.security.processors.interfaces.ICertificateRequestProcessor#generateCertificateRequest(com.cws.esolutions.security.processors.dto.CertificateRequest)
-	 */
-	public CertificateResponse applyCertificateResponse(final CertificateRequest request) throws CertificateRequestException
-	{
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.ICertificateRequestProcessor#generateCertificateRequest(com.cws.esolutions.security.processors.dto.CertificateRequest)
+     */
+    public CertificateResponse applyCertificateResponse(final CertificateRequest request) throws CertificateRequestException
+    {
         final String methodName = ICertificateRequestProcessor.CNAME + "#applyCertificateResponse(final CertificateRequest request) throws CertificateRequestException";
 
         if (DEBUG)
@@ -401,14 +401,14 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount authUser = request.getUserAccount();
         final List<String> subjectData = new ArrayList<String>(
-        		Arrays.asList(
-        				request.getCommonName(),
-        				request.getOrganizationalUnit(),
-        				request.getOrganizationName(),
-        				request.getLocalityName(),
-        				request.getStateName(),
-        				request.getCountryName(),
-        				request.getContactEmail()));
+                Arrays.asList(
+                        request.getCommonName(),
+                        request.getOrganizationalUnit(),
+                        request.getOrganizationName(),
+                        request.getLocalityName(),
+                        request.getStateName(),
+                        request.getCountryName(),
+                        request.getContactEmail()));
         final File rootDirectory = FileUtils.getFile(certConfig.getRootDirectory());
         final File storeDirectory = FileUtils.getFile(certConfig.getStoreDirectory() + "/" + request.getCommonName());
         final File certificateDirectory = FileUtils.getFile(certConfig.getCertificateDirectory() + "/" + request.getCommonName());
@@ -419,22 +419,22 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
         {
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("authUser: {}", authUser);
-        	DEBUGGER.debug("subjectData: {}", subjectData);
-        	DEBUGGER.debug("rootDirectory: {}", rootDirectory);
-        	DEBUGGER.debug("storeDirectory: {}", storeDirectory);
-        	DEBUGGER.debug("certificateDirectory: {}", certificateDirectory);
-        	DEBUGGER.debug("keystoreFile: {}", keystoreFile);
-        	DEBUGGER.debug("certificateFile: {}", certificateFile);
+            DEBUGGER.debug("subjectData: {}", subjectData);
+            DEBUGGER.debug("rootDirectory: {}", rootDirectory);
+            DEBUGGER.debug("storeDirectory: {}", storeDirectory);
+            DEBUGGER.debug("certificateDirectory: {}", certificateDirectory);
+            DEBUGGER.debug("keystoreFile: {}", keystoreFile);
+            DEBUGGER.debug("certificateFile: {}", certificateFile);
         }
 
         try
         {
             if (!(rootDirectory.canWrite()))
             {
-            	if (!(rootDirectory.mkdirs()))
-            	{
-            		throw new IOException("Root certificate directory either does not exist or cannot be written to. Cannot continue.");
-            	}
+                if (!(rootDirectory.mkdirs()))
+                {
+                    throw new IOException("Root certificate directory either does not exist or cannot be written to. Cannot continue.");
+                }
             }
 
             if (!(certConfig.getRootCertificateFile().exists()))
@@ -459,19 +459,19 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
 
             boolean isComplete = processor.applyCertificateRequest(request.getCommonName(), certificateFile, keystoreFile, request.getStorePassword());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("File: {}", isComplete);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("File: {}", isComplete);
+            }
 
-        	if (isComplete)
-        	{
-        		response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-        	}
-        	else
-        	{
-        		response.setRequestStatus(SecurityRequestStatus.FAILURE);
-        	}
+            if (isComplete)
+            {
+                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+            }
+            else
+            {
+                response.setRequestStatus(SecurityRequestStatus.FAILURE);
+            }
         }
         catch (IOException iox)
         {
@@ -520,5 +520,5 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
         }
 
         return response;
-	}
+    }
 }

@@ -354,9 +354,9 @@ public class SystemManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         mView.addObject(Constants.COMMAND, new Server());
@@ -434,9 +434,9 @@ public class SystemManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         try
@@ -565,12 +565,12 @@ public class SystemManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
-    	try
+        try
         {
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostName(hRequest.getRemoteHost());
@@ -709,9 +709,9 @@ public class SystemManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         try
@@ -879,9 +879,9 @@ public class SystemManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         // TODO
@@ -958,9 +958,9 @@ public class SystemManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         RequestHostInfo reqInfo = new RequestHostInfo();
@@ -1147,9 +1147,9 @@ public class SystemManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         this.validator.validate(request, bindResult);
@@ -1419,9 +1419,9 @@ public class SystemManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         // TODO
@@ -1502,12 +1502,12 @@ public class SystemManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
-    	try
+        try
         {
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostName(hRequest.getRemoteHost());

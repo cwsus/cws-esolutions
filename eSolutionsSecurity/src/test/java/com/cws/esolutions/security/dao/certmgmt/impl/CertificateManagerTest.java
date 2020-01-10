@@ -61,7 +61,7 @@ public class CertificateManagerTest
         }
         catch (Exception ex)
         {
-        	ex.printStackTrace();
+            ex.printStackTrace();
             Assert.fail(ex.getMessage());
 
             System.exit(-1);
@@ -71,18 +71,18 @@ public class CertificateManagerTest
     @Test public void createCertificateRequest()
     {
         List<String> subjectData = new ArrayList<String>(
-        		Arrays.asList(
-        				"test.junit.com",
-        				"Research and Development",
-        				"CaspersBox Web Services",
-        				"Buffalo",
-        				"New York",
-        				"US",
-        				"secadm@caspersbox.com"));
+                Arrays.asList(
+                        "test.junit.com",
+                        "Research and Development",
+                        "CaspersBox Web Services",
+                        "Buffalo",
+                        "New York",
+                        "US",
+                        "secadm@caspersbox.com"));
 
         try
         {
-        	processor.createCertificateRequest(subjectData, "junit", 365, 4096);
+            processor.createCertificateRequest(subjectData, "junit", 365, 4096);
         }
         catch (Exception ex)
         {
@@ -94,11 +94,11 @@ public class CertificateManagerTest
     {
         try
         {
-        	processor.applyCertificateRequest("test.junit.com", FileUtils.getFile("/opt/cws/eSolutions/certs/certificates/test.junit.com.crt"), FileUtils.getFile("/opt/cws/eSolutions/certs/keystores/test.junit.com.jks"), "junit");
+            processor.applyCertificateRequest("test.junit.com", FileUtils.getFile("/opt/cws/eSolutions/certs/certificates/test.junit.com.crt"), FileUtils.getFile("/opt/cws/eSolutions/certs/keystores/test.junit.com.jks"), "junit");
         }
         catch (Exception ex)
         {
-        	ex.printStackTrace();
+            ex.printStackTrace();
             Assert.fail(ex.getMessage());
         }
     }

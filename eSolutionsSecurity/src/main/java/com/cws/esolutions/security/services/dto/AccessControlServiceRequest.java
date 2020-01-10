@@ -23,7 +23,7 @@ package com.cws.esolutions.security.services.dto;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
 import java.io.Serializable;
@@ -39,8 +39,8 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 public class AccessControlServiceRequest implements Serializable
 {
-	private String serviceGuid = null;
-	private UserAccount userAccount = null;
+    private String serviceGuid = null;
+    private UserAccount userAccount = null;
 
     private static final String CNAME = AccessControlServiceRequest.class.getName();
     private static final long serialVersionUID = 3314079583199404196L;
@@ -51,54 +51,54 @@ public class AccessControlServiceRequest implements Serializable
 
     public final void setServiceGuid(final String value)
     {
-    	final String methodName = AccessControlServiceRequest.CNAME + "#setServiceGuid(final String value)";
+        final String methodName = AccessControlServiceRequest.CNAME + "#setServiceGuid(final String value)";
 
-    	if (DEBUG)
-    	{
-    		DEBUGGER.debug(methodName);
-    		DEBUGGER.debug("Value: {}", value);
-    	}
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
 
-    	this.serviceGuid = value;
+        this.serviceGuid = value;
     }
 
     public final void setUserAccount(final UserAccount value)
     {
-    	final String methodName = AccessControlServiceRequest.CNAME + "#setUserAccount(final UserAccount value)";
+        final String methodName = AccessControlServiceRequest.CNAME + "#setUserAccount(final UserAccount value)";
 
-    	if (DEBUG)
-    	{
-    		DEBUGGER.debug(methodName);
-    		DEBUGGER.debug("UserAccount: {}", value);
-    	}
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("UserAccount: {}", value);
+        }
 
-    	this.userAccount = value;
+        this.userAccount = value;
     }
 
     public final String getServiceGuid()
     {
-    	final String methodName = AccessControlServiceRequest.CNAME + "#getServiceGuid()";
+        final String methodName = AccessControlServiceRequest.CNAME + "#getServiceGuid()";
 
-    	if (DEBUG)
-    	{
-    		DEBUGGER.debug(methodName);
-    		DEBUGGER.debug("Value: {}", this.serviceGuid);
-    	}
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.serviceGuid);
+        }
 
-    	return this.serviceGuid;
+        return this.serviceGuid;
     }
 
     public final UserAccount getUserAccount()
     {
-    	final String methodName = AccessControlServiceRequest.CNAME + "#getUserAccount()";
+        final String methodName = AccessControlServiceRequest.CNAME + "#getUserAccount()";
 
-    	if (DEBUG)
-    	{
-    		DEBUGGER.debug(methodName);
-    		DEBUGGER.debug("UserAccount: {}", this.userAccount);
-    	}
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("UserAccount: {}", this.userAccount);
+        }
 
-    	return this.userAccount;
+        return this.userAccount;
     }
 
     @Override

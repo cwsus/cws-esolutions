@@ -23,7 +23,7 @@ package com.cws.esolutions.security.processors.dto;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		03/28/2017 01:41:00             Created.
+ * cws-khuntly           03/28/2017 01:41:00             Created.
  */
 import java.io.File;
 import org.slf4j.Logger;
@@ -41,12 +41,12 @@ import com.cws.esolutions.security.enums.SecurityRequestStatus;
  */
 public class CertificateResponse implements Serializable
 {
-	private File csrFile = null;
-	private ArrayList<String> availableRequests = null;
-	private SecurityRequestStatus requestStatus = null;
+    private File csrFile = null;
+    private ArrayList<String> availableRequests = null;
+    private SecurityRequestStatus requestStatus = null;
 
-	private static final long serialVersionUID = 4835067783924884463L;
-	private static final String CNAME = CertificateResponse.class.getName();
+    private static final long serialVersionUID = 4835067783924884463L;
+    private static final String CNAME = CertificateResponse.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

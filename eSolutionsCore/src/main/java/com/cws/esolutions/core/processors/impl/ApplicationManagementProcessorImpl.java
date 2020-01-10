@@ -23,7 +23,7 @@ package com.cws.esolutions.core.processors.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import java.util.List;
 import java.util.UUID;
@@ -91,26 +91,26 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
                 try
@@ -172,7 +172,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             if ((validator != null) && (validator.size() != 0))
             {
-            	throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_APPLICATION_EXISTS));
+                throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_APPLICATION_EXISTS));
             }
 
             // project does't already exist. we can add it
@@ -181,7 +181,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             // different table in the database)
             if ((application.getPlatforms() == null) || (application.getPlatforms().size() == 0))
             {
-            	throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_NO_PLATFORM_PROVIDED));
+                throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_NO_PLATFORM_PROVIDED));
             }
 
             List<String> platforms = new ArrayList<String>();
@@ -307,26 +307,26 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
                 try
@@ -466,26 +466,26 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
                 try
@@ -608,26 +608,26 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
                 try
@@ -672,7 +672,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             if ((appData == null) || (appData.size() == 0))
             {
-            	throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_LIST_APPLICATIONS_FAILED));
+                throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_LIST_APPLICATIONS_FAILED));
             }
 
             List<Application> appList = new ArrayList<Application>();
@@ -783,26 +783,26 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
                 try
@@ -847,7 +847,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             if ((appData == null) || (appData.size() == 0))
             {
-            	throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_LIST_APPLICATIONS_FAILED));
+                throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_LIST_APPLICATIONS_FAILED));
             }
 
             List<Application> appList = new ArrayList<Application>();
@@ -959,26 +959,26 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
                 try
@@ -1023,7 +1023,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             if ((appData == null) || (appData.size() == 0))
             {
-            	throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_NO_APPLICATION_DATA_FOUND));
+                throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_NO_APPLICATION_DATA_FOUND));
             }
 
             if (DEBUG)
@@ -1136,26 +1136,26 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
                 try
@@ -1200,7 +1200,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             if ((appData == null) || (appData.size() == 0))
             {
-            	throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_NO_APPLICATION_DATA_FOUND));
+                throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_NO_APPLICATION_DATA_FOUND));
             }
 
             FileManagerRequest fileRequest = new FileManagerRequest();
@@ -1245,7 +1245,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             if (StringUtils.isEmpty(correlator))
             {
-            	throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_MQ_AGENT_FAILED));
+                throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_MQ_AGENT_FAILED));
             }
             
             agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
@@ -1265,7 +1265,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             if (agentResponse.getRequestStatus() != AgentStatus.SUCCESS)
             {
-            	throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_AGENT_REQUEST_FAILED));
+                throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_AGENT_REQUEST_FAILED));
             }
 
             FileManagerResponse fileResponse = (FileManagerResponse) agentResponse.getResponsePayload();
@@ -1277,7 +1277,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             if (fileResponse.getRequestStatus() != AgentStatus.SUCCESS)
             {
-            	throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_AGENT_REQUEST_FAILED));
+                throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_AGENT_REQUEST_FAILED));
             }
 
             if ((fileResponse.getFileData() != null) && (fileResponse.getFileData().length != 0))
@@ -1397,26 +1397,26 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         try
         {
             // this will require admin and service authorization
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid(request.getServiceId());
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid(request.getServiceId());
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
 
-        	AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-        	}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
             if (!(accessResponse.getIsUserAuthorized()))
             {
                 // unauthorized
-            	response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
                 // audit
                 try

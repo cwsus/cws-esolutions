@@ -50,15 +50,15 @@ public class EmailUtilsTest
     @Before public void setUp()
     {
         try
-    	{
-    		CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", false, false);
-    	}
-    	catch (Exception ex)
-    	{
+        {
+            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", false, false);
+        }
+        catch (Exception ex)
+        {
             Assert.fail(ex.getMessage());
 
             System.exit(-1);
-    	}
+        }
     }
 
     @Test public void sendEmailMessage()

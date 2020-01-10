@@ -23,7 +23,7 @@ package com.cws.esolutions.core.processors.dto;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import java.util.List;
 import org.slf4j.Logger;
@@ -39,8 +39,8 @@ import com.cws.esolutions.core.CoreServiceConstants;
  */
 public class DNSEntry implements Serializable
 {
-	private int retry = 3600;
-	private int refresh = 900;
+    private int retry = 3600;
+    private int refresh = 900;
     private int lifetime = 900;
     private int minimum = 3600;
     private String owner = null;

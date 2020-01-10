@@ -458,9 +458,9 @@ public class UserManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         mView.addObject(Constants.COMMAND, new UserAccount());
@@ -538,9 +538,9 @@ public class UserManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         try
@@ -715,9 +715,9 @@ public class UserManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         // mView.addObject("roles", availableRoles);
@@ -795,9 +795,9 @@ public class UserManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         try
@@ -937,9 +937,9 @@ public class UserManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         try
@@ -1093,9 +1093,9 @@ public class UserManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         try
@@ -1249,9 +1249,9 @@ public class UserManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         try
@@ -1382,9 +1382,9 @@ public class UserManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         try
@@ -1515,9 +1515,9 @@ public class UserManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         try
@@ -1649,9 +1649,9 @@ public class UserManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         try
@@ -1787,9 +1787,9 @@ public class UserManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         try
@@ -2035,9 +2035,9 @@ public class UserManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         try
@@ -2168,9 +2168,9 @@ public class UserManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         try
@@ -2355,19 +2355,19 @@ public class UserManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         this.validator.validate(user, bindResult);
 
         if (bindResult.hasErrors())
         {
-        	ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
+            ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
 
-        	mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
-        	mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
+            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+            mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
             mView.addObject(Constants.COMMAND, user);
             mView.setViewName(this.createUserPage);
         }

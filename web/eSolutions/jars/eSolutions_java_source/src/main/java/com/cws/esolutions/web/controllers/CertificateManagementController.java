@@ -155,9 +155,9 @@ public class CertificateManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-        	mView.setViewName(this.appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
 
-        	return mView;
+            return mView;
         }
 
         mView.addObject(Constants.COMMAND, new Application());

@@ -23,7 +23,7 @@ package com.cws.esolutions.core.dao.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import java.sql.Types;
 import java.util.List;
@@ -60,20 +60,20 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
             DEBUGGER.debug("Value: {}", value);
         }
 
-    	Map<Integer, Object> params = new HashMap<Integer, Object>();
-    	params.put(1, (String) value.get(0));
-    	params.put(2, (String) value.get(1));
-    	params.put(3, (Double) value.get(2));
-    	params.put(4, (String) value.get(3));
-    	params.put(5, (String) value.get(4));
-    	params.put(6, (String) value.get(5));
-    	params.put(7, (String) value.get(6));
-    	params.put(8, (String) value.get(7));
-    	params.put(9, (String) value.get(8));
+        Map<Integer, Object> params = new HashMap<Integer, Object>();
+        params.put(1, (String) value.get(0));
+        params.put(2, (String) value.get(1));
+        params.put(3, (Double) value.get(2));
+        params.put(4, (String) value.get(3));
+        params.put(5, (String) value.get(4));
+        params.put(6, (String) value.get(5));
+        params.put(7, (String) value.get(6));
+        params.put(8, (String) value.get(7));
+        params.put(9, (String) value.get(8));
 
         try
         {
-        	SQLUtils.addOrDeleteData("{CALL insertNewApplication(?, ?, ?, ?, ?, ?, ?, ?, ?)}", params);
+            SQLUtils.addOrDeleteData("{CALL insertNewApplication(?, ?, ?, ?, ?, ?, ?, ?, ?)}", params);
         }
         catch (UtilityException ux)
         {
@@ -95,15 +95,15 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         }
 
         Map<Integer, Object> params = new HashMap<Integer, Object>();
-    	params.put(1, (String) value.get(0));
-    	params.put(2, (String) value.get(1));
-    	params.put(3, (Double) value.get(2));
-    	params.put(4, (String) value.get(3));
-    	params.put(5, (String) value.get(4));
-    	params.put(6, (String) value.get(5));
-    	params.put(7, (String) value.get(6));
-    	params.put(8, (String) value.get(7));
-    	params.put(9, (String) value.get(8));
+        params.put(1, (String) value.get(0));
+        params.put(2, (String) value.get(1));
+        params.put(3, (Double) value.get(2));
+        params.put(4, (String) value.get(3));
+        params.put(5, (String) value.get(4));
+        params.put(6, (String) value.get(5));
+        params.put(7, (String) value.get(6));
+        params.put(8, (String) value.get(7));
+        params.put(9, (String) value.get(8));
         try
         {
             SQLUtils.addOrDeleteData("{CALL updateApplicationData(?, ?, ?, ?, ?, ?, ?, ?, ?)}", params);
@@ -128,11 +128,11 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         }
 
         Map<Integer, Object> params = new HashMap<Integer, Object>();
-    	params.put(1, value);
+        params.put(1, value);
 
         try
         {
-        	SQLUtils.addOrDeleteData("{CALL removeApplicationData(?)}", params);
+            SQLUtils.addOrDeleteData("{CALL removeApplicationData(?)}", params);
         }
         catch (UtilityException ux)
         {

@@ -23,7 +23,7 @@ package com.cws.esolutions.core.main;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -137,7 +137,7 @@ public class SQLUtility
             System.err.println("An error occurred while loading configuration data: " + sx.getCause().getMessage());
 
             System.exit(1);
-		}
+        }
 
         Options options = new Options();
 

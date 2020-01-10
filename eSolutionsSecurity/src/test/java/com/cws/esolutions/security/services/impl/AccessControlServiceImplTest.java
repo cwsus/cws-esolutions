@@ -65,9 +65,9 @@ public class AccessControlServiceImplTest
     {
         try
         {
-        	AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-        	accessRequest.setUserAccount(userAccount);
-        	accessRequest.setServiceGuid("test");
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+            accessRequest.setServiceGuid("test");
 
             Assert.assertNotNull(processor.isUserAuthorized(accessRequest));
         }

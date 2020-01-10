@@ -45,12 +45,12 @@ public class SQLUtilsTest {
     {
         try
         {
-        	SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
+            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
             CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, true);
         }
         catch (Exception ex)
         {
-        	ex.printStackTrace();
+            ex.printStackTrace();
             Assert.fail(ex.getMessage());
 
             System.exit(-1);
@@ -59,26 +59,26 @@ public class SQLUtilsTest {
 
     @Test public void addOrDeleteDataWithParams()
     {
-    	Map<Integer, Object> params = new HashMap<Integer, Object>();
-    	params.put(1, "cf60680d-60d6-4046-802e-8a7dad7c80fe");
-    	params.put(2, "mynewapp2");
-    	params.put(3, 1.0);
-    	params.put(4, "/appvol/WAS70/mynewapp2");
-    	params.put(5, "/nas/apps/mynewapp2");
-    	params.put(6, "mynewapp2.war");
-    	params.put(7, "");
-    	params.put(8, "/appvol/WAS70/logs/mynewapp2");
-    	params.put(9, "6ff52477-7fb7-4d4d-8861-5cbc1e7ef2ff");
+        Map<Integer, Object> params = new HashMap<Integer, Object>();
+        params.put(1, "cf60680d-60d6-4046-802e-8a7dad7c80fe");
+        params.put(2, "mynewapp2");
+        params.put(3, 1.0);
+        params.put(4, "/appvol/WAS70/mynewapp2");
+        params.put(5, "/nas/apps/mynewapp2");
+        params.put(6, "mynewapp2.war");
+        params.put(7, "");
+        params.put(8, "/appvol/WAS70/logs/mynewapp2");
+        params.put(9, "6ff52477-7fb7-4d4d-8861-5cbc1e7ef2ff");
 
-    	try
-    	{
-    		SQLUtils.addOrDeleteData("{CALL insertNewApplication(?, ?, ?, ?, ?, ?, ?, ?, ?)}", params);
-    	}
-    	catch (UtilityException ux)
-    	{
-    		ux.printStackTrace();
-    		Assert.fail("Exception: " + ux.getMessage() + " : " + ux);
-    	}
+        try
+        {
+            SQLUtils.addOrDeleteData("{CALL insertNewApplication(?, ?, ?, ?, ?, ?, ?, ?, ?)}", params);
+        }
+        catch (UtilityException ux)
+        {
+            ux.printStackTrace();
+            Assert.fail("Exception: " + ux.getMessage() + " : " + ux);
+        }
     }
 
     @After public void tearDown()

@@ -23,7 +23,7 @@ package com.cws.esolutions.security.dao.keymgmt.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import java.io.File;
 import java.io.IOException;
@@ -78,7 +78,7 @@ public class FileKeyManager implements KeyManager
         {
             if (!(keyDirectory.exists()))
             {
-            	throw new KeyManagementException("Configured key directory does not exist and unable to create it");
+                throw new KeyManagementException("Configured key directory does not exist and unable to create it");
             }
 
             File publicFile = FileUtils.getFile(keyDirectory + "/" + guid + SecurityServiceConstants.PUBLICKEY_FILE_EXT);
@@ -167,10 +167,10 @@ public class FileKeyManager implements KeyManager
         {
             if (!(keyDirectory.exists()))
             {
-            	if (!(keyDirectory.mkdirs()))
-            	{
-            		throw new KeyManagementException("Configured key directory does not exist and unable to create it");
-            	}
+                if (!(keyDirectory.mkdirs()))
+                {
+                    throw new KeyManagementException("Configured key directory does not exist and unable to create it");
+                }
             }
 
             keyDirectory.setExecutable(true, true);

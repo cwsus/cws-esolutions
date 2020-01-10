@@ -23,7 +23,7 @@ package com.cws.esolutions.security.config.xml;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly  		11/23/2008 22:39:20             Created.
+ * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
 import java.io.Serializable;
@@ -45,7 +45,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 @XmlAccessorType(XmlAccessType.NONE)
 public final class SecurityConfig implements Serializable
 {
-	private int keyBits = 256;
+    private int keyBits = 256;
     private int otpVariance = 0;
     private int saltLength = 32; // default to 64
     private int maxAttempts = 3; // default of 3

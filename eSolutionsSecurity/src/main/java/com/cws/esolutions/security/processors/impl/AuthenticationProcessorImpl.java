@@ -23,7 +23,7 @@ package com.cws.esolutions.security.processors.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import java.util.List;
 import java.util.Date;
@@ -176,9 +176,9 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             }
             else
             {
-            	userManager.performSuccessfulLogin(authUser.getUsername(), authUser.getGuid(), authUser.getFailedCount(), System.currentTimeMillis());
+                userManager.performSuccessfulLogin(authUser.getUsername(), authUser.getGuid(), authUser.getFailedCount(), System.currentTimeMillis());
 
-            	userAccount.setLastLogin(System.currentTimeMillis());
+                userAccount.setLastLogin(System.currentTimeMillis());
                 userAccount.setStatus(LoginStatus.SUCCESS);
 
                 response.setRequestStatus(SecurityRequestStatus.SUCCESS);
@@ -187,7 +187,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
             if (DEBUG)
             {
-            	DEBUGGER.debug("UserAccount: {}", userAccount);
+                DEBUGGER.debug("UserAccount: {}", userAccount);
                 DEBUGGER.debug("AuthenticationResponse: {}", response);
             }
         }
@@ -235,8 +235,8 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
         }
         catch (SecurityException sx)
         {
-        	ERROR_RECORDER.error(sx.getMessage(), sx);
-		}
+            ERROR_RECORDER.error(sx.getMessage(), sx);
+        }
         finally
         {
             // audit
@@ -313,10 +313,10 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
             boolean isAuthorized = PasswordUtils.validateOtpValue(secConfig.getOtpVariance(), secConfig.getOtpAlgorithm(),
                     PasswordUtils.decryptText(otpSecret, otpSalt,
-                    		secBean.getConfigData().getSecurityConfig().getSecretAlgorithm(),
-                    		secBean.getConfigData().getSecurityConfig().getIterations(),
-                    		secBean.getConfigData().getSecurityConfig().getKeyBits(),
-                    		secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                            secBean.getConfigData().getSecurityConfig().getSecretAlgorithm(),
+                            secBean.getConfigData().getSecurityConfig().getIterations(),
+                            secBean.getConfigData().getSecurityConfig().getKeyBits(),
+                            secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
                             secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
                             secBean.getConfigData().getSystemConfig().getEncoding()),
                     secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),

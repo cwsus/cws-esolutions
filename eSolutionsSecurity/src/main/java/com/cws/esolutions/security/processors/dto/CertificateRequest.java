@@ -23,7 +23,7 @@ package com.cws.esolutions.security.processors.dto;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		03/28/2017 01:41:00             Created.
+ * cws-khuntly           03/28/2017 01:41:00             Created.
  */
 import java.io.File;
 import org.slf4j.Logger;
@@ -40,24 +40,24 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 public class CertificateRequest implements Serializable
 {
-	private int keySize = 2048;
-	private String stateName = null;
-	private int validityPeriod = 365;
-	private String commonName = null;
-	private String countryName = null;
-	private String localityName = null;
-	private String contactEmail = null;
-	private File certificateFile = null;
+    private int keySize = 2048;
+    private String stateName = null;
+    private int validityPeriod = 365;
+    private String commonName = null;
+    private String countryName = null;
+    private String localityName = null;
+    private String contactEmail = null;
+    private File certificateFile = null;
     private String applicationId = null;
     private String storePassword = null;
     private String applicationName = null;
-	private UserAccount userAccount = null;
-	private String organizationName = null;
-	private RequestHostInfo hostInfo = null;
-	private String organizationalUnit = null;
+    private UserAccount userAccount = null;
+    private String organizationName = null;
+    private RequestHostInfo hostInfo = null;
+    private String organizationalUnit = null;
 
-	private static final long serialVersionUID = -4071795817942006166L;
-	private static final String CNAME = CertificateRequest.class.getName();
+    private static final long serialVersionUID = -4071795817942006166L;
+    private static final String CNAME = CertificateRequest.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

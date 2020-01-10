@@ -227,8 +227,8 @@ public class AgentDaemon implements Daemon
                     PasswordUtils.decryptText(AgentDaemon.agentBean.getConfigData().getServerConfig().getPassword(),
                             AgentDaemon.agentBean.getConfigData().getServerConfig().getSalt(),
                             AgentDaemon.agentBean.getConfigData().getServerConfig().getEncryptionAlgorithm(),
-                        	AgentDaemon.agentBean.getConfigData().getServerConfig().getIterations(),
-                        	AgentDaemon.agentBean.getConfigData().getServerConfig().getKeyBits(),
+                            AgentDaemon.agentBean.getConfigData().getServerConfig().getIterations(),
+                            AgentDaemon.agentBean.getConfigData().getServerConfig().getKeyBits(),
                             AgentDaemon.agentBean.getConfigData().getServerConfig().getEncryptionAlgorithm(),
                             AgentDaemon.agentBean.getConfigData().getServerConfig().getEncryptionInstance(),
                             AgentDaemon.agentBean.getConfigData().getServerConfig().getEncoding()));

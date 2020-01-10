@@ -23,7 +23,7 @@ package com.cws.esolutions.security.dao.usermgmt.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly			11/23/2008 22:39:20             Created.
+ * cws-khuntly            11/23/2008 22:39:20             Created.
  */
 import java.io.BufferedReader;
 /*
@@ -73,49 +73,49 @@ public class FileUserManager implements UserManager
 
         try
         {
-        	scanner = new Scanner(new File(passwordConfig.getPasswordFile()));
+            scanner = new Scanner(new File(passwordConfig.getPasswordFile()));
 
-	        if (DEBUG)
-	        {
-	        	DEBUGGER.debug("Scanner: {}", scanner);
-	        }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Scanner: {}", scanner);
+            }
 
-	    	while (scanner.hasNext())
-	    	{
-	    		String lineEntry = scanner.nextLine();
+            while (scanner.hasNext())
+            {
+                String lineEntry = scanner.nextLine();
 
-	    		if (DEBUG)
-	    		{
-	    			DEBUGGER.debug("lineEntry: {}", lineEntry);
-	    		}
-    		
-	    		if (lineEntry.contains(userId) && lineEntry.contains(userGuid))
-	    		{
-	    			String[] userAttributes = lineEntry.split(":");
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("lineEntry: {}", lineEntry);
+                }
+            
+                if (lineEntry.contains(userId) && lineEntry.contains(userGuid))
+                {
+                    String[] userAttributes = lineEntry.split(":");
 
-	        		if (DEBUG)
-	        		{
-	        			for (int x = 0; x != userAttributes.length; x++)
-	        			{
-	        				DEBUGGER.debug("userAttributes: {}", (Object) userAttributes[x]);
-	        			}
-	        		}
+                    if (DEBUG)
+                    {
+                        for (int x = 0; x != userAttributes.length; x++)
+                        {
+                            DEBUGGER.debug("userAttributes: {}", (Object) userAttributes[x]);
+                        }
+                    }
 
-	    			isValid = true;
-	    		}
-	    	}
+                    isValid = true;
+                }
+            }
         }
         catch (FileNotFoundException fnfx)
         {
-        	throw new UserManagementException(fnfx.getMessage(), fnfx);
+            throw new UserManagementException(fnfx.getMessage(), fnfx);
         }
         finally
         {
-        	try
-        	{
-        		scanner.close();
-        	}
-        	catch (IllegalStateException isx) {} // dont do anything with it
+            try
+            {
+                scanner.close();
+            }
+            catch (IllegalStateException isx) {} // dont do anything with it
         }
 
         return isValid;
@@ -383,8 +383,8 @@ public class FileUserManager implements UserManager
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#performSuccessfulLogin(java.lang.String, java.lang.String, java.lang.int, java.util.Long)
      */
-	public synchronized boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final Long timestamp) throws UserManagementException
-	{
+    public synchronized boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final Long timestamp) throws UserManagementException
+    {
         final String methodName = FileUserManager.CNAME + "#performSuccessfulLogin(final String userId, final String guid, final int lockCount, final Long timestamp) throws UserManagementException";
 
         if (DEBUG)
@@ -396,78 +396,78 @@ public class FileUserManager implements UserManager
             DEBUGGER.debug("Value: {}", timestamp);
         }
 
-    	String lineEntry = null;
-    	String inputString = null;
-    	boolean isComplete = false;
-    	StringBuffer sBuffer = null;
-    	BufferedReader bReader = null;
-    	FileOutputStream fileOut = null;
-    	File textFile = new File(passwordConfig.getPasswordFile());
+        String lineEntry = null;
+        String inputString = null;
+        boolean isComplete = false;
+        StringBuffer sBuffer = null;
+        BufferedReader bReader = null;
+        FileOutputStream fileOut = null;
+        File textFile = new File(passwordConfig.getPasswordFile());
 
-		try
-		{
-			bReader = new BufferedReader(new FileReader(textFile));
-			sBuffer = new StringBuffer();
-			lineEntry = null;
+        try
+        {
+            bReader = new BufferedReader(new FileReader(textFile));
+            sBuffer = new StringBuffer();
+            lineEntry = null;
 
-			while ((lineEntry = bReader.readLine()) != null)
-			{
-				if (DEBUG)
-				{
-					DEBUGGER.debug("lineEntry: {}", lineEntry);
-				}
+            while ((lineEntry = bReader.readLine()) != null)
+            {
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("lineEntry: {}", lineEntry);
+                }
 
-				sBuffer.append(lineEntry);
-				sBuffer.append(System.lineSeparator());
-			}
+                sBuffer.append(lineEntry);
+                sBuffer.append(System.lineSeparator());
+            }
 
-			inputString = sBuffer.toString();
+            inputString = sBuffer.toString();
 
-			if (DEBUG)
-			{
-				DEBUGGER.debug("inputString: {}", inputString);
-			}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("inputString: {}", inputString);
+            }
 
-			if ((inputString.contains(userId)) && inputString.contains(guid))
-			{
-				inputString = inputString.replace(String.valueOf(timestamp), String.valueOf(System.currentTimeMillis()));
-				inputString = inputString.replace(String.valueOf(lockCount), String.valueOf(0));
-			}
+            if ((inputString.contains(userId)) && inputString.contains(guid))
+            {
+                inputString = inputString.replace(String.valueOf(timestamp), String.valueOf(System.currentTimeMillis()));
+                inputString = inputString.replace(String.valueOf(lockCount), String.valueOf(0));
+            }
 
-			fileOut = new FileOutputStream(textFile);
-			fileOut.write(inputString.getBytes());
+            fileOut = new FileOutputStream(textFile);
+            fileOut.write(inputString.getBytes());
 
-			isComplete = true;
-		}
-		catch (FileNotFoundException e)
-		{
-			e.printStackTrace();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-		finally
-		{
-			try
-			{
-				if (fileOut != null)
-				{
-					fileOut.flush();
-					fileOut.close();
-				}
+            isComplete = true;
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            try
+            {
+                if (fileOut != null)
+                {
+                    fileOut.flush();
+                    fileOut.close();
+                }
 
-				if (bReader != null)
-				{
-					bReader.close();
-				}
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
-		}
+                if (bReader != null)
+                {
+                    bReader.close();
+                }
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
 
-		return isComplete;
-	}
+        return isComplete;
+    }
 }

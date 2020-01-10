@@ -23,7 +23,7 @@ package com.cws.esolutions.security.main;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly			11/23/2008 22:39:20             Created.
+ * cws-khuntly            11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
 import java.net.InetAddress;
@@ -62,7 +62,7 @@ import com.cws.esolutions.security.processors.interfaces.IAccountControlProcesso
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   		11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 @SuppressWarnings("static-access")
 public class UserManagementUtility

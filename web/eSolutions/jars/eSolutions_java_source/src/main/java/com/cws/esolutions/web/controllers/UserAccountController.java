@@ -1067,7 +1067,7 @@ public class UserAccountController
 
         if (bindResult.hasErrors())
         {
-        	ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
+            ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
 
             AccountChangeData command = new AccountChangeData();
             changeReq.setIsReset(changeReq.isReset());
@@ -1261,10 +1261,10 @@ public class UserAccountController
 
         if (bindResult.hasErrors())
         {
-        	ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
+            ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
 
-        	mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
-        	mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
+            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+            mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
             mView.addObject(Constants.COMMAND, new AccountChangeData());
             mView.setViewName(this.enableOtpPage);
         }
