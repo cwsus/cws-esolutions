@@ -23,7 +23,7 @@ package com.cws.esolutions.web.webservices.interfaces;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly           11/23/2008 22:39:20             Created.
+ * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
 import javax.jws.WebMethod;
@@ -34,8 +34,8 @@ import javax.jws.soap.SOAPBinding.Style;
 
 import com.cws.esolutions.web.Constants;
 /**
- * API allowing audit management tasks - storing audit requests and retrieving
- * for provided user accounts on demand.
+ * API for the webservice that we havent done a damn thing with yet
+ * and hope it works without any testing lol
  *
  * @author cws-khuntly
  * @version 1.0

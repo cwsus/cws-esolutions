@@ -23,7 +23,7 @@ package com.cws.esolutions.security.processors.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly           11/23/2008 22:39:20             Created.
+ * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
 import java.util.Date;
@@ -54,7 +54,7 @@ import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementExceptio
  */
 public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 {
-	private static final String CNAME = AuthenticationProcessorImpl.class.getName();
+    private static final String CNAME = AuthenticationProcessorImpl.class.getName();
 
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor#processAgentLogon(com.cws.esolutions.security.processors.dto.AuthenticationRequest)

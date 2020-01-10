@@ -23,7 +23,7 @@ package com.cws.esolutions.security.processors.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly           11/23/2008 22:39:20             Created.
+ * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.Date;
 import java.util.List;
@@ -57,7 +57,7 @@ import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementExceptio
  */
 public class AccountResetProcessorImpl implements IAccountResetProcessor
 {
-	private static final String CNAME = AccountResetProcessorImpl.class.getName();
+    private static final String CNAME = AccountResetProcessorImpl.class.getName();
 
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#findUserAccount(com.cws.esolutions.security.processors.dto.AccountResetRequest)

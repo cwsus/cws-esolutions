@@ -24,7 +24,7 @@ package com.cws.esolutions.web.webservices.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   11/23/2008 22:39:20             Created.
+ * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
 import java.util.Random;
@@ -36,7 +36,6 @@ import com.cws.esolutions.web.webservices.interfaces.IQuoteService;
 /**
  * @author cws-khuntly
  * @version 1.0
- * @see org.springframework.validation.Validator
  */
 @WebService(endpointInterface = "com.cws.esolutions.web.webservices.interfaces.IQuoteService")
 public class QuoteServiceImpl implements IQuoteService
@@ -63,29 +62,29 @@ public class QuoteServiceImpl implements IQuoteService
         quoteList.add("So many books, so little time");
     }
 
-	/**
-	 * @see com.cws.esolutions.web.webservices.interfaces.IQuoteService#getQuote()
-	 */
+    /**
+     * @see com.cws.esolutions.web.webservices.interfaces.IQuoteService#getQuote()
+     */
     public final String getQuote()
     {
-		final String methodName = QuoteServiceImpl.CNAME + "#getQuote()";
+        final String methodName = QuoteServiceImpl.CNAME + "#getQuote()";
 
         if (DEBUG)
         {
-			DEBUGGER.debug("Value: ", methodName);
-		}
+            DEBUGGER.debug("Value: ", methodName);
+        }
 
-		int index = 0;
-		String quote = null;
-		Random random = new Random();
+        int index = 0;
+        String quote = null;
+        Random random = new Random();
 
         index = random.nextInt(quoteList.size());
         quote = (String) quoteList.get(index);
 
-		if (DEBUG)
-		{
-			DEBUGGER.debug("Value: ", quote);
-		}
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Value: ", quote);
+        }
 
         return quote;
     }

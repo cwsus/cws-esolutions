@@ -19,7 +19,7 @@ package com.cws.esolutions.agent.config.enums;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly              Jan 3, 2014                         Created.
+ * cws-khuntly             Jan 3, 2014                         Created.
  */
 
 /**

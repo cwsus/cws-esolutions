@@ -23,7 +23,7 @@ package com.cws.esolutions.security.processors.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly           11/23/2008 22:39:20             Created.
+ * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
 import java.util.Arrays;
@@ -63,9 +63,9 @@ import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementExceptio
  */
 public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 {
-	private static final String CNAME = AccountChangeProcessorImpl.class.getName();
+    private static final String CNAME = AccountChangeProcessorImpl.class.getName();
 
-	/**
+    /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#changeUserEmail(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
      */
     public AccountChangeResponse changeUserEmail(final AccountChangeRequest request) throws AccountChangeException

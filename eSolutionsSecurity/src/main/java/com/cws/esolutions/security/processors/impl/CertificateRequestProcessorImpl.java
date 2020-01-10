@@ -23,7 +23,7 @@ package com.cws.esolutions.security.processors.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly           03/28/2017 01:41:00             Created.
+ * cws-khuntly          03/28/2017 01:41:00             Created.
  */
 import java.io.File;
 import java.util.List;
@@ -54,7 +54,7 @@ import com.cws.esolutions.security.dao.certmgmt.exception.CertificateManagementE
  */
 public class CertificateRequestProcessorImpl implements ICertificateRequestProcessor
 {
-	private static final String CNAME = CertificateRequestProcessorImpl.class.getName();
+    private static final String CNAME = CertificateRequestProcessorImpl.class.getName();
 
     public CertificateResponse listActiveRequests(final CertificateRequest request) throws CertificateRequestException
     {

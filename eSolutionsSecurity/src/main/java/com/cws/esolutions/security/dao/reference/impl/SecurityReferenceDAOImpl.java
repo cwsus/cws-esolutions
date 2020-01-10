@@ -42,7 +42,7 @@ import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDA
  */
 public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
 {
-	private static final String CNAME = SecurityReferenceDAOImpl.class.getName();
+    private static final String CNAME = SecurityReferenceDAOImpl.class.getName();
 
     /**
      * @see com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO#obtainApprovedServers()

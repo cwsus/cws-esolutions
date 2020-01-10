@@ -23,7 +23,7 @@ package com.cws.esolutions.security.dao.usermgmt.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly            11/23/2008 22:39:20             Created.
+ * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import java.io.BufferedReader;
 /*
@@ -35,7 +35,7 @@ import java.io.BufferedReader;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly   11/23/2008 22:39:20             Created.
+ * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.io.File;
 import java.util.List;

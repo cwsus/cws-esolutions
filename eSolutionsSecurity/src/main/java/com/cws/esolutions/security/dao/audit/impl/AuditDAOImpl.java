@@ -23,7 +23,7 @@ package com.cws.esolutions.security.dao.audit.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly           11/23/2008 22:39:20             Created.
+ * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
 import java.sql.ResultSet;
@@ -38,11 +38,11 @@ import com.cws.esolutions.security.dao.audit.interfaces.IAuditDAO;
  */
 public class AuditDAOImpl implements IAuditDAO
 {
-	private static final String CNAME = AuditDAOImpl.class.getName();
+    private static final String CNAME = AuditDAOImpl.class.getName();
 
-	/**
-	 * @see com.cws.esolutions.security.dao.audit.interfaces.IAuditDAO#auditRequestedOperation(java.util.List)
-	 */
+    /**
+     * @see com.cws.esolutions.security.dao.audit.interfaces.IAuditDAO#auditRequestedOperation(java.util.List)
+     */
     public synchronized void auditRequestedOperation(final List<String> auditRequest) throws SQLException
     {
         final String methodName = AuditDAOImpl.CNAME + "#auditRequestedOperation(final List<String> auditRequest) throws SQLException";

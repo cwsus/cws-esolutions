@@ -23,7 +23,7 @@ package com.cws.esolutions.security.processors.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly           11/23/2008 22:39:20             Created.
+ * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.Date;
 import java.util.List;
@@ -48,7 +48,7 @@ import com.cws.esolutions.security.services.exception.AccessControlServiceExcept
  */
 public class AuditProcessorImpl implements IAuditProcessor
 {
-	private static final String CNAME = AuditProcessorImpl.class.getName();
+    private static final String CNAME = AuditProcessorImpl.class.getName();
 
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAuditProcessor#auditRequest(com.cws.esolutions.security.processors.dto.AuditRequest)

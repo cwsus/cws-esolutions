@@ -23,7 +23,7 @@ package com.cws.esolutions.security.processors.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly           11/23/2008 22:39:20             Created.
+ * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import javax.crypto.Cipher;
 import java.io.IOException;
@@ -59,7 +59,7 @@ import com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor;
  */
 public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 {
-	private static final String CNAME = FileSecurityProcessorImpl.class.getName();
+    private static final String CNAME = FileSecurityProcessorImpl.class.getName();
 
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor#signFile(com.cws.esolutions.security.processors.dto.FileSecurityRequest)

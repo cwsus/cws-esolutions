@@ -23,7 +23,7 @@ package com.cws.esolutions.security.dao.certmgmt.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly           11/23/2008 22:39:20             Created.
+ * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.io.File;
 import java.util.List;
@@ -67,7 +67,7 @@ import com.cws.esolutions.security.dao.certmgmt.exception.CertificateManagementE
  */
 public class CertificateManagerImpl implements ICertificateManager
 {
-	private static final String CNAME = CertificateManagerImpl.class.getName();
+    private static final String CNAME = CertificateManagerImpl.class.getName();
 
     /**
      * @see com.cws.esolutions.security.dao.certmgmt.interfaces.ICertificateManager#createCertificateRequest(List, String, int, int)

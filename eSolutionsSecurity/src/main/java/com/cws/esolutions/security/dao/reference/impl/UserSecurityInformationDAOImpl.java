@@ -23,7 +23,7 @@ package com.cws.esolutions.security.dao.reference.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly           11/23/2008 22:39:20             Created.
+ * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
 import java.util.Arrays;
@@ -39,7 +39,7 @@ import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInforma
  */
 public class UserSecurityInformationDAOImpl implements IUserSecurityInformationDAO
 {
-	private static final String CNAME = UserSecurityInformationDAOImpl.class.getName();
+    private static final String CNAME = UserSecurityInformationDAOImpl.class.getName();
 
     /**
      * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#addOrUpdateSalt(java.lang.String, java.lang.String, java.lang.String)

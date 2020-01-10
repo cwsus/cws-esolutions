@@ -23,7 +23,7 @@ package com.cws.esolutions.security.dao.userauth.impl;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * cws-khuntly           12/17/2019 22:39:20             Created.
+ * cws-khuntly          12/17/2019 22:39:20             Created.
  */
 import java.io.File;
 import java.util.List;
