@@ -54,9 +54,11 @@ import com.cws.esolutions.security.dao.certmgmt.exception.CertificateManagementE
  */
 public class CertificateRequestProcessorImpl implements ICertificateRequestProcessor
 {
+	private static final String CNAME = CertificateRequestProcessorImpl.class.getName();
+
     public CertificateResponse listActiveRequests(final CertificateRequest request) throws CertificateRequestException
     {
-        final String methodName = ICertificateRequestProcessor.CNAME + "#listActiveRequests(final CertificateRequest request) throws CertificateRequestException";
+        final String methodName = CertificateRequestProcessorImpl.CNAME + "#listActiveRequests(final CertificateRequest request) throws CertificateRequestException";
 
         if (DEBUG)
         {
@@ -204,7 +206,7 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
      */
     public CertificateResponse generateCertificateRequest(final CertificateRequest request) throws CertificateRequestException
     {
-        final String methodName = ICertificateRequestProcessor.CNAME + "#generateCertificateRequest(final CertificateRequest request) throws CertificateRequestException";
+        final String methodName = CertificateRequestProcessorImpl.CNAME + "#generateCertificateRequest(final CertificateRequest request) throws CertificateRequestException";
 
         if (DEBUG)
         {
@@ -388,7 +390,7 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
      */
     public CertificateResponse applyCertificateResponse(final CertificateRequest request) throws CertificateRequestException
     {
-        final String methodName = ICertificateRequestProcessor.CNAME + "#applyCertificateResponse(final CertificateRequest request) throws CertificateRequestException";
+        final String methodName = CertificateRequestProcessorImpl.CNAME + "#applyCertificateResponse(final CertificateRequest request) throws CertificateRequestException";
 
         if (DEBUG)
         {

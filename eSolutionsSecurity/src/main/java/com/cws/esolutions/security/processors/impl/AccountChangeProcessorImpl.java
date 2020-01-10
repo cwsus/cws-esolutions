@@ -59,16 +59,18 @@ import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 /**
- * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor
+ * @see com.cws.esolutions.security.processors.interfaces.AccountChangeProcessorImpl
  */
 public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 {
-    /**
-     * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#changeUserEmail(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
+	private static final String CNAME = AccountChangeProcessorImpl.class.getName();
+
+	/**
+     * @see com.cws.esolutions.security.processors.interfaces.AccountChangeProcessorImpl#changeUserEmail(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
      */
     public AccountChangeResponse changeUserEmail(final AccountChangeRequest request) throws AccountChangeException
     {
-        final String methodName = IAccountChangeProcessor.CNAME + "#changeUserEmail(final AccountChangeRequest request) throws AccountChangeException";
+        final String methodName = AccountChangeProcessorImpl.CNAME + "#changeUserEmail(final AccountChangeRequest request) throws AccountChangeException";
 
         if (DEBUG)
         {
@@ -201,11 +203,11 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
     }
 
     /**
-     * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#changeUserContact(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
+     * @see com.cws.esolutions.security.processors.interfaces.AccountChangeProcessorImpl#changeUserContact(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
      */
     public AccountChangeResponse changeUserContact(final AccountChangeRequest request) throws AccountChangeException
     {
-        final String methodName = IAccountChangeProcessor.CNAME + "#changeUserContact(final AccountChangeRequest request) throws AccountChangeException";
+        final String methodName = AccountChangeProcessorImpl.CNAME + "#changeUserContact(final AccountChangeRequest request) throws AccountChangeException";
 
         if (DEBUG)
         {
@@ -343,11 +345,11 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
     }
 
     /**
-     * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#changeUserPassword(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
+     * @see com.cws.esolutions.security.processors.interfaces.AccountChangeProcessorImpl#changeUserPassword(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
      */
     public AccountChangeResponse changeUserPassword(final AccountChangeRequest request) throws AccountChangeException
     {
-        final String methodName = IAccountChangeProcessor.CNAME + "#changeUserPassword(final AccountChangeRequest request) throws AccountChangeException";
+        final String methodName = AccountChangeProcessorImpl.CNAME + "#changeUserPassword(final AccountChangeRequest request) throws AccountChangeException";
 
         if (DEBUG)
         {
@@ -561,11 +563,11 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
     }
 
     /**
-     * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#changeUserSecurity(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
+     * @see com.cws.esolutions.security.processors.interfaces.AccountChangeProcessorImpl#changeUserSecurity(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
      */
     public AccountChangeResponse changeUserSecurity(final AccountChangeRequest request) throws AccountChangeException
     {
-        final String methodName = IAccountChangeProcessor.CNAME + "#changeUserSecurity(final AccountChangeRequest request) throws AccountChangeException";
+        final String methodName = AccountChangeProcessorImpl.CNAME + "#changeUserSecurity(final AccountChangeRequest request) throws AccountChangeException";
 
         if (DEBUG)
         {
@@ -795,11 +797,11 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
     }
 
     /**
-     * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#changeUserKeys(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
+     * @see com.cws.esolutions.security.processors.interfaces.AccountChangeProcessorImpl#changeUserKeys(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
      */
     public AccountChangeResponse changeUserKeys(final AccountChangeRequest request) throws AccountChangeException
     {
-        final String methodName = IAccountChangeProcessor.CNAME + "#changeUserKeys(final AccountChangeRequest request) throws AccountChangeException";
+        final String methodName = AccountChangeProcessorImpl.CNAME + "#changeUserKeys(final AccountChangeRequest request) throws AccountChangeException";
 
         if (DEBUG)
         {
@@ -910,11 +912,11 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
     }
 
     /**
-     * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#enableOtpAuth(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
+     * @see com.cws.esolutions.security.processors.interfaces.AccountChangeProcessorImpl#enableOtpAuth(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
      */
     public AccountChangeResponse enableOtpAuth(final AccountChangeRequest request) throws AccountChangeException
     {
-        final String methodName = IAccountChangeProcessor.CNAME + "#enableOtpAuth(final AccountChangeRequest request) throws AccountChangeException";
+        final String methodName = AccountChangeProcessorImpl.CNAME + "#enableOtpAuth(final AccountChangeRequest request) throws AccountChangeException";
 
         if (DEBUG)
         {
@@ -1007,7 +1009,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                         return response;
                     }
 
-                    String qrCodeData = String.format(IAccountChangeProcessor.KEY_URI_FORMAT,
+                    String qrCodeData = String.format(AccountChangeProcessorImpl.KEY_URI_FORMAT,
                             userAccount.getUsername(),
                             secret,
                             request.getApplicationName(),
@@ -1103,11 +1105,11 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
     }
 
     /**
-     * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#disableOtpAuth(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
+     * @see com.cws.esolutions.security.processors.interfaces.AccountChangeProcessorImpl#disableOtpAuth(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
      */
     public AccountChangeResponse disableOtpAuth(final AccountChangeRequest request) throws AccountChangeException
     {
-        final String methodName = IAccountChangeProcessor.CNAME + "#disableOtpAuth(final AccountChangeRequest request) throws AccountChangeException";
+        final String methodName = AccountChangeProcessorImpl.CNAME + "#disableOtpAuth(final AccountChangeRequest request) throws AccountChangeException";
 
         if (DEBUG)
         {

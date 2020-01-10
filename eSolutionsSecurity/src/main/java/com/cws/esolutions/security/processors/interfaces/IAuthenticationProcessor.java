@@ -59,7 +59,6 @@ public interface IAuthenticationProcessor
     static final String ATTRIBUTE_UID = "uid";
     static final String ATTRIBUTE_GUID = "cn";
     static final IAuditProcessor auditor = new AuditProcessorImpl();
-    static final String CNAME = IAuthenticationProcessor.class.getName();
     static final ISecurityReferenceDAO secRef = new SecurityReferenceDAOImpl();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final IAccessControlService accessControl = new AccessControlServiceImpl();

@@ -42,7 +42,6 @@ import com.cws.esolutions.security.dao.certmgmt.exception.CertificateManagementE
  */
 public interface ICertificateManager
 {
-    static final String CNAME = ICertificateManager.class.getName();
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
     static final CertificateConfig certConfig = svcBean.getConfigData().getCertConfig();
     

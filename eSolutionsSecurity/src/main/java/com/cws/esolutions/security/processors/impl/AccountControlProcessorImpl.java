@@ -59,12 +59,14 @@ import com.cws.esolutions.security.services.exception.AccessControlServiceExcept
  */
 public class AccountControlProcessorImpl implements IAccountControlProcessor
 {
+	private static final String CNAME = AccountControlProcessorImpl.class.getName();
+
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor#createNewUser(com.cws.esolutions.security.processors.dto.AccountControlRequest)
      */
     public AccountControlResponse createNewUser(final AccountControlRequest request) throws AccountControlException
     {
-        final String methodName = IAccountControlProcessor.CNAME + "#createNewUser(final CreateUserRequest createReq) throws AccountControlException";
+        final String methodName = AccountControlProcessorImpl.CNAME + "#createNewUser(final CreateUserRequest createReq) throws AccountControlException";
 
         if (DEBUG)
         {
@@ -322,7 +324,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
      */
     public AccountControlResponse removeUserAccount(final AccountControlRequest request) throws AccountControlException
     {
-        final String methodName = IAccountControlProcessor.CNAME + "#removeUserAccount(final AccountControlRequest) throws AccountControlException";
+        final String methodName = AccountControlProcessorImpl.CNAME + "#removeUserAccount(final AccountControlRequest) throws AccountControlException";
 
         if (DEBUG)
         {
@@ -472,7 +474,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
      */
     public AccountControlResponse modifyUserSuspension(final AccountControlRequest request) throws AccountControlException
     {
-        final String methodName = IAccountControlProcessor.CNAME + "#modifyUserSuspension(final AccountControlRequest) throws AccountControlException";
+        final String methodName = AccountControlProcessorImpl.CNAME + "#modifyUserSuspension(final AccountControlRequest) throws AccountControlException";
 
         if (DEBUG)
         {
@@ -640,7 +642,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
      */
     public AccountControlResponse modifyUserRole(final AccountControlRequest request) throws AccountControlException
     {
-        final String methodName = IAccountControlProcessor.CNAME + "#modifyUserRole(final AccountControlRequest) throws AccountControlException";
+        final String methodName = AccountControlProcessorImpl.CNAME + "#modifyUserRole(final AccountControlRequest) throws AccountControlException";
 
         if (DEBUG)
         {
@@ -846,7 +848,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
      */
     public AccountControlResponse modifyUserPassword(final AccountControlRequest request) throws AccountControlException
     {
-        final String methodName = IAccountControlProcessor.CNAME + "#modifyUserPassword(final AccountControlRequest request) throws AccountControlException";
+        final String methodName = AccountControlProcessorImpl.CNAME + "#modifyUserPassword(final AccountControlRequest request) throws AccountControlException";
 
         if (DEBUG)
         {
@@ -1061,7 +1063,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
      */
     public AccountControlResponse modifyUserLockout(final AccountControlRequest request) throws AccountControlException
     {
-        final String methodName = IAccountControlProcessor.CNAME + "#modifyUserLockout(final AccountControlRequest) throws AccountControlException";
+        final String methodName = AccountControlProcessorImpl.CNAME + "#modifyUserLockout(final AccountControlRequest) throws AccountControlException";
 
         if (DEBUG)
         {
@@ -1224,7 +1226,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
      */
     public AccountControlResponse searchAccounts(final AccountControlRequest request) throws AccountControlException
     {
-        final String methodName = IAccountControlProcessor.CNAME + "#searchAccounts(final AccountControlRequest request) throws AccountControlException";
+        final String methodName = AccountControlProcessorImpl.CNAME + "#searchAccounts(final AccountControlRequest request) throws AccountControlException";
 
         if (DEBUG)
         {
@@ -1404,7 +1406,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
      */
     public AccountControlResponse loadUserAccount(final AccountControlRequest request) throws AccountControlException
     {
-        final String methodName = IAccountControlProcessor.CNAME + "#loadUserAccount(final AccountControlRequest request) throws AccountControlException";
+        final String methodName = AccountControlProcessorImpl.CNAME + "#loadUserAccount(final AccountControlRequest request) throws AccountControlException";
 
         if (DEBUG)
         {
@@ -1578,7 +1580,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
      */
     public AccountControlResponse listUserAccounts(final AccountControlRequest request) throws AccountControlException
     {
-        final String methodName = IAccountControlProcessor.CNAME + "#listUserAccounts(final AccountControlRequest request) throws AccountControlException";
+        final String methodName = AccountControlProcessorImpl.CNAME + "#listUserAccounts(final AccountControlRequest request) throws AccountControlException";
 
         if (DEBUG)
         {

@@ -59,12 +59,14 @@ import com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor;
  */
 public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 {
+	private static final String CNAME = FileSecurityProcessorImpl.class.getName();
+
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor#signFile(com.cws.esolutions.security.processors.dto.FileSecurityRequest)
      */
     public synchronized FileSecurityResponse signFile(final FileSecurityRequest request) throws FileSecurityException
     {
-        final String methodName = IFileSecurityProcessor.CNAME + "#signFile(final FileSecurityRequest request) throws FileSecurityException";
+        final String methodName = FileSecurityProcessorImpl.CNAME + "#signFile(final FileSecurityRequest request) throws FileSecurityException";
 
         if (DEBUG)
         {
@@ -201,7 +203,7 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
      */
     public synchronized FileSecurityResponse verifyFile(final FileSecurityRequest request) throws FileSecurityException
     {
-        final String methodName = IFileSecurityProcessor.CNAME + "#verifyFile(final FileSecurityRequest request) throws FileSecurityException";
+        final String methodName = FileSecurityProcessorImpl.CNAME + "#verifyFile(final FileSecurityRequest request) throws FileSecurityException";
 
         if (DEBUG)
         {
@@ -331,7 +333,7 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
      */
     public synchronized FileSecurityResponse encryptFile(final FileSecurityRequest request) throws FileSecurityException
     {
-        final String methodName = IFileSecurityProcessor.CNAME + "#encryptFile(final FileSecurityRequest request) throws FileSecurityException";
+        final String methodName = FileSecurityProcessorImpl.CNAME + "#encryptFile(final FileSecurityRequest request) throws FileSecurityException";
 
         if (DEBUG)
         {
@@ -466,7 +468,7 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
      */
     public synchronized FileSecurityResponse decryptFile(final FileSecurityRequest request) throws FileSecurityException
     {
-        final String methodName = IFileSecurityProcessor.CNAME + "#decryptFile(final FileSecurityRequest request) throws FileSecurityException";
+        final String methodName = FileSecurityProcessorImpl.CNAME + "#decryptFile(final FileSecurityRequest request) throws FileSecurityException";
 
         if (DEBUG)
         {

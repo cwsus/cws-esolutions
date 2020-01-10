@@ -42,13 +42,12 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 public interface IAuditDAO
 {
-    static final String CNAME = IAuditDAO.class.getName();
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
     static final DataSource dataSource = svcBean.getDataSources().get(SecurityServiceConstants.INIT_AUDITDS_MANAGER);
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger AUDIT_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.AUDIT_LOGGER + CNAME);
+    static final Logger AUDIT_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.AUDIT_LOGGER);
 
     /**
      * Inserts audit-related data into the audit datastore

@@ -50,7 +50,6 @@ import com.cws.esolutions.security.processors.exception.CertificateRequestExcept
 public interface ICertificateRequestProcessor
 {
     static final IAuditProcessor auditor = new AuditProcessorImpl();
-    static final String CNAME = ICertificateRequestProcessor.class.getName();
     static final ICertificateManager processor = new CertificateManagerImpl();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final IAccessControlService accessControl = new AccessControlServiceImpl();

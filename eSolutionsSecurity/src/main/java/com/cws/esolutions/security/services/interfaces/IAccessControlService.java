@@ -45,7 +45,6 @@ import com.cws.esolutions.security.services.exception.AccessControlServiceExcept
  */
 public interface IAccessControlService
 {
-    static final String CNAME = IAccessControlService.class.getName();
     static final ISecurityReferenceDAO ref = new SecurityReferenceDAOImpl();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();

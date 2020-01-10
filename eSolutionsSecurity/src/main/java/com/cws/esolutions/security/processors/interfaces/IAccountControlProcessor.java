@@ -54,7 +54,6 @@ import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInforma
  */
 public interface IAccountControlProcessor
 {
-    static final String CNAME = IAccountControlProcessor.class.getName();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
 
     static final IAuditProcessor auditor = new AuditProcessorImpl();

@@ -43,8 +43,6 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 public interface IUserSecurityInformationDAO
 {
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
-
-    static final String CNAME = IUserSecurityInformationDAO.class.getName();
     static final DataSource dataSource = svcBean.getDataSources().get(SecurityServiceConstants.INIT_SECURITYDS_MANAGER);
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);

@@ -48,12 +48,14 @@ import com.cws.esolutions.security.services.exception.AccessControlServiceExcept
  */
 public class AuditProcessorImpl implements IAuditProcessor
 {
+	private static final String CNAME = AuditProcessorImpl.class.getName();
+
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAuditProcessor#auditRequest(com.cws.esolutions.security.processors.dto.AuditRequest)
      */
     public void auditRequest(final AuditRequest request) throws AuditServiceException
     {
-        final String methodName = IAuditProcessor.CNAME + "#auditRequest(final AuditRequest request) throws AuditServiceException";
+        final String methodName = AuditProcessorImpl.CNAME + "#auditRequest(final AuditRequest request) throws AuditServiceException";
 
         if (DEBUG)
         {
@@ -137,7 +139,7 @@ public class AuditProcessorImpl implements IAuditProcessor
      */
     public AuditResponse getAuditEntries(final AuditRequest request) throws AuditServiceException
     {
-        final String methodName = IAuditProcessor.CNAME + "#getAuditEntries(final AuditRequest request) throws AuditServiceException";
+        final String methodName = AuditProcessorImpl.CNAME + "#getAuditEntries(final AuditRequest request) throws AuditServiceException";
 
         if (DEBUG)
         {

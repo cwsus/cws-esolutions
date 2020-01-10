@@ -38,12 +38,14 @@ import com.cws.esolutions.security.services.exception.AccessControlServiceExcept
  */
 public class AccessControlServiceImpl implements IAccessControlService
 {
+	private static final String CNAME = AccessControlServiceImpl.class.getName();
+
     /**
      * @see com.cws.esolutions.security.services.interfaces.IAccessControlService#isUserAuthorized(AccessControlServiceRequest) throws AccessControlServiceException
      */
     public AccessControlServiceResponse isUserAuthorized(final AccessControlServiceRequest request) throws AccessControlServiceException
     {
-        final String methodName = IAccessControlService.CNAME + "#isUserAuthorized(final AccessControlServiceRequest request) throws AccessControlServiceException";
+        final String methodName = AccessControlServiceImpl.CNAME + "#isUserAuthorized(final AccessControlServiceRequest request) throws AccessControlServiceException";
 
         if (DEBUG)
         {

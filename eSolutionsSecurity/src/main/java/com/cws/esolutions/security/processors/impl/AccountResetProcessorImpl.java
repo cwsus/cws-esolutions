@@ -57,12 +57,14 @@ import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementExceptio
  */
 public class AccountResetProcessorImpl implements IAccountResetProcessor
 {
+	private static final String CNAME = AccountResetProcessorImpl.class.getName();
+
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#findUserAccount(com.cws.esolutions.security.processors.dto.AccountResetRequest)
      */
     public AccountResetResponse findUserAccount(final AccountResetRequest request) throws AccountResetException
     {
-        final String methodName = IAccountResetProcessor.CNAME + "#findUserAccount(final AccountResetRequest request) throws AccountResetException";
+        final String methodName = AccountResetProcessorImpl.CNAME + "#findUserAccount(final AccountResetRequest request) throws AccountResetException";
 
         if (DEBUG)
         {
@@ -122,7 +124,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
      */
     public AccountResetResponse obtainUserSecurityConfig(final AccountResetRequest request) throws AccountResetException
     {
-        final String methodName = IAccountResetProcessor.CNAME + "#obtainUserSecurityConfig(final AccountResetRequest request) throws AccountResetException";
+        final String methodName = AccountResetProcessorImpl.CNAME + "#obtainUserSecurityConfig(final AccountResetRequest request) throws AccountResetException";
 
         if (DEBUG)
         {
@@ -236,7 +238,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
      */
     public AccountResetResponse verifyUserSecurityConfig(final AccountResetRequest request) throws AccountResetException
     {
-        final String methodName = IAccountResetProcessor.CNAME + "#verifyUserSecurityConfig(final AccountResetRequest request) throws AccountResetException";
+        final String methodName = AccountResetProcessorImpl.CNAME + "#verifyUserSecurityConfig(final AccountResetRequest request) throws AccountResetException";
 
         if (DEBUG)
         {
@@ -358,7 +360,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
      */
     public AccountResetResponse resetUserPassword(final AccountResetRequest request) throws AccountResetException
     {
-        final String methodName = IAccountResetProcessor.CNAME + "#resetUserPassword(final AccountResetRequest request) throws AccountResetException";
+        final String methodName = AccountResetProcessorImpl.CNAME + "#resetUserPassword(final AccountResetRequest request) throws AccountResetException";
 
         if (DEBUG)
         {
@@ -502,7 +504,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
      */
     public AccountResetResponse verifyResetRequest(final AccountResetRequest request) throws AccountResetException
     {
-        final String methodName = IAccountResetProcessor.CNAME + "#verifyResetRequest(final AccountResetRequest request) throws AccountResetException";
+        final String methodName = AccountResetProcessorImpl.CNAME + "#verifyResetRequest(final AccountResetRequest request) throws AccountResetException";
 
         if (DEBUG)
         {

@@ -55,7 +55,6 @@ import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInforma
 public interface IAccountResetProcessor
 {
     static final IAuditProcessor auditor = new AuditProcessorImpl();
-    static final String CNAME = IAccountResetProcessor.class.getName();
     static final ISecurityReferenceDAO secRef = new SecurityReferenceDAOImpl();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final IAccessControlService accessControl = new AccessControlServiceImpl();

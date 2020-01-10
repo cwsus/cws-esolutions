@@ -44,8 +44,6 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 public interface ISecurityReferenceDAO
 {
-    static final String CNAME = ISecurityReferenceDAO.class.getName();
-
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
     static final DataSource dataSource = svcBean.getDataSources().get(SecurityServiceConstants.INIT_SECURITYDS_MANAGER);
 

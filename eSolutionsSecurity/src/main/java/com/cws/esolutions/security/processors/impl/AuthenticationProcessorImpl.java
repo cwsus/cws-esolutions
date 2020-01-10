@@ -54,12 +54,14 @@ import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementExceptio
  */
 public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 {
+	private static final String CNAME = AuthenticationProcessorImpl.class.getName();
+
     /**
      * @see com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor#processAgentLogon(com.cws.esolutions.security.processors.dto.AuthenticationRequest)
      */
     public AuthenticationResponse processAgentLogon(final AuthenticationRequest request) throws AuthenticationException
     {
-        final String methodName = IAuthenticationProcessor.CNAME + "#processAgentLogon(final AuthenticationRequest request) throws AuthenticationException";
+        final String methodName = AuthenticationProcessorImpl.CNAME + "#processAgentLogon(final AuthenticationRequest request) throws AuthenticationException";
 
         if (DEBUG)
         {
@@ -279,7 +281,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
      */
     public AuthenticationResponse processOtpLogon(final AuthenticationRequest request) throws AuthenticationException
     {
-        final String methodName = IAuthenticationProcessor.CNAME + "#processOtpLogon(final AuthenticationRequest request) throws AuthenticationException";
+        final String methodName = AuthenticationProcessorImpl.CNAME + "#processOtpLogon(final AuthenticationRequest request) throws AuthenticationException";
 
         if (DEBUG)
         {

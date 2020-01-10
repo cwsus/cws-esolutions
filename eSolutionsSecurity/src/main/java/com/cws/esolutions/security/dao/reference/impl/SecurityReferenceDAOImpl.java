@@ -42,12 +42,14 @@ import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDA
  */
 public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
 {
+	private static final String CNAME = SecurityReferenceDAOImpl.class.getName();
+
     /**
      * @see com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO#obtainApprovedServers()
      */
     public synchronized List<String> obtainApprovedServers() throws SQLException
     {
-        final String methodName = ISecurityReferenceDAO.CNAME + "#obtainApprovedServers() throws SQLException";
+        final String methodName = SecurityReferenceDAOImpl.CNAME + "#obtainApprovedServers() throws SQLException";
 
         if (DEBUG)
         {
@@ -139,7 +141,7 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
      */
     public synchronized List<String> obtainSecurityQuestionList() throws SQLException
     {
-        final String methodName = ISecurityReferenceDAO.CNAME + "#obtainSecurityQuestionList() throws SQLException";
+        final String methodName = SecurityReferenceDAOImpl.CNAME + "#obtainSecurityQuestionList() throws SQLException";
 
         if (DEBUG)
         {
@@ -231,7 +233,7 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
      */
     public synchronized Map<String, String> listAvailableServices() throws SQLException
     {
-        final String methodName = ISecurityReferenceDAO.CNAME + "#listAvailableServices() throws SQLException";
+        final String methodName = SecurityReferenceDAOImpl.CNAME + "#listAvailableServices() throws SQLException";
 
         if (DEBUG)
         {
@@ -316,7 +318,7 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
      */
     public synchronized List<String> listServicesForGroup(final String groupName) throws SQLException
     {
-        final String methodName = ISecurityReferenceDAO.CNAME + "#listServicesForGroup(final String groupName) throws SQLException";
+        final String methodName = SecurityReferenceDAOImpl.CNAME + "#listServicesForGroup(final String groupName) throws SQLException";
 
         if (DEBUG)
         {

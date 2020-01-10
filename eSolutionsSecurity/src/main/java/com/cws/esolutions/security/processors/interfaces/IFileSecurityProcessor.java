@@ -49,7 +49,6 @@ public interface IFileSecurityProcessor
 {
     static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
-    static final String CNAME = IFileSecurityProcessor.class.getName();
     static final KeyConfig keyConfig = secBean.getConfigData().getKeyConfig();
     static final SecurityConfigurationData secConfig = secBean.getConfigData();
     static final FileSecurityConfig fileSecurityConfig = secConfig.getFileSecurityConfig();

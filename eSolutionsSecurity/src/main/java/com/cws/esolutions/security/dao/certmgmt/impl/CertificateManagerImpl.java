@@ -67,12 +67,14 @@ import com.cws.esolutions.security.dao.certmgmt.exception.CertificateManagementE
  */
 public class CertificateManagerImpl implements ICertificateManager
 {
+	private static final String CNAME = CertificateManagerImpl.class.getName();
+
     /**
      * @see com.cws.esolutions.security.dao.certmgmt.interfaces.ICertificateManager#createCertificateRequest(List, String, int, int)
      */
     public synchronized File createCertificateRequest(final List<String> subjectData, final String storePassword, final int validityPeriod, final int keySize) throws CertificateManagementException
     {
-        final String methodName = ICertificateManager.CNAME + "#createCertificateRequest(final List<String> subjectData, final String storePassword, final int validityPeriod, final int keySize) throws CertificateManagementException";
+        final String methodName = CertificateManagerImpl.CNAME + "#createCertificateRequest(final List<String> subjectData, final String storePassword, final int validityPeriod, final int keySize) throws CertificateManagementException";
         
         if (DEBUG)
         {
@@ -408,7 +410,7 @@ public class CertificateManagerImpl implements ICertificateManager
      */
     public synchronized boolean applyCertificateRequest(final String commonName, final File certificateFile, final File keystoreFile, final String storePassword) throws CertificateManagementException
     {
-        final String methodName = ICertificateManager.CNAME + "#applyCertificateRequest(final String commonName, final File certificateFile, final File keystoreFile, final String storePassword) throws CertificateManagementException";
+        final String methodName = CertificateManagerImpl.CNAME + "#applyCertificateRequest(final String commonName, final File certificateFile, final File keystoreFile, final String storePassword) throws CertificateManagementException";
         
         if (DEBUG)
         {

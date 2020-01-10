@@ -58,7 +58,6 @@ import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInforma
  */
 public interface IAccountChangeProcessor
 {
-    static final String CNAME = IAccountChangeProcessor.class.getName();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final String KEY_URI_FORMAT = "otpauth://totp/%s?secret=%s&issuer=%s&algorithm=%s"; // https://code.google.com/p/google-authenticator/wiki/KeyUriFormat
 
