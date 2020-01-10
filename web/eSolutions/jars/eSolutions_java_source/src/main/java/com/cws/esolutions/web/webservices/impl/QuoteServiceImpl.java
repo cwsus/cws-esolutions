@@ -79,7 +79,7 @@ public class QuoteServiceImpl implements IQuoteService
         Random random = new Random();
 
         index = random.nextInt(quoteList.size());
-        quote = (String) quoteList.get(index);
+        quote = quoteList.get(index);
 
         if (DEBUG)
         {

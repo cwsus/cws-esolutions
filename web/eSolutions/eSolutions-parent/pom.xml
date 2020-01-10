@@ -30,6 +30,8 @@
         <eSolutionsCore.version>1.0-SNAPSHOT</eSolutionsCore.version>
         <eSolutionsSecurity.version>1.0-SNAPSHOT</eSolutionsSecurity.version>
         <spnego.version>7</spnego.version>
+        <webservices-api.version>2.0.1</webservices-api.version>
+        <javax.annotation-api.version>1.3.2</javax.annotation-api.version>
     </properties>
 
     <modules>
@@ -222,6 +224,21 @@
                 <type>jar</type>
                 <scope>compile</scope>
             </dependency>
+            <!-- web services -->
+	        <dependency>
+	            <groupId>javax.xml</groupId>
+	            <artifactId>webservices-api</artifactId>
+	            <version>${webservices-api.version}</version>
+	            <type>jar</type>
+	            <scope>compile</scope>
+	        </dependency>
+	        <dependency>
+	            <groupId>javax.annotation</groupId>
+	            <artifactId>javax.annotation-api</artifactId>
+	            <version>${javax.annotation-api.version}</version>
+	            <type>jar</type>
+	            <scope>compile</scope>
+	        </dependency>
         </dependencies>
     </dependencyManagement>
 </project>
