@@ -57,6 +57,7 @@ public class FileAuthenticator implements Authenticator
         Scanner scanner = null;
         List<Object> userAccount = null;
 
+        System.out.println("FileAuthenticator");
         try
         {
             scanner = new Scanner(new File(passwordConfig.getPasswordFile()));

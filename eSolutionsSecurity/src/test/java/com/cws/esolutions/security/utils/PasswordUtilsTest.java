@@ -54,38 +54,24 @@ public class PasswordUtilsTest
         }
     }
 
-    @Test public void twoWayEncrypt()
+    @Test public void testEncryption()
     {
-        final String password = "appuser10";
+        final String plainText = "appuser10";
         final String salt = "hg4Q1qymhVY5ZICwyXuYFvdegQVyrAbg";
-        final String expected = "T25jNUFNZVp6TzlmZ3B3ZkNoeWdsQT09OnhscWh2VzFyTUtYRkErZDE4V3d1Nmc9PQ==";
 
         try
         {
-            Assert.assertEquals(expected, PasswordUtils.encryptText(password, salt,
+        	String encrypted = PasswordUtils.encryptText(plainText, salt, // encrypt
                     bean.getConfigData().getSecurityConfig().getSecretAlgorithm(),
                     bean.getConfigData().getSecurityConfig().getIterations(),
                     bean.getConfigData().getSecurityConfig().getKeyBits(),
                     bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
                     bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                    bean.getConfigData().getSystemConfig().getEncoding()));
-        }
-        catch (SecurityException sx)
-        {
-            sx.printStackTrace();
-            Assert.fail();
-        }
-    }
+                    bean.getConfigData().getSystemConfig().getEncoding());
 
-    @Test public void twoWayDecrypt()
-    {
-        final String expected = "appuser10";
-        final String encrypted = "T25jNUFNZVp6TzlmZ3B3ZkNoeWdsQT09OnhscWh2VzFyTUtYRkErZDE4V3d1Nmc9PQ==";
-        final String salt = "hg4Q1qymhVY5ZICwyXuYFvdegQVyrAbg";
+        	Assert.assertNotNull(encrypted); // make sure we got a value back
 
-        try
-        {
-            Assert.assertEquals(expected, PasswordUtils.decryptText(encrypted, salt,
+            Assert.assertEquals(plainText, PasswordUtils.decryptText(encrypted, salt, //decrypt and validate
                     bean.getConfigData().getSecurityConfig().getSecretAlgorithm(),
                     bean.getConfigData().getSecurityConfig().getIterations(),
                     bean.getConfigData().getSecurityConfig().getKeyBits(),
