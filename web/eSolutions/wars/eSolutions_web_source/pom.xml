@@ -66,5 +66,12 @@
             <groupId>eSolutions</groupId>
             <artifactId>eSolutions_web_config</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.sun.xml.ws</groupId>
+            <artifactId>jaxws-rt</artifactId>
+            <version>2.2.8</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>
