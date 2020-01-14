@@ -1,3 +1,4 @@
 bin
 *.class
 .sts4-cache
+*.bak

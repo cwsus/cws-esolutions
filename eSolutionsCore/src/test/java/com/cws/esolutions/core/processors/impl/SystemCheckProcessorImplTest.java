@@ -104,7 +104,7 @@ public class SystemCheckProcessorImplTest
         source.setOperIpAddress("127.0.0.1");
 
         Server target = new Server();
-        target.setOperHostName("chibcarray.us.hsbc");
+        target.setOperHostName("proxy.prod.mtb.com");
 
         SystemCheckRequest request = new SystemCheckRequest();
         request.setRequestInfo(hostInfo);
