@@ -111,11 +111,11 @@
         <certificateType>X509</certificateType>
         <certificateAlgorithm>RSA</certificateAlgorithm>
         <signatureAlgorithm>SHA512withRSA</signatureAlgorithm>
-         <certificateKeySize>2048</certificateKeySize>
-         <rootCertificateName>CWS Root CA v1</rootCertificateName>
-         <intermediateCertificateName>CWS Intermediate CA v1</intermediateCertificateName>
-         <rootCertificateFile>/opt/cws/eSolutions/certs/cacerts/CWS Root CA v1.crt</rootCertificateFile>
-         <intermediateCertificateFile>/opt/cws/eSolutions/certs/cacerts/CWS Intermediate CA v1.crt</intermediateCertificateFile>
+        <certificateKeySize>2048</certificateKeySize>
+        <rootCertificateName>CWS Root CA v1</rootCertificateName>
+        <intermediateCertificateName>CWS Intermediate CA v1</intermediateCertificateName>
+        <rootCertificateFile>/opt/cws/eSolutions/certs/cacerts/CWS Root CA v1.crt</rootCertificateFile>
+        <intermediateCertificateFile>/opt/cws/eSolutions/certs/cacerts/CWS Intermediate CA v1.crt</intermediateCertificateFile>
     </certificate-config>
 
     <!-- only required if file-based signing is used. if this is configured then key-config MUST be configured. -->

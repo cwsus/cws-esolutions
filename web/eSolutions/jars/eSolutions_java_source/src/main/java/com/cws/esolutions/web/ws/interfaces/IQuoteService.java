@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.web.webservices.interfaces;
+package com.cws.esolutions.web.ws.interfaces;
 /*
  * Project: eSolutions_web_source
  * Package: com.cws.esolutions.web.webservices.interfaces

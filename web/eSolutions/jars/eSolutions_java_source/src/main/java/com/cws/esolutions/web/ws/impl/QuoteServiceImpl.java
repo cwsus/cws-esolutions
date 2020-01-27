@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package com.cws.esolutions.web.webservices.impl;
+package com.cws.esolutions.web.ws.impl;
 /*
  * Project: eSolutions_java_source
  * Package: com.cws.esolutions.web.webservices.impl
@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import javax.jws.WebService;
 import javax.annotation.PostConstruct;
 
-import com.cws.esolutions.web.webservices.interfaces.IQuoteService;
+import com.cws.esolutions.web.ws.interfaces.IQuoteService;
 /**
  * @author cws-khuntly
  * @version 1.0

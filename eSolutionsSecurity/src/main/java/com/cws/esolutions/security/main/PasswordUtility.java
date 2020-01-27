@@ -80,6 +80,10 @@ public class PasswordUtility
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
+    public PasswordUtility()
+    {
+    	System.out.println("instantiate");
+    }
     static
     {
         Option entryNameOption = OptionBuilder.withLongOpt("entry")
@@ -338,9 +342,15 @@ public class PasswordUtility
                     {
                         ERROR_RECORDER.error(iox.getMessage(), iox);
                     }
+                    finally
+                    {
+                    	System.out.println("Entry Name " + entryName + " stored.");
+                    }
                 }
-
-                System.out.println("Entry Name " + entryName + " stored.");
+                else
+                {
+                	System.out.println("Entry: " + encodedUserName + ", Password: " + encodedPassword);
+                }
             }
 
             if (commandLine.hasOption("decrypt"))
