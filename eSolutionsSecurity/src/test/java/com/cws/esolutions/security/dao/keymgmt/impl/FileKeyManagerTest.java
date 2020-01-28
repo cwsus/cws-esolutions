@@ -49,8 +49,8 @@ public class FileKeyManagerTest
     {
         try
         {
-            hostInfo.setHostAddress("junit");
-            hostInfo.setHostName("junit");
+            hostInfo.setHostAddress("127.0.0.1");
+            hostInfo.setHostName("junit.test.com");
 
             userAccount.setStatus(LoginStatus.SUCCESS);
             userAccount.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
@@ -66,13 +66,16 @@ public class FileKeyManagerTest
         }
     }
 
+	/**
+	 * Test method for {@link com.cws.esolutions.security.dao.keymgmt.impl.FileKeyManager#createKeys(java.lang.String)}.
+	 */
     @Test public void createKeys()
     {
         try
         {
             Assert.assertTrue(processor.createKeys(userAccount.getGuid()));
         }
-        catch (KeyManagementException kmx)
+        catch (Exception kmx)
         {
             Assert.fail(kmx.getMessage());
         }

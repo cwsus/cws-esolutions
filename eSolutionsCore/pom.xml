@@ -95,11 +95,10 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        <!-- agent -->
         <dependency>
             <groupId>com.cws</groupId>
-            <artifactId>eSolutionsAgent</artifactId>
-            <version>${eSolutionsAgent.version}</version>
+            <artifactId>eSolutionsSecurity</artifactId>
+            <version>${eSolutionsSecurity.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.quartz-scheduler</groupId>
@@ -111,8 +110,8 @@
         </dependency>
         <dependency>
             <groupId>com.cws</groupId>
-            <artifactId>eSolutionsSecurity</artifactId>
-            <version>${eSolutionsSecurity.version}</version>
+            <artifactId>eSolutionsAgent</artifactId>
+            <version>${eSolutionsAgent.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.quartz-scheduler</groupId>

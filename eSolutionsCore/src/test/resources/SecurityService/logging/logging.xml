@@ -5,7 +5,7 @@
         <param name="File" value="${LOG_ROOT}/SecurityService-audit.log" />
         <param name="DatePattern" value=".yyyy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
+            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread: %t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
         </layout>
         <filter class="org.apache.log4j.varia.LevelMatchFilter">
             <param name="LevelToMatch" value="INFO" />
@@ -17,7 +17,7 @@
         <param name="File" value="${LOG_ROOT}/SecurityService-error.log" />
         <param name="DatePattern" value=".yyyy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
+            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread: %t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
         </layout>
         <filter class="org.apache.log4j.varia.LevelMatchFilter">
             <param name="LevelToMatch" value="ERROR" />
@@ -30,7 +30,7 @@
         <param name="DatePattern" value=".yyyy-MM-dd" />
         <param name="Threshold" value="DEBUG" />
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
+            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread: %t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
         </layout>
         <filter class="org.apache.log4j.varia.LevelMatchFilter">
             <param name="LevelToMatch" value="DEBUG" />

@@ -224,6 +224,10 @@ public class FileKeyManager implements KeyManager
         {
             throw new KeyManagementException(nsax.getMessage(), nsax);
         }
+        catch (NullPointerException npe)
+        {
+        	throw new KeyManagementException(npe.getMessage(), npe);
+        }
         finally
         {
             if (publicStream != null)
