@@ -64,7 +64,7 @@ public final class CertificateRequestProcessorTest
 
             userSecurity.setPassword("junit");
 
-            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
+            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", false);
         }
         catch (Exception ex)
         {
