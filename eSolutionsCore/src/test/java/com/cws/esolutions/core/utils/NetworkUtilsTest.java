@@ -54,7 +54,7 @@ public class NetworkUtilsTest
     {
         try
         {
-            NetworkUtils.executeTelnetRequest("chibcarray.us.hsbc", 8080, 10000);
+            NetworkUtils.executeTelnetRequest("proxy.caspersbox.com", 8080, 10000);
         }
         catch (UtilityException ux)
         {
@@ -66,12 +66,9 @@ public class NetworkUtilsTest
     {
         try
         {
-            List<List<String>> responseData = NetworkUtils.executeDNSLookup(null, "google.com", "SOA", null);
+            List<List<String>> responseData = NetworkUtils.executeDNSLookup(null, "google.com", "A", null);
 
-            for (List<String> response : responseData)
-            {
-                System.out.println(response);
-            }
+            Assert.assertNotNull(responseData);
         }
         catch (UtilityException ux)
         {
