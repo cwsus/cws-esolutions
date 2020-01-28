@@ -36,6 +36,7 @@ import com.cws.esolutions.web.ws.interfaces.IQuoteService;
 /**
  * @author cws-khuntly
  * @version 1.0
+ * @see com.cws.esolutions.web.ws.interfaces.IQuoteService
  */
 @WebService(endpointInterface = "com.cws.esolutions.web.webservices.interfaces.IQuoteService")
 public class QuoteServiceImpl implements IQuoteService

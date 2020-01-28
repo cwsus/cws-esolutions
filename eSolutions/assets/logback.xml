@@ -1,0 +1,97 @@
+<configuration>
+	<appender name="logcat" class="ch.qos.logback.classic.android.LogcatAppender">
+		<encoder>
+			<pattern>%msg</pattern>
+		</encoder>
+	</appender>
+	<appender name="esolutions-debug" class="ch.qos.logback.core.FileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>DEBUG</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<file>/storage/sdcard1/esolutions-debug.log</file>
+		<encoder>
+			<pattern>[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n</pattern>
+		</encoder>
+	</appender>
+	<appender name="esolutions-error" class="ch.qos.logback.core.FileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<file>/storage/sdcard1/esolutions.log</file>
+		<encoder>
+			<pattern>[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n</pattern>
+		</encoder>
+	</appender>
+	<appender name="esolutionssvc-debug" class="ch.qos.logback.core.FileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>DEBUG</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<file>/storage/sdcard1/esolutionssvc-debug.log</file>
+		<encoder>
+			<pattern>[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n</pattern>
+		</encoder>
+	</appender>
+	<appender name="esolutionssvc-error" class="ch.qos.logback.core.FileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<file>/storage/sdcard1/esolutionssvc-error.log</file>
+		<encoder>
+			<pattern>[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n</pattern>
+		</encoder>
+	</appender>
+	<appender name="securitysvc-debug" class="ch.qos.logback.core.FileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>DEBUG</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<file>/storage/sdcard1/security-debug.log</file>
+		<encoder>
+			<pattern>[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n</pattern>
+		</encoder>
+	</appender>
+	<appender name="securitysvc-error" class="ch.qos.logback.core.FileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<file>/storage/sdcard1/security-error.log</file>
+		<encoder>
+			<pattern>[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="ERROR_RECORDER.com.cws.esolutions.android" level="ERROR" additivity="false">
+		<appender-ref ref="esolutions-error" />
+	</logger>
+	<logger name="DEBUGGER" level="DEBUG" additivity="false">
+		<appender-ref ref="esolutions-debug" />
+	</logger>
+	<logger name="ERROR_RECORDER.com.cws.esolutions.core" level="ERROR" additivity="false">
+		<appender-ref ref="esolutionssvc-error" />
+	</logger>
+	<logger name="CORE_DEBUGGER" level="DEBUG" additivity="false">
+		<appender-ref ref="esolutionssvc-debug" />
+	</logger>
+	<logger name="ERROR_RECORDER.com.cws.esolutions.security" level="ERROR" additivity="false">
+		<appender-ref ref="securitysvc-error" />
+	</logger>
+	<logger name="SECURITY_DEBUGGER" level="DEBUG" additivity="false">
+		<appender-ref ref="securitysvc-debug" />
+	</logger>
+
+	<root level="INFO">
+		<appender-ref ref="logcat" />
+	</root>
+</configuration>
+
