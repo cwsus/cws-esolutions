@@ -31,9 +31,9 @@ import org.junit.Assert;
 import org.junit.Before;
 
 import com.cws.esolutions.agent.AgentDaemon;
-import com.cws.esolutions.agent.processors.dto.ApplicationManagerRequest;
 import com.cws.esolutions.agent.processors.exception.ApplicationManagerException;
 import com.cws.esolutions.agent.processors.interfaces.IApplicationManagerProcessor;
+import com.cws.esolutions.core.processors.dto.ApplicationManagerRequest;
 
 public class ApplicationManagerProcessorImplTest
 {

@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.agent.processors.dto;
+package com.cws.esolutions.core.processors.dto;
 /*
  * Project: eSolutionsAgent
  * Package: com.cws.esolutions.agent.processors.dto
- * File: ApplicationManagerRequestManagerRequest.java
+ * File: SystemManagerRequest.java
  *
  * History
  *
@@ -30,34 +30,36 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.agent.AgentConstants;
+import com.cws.esolutions.core.CoreServiceConstants;
+import com.cws.esolutions.core.processors.enums.SystemCheckType;
+import com.cws.esolutions.core.processors.enums.ListOperationType;
 /**
- * Interface for the ApplicationManagerRequest Data DAO layer. Allows access
+ * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
- * ApplicationManagerRequest information.
+ * application information.
  *
  * @author cws-khuntly
  * @version 1.0
  */
-public class ApplicationManagerRequest implements Serializable
+public class ServiceCheckRequest implements Serializable
 {
-    private double version = 0.0;
-    private String installPath = null;
-    private String packageName = null;
-    private String packageLocation = null;
-    private String packageInstaller = null;
-    private String installerOptions = null;
+    private int portNumber = 0;
+    private String targetHost = null;
+    private String processName = null;
+    private String extTargetDir = null;
+    private SystemCheckType requestType = null;
+    private ListOperationType listOperationType = null;
 
-    private static final String CNAME = ApplicationManagerRequest.class.getName();
-    private static final long serialVersionUID = -7939041322590386615L;
+    private static final long serialVersionUID = 9161223960598973053L;
+    private static final String CNAME = ServiceCheckRequest.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(AgentConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(AgentConstants.ERROR_LOGGER);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER);
 
-    public final void setPackageName(final String value)
+    public final void setRequestType(final SystemCheckType value)
     {
-        final String methodName = ApplicationManagerRequest.CNAME + "#setPackageName(final String value)";
+        final String methodName = ServiceCheckRequest.CNAME + "#setRequestType(final SystemCheckType value)";
 
         if (DEBUG)
         {
@@ -65,12 +67,12 @@ public class ApplicationManagerRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.packageName = value;
+        this.requestType = value;
     }
 
-    public final void setInstallPath(final String value)
+    public final void setTargetHost(final String value)
     {
-        final String methodName = ApplicationManagerRequest.CNAME + "#setInstallPath(final String value)";
+        final String methodName = ServiceCheckRequest.CNAME + "#setTargetHost(final String value)";
 
         if (DEBUG)
         {
@@ -78,12 +80,12 @@ public class ApplicationManagerRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.installPath = value;
+        this.targetHost = value;
     }
 
-    public final void setPackageLocation(final String value)
+    public final void setPortNumber(final int value)
     {
-        final String methodName = ApplicationManagerRequest.CNAME + "#setPackageLocation(final String value)";
+        final String methodName = ServiceCheckRequest.CNAME + "#setPortNumber(final int value)";
 
         if (DEBUG)
         {
@@ -91,12 +93,12 @@ public class ApplicationManagerRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.packageLocation = value;
+        this.portNumber = value;
     }
 
-    public final void setVersion(final double value)
+    public final void setProcessName(final String value)
     {
-        final String methodName = ApplicationManagerRequest.CNAME + "#setPackageLocation(final double value)";
+        final String methodName = ServiceCheckRequest.CNAME + "#setProcessName(final String value)";
 
         if (DEBUG)
         {
@@ -104,12 +106,12 @@ public class ApplicationManagerRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.version = value;
+        this.processName = value;
     }
 
-    public final void setPackageInstaller(final String value)
+    public final void setExtTargetDir(final String value)
     {
-        final String methodName = ApplicationManagerRequest.CNAME + "#setPackageInstaller(final String value)";
+        final String methodName = ServiceCheckRequest.CNAME + "#setExtTargetDir(final String value)";
 
         if (DEBUG)
         {
@@ -117,12 +119,12 @@ public class ApplicationManagerRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.packageInstaller = value;
+        this.extTargetDir = value;
     }
 
-    public final void setInstallerOptions(final String value)
+    public final void setListOperationType(final ListOperationType value)
     {
-        final String methodName = ApplicationManagerRequest.CNAME + "#setInstallerOptions(final String value)";
+        final String methodName = ServiceCheckRequest.CNAME + "#setListOperationType(final ListOperationType value)";
 
         if (DEBUG)
         {
@@ -130,91 +132,91 @@ public class ApplicationManagerRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.installerOptions = value;
+        this.listOperationType = value;
     }
 
-    public final String getPackageName()
+    public final SystemCheckType getRequestType()
     {
-        final String methodName = ApplicationManagerRequest.CNAME + "#getPackageName()";
+        final String methodName = ServiceCheckRequest.CNAME + "#getRequestType()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.packageName);
+            DEBUGGER.debug("Value: {}", this.requestType);
         }
 
-        return this.packageName;
+        return this.requestType;
     }
 
-    public final String getInstallPath()
+    public final String getTargetHost()
     {
-        final String methodName = ApplicationManagerRequest.CNAME + "#getInstallPath()";
+        final String methodName = ServiceCheckRequest.CNAME + "#getTargetHost()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.installPath);
+            DEBUGGER.debug("Value: {}", this.targetHost);
         }
 
-        return this.installPath;
+        return this.targetHost;
     }
 
-    public final String getPackageLocation()
+    public final int getPortNumber()
     {
-        final String methodName = ApplicationManagerRequest.CNAME + "#getPackageLocation()";
+        final String methodName = ServiceCheckRequest.CNAME + "#getPortNumber()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.packageLocation);
+            DEBUGGER.debug("Value: {}", this.portNumber);
         }
 
-        return this.packageLocation;
+        return this.portNumber;
     }
 
-    public final String getPackageInstaller()
+    public final String getProcessName()
     {
-        final String methodName = ApplicationManagerRequest.CNAME + "#getPackageInstaller()";
+        final String methodName = ServiceCheckRequest.CNAME + "#getProcessName()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.packageInstaller);
+            DEBUGGER.debug("Value: {}", this.processName);
         }
 
-        return this.packageInstaller;
+        return this.processName;
     }
 
-    public final String getInstallerOptions()
+    public final String getExtTargetDir()
     {
-        final String methodName = ApplicationManagerRequest.CNAME + "#getInstallerOptions()";
+        final String methodName = ServiceCheckRequest.CNAME + "#getExtTargetDir()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.installerOptions);
+            DEBUGGER.debug("Value: {}", this.extTargetDir);
         }
 
-        return this.installerOptions;
+        return this.extTargetDir;
     }
 
-    public final double getVersion()
+    public final ListOperationType getListOperationType()
     {
-        final String methodName = ApplicationManagerRequest.CNAME + "#getVersion()";
+        final String methodName = ServiceCheckRequest.CNAME + "#getListOperationType()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.version);
+            DEBUGGER.debug("Value: {}", this.listOperationType);
         }
 
-        return this.version;
+        return this.listOperationType;
     }
 
     @Override
     public final String toString()
     {
-        final String methodName = ApplicationManagerRequest.CNAME + "#toString()";
+        final String methodName = ServiceCheckRequest.CNAME + "#toString()";
 
         if (DEBUG)
         {
@@ -222,7 +224,7 @@ public class ApplicationManagerRequest implements Serializable
         }
 
         StringBuilder sBuilder = new StringBuilder()
-            .append("[" + this.getClass().getName() + "]" + AgentConstants.LINE_BREAK + "{" + AgentConstants.LINE_BREAK);
+            .append("[" + this.getClass().getName() + "]" + CoreServiceConstants.LINE_BREAK + "{" + CoreServiceConstants.LINE_BREAK);
 
         for (Field field : this.getClass().getDeclaredFields())
         {
@@ -242,7 +244,7 @@ public class ApplicationManagerRequest implements Serializable
                 {
                     if (field.get(this) != null)
                     {
-                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + AgentConstants.LINE_BREAK);
+                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + CoreServiceConstants.LINE_BREAK);
                     }
                 }
                 catch (IllegalAccessException iax)

@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.agent.processors.dto;
+package com.cws.esolutions.core.processors.dto;
 /*
  * Project: eSolutionsAgent
  * Package: com.cws.esolutions.agent.processors.dto
- * File: SystemManagerResponse.java
+ * File: ApplicationManagerResponse.java
  *
  * History
  *
@@ -30,8 +30,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.agent.AgentConstants;
-import com.cws.esolutions.agent.enums.AgentStatus;
+import com.cws.esolutions.core.CoreServiceConstants;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -40,74 +39,74 @@ import com.cws.esolutions.agent.enums.AgentStatus;
  * @author cws-khuntly
  * @version 1.0
  */
-public class SystemManagerResponse implements Serializable
+public class ApplicationManagerResponse implements Serializable
 {
-    private Object requestData = null;
+    private String response = null;
     private AgentStatus requestStatus = null;
 
-    private static final long serialVersionUID = 256273030714343000L;
-    private static final String CNAME = SystemManagerResponse.class.getName();
+    private static final long serialVersionUID = -9096097694538612637L;
+    private static final String CNAME = ApplicationManagerResponse.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(AgentConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(AgentConstants.ERROR_LOGGER);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER);
 
     public final void setRequestStatus(final AgentStatus value)
     {
-        final String methodName = SystemManagerResponse.CNAME + "#setRequestStatus(final AgentStatus value)";
+        final String methodName = ApplicationManagerResponse.CNAME + "#setRequestStatus(final AgentStatus value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("AgentStatus: {}", value);
         }
 
         this.requestStatus = value;
     }
 
-    public final void setResponseData(final Object value)
+    public final void setResponse(final String value)
     {
-        final String methodName = SystemManagerResponse.CNAME + "#setResponseData(final Object value)";
+        final String methodName = ApplicationManagerResponse.CNAME + "#setResponse(final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug(value);
         }
 
-        this.requestData = value;
+        this.response = value;
     }
 
     public final AgentStatus getRequestStatus()
     {
-        final String methodName = SystemManagerResponse.CNAME + "#getRequestStatus()";
+        final String methodName = ApplicationManagerResponse.CNAME + "#getRequestStatus()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.requestStatus);
+            DEBUGGER.debug("AgentStatus: {}", this.requestStatus);
         }
 
         return this.requestStatus;
     }
 
-    public final Object getResponseData()
+    public final String getResponse()
     {
-        final String methodName = SystemManagerResponse.CNAME + "#getResponseData()";
+        final String methodName = ApplicationManagerResponse.CNAME + "#getResponse()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.requestData);
+            DEBUGGER.debug(this.response);
         }
 
-        return this.requestData;
+        return this.response;
     }
 
     @Override
     public final String toString()
     {
-        final String methodName = SystemManagerResponse.CNAME + "#toString()";
+        final String methodName = ApplicationManagerResponse.CNAME + "#toString()";
 
         if (DEBUG)
         {
@@ -115,7 +114,7 @@ public class SystemManagerResponse implements Serializable
         }
 
         StringBuilder sBuilder = new StringBuilder()
-            .append("[" + this.getClass().getName() + "]" + AgentConstants.LINE_BREAK + "{" + AgentConstants.LINE_BREAK);
+            .append("[" + this.getClass().getName() + "]" + CoreServiceConstants.LINE_BREAK + "{" + CoreServiceConstants.LINE_BREAK);
 
         for (Field field : this.getClass().getDeclaredFields())
         {
@@ -135,7 +134,7 @@ public class SystemManagerResponse implements Serializable
                 {
                     if (field.get(this) != null)
                     {
-                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + AgentConstants.LINE_BREAK);
+                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + CoreServiceConstants.LINE_BREAK);
                     }
                 }
                 catch (IllegalAccessException iax)

@@ -32,10 +32,10 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 
 import com.cws.esolutions.agent.enums.AgentStatus;
-import com.cws.esolutions.agent.processors.dto.FileManagerRequest;
-import com.cws.esolutions.agent.processors.dto.FileManagerResponse;
 import com.cws.esolutions.agent.processors.exception.FileManagerException;
 import com.cws.esolutions.agent.processors.interfaces.IFileManagerProcessor;
+import com.cws.esolutions.core.processors.dto.FileManagerRequest;
+import com.cws.esolutions.core.processors.dto.FileManagerResponse;
 /**
  * @see com.cws.esolutions.agent.processors.interfaces.IFileManagerProcessor
  */

@@ -41,9 +41,9 @@ import com.cws.esolutions.agent.AgentDaemon;
 import com.cws.esolutions.agent.dto.AgentRequest;
 import com.cws.esolutions.agent.dto.AgentResponse;
 import com.cws.esolutions.agent.enums.AgentStatus;
-import com.cws.esolutions.agent.processors.enums.SystemCheckType;
-import com.cws.esolutions.agent.processors.dto.FileManagerRequest;
-import com.cws.esolutions.agent.processors.dto.ServiceCheckRequest;
+import com.cws.esolutions.core.processors.dto.FileManagerRequest;
+import com.cws.esolutions.core.processors.dto.ServiceCheckRequest;
+import com.cws.esolutions.core.processors.enums.SystemCheckType;
 
 public class AgentRequestProcessorImplTest
 {

@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.agent.processors.dto;
+package com.cws.esolutions.core.processors.dto;
 /*
  * Project: eSolutionsAgent
  * Package: com.cws.esolutions.agent.processors.dto
- * File: FileManagerRequest.java
+ * File: SystemManagerResponse.java
  *
  * History
  *
@@ -25,13 +25,13 @@ package com.cws.esolutions.agent.processors.dto;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.util.List;
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.agent.AgentConstants;
+import com.cws.esolutions.agent.enums.AgentStatus;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -40,23 +40,21 @@ import com.cws.esolutions.agent.AgentConstants;
  * @author cws-khuntly
  * @version 1.0
  */
-public class FileManagerRequest implements Serializable
+public class SystemManagerResponse implements Serializable
 {
-    private byte[] fileData = null;
-    private String requestFile = null;
-    private List<byte[]> sourceFiles = null;
-    private List<String> targetFiles = null;
+    private Object requestData = null;
+    private AgentStatus requestStatus = null;
 
-    private static final long serialVersionUID = 8211567364581203557L;
-    private static final String CNAME = FileManagerRequest.class.getName();
+    private static final long serialVersionUID = 256273030714343000L;
+    private static final String CNAME = SystemManagerResponse.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(AgentConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(AgentConstants.ERROR_LOGGER);
 
-    public final void setRequestFile(final String value)
+    public final void setRequestStatus(final AgentStatus value)
     {
-        final String methodName = FileManagerRequest.CNAME + "#setRequestFile(final String value)";
+        final String methodName = SystemManagerResponse.CNAME + "#setRequestStatus(final AgentStatus value)";
 
         if (DEBUG)
         {
@@ -64,12 +62,12 @@ public class FileManagerRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.requestFile = value;
+        this.requestStatus = value;
     }
 
-    public final void setFileData(final byte[] value)
+    public final void setResponseData(final Object value)
     {
-        final String methodName = FileManagerRequest.CNAME + "#setFileData(final byte[] value)";
+        final String methodName = SystemManagerResponse.CNAME + "#setResponseData(final Object value)";
 
         if (DEBUG)
         {
@@ -77,91 +75,39 @@ public class FileManagerRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.fileData = value;
+        this.requestData = value;
     }
 
-    public final void setSourceFiles(final List<byte[]> value)
+    public final AgentStatus getRequestStatus()
     {
-        final String methodName = FileManagerRequest.CNAME + "#setSourceFiles(final List<String> value)";
+        final String methodName = SystemManagerResponse.CNAME + "#getRequestStatus()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("Value: {}", this.requestStatus);
         }
 
-        this.sourceFiles = value;
+        return this.requestStatus;
     }
 
-    public final void setTargetFiles(final List<String> value)
+    public final Object getResponseData()
     {
-        final String methodName = FileManagerRequest.CNAME + "#setTargetFiles(final List<String> value)";
+        final String methodName = SystemManagerResponse.CNAME + "#getResponseData()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("Value: {}", this.requestData);
         }
 
-        this.targetFiles = value;
-    }
-
-    public final String getRequestFile()
-    {
-        final String methodName = FileManagerRequest.CNAME + "#getRequestFile()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.requestFile);
-        }
-
-        return this.requestFile;
-    }
-
-    public final byte[] getFileData()
-    {
-        final String methodName = FileManagerRequest.CNAME + "#getFileData()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.fileData);
-        }
-
-        return this.fileData;
-    }
-
-    public final List<byte[]> getSourceFiles()
-    {
-        final String methodName = FileManagerRequest.CNAME + "#getSourceFiles()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.sourceFiles);
-        }
-
-        return this.sourceFiles;
-    }
-
-    public final List<String> getTargetFiles()
-    {
-        final String methodName = FileManagerRequest.CNAME + "#getTargetFiles()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.targetFiles);
-        }
-
-        return this.targetFiles;
+        return this.requestData;
     }
 
     @Override
     public final String toString()
     {
-        final String methodName = FileManagerRequest.CNAME + "#toString()";
+        final String methodName = SystemManagerResponse.CNAME + "#toString()";
 
         if (DEBUG)
         {

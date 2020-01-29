@@ -108,18 +108,5 @@
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>com.cws</groupId>
-            <artifactId>eSolutionsAgent</artifactId>
-            <version>${eSolutionsAgent.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.quartz-scheduler</groupId>
-                    <artifactId>quartz</artifactId>
-                </exclusion>
-            </exclusions>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 </project>

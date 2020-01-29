@@ -33,9 +33,9 @@ import java.sql.SQLException;
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.core.utils.MQUtils;
-import com.cws.esolutions.agent.dto.AgentRequest;
-import com.cws.esolutions.agent.dto.AgentResponse;
-import com.cws.esolutions.agent.enums.AgentStatus;
+//import com.cws.esolutions.agent.dto.AgentRequest;
+//import com.cws.esolutions.agent.dto.AgentResponse;
+//import com.cws.esolutions.agent.enums.AgentStatus;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.dto.Service;
@@ -45,8 +45,8 @@ import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.core.utils.exception.UtilityException;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-import com.cws.esolutions.agent.processors.dto.FileManagerRequest;
-import com.cws.esolutions.agent.processors.dto.FileManagerResponse;
+//import com.cws.esolutions.agent.processors.dto.FileManagerRequest;
+//import com.cws.esolutions.agent.processors.dto.FileManagerResponse;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementResponse;
@@ -61,12 +61,14 @@ import com.cws.esolutions.core.processors.interfaces.IApplicationManagementProce
  */
 public class ApplicationManagementProcessorImpl implements IApplicationManagementProcessor
 {
+	private static final String CNAME = ApplicationManagementProcessorImpl.class.getName();
+
     /**
      * @see com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor#addNewApplication(com.cws.esolutions.core.processors.dto.ApplicationManagementRequest)
      */
     public ApplicationManagementResponse addNewApplication(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
-        final String methodName = IApplicationManagementProcessor.CNAME + "#addNewApplication(final ApplicationManagementRequest request) throws ApplicationManagementException";
+        final String methodName = ApplicationManagementProcessorImpl.CNAME + "#addNewApplication(final ApplicationManagementRequest request) throws ApplicationManagementException";
 
         if (DEBUG)
         {
@@ -171,7 +173,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             if ((validator != null) && (validator.size() != 0))
             {
-                throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_APPLICATION_EXISTS));
+                throw new ApplicationManagementException("Application already exists, cannot duplicate.");
             }
 
             // project does't already exist. we can add it
@@ -180,7 +182,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             // different table in the database)
             if ((application.getPlatforms() == null) || (application.getPlatforms().size() == 0))
             {
-                throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_NO_PLATFORM_PROVIDED));
+                throw new ApplicationManagementException("No platform was provided. Cannot continue.");
             }
 
             List<String> platforms = new ArrayList<String>();
@@ -195,7 +197,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 // make sure its a valid platform
                 if (serviceDao.getService(targetPlatform.getGuid()) == null)
                 {
-                    throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_INVALID_PLATFORM));
+                    throw new ApplicationManagementException("An invalid platform was specified. Please try again.");
                 }
 
                 platforms.add(targetPlatform.getGuid());
@@ -282,7 +284,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
      */
     public ApplicationManagementResponse updateApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
-        final String methodName = IApplicationManagementProcessor.CNAME + "#updateApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException";
+        final String methodName = ApplicationManagementProcessorImpl.CNAME + "#updateApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException";
 
         if (DEBUG)
         {
@@ -441,7 +443,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
      */
     public ApplicationManagementResponse deleteApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
-        final String methodName = IApplicationManagementProcessor.CNAME + "#deleteApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException";
+        final String methodName = ApplicationManagementProcessorImpl.CNAME + "#deleteApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException";
 
         if (DEBUG)
         {
@@ -583,7 +585,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
      */
     public ApplicationManagementResponse listApplications(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
-        final String methodName = IApplicationManagementProcessor.CNAME + "#listApplications(final ApplicationManagementRequest request) throws ApplicationManagementException";
+        final String methodName = ApplicationManagementProcessorImpl.CNAME + "#listApplications(final ApplicationManagementRequest request) throws ApplicationManagementException";
 
         if (DEBUG)
         {
@@ -671,7 +673,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             if ((appData == null) || (appData.size() == 0))
             {
-                throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_LIST_APPLICATIONS_FAILED));
+                throw new ApplicationManagementException("Obtaining list of applications failed. Please review SQL logs.");
             }
 
             List<Application> appList = new ArrayList<Application>();
@@ -758,7 +760,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
      */
     public ApplicationManagementResponse listApplicationsByAttribute(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
-        final String methodName = IApplicationManagementProcessor.CNAME + "#listApplicationsByAttribute(final ApplicationManagementRequest request) throws ApplicationManagementException";
+        final String methodName = ApplicationManagementProcessorImpl.CNAME + "#listApplicationsByAttribute(final ApplicationManagementRequest request) throws ApplicationManagementException";
 
         if (DEBUG)
         {
@@ -846,7 +848,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             if ((appData == null) || (appData.size() == 0))
             {
-                throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_LIST_APPLICATIONS_FAILED));
+                throw new ApplicationManagementException("Obtaining list of applications failed. Please review SQL logs.");
             }
 
             List<Application> appList = new ArrayList<Application>();
@@ -934,7 +936,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
      */
     public ApplicationManagementResponse getApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
-        final String methodName = IApplicationManagementProcessor.CNAME + "#getApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException";
+        final String methodName = ApplicationManagementProcessorImpl.CNAME + "#getApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException";
 
         if (DEBUG)
         {
@@ -1022,7 +1024,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             if ((appData == null) || (appData.size() == 0))
             {
-                throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_NO_APPLICATION_DATA_FOUND));
+                throw new ApplicationManagementException("No application data was found.");
             }
 
             if (DEBUG)
@@ -1108,7 +1110,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
      */
     public ApplicationManagementResponse applicationFileRequest(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
-        final String methodName = IApplicationManagementProcessor.CNAME + "#applicationFileRequest(final ApplicationManagementRequest request) throws ApplicationManagementException";
+        final String methodName = ApplicationManagementProcessorImpl.CNAME + "#applicationFileRequest(final ApplicationManagementRequest request) throws ApplicationManagementException";
 
         if (DEBUG)
         {
@@ -1199,7 +1201,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             if ((appData == null) || (appData.size() == 0))
             {
-                throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_NO_APPLICATION_DATA_FOUND));
+            	throw new ApplicationManagementException("No application data was found.");
             }
 
             FileManagerRequest fileRequest = new FileManagerRequest();
@@ -1244,7 +1246,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             if (StringUtils.isEmpty(correlator))
             {
-                throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_MQ_AGENT_FAILED));
+                throw new ApplicationManagementException("Failed to process request. Please review logs.");
             }
             
             agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
@@ -1264,7 +1266,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             if (agentResponse.getRequestStatus() != AgentStatus.SUCCESS)
             {
-                throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_AGENT_REQUEST_FAILED));
+            	throw new ApplicationManagementException("Failed to process request. Please review logs.");
             }
 
             FileManagerResponse fileResponse = (FileManagerResponse) agentResponse.getResponsePayload();
@@ -1276,7 +1278,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             if (fileResponse.getRequestStatus() != AgentStatus.SUCCESS)
             {
-                throw new ApplicationManagementException(IApplicationManagementProcessor.bundle.getString(IApplicationManagementProcessor.MESSAGE_AGENT_REQUEST_FAILED));
+            	throw new ApplicationManagementException("Failed to process request. Please review logs.");
             }
 
             if ((fileResponse.getFileData() != null) && (fileResponse.getFileData().length != 0))
@@ -1372,7 +1374,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
      */
     public ApplicationManagementResponse deployApplication(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
-        final String methodName = IApplicationManagementProcessor.CNAME + "#deployApplication(final ApplicationManagementRequest request) throws ApplicationManagementException";
+        final String methodName = ApplicationManagementProcessorImpl.CNAME + "#deployApplication(final ApplicationManagementRequest request) throws ApplicationManagementException";
 
         if (DEBUG)
         {

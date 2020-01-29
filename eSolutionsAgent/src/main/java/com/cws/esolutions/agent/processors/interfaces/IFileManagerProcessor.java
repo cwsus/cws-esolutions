@@ -30,9 +30,9 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.agent.AgentBean;
 import com.cws.esolutions.agent.AgentConstants;
-import com.cws.esolutions.agent.processors.dto.FileManagerRequest;
-import com.cws.esolutions.agent.processors.dto.FileManagerResponse;
 import com.cws.esolutions.agent.processors.exception.FileManagerException;
+import com.cws.esolutions.core.processors.dto.FileManagerRequest;
+import com.cws.esolutions.core.processors.dto.FileManagerResponse;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove

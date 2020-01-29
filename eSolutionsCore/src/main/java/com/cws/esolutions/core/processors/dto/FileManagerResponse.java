@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.agent.processors.dto;
+package com.cws.esolutions.core.processors.dto;
 /*
  * Project: eSolutionsAgent
  * Package: com.cws.esolutions.agent.processors.dto
- * File: ApplicationManagerResponse.java
+ * File: FileManagerResponse.java
  *
  * History
  *
@@ -25,6 +25,7 @@ package com.cws.esolutions.agent.processors.dto;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
+import java.util.List;
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -40,13 +41,17 @@ import com.cws.esolutions.agent.enums.AgentStatus;
  * @author cws-khuntly
  * @version 1.0
  */
-public class ApplicationManagerResponse implements Serializable
+public class FileManagerResponse implements Serializable
 {
-    private String response = null;
+    private Long checksum = null;
+    private byte[] fileData = null;
+    private String fileName = null;
+    private String filePath = null;
+    private List<String> dirListing = null;
     private AgentStatus requestStatus = null;
 
-    private static final long serialVersionUID = -9096097694538612637L;
-    private static final String CNAME = ApplicationManagerResponse.class.getName();
+    private static final long serialVersionUID = 1675501067920065831L;
+    private static final String CNAME = FileManagerResponse.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(AgentConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -54,7 +59,7 @@ public class ApplicationManagerResponse implements Serializable
 
     public final void setRequestStatus(final AgentStatus value)
     {
-        final String methodName = ApplicationManagerResponse.CNAME + "#setRequestStatus(final AgentStatus value)";
+        final String methodName = FileManagerResponse.CNAME + "#setRequestStatus(final AgentStatus value)";
 
         if (DEBUG)
         {
@@ -65,22 +70,74 @@ public class ApplicationManagerResponse implements Serializable
         this.requestStatus = value;
     }
 
-    public final void setResponse(final String value)
+    public final void setFileData(final byte[] value)
     {
-        final String methodName = ApplicationManagerResponse.CNAME + "#setResponse(final String value)";
+        final String methodName = FileManagerResponse.CNAME + "#setFileData(final byte[] value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug(value);
+            DEBUGGER.debug("Value: {}", value);
         }
 
-        this.response = value;
+        this.fileData = value;
+    }
+
+    public final void setFileName(final String value)
+    {
+        final String methodName = FileManagerResponse.CNAME + "#setFileName(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.fileName = value;
+    }
+
+    public final void setFilePath(final String value)
+    {
+        final String methodName = FileManagerResponse.CNAME + "#setFilePath(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.filePath = value;
+    }
+
+    public final void setChecksum(final Long value)
+    {
+        final String methodName = FileManagerResponse.CNAME + "#setChecksum(final Long value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.checksum = value;
+    }
+
+    public final void setDirListing(final List<String> value)
+    {
+        final String methodName = FileManagerResponse.CNAME + "#setChecksum(final List<String> value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.dirListing = value;
     }
 
     public final AgentStatus getRequestStatus()
     {
-        final String methodName = ApplicationManagerResponse.CNAME + "#getRequestStatus()";
+        final String methodName = FileManagerResponse.CNAME + "#getRequestStatus()";
 
         if (DEBUG)
         {
@@ -91,23 +148,75 @@ public class ApplicationManagerResponse implements Serializable
         return this.requestStatus;
     }
 
-    public final String getResponse()
+    public final byte[] getFileData()
     {
-        final String methodName = ApplicationManagerResponse.CNAME + "#getResponse()";
+        final String methodName = FileManagerResponse.CNAME + "#getFileData()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug(this.response);
+            DEBUGGER.debug("Value: {}", this.fileData);
         }
 
-        return this.response;
+        return this.fileData;
+    }
+
+    public final String getFileName()
+    {
+        final String methodName = FileManagerResponse.CNAME + "#getFileName()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.fileName);
+        }
+
+        return this.fileName;
+    }
+
+    public final String getFilePath()
+    {
+        final String methodName = FileManagerResponse.CNAME + "#getFilePath()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.filePath);
+        }
+
+        return this.filePath;
+    }
+
+    public final Long getChecksum()
+    {
+        final String methodName = FileManagerResponse.CNAME + "#getChecksum()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.checksum);
+        }
+
+        return this.checksum;
+    }
+
+    public final List<String> getDirListing()
+    {
+        final String methodName = FileManagerResponse.CNAME + "#getChecksum()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.dirListing);
+        }
+
+        return this.dirListing;
     }
 
     @Override
     public final String toString()
     {
-        final String methodName = ApplicationManagerResponse.CNAME + "#toString()";
+        final String methodName = FileManagerResponse.CNAME + "#toString()";
 
         if (DEBUG)
         {

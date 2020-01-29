@@ -44,10 +44,10 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 
 import com.cws.esolutions.agent.enums.AgentStatus;
-import com.cws.esolutions.agent.processors.dto.ServiceCheckRequest;
-import com.cws.esolutions.agent.processors.dto.ServiceCheckResponse;
 import com.cws.esolutions.agent.processors.exception.ServiceCheckException;
 import com.cws.esolutions.agent.processors.interfaces.IServiceCheckProcessor;
+import com.cws.esolutions.core.processors.dto.ServiceCheckRequest;
+import com.cws.esolutions.core.processors.dto.ServiceCheckResponse;
 /**
  * @see com.cws.esolutions.agent.processors.interfaces.IServiceCheckProcessor
  */

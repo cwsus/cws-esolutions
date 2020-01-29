@@ -34,8 +34,8 @@ import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.processors.enums.ServiceCheckType;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-import com.cws.esolutions.agent.processors.enums.StateManagementType;
-import com.cws.esolutions.agent.processors.enums.ServiceOperationType;
+//import com.cws.esolutions.agent.processors.enums.StateManagementType;
+//import com.cws.esolutions.agent.processors.enums.ServiceOperationType;
 /**
  * @author cws-khuntly
  * @version 1.0
@@ -54,8 +54,8 @@ public class ServerManagementRequest implements Serializable
     private UserAccount userAccount = null;
     private RequestHostInfo requestInfo = null;
     private ServiceCheckType requestType = null;
-    private ServiceOperationType serviceType = null;
-    private StateManagementType stateMgmtType = null;
+    //private ServiceOperationType serviceType = null;
+    //private StateManagementType stateMgmtType = null;
 
     private static final long serialVersionUID = -5693821644019998365L;
     private static final String CNAME = ServerManagementRequest.class.getName();
@@ -194,7 +194,7 @@ public class ServerManagementRequest implements Serializable
         this.requestType = value;
     }
 
-    public final void setServiceType(final ServiceOperationType value)
+    /*public final void setServiceType(final ServiceOperationType value)
     {
         final String methodName = ServerManagementRequest.CNAME + "#setServiceType(final ServiceOperationType value)";
 
@@ -205,7 +205,7 @@ public class ServerManagementRequest implements Serializable
         }
 
         this.serviceType = value;
-    }
+    }*/
 
     public final void setInstallAgent(final boolean value)
     {
@@ -220,7 +220,7 @@ public class ServerManagementRequest implements Serializable
         this.installAgent = value;
     }
 
-    public final void setStateMgmtType(final StateManagementType value)
+    /*public final void setStateMgmtType(final StateManagementType value)
     {
         final String methodName = ServerManagementRequest.CNAME + "#setStateMgmtType(final StateManagementType value)";
 
@@ -231,7 +231,7 @@ public class ServerManagementRequest implements Serializable
         }
 
         this.stateMgmtType = value;
-    }
+    }*/
 
     public final UserAccount getUserAccount()
     {
@@ -363,7 +363,7 @@ public class ServerManagementRequest implements Serializable
         return this.requestType;
     }
 
-    public final ServiceOperationType getServiceType()
+    /*public final ServiceOperationType getServiceType()
     {
         final String methodName = ServerManagementRequest.CNAME + "#getServiceType()";
 
@@ -374,7 +374,7 @@ public class ServerManagementRequest implements Serializable
         }
 
         return this.serviceType;
-    }
+    }*/
 
     public final boolean installAgent()
     {
@@ -389,7 +389,7 @@ public class ServerManagementRequest implements Serializable
         return this.installAgent;
     }
 
-    public final StateManagementType getStateMgmtType()
+    /*public final StateManagementType getStateMgmtType()
     {
         final String methodName = ServerManagementRequest.CNAME + "#getStateMgmtType()";
 
@@ -400,7 +400,7 @@ public class ServerManagementRequest implements Serializable
         }
 
         return this.stateMgmtType;
-    }
+    }*/
 
     @Override
     public final String toString()

@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.agent.processors.enums;
+package com.cws.esolutions.core.processors.enums;
 /*
  * Project: eSolutionsAgent
  * Package: com.cws.esolutions.agent.processors.enums
- * File: FileType.java
+ * File: SystemCheckType.java
  *
  * History
  *
@@ -33,8 +33,12 @@ package com.cws.esolutions.agent.processors.enums;
  * @author cws-khuntly
  * @version 1.0
  */
-public enum FileType
+public enum SystemCheckType
 {
-    NORMAL,
-    DEPLOYMENT;
+    // appserver requests
+    STATUS,
+    NETSTAT,
+    REMOTEDATE,
+    TELNET,
+    PROCESSLIST;
 }

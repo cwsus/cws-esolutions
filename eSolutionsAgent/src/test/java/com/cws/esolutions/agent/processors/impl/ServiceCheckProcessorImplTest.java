@@ -31,11 +31,11 @@ import org.junit.Assert;
 
 import com.cws.esolutions.agent.AgentDaemon;
 import com.cws.esolutions.agent.enums.AgentStatus;
-import com.cws.esolutions.agent.processors.enums.SystemCheckType;
-import com.cws.esolutions.agent.processors.dto.ServiceCheckRequest;
-import com.cws.esolutions.agent.processors.dto.ServiceCheckResponse;
 import com.cws.esolutions.agent.processors.exception.ServiceCheckException;
 import com.cws.esolutions.agent.processors.interfaces.IServiceCheckProcessor;
+import com.cws.esolutions.core.processors.dto.ServiceCheckRequest;
+import com.cws.esolutions.core.processors.dto.ServiceCheckResponse;
+import com.cws.esolutions.core.processors.enums.SystemCheckType;
 
 public class ServiceCheckProcessorImplTest
 {

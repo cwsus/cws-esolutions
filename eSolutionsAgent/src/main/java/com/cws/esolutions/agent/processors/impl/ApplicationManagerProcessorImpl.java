@@ -40,17 +40,17 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 
 import com.cws.esolutions.agent.enums.AgentStatus;
-import com.cws.esolutions.agent.processors.dto.ApplicationManagerRequest;
-import com.cws.esolutions.agent.processors.dto.ApplicationManagerResponse;
 import com.cws.esolutions.agent.processors.exception.ApplicationManagerException;
 import com.cws.esolutions.agent.processors.interfaces.IApplicationManagerProcessor;
+import com.cws.esolutions.core.processors.dto.ApplicationManagerRequest;
+import com.cws.esolutions.core.processors.dto.ApplicationManagerResponse;
 /**
  * @see com.cws.esolutions.agent.processors.interfaces.IApplicationManagerProcessor
  */
 public class ApplicationManagerProcessorImpl implements IApplicationManagerProcessor
 {
     /**
-     * @see com.cws.esolutions.agent.processors.interfaces.IApplicationManagerProcessor#installApplication(com.cws.esolutions.agent.processors.dto.ApplicationManagerRequest)
+     * @see com.cws.esolutions.agent.processors.interfaces.IApplicationManagerProcessor#installApplication(com.cws.esolutions.core.processors.dto.ApplicationManagerRequest)
      */
     public ApplicationManagerResponse installApplication(final ApplicationManagerRequest request) throws ApplicationManagerException
     {
