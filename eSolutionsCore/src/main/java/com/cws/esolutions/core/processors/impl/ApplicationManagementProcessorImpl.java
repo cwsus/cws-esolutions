@@ -33,9 +33,6 @@ import java.sql.SQLException;
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.core.utils.MQUtils;
-//import com.cws.esolutions.agent.dto.AgentRequest;
-//import com.cws.esolutions.agent.dto.AgentResponse;
-//import com.cws.esolutions.agent.enums.AgentStatus;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.dto.Service;
@@ -45,11 +42,13 @@ import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.core.utils.exception.UtilityException;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-//import com.cws.esolutions.agent.processors.dto.FileManagerRequest;
-//import com.cws.esolutions.agent.processors.dto.FileManagerResponse;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementResponse;
+import com.cws.esolutions.core.processors.dto.CoreServicesRequest;
+import com.cws.esolutions.core.processors.dto.CoreServicesResponse;
+import com.cws.esolutions.core.processors.dto.FileManagerRequest;
+import com.cws.esolutions.core.processors.dto.FileManagerResponse;
 import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
 import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
@@ -1118,7 +1117,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             DEBUGGER.debug("ApplicationManagementRequest: {}", request);
         }
 
-        AgentResponse agentResponse = null;
+        CoreServicesResponse CoreServiceResponse = null;
         ApplicationManagementResponse response = new ApplicationManagementResponse();
 
         final Server server = request.getServer();
@@ -1220,13 +1219,13 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 DEBUGGER.debug("FileManagerRequest: {}", fileRequest);
             }
 
-            AgentRequest agentRequest = new AgentRequest();
+            CoreServicesRequest agentRequest = new CoreServicesRequest();
             agentRequest.setAppName(appConfig.getAppName());
             agentRequest.setRequestPayload(fileRequest);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("AgentRequest: {}", agentRequest);
+                DEBUGGER.debug("CoreServicesRequest: {}", agentRequest);
             }
 
             String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(),
@@ -1249,7 +1248,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 throw new ApplicationManagementException("Failed to process request. Please review logs.");
             }
             
-            agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
+            CoreServiceResponse = (CoreServicesResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
                     new ArrayList<String>(
                             Arrays.asList(
                                     agentConfig.getUsername(),
@@ -1261,22 +1260,22 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             if (DEBUG)
             {
-                DEBUGGER.debug("AgentResponse: {}", agentResponse);
+                DEBUGGER.debug("CoreServiceResponse: {}", CoreServiceResponse);
             }
 
-            if (agentResponse.getRequestStatus() != AgentStatus.SUCCESS)
+            if (CoreServiceResponse.getRequestStatus() != CoreServicesStatus.SUCCESS)
             {
             	throw new ApplicationManagementException("Failed to process request. Please review logs.");
             }
 
-            FileManagerResponse fileResponse = (FileManagerResponse) agentResponse.getResponsePayload();
+            FileManagerResponse fileResponse = (FileManagerResponse) CoreServiceResponse.getResponsePayload();
 
             if (DEBUG)
             {
                 DEBUGGER.debug("FileManagerResponse: {}", fileResponse);
             }
 
-            if (fileResponse.getRequestStatus() != AgentStatus.SUCCESS)
+            if (fileResponse.getRequestStatus() != CoreServicesStatus.SUCCESS)
             {
             	throw new ApplicationManagementException("Failed to process request. Please review logs.");
             }

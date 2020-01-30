@@ -38,12 +38,12 @@ import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.agent.AgentBean;
 import com.cws.esolutions.agent.AgentConstants;
-import com.cws.esolutions.agent.dto.AgentRequest;
-import com.cws.esolutions.agent.dto.AgentResponse;
 import com.cws.esolutions.agent.config.xml.ServerConfig;
 import com.cws.esolutions.agent.exception.AgentException;
 import com.cws.esolutions.agent.processors.impl.AgentRequestProcessorImpl;
 import com.cws.esolutions.agent.processors.interfaces.IAgentRequestProcessor;
+import com.cws.esolutions.core.processors.dto.AgentRequest;
+import com.cws.esolutions.core.processors.dto.AgentResponse;
 /**
  * MQ Message Handling class
  *

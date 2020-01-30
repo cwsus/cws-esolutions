@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.agent.dto;
+package com.cws.esolutions.core.processors.dto;
 /*
  * Project: eSolutionsAgent
  * Package: com.cws.esolutions.agent.dto
- * File: AgentResponse.java
+ * File: CoreServicesResponse.java
  *
  * History
  *
@@ -30,8 +30,8 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.agent.AgentConstants;
-import com.cws.esolutions.agent.enums.AgentStatus;
+import com.cws.esolutions.core.CoreServiceConstants;
+import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -40,26 +40,26 @@ import com.cws.esolutions.agent.enums.AgentStatus;
  * @author cws-khuntly
  * @version 1.0
  */
-public class AgentResponse implements Serializable
+public class CoreServicesResponse implements Serializable
 {
     private Object responsePayload = null;
-    private AgentStatus requestStatus = null;
+    private CoreServicesStatus requestStatus = null;
 
-    private static final String CNAME = AgentResponse.class.getName();
+    private static final String CNAME = CoreServicesResponse.class.getName();
     private static final long serialVersionUID = 8147483886425734062L;
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(AgentConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(AgentConstants.ERROR_LOGGER);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER);
 
-    public final void setRequestStatus(final AgentStatus value)
+    public final void setRequestStatus(final CoreServicesStatus value)
     {
-        final String methodName = AgentResponse.CNAME + "#setRequestStatus(final AgentStatus value)";
+        final String methodName = CoreServicesResponse.CNAME + "#setRequestStatus(final CoreServicesStatus value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AgentStatus: {}", value);
+            DEBUGGER.debug("CoreServicesStatus: {}", value);
         }
 
         this.requestStatus = value;
@@ -67,7 +67,7 @@ public class AgentResponse implements Serializable
 
     public final void setResponsePayload(final Object value)
     {
-        final String methodName = AgentResponse.CNAME + "#setResponsePayload(final Object value)";
+        final String methodName = CoreServicesResponse.CNAME + "#setResponsePayload(final Object value)";
 
         if (DEBUG)
         {
@@ -78,14 +78,14 @@ public class AgentResponse implements Serializable
         this.responsePayload = value;
     }
 
-    public final AgentStatus getRequestStatus()
+    public final CoreServicesStatus getRequestStatus()
     {
-        final String methodName = AgentResponse.CNAME + "#getRequestStatus()";
+        final String methodName = CoreServicesResponse.CNAME + "#getRequestStatus()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AgentStatus: {}", this.requestStatus);
+            DEBUGGER.debug("CoreServicesStatus: {}", this.requestStatus);
         }
 
         return this.requestStatus;
@@ -93,7 +93,7 @@ public class AgentResponse implements Serializable
 
     public final Object getResponsePayload()
     {
-        final String methodName = AgentResponse.CNAME + "#getResponsePayload()";
+        final String methodName = CoreServicesResponse.CNAME + "#getResponsePayload()";
 
         if (DEBUG)
         {
@@ -107,7 +107,7 @@ public class AgentResponse implements Serializable
     @Override
     public String toString()
     {
-        final String methodName = AgentResponse.CNAME + "#toString()";
+        final String methodName = CoreServicesResponse.CNAME + "#toString()";
 
         if (DEBUG)
         {
@@ -115,7 +115,7 @@ public class AgentResponse implements Serializable
         }
 
         StringBuilder sBuilder = new StringBuilder()
-            .append("[" + this.getClass().getName() + "]" + AgentConstants.LINE_BREAK + "{" + AgentConstants.LINE_BREAK);
+            .append("[" + this.getClass().getName() + "]" + CoreServiceConstants.LINE_BREAK + "{" + CoreServiceConstants.LINE_BREAK);
 
         for (Field field : this.getClass().getDeclaredFields())
         {
@@ -135,7 +135,7 @@ public class AgentResponse implements Serializable
                 {
                     if (field.get(this) != null)
                     {
-                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + AgentConstants.LINE_BREAK);
+                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + CoreServiceConstants.LINE_BREAK);
                     }
                 }
                 catch (IllegalAccessException iax)

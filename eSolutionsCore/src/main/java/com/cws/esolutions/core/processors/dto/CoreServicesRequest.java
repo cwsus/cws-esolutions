@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.agent.dto;
+package com.cws.esolutions.core.processors.dto;
 /*
  * Project: eSolutionsAgent
  * Package: com.cws.esolutions.agent.dto
- * File: AgentRequest.java
+ * File: CoreServicesRequest.java
  *
  * History
  *
@@ -30,7 +30,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.agent.AgentConstants;
+import com.cws.esolutions.core.CoreServiceConstants;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -39,23 +39,23 @@ import com.cws.esolutions.agent.AgentConstants;
  * @author cws-khuntly
  * @version 1.0
  */
-public class AgentRequest implements Serializable
+public class CoreServicesRequest implements Serializable
 {
     private String appName = null;
     private String projectId = null;
     private String serviceId = null;
     private Object requestPayload = null;
 
-    private static final String CNAME = AgentRequest.class.getName();
+    private static final String CNAME = CoreServicesRequest.class.getName();
     private static final long serialVersionUID = -7910758710669328293L;
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(AgentConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(AgentConstants.ERROR_LOGGER);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER);
 
     public final void setAppName(final String value)
     {
-        final String methodName = AgentRequest.CNAME + "#setAppName(final String value)";
+        final String methodName = CoreServicesRequest.CNAME + "#setAppName(final String value)";
 
         if (DEBUG)
         {
@@ -68,7 +68,7 @@ public class AgentRequest implements Serializable
 
     public final void setProjectId(final String value)
     {
-        final String methodName = AgentRequest.CNAME + "#setProjectId(final String value)";
+        final String methodName = CoreServicesRequest.CNAME + "#setProjectId(final String value)";
 
         if (DEBUG)
         {
@@ -81,7 +81,7 @@ public class AgentRequest implements Serializable
 
     public final void setServiceId(final String value)
     {
-        final String methodName = AgentRequest.CNAME + "#setServiceId(final String value)";
+        final String methodName = CoreServicesRequest.CNAME + "#setServiceId(final String value)";
 
         if (DEBUG)
         {
@@ -94,7 +94,7 @@ public class AgentRequest implements Serializable
 
     public final void setRequestPayload(final Object value)
     {
-        final String methodName = AgentRequest.CNAME + "#setRequestPayload(final Object value)";
+        final String methodName = CoreServicesRequest.CNAME + "#setRequestPayload(final Object value)";
 
         if (DEBUG)
         {
@@ -107,7 +107,7 @@ public class AgentRequest implements Serializable
 
     public final String getAppName()
     {
-        final String methodName = AgentRequest.CNAME + "#getAppName()";
+        final String methodName = CoreServicesRequest.CNAME + "#getAppName()";
 
         if (DEBUG)
         {
@@ -120,7 +120,7 @@ public class AgentRequest implements Serializable
 
     public final String getProjectId()
     {
-        final String methodName = AgentRequest.CNAME + "#getProjectId()";
+        final String methodName = CoreServicesRequest.CNAME + "#getProjectId()";
 
         if (DEBUG)
         {
@@ -133,7 +133,7 @@ public class AgentRequest implements Serializable
 
     public final String getServiceId()
     {
-        final String methodName = AgentRequest.CNAME + "#getServiceId()";
+        final String methodName = CoreServicesRequest.CNAME + "#getServiceId()";
 
         if (DEBUG)
         {
@@ -146,7 +146,7 @@ public class AgentRequest implements Serializable
 
     public final Object getRequestPayload()
     {
-        final String methodName = AgentRequest.CNAME + "#getRequestPayload()";
+        final String methodName = CoreServicesRequest.CNAME + "#getRequestPayload()";
 
         if (DEBUG)
         {
@@ -160,7 +160,7 @@ public class AgentRequest implements Serializable
     @Override
     public String toString()
     {
-        final String methodName = AgentRequest.CNAME + "#toString()";
+        final String methodName = CoreServicesRequest.CNAME + "#toString()";
 
         if (DEBUG)
         {
@@ -168,7 +168,7 @@ public class AgentRequest implements Serializable
         }
 
         StringBuilder sBuilder = new StringBuilder()
-            .append("[" + this.getClass().getName() + "]" + AgentConstants.LINE_BREAK + "{" + AgentConstants.LINE_BREAK);
+            .append("[" + this.getClass().getName() + "]" + CoreServiceConstants.LINE_BREAK + "{" + CoreServiceConstants.LINE_BREAK);
 
         for (Field field : this.getClass().getDeclaredFields())
         {
@@ -188,7 +188,7 @@ public class AgentRequest implements Serializable
                 {
                     if (field.get(this) != null)
                     {
-                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + AgentConstants.LINE_BREAK);
+                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + CoreServiceConstants.LINE_BREAK);
                     }
                 }
                 catch (IllegalAccessException iax)

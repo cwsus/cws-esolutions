@@ -34,11 +34,11 @@ import java.util.ArrayList;
 
 import com.cws.esolutions.core.utils.MQUtils;
 import com.cws.esolutions.core.CoreServiceBean;
-import com.cws.esolutions.agent.dto.AgentRequest;
+import com.cws.esolutions.core.processors.dto.CoreServicesRequest;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.core.utils.exception.UtilityException;
-import com.cws.esolutions.agent.processors.dto.SystemManagerRequest;
-import com.cws.esolutions.agent.processors.enums.SystemManagementType;
+import com.cws.esolutions.core.processors.dto.SystemManagerRequest;
+import com.cws.esolutions.core.processors.enums.SystemManagementType;
 
 public class MQUtilsTest
 {
@@ -63,7 +63,7 @@ public class MQUtilsTest
         SystemManagerRequest system = new SystemManagerRequest();
         system.setMgmtType(SystemManagementType.SYSTEMCHECK);
 
-        AgentRequest request = new AgentRequest();
+        CoreServicesRequest request = new CoreServicesRequest();
         request.setAppName("eSolutions");
         request.setProjectId("1");
         request.setRequestPayload(system);

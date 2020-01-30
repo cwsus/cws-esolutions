@@ -30,8 +30,8 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.agent.AgentConstants;
-import com.cws.esolutions.agent.enums.AgentStatus;
+import com.cws.esolutions.core.CoreServiceConstants;
+import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -43,18 +43,18 @@ import com.cws.esolutions.agent.enums.AgentStatus;
 public class SystemManagerResponse implements Serializable
 {
     private Object requestData = null;
-    private AgentStatus requestStatus = null;
+    private CoreServicesStatus requestStatus = null;
 
     private static final long serialVersionUID = 256273030714343000L;
     private static final String CNAME = SystemManagerResponse.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(AgentConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(AgentConstants.ERROR_LOGGER);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER);
 
-    public final void setRequestStatus(final AgentStatus value)
+    public final void setRequestStatus(final CoreServicesStatus value)
     {
-        final String methodName = SystemManagerResponse.CNAME + "#setRequestStatus(final AgentStatus value)";
+        final String methodName = SystemManagerResponse.CNAME + "#setRequestStatus(final CoreServicesStatus value)";
 
         if (DEBUG)
         {
@@ -78,7 +78,7 @@ public class SystemManagerResponse implements Serializable
         this.requestData = value;
     }
 
-    public final AgentStatus getRequestStatus()
+    public final CoreServicesStatus getRequestStatus()
     {
         final String methodName = SystemManagerResponse.CNAME + "#getRequestStatus()";
 
@@ -115,7 +115,7 @@ public class SystemManagerResponse implements Serializable
         }
 
         StringBuilder sBuilder = new StringBuilder()
-            .append("[" + this.getClass().getName() + "]" + AgentConstants.LINE_BREAK + "{" + AgentConstants.LINE_BREAK);
+            .append("[" + this.getClass().getName() + "]" + CoreServiceConstants.LINE_BREAK + "{" + CoreServiceConstants.LINE_BREAK);
 
         for (Field field : this.getClass().getDeclaredFields())
         {
@@ -135,7 +135,7 @@ public class SystemManagerResponse implements Serializable
                 {
                     if (field.get(this) != null)
                     {
-                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + AgentConstants.LINE_BREAK);
+                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + CoreServiceConstants.LINE_BREAK);
                     }
                 }
                 catch (IllegalAccessException iax)

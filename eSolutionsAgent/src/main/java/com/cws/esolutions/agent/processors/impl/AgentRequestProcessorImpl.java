@@ -14,19 +14,6 @@
  * limitations under the License.
  */
 package com.cws.esolutions.agent.processors.impl;
-/*
- * Project: eSolutionsAgent
- * Package: com.cws.esolutions.agent.server.processors.impl
- * File: AgentRequestProcessorImpl.java
- *
- * History
- *
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * cws-khuntly          11/23/2008 22:39:20             Created.
- */
-import com.cws.esolutions.agent.dto.AgentRequest;
-import com.cws.esolutions.agent.dto.AgentResponse;
 import com.cws.esolutions.agent.enums.AgentStatus;
 import com.cws.esolutions.agent.exception.AgentException;
 import com.cws.esolutions.agent.processors.impl.FileManagerProcessorImpl;
@@ -37,6 +24,8 @@ import com.cws.esolutions.agent.processors.exception.SystemManagerException;
 import com.cws.esolutions.agent.processors.interfaces.IFileManagerProcessor;
 import com.cws.esolutions.agent.processors.interfaces.IAgentRequestProcessor;
 import com.cws.esolutions.agent.processors.interfaces.IServiceCheckProcessor;
+import com.cws.esolutions.core.processors.dto.AgentRequest;
+import com.cws.esolutions.core.processors.dto.AgentResponse;
 import com.cws.esolutions.core.processors.dto.FileManagerRequest;
 import com.cws.esolutions.core.processors.dto.FileManagerResponse;
 import com.cws.esolutions.core.processors.dto.ServiceCheckRequest;

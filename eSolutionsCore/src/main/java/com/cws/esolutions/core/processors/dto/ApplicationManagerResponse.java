@@ -31,6 +31,7 @@ import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.CoreServiceConstants;
+import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -42,7 +43,7 @@ import com.cws.esolutions.core.CoreServiceConstants;
 public class ApplicationManagerResponse implements Serializable
 {
     private String response = null;
-    private AgentStatus requestStatus = null;
+    private CoreServicesStatus requestStatus = null;
 
     private static final long serialVersionUID = -9096097694538612637L;
     private static final String CNAME = ApplicationManagerResponse.class.getName();
@@ -51,14 +52,14 @@ public class ApplicationManagerResponse implements Serializable
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER);
 
-    public final void setRequestStatus(final AgentStatus value)
+    public final void setRequestStatus(final CoreServicesStatus value)
     {
-        final String methodName = ApplicationManagerResponse.CNAME + "#setRequestStatus(final AgentStatus value)";
+        final String methodName = ApplicationManagerResponse.CNAME + "#setRequestStatus(final CoreServicesStatus value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AgentStatus: {}", value);
+            DEBUGGER.debug("CoreServicesStatus: {}", value);
         }
 
         this.requestStatus = value;
@@ -77,14 +78,14 @@ public class ApplicationManagerResponse implements Serializable
         this.response = value;
     }
 
-    public final AgentStatus getRequestStatus()
+    public final CoreServicesStatus getRequestStatus()
     {
         final String methodName = ApplicationManagerResponse.CNAME + "#getRequestStatus()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AgentStatus: {}", this.requestStatus);
+            DEBUGGER.debug("CoreServicesStatus: {}", this.requestStatus);
         }
 
         return this.requestStatus;
