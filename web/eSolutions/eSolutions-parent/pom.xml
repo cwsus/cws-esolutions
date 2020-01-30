@@ -36,8 +36,8 @@
     </properties>
 
     <modules>
-        <module>../../../eSolutionsCore</module>
         <module>../../../eSolutionsSecurity</module>
+        <module>../../../eSolutionsCore</module>
         <module>../jars/eSolutions_java_source</module>
         <module>../jars/eSolutions_web_config</module>
         <module>../wars/eSolutions_web_source</module>
