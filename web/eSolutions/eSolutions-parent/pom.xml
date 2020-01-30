@@ -36,7 +36,6 @@
     </properties>
 
     <modules>
-        <module>../../../eSolutionsAgent</module>
         <module>../../../eSolutionsCore</module>
         <module>../../../eSolutionsSecurity</module>
         <module>../jars/eSolutions_java_source</module>
