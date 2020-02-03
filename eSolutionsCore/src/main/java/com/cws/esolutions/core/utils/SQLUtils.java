@@ -36,7 +36,7 @@ import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 
 import com.cws.esolutions.core.CoreServicesBean;
-import com.cws.esolutions.core.CoreServiceConstants;
+import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.utils.exception.UtilityException;
 /**
  * @author cws-khuntly
@@ -48,9 +48,9 @@ public class SQLUtils
     private static final CoreServicesBean appBean = CoreServicesBean.getInstance();
     private static final DataSource dataSource = appBean.getDataSources().get("ApplicationDataSource");
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER);
 
     /**
      * Run a provided query against the configured datasource and return the resultset for

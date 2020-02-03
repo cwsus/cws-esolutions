@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
-import com.cws.esolutions.core.CoreServiceConstants;
+import com.cws.esolutions.core.CoreServicesConstants;
 /**
  * @author cws-khuntly
  * @version 1.0
@@ -59,9 +59,9 @@ public final class ApplicationConfig implements Serializable
     private static final long serialVersionUID = -2125011070971484380L;
     private static final String CNAME = ApplicationConfig.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER);
 
     public final void setEmailAliasId(final String value)
     {
@@ -344,7 +344,7 @@ public final class ApplicationConfig implements Serializable
         }
 
         StringBuilder sBuilder = new StringBuilder()
-            .append("[" + this.getClass().getName() + "]" + CoreServiceConstants.LINE_BREAK + "{" + CoreServiceConstants.LINE_BREAK);
+            .append("[" + this.getClass().getName() + "]" + CoreServicesConstants.LINE_BREAK + "{" + CoreServicesConstants.LINE_BREAK);
 
         for (Field field : this.getClass().getDeclaredFields())
         {
@@ -364,7 +364,7 @@ public final class ApplicationConfig implements Serializable
                 {
                     if (field.get(this) != null)
                     {
-                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + CoreServiceConstants.LINE_BREAK);
+                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + CoreServicesConstants.LINE_BREAK);
                     }
                 }
                 catch (IllegalAccessException iax)

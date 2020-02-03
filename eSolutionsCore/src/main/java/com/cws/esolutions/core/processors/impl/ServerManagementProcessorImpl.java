@@ -34,7 +34,7 @@ import java.sql.SQLException;
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.core.CoreServiceConstants;
+import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.dto.Service;
 import com.cws.esolutions.core.processors.enums.ServerType;
@@ -205,20 +205,20 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                             requestServer.getInstalledMemory(),
                             requestServer.getOperIpAddress(),
                             requestServer.getOperHostName(),
-                            (StringUtils.isNotEmpty(requestServer.getMgmtIpAddress())) ? requestServer.getMgmtIpAddress() : CoreServiceConstants.NOT_SET,
-                            (StringUtils.isNotEmpty(requestServer.getMgmtHostName())) ? requestServer.getMgmtHostName() : CoreServiceConstants.NOT_SET,
-                            (StringUtils.isNotEmpty(requestServer.getBkIpAddress())) ? requestServer.getBkIpAddress() : CoreServiceConstants.NOT_SET,
-                            (StringUtils.isNotEmpty(requestServer.getBkHostName())) ? requestServer.getBkHostName() : CoreServiceConstants.NOT_SET,
-                            (StringUtils.isNotEmpty(requestServer.getNasIpAddress())) ? requestServer.getNasIpAddress() : CoreServiceConstants.NOT_SET,
-                            (StringUtils.isNotEmpty(requestServer.getNasHostName())) ? requestServer.getNasHostName() : CoreServiceConstants.NOT_SET,
-                            (StringUtils.isNotEmpty(requestServer.getNatAddress())) ? requestServer.getNatAddress() : CoreServiceConstants.NOT_SET,
+                            (StringUtils.isNotEmpty(requestServer.getMgmtIpAddress())) ? requestServer.getMgmtIpAddress() : CoreServicesConstants.NOT_SET,
+                            (StringUtils.isNotEmpty(requestServer.getMgmtHostName())) ? requestServer.getMgmtHostName() : CoreServicesConstants.NOT_SET,
+                            (StringUtils.isNotEmpty(requestServer.getBkIpAddress())) ? requestServer.getBkIpAddress() : CoreServicesConstants.NOT_SET,
+                            (StringUtils.isNotEmpty(requestServer.getBkHostName())) ? requestServer.getBkHostName() : CoreServicesConstants.NOT_SET,
+                            (StringUtils.isNotEmpty(requestServer.getNasIpAddress())) ? requestServer.getNasIpAddress() : CoreServicesConstants.NOT_SET,
+                            (StringUtils.isNotEmpty(requestServer.getNasHostName())) ? requestServer.getNasHostName() : CoreServicesConstants.NOT_SET,
+                            (StringUtils.isNotEmpty(requestServer.getNatAddress())) ? requestServer.getNatAddress() : CoreServicesConstants.NOT_SET,
                             requestServer.getServerComments(),
                             userAccount.getGuid(),
-                            (StringUtils.isNotBlank(requestServer.getMgrUrl())) ? requestServer.getMgrUrl() : CoreServiceConstants.NOT_SET,
+                            (StringUtils.isNotBlank(requestServer.getMgrUrl())) ? requestServer.getMgrUrl() : CoreServicesConstants.NOT_SET,
                             requestServer.getDmgrPort(),
-                            (StringUtils.isNotBlank(requestServer.getServerRack())) ? requestServer.getServerRack() : CoreServiceConstants.NOT_SET,
-                            (StringUtils.isNotBlank(requestServer.getRackPosition())) ? requestServer.getRackPosition() : CoreServiceConstants.NOT_SET,
-                            (requestServer.getOwningDmgr() != null) ? requestServer.getOwningDmgr().getServerGuid() : CoreServiceConstants.NOT_SET));
+                            (StringUtils.isNotBlank(requestServer.getServerRack())) ? requestServer.getServerRack() : CoreServicesConstants.NOT_SET,
+                            (StringUtils.isNotBlank(requestServer.getRackPosition())) ? requestServer.getRackPosition() : CoreServicesConstants.NOT_SET,
+                            (requestServer.getOwningDmgr() != null) ? requestServer.getOwningDmgr().getServerGuid() : CoreServicesConstants.NOT_SET));
 
             if (DEBUG)
             {
@@ -406,20 +406,20 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                             requestServer.getInstalledMemory(),
                             requestServer.getOperIpAddress(),
                             requestServer.getOperHostName(),
-                            (StringUtils.isNotEmpty(requestServer.getMgmtIpAddress())) ? requestServer.getMgmtIpAddress() : CoreServiceConstants.NOT_SET,
-                            (StringUtils.isNotEmpty(requestServer.getMgmtHostName())) ? requestServer.getMgmtHostName() : CoreServiceConstants.NOT_SET,
-                            (StringUtils.isNotEmpty(requestServer.getBkIpAddress())) ? requestServer.getBkIpAddress() : CoreServiceConstants.NOT_SET,
-                            (StringUtils.isNotEmpty(requestServer.getBkHostName())) ? requestServer.getBkHostName() : CoreServiceConstants.NOT_SET,
-                            (StringUtils.isNotEmpty(requestServer.getNasIpAddress())) ? requestServer.getNasIpAddress() : CoreServiceConstants.NOT_SET,
-                            (StringUtils.isNotEmpty(requestServer.getNasHostName())) ? requestServer.getNasHostName() : CoreServiceConstants.NOT_SET,
-                            (StringUtils.isNotEmpty(requestServer.getNatAddress())) ? requestServer.getNatAddress() : CoreServiceConstants.NOT_SET,
+                            (StringUtils.isNotEmpty(requestServer.getMgmtIpAddress())) ? requestServer.getMgmtIpAddress() : CoreServicesConstants.NOT_SET,
+                            (StringUtils.isNotEmpty(requestServer.getMgmtHostName())) ? requestServer.getMgmtHostName() : CoreServicesConstants.NOT_SET,
+                            (StringUtils.isNotEmpty(requestServer.getBkIpAddress())) ? requestServer.getBkIpAddress() : CoreServicesConstants.NOT_SET,
+                            (StringUtils.isNotEmpty(requestServer.getBkHostName())) ? requestServer.getBkHostName() : CoreServicesConstants.NOT_SET,
+                            (StringUtils.isNotEmpty(requestServer.getNasIpAddress())) ? requestServer.getNasIpAddress() : CoreServicesConstants.NOT_SET,
+                            (StringUtils.isNotEmpty(requestServer.getNasHostName())) ? requestServer.getNasHostName() : CoreServicesConstants.NOT_SET,
+                            (StringUtils.isNotEmpty(requestServer.getNatAddress())) ? requestServer.getNatAddress() : CoreServicesConstants.NOT_SET,
                             requestServer.getServerComments(),
                             requestServer.getAssignedEngineer().getGuid(),
-                            (StringUtils.isNotBlank(requestServer.getMgrUrl())) ? requestServer.getMgrUrl() : CoreServiceConstants.NOT_SET,
+                            (StringUtils.isNotBlank(requestServer.getMgrUrl())) ? requestServer.getMgrUrl() : CoreServicesConstants.NOT_SET,
                             requestServer.getDmgrPort(),
-                            (StringUtils.isNotBlank(requestServer.getServerRack())) ? requestServer.getServerRack() : CoreServiceConstants.NOT_SET,
-                            (StringUtils.isNotBlank(requestServer.getRackPosition())) ? requestServer.getRackPosition() : CoreServiceConstants.NOT_SET,
-                            (requestServer.getOwningDmgr() != null) ? requestServer.getOwningDmgr().getServerGuid() : CoreServiceConstants.NOT_SET));
+                            (StringUtils.isNotBlank(requestServer.getServerRack())) ? requestServer.getServerRack() : CoreServicesConstants.NOT_SET,
+                            (StringUtils.isNotBlank(requestServer.getRackPosition())) ? requestServer.getRackPosition() : CoreServicesConstants.NOT_SET,
+                            (requestServer.getOwningDmgr() != null) ? requestServer.getOwningDmgr().getServerGuid() : CoreServicesConstants.NOT_SET));
 
             if (DEBUG)
             {

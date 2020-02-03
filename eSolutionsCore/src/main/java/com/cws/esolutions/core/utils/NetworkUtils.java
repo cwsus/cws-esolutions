@@ -83,7 +83,7 @@ import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.http.impl.client.SystemDefaultCredentialsProvider;
 
 import com.cws.esolutions.core.CoreServicesBean;
-import com.cws.esolutions.core.CoreServiceConstants;
+import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.config.xml.FTPConfig;
 import com.cws.esolutions.core.config.xml.SSHConfig;
 import com.cws.esolutions.core.config.xml.HTTPConfig;
@@ -109,9 +109,9 @@ public final class NetworkUtils
     private static final CoreServicesBean appBean = CoreServicesBean.getInstance();
     private static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER + CNAME);
 
     /**
      * Creates an SSH connection to a target host and then executes an SCP
@@ -468,7 +468,7 @@ public final class NetworkUtils
                             DEBUGGER.debug("Data: {}", line);
                         }
 
-                        sBuilder.append(line + CoreServiceConstants.LINE_BREAK);
+                        sBuilder.append(line + CoreServicesConstants.LINE_BREAK);
                     }
 
                     if (DEBUG)

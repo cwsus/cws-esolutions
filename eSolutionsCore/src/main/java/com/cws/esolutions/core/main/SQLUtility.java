@@ -34,8 +34,8 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.ParseException;
 
-import com.cws.esolutions.core.CoreServiceConstants;
-import com.cws.esolutions.core.exception.CoreServiceException;
+import com.cws.esolutions.core.CoreServicesConstants;
+import com.cws.esolutions.core.exception.CoreServicesException;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
@@ -54,7 +54,7 @@ public class SQLUtility
     private static final String SEC_LOG_CONFIG = System.getProperty("user.home") + "/etc/SecurityService/logging/logging.xml";
     private static final String SEC_SVC_CONFIG = System.getProperty("user.home") + "/etc/SecurityService/config/ServiceConfig.xml";
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public enum LoadType
@@ -126,7 +126,7 @@ public class SQLUtility
             SecurityServiceInitializer.initializeService(securityConfiguration, securityLogging, false);
             CoreServiceInitializer.initializeService(coreConfiguration, coreLogging, false, true);
         }
-        catch (CoreServiceException csx)
+        catch (CoreServicesException csx)
         {
             System.err.println("An error occurred while loading configuration data: " + csx.getCause().getMessage());
 

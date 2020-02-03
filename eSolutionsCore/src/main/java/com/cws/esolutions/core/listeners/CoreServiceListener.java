@@ -44,9 +44,9 @@ import org.apache.log4j.xml.DOMConfigurator;
 import javax.servlet.ServletContextListener;
 
 import com.cws.esolutions.core.CoreServicesBean;
-import com.cws.esolutions.core.CoreServiceConstants;
+import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.config.xml.DataSourceManager;
-import com.cws.esolutions.core.exception.CoreServiceException;
+import com.cws.esolutions.core.exception.CoreServicesException;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 /**
  * @author cws-khuntly
@@ -62,9 +62,9 @@ public class CoreServiceListener implements ServletContextListener
     private static final String CNAME = CoreServiceListener.class.getName();
     private static final String INIT_SYSLOGGING_FILE = "eSolutionsCoreLogger";
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER + CNAME);
 
     public void contextInitialized(final ServletContextEvent contextEvent)
     {
@@ -103,7 +103,7 @@ public class CoreServiceListener implements ServletContextListener
                 {
                     ERROR_RECORDER.error("System configuration not found. Shutting down !");
 
-                    throw new CoreServiceException("System configuration file location not provided by application. Cannot continue.");
+                    throw new CoreServicesException("System configuration file location not provided by application. Cannot continue.");
                 }
 
                 if (DEBUG)
@@ -136,7 +136,7 @@ public class CoreServiceListener implements ServletContextListener
             }
             else
             {
-                throw new CoreServiceException("Failed to load servlet context");
+                throw new CoreServicesException("Failed to load servlet context");
             }
         }
         catch (NamingException nx)
@@ -147,7 +147,7 @@ public class CoreServiceListener implements ServletContextListener
         {
             ERROR_RECORDER.error(jx.getMessage(), jx);
         }
-        catch (CoreServiceException csx)
+        catch (CoreServicesException csx)
         {
             ERROR_RECORDER.error(csx.getMessage(), csx);
         }

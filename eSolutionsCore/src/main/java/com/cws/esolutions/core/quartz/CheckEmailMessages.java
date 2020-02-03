@@ -40,7 +40,7 @@ import javax.mail.MessagingException;
 import org.quartz.JobExecutionContext;
 
 import com.cws.esolutions.core.utils.EmailUtils;
-import com.cws.esolutions.core.CoreServiceConstants;
+import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.security.utils.PasswordUtils;
 /**
@@ -55,9 +55,9 @@ public class CheckEmailMessages implements Job
 {
     private static final String CNAME = CheckEmailMessages.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CheckEmailMessages.CNAME);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER + CheckEmailMessages.CNAME);
 
     /**
      * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)

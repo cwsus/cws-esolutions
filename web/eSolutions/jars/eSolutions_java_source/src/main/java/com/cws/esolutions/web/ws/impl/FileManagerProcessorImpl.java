@@ -34,7 +34,7 @@ import javax.jws.WebService;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.io.FileUtils;
 
-import com.cws.esolutions.core.CoreServiceConstants;
+import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.processors.dto.FileManagerRequest;
 import com.cws.esolutions.core.processors.dto.FileManagerResponse;
 import com.cws.esolutions.web.ws.interfaces.IFileManagerProcessor;
@@ -47,9 +47,9 @@ import com.cws.esolutions.core.processors.exception.FileManagerException;
 public class FileManagerProcessorImpl implements IFileManagerProcessor
 {
 	private static final String CNAME = QuoteServiceImpl.class.getName();
-	private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
+	private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER);
 
     public FileManagerResponse retrieveFile(final FileManagerRequest request) throws FileManagerException
     {

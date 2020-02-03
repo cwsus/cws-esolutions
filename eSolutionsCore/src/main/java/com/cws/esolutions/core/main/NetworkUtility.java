@@ -46,9 +46,9 @@ import org.apache.commons.cli.CommandLineParser;
 
 import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.utils.NetworkUtils;
-import com.cws.esolutions.core.CoreServiceConstants;
+import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.core.exception.CoreServiceException;
+import com.cws.esolutions.core.exception.CoreServicesException;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.security.exception.SecurityServiceException;
@@ -75,9 +75,9 @@ public final class NetworkUtility
     private static final String SEC_LOG_CONFIG = System.getProperty("user.home") + "/etc/SecurityService/logging/logging.xml";
     private static final String SEC_SVC_CONFIG = System.getProperty("user.home") + "/etc/SecurityService/config/ServiceConfig.xml";
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER + CNAME);
 
     static
     {
@@ -294,11 +294,11 @@ public final class NetworkUtility
             {
                 if (!(commandLine.hasOption("hostname")) || (!(StringUtils.isBlank(commandLine.getOptionValue("hostname")))))
                 {
-                    throw new CoreServiceException("No target host was provided. Unable to process request.");
+                    throw new CoreServicesException("No target host was provided. Unable to process request.");
                 }
                 else if (!(commandLine.hasOption("username")) && (StringUtils.isBlank(commandLine.getOptionValue("username"))))
                 {
-                    throw new CoreServiceException("No username was provided. Using default.");
+                    throw new CoreServicesException("No username was provided. Using default.");
                 }
 
                 // NetworkUtils.executeSshConnection(commandLine.getOptionValue("hostname"), commandList);
@@ -307,11 +307,11 @@ public final class NetworkUtility
             {
                 if (!(commandLine.hasOption("hostname")) || (!(StringUtils.isBlank(commandLine.getOptionValue("hostname")))))
                 {
-                    throw new CoreServiceException("No target host was provided. Unable to process request.");
+                    throw new CoreServicesException("No target host was provided. Unable to process request.");
                 }
                 else if (!(commandLine.hasOption("method")) && (StringUtils.isBlank(commandLine.getOptionValue("method")))) 
                 {
-                    throw new CoreServiceException("No HTTP method was provided. Unable to process request.");
+                    throw new CoreServicesException("No HTTP method was provided. Unable to process request.");
                 }
 
                 NetworkUtils.executeHttpConnection(new URL(commandLine.getOptionValue("hostname")), commandLine.getOptionValue("method"));
@@ -320,15 +320,15 @@ public final class NetworkUtility
             {
                 if (!(commandLine.hasOption("hostname")) || (StringUtils.isBlank(commandLine.getOptionValue("hostname"))))
                 {
-                    throw new CoreServiceException("No target host was provided. Unable to process request.");
+                    throw new CoreServicesException("No target host was provided. Unable to process request.");
                 }
                 else if (!(commandLine.hasOption("sourceFile")) && (StringUtils.isBlank(commandLine.getOptionValue("sourceFile")))) 
                 {
-                    throw new CoreServiceException("No source file(s) were provided. Unable to process request.");
+                    throw new CoreServicesException("No source file(s) were provided. Unable to process request.");
                 }
                 else if (!(commandLine.hasOption("targetFile")) && (StringUtils.isBlank(commandLine.getOptionValue("targetFile")))) 
                 {
-                    throw new CoreServiceException("No target file(s) were provided. Unable to process request.");
+                    throw new CoreServicesException("No target file(s) were provided. Unable to process request.");
                 }
 
                 List<String> filesToTransfer = new ArrayList<String>(
@@ -385,7 +385,7 @@ public final class NetworkUtility
 
             System.err.println("An error occurred during processing: " + ssx.getMessage());
         }
-        catch (CoreServiceException csx)
+        catch (CoreServicesException csx)
         {
             ERROR_RECORDER.error(csx.getMessage(), csx);
 

@@ -34,7 +34,7 @@ import java.sql.SQLException;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.CoreServicesBean;
-import com.cws.esolutions.core.CoreServiceConstants;
+import com.cws.esolutions.core.CoreServicesConstants;
 /**
  * @author cws-khuntly
  * @version 1.0
@@ -46,8 +46,8 @@ public interface IWebMessagingDAO
     static final CoreServicesBean appBean = CoreServicesBean.getInstance();
     static final DataSource dataSource = appBean.getDataSources().get("ApplicationDataSource");
 
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
-    static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
+    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER + CNAME);
+    static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     boolean insertMessage(final List<Object> messageList) throws SQLException;

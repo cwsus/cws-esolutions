@@ -33,7 +33,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.core.utils.NetworkUtils;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.core.CoreServiceConstants;
+import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.processors.dto.DNSEntry;
 import com.cws.esolutions.core.processors.dto.DNSRecord;
 import com.cws.esolutions.core.processors.enums.ServerType;
@@ -315,15 +315,15 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
             }
 
             StringBuilder pBuilder = new StringBuilder()
-                .append("$ORIGIN " + entry.getOrigin() + CoreServiceConstants.LINE_BREAK)
-                .append("$TTL " + entry.getLifetime() + CoreServiceConstants.LINE_BREAK)
-                .append(entry.getSiteName() + " IN SOA " + entry.getMaster() + " " + entry.getOwner() + " (" + CoreServiceConstants.LINE_BREAK)
-                .append("       " + entry.getSerialNumber() + "," + CoreServiceConstants.LINE_BREAK)
-                .append("       " + entry.getRefresh() + "," + CoreServiceConstants.LINE_BREAK)
-                .append("       " + entry.getRetry() + "," + CoreServiceConstants.LINE_BREAK)
-                .append("       " + entry.getExpiry() + "," + CoreServiceConstants.LINE_BREAK)
-                .append("       " + entry.getMinimum() + "," + CoreServiceConstants.LINE_BREAK)
-                .append("       )" + CoreServiceConstants.LINE_BREAK);
+                .append("$ORIGIN " + entry.getOrigin() + CoreServicesConstants.LINE_BREAK)
+                .append("$TTL " + entry.getLifetime() + CoreServicesConstants.LINE_BREAK)
+                .append(entry.getSiteName() + " IN SOA " + entry.getMaster() + " " + entry.getOwner() + " (" + CoreServicesConstants.LINE_BREAK)
+                .append("       " + entry.getSerialNumber() + "," + CoreServicesConstants.LINE_BREAK)
+                .append("       " + entry.getRefresh() + "," + CoreServicesConstants.LINE_BREAK)
+                .append("       " + entry.getRetry() + "," + CoreServicesConstants.LINE_BREAK)
+                .append("       " + entry.getExpiry() + "," + CoreServicesConstants.LINE_BREAK)
+                .append("       " + entry.getMinimum() + "," + CoreServicesConstants.LINE_BREAK)
+                .append("       )" + CoreServicesConstants.LINE_BREAK);
 
             for (DNSRecord record : apexRecords)
             {
@@ -335,11 +335,11 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 switch (record.getRecordType())
                 {
                     case MX:
-                        pBuilder.append("       " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordPriority() + "    " + record.getRecordAddress() + CoreServiceConstants.LINE_BREAK);
+                        pBuilder.append("       " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordPriority() + "    " + record.getRecordAddress() + CoreServicesConstants.LINE_BREAK);
 
                         break;
                     default:
-                        pBuilder.append("       " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordAddress() + CoreServiceConstants.LINE_BREAK);
+                        pBuilder.append("       " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordAddress() + CoreServicesConstants.LINE_BREAK);
 
                         break;
                 }
@@ -347,8 +347,8 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
             if ((entry.getSubRecords() != null) && (entry.getSubRecords().size() != 0))
             {
-                pBuilder.append(CoreServiceConstants.LINE_BREAK);
-                pBuilder.append("$ORIGIN " + entry.getSiteName() + "." + CoreServiceConstants.LINE_BREAK); // always put the site name as the initial origin
+                pBuilder.append(CoreServicesConstants.LINE_BREAK);
+                pBuilder.append("$ORIGIN " + entry.getSiteName() + "." + CoreServicesConstants.LINE_BREAK); // always put the site name as the initial origin
 
                 for (DNSRecord record : entry.getSubRecords())
                 {
@@ -361,15 +361,15 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                     {
                         if (!(StringUtils.contains(pBuilder.toString(), record.getRecordOrigin())))
                         {
-                            pBuilder.append(CoreServiceConstants.LINE_BREAK);
-                            pBuilder.append("$ORIGIN " + record.getRecordOrigin() + "." + CoreServiceConstants.LINE_BREAK);
+                            pBuilder.append(CoreServicesConstants.LINE_BREAK);
+                            pBuilder.append("$ORIGIN " + record.getRecordOrigin() + "." + CoreServicesConstants.LINE_BREAK);
                         }
                     }
 
                     switch (record.getRecordType())
                     {
                         case MX:
-                            pBuilder.append("       " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordPriority() + "    " + record.getRecordAddress() + CoreServiceConstants.LINE_BREAK);
+                            pBuilder.append("       " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordPriority() + "    " + record.getRecordAddress() + CoreServicesConstants.LINE_BREAK);
 
                             break;
                         case SRV:
@@ -377,24 +377,24 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                             {
                                 pBuilder.append(record.getRecordService() + "." + record.getRecordProtocol() + "    " + record.getRecordName() + "    " +
                                         record.getRecordLifetime() + "    " + record.getRecordClass() + "    " + record.getRecordType() + "    " +
-                                        record.getRecordPriority() + "    " + record.getRecordWeight() + "    " + record.getRecordPort() + "    " + record.getRecordAddress() + CoreServiceConstants.LINE_BREAK);
+                                        record.getRecordPriority() + "    " + record.getRecordWeight() + "    " + record.getRecordPort() + "    " + record.getRecordAddress() + CoreServicesConstants.LINE_BREAK);
                             }
                             else
                             {
                                 pBuilder.append(record.getRecordService() + "." + record.getRecordProtocol() + "    " + record.getRecordLifetime() + "    " +
                                         record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordPriority() + "    " +
-                                        record.getRecordWeight() + "    " + record.getRecordPort() + "    " + record.getRecordAddress() + CoreServiceConstants.LINE_BREAK);
+                                        record.getRecordWeight() + "    " + record.getRecordPort() + "    " + record.getRecordAddress() + CoreServicesConstants.LINE_BREAK);
                             }
 
                             break;
                         default:
                             if ((record.getRecordAddress() != null) && (record.getRecordAddresses() == null))
                             {
-                                pBuilder.append(record.getRecordName() + "    " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordAddress() + CoreServiceConstants.LINE_BREAK);
+                                pBuilder.append(record.getRecordName() + "    " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordAddress() + CoreServicesConstants.LINE_BREAK);
                             }
                             else
                             {
-                                pBuilder.append(record.getRecordName() + "    " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordAddresses().get(0) + CoreServiceConstants.LINE_BREAK);
+                                pBuilder.append(record.getRecordName() + "    " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordAddresses().get(0) + CoreServicesConstants.LINE_BREAK);
 
                                 for (int x = 1; x != record.getRecordAddresses().size(); x++)
                                 {
@@ -403,7 +403,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                                         DEBUGGER.debug("recordAddress: {}: ", record.getRecordAddresses().get(x));
                                     }
             
-                                    pBuilder.append("    " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordAddresses().get(x) + CoreServiceConstants.LINE_BREAK);
+                                    pBuilder.append("    " + record.getRecordClass() + "    " + record.getRecordType() + "    " + record.getRecordAddresses().get(x) + CoreServicesConstants.LINE_BREAK);
                                 }
                             }
 

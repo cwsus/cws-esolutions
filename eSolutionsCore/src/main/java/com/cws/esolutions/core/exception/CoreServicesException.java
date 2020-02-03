@@ -17,7 +17,7 @@ package com.cws.esolutions.core.exception;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.exception
- * File: CoreServiceException.java
+ * File: CoreServicesException.java
  *
  * History
  *
@@ -34,7 +34,7 @@ package com.cws.esolutions.core.exception;
  * @author cws-khuntly
  * @version 1.0
  */
-public class CoreServiceException extends Exception
+public class CoreServicesException extends Exception
 {
     private static final long serialVersionUID = -4141507100554321719L;
 
@@ -43,7 +43,7 @@ public class CoreServiceException extends Exception
      *
      * @param message - The message for the exception
      */
-    public CoreServiceException(final String message)
+    public CoreServicesException(final String message)
     {
         super(message);
     }
@@ -53,7 +53,7 @@ public class CoreServiceException extends Exception
      *
      * @param throwable - The throwable for the exception
      */
-    public CoreServiceException(final Throwable throwable)
+    public CoreServicesException(final Throwable throwable)
     {
         super(throwable);
     }
@@ -64,7 +64,7 @@ public class CoreServiceException extends Exception
      * @param message - The message for the exception
      * @param throwable - The throwable for the exception
      */
-    public CoreServiceException(final String message, final Throwable throwable)
+    public CoreServicesException(final String message, final Throwable throwable)
     {
         super(message, throwable);
     }

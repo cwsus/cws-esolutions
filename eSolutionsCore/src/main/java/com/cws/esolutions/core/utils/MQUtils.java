@@ -44,7 +44,7 @@ import javax.naming.NamingException;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-import com.cws.esolutions.core.CoreServiceConstants;
+import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.core.utils.exception.UtilityException;
 /**
@@ -59,9 +59,9 @@ public final class MQUtils
     private static final String INIT_CONTEXT = "java:comp/env";
     private static final String CNAME = MQUtils.class.getName();
 
-    static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
+    static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
+    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER + CNAME);
 
     /**
      * Puts an MQ message on a specified queue and returns the associated

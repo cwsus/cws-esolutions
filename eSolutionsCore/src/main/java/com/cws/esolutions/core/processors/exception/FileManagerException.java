@@ -25,11 +25,11 @@ package com.cws.esolutions.core.processors.exception;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import com.cws.esolutions.core.exception.CoreServiceException;
+import com.cws.esolutions.core.exception.CoreServicesException;
 /**
  * @see com.cws.esolutions.agent.exception.AgentException
  */
-public class FileManagerException extends CoreServiceException
+public class FileManagerException extends CoreServicesException
 {
     private static final long serialVersionUID = -2932676631264113045L;
 

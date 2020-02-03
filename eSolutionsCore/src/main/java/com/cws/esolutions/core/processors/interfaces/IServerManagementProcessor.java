@@ -28,7 +28,7 @@ package com.cws.esolutions.core.processors.interfaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.core.CoreServiceConstants;
+import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.dao.impl.ServerDataDAOImpl;
 import com.cws.esolutions.core.dao.interfaces.IServerDataDAO;
 import com.cws.esolutions.core.processors.dto.ServerManagementRequest;
@@ -51,9 +51,9 @@ public interface IServerManagementProcessor
     static final String CNAME = IServerManagementProcessor.class.getName();
     static final IAccessControlService accessControl = new AccessControlServiceImpl();
 
-    static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
+    static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
+    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER + CNAME);
 
     /**
      * Adds the provided server to the service datastore.

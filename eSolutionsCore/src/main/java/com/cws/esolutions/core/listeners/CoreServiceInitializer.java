@@ -43,12 +43,12 @@ import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.commons.dbcp.BasicDataSource;
 
 import com.cws.esolutions.core.CoreServicesBean;
-import com.cws.esolutions.core.CoreServiceConstants;
+import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.config.xml.DataSourceManager;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
-import com.cws.esolutions.core.exception.CoreServiceException;
+import com.cws.esolutions.core.exception.CoreServicesException;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 /**
@@ -60,9 +60,9 @@ public class CoreServiceInitializer
     private static final String CNAME = CoreServiceInitializer.class.getName();
     private static final CoreServicesBean appBean = CoreServicesBean.getInstance();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER + CNAME);
 
     /**
      * Initializes the core service in a standalone mode - used for applications outside of a container or when
@@ -72,10 +72,10 @@ public class CoreServiceInitializer
      * @param logConfig - The logging configuration file to utilize
      * @param loadSecurity - Flag to start security
      * @param startConnections - Flag to start connections
-     * @throws CoreServiceException @{link com.cws.esolutions.core.exception.CoreServiceException}
+     * @throws CoreServicesException @{link com.cws.esolutions.core.exception.CoreServicesException}
      * if an exception occurs during initialization
      */
-    public static void initializeService(final String configFile, final String logConfig, final boolean loadSecurity, final boolean startConnections) throws CoreServiceException
+    public static void initializeService(final String configFile, final String logConfig, final boolean loadSecurity, final boolean startConnections) throws CoreServicesException
     {
         URL xmlURL = null;
         JAXBContext context = null;
@@ -185,12 +185,12 @@ public class CoreServiceInitializer
         catch (JAXBException jx)
         {
             jx.printStackTrace();
-            throw new CoreServiceException(jx.getMessage(), jx);
+            throw new CoreServicesException(jx.getMessage(), jx);
         }
         catch (MalformedURLException mux)
         {
             mux.printStackTrace();
-            throw new CoreServiceException(mux.getMessage(), mux);
+            throw new CoreServicesException(mux.getMessage(), mux);
         }
     }
 

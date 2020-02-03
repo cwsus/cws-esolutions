@@ -28,7 +28,7 @@ package com.cws.esolutions.core.main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.core.CoreServiceConstants;
+import com.cws.esolutions.core.CoreServicesConstants;
 /**
  * Utility class for MQ operations. Currently supports ActiveMQ. Future
  * plans to support IBM MQ in the works.
@@ -40,9 +40,9 @@ public final class MQUtility
 {
         private static final String CNAME = MQUtility.class.getName();
 
-    static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
+    static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
+    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER + CNAME);
 
     public static final void main(final String[] args)
     {

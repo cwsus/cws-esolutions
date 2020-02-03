@@ -25,16 +25,16 @@ package com.cws.esolutions.core.processors.exception;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import com.cws.esolutions.core.exception.CoreServiceException;
+import com.cws.esolutions.core.exception.CoreServicesException;
 /**
- * @see com.cws.esolutions.core.exception.CoreServiceException
+ * @see com.cws.esolutions.core.exception.CoreServicesException
  */
-public class VirtualServiceException extends CoreServiceException
+public class VirtualServiceException extends CoreServicesException
 {
     private static final long serialVersionUID = -1845781429123758169L;
 
     /**
-     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.String)
+     * @see com.cws.esolutions.core.exception.CoreServicesException#CoreServiceException(java.lang.String)
      *
      * @param message - The message for the exception
      */
@@ -44,7 +44,7 @@ public class VirtualServiceException extends CoreServiceException
     }
 
     /**
-     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.String)
+     * @see com.cws.esolutions.core.exception.CoreServicesException#CoreServiceException(java.lang.String)
      *
      * @param throwable - The throwable for the exception
      */
@@ -54,7 +54,7 @@ public class VirtualServiceException extends CoreServiceException
     }
 
     /**
-     * @see com.cws.esolutions.core.exception.CoreServiceException#CoreServiceException(java.lang.String)
+     * @see com.cws.esolutions.core.exception.CoreServicesException#CoreServiceException(java.lang.String)
      *
      * @param message - The message for the exception
      * @param throwable - The throwable for the exception
