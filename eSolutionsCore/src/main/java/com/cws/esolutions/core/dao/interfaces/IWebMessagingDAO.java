@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import java.sql.SQLException;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.core.CoreServiceBean;
+import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.CoreServiceConstants;
 /**
  * @author cws-khuntly
@@ -43,7 +43,7 @@ public interface IWebMessagingDAO
 {
     static final String CNAME = IWebMessagingDAO.class.getName();
 
-    static final CoreServiceBean appBean = CoreServiceBean.getInstance();
+    static final CoreServicesBean appBean = CoreServicesBean.getInstance();
     static final DataSource dataSource = appBean.getDataSources().get("ApplicationDataSource");
 
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);

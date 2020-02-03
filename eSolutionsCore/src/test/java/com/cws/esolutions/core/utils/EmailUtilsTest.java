@@ -39,13 +39,13 @@ import javax.mail.MessagingException;
 import java.io.FileNotFoundException;
 import org.apache.commons.io.FileUtils;
 
-import com.cws.esolutions.core.CoreServiceBean;
+import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 
 public class EmailUtilsTest
 {
-    private static final CoreServiceBean bean = CoreServiceBean.getInstance();
+    private static final CoreServicesBean bean = CoreServicesBean.getInstance();
 
     @Before public void setUp()
     {

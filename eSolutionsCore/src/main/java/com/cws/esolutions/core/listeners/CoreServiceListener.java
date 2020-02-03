@@ -43,7 +43,7 @@ import javax.servlet.ServletContextEvent;
 import org.apache.log4j.xml.DOMConfigurator;
 import javax.servlet.ServletContextListener;
 
-import com.cws.esolutions.core.CoreServiceBean;
+import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.config.xml.DataSourceManager;
 import com.cws.esolutions.core.exception.CoreServiceException;
@@ -55,7 +55,7 @@ import com.cws.esolutions.core.config.xml.CoreConfigurationData;
  */
 public class CoreServiceListener implements ServletContextListener
 {
-    private static final CoreServiceBean appBean = CoreServiceBean.getInstance();
+    private static final CoreServicesBean appBean = CoreServicesBean.getInstance();
 
     private static final String DS_CONTEXT = "java:comp/env/";
     private static final String INIT_SYSAPP_FILE = "eSolutionsCoreConfig";

@@ -36,10 +36,11 @@ import org.apache.commons.io.FileUtils;
 
 import com.cws.esolutions.agent.AgentDaemon;
 import com.cws.esolutions.agent.enums.AgentStatus;
-import com.cws.esolutions.agent.processors.exception.FileManagerException;
-import com.cws.esolutions.agent.processors.interfaces.IFileManagerProcessor;
 import com.cws.esolutions.core.processors.dto.FileManagerRequest;
 import com.cws.esolutions.core.processors.dto.FileManagerResponse;
+import com.cws.esolutions.core.processors.exception.FileManagerException;
+import com.cws.esolutions.web.ws.impl.FileManagerProcessorImpl;
+import com.cws.esolutions.web.ws.interfaces.IFileManagerProcessor;
 
 public class FileManagerProcessorImplTest
 {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.agent.processors.interfaces;
+package com.cws.esolutions.web.ws.interfaces;
 /*
  * Project: eSolutionsAgent
  * Package: com.cws.esolutions.agent.processors.interfaces
@@ -25,14 +25,14 @@ package com.cws.esolutions.agent.processors.interfaces;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.jws.WebMethod;
+import javax.jws.WebService;
+import javax.jws.soap.SOAPBinding;
+import javax.jws.soap.SOAPBinding.Style;
 
-import com.cws.esolutions.agent.AgentBean;
-import com.cws.esolutions.agent.AgentConstants;
-import com.cws.esolutions.agent.processors.exception.FileManagerException;
 import com.cws.esolutions.core.processors.dto.FileManagerRequest;
 import com.cws.esolutions.core.processors.dto.FileManagerResponse;
+import com.cws.esolutions.core.processors.exception.FileManagerException;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -41,20 +41,19 @@ import com.cws.esolutions.core.processors.dto.FileManagerResponse;
  * @author cws-khuntly
  * @version 1.0
  */
+@WebService
+@SOAPBinding(style = Style.DOCUMENT)
 public interface IFileManagerProcessor
 {
-    static final AgentBean appBean = AgentBean.getInstance();
-
     static final byte buffer[] = new byte[1024];
     static final String CNAME = IFileManagerProcessor.class.getName();
 
-    static final Logger DEBUGGER = LoggerFactory.getLogger(AgentConstants.DEBUGGER);
-    static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(AgentConstants.ERROR_LOGGER + CNAME);
-
+    @WebMethod
     FileManagerResponse retrieveFile(final FileManagerRequest request) throws FileManagerException;
 
+    @WebMethod
     FileManagerResponse deployFile(final FileManagerRequest request) throws FileManagerException;
 
+    @WebMethod
     FileManagerResponse deleteFile(final FileManagerRequest request) throws FileManagerException;
 }

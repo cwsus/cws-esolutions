@@ -28,7 +28,7 @@ package com.cws.esolutions.core.processors.interfaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.core.CoreServiceBean;
+import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.config.xml.SSHConfig;
 import com.cws.esolutions.core.dao.impl.ServerDataDAOImpl;
@@ -50,7 +50,7 @@ public interface IDNSServiceRequestProcessor
 {
     static final IServerDataDAO dao = new ServerDataDAOImpl();
     static final IAuditProcessor auditor = new AuditProcessorImpl();
-    static final CoreServiceBean appBean = CoreServiceBean.getInstance();
+    static final CoreServicesBean appBean = CoreServicesBean.getInstance();
     static final String CNAME = IDNSServiceRequestProcessor.class.getName();
     static final SSHConfig sshConfig = appBean.getConfigData().getSshConfig();
     static final IAccessControlService accessControl = new AccessControlServiceImpl();

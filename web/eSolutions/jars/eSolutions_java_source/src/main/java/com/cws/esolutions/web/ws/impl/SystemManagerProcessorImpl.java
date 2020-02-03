@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2009 - 2020 CaspersBox Web Services
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.agent.processors.exception;
+package com.cws.esolutions.web.ws.impl;
 /*
- * Project: eSolutionsAgent
- * Package: com.cws.esolutions.agent.processors.exception
- * File: FileManagerException.java
+ * Project: eSolutions_java_source
+ * Package: com.cws.esolutions.web.webservices.impl
+ * File: QuoteServiceImpl.java
  *
  * History
  *
@@ -25,26 +25,15 @@ package com.cws.esolutions.agent.processors.exception;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import com.cws.esolutions.agent.exception.AgentException;
+import javax.jws.WebService;
+
+import com.cws.esolutions.web.ws.interfaces.ISystemManagerProcessor;
 /**
- * @see com.cws.esolutions.agent.exception.AgentException
+ * @author cws-khuntly
+ * @version 1.0
+ * @see com.cws.esolutions.web.ws.interfaces.IQuoteService
  */
-public class FileManagerException extends AgentException
+@WebService(endpointInterface = "com.cws.esolutions.web.ws.interfaces.ISystemManagerProcessor")
+public class SystemManagerProcessorImpl implements ISystemManagerProcessor
 {
-    private static final long serialVersionUID = -2932676631264113045L;
-
-    public FileManagerException(final String message)
-    {
-        super(message);
-    }
-
-    public FileManagerException(final Throwable throwable)
-    {
-        super(throwable);
-    }
-
-    public FileManagerException(final String message, final Throwable throwable)
-    {
-        super(message, throwable);
-    }
 }

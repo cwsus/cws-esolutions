@@ -29,7 +29,7 @@ package com.cws.esolutions.core.processors.interfaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.core.CoreServiceBean;
+import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.config.xml.AgentConfig;
 import com.cws.esolutions.core.dao.impl.ServiceDataDAOImpl;
@@ -53,7 +53,7 @@ import com.cws.esolutions.core.processors.exception.ApplicationManagementExcepti
 public interface IApplicationManagementProcessor
 {
     static final IAuditProcessor auditor = new AuditProcessorImpl();
-    static final CoreServiceBean appBean = CoreServiceBean.getInstance();
+    static final CoreServicesBean appBean = CoreServicesBean.getInstance();
     static final IServiceDataDAO serviceDao = new ServiceDataDAOImpl();
     static final IApplicationDataDAO appDAO = new ApplicationDataDAOImpl();
     static final AgentConfig agentConfig = appBean.getConfigData().getAgentConfig();

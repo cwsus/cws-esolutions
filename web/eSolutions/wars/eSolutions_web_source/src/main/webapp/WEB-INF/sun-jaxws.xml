@@ -2,6 +2,14 @@
 <endpoints xmlns="http://java.sun.com/xml/ns/jax-ws/ri/runtime"
     version="2.0">
     <endpoint name="QuoteServiceImpl"
-        implementation="com.cws.esolutions.web.webservices.impl.QuoteServiceImpl"
+        implementation="com.cws.esolutions.web.ws.impl.QuoteServiceImpl"
         url-pattern="/getQuote" />
+
+    <endpoint name="SystemManagerProcessorImpl"
+        implementation="com.cws.esolutions.web.ws.impl.SystemManagerProcessorImpl"
+        url-pattern="/system-manager" />
+
+    <endpoint name="FileManagerProcessorImpl"
+        implementation="com.cws.esolutions.web.ws.impl.FileManagerProcessorImpl"
+        url-pattern="/file-manager" />
 </endpoints>

@@ -42,7 +42,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.commons.dbcp.BasicDataSource;
 
-import com.cws.esolutions.core.CoreServiceBean;
+import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.SecurityServiceBean;
@@ -58,7 +58,7 @@ import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 public class CoreServiceInitializer
 {
     private static final String CNAME = CoreServiceInitializer.class.getName();
-    private static final CoreServiceBean appBean = CoreServiceBean.getInstance();
+    private static final CoreServicesBean appBean = CoreServicesBean.getInstance();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

@@ -28,7 +28,7 @@ package com.cws.esolutions.core.processors.interfaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.core.CoreServiceBean;
+import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.config.xml.ServiceAccount;
 import com.cws.esolutions.core.dao.impl.WebMessagingDAOImpl;
@@ -49,7 +49,7 @@ public interface IWebMessagingProcessor
 {
     static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final IAccessControlService accessControl = new AccessControlServiceImpl();
-    static final CoreServiceBean appBean = CoreServiceBean.getInstance();
+    static final CoreServicesBean appBean = CoreServicesBean.getInstance();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
     static final ServiceAccount serviceAccount = appBean.getConfigData().getAppConfig().getServiceAccount().get(0);
     static final IWebMessagingDAO webMessengerDAO = new WebMessagingDAOImpl();

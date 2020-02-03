@@ -44,7 +44,7 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.CommandLineParser;
 
-import com.cws.esolutions.core.CoreServiceBean;
+import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.utils.NetworkUtils;
 import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.security.SecurityServiceBean;
@@ -68,7 +68,7 @@ public final class NetworkUtility
     private static Options options = null;
 
     private static final String CNAME = NetworkUtility.class.getName();
-    private static final CoreServiceBean appBean = CoreServiceBean.getInstance();
+    private static final CoreServicesBean appBean = CoreServicesBean.getInstance();
     private static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     private static final String CORE_LOG_CONFIG = System.getProperty("user.home") + "/etc/eSolutionsCore/logging/logging.xml";
     private static final String CORE_SVC_CONFIG = System.getProperty("user.home") + "/etc/eSolutionsCore/config/ServiceConfig.xml";

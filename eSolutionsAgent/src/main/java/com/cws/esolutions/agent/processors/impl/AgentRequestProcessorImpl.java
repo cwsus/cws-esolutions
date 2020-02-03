@@ -16,12 +16,9 @@
 package com.cws.esolutions.agent.processors.impl;
 import com.cws.esolutions.agent.enums.AgentStatus;
 import com.cws.esolutions.agent.exception.AgentException;
-import com.cws.esolutions.agent.processors.impl.FileManagerProcessorImpl;
 import com.cws.esolutions.agent.processors.impl.ServiceCheckProcessorImpl;
-import com.cws.esolutions.agent.processors.exception.FileManagerException;
 import com.cws.esolutions.agent.processors.exception.ServiceCheckException;
 import com.cws.esolutions.agent.processors.exception.SystemManagerException;
-import com.cws.esolutions.agent.processors.interfaces.IFileManagerProcessor;
 import com.cws.esolutions.agent.processors.interfaces.IAgentRequestProcessor;
 import com.cws.esolutions.agent.processors.interfaces.IServiceCheckProcessor;
 import com.cws.esolutions.core.processors.dto.AgentRequest;
@@ -30,6 +27,9 @@ import com.cws.esolutions.core.processors.dto.FileManagerRequest;
 import com.cws.esolutions.core.processors.dto.FileManagerResponse;
 import com.cws.esolutions.core.processors.dto.ServiceCheckRequest;
 import com.cws.esolutions.core.processors.dto.ServiceCheckResponse;
+import com.cws.esolutions.core.processors.exception.FileManagerException;
+import com.cws.esolutions.web.ws.impl.FileManagerProcessorImpl;
+import com.cws.esolutions.web.ws.interfaces.IFileManagerProcessor;
 import com.cws.esolutions.agent.processors.exception.ApplicationManagerException;
 /**
  * @see com.cws.esolutions.agent.processors.interfaces.IAgentRequestProcessor

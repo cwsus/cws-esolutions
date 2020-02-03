@@ -17,7 +17,7 @@ package com.cws.esolutions.core;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core
- * File: CoreServiceBean.java
+ * File: CoreServicesBean.java
  *
  * History
  *
@@ -36,16 +36,16 @@ import com.cws.esolutions.core.config.xml.CoreConfigurationData;
  * @author cws-khuntly
  * @version 1.0
  */
-public class CoreServiceBean
+public class CoreServicesBean
 {
     private String osType = null;
     private String hostName = null;
     private CoreConfigurationData configData = null;
     private Map<String, DataSource> dataSources = null;
 
-    private static CoreServiceBean instance = null;
+    private static CoreServicesBean instance = null;
 
-    private static final String CNAME = CoreServiceBean.class.getName();
+    private static final String CNAME = CoreServicesBean.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -56,22 +56,22 @@ public class CoreServiceBean
      *
      * @return InitializerBean
      */
-    public static final CoreServiceBean getInstance()
+    public static final CoreServicesBean getInstance()
     {
         final String method = CNAME + "#getInstance()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(method);
-            DEBUGGER.debug("instance: {}", CoreServiceBean.instance);
+            DEBUGGER.debug("instance: {}", CoreServicesBean.instance);
         }
 
-        if (CoreServiceBean.instance == null)
+        if (CoreServicesBean.instance == null)
         {
-            CoreServiceBean.instance = new CoreServiceBean();
+            CoreServicesBean.instance = new CoreServicesBean();
         }
 
-        return CoreServiceBean.instance;
+        return CoreServicesBean.instance;
     }
 
     /**
@@ -82,7 +82,7 @@ public class CoreServiceBean
      */
     public final void setConfigData(final CoreConfigurationData value)
     {
-        final String methodName = CoreServiceBean.CNAME + "#setConfigData(final CoreConfigurationData value)";
+        final String methodName = CoreServicesBean.CNAME + "#setConfigData(final CoreConfigurationData value)";
 
         if (DEBUG)
         {
@@ -95,7 +95,7 @@ public class CoreServiceBean
 
     public final void setDataSources(final Map<String, DataSource> value)
     {
-        final String methodName = CoreServiceBean.CNAME + "#setDataSources(final Map<String, DataSource> value)";
+        final String methodName = CoreServicesBean.CNAME + "#setDataSources(final Map<String, DataSource> value)";
 
         if (DEBUG)
         {
@@ -115,7 +115,7 @@ public class CoreServiceBean
      */
     public final void setOsType(final String value)
     {
-        final String methodName = CoreServiceBean.CNAME + "#setOsType(final String value)";
+        final String methodName = CoreServicesBean.CNAME + "#setOsType(final String value)";
 
         if (DEBUG)
         {
@@ -135,7 +135,7 @@ public class CoreServiceBean
      */
     public final void setHostName(final String value)
     {
-        final String methodName = CoreServiceBean.CNAME + "#setHostName(final String value)";
+        final String methodName = CoreServicesBean.CNAME + "#setHostName(final String value)";
 
         if (DEBUG)
         {
@@ -155,7 +155,7 @@ public class CoreServiceBean
      */
     public final CoreConfigurationData getConfigData()
     {
-        final String methodName = CoreServiceBean.CNAME + "#getConfigData()";
+        final String methodName = CoreServicesBean.CNAME + "#getConfigData()";
 
         if (DEBUG)
         {
@@ -168,7 +168,7 @@ public class CoreServiceBean
 
     public final Map<String, DataSource> getDataSources()
     {
-        final String methodName = CoreServiceBean.CNAME + "#getDataSources()";
+        final String methodName = CoreServicesBean.CNAME + "#getDataSources()";
 
         if (DEBUG)
         {
@@ -188,7 +188,7 @@ public class CoreServiceBean
      */
     public final String getOsType()
     {
-        final String methodName = CoreServiceBean.CNAME + "#getOsType()";
+        final String methodName = CoreServicesBean.CNAME + "#getOsType()";
 
         if (DEBUG)
         {
@@ -206,7 +206,7 @@ public class CoreServiceBean
      */
     public final String getHostName()
     {
-        final String methodName = CoreServiceBean.CNAME + "#getHostName()";
+        final String methodName = CoreServicesBean.CNAME + "#getHostName()";
 
         if (DEBUG)
         {
@@ -220,7 +220,7 @@ public class CoreServiceBean
     @Override
     public final String toString()
     {
-        final String methodName = CoreServiceBean.CNAME + "#toString()";
+        final String methodName = CoreServicesBean.CNAME + "#toString()";
 
         if (DEBUG)
         {

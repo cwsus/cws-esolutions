@@ -31,7 +31,7 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.core.CoreServiceBean;
+import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.CoreServiceConstants;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -43,7 +43,7 @@ import com.cws.esolutions.core.CoreServiceConstants;
  */
 public interface IApplicationDataDAO
 {
-    static final CoreServiceBean appBean = CoreServiceBean.getInstance();
+    static final CoreServicesBean appBean = CoreServicesBean.getInstance();
 
     static final String CNAME = IApplicationDataDAO.class.getName();
     static final DataSource dataSource = appBean.getDataSources().get("ApplicationDataSource");

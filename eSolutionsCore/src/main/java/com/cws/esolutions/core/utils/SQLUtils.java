@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 
-import com.cws.esolutions.core.CoreServiceBean;
+import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.utils.exception.UtilityException;
 /**
@@ -45,7 +45,7 @@ import com.cws.esolutions.core.utils.exception.UtilityException;
 public class SQLUtils
 {
     private static final String CNAME = SQLUtils.class.getName();
-    private static final CoreServiceBean appBean = CoreServiceBean.getInstance();
+    private static final CoreServicesBean appBean = CoreServicesBean.getInstance();
     private static final DataSource dataSource = appBean.getDataSources().get("ApplicationDataSource");
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);

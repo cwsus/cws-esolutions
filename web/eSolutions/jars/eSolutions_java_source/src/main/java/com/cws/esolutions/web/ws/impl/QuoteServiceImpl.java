@@ -38,7 +38,7 @@ import com.cws.esolutions.web.ws.interfaces.IQuoteService;
  * @version 1.0
  * @see com.cws.esolutions.web.ws.interfaces.IQuoteService
  */
-@WebService(endpointInterface = "com.cws.esolutions.web.webservices.interfaces.IQuoteService")
+@WebService(endpointInterface = "com.cws.esolutions.web.ws.interfaces.IQuoteService")
 public class QuoteServiceImpl implements IQuoteService
 {
     private static List<String> quoteList = null;
@@ -75,12 +75,7 @@ public class QuoteServiceImpl implements IQuoteService
             DEBUGGER.debug("Value: ", methodName);
         }
 
-        int index = 0;
-        String quote = null;
-        Random random = new Random();
-
-        index = random.nextInt(quoteList.size());
-        quote = quoteList.get(index);
+        final String quote = quoteList.get(new Random().nextInt(quoteList.size()));
 
         if (DEBUG)
         {

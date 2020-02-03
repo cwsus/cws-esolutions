@@ -82,7 +82,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.http.impl.client.SystemDefaultCredentialsProvider;
 
-import com.cws.esolutions.core.CoreServiceBean;
+import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.config.xml.FTPConfig;
 import com.cws.esolutions.core.config.xml.SSHConfig;
@@ -106,7 +106,7 @@ public final class NetworkUtils
     private static final String PROXY_AUTH_TYPE_NTLM = "NTLM";
     private static final String PROXY_AUTH_TYPE_BASIC = "basic";
     private static final String CNAME = NetworkUtils.class.getName();
-    private static final CoreServiceBean appBean = CoreServiceBean.getInstance();
+    private static final CoreServicesBean appBean = CoreServicesBean.getInstance();
     private static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);

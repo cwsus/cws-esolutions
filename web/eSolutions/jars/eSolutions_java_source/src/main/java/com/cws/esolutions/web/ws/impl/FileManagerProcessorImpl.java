@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.agent.processors.impl;
+package com.cws.esolutions.web.ws.impl;
 /*
  * Project: eSolutionsAgent
  * Package: com.cws.esolutions.agent.processors.impl
@@ -27,23 +27,33 @@ package com.cws.esolutions.agent.processors.impl;
  */
 import java.io.File;
 import java.util.List;
+import org.slf4j.Logger;
 import java.util.ArrayList;
 import java.io.IOException;
+import javax.jws.WebService;
+import org.slf4j.LoggerFactory;
 import org.apache.commons.io.FileUtils;
 
-import com.cws.esolutions.agent.enums.AgentStatus;
-import com.cws.esolutions.agent.processors.exception.FileManagerException;
-import com.cws.esolutions.agent.processors.interfaces.IFileManagerProcessor;
+import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.processors.dto.FileManagerRequest;
 import com.cws.esolutions.core.processors.dto.FileManagerResponse;
+import com.cws.esolutions.web.ws.interfaces.IFileManagerProcessor;
+import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
+import com.cws.esolutions.core.processors.exception.FileManagerException;
 /**
- * @see com.cws.esolutions.agent.processors.interfaces.IFileManagerProcessor
+ * @see com.cws.esolutions.web.ws.interfaces.IFileManagerProcessor
  */
+@WebService(endpointInterface = "com.cws.esolutions.web.ws.interfaces.IFileManagerProcessor")
 public class FileManagerProcessorImpl implements IFileManagerProcessor
 {
+	private static final String CNAME = QuoteServiceImpl.class.getName();
+	private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
+    private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER);
+
     public FileManagerResponse retrieveFile(final FileManagerRequest request) throws FileManagerException
     {
-        final String methodName = IFileManagerProcessor.CNAME + "#retrieveFile(final ApplicationManagerRequest request) throws FileManagerException";
+        final String methodName = FileManagerProcessorImpl.CNAME + "#retrieveFile(final ApplicationManagerRequest request) throws FileManagerException";
 
         if (DEBUG)
         {
@@ -81,11 +91,11 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
 
                     response.setDirListing(fileData);
                     response.setFilePath(request.getRequestFile());
-                    response.setRequestStatus(AgentStatus.SUCCESS);
+                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
                 }
                 else
                 {
-                    response.setRequestStatus(AgentStatus.FAILURE);
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
 
                 if (DEBUG)
@@ -116,7 +126,7 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
                     response.setFileData(fileBytes);
                     response.setFileName(retrievableFile.getName());
                     response.setFilePath(retrievableFile.getPath());
-                    response.setRequestStatus(AgentStatus.SUCCESS);
+                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
 
                     if (DEBUG)
                     {
@@ -125,7 +135,7 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
                 }
                 else
                 {
-                    response.setRequestStatus(AgentStatus.FAILURE);
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
             }
         }
@@ -141,7 +151,7 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
 
     public FileManagerResponse deployFile(final FileManagerRequest request) throws FileManagerException
     {
-        final String methodName = IFileManagerProcessor.CNAME + "#deployFile(final FileManagerRequest request) throws FileManagerException";
+        final String methodName = FileManagerProcessorImpl.CNAME + "#deployFile(final FileManagerRequest request) throws FileManagerException";
 
         if (DEBUG)
         {
@@ -210,11 +220,11 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
 
                 if (failedFiles.size() != 0)
                 {
-                    response.setRequestStatus(AgentStatus.FAILURE);
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
                 else
                 {
-                    response.setRequestStatus(AgentStatus.SUCCESS);
+                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
                 }
             }
             else
@@ -247,7 +257,7 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
                     if (FileUtils.sizeOf(FileUtils.getFile(targetPath, targetFile)) == sourceFile.length)
                     {
                         // match
-                        response.setRequestStatus(AgentStatus.SUCCESS);
+                        response.setRequestStatus(CoreServicesStatus.SUCCESS);
                     }
                     else
                     {
@@ -274,7 +284,7 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
 
     public FileManagerResponse deleteFile(final FileManagerRequest request) throws FileManagerException
     {
-        final String methodName = IFileManagerProcessor.CNAME + "#deleteFile(final FileManagerRequest request) throws FileManagerException";
+        final String methodName = FileManagerProcessorImpl.CNAME + "#deleteFile(final FileManagerRequest request) throws FileManagerException";
 
         if (DEBUG)
         {
@@ -338,11 +348,11 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
 
             if (failedFiles.size() != 0)
             {
-                response.setRequestStatus(AgentStatus.FAILURE);
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
             else
             {
-                response.setRequestStatus(AgentStatus.SUCCESS);
+                response.setRequestStatus(CoreServicesStatus.SUCCESS);
             }
         }
         else
@@ -358,11 +368,11 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
 
                 if (!(isFileDeleted))
                 {
-                    response.setRequestStatus(AgentStatus.FAILURE);
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
                 else
                 {
-                    response.setRequestStatus(AgentStatus.SUCCESS);
+                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
                 }
             }
             else
