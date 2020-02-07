@@ -17,7 +17,9 @@
  *
  */
 -->
-<Context docBase="${catalina.home}/installedApps/eSolutions_web_source-1.0.war" sessionCookieDomain="127.0.0.1" sessionCookiePath="/eSolutions" sessionCookieName="ESOLUTIONS_ID">
+<Context docBase="${catalina.home}/installedApps/eSolutions_web_source-1.0.war" useNaming="true" path="/esolutions"
+    sessionCookieDomain="127.0.0.1" sessionCookiePath="/esolutions" sessionCookieName="ESOLUTIONS_ID">
+    
     <Resource name="jdbc/esolutionssvc" auth="Container" type="javax.sql.DataSource"
         username="appuser" password="appuser10" driverClassName="com.mysql.jdbc.Driver"
         url="jdbc:mysql://ip-172-30-0-105.us-west-2.compute.internal/esolutionssvc?useConfigs=fullDebug&amp;useCompression=true&amp;
@@ -28,15 +30,12 @@
             trustCertificateKeyStoreType=JKS&amp;trustCertificateKeyStorePassword=changeit&amp;
             autoReconnect=true&amp;autoReconnectForPools=true&amp;paranoid=true&amp;
             useLocalTransactionState=true&amp;characterEncoding=UTF8&amp;useServerPrepStmts=true&amp;
-            zeroDateTimeBehavior=convertToNull"
+            zeroDateTimeBehavior=convertToNull" removeAbandonedOnMaintenance="true"
         testWhileIdle="true" testOnBorrow="true" testOnReturn="false"
         validationQuery="SELECT 1 FROM DUAL" validationInterval="30000"
-        timeBetweenEvictionRunsMillis="5000" maxActive="100" minIdle="0"
-        maxWait="10000" initialSize="0" removeAbandonedTimeout="60" singleton="true"
-        removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
-        jdbcInterceptors="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;
-            org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer;
-            org.apache.tomcat.jdbc.pool.interceptor.SlowQueryReportJmx(threshold=10000)" />
+        timeBetweenEvictionRunsMillis="5000" maxTotal="100" minIdle="0"
+        maxWaitMillis="10000" initialSize="0" removeAbandonedTimeout="60" singleton="true"
+        removeAbandonedOnBorrow="true" logAbandoned="true" minEvictableIdleTimeMillis="30000" />
 
     <Resource name="jdbc/cwssec" auth="Container" type="javax.sql.DataSource"
         username="appuser" password="appuser10" driverClassName="com.mysql.jdbc.Driver"
@@ -48,15 +47,12 @@
             trustCertificateKeyStoreType=JKS&amp;trustCertificateKeyStorePassword=changeit&amp;
             autoReconnect=true&amp;autoReconnectForPools=true&amp;paranoid=true&amp;
             useLocalTransactionState=true&amp;characterEncoding=UTF8&amp;useServerPrepStmts=true&amp;
-            zeroDateTimeBehavior=convertToNull"
+            zeroDateTimeBehavior=convertToNull" removeAbandonedOnMaintenance="true"
         testWhileIdle="true" testOnBorrow="true" testOnReturn="false"
         validationQuery="SELECT 1 FROM DUAL" validationInterval="30000"
-        timeBetweenEvictionRunsMillis="5000" maxActive="100" minIdle="0"
-        maxWait="10000" initialSize="0" removeAbandonedTimeout="60" singleton="true"
-        removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
-        jdbcInterceptors="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;
-            org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer;
-            org.apache.tomcat.jdbc.pool.interceptor.SlowQueryReportJmx(threshold=10000)" />
+        timeBetweenEvictionRunsMillis="5000" maxTotal="100" minIdle="0"
+        maxWaitMillis="10000" initialSize="0" removeAbandonedTimeout="60" singleton="true"
+        removeAbandonedOnBorrow="true" logAbandoned="true" minEvictableIdleTimeMillis="30000" />
 
     <Resource name="jms/mqConnectionFactory" auth="Container" type="org.apache.activemq.ActiveMQConnectionFactory"
         factory="org.apache.activemq.jndi.JNDIReferenceFactory" brokerURL="tcp://127.0.0.1:61616" />

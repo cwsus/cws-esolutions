@@ -3,7 +3,7 @@
     version="2.0">
     <endpoint name="QuoteServiceImpl"
         implementation="com.cws.esolutions.web.ws.impl.QuoteServiceImpl"
-        url-pattern="/getQuote" />
+        url-pattern="/get-quote" />
 
     <endpoint name="SystemManagerProcessorImpl"
         implementation="com.cws.esolutions.web.ws.impl.SystemManagerProcessorImpl"

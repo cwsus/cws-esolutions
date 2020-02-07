@@ -38,10 +38,6 @@
         <put-attribute name="pageTitle"     value="eSolutions - Service Unavailable" cascade="true" />
         <put-attribute name="body"          value="/com.cws.esolutions.web/jsp/html/en/System_Unavailable.jsp" cascade="true" />
     </definition>
-    <definition name="System_DisplaySetupPage" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - Setup" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web/jsp/html/en/System_Setup.jsp" cascade="true" />
-    </definition>
     <definition name="System_DisplayHeadersPage" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - Display HTTP Headers" cascade="true" />
         <put-attribute name="body"          value="/com.cws.esolutions.web/jsp/html/en/System_DisplayHeaders.jsp" cascade="true" />
@@ -96,11 +92,11 @@
     <!-- DNSService -->
     <definition name="DNSService_ServiceLookup" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - DNS Services - Service Lookup" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.dnsservice/jsp/html/en/DNSService_ServiceLookup.jsp" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.esolutions.web.dns-service/jsp/html/en/DNSService_ServiceLookup.jsp" cascade="true" />
     </definition>
     <definition name="DNSService_CreateService" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - DNS Services - Create Service" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.dnsservice/jsp/html/en/DNSService_CreateService.jsp" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.esolutions.web.dns-service/jsp/html/en/DNSService_CreateService.jsp" cascade="true" />
     </definition>
 
     <!-- Messaging -->
@@ -116,15 +112,15 @@
     <!-- OnlineReset -->
     <definition name="OnlineReset_SubmitUsername" extends="baseLayout">
         <put-attribute name="title"         value="eSolutions - Forgot Password" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.onlinereset/jsp/html/en/OnlineReset_SubmitUsername.jsp" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.esolutions.web.online-reset/jsp/html/en/OnlineReset_SubmitUsername.jsp" cascade="true" />
     </definition>
     <definition name="OnlineReset_SubmitAnswers" extends="baseLayout">
         <put-attribute name="title"         value="eSolutions - Forgot Password" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.onlinereset/jsp/html/en/OnlineReset_QuestionResponse.jsp" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.esolutions.web.online-reset/jsp/html/en/OnlineReset_QuestionResponse.jsp" cascade="true" />
     </definition>
     <definition name="OnlineReset_ForgotUsername" extends="baseLayout">
         <put-attribute name="title"         value="eSolutions - Forgot Password" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.onlinereset/jsp/html/en/OnlineReset_ForgotUsername.jsp" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.esolutions.web.online-reset/jsp/html/en/OnlineReset_ForgotUsername.jsp" cascade="true" />
     </definition>
 
     <!-- Service Management -->
@@ -214,26 +210,26 @@
     <!-- UserAccount -->
     <definition name="UserAccount_EnableOTP" extends="baseLayout">
         <put-attribute name="title"         value="eSolutions - Enable One-Time Password" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.useraccount/jsp/html/en/UserAccount_EnableOTP.jsp" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.esolutions.web.user-account/jsp/html/en/UserAccount_EnableOTP.jsp" cascade="true" />
     </definition>
     <definition name="UserAccount_ChangePassword" extends="baseLayout">
         <put-attribute name="title"         value="eSolutions - Update Password" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.useraccount/jsp/html/en/UserAccount_ChangePassword.jsp" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.esolutions.web.user-account/jsp/html/en/UserAccount_ChangePassword.jsp" cascade="true" />
     </definition>
     <definition name="UserAccount_ChangeSecurity" extends="baseLayout">
         <put-attribute name="title"         value="eSolutions - Update Security Questions" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.useraccount/jsp/html/en/UserAccount_ChangeSecurity.jsp" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.esolutions.web.user-account/jsp/html/en/UserAccount_ChangeSecurity.jsp" cascade="true" />
     </definition>
     <definition name="UserAccount_ChangeEmail" extends="baseLayout">
         <put-attribute name="title"         value="eSolutions - Update Email Address" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.useraccount/jsp/html/en/UserAccount_ChangeEmail.jsp" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.esolutions.web.user-account/jsp/html/en/UserAccount_ChangeEmail.jsp" cascade="true" />
     </definition>
     <definition name="UserAccount_ChangeContact" extends="baseLayout">
         <put-attribute name="title"         value="eSolutions - Update Contact Information" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.useraccount/jsp/html/en/UserAccount_ChangeContact.jsp" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.esolutions.web.user-account/jsp/html/en/UserAccount_ChangeContact.jsp" cascade="true" />
     </definition>
     <definition name="UserAccount_ShowUser" extends="baseLayout">
         <put-attribute name="title"         value="eSolutions - View User Account" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.useraccount/jsp/html/en/UserAccount_ViewAccount.jsp" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.esolutions.web.user-account/jsp/html/en/UserAccount_ViewAccount.jsp" cascade="true" />
     </definition>
 </tiles-definitions>
