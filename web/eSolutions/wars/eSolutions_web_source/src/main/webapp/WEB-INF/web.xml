@@ -44,7 +44,10 @@
     </context-param>
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:eSolutions/eSolutions-app.xml</param-value>
+        <param-value>
+            classpath:eSolutions/eSolutions-app.xml
+            classpath:eSolutions/application-security.xml
+        </param-value>
     </context-param>
     <context-param>
         <param-name>quartz:config-file</param-name>
@@ -147,6 +150,12 @@
             <param-value>UTF-8</param-value>
         </init-param>
     </filter>
+    <filter>
+        <description>Spring Security Filter Chain</description>
+        <display-name>SpringSecurityFilter</display-name>
+        <filter-name>SpringSecurityFilter</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
 
     <filter-mapping id="CsrfPreventionFilter_mapping">
         <filter-name>CsrfPreventionFilter</filter-name>
@@ -170,6 +179,10 @@
     </filter-mapping>
     <filter-mapping id="SpringEncodingFilter_mapping">
         <filter-name>encoding-filter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping id="SpringSecurityFilter_mapping">
+        <filter-name>SpringSecurityFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
