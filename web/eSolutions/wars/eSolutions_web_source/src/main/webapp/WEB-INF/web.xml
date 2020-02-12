@@ -127,6 +127,16 @@
         <filter-name>SessionFixationFilter</filter-name>
         <filter-class>com.cws.esolutions.security.filters.SessionFixationFilter</filter-class>
     </filter>
+    <filter id="ResponseTimeFilter">
+        <description>Response Timing Filter</description>
+        <display-name>ResponseTimeFilter</display-name>
+        <filter-name>ResponseTimeFilter</filter-name>
+        <filter-class>com.cws.esolutions.core.filters.ResponseTimeFilter</filter-class>
+        <init-param>
+            <param-name>env</param-name>
+            <param-value>dev</param-value>
+        </init-param>
+    </filter>
     <filter id="SpringEncodingFilter">
         <description>Spring Encoding Filter</description>
         <display-name>SpringEncodingFilter</display-name>
@@ -152,6 +162,10 @@
     </filter-mapping>
     <filter-mapping id="SessionFixationFilter_mapping">
         <filter-name>SessionFixationFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping id="ResponseTimeFilter_mapping">
+        <filter-name>ResponseTimeFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
     <filter-mapping id="SpringEncodingFilter_mapping">
