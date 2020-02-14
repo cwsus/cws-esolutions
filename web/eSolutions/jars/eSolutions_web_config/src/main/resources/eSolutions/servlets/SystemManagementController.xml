@@ -38,7 +38,7 @@
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
-        <property name="serverValidator">
+        <property name="validator">
             <ref bean="serverValidator" />
         </property>
         <property name="availableDomains">

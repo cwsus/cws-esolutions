@@ -20,7 +20,7 @@
     </bean>
 
     <bean id="applicationManagementController" class="com.cws.esolutions.web.controllers.ApplicationManagementController">
-        <property name="applicationValidator">
+        <property name="validator">
             <ref bean="applicationValidatorBean" />
         </property>
         <property name="appConfig">

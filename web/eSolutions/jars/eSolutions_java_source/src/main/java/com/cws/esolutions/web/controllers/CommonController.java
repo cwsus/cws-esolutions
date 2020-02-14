@@ -52,13 +52,7 @@ import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.web.validators.EmailMessageValidator;
-import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
-import com.cws.esolutions.core.processors.dto.MessagingResponse;
-import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
-import com.cws.esolutions.core.processors.exception.MessagingServiceException;
-import com.cws.esolutions.core.processors.impl.ServiceMessagingProcessorImpl;
 /**
  * @author cws-khuntly
  * @version 1.0
@@ -69,11 +63,9 @@ import com.cws.esolutions.core.processors.impl.ServiceMessagingProcessorImpl;
 public class CommonController
 {
     private String homePage = null;
-    private String serviceId = null;
     private CoreConfigurationData coreConfig = null;
     private ApplicationServiceBean appConfig = null;
     private SimpleMailMessage contactResponseEmail = null;
-    private ServiceMessagingProcessorImpl processor = null;
 
     private static final String CNAME = CommonController.class.getName();
 
@@ -107,19 +99,6 @@ public class CommonController
         this.coreConfig = value;
     }
 
-    public final void setProcessor(final ServiceMessagingProcessorImpl value)
-    {
-        final String methodName = CommonController.CNAME + "#setProcessor(final ServiceMessagingProcessorImpl value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.processor = value;
-    }
-
     public final void setHomePage(final String value)
     {
         final String methodName = CommonController.CNAME + "#setHomePage(final String value)";
@@ -131,19 +110,6 @@ public class CommonController
         }
 
         this.homePage = value;
-    }
-
-    public final void setServiceId(final String value)
-    {
-        final String methodName = CommonController.CNAME + "#setServiceId(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.serviceId = value;
     }
 
     public final void setContactResponseEmail(final SimpleMailMessage value)
@@ -217,61 +183,6 @@ public class CommonController
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
-        }
-
-        try
-        {
-            // ensure authenticated access
-            RequestHostInfo reqInfo = new RequestHostInfo();
-            reqInfo.setHostAddress(hRequest.getRemoteAddr());
-            reqInfo.setHostName(hRequest.getRemoteHost());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            }
-
-            MessagingRequest mRequest = new MessagingRequest();
-            mRequest.setRequestInfo(reqInfo);
-            mRequest.setUserAccount(userAccount);
-            mRequest.setServiceId(this.serviceId);
-            mRequest.setApplicationId(this.appConfig.getApplicationId());
-            mRequest.setApplicationName(this.appConfig.getApplicationName());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("MessagingRequest: {}", mRequest);
-            }
-
-            MessagingResponse mResponse = this.processor.showMessages(mRequest);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("MessagingResponse: {}", mResponse);
-            }
-
-            if (mResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-            {
-                mView.addObject("dateFormat", this.appConfig.getDateFormat());
-                mView.addObject("messageList", mResponse.getSvcMessages());
-            }
-
-            MessagingResponse messageResponse = this.processor.showAlertMessages(new MessagingRequest());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("MessagingResponse: {}", messageResponse);
-            }
-
-            if (messageResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-            {
-                mView.addObject("alertMessages", messageResponse.getSvcMessages());
-            }
-        }
-        catch (MessagingServiceException msx)
-        {
-            // log it, but dont redirect or anything
-            ERROR_RECORDER.error(msx.getMessage(), msx);
         }
 
         if (DEBUG)

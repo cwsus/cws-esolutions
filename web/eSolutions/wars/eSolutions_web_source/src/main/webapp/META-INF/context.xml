@@ -17,10 +17,10 @@
  *
  */
 -->
-<Context docBase="${catalina.home}/installedApps/eSolutions_web_source-1.0.war" useNaming="true" path="/esolutions"
-    sessionCookieDomain="127.0.0.1" sessionCookiePath="/esolutions" sessionCookieName="ESOLUTIONS_ID">
+<Context useNaming="true" path="/esolutions" sessionCookiePath="/esolutions" sessionCookieName="ESOLUTIONS_ID">
 
     <Environment name="env" value="dev" type="java.lang.String" override="false" />
+
     <Resource name="jdbc/esolutionssvc" auth="Container" type="javax.sql.DataSource"
         username="appuser" password="appuser10" driverClassName="com.mysql.jdbc.Driver"
         url="jdbc:mysql://ip-172-30-0-105.us-west-2.compute.internal/esolutionssvc?useConfigs=fullDebug&amp;useCompression=true&amp;

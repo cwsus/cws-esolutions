@@ -51,6 +51,7 @@ import com.cws.esolutions.core.processors.dto.Application;
 @RequestMapping("/certificate-management")
 public class CertificateManagementController
 {
+	private String serviceId = null;
     private String serviceName = null;
     private String defaultPage = null;
     private ApplicationServiceBean appConfig = null;
@@ -84,6 +85,19 @@ public class CertificateManagementController
         }
 
         this.serviceName = value;
+    }
+
+    public final void setServiceId(final String value)
+    {
+        final String methodName = CertificateManagementController.CNAME + "#setServiceId(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.serviceId = value;
     }
 
     public final void setDefaultPage(final String value)

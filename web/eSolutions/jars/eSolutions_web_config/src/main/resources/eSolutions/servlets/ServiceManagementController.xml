@@ -23,7 +23,7 @@
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
-        <property name="serviceValidator">
+        <property name="validator">
             <ref bean="serviceRequestValidator" />
         </property>
         <property name="serviceName" value="svcMgmt" />

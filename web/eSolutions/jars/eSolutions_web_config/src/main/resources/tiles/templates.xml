@@ -38,10 +38,6 @@
         <put-attribute name="pageTitle"     value="eSolutions - Service Unavailable" cascade="true" />
         <put-attribute name="body"          value="/com.cws.esolutions.web/jsp/html/en/System_Unavailable.jsp" cascade="true" />
     </definition>
-    <definition name="System_DisplayHeadersPage" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - Display HTTP Headers" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web/jsp/html/en/System_DisplayHeaders.jsp" cascade="true" />
-    </definition>
 
     <!-- Application Management -->
     <definition name="AppMgmt_DefaultHandler" extends="baseLayout">

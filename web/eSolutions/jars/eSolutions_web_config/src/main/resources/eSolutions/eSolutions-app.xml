@@ -11,6 +11,7 @@
         http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
 
     <!-- load up logging -->
+    <!--
     <bean id="eSolutions" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
         <property name="staticMethod">
             <value>org.springframework.util.Log4jConfigurer.initLogging</value>
@@ -21,6 +22,7 @@
             </list>
         </property>
     </bean>
+    -->
 
     <!-- load the datasource -->
     <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">

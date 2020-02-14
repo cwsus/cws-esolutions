@@ -44,26 +44,7 @@
     </context-param>
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>
-            classpath:eSolutions/eSolutions-app.xml
-            classpath:eSolutions/application-security.xml
-        </param-value>
-    </context-param>
-    <context-param>
-        <param-name>quartz:config-file</param-name>
-        <param-value>quartz/quartz.properties</param-value>
-    </context-param>
-    <context-param>
-        <param-name>quartz:shutdown-on-unload</param-name>
-        <param-value>true</param-value>
-    </context-param>
-    <context-param>
-        <param-name>quartz:wait-on-shutdown</param-name>
-        <param-value>false</param-value>
-    </context-param>
-    <context-param>
-        <param-name>quartz:start-scheduler-on-load</param-name>
-        <param-value>true</param-value>
+        <param-value>classpath:eSolutions/eSolutions-app.xml</param-value>
     </context-param>
     <context-param>
         <param-name>defaultHtmlEscape</param-name>
@@ -104,32 +85,6 @@
             <param-value>2</param-value>
         </init-param>
     </filter>
-    <filter id="SSLEnforcementFilter">
-        <description>Security Service SSL Enforcement</description>
-        <display-name>SSLEnforcementFilter</display-name>
-        <filter-name>SSLEnforcementFilter</filter-name>
-        <filter-class>com.cws.esolutions.security.filters.SSLEnforcementFilter</filter-class>
-        <init-param>
-            <param-name>filter-config</param-name>
-            <param-value>SecurityService/filters/SSLEnforcementFilter</param-value>
-        </init-param>
-    </filter>
-    <filter id="SessionAuthenticationFilter">
-        <description>Session Authorization Filter</description>
-        <display-name>SessionAuthenticationFilter</display-name>
-        <filter-name>SessionAuthenticationFilter</filter-name>
-        <filter-class>com.cws.esolutions.security.filters.SessionAuthenticationFilter</filter-class>
-        <init-param>
-            <param-name>filter-config</param-name>
-            <param-value>SecurityService/filters/SessionAuthenticationFilter</param-value>
-        </init-param>
-    </filter>
-    <filter id="SessionFixationFilter">
-        <description>Session Fixation Filter</description>
-        <display-name>SessionFixationFilter</display-name>
-        <filter-name>SessionFixationFilter</filter-name>
-        <filter-class>com.cws.esolutions.security.filters.SessionFixationFilter</filter-class>
-    </filter>
     <filter id="ResponseTimeFilter">
         <description>Response Timing Filter</description>
         <display-name>ResponseTimeFilter</display-name>
@@ -150,27 +105,9 @@
             <param-value>UTF-8</param-value>
         </init-param>
     </filter>
-    <filter>
-        <description>Spring Security Filter Chain</description>
-        <display-name>SpringSecurityFilter</display-name>
-        <filter-name>SpringSecurityFilter</filter-name>
-        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-    </filter>
 
     <filter-mapping id="CsrfPreventionFilter_mapping">
         <filter-name>CsrfPreventionFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping id="SSLEnforcementFilter_mapping">
-        <filter-name>SSLEnforcementFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping id="SessionAuthenticationFilter_mapping">
-        <filter-name>SessionAuthenticationFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping id="SessionFixationFilter_mapping">
-        <filter-name>SessionFixationFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
     <filter-mapping id="ResponseTimeFilter_mapping">
@@ -179,10 +116,6 @@
     </filter-mapping>
     <filter-mapping id="SpringEncodingFilter_mapping">
         <filter-name>encoding-filter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping id="SpringSecurityFilter_mapping">
-        <filter-name>SpringSecurityFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
@@ -195,15 +128,6 @@
             <param-value>classpath:eSolutions/controller_config.xml</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet id="QuartzInitializer">
-        <servlet-name>QuartzInitializer</servlet-name>
-        <servlet-class>org.quartz.ee.servlet.QuartzInitializerServlet</servlet-class>
-        <init-param>
-            <param-name>shutdown-on-unload</param-name>
-            <param-value>true</param-value>
-        </init-param>
-        <load-on-startup>2</load-on-startup>
     </servlet>
     
     <servlet-mapping id="eSolutions_mapping">

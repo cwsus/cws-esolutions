@@ -35,7 +35,7 @@
             <artifactId>commons-cli</artifactId>
             <version>${commons-cli.version}</version>
             <type>jar</type>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
@@ -71,12 +71,6 @@
             <version>${bouncycastle.version}</version>
             <type>jar</type>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-jdbc</artifactId>
-            <version>9.0.30</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

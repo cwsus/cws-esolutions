@@ -25,31 +25,27 @@ package com.cws.esolutions.core.processors.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.util.Arrays;
-import java.util.ArrayList;
 import org.apache.commons.lang.StringUtils;
 
-import com.cws.esolutions.core.utils.MQUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.core.processors.enums.SystemCheckType;
-import com.cws.esolutions.core.utils.exception.UtilityException;
 import com.cws.esolutions.core.processors.dto.SystemCheckRequest;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.SystemCheckResponse;
 import com.cws.esolutions.core.processors.dto.ServiceCheckRequest;
+import com.cws.esolutions.core.processors.dto.CoreServicesRequest;
 import com.cws.esolutions.core.processors.dto.ServiceCheckResponse;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
-import com.cws.esolutions.core.processors.dto.CoreServicesRequest;
 import com.cws.esolutions.core.processors.dto.CoreServicesResponse;
 import com.cws.esolutions.core.processors.exception.SystemCheckException;
 import com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor;
-import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
 import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
+import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /**
  * @see com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor
@@ -159,15 +155,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 DEBUGGER.debug("CoreServicesRequest: {}", agentRequest);
             }
 
-            String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(),
-                    new ArrayList<String>(
-                            Arrays.asList(
-                                    agentConfig.getUsername(),
-                                    agentConfig.getPassword(),
-                                    agentConfig.getSalt())),
-                                    agentConfig.getRequestQueue(),
-                                    server.getOperHostName(),
-                                    agentRequest);
+            String correlator = null;
 
             if (DEBUG)
             {
@@ -176,15 +164,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
             if (StringUtils.isNotEmpty(correlator))
             {
-                agentResponse = (CoreServicesResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
-                        new ArrayList<String>(
-                                Arrays.asList(
-                                        agentConfig.getUsername(),
-                                        agentConfig.getPassword(),
-                                        agentConfig.getSalt())),
-                                        agentConfig.getRequestQueue(),
-                                        agentConfig.getTimeout(),
-                                        correlator);
+
             }
             else
             {
@@ -214,12 +194,6 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
             {
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
-        }
-        catch (UtilityException ux)
-        {
-            ERROR_RECORDER.error(ux.getMessage(), ux);
-
-            throw new SystemCheckException(ux.getMessage(), ux);
         }
         catch (AccessControlServiceException acsx)
         {
@@ -368,15 +342,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 DEBUGGER.debug("CoreServicesRequest: {}", agentRequest);
             }
 
-            String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(),
-                    new ArrayList<String>(
-                            Arrays.asList(
-                                    agentConfig.getUsername(),
-                                    agentConfig.getPassword(),
-                                    agentConfig.getSalt())),
-                                    agentConfig.getRequestQueue(),
-                                    server.getOperHostName(),
-                                    agentRequest);
+            String correlator = null;
 
             if (DEBUG)
             {
@@ -385,15 +351,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
             if (StringUtils.isNotEmpty(correlator))
             {
-                agentResponse = (CoreServicesResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
-                        new ArrayList<String>(
-                                Arrays.asList(
-                                        agentConfig.getUsername(),
-                                        agentConfig.getPassword(),
-                                        agentConfig.getSalt())),
-                                        agentConfig.getRequestQueue(),
-                                        agentConfig.getTimeout(),
-                                        correlator);
+
             }
             else
             {
@@ -423,12 +381,6 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
             {
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
-        }
-        catch (UtilityException ux)
-        {
-            ERROR_RECORDER.error(ux.getMessage(), ux);
-
-            throw new SystemCheckException(ux.getMessage(), ux);
         }
         catch (AccessControlServiceException acsx)
         {
@@ -576,15 +528,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 DEBUGGER.debug("CoreServicesRequest: {}", agentRequest);
             }
 
-            String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(),
-                    new ArrayList<String>(
-                            Arrays.asList(
-                                    agentConfig.getUsername(),
-                                    agentConfig.getPassword(),
-                                    agentConfig.getSalt())),
-                                    agentConfig.getRequestQueue(),
-                                    server.getOperHostName(),
-                                    agentRequest);
+            String correlator = null;
 
             if (DEBUG)
             {
@@ -593,15 +537,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
             if (StringUtils.isNotEmpty(correlator))
             {
-                agentResponse = (CoreServicesResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
-                        new ArrayList<String>(
-                                Arrays.asList(
-                                        agentConfig.getUsername(),
-                                        agentConfig.getPassword(),
-                                        agentConfig.getSalt())),
-                                        agentConfig.getRequestQueue(),
-                                        agentConfig.getTimeout(),
-                                        correlator);
+
             }
             else
             {
@@ -631,12 +567,6 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
             {
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
-        }
-        catch (UtilityException ux)
-        {
-            ERROR_RECORDER.error(ux.getMessage(), ux);
-
-            throw new SystemCheckException(ux.getMessage(), ux);
         }
         catch (AccessControlServiceException acsx)
         {
@@ -783,15 +713,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 DEBUGGER.debug("CoreServicesRequest: {}", agentRequest);
             }
 
-            String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(),
-                    new ArrayList<String>(
-                            Arrays.asList(
-                                    agentConfig.getUsername(),
-                                    agentConfig.getPassword(),
-                                    agentConfig.getSalt())),
-                                    agentConfig.getRequestQueue(),
-                                    server.getOperHostName(),
-                                    agentRequest);
+            String correlator = null;
 
             if (DEBUG)
             {
@@ -800,15 +722,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
             if (StringUtils.isNotEmpty(correlator))
             {
-                agentResponse = (CoreServicesResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
-                        new ArrayList<String>(
-                                Arrays.asList(
-                                        agentConfig.getUsername(),
-                                        agentConfig.getPassword(),
-                                        agentConfig.getSalt())),
-                                        agentConfig.getRequestQueue(),
-                                        agentConfig.getTimeout(),
-                                        correlator);
+
             }
             else
             {
@@ -838,12 +752,6 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
             {
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
-        }
-        catch (UtilityException ux)
-        {
-            ERROR_RECORDER.error(ux.getMessage(), ux);
-
-            throw new SystemCheckException(ux.getMessage(), ux);
         }
         catch (AccessControlServiceException acsx)
         {

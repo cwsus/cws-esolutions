@@ -46,16 +46,11 @@ import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.web.validators.LoginValidator;
-import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
-import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
-import com.cws.esolutions.core.processors.impl.ServiceMessagingProcessorImpl;
-import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 import com.cws.esolutions.security.processors.impl.AuthenticationProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor;
@@ -75,26 +70,12 @@ public class LoginController
     private String logoffCompleteString = null;
     private String messageSubmissionFailed = null;
     private ApplicationServiceBean appConfig = null;
-    private ServiceMessagingProcessorImpl messaging = null;
 
     private static final String CNAME = LoginController.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
-
-    public final void setMessaging(final ServiceMessagingProcessorImpl value)
-    {
-        final String methodName = LoginController.CNAME + "#setMessaging(final ServiceMessagingProcessorImpl value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messaging = value;
-    }
 
     public final void setLoginPage(final String value)
     {
@@ -301,25 +282,6 @@ public class LoginController
 
         mView.setViewName(this.loginPage);
         mView.addObject(Constants.COMMAND, new AuthenticationRequest());
-
-        try
-        {
-            MessagingResponse messageResponse = this.messaging.showAlertMessages(new MessagingRequest());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("MessagingResponse: {}", messageResponse);
-            }
-
-            if (messageResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-            {
-                mView.addObject("alertMessages", messageResponse.getSvcMessages());
-            }
-        }
-        catch (MessagingServiceException msx)
-        {
-            // don't do anything with it
-        }
 
         if (StringUtils.isNotBlank(hRequest.getParameter("vpath")))
         {

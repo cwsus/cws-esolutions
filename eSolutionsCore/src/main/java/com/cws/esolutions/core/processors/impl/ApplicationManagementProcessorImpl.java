@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.sql.SQLException;
 import org.apache.commons.lang.StringUtils;
 
-import com.cws.esolutions.core.utils.MQUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.dto.Service;
@@ -40,15 +39,14 @@ import com.cws.esolutions.core.processors.dto.Application;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
-import com.cws.esolutions.core.utils.exception.UtilityException;
+import com.cws.esolutions.core.processors.dto.FileManagerRequest;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
+import com.cws.esolutions.core.processors.dto.CoreServicesRequest;
+import com.cws.esolutions.core.processors.dto.FileManagerResponse;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
+import com.cws.esolutions.core.processors.dto.CoreServicesResponse;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementResponse;
-import com.cws.esolutions.core.processors.dto.CoreServicesRequest;
-import com.cws.esolutions.core.processors.dto.CoreServicesResponse;
-import com.cws.esolutions.core.processors.dto.FileManagerRequest;
-import com.cws.esolutions.core.processors.dto.FileManagerResponse;
 import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
 import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
@@ -1228,15 +1226,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 DEBUGGER.debug("CoreServicesRequest: {}", agentRequest);
             }
 
-            String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(),
-                    new ArrayList<String>(
-                            Arrays.asList(
-                                    agentConfig.getUsername(),
-                                    agentConfig.getPassword(),
-                                    agentConfig.getSalt())),
-                                    agentConfig.getRequestQueue(),
-                                    server.getOperHostName(),
-                                    agentRequest);
+            String correlator = null;
 
             if (DEBUG)
             {
@@ -1247,16 +1237,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             {
                 throw new ApplicationManagementException("Failed to process request. Please review logs.");
             }
-            
-            CoreServiceResponse = (CoreServicesResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
-                    new ArrayList<String>(
-                            Arrays.asList(
-                                    agentConfig.getUsername(),
-                                    agentConfig.getPassword(),
-                                    agentConfig.getSalt())),
-                                    agentConfig.getRequestQueue(),
-                                    agentConfig.getTimeout(),
-                                    correlator);
 
             if (DEBUG)
             {
@@ -1318,12 +1298,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
             throw new ApplicationManagementException(acsx.getMessage(), acsx);
-        }
-        catch (UtilityException ux)
-        {
-            ERROR_RECORDER.error(ux.getMessage(), ux);
-
-            throw new ApplicationManagementException(ux.getMessage(), ux);
         }
         catch (SQLException sqx)
         {

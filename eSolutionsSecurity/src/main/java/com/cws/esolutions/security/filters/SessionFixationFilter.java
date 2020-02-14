@@ -186,10 +186,10 @@ public class SessionFixationFilter implements Filter
 
                     while (sessionEnumeration.hasMoreElements())
                     {
-                        String newSesionElement = (String) sessionEnumeration.nextElement();
-                        Object newSessionValue = nSession.getAttribute(newSesionElement);
+                        String newSessionElement = (String) sessionEnumeration.nextElement();
+                        Object newSessionValue = nSession.getAttribute(newSessionElement);
     
-                        DEBUGGER.debug("Attribute: " + newSesionElement + "; Value: " + newSessionValue);
+                        DEBUGGER.debug("Attribute: " + newSessionElement + "; Value: " + newSessionValue);
                     }
                 }
             }
