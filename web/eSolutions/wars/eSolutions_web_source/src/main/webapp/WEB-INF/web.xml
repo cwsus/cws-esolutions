@@ -43,10 +43,6 @@
         <param-value>SecurityService/logging/logging.xml</param-value>
     </context-param>
     <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:eSolutions/eSolutions-app.xml</param-value>
-    </context-param>
-    <context-param>
         <param-name>defaultHtmlEscape</param-name>
         <param-value>true</param-value>
     </context-param>
@@ -65,35 +61,12 @@
     <listener>
         <listener-class>com.cws.esolutions.core.listeners.CoreServiceListener</listener-class>
     </listener>
-    <listener>
-        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-    </listener>
-    <listener>
-        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
-    </listener>
 
-    <!-- NOTE: This can only be applied in a tomcat environment!! -->
-    <filter id="CsrfPreventionFilter">
-        <filter-name>CsrfPreventionFilter</filter-name>
-        <filter-class>org.apache.catalina.filters.CsrfPreventionFilter</filter-class>
-        <init-param>
-            <param-name>entryPoints</param-name>
-            <param-value>/ui/login/default</param-value>
-        </init-param>
-        <init-param>
-            <param-name>nonceCacheSize</param-name>
-            <param-value>2</param-value>
-        </init-param>
-    </filter>
     <filter id="ResponseTimeFilter">
         <description>Response Timing Filter</description>
         <display-name>ResponseTimeFilter</display-name>
         <filter-name>ResponseTimeFilter</filter-name>
         <filter-class>com.cws.esolutions.core.filters.ResponseTimeFilter</filter-class>
-        <init-param>
-            <param-name>env</param-name>
-            <param-value>dev</param-value>
-        </init-param>
     </filter>
     <filter id="SpringEncodingFilter">
         <description>Spring Encoding Filter</description>
@@ -106,10 +79,6 @@
         </init-param>
     </filter>
 
-    <filter-mapping id="CsrfPreventionFilter_mapping">
-        <filter-name>CsrfPreventionFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
     <filter-mapping id="ResponseTimeFilter_mapping">
         <filter-name>ResponseTimeFilter</filter-name>
         <url-pattern>/*</url-pattern>
@@ -119,13 +88,13 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-    <servlet id="eSolutions">
+    <servlet id="eSolutions_servlet">
         <display-name>eSolutions</display-name>
         <servlet-name>eSolutions</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>classpath:eSolutions/controller_config.xml</param-value>
+            <param-value>classpath:eSolutions/eSolutions-app.xml, classpath:eSolutions/controller_config.xml</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>

@@ -17,9 +17,36 @@
  *
  */
 -->
-<Context useNaming="true" path="/esolutions" sessionCookiePath="/esolutions" sessionCookieName="ESOLUTIONS_ID">
+<Context useNaming="true" path="/esolutions" sessionCookiePath="/esolutions" sessionCookieName="ESOLUTIONS_ID" reloadable="true">
 
     <Environment name="env" value="dev" type="java.lang.String" override="false" />
+
+    <Resource name="ldap/LdapResource" auth="Container"
+        type="javax.naming.ldap.LdapContext"
+        factory="com.cws.esolutions.tomcat.ldapadapter.LDAPContextFactory"
+        singleton="false" 
+        java.naming.factory.initial="com.sun.jndi.ldap.LdapCtxFactory"
+        java.naming.provider.url="ldap://127.0.0.1:389?dc=caspersbox,dc=com"
+        java.naming.security.authentication="simple"
+        java.naming.security.principal="username"
+        java.naming.security.credentials="password" />
+
+    <Resource name="jdbc/esolutions" auth="Container" type="javax.sql.DataSource"
+        username="appuser" password="appuser10" driverClassName="com.mysql.jdbc.Driver"
+        url="jdbc:mysql://ip-172-30-0-105.us-west-2.compute.internal/esolutions?useConfigs=fullDebug&amp;useCompression=true&amp;
+            useSSL=true&amp;requireSSL=true&amp;verifyServerCertificate=true&amp;
+            clientCertificateKeyStoreUrl=${catalina.home}/conf/tomcat.jks&amp;
+            clientCertificateKeyStoreType=JKS&amp;clientCertificateKeyStorePassword=changeit&amp;
+            trustCertificateKeyStoreUrl=${catalina.home}/conf/tomcat.jks&amp;
+            trustCertificateKeyStoreType=JKS&amp;trustCertificateKeyStorePassword=changeit&amp;
+            autoReconnect=true&amp;autoReconnectForPools=true&amp;paranoid=true&amp;
+            useLocalTransactionState=true&amp;characterEncoding=UTF8&amp;useServerPrepStmts=true&amp;
+            zeroDateTimeBehavior=convertToNull" removeAbandonedOnMaintenance="true"
+        testWhileIdle="true" testOnBorrow="true" testOnReturn="false"
+        validationQuery="SELECT 1 FROM DUAL" validationInterval="30000"
+        timeBetweenEvictionRunsMillis="5000" maxTotal="100" minIdle="0"
+        maxWaitMillis="10000" initialSize="0" removeAbandonedTimeout="60" singleton="true"
+        removeAbandonedOnBorrow="true" logAbandoned="true" minEvictableIdleTimeMillis="30000" />
 
     <Resource name="jdbc/esolutionssvc" auth="Container" type="javax.sql.DataSource"
         username="appuser" password="appuser10" driverClassName="com.mysql.jdbc.Driver"
@@ -41,6 +68,23 @@
     <Resource name="jdbc/cwssec" auth="Container" type="javax.sql.DataSource"
         username="appuser" password="appuser10" driverClassName="com.mysql.jdbc.Driver"
         url="jdbc:mysql://ip-172-30-0-105.us-west-2.compute.internal/cwssec?useConfigs=fullDebug&amp;useCompression=true&amp;
+            useSSL=true&amp;requireSSL=true&amp;verifyServerCertificate=true&amp;
+            clientCertificateKeyStoreUrl=${catalina.home}/conf/tomcat.jks&amp;
+            clientCertificateKeyStoreType=JKS&amp;clientCertificateKeyStorePassword=changeit&amp;
+            trustCertificateKeyStoreUrl=${catalina.home}/conf/tomcat.jks&amp;
+            trustCertificateKeyStoreType=JKS&amp;trustCertificateKeyStorePassword=changeit&amp;
+            autoReconnect=true&amp;autoReconnectForPools=true&amp;paranoid=true&amp;
+            useLocalTransactionState=true&amp;characterEncoding=UTF8&amp;useServerPrepStmts=true&amp;
+            zeroDateTimeBehavior=convertToNull" removeAbandonedOnMaintenance="true"
+        testWhileIdle="true" testOnBorrow="true" testOnReturn="false"
+        validationQuery="SELECT 1 FROM DUAL" validationInterval="30000"
+        timeBetweenEvictionRunsMillis="5000" maxTotal="100" minIdle="0"
+        maxWaitMillis="10000" initialSize="0" removeAbandonedTimeout="60" singleton="true"
+        removeAbandonedOnBorrow="true" logAbandoned="true" minEvictableIdleTimeMillis="30000" />
+
+    <Resource name="jdbc/audit" auth="Container" type="javax.sql.DataSource"
+        username="appuser" password="appuser10" driverClassName="com.mysql.jdbc.Driver"
+        url="jdbc:mysql://ip-172-30-0-105.us-west-2.compute.internal/audit?useConfigs=fullDebug&amp;useCompression=true&amp;
             useSSL=true&amp;requireSSL=true&amp;verifyServerCertificate=true&amp;
             clientCertificateKeyStoreUrl=${catalina.home}/conf/tomcat.jks&amp;
             clientCertificateKeyStoreType=JKS&amp;clientCertificateKeyStorePassword=changeit&amp;

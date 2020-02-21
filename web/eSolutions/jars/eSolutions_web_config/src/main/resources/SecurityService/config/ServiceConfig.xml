@@ -43,7 +43,7 @@
         <smsResetEnabled>false</smsResetEnabled> <!-- do we send the reset email AND an sms ? -->
         <smsCodeLength>8</smsCodeLength> <!-- how long should the sms reset id be ? -->
         <resetTimeout>30</resetTimeout> <!-- reset timeout length (minutes) -->
-        <authConfig>/opt/cws/eSolutions/etc/repository.properties</authConfig>
+        <authConfig>jdbc/cwssec</authConfig>
         <authManager>com.cws.esolutions.security.dao.userauth.impl.SQLAuthenticator</authManager>
         <userManager>com.cws.esolutions.security.dao.usermgmt.impl.SQLUserManager</userManager>
     </security-config>

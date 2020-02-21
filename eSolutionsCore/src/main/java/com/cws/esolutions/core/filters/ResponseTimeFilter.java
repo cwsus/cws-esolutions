@@ -27,10 +27,13 @@ package com.cws.esolutions.core.filters;
  */
 import org.slf4j.Logger;
 import java.io.IOException;
+import javax.naming.Context;
 import javax.servlet.Filter;
 import org.slf4j.LoggerFactory;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.ServletException;
@@ -40,6 +43,8 @@ import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
 
 import com.cws.esolutions.core.CoreServicesConstants;
+import com.cws.esolutions.core.processors.enums.ServiceRegion;
+import com.cws.esolutions.security.SecurityServiceConstants;
 /**
  * @author cws-khuntly
  * @version 1.0
@@ -48,11 +53,12 @@ import com.cws.esolutions.core.CoreServicesConstants;
 @WebFilter(filterName = "ResponseTimeFilter", urlPatterns = {"/*"}, initParams = @WebInitParam(name = "env", value = "dev"))
 public class ResponseTimeFilter implements Filter
 {
-    private FilterConfig filterConfig = null;
+	private String environment = null;
 
     private static final String CNAME = ResponseTimeFilter.class.getName();
     private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER);
 
     public void init(final FilterConfig config) throws ServletException
     {
@@ -64,7 +70,16 @@ public class ResponseTimeFilter implements Filter
     		DEBUGGER.debug("Value: {}", config);
     	}
 
-        this.filterConfig = config;
+        try
+        {
+        	Context initContext = new InitialContext();
+        	Context envContext = (Context) initContext.lookup(SecurityServiceConstants.DS_CONTEXT);
+        	environment = (String) envContext.lookup("env");
+        }
+        catch (NamingException nx)
+        {
+        	ERROR_RECORDER.error(nx.getMessage(), nx);
+        }
     }
 
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException
@@ -79,7 +94,9 @@ public class ResponseTimeFilter implements Filter
     		DEBUGGER.debug("Value: {}", chain);
     	}
 
-        if (StringUtils.equals(filterConfig.getInitParameter("env"), "dev"))
+    	if ((StringUtils.equals(environment, String.valueOf(ServiceRegion.DEV)) || (StringUtils.equals(environment, String.valueOf(ServiceRegion.INT)))
+    			|| (StringUtils.equals(environment, String.valueOf(ServiceRegion.SIT))) || (StringUtils.equals(environment, String.valueOf(ServiceRegion.QA)))
+    					|| (StringUtils.equals(environment, String.valueOf(ServiceRegion.STG)))))
         {
             long time = System.currentTimeMillis();
 

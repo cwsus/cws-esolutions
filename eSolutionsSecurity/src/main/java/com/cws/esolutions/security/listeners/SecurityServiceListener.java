@@ -27,35 +27,21 @@ package com.cws.esolutions.security.listeners;
  */
 import java.net.URL;
 import java.util.Map;
-
 import org.slf4j.Logger;
-
 import java.util.HashMap;
-
 import javax.sql.DataSource;
 import javax.naming.Context;
-
-import java.io.FileInputStream;
-
 import org.slf4j.LoggerFactory;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.naming.InitialContext;
 import javax.xml.bind.JAXBException;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
-
-import java.io.FileNotFoundException;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.helpers.Loader;
-
 import javax.servlet.ServletContextEvent;
-
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.xml.DOMConfigurator;
-
 import javax.servlet.ServletContextListener;
 
 import com.cws.esolutions.security.SecurityServiceBean;
@@ -79,7 +65,7 @@ public class SecurityServiceListener implements ServletContextListener
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
     /**
-     * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.ServletContextEvent)
+     * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
      */
     public void contextInitialized(final ServletContextEvent sContextEvent)
     {
@@ -109,7 +95,7 @@ public class SecurityServiceListener implements ServletContextListener
         {
             if (sContext != null)
             {
-                if (StringUtils.isBlank(SecurityServiceListener.INIT_SYSLOGGING_FILE))
+            	if (StringUtils.isBlank(SecurityServiceListener.INIT_SYSLOGGING_FILE))
                 {
                     System.err.println("Logging configuration not found. No logging enabled !");
                 }
@@ -120,14 +106,13 @@ public class SecurityServiceListener implements ServletContextListener
 
                 if (StringUtils.isBlank(SecurityServiceListener.INIT_SYSCONFIG_FILE))
                 {
-                    xmlURL = classLoader.getResource(sContext.getInitParameter(SecurityServiceListener.INIT_SYSCONFIG_FILE));
+                    ERROR_RECORDER.error("System configuration not found. Shutting down !");
 
+                    throw new SecurityServiceException("System configuration file location not provided by application. Cannot continue.");                    
                 }
                 else
                 {
-                    ERROR_RECORDER.error("System configuration not found. Shutting down !");
-
-                    throw new SecurityServiceException("System configuration file location not provided by application. Cannot continue.");
+                	xmlURL = classLoader.getResource(sContext.getInitParameter(SecurityServiceListener.INIT_SYSCONFIG_FILE));
                 }
 
                 if (DEBUG)
@@ -146,8 +131,7 @@ public class SecurityServiceListener implements ServletContextListener
                     Context initContext = new InitialContext();
                     Context envContext = (Context) initContext.lookup(SecurityServiceConstants.DS_CONTEXT);
 
-                    DAOInitializer.configureAndCreateAuthConnection(new FileInputStream(FileUtils.getFile(configData.getSecurityConfig().getAuthConfig())),
-                            false, SecurityServiceListener.svcBean);
+                    DAOInitializer.configureAndCreateAuthConnection(null, true, SecurityServiceListener.svcBean);
 
                     Map<String, DataSource> dsMap = new HashMap<String, DataSource>();
 
@@ -180,10 +164,6 @@ public class SecurityServiceListener implements ServletContextListener
         {
             ERROR_RECORDER.error(jx.getMessage(), jx);
         }
-        catch (FileNotFoundException fnfx)
-        {
-            ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
-        }
     }
 
     /**
@@ -199,20 +179,6 @@ public class SecurityServiceListener implements ServletContextListener
             DEBUGGER.debug("ServletContextEvent: {}", sContextEvent);
         }
 
-        SecurityConfigurationData config = SecurityServiceListener.svcBean.getConfigData();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("SecurityConfigurationData: {}", config);
-        }
-
-        try
-        {
-            DAOInitializer.closeAuthConnection(new FileInputStream(FileUtils.getFile(config.getSecurityConfig().getAuthConfig())), false, svcBean);
-        }
-        catch (FileNotFoundException fnfx)
-        {
-            ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
-        }
+        DAOInitializer.closeAuthConnection(null, true, svcBean);
     }
 }

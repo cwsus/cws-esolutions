@@ -10,20 +10,6 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
         http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
 
-    <!-- load up logging -->
-    <!--
-    <bean id="eSolutions" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-        <property name="staticMethod">
-            <value>org.springframework.util.Log4jConfigurer.initLogging</value>
-        </property>
-        <property name="arguments">
-            <list>
-                <value>classpath:eSolutions/logging/logging.xml</value>
-            </list>
-        </property>
-    </bean>
-    -->
-
     <!-- load the datasource -->
     <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
         <property name="jndiName" value="java:comp/env/jdbc/esolutions" />
@@ -67,7 +53,7 @@
                 <entry key="certMgmt" value="true" />
             </map>
         </property>
-        <property name="homePage" value="HomePage" />
+        <!--<property name="homePage" value="HomePage" /> -->
         <property name="contactAdminsPage" value="System_ContactAdmins" />
         <property name="errorResponsePage" value="System_ErrorResponse" />
         <property name="requestCompletePage" value="System_RequestComplete" />
@@ -104,7 +90,6 @@
                 <value>classpath:nls/UserAccountServlet/UserAccountServlet</value>
                 <value>classpath:nls/UserManagementServlet/UserManagementServlet</value>
                 <value>classpath:nls/UserManagementServlet/CertificateManagementServlet</value>
-                <value>classpath:nls/SetupServlet/SetupServlet</value>
                 <value>classpath:nls/theme/resources</value>
             </list>
         </property>
