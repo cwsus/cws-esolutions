@@ -12,7 +12,7 @@
     <url>http://www.caspersbox.com/</url>
 
     <properties>
-        <servlet.version>2.5</servlet.version>
+        <servlet.version>4.01</servlet.version>
         <junit.version>4.12</junit.version>
         <commons-codec.version>1.9</commons-codec.version>
         <commons-collections.version>4.0</commons-collections.version>
@@ -35,7 +35,6 @@
         <commons-cli.version>1.2</commons-cli.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <jaxb-runtime.version>2.3.2</jaxb-runtime.version>
-        <!-- maven variables -->
         <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
         <maven-assembly-plugin.version>3.1.1</maven-assembly-plugin.version>
         <maven-deploy-plugin.version>3.8.1</maven-deploy-plugin.version>
@@ -658,16 +657,16 @@
             <id>build</id>
             <dependencies>
                 <dependency>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
+                    <groupId>org.junit.jupiter</groupId>
+                    <artifactId>junit-jupiter-api</artifactId>
                     <version>${junit.version}</version>
-                    <scope>provided</scope>
+                    <scope>test</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>
                     <version>${slf4j.version}</version>
-                    <scope>compile</scope>
+                    <scope>provided</scope>
                 </dependency>
             </dependencies>
 
