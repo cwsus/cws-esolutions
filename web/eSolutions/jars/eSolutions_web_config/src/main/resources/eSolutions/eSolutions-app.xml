@@ -53,7 +53,7 @@
                 <entry key="certMgmt" value="true" />
             </map>
         </property>
-        <!--<property name="homePage" value="HomePage" /> -->
+        <property name="homePage" value="HomePage" />
         <property name="contactAdminsPage" value="System_ContactAdmins" />
         <property name="errorResponsePage" value="System_ErrorResponse" />
         <property name="requestCompletePage" value="System_RequestComplete" />
