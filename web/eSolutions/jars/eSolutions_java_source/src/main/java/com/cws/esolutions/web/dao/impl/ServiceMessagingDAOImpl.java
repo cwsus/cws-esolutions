@@ -159,7 +159,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
                 if (resultSet.next())
                 {
                     resultSet.first();
-                    svcMessage = new ArrayList<>();
+                    svcMessage = new ArrayList<Object>();
                     svcMessage.add(resultSet.getString(1)); // svc_message_id
                     svcMessage.add(resultSet.getString(2)); // svc_message_title
                     svcMessage.add(resultSet.getString(3)); // svc_message_txt
@@ -250,7 +250,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
                 if (resultSet.next())
                 {
                     resultSet.beforeFirst();
-                    response = new ArrayList<>();
+                    response = new ArrayList<Object[]>();
 
                     while (resultSet.next())
                     {
@@ -350,7 +350,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
                 if (resultSet.next())
                 {
                     resultSet.beforeFirst();
-                    response = new ArrayList<>();
+                    response = new ArrayList<Object[]>();
 
                     while (resultSet.next())
                     {
@@ -608,7 +608,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
                 if (resultSet.next())
                 {
                     resultSet.beforeFirst();
-                    responseData = new ArrayList<>();
+                    responseData = new ArrayList<Object[]>();
 
                     while (resultSet.next())
                     {
