@@ -130,7 +130,7 @@
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
+            <artifactId>javax.servlet-api</artifactId>
             <version>${servlet.version}</version>
             <type>jar</type>
             <scope>provided</scope>
@@ -239,8 +239,8 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
             <version>${log4j.version}</version>
             <type>jar</type>
             <scope>provided</scope>
