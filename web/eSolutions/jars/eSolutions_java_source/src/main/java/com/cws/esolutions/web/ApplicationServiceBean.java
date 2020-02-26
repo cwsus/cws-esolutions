@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cws.esolutions.web.Constants;
@@ -40,6 +41,7 @@ import com.cws.esolutions.web.validators.EmailMessageValidator;
  * @author cws-khuntly
  * @version 1.0
  */
+@Component
 public class ApplicationServiceBean implements Serializable
 {
     @Autowired private String homePage = null;
