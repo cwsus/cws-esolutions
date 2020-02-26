@@ -12,7 +12,7 @@
     <url>http://www.caspersbox.com/</url>
 
     <properties>
-        <servlet.version>4.01</servlet.version>
+        <servlet.version>4.0.1</servlet.version>
         <junit.version>4.12</junit.version>
         <commons-codec.version>1.9</commons-codec.version>
         <commons-collections.version>4.0</commons-collections.version>
