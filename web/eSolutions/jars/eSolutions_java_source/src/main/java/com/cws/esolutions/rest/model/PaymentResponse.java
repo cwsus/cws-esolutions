@@ -1,4 +1,4 @@
-package com.cws.esolutions.web.rest.dto;
+package com.cws.esolutions.rest.model;
 
 import org.slf4j.Logger;
 import java.io.Serializable;

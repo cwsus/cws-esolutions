@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.web.rest.dto;
+package com.cws.esolutions.rest.model;
 /*
  * Project: eSolutionsAgent
  * Package: com.cws.esolutions.agent.processors.impl

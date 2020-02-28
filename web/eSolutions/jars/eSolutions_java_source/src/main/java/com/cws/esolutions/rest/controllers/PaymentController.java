@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.web.rest.impl;
+package com.cws.esolutions.rest.controllers;
 
 import org.apache.commons.lang.StringUtils;
 /*
  * Project: eSolutions_java_source
- * Package: com.cws.esolutions.web.rest.impl
+ * Package: com.cws.esolutions.rest.controllers
  * File: PaymentController.java
  *
  * History
@@ -33,8 +33,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cws.esolutions.web.rest.dto.PaymentRequest;
-import com.cws.esolutions.web.rest.dto.PaymentResponse;
+import com.cws.esolutions.rest.model.PaymentRequest;
+import com.cws.esolutions.rest.model.PaymentResponse;
 
 @RestController
 @RequestMapping("/payment")

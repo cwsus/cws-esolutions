@@ -9,10 +9,10 @@
  * the materials be disclosed to third parties without the
  * express written authorization of CaspersBox Web Services, N.A.
  */
-package com.cws.esolutions.web.dto;
+package com.cws.esolutions.web.model;
 /*
  * Project: eSolutions_java_source
- * Package: com.cws.esolutions.web.dto
+ * Package: com.cws.esolutions.web.model
  * File: LoginRequest.java
  *
  * History
