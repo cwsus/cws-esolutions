@@ -123,21 +123,21 @@
                 <artifactId>standard</artifactId>
                 <version>${taglibs.version}</version>
                 <type>jar</type>
-                <scope>provided</scope>
+                <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>jstl</artifactId>
                 <version>${jstl.version}</version>
                 <type>jar</type>
-                <scope>provided</scope>
+                <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>jsp-api</artifactId>
                 <version>${jsp-api.version}</version>
                 <type>jar</type>
-                <scope>provided</scope>
+                <scope>compile</scope>
             </dependency>
             <!-- spring -->
             <dependency>

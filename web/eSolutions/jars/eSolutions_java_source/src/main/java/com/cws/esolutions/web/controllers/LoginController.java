@@ -29,6 +29,7 @@ package com.cws.esolutions.web.controllers;
 import org.slf4j.Logger;
 import java.util.Enumeration;
 import org.slf4j.LoggerFactory;
+import org.springframework.ui.Model;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringUtils;
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +37,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -60,7 +63,6 @@ import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcesso
  * @see org.springframework.stereotype.Controller
  */
 @Controller
-@RequestMapping("/login")
 public class LoginController
 {
     private String loginPage = null;
@@ -168,8 +170,8 @@ public class LoginController
         this.messageSubmissionFailed = value;
     }
 
-    @RequestMapping(value = "/default", method = RequestMethod.GET)
-    public final ModelAndView showDefaultPage()
+    @RequestMapping("/login")
+    public final String showDefaultPage(final Model model)
     {
         final String methodName = LoginController.CNAME + "#showDefaultPage()";
 
@@ -178,8 +180,7 @@ public class LoginController
             DEBUGGER.debug(methodName);
         }
 
-        ModelAndView mView = new ModelAndView();
-        mView.addObject(Constants.ALLOW_RESET, this.allowUserReset);
+        model.addAttribute(Constants.ALLOW_RESET, this.allowUserReset);
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -263,15 +264,12 @@ public class LoginController
                 switch (sessionAccount.getStatus())
                 {
                     case SUCCESS:
-                        mView = new ModelAndView(new RedirectView());
-                        mView.setViewName(this.appConfig.getHomeRedirect());
-
-                        return mView;
+                    	return this.appConfig.getHomeRedirect();
                     case EXPIRED:
                         hSession.invalidate();
-                        mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessagePasswordExpired());
+                        model.addAttribute(Constants.RESPONSE_MESSAGE, this.appConfig.getMessagePasswordExpired());
 
-                        return mView;
+                        return this.loginPage;
                     default:
                         hSession.invalidate();
 
@@ -280,20 +278,14 @@ public class LoginController
             }
         }
 
-        mView.setViewName(this.loginPage);
-        mView.addObject(Constants.COMMAND, new AuthenticationRequest());
-
-        if (StringUtils.isNotBlank(hRequest.getParameter("vpath")))
-        {
-            mView.addObject("redirectPath", hRequest.getParameter("vpath"));
-        }
+        model.addAttribute(Constants.COMMAND, new AuthenticationRequest());
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ModelAndView: {}", mView);
+            DEBUGGER.debug("ModelAndView: {}", model);
         }
 
-        return mView;
+        return this.loginPage;
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
