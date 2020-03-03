@@ -94,9 +94,9 @@ public class ResponseTimeFilter implements Filter
     		DEBUGGER.debug("Value: {}", chain);
     	}
 
-    	if ((StringUtils.equals(environment, String.valueOf(ServiceRegion.DEV)) || (StringUtils.equals(environment, String.valueOf(ServiceRegion.INT)))
-    			|| (StringUtils.equals(environment, String.valueOf(ServiceRegion.SIT))) || (StringUtils.equals(environment, String.valueOf(ServiceRegion.QA)))
-    					|| (StringUtils.equals(environment, String.valueOf(ServiceRegion.STG)))))
+    	if ((StringUtils.equalsIgnoreCase(environment, String.valueOf(ServiceRegion.DEV)) || (StringUtils.equalsIgnoreCase(environment, String.valueOf(ServiceRegion.INT)))
+    			|| (StringUtils.equalsIgnoreCase(environment, String.valueOf(ServiceRegion.SIT))) || (StringUtils.equalsIgnoreCase(environment, String.valueOf(ServiceRegion.QA)))
+    					|| (StringUtils.equalsIgnoreCase(environment, String.valueOf(ServiceRegion.STG)))))
         {
             long time = System.currentTimeMillis();
 

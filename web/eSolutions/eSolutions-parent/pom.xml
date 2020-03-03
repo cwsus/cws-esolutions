@@ -258,6 +258,20 @@
                 <type>jar</type>
                 <scope>compile</scope>
             </dependency>
+			<dependency>
+			    <groupId>org.apache.tiles</groupId>
+			    <artifactId>tiles-servlet</artifactId>
+			    <version>${tiles.version}</version>
+			    <type>jar</type>
+			    <scope>compile</scope>
+			</dependency>
+            <dependency>
+                <groupId>org.apache.tiles</groupId>
+                <artifactId>tiles-el</artifactId>
+                <version>${tiles.version}</version>
+                <type>jar</type>
+                <scope>compile</scope>
+            </dependency>			
             <!-- spnego -->
             <dependency>
                 <groupId>net.sourceforge.spnego</groupId>

@@ -37,8 +37,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +44,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.esolutions.web.Constants;
+import com.cws.esolutions.web.model.LoginRequest;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.web.validators.LoginValidator;
@@ -170,10 +169,10 @@ public class LoginController
         this.messageSubmissionFailed = value;
     }
 
-    @RequestMapping("/login")
-    public final String showDefaultPage(final Model model)
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public final String showLoginPage(final Model model)
     {
-        final String methodName = LoginController.CNAME + "#showDefaultPage()";
+        final String methodName = LoginController.CNAME + "#showLoginPage()";
 
         if (DEBUG)
         {
@@ -278,7 +277,7 @@ public class LoginController
             }
         }
 
-        model.addAttribute(Constants.COMMAND, new AuthenticationRequest());
+        model.addAttribute(Constants.COMMAND, new LoginRequest());
 
         if (DEBUG)
         {
