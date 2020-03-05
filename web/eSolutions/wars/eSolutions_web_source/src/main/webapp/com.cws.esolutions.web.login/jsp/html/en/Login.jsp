@@ -89,7 +89,7 @@
     </c:if>
 
     <p>
-        <form:form id="submitCombinedLogin" name="submitCombinedLogin" action="${pageContext.request.contextPath}/submit-logon" method="post">
+        <form:form id="submitCombinedLogin" name="submitCombinedLogin" action="${pageContext.request.contextPath}/ui/submit-logon" method="post">
             <input type="hidden" name="vpath" id="vpath" value="${param.vpath}" />
 
             <p>
