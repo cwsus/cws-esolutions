@@ -17,7 +17,7 @@ package com.cws.esolutions.security.dao.userauth.impl;
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security.dao.userauth.impl
- * File: LDAPAuthenticatorTest.java
+ * File: OpenLDAPAuthenticatorTest.java
  *
  * History
  *

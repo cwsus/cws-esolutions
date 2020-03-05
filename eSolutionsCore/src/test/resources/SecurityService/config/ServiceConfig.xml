@@ -26,7 +26,7 @@
         <smsCodeLength>8</smsCodeLength> <!-- how long should the sms reset id be ? -->
         <resetTimeout>30</resetTimeout> <!-- reset timeout length (minutes) -->
         <authConfig>/opt/cws/eSolutions/etc/repository.properties</authConfig>
-        <authManager>com.cws.esolutions.security.dao.userauth.impl.LDAPAuthenticator</authManager>
+        <authManager>com.cws.esolutions.security.dao.userauth.impl.OpenLDAPAuthenticator</authManager>
         <userManager>com.cws.esolutions.security.dao.usermgmt.impl.LDAPUserManager</userManager>
     </security-config>
 

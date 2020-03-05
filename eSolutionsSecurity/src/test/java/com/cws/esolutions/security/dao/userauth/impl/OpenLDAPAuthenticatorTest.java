@@ -17,7 +17,7 @@ package com.cws.esolutions.security.dao.userauth.impl;
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security.dao.userauth.impl
- * File: LDAPAuthenticatorTest.java
+ * File: OpenLDAPAuthenticatorTest.java
  *
  * History
  *
@@ -37,7 +37,7 @@ import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 
-public class LDAPAuthenticatorTest
+public class OpenLDAPAuthenticatorTest
 {
     @Before public void setUp()
     {
@@ -53,7 +53,7 @@ public class LDAPAuthenticatorTest
 
     @Test public void performLogon()
     {
-        Authenticator authenticator = AuthenticatorFactory.getAuthenticator("com.cws.esolutions.security.dao.userauth.impl.LDAPAuthenticator");
+        Authenticator authenticator = AuthenticatorFactory.getAuthenticator("com.cws.esolutions.security.dao.userauth.impl.OpenLDAPAuthenticator");
 
         try
         {
@@ -67,7 +67,7 @@ public class LDAPAuthenticatorTest
 
     @Test public void obtainSecurityData()
     {
-        Authenticator authenticator = AuthenticatorFactory.getAuthenticator("com.cws.esolutions.security.dao.userauth.impl.LDAPAuthenticator");
+        Authenticator authenticator = AuthenticatorFactory.getAuthenticator("com.cws.esolutions.security.dao.userauth.impl.OpenLDAPAuthenticator");
 
         try
         {
@@ -81,7 +81,7 @@ public class LDAPAuthenticatorTest
 
     @Test public void obtainOtpSecret()
     {
-        Authenticator authenticator = AuthenticatorFactory.getAuthenticator("com.cws.esolutions.security.dao.userauth.impl.LDAPAuthenticator");
+        Authenticator authenticator = AuthenticatorFactory.getAuthenticator("com.cws.esolutions.security.dao.userauth.impl.OpenLDAPAuthenticator");
 
         try
         {
@@ -95,7 +95,7 @@ public class LDAPAuthenticatorTest
 
     @Test public void verifySecurityData()
     {
-        Authenticator authenticator = AuthenticatorFactory.getAuthenticator("com.cws.esolutions.security.dao.userauth.impl.LDAPAuthenticator");
+        Authenticator authenticator = AuthenticatorFactory.getAuthenticator("com.cws.esolutions.security.dao.userauth.impl.OpenLDAPAuthenticator");
 
         try
         {

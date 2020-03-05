@@ -17,7 +17,7 @@ package com.cws.esolutions.security.dao.userauth.impl;
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security.dao.userauth.impl
- * File: LDAPAuthenticator.java
+ * File: OpenLDAPAuthenticator.java
  *
  * History
  *
@@ -46,16 +46,16 @@ import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException
 /**
  * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator
  */
-public class LDAPAuthenticator implements Authenticator
+public class OpenLDAPAuthenticator implements Authenticator
 {
-    private static final String CNAME = LDAPAuthenticator.class.getName();
+    private static final String CNAME = OpenLDAPAuthenticator.class.getName();
 
     /**
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String)
      */
     public synchronized List<Object> performLogon(final String username, final String password) throws AuthenticatorException
     {
-        final String methodName = LDAPAuthenticator.CNAME + "#performLogon(final String username, final String password) throws AuthenticatorException";
+        final String methodName = OpenLDAPAuthenticator.CNAME + "#performLogon(final String username, final String password) throws AuthenticatorException";
 
         if (DEBUG)
         {
@@ -239,7 +239,7 @@ public class LDAPAuthenticator implements Authenticator
      */
     public synchronized List<String> obtainSecurityData(final String userId, final String userGuid) throws AuthenticatorException
     {
-        final String methodName = LDAPAuthenticator.CNAME + "#obtainSecurityData(final String userId, final String userGuid) throws AuthenticatorException";
+        final String methodName = OpenLDAPAuthenticator.CNAME + "#obtainSecurityData(final String userId, final String userGuid) throws AuthenticatorException";
 
         if (DEBUG)
         {
@@ -341,7 +341,7 @@ public class LDAPAuthenticator implements Authenticator
      */
     public synchronized String obtainOtpSecret(final String userId, final String userGuid) throws AuthenticatorException
     {
-        final String methodName = LDAPAuthenticator.CNAME + "#obtainOtpSecret(final String userId, final String userGuid) throws AuthenticatorException";
+        final String methodName = OpenLDAPAuthenticator.CNAME + "#obtainOtpSecret(final String userId, final String userGuid) throws AuthenticatorException";
 
         if (DEBUG)
         {
@@ -434,7 +434,7 @@ public class LDAPAuthenticator implements Authenticator
      */
     public synchronized boolean verifySecurityData(final String userId, final String userGuid, List<String> values) throws AuthenticatorException
     {
-        final String methodName = LDAPAuthenticator.CNAME + "#verifySecurityData(final String userId, final String userGuid, List<String> values) throws AuthenticatorException";
+        final String methodName = OpenLDAPAuthenticator.CNAME + "#verifySecurityData(final String userId, final String userGuid, List<String> values) throws AuthenticatorException";
 
         if (DEBUG)
         {

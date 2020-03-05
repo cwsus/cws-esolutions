@@ -358,7 +358,7 @@ public class LoginController
     }
 
     // combined logon
-    @RequestMapping(value = "/submit", method = RequestMethod.POST)
+    @RequestMapping(value = "/submit-logon", method = RequestMethod.POST)
     public final ModelAndView doCombinedLogin(@ModelAttribute("AuthenticationData") final AuthenticationData loginRequest, final BindingResult bindResult)
     {
         final String methodName = LoginController.CNAME + "#doCombinedLogin(@ModelAttribute(\"AuthenticationData\") final AuthenticationData loginRequest, final BindingResult bindResult)";
