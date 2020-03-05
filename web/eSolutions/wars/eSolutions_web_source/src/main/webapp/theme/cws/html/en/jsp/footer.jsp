@@ -63,9 +63,9 @@
             <%-- we want to do intl here but we don't have any nls files for it. commenting for now --%>
             <%--
             <br />
-            <a href="?lang=en"><img class="img-flag" src="/html/eSolutions/img/img_flag_england.gif" title="<spring:message code="theme.top-nav.switch.en" />" alt=""/></a> | 
-            <a href="?lang=es"><img class="img-flag" src="/html/eSolutions/img/img_flag_spain.gif" title="<spring:message code="theme.top-nav.switch.es" />" alt=""/></a> | 
-            <a href="?lang=fr"><img class="img-flag" src="/html/eSolutions/img/img_flag_france.gif" title="<spring:message code="theme.top-nav.switch.fr" />" alt=""/></a>
+            <a href="?lang=en"><img class="img-flag" src="/static/img/img_flag_england.gif" title="<spring:message code="theme.top-nav.switch.en" />" alt=""/></a> | 
+            <a href="?lang=es"><img class="img-flag" src="/static/img/img_flag_spain.gif" title="<spring:message code="theme.top-nav.switch.es" />" alt=""/></a> | 
+            <a href="?lang=fr"><img class="img-flag" src="/static/img/img_flag_france.gif" title="<spring:message code="theme.top-nav.switch.fr" />" alt=""/></a>
             --%>
         </div>
     </div>

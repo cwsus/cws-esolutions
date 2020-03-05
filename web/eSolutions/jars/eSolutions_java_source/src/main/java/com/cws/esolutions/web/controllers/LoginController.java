@@ -263,12 +263,13 @@ public class LoginController
                 switch (sessionAccount.getStatus())
                 {
                     case SUCCESS:
-                    	return this.appConfig.getHomeRedirect();
+                    	break;
                     case EXPIRED:
                         hSession.invalidate();
+
                         model.addAttribute(Constants.RESPONSE_MESSAGE, this.appConfig.getMessagePasswordExpired());
 
-                        return this.loginPage;
+                        break;
                     default:
                         hSession.invalidate();
 
@@ -288,16 +289,14 @@ public class LoginController
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    public final ModelAndView performLogout()
+    public final String performLogout(final Model model)
     {
-        final String methodName = LoginController.CNAME + "#performLogout()";
+        final String methodName = LoginController.CNAME + "#performLogout(final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
         }
-
-        ModelAndView mView = new ModelAndView(new RedirectView());
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -347,15 +346,15 @@ public class LoginController
         hSession.removeAttribute(Constants.USER_ACCOUNT);
         hSession.invalidate();
 
-        mView.addObject(Constants.RESPONSE_MESSAGE, this.logoffCompleteString);
-        mView.setViewName(this.appConfig.getLogonRedirect());
+        model.addAttribute(Constants.RESPONSE_MESSAGE, this.logoffCompleteString);
+        model.addAttribute(Constants.COMMAND, new LoginRequest());
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ModelAndView: {}", mView);
+            DEBUGGER.debug("Model: {}", model);
         }
 
-        return mView;
+        return this.loginPage;
     }
 
     // combined logon

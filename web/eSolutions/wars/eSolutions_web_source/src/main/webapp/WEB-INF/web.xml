@@ -184,7 +184,8 @@
             <display-name>jsp-group</display-name>
             <url-pattern>/*</url-pattern>
             <page-encoding>UTF-8</page-encoding>
-            <include-prelude>/theme/cws/html/en/jsp/includes.jsp</include-prelude>
+            <include-prelude>/theme/cws/html/en/jsp/header.jsp</include-prelude>
+            <include-coda>/theme/cws/html/en/jsp/footer.jsp</include-coda>
         </jsp-property-group>
     </jsp-config>
 
