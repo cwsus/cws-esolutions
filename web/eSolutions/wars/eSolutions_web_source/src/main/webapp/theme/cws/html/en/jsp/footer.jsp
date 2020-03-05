@@ -41,7 +41,7 @@
                 title="<spring:message code="theme.contact.us" />" target="_blank"><spring:message code="theme.contact.us" /></a><br />
         </div>
         <div id="footer-left">
-            <c:if test=${not empty fn:trim(sessionScope.userAccount)}">
+            <c:if test="${not empty fn:trim(sessionScope.userAccount)}">
 				<spring:message code="theme.welcome.message" arguments="${sessionScope.userAccount.username}, ${sessionScope.userAccount.lastLogin}" /><br />
 				<a href="${pageContext.request.contextPath}/login/logout" title="<spring:message code='theme.navbar.logoff' />">
 				<spring:message code='theme.navbar.logoff' /></a> |
@@ -49,13 +49,11 @@
 				<spring:message code="theme.navbar.myaccount" /></a> |
 				<a href="${pageContext.request.contextPath}/ui/common/default"><spring:message code="theme.navbar.home" /></a>
 	        </c:if>
-            <%-- we want to do intl here but we don't have any nls files for it. commenting for now --%>
-            <%--
+
             <br />
             <a href="?lang=en"><img class="img-flag" src="/static/img/img_flag_england.gif" title="<spring:message code="theme.top-nav.switch.en" />" alt=""/></a> | 
             <a href="?lang=es"><img class="img-flag" src="/static/img/img_flag_spain.gif" title="<spring:message code="theme.top-nav.switch.es" />" alt=""/></a> | 
             <a href="?lang=fr"><img class="img-flag" src="/static/img/img_flag_france.gif" title="<spring:message code="theme.top-nav.switch.fr" />" alt=""/></a>
-            --%>
         </div>
     </div>
 </div>
