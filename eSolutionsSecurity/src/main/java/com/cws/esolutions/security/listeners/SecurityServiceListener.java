@@ -27,11 +27,9 @@ package com.cws.esolutions.security.listeners;
  */
 import java.net.URL;
 import java.util.Map;
-import org.slf4j.Logger;
 import java.util.HashMap;
 import javax.sql.DataSource;
 import javax.naming.Context;
-import org.slf4j.LoggerFactory;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.naming.InitialContext;
@@ -57,10 +55,7 @@ public class SecurityServiceListener implements ServletContextListener
 {
     private static final String INIT_SYSCONFIG_FILE = "SecurityServiceConfig";
     private static final String INIT_SYSLOGGING_FILE = "SecurityServiceLogger";
-    private static final String CNAME = SecurityServiceListener.class.getName();
     private static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
-
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
     /**
      * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
@@ -90,8 +85,6 @@ public class SecurityServiceListener implements ServletContextListener
 
                 if (StringUtils.isBlank(SecurityServiceListener.INIT_SYSCONFIG_FILE))
                 {
-                    ERROR_RECORDER.error("System configuration not found. Shutting down !");
-
                     throw new SecurityServiceException("System configuration file location not provided by application. Cannot continue.");                    
                 }
                 else
