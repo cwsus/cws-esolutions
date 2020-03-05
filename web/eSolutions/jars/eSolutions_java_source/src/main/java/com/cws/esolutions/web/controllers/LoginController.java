@@ -531,7 +531,7 @@ public class LoginController
                         ERROR_RECORDER.error("An unspecified error occurred during authentication.");
 
                         mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
-                        mView.addObject(Constants.COMMAND, new AuthenticationRequest());
+                        mView.addObject(Constants.COMMAND, new LoginRequest());
                         mView.setViewName(this.loginPage);
 
                         break;

@@ -104,7 +104,7 @@
     
     <servlet-mapping id="eSolutions_mapping">
         <servlet-name>eSolutions</servlet-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/ui/*</url-pattern>
     </servlet-mapping>
 
     <resource-ref id="esolutions">

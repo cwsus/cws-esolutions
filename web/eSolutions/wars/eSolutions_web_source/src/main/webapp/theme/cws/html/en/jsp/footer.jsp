@@ -41,25 +41,14 @@
                 title="<spring:message code="theme.contact.us" />" target="_blank"><spring:message code="theme.contact.us" /></a><br />
         </div>
         <div id="footer-left">
-            <c:choose>
-                <c:when test="${not empty fn:trim(sessionScope.userAccount)}">
-                    <spring:message code="theme.welcome.message" arguments="${sessionScope.userAccount.username}, ${sessionScope.userAccount.lastLogin}" /><br />
-                    <a href="${pageContext.request.contextPath}/ui/login/logout" title="<spring:message code='theme.navbar.logoff' />">
-                        <spring:message code='theme.navbar.logoff' /></a> |
-                    <a href="${pageContext.request.contextPath}/ui/user-account/default" title="<spring:message code='theme.navbar.myaccount' />">
-                        <spring:message code="theme.navbar.myaccount" /></a> |
-                </c:when>
-                <c:otherwise>
-                    <a href="${pageContext.request.contextPath}/ui/login/default" title="<spring:message code='theme.navbar.login' />">
-                        <spring:message code='theme.navbar.login' /></a> | 
-                </c:otherwise>
-            </c:choose>
-            <script>
-                if ((window.location.pathname.search('login') == -1) && (window.location.pathname.search('common/default') == -1))
-                {
-                    document.write(' | <a href="${pageContext.request.contextPath}/ui/common/default"><spring:message code="theme.navbar.home" /></a>');
-                }
-            </script>
+            <c:if test=${not empty fn:trim(sessionScope.userAccount)}">
+				<spring:message code="theme.welcome.message" arguments="${sessionScope.userAccount.username}, ${sessionScope.userAccount.lastLogin}" /><br />
+				<a href="${pageContext.request.contextPath}/login/logout" title="<spring:message code='theme.navbar.logoff' />">
+				<spring:message code='theme.navbar.logoff' /></a> |
+				<a href="${pageContext.request.contextPath}/user-account/default" title="<spring:message code='theme.navbar.myaccount' />">
+				<spring:message code="theme.navbar.myaccount" /></a> |
+				<a href="${pageContext.request.contextPath}/ui/common/default"><spring:message code="theme.navbar.home" /></a>
+	        </c:if>
             <%-- we want to do intl here but we don't have any nls files for it. commenting for now --%>
             <%--
             <br />

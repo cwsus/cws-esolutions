@@ -27,11 +27,9 @@ package com.cws.esolutions.core.listeners;
  */
 import java.net.URL;
 import java.util.Map;
-import org.slf4j.Logger;
 import java.util.HashMap;
 import javax.naming.Context;
 import javax.sql.DataSource;
-import org.slf4j.LoggerFactory;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.naming.InitialContext;
@@ -44,7 +42,6 @@ import org.apache.log4j.xml.DOMConfigurator;
 import javax.servlet.ServletContextListener;
 
 import com.cws.esolutions.core.CoreServicesBean;
-import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.config.xml.DataSourceManager;
 import com.cws.esolutions.core.exception.CoreServicesException;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
@@ -59,12 +56,7 @@ public class CoreServiceListener implements ServletContextListener
 
     private static final String DS_CONTEXT = "java:comp/env/";
     private static final String INIT_SYSAPP_FILE = "eSolutionsCoreConfig";
-    private static final String CNAME = CoreServiceListener.class.getName();
     private static final String INIT_SYSLOGGING_FILE = "eSolutionsCoreLogger";
-
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
-    private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER + CNAME);
 
     public void contextInitialized(final ServletContextEvent contextEvent)
     {
@@ -75,12 +67,6 @@ public class CoreServiceListener implements ServletContextListener
 
         final ServletContext sContext = contextEvent.getServletContext();
         final ClassLoader classLoader = CoreServiceListener.class.getClassLoader();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ServletContext: {}", sContext);
-            DEBUGGER.debug("ClassLoader: {}", classLoader);
-        }
 
         try
         {
@@ -101,14 +87,7 @@ public class CoreServiceListener implements ServletContextListener
                 }
                 else
                 {
-                    ERROR_RECORDER.error("System configuration not found. Shutting down !");
-
                     throw new CoreServicesException("System configuration file location not provided by application. Cannot continue.");
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("xmlURL: {}", xmlURL);
                 }
 
                 if (xmlURL != null)
@@ -141,26 +120,19 @@ public class CoreServiceListener implements ServletContextListener
         }
         catch (NamingException nx)
         {
-            ERROR_RECORDER.error(nx.getMessage(), nx);
+        	System.out.println(nx.getMessage());
         }
         catch (JAXBException jx)
         {
-            ERROR_RECORDER.error(jx.getMessage(), jx);
+        	System.out.println(jx.getMessage());
         }
         catch (CoreServicesException csx)
         {
-            ERROR_RECORDER.error(csx.getMessage(), csx);
+        	System.out.println(csx.getMessage());
         }
     }
 
     public void contextDestroyed(final ServletContextEvent contextEvent)
     {
-        final String methodName = CoreServiceListener.CNAME + "#contextDestroyed(final ServletContextEvent contextEvent)";
-        
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ServletContextEvent: {}", contextEvent);
-        }
     }
 }

@@ -60,8 +60,6 @@ public class SecurityServiceListener implements ServletContextListener
     private static final String CNAME = SecurityServiceListener.class.getName();
     private static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
-    private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
     /**
@@ -69,14 +67,6 @@ public class SecurityServiceListener implements ServletContextListener
      */
     public void contextInitialized(final ServletContextEvent sContextEvent)
     {
-        final String methodName = SecurityServiceListener.CNAME + "#contextInitialized(final ServletContextEvent sContextEvent)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ServletContextEvent: {}", sContextEvent);
-        }
-
         URL xmlURL = null;
         JAXBContext context = null;
         Unmarshaller marshaller = null;
@@ -84,12 +74,6 @@ public class SecurityServiceListener implements ServletContextListener
 
         final ServletContext sContext = sContextEvent.getServletContext();
         final ClassLoader classLoader = SecurityServiceListener.class.getClassLoader();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ServletContext: {}", sContext);
-            DEBUGGER.debug("ClassLoader: {}", classLoader);
-        }
 
         try
         {
@@ -113,11 +97,6 @@ public class SecurityServiceListener implements ServletContextListener
                 else
                 {
                 	xmlURL = classLoader.getResource(sContext.getInitParameter(SecurityServiceListener.INIT_SYSCONFIG_FILE));
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("xmlURL: {}", xmlURL);
                 }
 
                 if (xmlURL != null)
@@ -154,15 +133,15 @@ public class SecurityServiceListener implements ServletContextListener
         }
         catch (NamingException nx)
         {
-            ERROR_RECORDER.error(nx.getMessage(), nx);
+        	System.err.println(nx.getMessage());
         }
         catch (SecurityServiceException ssx)
         {
-            ERROR_RECORDER.error(ssx.getMessage(), ssx);
+        	System.err.println(ssx.getMessage());
         }
         catch (JAXBException jx)
         {
-            ERROR_RECORDER.error(jx.getMessage(), jx);
+        	System.err.println(jx.getMessage());
         }
     }
 
@@ -171,14 +150,6 @@ public class SecurityServiceListener implements ServletContextListener
      */
     public void contextDestroyed(final ServletContextEvent sContextEvent)
     {
-        final String methodName = SecurityServiceListener.CNAME + "#contextDestroyed(final ServletContextEvent sContextEvent)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ServletContextEvent: {}", sContextEvent);
-        }
-
         DAOInitializer.closeAuthConnection(null, true, svcBean);
     }
 }
