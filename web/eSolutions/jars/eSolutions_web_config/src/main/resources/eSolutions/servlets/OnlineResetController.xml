@@ -30,13 +30,12 @@
         <property name="validator">
             <ref bean="onlineResetValidator" />
         </property>
-        <property name="allowUserReset" value="true" /> <!-- enable/disable user reset process -->
         <property name="resetURL" value="/ui/online-reset/forgot-password/" />
         <property name="messageRequestComplete" value="olr.request.complete" />
         <property name="messageRequestFailure" value="olr.request.failure" />
-        <property name="submitAnswersPage" value="OnlineReset_SubmitAnswers" />
-        <property name="submitUsernamePage" value="OnlineReset_SubmitUsername" />
-        <property name="submitEmailAddrPage" value="OnlineReset_ForgotUsername" />
+        <property name="submitAnswersPage" value=".online-reset/jsp/html/en/OnlineReset_QuestionResponse" />
+        <property name="submitUsernamePage" value=".online-reset/jsp/html/en/OnlineReset_SubmitUsername" />
+        <property name="submitEmailAddrPage" value=".online-reset/jsp/html/en/OnlineReset_ForgotUsername" />
         <property name="forgotUsernameEmail" ref="forgotUsernameEmail" />
         <property name="forgotPasswordEmail" ref="forgotPasswordEmail" />
     </bean>

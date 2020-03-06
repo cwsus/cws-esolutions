@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import org.slf4j.LoggerFactory;
+import org.springframework.ui.Model;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
@@ -39,8 +40,6 @@ import org.springframework.stereotype.Controller;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -59,19 +58,19 @@ import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
+import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.security.processors.dto.AccountChangeData;
 import com.cws.esolutions.security.processors.enums.ResetRequestType;
-import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AccountResetRequest;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
-import com.cws.esolutions.security.processors.impl.AccountResetProcessorImpl;
-import com.cws.esolutions.core.processors.exception.MessagingServiceException;
-import com.cws.esolutions.core.processors.impl.ServiceMessagingProcessorImpl;
 import com.cws.esolutions.core.processors.interfaces.IWebMessagingProcessor;
+import com.cws.esolutions.security.processors.impl.AccountResetProcessorImpl;
+import com.cws.esolutions.core.processors.impl.ServiceMessagingProcessorImpl;
+import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
@@ -87,7 +86,6 @@ import com.cws.esolutions.security.processors.interfaces.IAccountControlProcesso
 public class OnlineResetController
 {
     private String resetURL = null;
-    private boolean allowUserReset = true;
     private String submitAnswersPage = null;
     private String submitUsernamePage = null;
     private String submitEmailAddrPage = null;
@@ -237,19 +235,6 @@ public class OnlineResetController
         this.validator = value;
     }
 
-    public final void setAllowUserReset(final boolean value)
-    {
-        final String methodName = OnlineResetController.CNAME + "#setAllowUserReset(final boolean value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.allowUserReset = value;
-    }
-
     public final void setForgotUsernameEmail(final SimpleMailMessage value)
     {
         final String methodName = OnlineResetController.CNAME + "#setForgotUsernameEmail(final SimpleMailMessage value)";
@@ -277,16 +262,15 @@ public class OnlineResetController
     }
 
     @RequestMapping(value = "/forgot-username", method = RequestMethod.GET)
-    public final ModelAndView showForgotUsername()
+    public final String showForgotUsername(final Model model)
     {
         final String methodName = OnlineResetController.CNAME + "#showForgotUsername()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Model: {}", model);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -301,7 +285,7 @@ public class OnlineResetController
             DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -312,7 +296,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -323,7 +307,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -345,7 +329,7 @@ public class OnlineResetController
 
             if (messageResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
             {
-                mView.addObject("alertMessages", messageResponse.getSvcMessages());
+            	model.addAttribute("alertMessages", messageResponse.getSvcMessages());
             }
         }
         catch (MessagingServiceException msx)
@@ -353,35 +337,31 @@ public class OnlineResetController
             // don't do anything with it
         }
 
-        mView.addObject("resetType", ResetRequestType.USERNAME);
-        mView.addObject(Constants.COMMAND, new AccountChangeData());
-        mView.setViewName(this.submitEmailAddrPage);
+        model.addAttribute("resetType", ResetRequestType.USERNAME);
+        model.addAttribute(Constants.COMMAND, new AccountChangeData());
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ModelAndView: {}", mView);
+            DEBUGGER.debug("ModelAndView: {}", model);
         }
 
-        return mView;
+        return this.submitEmailAddrPage;
     }
 
     @RequestMapping(value = "/forgot-password", method = RequestMethod.GET)
-    public final ModelAndView showForgottenPassword()
+    public final String showForgottenPassword(final Model model)
     {
         final String methodName = OnlineResetController.CNAME + "#showForgottenPassword()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Model: {}", model);
         }
-
-        ModelAndView mView = new ModelAndView();
-        mView.addObject(Constants.ALLOW_RESET, this.allowUserReset);
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
-        final IWebMessagingProcessor svcMessage = new ServiceMessagingProcessorImpl();
 
         if (DEBUG)
         {
@@ -391,7 +371,7 @@ public class OnlineResetController
             DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -402,7 +382,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -413,7 +393,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -424,41 +404,21 @@ public class OnlineResetController
             }
         }
 
-        try
-        {
-            MessagingResponse messageResponse = svcMessage.showAlertMessages(new MessagingRequest());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("MessagingResponse: {}", messageResponse);
-            }
-
-            if (messageResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-            {
-                mView.addObject("alertMessages", messageResponse.getSvcMessages());
-            }
-        }
-        catch (MessagingServiceException msx)
-        {
-            // don't do anything with it
-        }
-
-        mView.addObject("resetType", ResetRequestType.PASSWORD);
-        mView.addObject(Constants.COMMAND, new AccountChangeData());
-        mView.setViewName(this.submitUsernamePage);
+        model.addAttribute("resetType", ResetRequestType.PASSWORD);
+        model.addAttribute(Constants.COMMAND, new AccountChangeData());
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ModelAndView: {}", mView);
+            DEBUGGER.debug("ModelAndView: {}", model);
         }
 
-        return mView;
+        return this.submitUsernamePage;
     }
 
     @RequestMapping(value = "/forgot-password/{resetId}", method = RequestMethod.GET)
-    public final ModelAndView showPasswordChange(@PathVariable(value = "resetId") final String resetId)
+    public final String showPasswordChange(@PathVariable(value = "resetId") final String resetId, final Model model)
     {
-        final String methodName = OnlineResetController.CNAME + "#showPasswordChange()";
+        final String methodName = OnlineResetController.CNAME + "#showPasswordChange(@PathVariable(value = \"resetId\") final String resetId, final Model model)";
 
         if (DEBUG)
         {
@@ -466,8 +426,6 @@ public class OnlineResetController
             DEBUGGER.debug("resetId: {}", resetId);
         }
 
-        ModelAndView mView = new ModelAndView(new RedirectView());
-
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
@@ -480,7 +438,7 @@ public class OnlineResetController
             DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -491,7 +449,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -502,7 +460,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -552,16 +510,16 @@ public class OnlineResetController
                     // this account is suspended, we cant work on it
                     hSession.invalidate();
 
-                    mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageUserNotLoggedIn());
-                    mView.setViewName(this.appConfig.getLogonRedirect());
+                    model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageUserNotLoggedIn());
+                    return this.appConfig.getLogonRedirect();
                 }
                 else
                 {
                     // add in the session id
                     hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
-                    mView.addObject(OnlineResetController.RESET_KEY_ID, resetId);
-                    mView.setViewName(this.appConfig.getExpiredRedirect());
+                    model.addAttribute(OnlineResetController.RESET_KEY_ID, resetId);
+                    return this.appConfig.getLogonRedirect();
                 }
             }
             else
@@ -569,26 +527,19 @@ public class OnlineResetController
                 // user not logged in, redirect
                 hSession.invalidate();
 
-                mView.setViewName(this.appConfig.getLogonRedirect());
+                return this.appConfig.getLogonRedirect();
             }
         }
         catch (AccountResetException arx)
         {
             ERROR_RECORDER.error(arx.getMessage(), arx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
     }
 
     @RequestMapping(value = "/cancel", method = RequestMethod.GET)
-    public final ModelAndView doCancelRequest()
+    public final String doCancelRequest(final Model model)
     {
         final String methodName = OnlineResetController.CNAME + "#doCancelRequest()";
 
@@ -596,8 +547,6 @@ public class OnlineResetController
         {
             DEBUGGER.debug(methodName);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -611,7 +560,7 @@ public class OnlineResetController
             DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -622,7 +571,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -633,7 +582,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -646,31 +595,28 @@ public class OnlineResetController
 
         hSession.invalidate(); // clear the http session
 
-        mView = new ModelAndView(new RedirectView());
-        mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessageRequestCanceled());
-        mView.setViewName(this.appConfig.getLogonRedirect());
+        model.addAttribute(Constants.RESPONSE_MESSAGE, this.appConfig.getMessageRequestCanceled());
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ModelAndView: {}", mView);
+            DEBUGGER.debug("ModelAndView: {}", model);
         }
 
-        return mView;
+        return this.appConfig.getLogonRedirect();
     }
 
     @RequestMapping(value = "/forgot-username", method = RequestMethod.POST)
-    public final ModelAndView submitForgottenUsername(@ModelAttribute("request") final AccountChangeData request, final BindingResult bindResult)
+    public final String submitForgottenUsername(@ModelAttribute("request") final AccountChangeData request, final BindingResult bindResult, final Model model)
     {
-        final String methodName = OnlineResetController.CNAME + "#submitForgottenUsername(@ModelAttribute(\"UserChangeRequest\") final UserChangeRequest request, final BindingResult bindResult)";
+        final String methodName = OnlineResetController.CNAME + "#submitForgottenUsername(@ModelAttribute(\"UserChangeRequest\") final UserChangeRequest request, final BindingResult bindResult, final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("UserChangeRequest: {}", request);
             DEBUGGER.debug("BindingResult: {}", bindResult);
+            DEBUGGER.debug("Model: {}", model);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -685,7 +631,7 @@ public class OnlineResetController
             DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -696,7 +642,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -707,7 +653,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -726,12 +672,11 @@ public class OnlineResetController
             // validation failed
             ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
 
-            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
-            mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
-            mView.addObject(Constants.COMMAND, new AccountChangeData());
-            mView.setViewName(this.submitUsernamePage);
+            model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+            model.addAttribute(Constants.BIND_RESULT, bindResult.getAllErrors());
+            model.addAttribute(Constants.COMMAND, new AccountChangeData());
 
-            return mView;
+            return this.submitUsernamePage;
         }
 
         try
@@ -810,47 +755,37 @@ public class OnlineResetController
                 {
                     ERROR_RECORDER.error(mx.getMessage(), mx);
 
-                    mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
+                    model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                 }
 
-                mView = new ModelAndView(new RedirectView());
-                mView.addObject(Constants.MESSAGE_RESPONSE, this.messageRequestComplete);
-                mView.setViewName(this.appConfig.getLogonRedirect());
+                model.addAttribute(Constants.MESSAGE_RESPONSE, this.messageRequestComplete);
+                return this.appConfig.getLogonRedirect();
             }
             else
             {
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+                return this.appConfig.getErrorResponsePage();
             }
         }
         catch (AccountControlException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
-            mView = new ModelAndView(new RedirectView());
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
     }
 
     @RequestMapping(value = "/forgot-password", method = RequestMethod.POST)
-    public final ModelAndView submitUsername(@ModelAttribute("request") final AccountChangeData request, final BindingResult bindResult)
+    public final String submitUsername(@ModelAttribute("request") final AccountChangeData request, final BindingResult bindResult, final Model model)
     {
-        final String methodName = OnlineResetController.CNAME + "#submitUsername(@ModelAttribute(\"UserChangeRequest\") final UserChangeRequest request, final BindingResult bindResult)";
+        final String methodName = OnlineResetController.CNAME + "#submitUsername(@ModelAttribute(\"UserChangeRequest\") final UserChangeRequest request, final BindingResult bindResult, final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("UserChangeRequest: {}", request);
             DEBUGGER.debug("BindingResult: {}", bindResult);
+            DEBUGGER.debug("Model: {}", model);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -865,7 +800,7 @@ public class OnlineResetController
             DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -876,7 +811,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -887,7 +822,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -905,12 +840,11 @@ public class OnlineResetController
             // validation failed
             ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
 
-            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
-            mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
-            mView.addObject(Constants.COMMAND, new AccountChangeData());
-            mView.setViewName(this.submitUsernamePage);
+            model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+            model.addAttribute(Constants.BIND_RESULT, bindResult.getAllErrors());
+            model.addAttribute(Constants.COMMAND, new AccountChangeData());
 
-            return mView;
+            return this.submitUsernamePage;
         }
 
         try
@@ -957,10 +891,7 @@ public class OnlineResetController
 
                 if ((resAccount.isSuspended()) || (resAccount.isOlrLocked()))
                 {
-                    mView = new ModelAndView(new RedirectView());
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    return mView;
+                    return this.appConfig.getUnauthorizedPage();
                 }
 
                 AuthenticationData userSec = response.getUserSecurity();
@@ -982,45 +913,38 @@ public class OnlineResetController
                 // xlnt. set the user
                 hSession.setAttribute(Constants.USER_ACCOUNT, resAccount);
 
-                mView.addObject("resetType", ResetRequestType.QUESTIONS);
-                mView.addObject(Constants.COMMAND, changeReq);
-                mView.setViewName(this.submitAnswersPage);
+                model.addAttribute("resetType", ResetRequestType.QUESTIONS);
+                model.addAttribute(Constants.COMMAND, changeReq);
+
+                return this.submitAnswersPage;
             }
             else
             {
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+                return this.appConfig.getErrorResponsePage();
             }
         }
         catch (AccountResetException arx)
         {
             ERROR_RECORDER.error(arx.getMessage(), arx);
 
-            mView = new ModelAndView(new RedirectView());
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
     }
 
     @RequestMapping(value = "/submit", method = RequestMethod.POST)
-    public final ModelAndView submitSecurityResponse(@ModelAttribute("request") final AccountChangeData request, final BindingResult bindResult)
+    public final String submitSecurityResponse(@ModelAttribute("request") final AccountChangeData request, final BindingResult bindResult, final Model model)
     {
-        final String methodName = OnlineResetController.CNAME + "#submitSecurityResponse(@ModelAttribute(\"request\") final UserChangeRequest request, final BindingResult bindResult)";
+        final String methodName = OnlineResetController.CNAME + "#submitSecurityResponse(@ModelAttribute(\"request\") final UserChangeRequest request, final BindingResult bindResult, final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("UserChangeRequest: {}", request);
             DEBUGGER.debug("BindingResult: {}", bindResult);
+            DEBUGGER.debug("Model: {}", model);
         }
 
         boolean resetError = false;
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -1037,7 +961,7 @@ public class OnlineResetController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1048,7 +972,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1059,7 +983,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1077,12 +1001,11 @@ public class OnlineResetController
             // validation failed
             ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
 
-            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
-            mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
-            mView.addObject(Constants.COMMAND, request);
-            mView.setViewName(this.submitAnswersPage);
+            model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+            model.addAttribute(Constants.BIND_RESULT, bindResult.getAllErrors());
+            model.addAttribute(Constants.COMMAND, request);
 
-            return mView;
+            return this.submitAnswersPage;
         }
 
         try
@@ -1205,7 +1128,7 @@ public class OnlineResetController
                     {
                         ERROR_RECORDER.error(mx.getMessage(), mx);
 
-                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
+                        model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                     }
 
                     if (this.secConfig.getSecurityConfig().getSmsResetEnabled())
@@ -1230,14 +1153,14 @@ public class OnlineResetController
                         {
                             ERROR_RECORDER.error(mx.getMessage(), mx);
 
-                            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
+                            model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                         }
                     }
                 }
                 else
                 {
                     // some failure occurred
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+                    return this.appConfig.getErrorResponsePage();
                 }
             }
             else
@@ -1251,16 +1174,17 @@ public class OnlineResetController
                 }
 
                 resetError = true;
-                mView.addObject(Constants.ERROR_RESPONSE, this.messageRequestFailure);
-                mView.addObject(Constants.COMMAND, request);
-                mView.setViewName(this.submitAnswersPage);
+                model.addAttribute(Constants.ERROR_RESPONSE, this.messageRequestFailure);
+                model.addAttribute(Constants.COMMAND, request);
+
+                return this.submitAnswersPage;
             }
         }
         catch (AccountResetException arx)
         {
             ERROR_RECORDER.error(arx.getMessage(), arx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
         finally
         {
@@ -1273,16 +1197,17 @@ public class OnlineResetController
                 hRequest.getSession().removeAttribute(Constants.USER_ACCOUNT);
                 hRequest.getSession().invalidate();
 
-                mView.addObject(Constants.RESPONSE_MESSAGE, this.messageRequestComplete);
-                mView.setViewName(this.appConfig.getLogonRedirect());
+                model.addAttribute(Constants.RESPONSE_MESSAGE, this.messageRequestComplete);
+
+                return this.appConfig.getLogonRedirect();
             }
         }
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ModelAndView: {}", mView);
+            DEBUGGER.debug("ModelAndView: {}", model);
         }
 
-        return mView;
+        return this.appConfig.getLogonRedirect();
     }
 }

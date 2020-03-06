@@ -16,7 +16,7 @@
     <bean id="viewResolver"
         class="org.springframework.web.servlet.view.UrlBasedViewResolver">
         <property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
-        <property name="prefix" value="/com.cws.esolutions.web." />
+        <property name="prefix" value="/com.cws.esolutions.web" />
         <property name="suffix" value=".jsp" />
     </bean>
 
@@ -39,7 +39,7 @@
     <bean id="coreConfig" class="com.cws.esolutions.core.config.xml.CoreConfigurationData" />
 
     <!-- application configuration -->
-    <bean id="appConfig" class="com.cws.esolutions.web.ApplicationServiceBean">
+    <bean id="appConfig" class="com.cws.esolutions.web.ApplicationServiceBean" scope="application">
         <property name="messageValidator">
             <ref bean="messageValidator" />
         </property>
@@ -63,14 +63,14 @@
                 <entry key="certMgmt" value="true" />
             </map>
         </property>
-        <property name="homePage" value="HomePage" />
-        <property name="contactAdminsPage" value="System_ContactAdmins" />
-        <property name="errorResponsePage" value="System_ErrorResponse" />
-        <property name="requestCompletePage" value="System_RequestComplete" />
+        <property name="homePage" value="/jsp/html/en/CommonLandingPage" />
+        <property name="contactAdminsPage" value="/jsp/html/en/System_ContactAdmins" />
+        <property name="errorResponsePage" value="/jsp/html/en/System_ErrorHandler" />
+        <property name="requestCompletePage" value="/jsp/html/en/System_RequestComplete" />
         <property name="searchRequestPage" value="System_SearchRequest" />
-        <property name="unauthorizedPage" value="System_Unauthorized" />
-        <property name="unavailablePage" value="System_UnavailablePage" />
-        <property name="logonRedirect" value="redirect:/ui/login/default" />
+        <property name="unauthorizedPage" value="/jsp/html/en/System_Unauthorized" />
+        <property name="unavailablePage" value="/jsp/html/en/System_Unavailable" />
+        <property name="logonRedirect" value="redirect:/ui/auth/default" />
         <property name="homeRedirect" value="redirect:/ui/common/default" />
         <property name="contactAdminsRedirect" value="redirect:/ui/common/contact" />
         <property name="expiredRedirect" value="redirect:/ui/user-account/password" />

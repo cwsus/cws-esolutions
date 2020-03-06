@@ -62,6 +62,7 @@ import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcesso
  * @see org.springframework.stereotype.Controller
  */
 @Controller
+@RequestMapping("/auth")
 public class LoginController
 {
     private String loginPage = null;
@@ -169,7 +170,7 @@ public class LoginController
         this.messageSubmissionFailed = value;
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    @RequestMapping(value = "/default", method = RequestMethod.GET)
     public final String showLoginPage(final Model model)
     {
         final String methodName = LoginController.CNAME + "#showLoginPage()";
@@ -284,7 +285,8 @@ public class LoginController
         {
             DEBUGGER.debug("ModelAndView: {}", model);
         }
-
+        System.out.println(this.appConfig);
+        System.out.println(this.appConfig.getServices());
         return this.loginPage;
     }
 
@@ -358,7 +360,7 @@ public class LoginController
     }
 
     // combined logon
-    @RequestMapping(value = "/submit-logon", method = RequestMethod.POST)
+    @RequestMapping(value = "/submit", method = RequestMethod.POST)
     public final ModelAndView doCombinedLogin(@ModelAttribute("AuthenticationData") final AuthenticationData loginRequest, final BindingResult bindResult)
     {
         final String methodName = LoginController.CNAME + "#doCombinedLogin(@ModelAttribute(\"AuthenticationData\") final AuthenticationData loginRequest, final BindingResult bindResult)";

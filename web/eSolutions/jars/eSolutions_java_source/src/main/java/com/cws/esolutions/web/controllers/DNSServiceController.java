@@ -30,11 +30,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import java.util.Enumeration;
 import org.slf4j.LoggerFactory;
+import org.springframework.ui.Model;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,8 +67,8 @@ public class DNSServiceController
     private String serviceName = null;
     private String serviceHost = null;
     private String[] searchSuffix = null;
-    private String createServicePage = null;
     private List<String> serviceTypes = null;
+    private String messageNoSearchResults = null;
     private ApplicationServiceBean appConfig = null;
 
     private static final String CNAME = DNSServiceController.class.getName();
@@ -88,19 +88,6 @@ public class DNSServiceController
         }
 
         this.lookupPage = value;
-    }
-
-    public final void setCreateServicePage(final String value)
-    {
-        final String methodName = DNSServiceController.CNAME + "#setCreateServicePage(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.createServicePage = value;
     }
 
     public final void setServiceName(final String value)
@@ -188,8 +175,21 @@ public class DNSServiceController
         this.serviceTypes = value;
     }
 
+    public final void setMessageNoSearchResults(final String value)
+    {
+    	final String methodName = CNAME + "#setMessageNoSearchResults(final String value)";
+
+    	if (DEBUG)
+    	{
+    		DEBUGGER.debug(methodName);
+    		DEBUGGER.debug("Value: {}", value);
+    	}
+
+    	this.messageNoSearchResults = value;
+    }
+
     @RequestMapping(value = "/default", method = RequestMethod.GET)
-    public final ModelAndView showDefaultPage()
+    public final String showDefaultPage(final Model model)
     {
         final String methodName = DNSServiceController.CNAME + "#showDefaultPage()";
 
@@ -198,8 +198,6 @@ public class DNSServiceController
             DEBUGGER.debug(methodName);
         }
 
-        ModelAndView mView = new ModelAndView();
-
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
@@ -247,36 +245,34 @@ public class DNSServiceController
             }
         }
 
+        System.out.println(this.appConfig);
+        System.out.println(this.appConfig.getServices());
+        System.out.println(this.appConfig.getServices().get(this.serviceName));
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
-        mView.addObject("serviceTypes", this.serviceTypes);
-        mView.addObject(Constants.COMMAND, new DNSRecord());
-        mView.setViewName(this.lookupPage);
+        model.addAttribute("serviceTypes", this.serviceTypes);
+        model.addAttribute(Constants.COMMAND, new DNSRecord());
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ModelAndView: {}", mView);
+            DEBUGGER.debug("ModelAndView: {}", model);
         }
 
-        return mView;
+        return this.lookupPage;
     }
 
     @RequestMapping(value = "/service-lookup", method = RequestMethod.GET)
-    public final ModelAndView showLookup()
+    public final String showLookup(final Model model)
     {
-        final String methodName = DNSServiceController.CNAME + "#showLookup()";
+        final String methodName = DNSServiceController.CNAME + "#showLookup(final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -325,107 +321,24 @@ public class DNSServiceController
             }
         }
 
-
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
             
-        mView.addObject("serviceTypes", this.serviceTypes);
-        mView.addObject(Constants.COMMAND, new DNSRecord());
-        mView.setViewName(this.lookupPage);
+        model.addAttribute("serviceTypes", this.serviceTypes);
+        model.addAttribute(Constants.COMMAND, new DNSRecord());
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ModelAndView: {}", mView);
+            DEBUGGER.debug("ModelAndView: {}", model);
         }
 
-        return mView;
-    }
-
-    @RequestMapping(value = "/create-service", method = RequestMethod.GET)
-    public final ModelAndView showCreateService()
-    {
-        final String methodName = DNSServiceController.CNAME + "#showCreateService()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        ModelAndView mView = new ModelAndView();
-
-        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        final HttpServletRequest hRequest = requestAttributes.getRequest();
-        final HttpSession hSession = hRequest.getSession();
-        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
-            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
-            DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("Session ID: {}", hSession.getId());
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-
-            DEBUGGER.debug("Dumping session content:");
-            Enumeration<?> sessionEnumeration = hSession.getAttributeNames();
-
-            while (sessionEnumeration.hasMoreElements())
-            {
-                String element = (String) sessionEnumeration.nextElement();
-                Object value = hSession.getAttribute(element);
-
-                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
-            }
-
-            DEBUGGER.debug("Dumping request content:");
-            Enumeration<?> requestEnumeration = hRequest.getAttributeNames();
-
-            while (requestEnumeration.hasMoreElements())
-            {
-                String element = (String) requestEnumeration.nextElement();
-                Object value = hRequest.getAttribute(element);
-
-                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
-            }
-
-            DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<?> paramsEnumeration = hRequest.getParameterNames();
-
-            while (paramsEnumeration.hasMoreElements())
-            {
-                String element = (String) paramsEnumeration.nextElement();
-                Object value = hRequest.getParameter(element);
-
-                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
-            }
-        }
-
-
-        if (!(this.appConfig.getServices().get(this.serviceName)))
-        {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
-        }
-            
-        mView.addObject("serviceTypes", this.serviceTypes);
-        mView.addObject(Constants.COMMAND, new DNSRecord());
-        mView.setViewName(this.createServicePage);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
+        return this.lookupPage;
     }
 
     @RequestMapping(value = "/service-lookup", method = RequestMethod.POST)
-    public final ModelAndView showLookup(@ModelAttribute("entry") final DNSRecord request, final BindingResult bindResult)
+    public final String showLookup(@ModelAttribute("entry") final DNSRecord request, final BindingResult bindResult, final Model model)
     {
         final String methodName = DNSServiceController.CNAME + "#showLookup(@ModelAttribute(\"entry\") final DNSRecord request, final BindingResult bindResult)";
 
@@ -435,8 +348,6 @@ public class DNSServiceController
             DEBUGGER.debug("DNSRecord: {}", request);
             DEBUGGER.debug("BindingResult: {}", bindResult);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -486,12 +397,9 @@ public class DNSServiceController
             }
         }
 
-
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
         try
@@ -534,38 +442,37 @@ public class DNSServiceController
                 if ((response.getDnsRecords() != null) && (response.getDnsRecords().size() != 0))
                 {
                     // multiple records were returned
-                    mView.addObject("dnsEntries", response.getDnsRecords());
+                    model.addAttribute("dnsEntries", response.getDnsRecords());
                 }
                 else if (response.getDnsRecord() != null)
                 {
-                    mView.addObject("dnsEntry", response.getDnsRecord());
+                	model.addAttribute("dnsEntry", response.getDnsRecord());
                 }
                 else
                 {
-                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                	model.addAttribute(Constants.ERROR_RESPONSE, this.messageNoSearchResults);
                 }
             }
             else
             {
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+                return this.appConfig.getErrorResponsePage();
             }
 
-            mView.addObject("serviceTypes", this.serviceTypes);
-            mView.addObject(Constants.COMMAND, new DNSRecord());
-            mView.setViewName(this.lookupPage);
+            model.addAttribute("serviceTypes", this.serviceTypes);
+            model.addAttribute(Constants.COMMAND, new DNSRecord());
         }
         catch (DNSServiceException dsx)
         {
             ERROR_RECORDER.error(dsx.getMessage(), dsx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ModelAndView: {}", mView);
+            DEBUGGER.debug("ModelAndView: {}", model);
         }
  
-        return mView;
+        return this.lookupPage;
     }
 }

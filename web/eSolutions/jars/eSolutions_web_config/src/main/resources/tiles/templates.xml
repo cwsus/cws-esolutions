@@ -16,7 +16,7 @@
     <!-- Common -->
     <definition name="HomePage" extends="baseLayout">
         <put-attribute name="title"         value="eSolutions - Home"/>
-        <put-attribute name="body"          value="/com.cws.esolutions.web/jsp/html/en/CommonLandingPage.jsp"/>
+        <put-attribute name="body"          value="/com.cws.esolutions.web.jsp"/>
     </definition>
     <definition name="System_ContactAdmins" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - Contact Administrators" cascade="true" />
@@ -24,19 +24,19 @@
     </definition>
     <definition name="System_ErrorResponse" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - System Error" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web/jsp/html/en/System_ErrorHandler.jsp" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.esolutions.web.jsp" cascade="true" />
     </definition>
     <definition name="System_RequestComplete" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - Request Complete" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web/jsp/html/en/System_RequestComplete.jsp" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.esolutions.web.jsp" cascade="true" />
     </definition>
     <definition name="System_Unauthorized" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - Service Not Authorized" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web/jsp/html/en/System_Unauthorized.jsp" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.esolutions.web.jsp" cascade="true" />
     </definition>
     <definition name="System_UnavailablePage" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - Service Unavailable" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web/jsp/html/en/System_Unavailable.jsp" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.esolutions.web.jsp" cascade="true" />
     </definition>
 
     <!-- Application Management -->
@@ -88,7 +88,7 @@
     <!-- DNSService -->
     <definition name="DNSService_ServiceLookup" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - DNS Services - Service Lookup" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.dns-service/jsp/html/en/DNSService_ServiceLookup.jsp" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.esolutions.web.jsp" cascade="true" />
     </definition>
     <definition name="DNSService_CreateService" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - DNS Services - Create Service" cascade="true" />
@@ -108,15 +108,15 @@
     <!-- OnlineReset -->
     <definition name="OnlineReset_SubmitUsername" extends="baseLayout">
         <put-attribute name="title"         value="eSolutions - Forgot Password" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.online-reset/jsp/html/en/OnlineReset_SubmitUsername.jsp" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.esolutions.web.jsp" cascade="true" />
     </definition>
     <definition name="OnlineReset_SubmitAnswers" extends="baseLayout">
         <put-attribute name="title"         value="eSolutions - Forgot Password" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.online-reset/jsp/html/en/OnlineReset_QuestionResponse.jsp" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.esolutions.web.jsp" cascade="true" />
     </definition>
     <definition name="OnlineReset_ForgotUsername" extends="baseLayout">
         <put-attribute name="title"         value="eSolutions - Forgot Password" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.online-reset/jsp/html/en/OnlineReset_ForgotUsername.jsp" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.esolutions.web.jsp" cascade="true" />
     </definition>
 
     <!-- Service Management -->
