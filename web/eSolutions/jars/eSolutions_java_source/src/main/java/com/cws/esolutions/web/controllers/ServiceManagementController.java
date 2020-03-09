@@ -30,12 +30,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import java.util.Enumeration;
 import org.slf4j.LoggerFactory;
+import org.springframework.ui.Model;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -255,16 +255,15 @@ public class ServiceManagementController
     }
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
-    public final ModelAndView showDefaultPage()
+    public final String showDefaultPage(final Model model)
     {
-        final String methodName = ServiceManagementController.CNAME + "#showDefaultPage()";
+        final String methodName = ServiceManagementController.CNAME + "#showDefaultPage(final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Model: {}", model);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -315,25 +314,21 @@ public class ServiceManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
-
-        mView.setViewName(this.defaultPage);
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ModelAndView: {}", mView);
+            DEBUGGER.debug("ModelAndView: {}", model);
         }
 
-        return mView;
+        return this.defaultPage;
     }
 
     @RequestMapping(value = "/search/terms/{terms}/type/{type}/page/{page}", method = RequestMethod.GET)
-    public final ModelAndView showSearchPage(@PathVariable("terms") final String terms, @PathVariable("type") final String type, @PathVariable("page") final int page)
+    public final String showSearchPage(@PathVariable("terms") final String terms, @PathVariable("type") final String type, @PathVariable("page") final int page, final Model model)
     {
-        final String methodName = ServiceManagementController.CNAME + "#showSearchPage(@PathVariable(\"terms\") final String terms, @PathVariable(\"type\") final String type, @PathVariable(\"page\") final int page)";
+        final String methodName = ServiceManagementController.CNAME + "#showSearchPage(@PathVariable(\"terms\") final String terms, @PathVariable(\"type\") final String type, @PathVariable(\"page\") final int page, final Model model)";
 
         if (DEBUG)
         {
@@ -341,9 +336,8 @@ public class ServiceManagementController
             DEBUGGER.debug("Value: {}", terms);
             DEBUGGER.debug("Value: {}", type);
             DEBUGGER.debug("Value: {}", page);
+            DEBUGGER.debug("Value: {}", model);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -395,9 +389,7 @@ public class ServiceManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
         try
@@ -442,51 +434,45 @@ public class ServiceManagementController
 
             if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
             {
-                mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
-                mView.addObject("page", page);
-                mView.addObject("searchTerms", terms);
-                mView.addObject("searchType", type);
-                mView.addObject(Constants.SEARCH_RESULTS, response.getServiceList());
-                mView.addObject(Constants.COMMAND, new Service());
-                mView.setViewName(this.defaultPage);
+                model.addAttribute("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
+                model.addAttribute("page", page);
+                model.addAttribute("searchTerms", terms);
+                model.addAttribute("searchType", type);
+                model.addAttribute(Constants.SEARCH_RESULTS, response.getServiceList());
+                model.addAttribute(Constants.COMMAND, new Service());
+
+                return this.defaultPage;
             }
             else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
+                return this.appConfig.getUnauthorizedPage();
             }
             else
             {
-                mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                mView.addObject(Constants.COMMAND, new Service());
-                mView.setViewName(this.defaultPage);
+                model.addAttribute(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                model.addAttribute(Constants.COMMAND, new Service());
+
+                return this.defaultPage;
             }
         }
         catch (ServiceManagementException smx)
         {
             ERROR_RECORDER.error(smx.getMessage(), smx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
     }
 
     @RequestMapping(value = "/list-platforms", method = RequestMethod.GET)
-    public final ModelAndView showPlatformList()
+    public final String showPlatformList(final Model model)
     {
-        final String methodName = ServiceManagementController.CNAME + "#showPlatformList()";
+        final String methodName = ServiceManagementController.CNAME + "#showPlatformList(final String model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Model: {}", model);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -538,9 +524,7 @@ public class ServiceManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
         try
@@ -591,48 +575,41 @@ public class ServiceManagementController
                     DEBUGGER.debug("platformList: {}", platformList);
                 }
 
-                mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
-                mView.addObject("page", 1);
-                mView.addObject("platformList", platformList);
-                mView.setViewName(this.viewServiceList);
+                model.addAttribute("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
+                model.addAttribute("page", 1);
+                model.addAttribute("platformList", platformList);
+
+                return this.viewServiceList;
             }
             else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
+                return this.appConfig.getUnauthorizedPage();
             }
             else
             {
-                mView = new ModelAndView(new RedirectView());
-                mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                mView.setViewName(this.addServiceRedirect);
+                model.addAttribute(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+
+                return this.addServiceRedirect;
             }
         }
         catch (ServiceManagementException pmx)
         {
             ERROR_RECORDER.error(pmx.getMessage(), pmx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
     }
 
     @RequestMapping(value = "/list-platforms/page/{page}", method = RequestMethod.GET)
-    public final ModelAndView showPlatformList(@PathVariable("page") final int page)
+    public final String showPlatformList(@PathVariable("page") final int page, final Model model)
     {
-        final String methodName = ServiceManagementController.CNAME + "#showPlatformList(@PathVariable(\"page\") final int page)";
+        final String methodName = ServiceManagementController.CNAME + "#showPlatformList(@PathVariable(\"page\") final int page, final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Model: {}", model);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -684,9 +661,7 @@ public class ServiceManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
         try
@@ -738,47 +713,41 @@ public class ServiceManagementController
                     DEBUGGER.debug("platformList: {}", platformList);
                 }
 
-                mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
-                mView.addObject("page", page);
-                mView.addObject("platformList", platformList);
-                mView.setViewName(this.viewServiceList);
+                model.addAttribute("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
+                model.addAttribute("page", page);
+                model.addAttribute("platformList", platformList);
+
+                return this.viewServiceList;
             }
             else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
+                return this.appConfig.getUnauthorizedPage();
             }
             else
             {
-                mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                mView.setViewName(this.defaultPage);
+                model.addAttribute(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+
+                return this.defaultPage;
             }
         }
         catch (ServiceManagementException pmx)
         {
             ERROR_RECORDER.error(pmx.getMessage(), pmx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
     }
 
     @RequestMapping(value = "/list-datacenters", method = RequestMethod.GET)
-    public final ModelAndView showDatacenterList()
+    public final String showDatacenterList(final Model model)
     {
-        final String methodName = ServiceManagementController.CNAME + "#showDatacenterList()";
+        final String methodName = ServiceManagementController.CNAME + "#showDatacenterList(final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Model: {}", model);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -830,9 +799,7 @@ public class ServiceManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
         try
@@ -885,42 +852,37 @@ public class ServiceManagementController
 
                 if ((datacenterList != null) && (datacenterList.size() != 0))
                 {
-                    mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
-                    mView.addObject("page", 1);
-                    mView.addObject("datacenterList", datacenterList);
-                    mView.setViewName(this.viewServiceList);
+                    model.addAttribute("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
+                    model.addAttribute("page", 1);
+                    model.addAttribute("datacenterList", datacenterList);
+
+                    return this.viewServiceList;
                 }
                 else
                 {
-                    mView.addObject(Constants.MESSAGE_RESPONSE, this.messageNoServicesFound);
-                    mView.addObject(Constants.COMMAND, new Service());
-                    mView.setViewName(this.addServiceRedirect);
+                    model.addAttribute(Constants.MESSAGE_RESPONSE, this.messageNoServicesFound);
+                    model.addAttribute(Constants.COMMAND, new Service());
+
+                    return this.addServiceRedirect;
                 }
             }
             else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
+                return this.appConfig.getUnauthorizedPage();
             }
             else
             {
-                mView = new ModelAndView(new RedirectView());
-                mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                mView.setViewName(this.addServiceRedirect);
+                model.addAttribute(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+
+                return this.addServiceRedirect;
             }
         }
         catch (ServiceManagementException smx)
         {
             ERROR_RECORDER.error(smx.getMessage(), smx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
     }
 
     @RequestMapping(value = "/list-datacenters/page/{page}", method = RequestMethod.GET)

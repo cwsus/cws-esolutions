@@ -59,7 +59,7 @@ import com.cws.esolutions.core.config.xml.CoreConfigurationData;
  * @see org.springframework.stereotype.Controller
  */
 @Controller
-@RequestMapping("/common")
+@RequestMapping("/home")
 public class CommonController
 {
     private String homePage = null;

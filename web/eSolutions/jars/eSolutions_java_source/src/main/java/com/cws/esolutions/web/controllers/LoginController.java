@@ -171,7 +171,7 @@ public class LoginController
     }
 
     @RequestMapping(value = {"/default", "login"}, method = RequestMethod.GET)
-    public final String showLoginPage(final Model model)
+    public final String showDefaultPage(final Model model)
     {
         final String methodName = LoginController.CNAME + "#showLoginPage()";
 

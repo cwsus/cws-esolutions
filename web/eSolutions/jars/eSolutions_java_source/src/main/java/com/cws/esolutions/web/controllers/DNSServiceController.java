@@ -189,7 +189,7 @@ public class DNSServiceController
     }
 
     @RequestMapping(value = {"/default", "/lookup"}, method = RequestMethod.GET)
-    public final String showLookupPage(final Model model)
+    public final String showDefaultPage(final Model model)
     {
         final String methodName = DNSServiceController.CNAME + "#showLookupPage(final Model model)";
 
