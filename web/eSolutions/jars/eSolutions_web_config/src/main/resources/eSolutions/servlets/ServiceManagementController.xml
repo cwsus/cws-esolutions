@@ -29,10 +29,10 @@
         <property name="serviceName" value="svcMgmt" />
         <property name="serviceId" value="D1B5D088-32B3-4AA1-9FCF-822CB476B649" />
         <property name="recordsPerPage" value="20" />
-        <property name="defaultPage" value="ServiceMgmt_DefaultHandler" />
-        <property name="addServicePage" value="ServiceMgmt_AddService" />
-        <property name="viewServicePage" value="ServiceMgmt_ViewService" />
-        <property name="viewServiceList" value="ServiceMgmt_ViewServices" />
+        <property name="defaultPage" value=".service-management/jsp/html/en/ServiceMgmt_DefaultHandler" />
+        <property name="addServicePage" value=".service-management/jsp/html/en/ServiceMgmt_AddService" />
+        <property name="viewServicePage" value=".service-management/jsp/html/en/ServiceMgmt_ViewService" />
+        <property name="viewServiceList" value=".service-management/jsp/html/en/ServiceMgmt_ViewServices" />
         <property name="messageNoServicesFound" value="svc.mgmt.no.services" />
         <property name="addServiceRedirect" value="redirect:/ui/service-management/add-service" />
         <property name="messageServiceAddSuccess" value="svc.mgmt.datacenter.add.success" />

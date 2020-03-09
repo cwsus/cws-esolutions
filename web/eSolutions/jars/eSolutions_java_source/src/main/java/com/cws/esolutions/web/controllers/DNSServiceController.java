@@ -188,86 +188,10 @@ public class DNSServiceController
     	this.messageNoSearchResults = value;
     }
 
-    @RequestMapping(value = "/default", method = RequestMethod.GET)
-    public final String showDefaultPage(final Model model)
+    @RequestMapping(value = {"/default", "/lookup"}, method = RequestMethod.GET)
+    public final String showLookupPage(final Model model)
     {
-        final String methodName = DNSServiceController.CNAME + "#showDefaultPage()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        final HttpServletRequest hRequest = requestAttributes.getRequest();
-        final HttpSession hSession = hRequest.getSession();
-        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
-            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
-            DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("Session ID: {}", hSession.getId());
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-
-            DEBUGGER.debug("Dumping session content:");
-            Enumeration<?> sessionEnumeration = hSession.getAttributeNames();
-
-            while (sessionEnumeration.hasMoreElements())
-            {
-                String element = (String) sessionEnumeration.nextElement();
-                Object value = hSession.getAttribute(element);
-
-                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
-            }
-
-            DEBUGGER.debug("Dumping request content:");
-            Enumeration<?> requestEnumeration = hRequest.getAttributeNames();
-
-            while (requestEnumeration.hasMoreElements())
-            {
-                String element = (String) requestEnumeration.nextElement();
-                Object value = hRequest.getAttribute(element);
-
-                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
-            }
-
-            DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<?> paramsEnumeration = hRequest.getParameterNames();
-
-            while (paramsEnumeration.hasMoreElements())
-            {
-                String element = (String) paramsEnumeration.nextElement();
-                Object value = hRequest.getParameter(element);
-
-                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
-            }
-        }
-
-        System.out.println(this.appConfig);
-        System.out.println(this.appConfig.getServices());
-        System.out.println(this.appConfig.getServices().get(this.serviceName));
-        if (!(this.appConfig.getServices().get(this.serviceName)))
-        {
-            return this.appConfig.getUnavailablePage();
-        }
-
-        model.addAttribute("serviceTypes", this.serviceTypes);
-        model.addAttribute(Constants.COMMAND, new DNSRecord());
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", model);
-        }
-
-        return this.lookupPage;
-    }
-
-    @RequestMapping(value = "/service-lookup", method = RequestMethod.GET)
-    public final String showLookup(final Model model)
-    {
-        final String methodName = DNSServiceController.CNAME + "#showLookup(final Model model)";
+        final String methodName = DNSServiceController.CNAME + "#showLookupPage(final Model model)";
 
         if (DEBUG)
         {
@@ -325,7 +249,7 @@ public class DNSServiceController
         {
             return this.appConfig.getUnavailablePage();
         }
-            
+
         model.addAttribute("serviceTypes", this.serviceTypes);
         model.addAttribute(Constants.COMMAND, new DNSRecord());
 
@@ -337,10 +261,10 @@ public class DNSServiceController
         return this.lookupPage;
     }
 
-    @RequestMapping(value = "/service-lookup", method = RequestMethod.POST)
-    public final String showLookup(@ModelAttribute("entry") final DNSRecord request, final BindingResult bindResult, final Model model)
+    @RequestMapping(value = "/search", method = RequestMethod.POST)
+    public final String submitLookup(@ModelAttribute("entry") final DNSRecord request, final BindingResult bindResult, final Model model)
     {
-        final String methodName = DNSServiceController.CNAME + "#showLookup(@ModelAttribute(\"entry\") final DNSRecord request, final BindingResult bindResult)";
+        final String methodName = DNSServiceController.CNAME + "#submitLookup(@ModelAttribute(\"entry\") final DNSRecord request, final BindingResult bindResult)";
 
         if (DEBUG)
         {

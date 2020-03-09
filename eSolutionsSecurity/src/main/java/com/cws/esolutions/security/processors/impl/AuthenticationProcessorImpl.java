@@ -106,12 +106,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             }
 
             List<Object> authObject = authenticator.performLogon(userInfo.get(0)[1],
-                    PasswordUtils.encryptText(
-                        authSec.getPassword(),
-                        userSalt,
-                        secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
-                        secBean.getConfigData().getSecurityConfig().getIterations(),
-                        secBean.getConfigData().getSystemConfig().getEncoding()));
+            		userSalt, authSec.getPassword());
 
             if (DEBUG)
             {

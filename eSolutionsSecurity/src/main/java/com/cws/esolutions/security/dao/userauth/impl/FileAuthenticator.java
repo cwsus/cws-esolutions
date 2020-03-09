@@ -44,9 +44,9 @@ public class FileAuthenticator implements Authenticator
     /**
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String)
      */
-    public synchronized List<Object> performLogon(final String username, final String password) throws AuthenticatorException
+    public synchronized List<Object> performLogon(final String username, final String salt, final String password) throws AuthenticatorException
     {
-        final String methodName = FileAuthenticator.CNAME + "#performLogon(final String username, final String password) throws AuthenticatorException";
+        final String methodName = FileAuthenticator.CNAME + "#performLogon(final String username, final String salt, final String password) throws AuthenticatorException";
 
         if (DEBUG)
         {
@@ -57,7 +57,6 @@ public class FileAuthenticator implements Authenticator
         Scanner scanner = null;
         List<Object> userAccount = null;
 
-        System.out.println("FileAuthenticator");
         try
         {
             scanner = new Scanner(new File(passwordConfig.getPasswordFile()));

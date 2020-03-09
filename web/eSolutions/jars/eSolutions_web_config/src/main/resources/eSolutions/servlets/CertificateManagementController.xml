@@ -15,6 +15,6 @@
         </property>
         <property name="serviceName" value="certMgmt" />
         <property name="serviceId" value="5DC38ADF-6D09-4843-8A58-514072DD25D5" />
-        <property name="defaultPage" value="CertMgmt_DefaultHandler" />
+        <property name="defaultPage" value=".certificate-management/jsp/html/en/CertMgmt_DefaultHandler" />
     </bean>
 </beans>

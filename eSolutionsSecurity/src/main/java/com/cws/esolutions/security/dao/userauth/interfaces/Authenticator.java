@@ -67,11 +67,12 @@ public interface Authenticator
      * handling.
      *
      * @param userId - the username to validate data against
+     * @param salt - The salt for the password to be hashed against
      * @param password - the password to validate data against
      * @return List - The account information for the authenticated user
      * @throws AuthenticatorException {@link com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException} if an exception occurs during processing
      */
-    List<Object> performLogon(final String userId, final String password) throws AuthenticatorException;
+    List<Object> performLogon(final String userId, final String salt, final String password) throws AuthenticatorException;
 
     /**
      * Processes an agent logon request via an LDAP user datastore. If the

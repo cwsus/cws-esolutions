@@ -81,7 +81,7 @@
     </c:if>
 
     <p>
-        <form:form id="submitNameLookup" name="submitNameLookup" action="${pageContext.request.contextPath}/ui/dns-service/service-lookup" method="post">
+        <form:form id="submitNameLookup" name="submitNameLookup" action="${pageContext.request.contextPath}/ui/dns-service/search" method="post">
             <p>
                 <label id="txtServiceName"><spring:message code="dns.service.hostname" /></label>
                 <form:input path="recordName" />

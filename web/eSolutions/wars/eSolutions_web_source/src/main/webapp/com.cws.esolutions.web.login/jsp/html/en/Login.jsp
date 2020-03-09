@@ -107,16 +107,18 @@
     </p>
 </div>
 
-<div id="rightbar">
-    <h1><spring:message code="login.user.forgot.info" /></h1>
-    <ul>
-        <li>
-            <a href="${pageContext.request.contextPath}/ui/online-reset/forgot-username" title="<spring:message code='login.user.forgot_uid' />">
-                <spring:message code="login.user.forgot_uid" /></a>
-        </li>
-        <li>
-            <a href="${pageContext.request.contextPath}/ui/online-reset/forgot-password" title="<spring:message code='login.user.forgot_pwd' />">
-                <spring:message code="login.user.forgot_pwd" /></a>
-        </li>
-    </ul>
-</div>
+<c:if test="${not empty allowUserReset and allowUserReset eq true}">
+	<div id="rightbar">
+	    <h1><spring:message code="login.user.forgot.info" /></h1>
+	    <ul>
+	        <li>
+	            <a href="${pageContext.request.contextPath}/ui/online-reset/forgot-username" title="<spring:message code='login.user.forgot_uid' />">
+	                <spring:message code="login.user.forgot_uid" /></a>
+	        </li>
+	        <li>
+	            <a href="${pageContext.request.contextPath}/ui/online-reset/forgot-password" title="<spring:message code='login.user.forgot_pwd' />">
+	                <spring:message code="login.user.forgot_pwd" /></a>
+	        </li>
+	    </ul>
+	</div>
+</c:if>

@@ -28,12 +28,12 @@
         </property>
         <property name="serviceName" value="appMgmt" />
         <property name="serviceId" value="96E4E53E-FE87-446C-AF03-0F5BC6527B9D" />
-        <property name="viewFilePage" value="AppMgmt_ViewFile" />
-        <property name="addAppPage" value="AppMgmt_AddApplication" />
-        <property name="defaultPage" value="AppMgmt_DefaultHandler" />
-        <property name="viewAppPage" value="AppMgmt_ViewApplication" />
-        <property name="retrieveFilesPage" value="AppMgmt_RetrieveFiles" />
-        <property name="viewApplicationsPage" value="AppMgmt_ViewApplications" />
+        <property name="viewFilePage" value=".application-management/jsp/html/en/AppMgmt_ViewFile" />
+        <property name="addAppPage" value=".application-management/jsp/html/en/AppMgmt_AddApplication" />
+        <property name="defaultPage" value=".application-management/jsp/html/en/AppMgmt_DefaultHandler" />
+        <property name="viewAppPage" value=".application-management/jsp/html/en/AppMgmt_ViewApplication" />
+        <property name="retrieveFilesPage" value=".application-management/jsp/html/en/AppMgmt_RetrieveFiles" />
+        <property name="viewApplicationsPage" value=".application-management/jsp/html/en/AppMgmt_ViewApplications" />
         <property name="messageNoFileData" value="app.mgmt.no.file.data.received" />
         <property name="messageApplicationAdded" value="app.mgmt.application.added" />
         <property name="messageNoApplicationsFound" value="app.mgmt.no.applications" />

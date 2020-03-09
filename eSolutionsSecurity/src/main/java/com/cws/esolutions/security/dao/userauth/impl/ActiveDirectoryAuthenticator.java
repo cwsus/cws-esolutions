@@ -42,21 +42,20 @@ import com.unboundid.ldap.sdk.SimpleBindRequest;
 import com.unboundid.ldap.sdk.LDAPConnectionPool;
 
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
-import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 /**
  * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator
  */
-public class OpenLDAPAuthenticator implements Authenticator
+public class ActiveDirectoryAuthenticator implements Authenticator
 {
-    private static final String CNAME = OpenLDAPAuthenticator.class.getName();
+    private static final String CNAME = ActiveDirectoryAuthenticator.class.getName();
 
     /**
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String)
      */
     public synchronized List<Object> performLogon(final String username, final String salt, final String password) throws AuthenticatorException
     {
-        final String methodName = OpenLDAPAuthenticator.CNAME + "#performLogon(final String username, final String salt, final String password) throws AuthenticatorException";
+        final String methodName = ActiveDirectoryAuthenticator.CNAME + "#performLogon(final String username, final String salt, final String password) throws AuthenticatorException";
 
         if (DEBUG)
         {
@@ -131,13 +130,7 @@ public class OpenLDAPAuthenticator implements Authenticator
                 DEBUGGER.debug("SearchResultEntry: {}", entry);
             }
 
-            // encrypt password first
-            BindRequest bindRequest = new SimpleBindRequest(entry.getDN(), PasswordUtils.encryptText(
-                    salt,
-                    password,
-                    svcBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
-                    svcBean.getConfigData().getSecurityConfig().getIterations(),
-                    svcBean.getConfigData().getSystemConfig().getEncoding()));
+            BindRequest bindRequest = new SimpleBindRequest(entry.getDN(), password);
 
             if (DEBUG)
             {
@@ -246,7 +239,7 @@ public class OpenLDAPAuthenticator implements Authenticator
      */
     public synchronized List<String> obtainSecurityData(final String userId, final String userGuid) throws AuthenticatorException
     {
-        final String methodName = OpenLDAPAuthenticator.CNAME + "#obtainSecurityData(final String userId, final String userGuid) throws AuthenticatorException";
+        final String methodName = ActiveDirectoryAuthenticator.CNAME + "#obtainSecurityData(final String userId, final String userGuid) throws AuthenticatorException";
 
         if (DEBUG)
         {
@@ -348,7 +341,7 @@ public class OpenLDAPAuthenticator implements Authenticator
      */
     public synchronized String obtainOtpSecret(final String userId, final String userGuid) throws AuthenticatorException
     {
-        final String methodName = OpenLDAPAuthenticator.CNAME + "#obtainOtpSecret(final String userId, final String userGuid) throws AuthenticatorException";
+        final String methodName = ActiveDirectoryAuthenticator.CNAME + "#obtainOtpSecret(final String userId, final String userGuid) throws AuthenticatorException";
 
         if (DEBUG)
         {
@@ -441,7 +434,7 @@ public class OpenLDAPAuthenticator implements Authenticator
      */
     public synchronized boolean verifySecurityData(final String userId, final String userGuid, List<String> values) throws AuthenticatorException
     {
-        final String methodName = OpenLDAPAuthenticator.CNAME + "#verifySecurityData(final String userId, final String userGuid, List<String> values) throws AuthenticatorException";
+        final String methodName = ActiveDirectoryAuthenticator.CNAME + "#verifySecurityData(final String userId, final String userGuid, List<String> values) throws AuthenticatorException";
 
         if (DEBUG)
         {

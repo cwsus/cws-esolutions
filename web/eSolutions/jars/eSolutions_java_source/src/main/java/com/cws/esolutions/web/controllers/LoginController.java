@@ -170,7 +170,7 @@ public class LoginController
         this.messageSubmissionFailed = value;
     }
 
-    @RequestMapping(value = "/default", method = RequestMethod.GET)
+    @RequestMapping(value = {"/default", "login"}, method = RequestMethod.GET)
     public final String showLoginPage(final Model model)
     {
         final String methodName = LoginController.CNAME + "#showLoginPage()";
@@ -279,14 +279,14 @@ public class LoginController
             }
         }
 
+        model.addAttribute(this.allowUserReset);
         model.addAttribute(Constants.COMMAND, new LoginRequest());
 
         if (DEBUG)
         {
             DEBUGGER.debug("ModelAndView: {}", model);
         }
-        System.out.println(this.appConfig);
-        System.out.println(this.appConfig.getServices());
+
         return this.loginPage;
     }
 
