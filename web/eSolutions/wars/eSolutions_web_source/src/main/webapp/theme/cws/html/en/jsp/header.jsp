@@ -89,10 +89,8 @@
                     {
                         break;
                     }
-                    else
-                    {
-                        setInterval(function() { window.location.href = '${pageContext.request.contextPath}/ui/auth/logout'; }, timeout);
-                    }
+
+                    setInterval(function() { window.location.href = '${pageContext.request.contextPath}/ui/auth/logout'; }, timeout);
                 }
             //-->
         </script>
