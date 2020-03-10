@@ -17,7 +17,7 @@ package com.cws.esolutions.security.dao.usermgmt.impl;
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security.dao.usermgmt.impl
- * File: LDAPUserManagerTest.java
+ * File: OpenLDAPUserManagerTest.java
  *
  * History
  *
@@ -39,10 +39,10 @@ import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.dao.usermgmt.factory.UserManagerFactory;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 
-public class LDAPUserManagerTest
+public class OpenLDAPUserManagerTest
 {
     private static final String GUID = UUID.randomUUID().toString();
-    private static final UserManager manager = UserManagerFactory.getUserManager("com.cws.esolutions.security.dao.usermgmt.impl.LDAPUserManager");
+    private static final UserManager manager = UserManagerFactory.getUserManager("com.cws.esolutions.security.dao.usermgmt.impl.OpenLDAPUserManager");
 
     @Before public void setUp()
     {
@@ -62,7 +62,7 @@ public class LDAPUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.validateUserAccount("junit-test", LDAPUserManagerTest.GUID));
+            Assert.assertTrue(manager.validateUserAccount("junit-test", OpenLDAPUserManagerTest.GUID));
         }
         catch (UserManagementException umx)
         {
@@ -82,7 +82,7 @@ public class LDAPUserManagerTest
                                     "Test",
                                     "User",
                                     "test@test.com",
-                                    LDAPUserManagerTest.GUID,
+                                    OpenLDAPUserManagerTest.GUID,
                                     "Test User")),
                     new ArrayList<String>(
                             Arrays.asList(
@@ -134,7 +134,7 @@ public class LDAPUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyUserEmail(LDAPUserManagerTest.GUID, "test@test.com"));
+            Assert.assertTrue(manager.modifyUserEmail(OpenLDAPUserManagerTest.GUID, "test@test.com"));
         }
         catch (UserManagementException umx)
         {
@@ -146,7 +146,7 @@ public class LDAPUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyUserContact(LDAPUserManagerTest.GUID,
+            Assert.assertTrue(manager.modifyUserContact(OpenLDAPUserManagerTest.GUID,
                     new ArrayList<String>(
                             Arrays.asList("555-555-1212", "555-555-1213"))));
         }
@@ -160,8 +160,8 @@ public class LDAPUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyUserSuspension(LDAPUserManagerTest.GUID, true));
-            Assert.assertTrue(manager.modifyUserSuspension(LDAPUserManagerTest.GUID, false));
+            Assert.assertTrue(manager.modifyUserSuspension(OpenLDAPUserManagerTest.GUID, true));
+            Assert.assertTrue(manager.modifyUserSuspension(OpenLDAPUserManagerTest.GUID, false));
         }
         catch (UserManagementException umx)
         {
@@ -173,7 +173,7 @@ public class LDAPUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyUserGroups(LDAPUserManagerTest.GUID, new Object[] { "Service Admins" }));
+            Assert.assertTrue(manager.modifyUserGroups(OpenLDAPUserManagerTest.GUID, new Object[] { "Service Admins" }));
         }
         catch (UserManagementException umx)
         {
@@ -185,8 +185,8 @@ public class LDAPUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyOlrLock(LDAPUserManagerTest.GUID, true));
-            Assert.assertTrue(manager.modifyOlrLock(LDAPUserManagerTest.GUID, false));
+            Assert.assertTrue(manager.modifyOlrLock(OpenLDAPUserManagerTest.GUID, true));
+            Assert.assertTrue(manager.modifyOlrLock(OpenLDAPUserManagerTest.GUID, false));
         }
         catch (UserManagementException umx)
         {
@@ -198,9 +198,9 @@ public class LDAPUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyUserLock(LDAPUserManagerTest.GUID, true, 0));
-            Assert.assertTrue(manager.modifyUserLock(LDAPUserManagerTest.GUID, false, 1));
-            Assert.assertTrue(manager.modifyUserLock(LDAPUserManagerTest.GUID, false, 0));
+            Assert.assertTrue(manager.modifyUserLock(OpenLDAPUserManagerTest.GUID, true, 0));
+            Assert.assertTrue(manager.modifyUserLock(OpenLDAPUserManagerTest.GUID, false, 1));
+            Assert.assertTrue(manager.modifyUserLock(OpenLDAPUserManagerTest.GUID, false, 0));
         }
         catch (UserManagementException umx)
         {
@@ -212,7 +212,7 @@ public class LDAPUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyUserPassword(LDAPUserManagerTest.GUID, RandomStringUtils.randomAlphanumeric(64)));
+            Assert.assertTrue(manager.modifyUserPassword(OpenLDAPUserManagerTest.GUID, RandomStringUtils.randomAlphanumeric(64)));
         }
         catch (UserManagementException umx)
         {
@@ -224,7 +224,7 @@ public class LDAPUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyUserSecurity(LDAPUserManagerTest.GUID, new ArrayList<String>(
+            Assert.assertTrue(manager.modifyUserSecurity(OpenLDAPUserManagerTest.GUID, new ArrayList<String>(
                     Arrays.asList(
                             RandomStringUtils.randomAlphanumeric(64),
                             RandomStringUtils.randomAlphanumeric(64),
@@ -241,8 +241,8 @@ public class LDAPUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyOtpSecret(LDAPUserManagerTest.GUID, true, RandomStringUtils.randomAlphanumeric(64)));
-            Assert.assertTrue(manager.modifyOtpSecret(LDAPUserManagerTest.GUID, false, null));
+            Assert.assertTrue(manager.modifyOtpSecret(OpenLDAPUserManagerTest.GUID, true, RandomStringUtils.randomAlphanumeric(64)));
+            Assert.assertTrue(manager.modifyOtpSecret(OpenLDAPUserManagerTest.GUID, false, null));
         }
         catch (UserManagementException umx)
         {
@@ -254,7 +254,7 @@ public class LDAPUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.removeUserAccount(LDAPUserManagerTest.GUID));
+            Assert.assertTrue(manager.removeUserAccount(OpenLDAPUserManagerTest.GUID));
         }
         catch (UserManagementException umx)
         {

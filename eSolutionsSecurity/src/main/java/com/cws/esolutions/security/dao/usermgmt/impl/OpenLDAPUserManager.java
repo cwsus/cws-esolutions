@@ -17,7 +17,7 @@ package com.cws.esolutions.security.dao.usermgmt.impl;
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security.dao.usermgmt.impl
- * File: LDAPUserManager.java
+ * File: OpenLDAPUserManager.java
  *
  * History
  *
@@ -54,16 +54,16 @@ import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementExceptio
 /**
  * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager
  */
-public class LDAPUserManager implements UserManager
+public class OpenLDAPUserManager implements UserManager
 {
-    private static final String CNAME = LDAPUserManager.class.getName();
+    private static final String CNAME = OpenLDAPUserManager.class.getName();
 
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#validateUserAccount(java.lang.String, java.lang.String)
      */
     public synchronized boolean validateUserAccount(final String userId, final String userGuid) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#validateUserAccount(final String userID, final String userGuid) throws UserManagementException";
+        final String methodName = OpenLDAPUserManager.CNAME + "#validateUserAccount(final String userID, final String userGuid) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -159,7 +159,7 @@ public class LDAPUserManager implements UserManager
      */
     public synchronized boolean addUserAccount(final List<String> userAccount, final List<String> roles) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#addUserAccount(final List<String> userAccount, final List<String> roles) throws UserManagementException";
+        final String methodName = OpenLDAPUserManager.CNAME + "#addUserAccount(final List<String> userAccount, final List<String> roles) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -305,7 +305,7 @@ public class LDAPUserManager implements UserManager
      */
     public synchronized boolean removeUserAccount(final String userId) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#removeUserAccount(final String userId) throws UserManagementException";
+        final String methodName = OpenLDAPUserManager.CNAME + "#removeUserAccount(final String userId) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -389,7 +389,7 @@ public class LDAPUserManager implements UserManager
      */
     public synchronized List<String[]> searchUsers(final String searchData) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#searchUsers(final String searchData) throws UserManagementException";
+        final String methodName = OpenLDAPUserManager.CNAME + "#searchUsers(final String searchData) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -508,7 +508,7 @@ public class LDAPUserManager implements UserManager
      */
     public synchronized List<Object> loadUserAccount(final String userGuid) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#loadUserAccount(final String userGuid) throws UserManagementException";
+        final String methodName = OpenLDAPUserManager.CNAME + "#loadUserAccount(final String userGuid) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -688,7 +688,7 @@ public class LDAPUserManager implements UserManager
      */
     public synchronized List<String[]> listUserAccounts() throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#listUserAccounts() throws UserManagementException";
+        final String methodName = OpenLDAPUserManager.CNAME + "#listUserAccounts() throws UserManagementException";
 
         if (DEBUG)
         {
@@ -794,7 +794,7 @@ public class LDAPUserManager implements UserManager
      */
     public synchronized boolean modifyUserEmail(final String userId, final String value) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#modifyUserEmail(final String userId, final String value) throws UserManagementException";
+        final String methodName = OpenLDAPUserManager.CNAME + "#modifyUserEmail(final String userId, final String value) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -878,7 +878,7 @@ public class LDAPUserManager implements UserManager
      */
     public synchronized boolean modifyUserContact(final String userId, final List<String> values) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#modifyUserContact(final String userId, final String value, final String attribute) throws UserManagementException";
+        final String methodName = OpenLDAPUserManager.CNAME + "#modifyUserContact(final String userId, final String value, final String attribute) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -962,7 +962,7 @@ public class LDAPUserManager implements UserManager
      */
     public synchronized boolean modifyUserSuspension(final String userId, final boolean isSuspended) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#modifyUserSuspension(final String userDN, final boolean isSuspended) throws UserManagementException";
+        final String methodName = OpenLDAPUserManager.CNAME + "#modifyUserSuspension(final String userDN, final boolean isSuspended) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -1053,7 +1053,7 @@ public class LDAPUserManager implements UserManager
      */
     public synchronized boolean modifyUserGroups(final String userId, final Object[] value) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#modifyUserGroups(final String userId, final Object[] value) throws UserManagementException";
+        final String methodName = OpenLDAPUserManager.CNAME + "#modifyUserGroups(final String userId, final Object[] value) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -1156,7 +1156,7 @@ public class LDAPUserManager implements UserManager
      */
     public synchronized boolean modifyOlrLock(final String userId, final boolean isLocked) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#modifyOlrLock(final String userId, final boolean isLocked) throws UserManagementException";
+        final String methodName = OpenLDAPUserManager.CNAME + "#modifyOlrLock(final String userId, final boolean isLocked) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -1241,7 +1241,7 @@ public class LDAPUserManager implements UserManager
      */
     public synchronized boolean modifyUserLock(final String userId, final boolean isLocked, final int increment) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#modifyUserLock(final String userId, final boolean isLocked, final int increment) throws UserManagementException";
+        final String methodName = OpenLDAPUserManager.CNAME + "#modifyUserLock(final String userId, final boolean isLocked, final int increment) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -1333,7 +1333,7 @@ public class LDAPUserManager implements UserManager
      */
     public synchronized boolean modifyUserPassword(final String userId, final String newPass) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#modifyUserPassword(final String userId, final String newPass) throws UserManagementException";
+        final String methodName = OpenLDAPUserManager.CNAME + "#modifyUserPassword(final String userId, final String newPass) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -1420,7 +1420,7 @@ public class LDAPUserManager implements UserManager
      */
     public synchronized boolean modifyOtpSecret(final String userId, final boolean addSecret, final String secret) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#modifyOtpSecret(final String userId, final boolean addSecret, final String secret) throws UserManagementException";
+        final String methodName = OpenLDAPUserManager.CNAME + "#modifyOtpSecret(final String userId, final boolean addSecret, final String secret) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -1516,7 +1516,7 @@ public class LDAPUserManager implements UserManager
      */
     public synchronized boolean modifyUserSecurity(final String userId, final List<String> values) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#modifyUserSecurity(final String userId, final Map<String, String> values) throws UserManagementException";
+        final String methodName = OpenLDAPUserManager.CNAME + "#modifyUserSecurity(final String userId, final Map<String, String> values) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -1605,7 +1605,7 @@ public class LDAPUserManager implements UserManager
      */
     public boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final Long timestamp) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#performSuccessfulLogin(final String userId, final String guid, final int lockCount, final Long timestamp) throws UserManagementException";
+        final String methodName = OpenLDAPUserManager.CNAME + "#performSuccessfulLogin(final String userId, final String guid, final int lockCount, final Long timestamp) throws UserManagementException";
 
         if (DEBUG)
         {
