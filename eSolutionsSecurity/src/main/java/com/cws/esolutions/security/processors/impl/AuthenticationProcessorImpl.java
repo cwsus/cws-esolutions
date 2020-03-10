@@ -84,11 +84,12 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
         try
         {
+        	System.out.println(userManager);
             List<String[]> userInfo = userManager.searchUsers(authUser.getUsername());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("List<Object[]>: {}", userInfo);
+                DEBUGGER.debug("List<String[]>: {}", userInfo);
             }
 
             if (userInfo.size() != 1)
@@ -236,36 +237,39 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
         }
         finally
         {
-            // audit
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.LOGON);
-                auditEntry.setUserAccount(authUser);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
+        	if (secConfig.getPerformAudit())
+        	{
+	            // audit
+	            try
+	            {
+	                AuditEntry auditEntry = new AuditEntry();
+	                auditEntry.setHostInfo(reqInfo);
+	                auditEntry.setAuditType(AuditType.LOGON);
+	                auditEntry.setUserAccount(authUser);
+	                auditEntry.setAuthorized(Boolean.TRUE);
+	                auditEntry.setApplicationId(request.getApplicationId());
+	                auditEntry.setApplicationName(request.getApplicationName());
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+	                }
+	
+	                AuditRequest auditRequest = new AuditRequest();
+	                auditRequest.setAuditEntry(auditEntry);
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+	                }
+	
+	                auditor.auditRequest(auditRequest);
+	            }
+	            catch (AuditServiceException asx)
+	            {
+	                ERROR_RECORDER.error(asx.getMessage(), asx);
+	            }
+        	}
         }
 
         return response;
@@ -392,36 +396,39 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
         }
         finally
         {
-            // audit
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.LOGON);
-                auditEntry.setUserAccount(authUser);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
+        	if (secConfig.getPerformAudit())
+        	{
+	            // audit
+	            try
+	            {
+	                AuditEntry auditEntry = new AuditEntry();
+	                auditEntry.setHostInfo(reqInfo);
+	                auditEntry.setAuditType(AuditType.LOGON);
+	                auditEntry.setUserAccount(authUser);
+	                auditEntry.setAuthorized(Boolean.TRUE);
+	                auditEntry.setApplicationId(request.getApplicationId());
+	                auditEntry.setApplicationName(request.getApplicationName());
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+	                }
+	
+	                AuditRequest auditRequest = new AuditRequest();
+	                auditRequest.setAuditEntry(auditEntry);
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+	                }
+	
+	                auditor.auditRequest(auditRequest);
+	            }
+	            catch (AuditServiceException asx)
+	            {
+	                ERROR_RECORDER.error(asx.getMessage(), asx);
+	            }
+        	}
         }
 
         return response;

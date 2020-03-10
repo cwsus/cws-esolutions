@@ -63,6 +63,7 @@ public class AuthenticatorFactory
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", className);
         }
 
         if (authenticator == null)
@@ -70,7 +71,6 @@ public class AuthenticatorFactory
             try
             {
                 authenticator = Authenticator.class.getDeclaredConstructor(Class.forName(className)).newInstance();
-                // authenticator = (Authenticator) Class.forName(className).newInstance();
 
                 if (DEBUG)
                 {

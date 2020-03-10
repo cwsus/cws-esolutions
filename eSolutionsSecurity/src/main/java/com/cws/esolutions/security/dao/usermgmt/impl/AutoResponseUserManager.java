@@ -103,8 +103,9 @@ public class AutoResponseUserManager implements UserManager
         }
 
         List<String[]> results = new ArrayList<String[]>();
-        results.add(new String[] {"test"});
+        results.add(new String[] {searchData});
 
+        System.out.println(results);
         return results;
     }
 

@@ -71,7 +71,6 @@ public class UserManagerFactory
             try
             {
                 userManager = UserManager.class.getDeclaredConstructor(Class.forName(className)).newInstance();
-                // userManager = (UserManager) Class.forName(className).newInstance();
 
                 if (DEBUG)
                 {
