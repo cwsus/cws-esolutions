@@ -34,7 +34,7 @@ import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory;
 
-public class FileAuthenticatorTest {
+public class AutoResponseAuthenticatorTest {
 
 	@Before public void setUp()
     {
@@ -49,12 +49,12 @@ public class FileAuthenticatorTest {
     }
 
 	/**
-	 * Test method for {@link com.cws.esolutions.security.dao.userauth.impl.FileAuthenticator#performLogon(java.lang.String, java.lang.String)}.
+	 * Test method for {@link com.cws.esolutions.security.dao.userauth.impl.AutoResponseAuthenticator#performLogon(java.lang.String, java.lang.String)}.
 	 */
 	@Test
 	public final void testPerformLogon()
 	{
-		Authenticator authenticator = AuthenticatorFactory.getAuthenticator("com.cws.esolutions.security.dao.userauth.impl.FileAuthenticator");
+		Authenticator authenticator = AuthenticatorFactory.getAuthenticator("com.cws.esolutions.security.dao.userauth.impl.AutoResponseAuthenticator");
 
 		try
 		{
@@ -68,7 +68,7 @@ public class FileAuthenticatorTest {
 	}
 
 	/**
-	 * Test method for {@link com.cws.esolutions.security.dao.userauth.impl.FileAuthenticator#obtainSecurityData(java.lang.String, java.lang.String)}.
+	 * Test method for {@link com.cws.esolutions.security.dao.userauth.impl.AutoResponseAuthenticator#obtainSecurityData(java.lang.String, java.lang.String)}.
 	 */
 	@Test
 	public final void testObtainSecurityData()
@@ -77,7 +77,7 @@ public class FileAuthenticatorTest {
 	}
 
 	/**
-	 * Test method for {@link com.cws.esolutions.security.dao.userauth.impl.FileAuthenticator#obtainOtpSecret(java.lang.String, java.lang.String)}.
+	 * Test method for {@link com.cws.esolutions.security.dao.userauth.impl.AutoResponseAuthenticator#obtainOtpSecret(java.lang.String, java.lang.String)}.
 	 */
 	@Test
 	public final void testObtainOtpSecret()
@@ -86,7 +86,7 @@ public class FileAuthenticatorTest {
 	}
 
 	/**
-	 * Test method for {@link com.cws.esolutions.security.dao.userauth.impl.FileAuthenticator#verifySecurityData(java.lang.String, java.lang.String, java.util.List)}.
+	 * Test method for {@link com.cws.esolutions.security.dao.userauth.impl.AutoResponseAuthenticator#verifySecurityData(java.lang.String, java.lang.String, java.util.List)}.
 	 */
 	@Test
 	public final void testVerifySecurityData()

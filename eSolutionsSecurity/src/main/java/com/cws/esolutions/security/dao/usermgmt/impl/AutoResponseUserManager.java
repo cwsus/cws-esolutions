@@ -17,7 +17,7 @@ package com.cws.esolutions.security.dao.usermgmt.impl;
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security.dao.usermgmt.factory
- * File: FileUserManager.java
+ * File: AutoResponseUserManager.java
  *
  * History
  *
@@ -25,41 +25,24 @@ package com.cws.esolutions.security.dao.usermgmt.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly           11/23/2008 22:39:20             Created.
  */
-import java.io.BufferedReader;
-/*
- * Project: eSolutionsSecurity
- * Package: com.cws.esolutions.security.dao.usermgmt.impl
- * File: SQLUserManager.java
- *
- * History
- *
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * cws-khuntly          11/23/2008 22:39:20             Created.
- */
-import java.io.File;
 import java.util.List;
-import java.util.Scanner;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
+import java.util.ArrayList;
 
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 /**
  * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager
  */
-public class FileUserManager implements UserManager
+public class AutoResponseUserManager implements UserManager
 {
-    private static final String CNAME = FileUserManager.class.getName();
+    private static final String CNAME = AutoResponseUserManager.class.getName();
 
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#validateUserAccount(java.lang.String, java.lang.String)
      */
     public synchronized boolean validateUserAccount(final String userId, final String userGuid) throws UserManagementException
     {
-        final String methodName = FileUserManager.CNAME + "#validateUserAccount(final String userId, final String userGuid) throws UserManagementException";
+        final String methodName = AutoResponseUserManager.CNAME + "#validateUserAccount(final String userId, final String userGuid) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -68,57 +51,7 @@ public class FileUserManager implements UserManager
             DEBUGGER.debug("Value: {}", userGuid);
         }
 
-        Scanner scanner = null;
-        boolean isValid = false;
-
-        try
-        {
-            scanner = new Scanner(new File(passwordConfig.getPasswordFile()));
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Scanner: {}", scanner);
-            }
-
-            while (scanner.hasNext())
-            {
-                String lineEntry = scanner.nextLine();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("lineEntry: {}", lineEntry);
-                }
-            
-                if (lineEntry.contains(userId) && lineEntry.contains(userGuid))
-                {
-                    String[] userAttributes = lineEntry.split(":");
-
-                    if (DEBUG)
-                    {
-                        for (int x = 0; x != userAttributes.length; x++)
-                        {
-                            DEBUGGER.debug("userAttributes: {}", (Object) userAttributes[x]);
-                        }
-                    }
-
-                    isValid = true;
-                }
-            }
-        }
-        catch (FileNotFoundException fnfx)
-        {
-            throw new UserManagementException(fnfx.getMessage(), fnfx);
-        }
-        finally
-        {
-            try
-            {
-                scanner.close();
-            }
-            catch (IllegalStateException isx) {} // dont do anything with it
-        }
-
-        return isValid;
+        return true;
     }
 
     /**
@@ -126,7 +59,7 @@ public class FileUserManager implements UserManager
      */
     public synchronized boolean addUserAccount(final List<String> userAccount, final List<String> roles) throws UserManagementException
     {
-        final String methodName = FileUserManager.CNAME + "#addUserAccount(final List<String> userAccount, final List<String> roles) throws UserManagementException";
+        final String methodName = AutoResponseUserManager.CNAME + "#addUserAccount(final List<String> userAccount, final List<String> roles) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -135,9 +68,7 @@ public class FileUserManager implements UserManager
             DEBUGGER.debug("Value: {}", roles);
         }
 
-        boolean isComplete = false;
-
-        return isComplete;
+        return true;
     }
 
     /**
@@ -145,7 +76,7 @@ public class FileUserManager implements UserManager
      */
     public synchronized boolean removeUserAccount(final String userId) throws UserManagementException
     {
-        final String methodName = FileUserManager.CNAME + "#removeUserAccount(final String userId) throws UserManagementException";
+        final String methodName = AutoResponseUserManager.CNAME + "#removeUserAccount(final String userId) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -163,7 +94,7 @@ public class FileUserManager implements UserManager
      */
     public synchronized List<String[]> searchUsers(final String searchData) throws UserManagementException
     {
-        final String methodName = FileUserManager.CNAME + "#searchUsers(final String searchData) throws UserManagementException";
+        final String methodName = AutoResponseUserManager.CNAME + "#searchUsers(final String searchData) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -171,7 +102,8 @@ public class FileUserManager implements UserManager
             DEBUGGER.debug("Value: {}", searchData);
         }
 
-        List<String[]> results = null;
+        List<String[]> results = new ArrayList<String[]>();
+        results.add(new String[] {"test"});
 
         return results;
     }
@@ -181,7 +113,7 @@ public class FileUserManager implements UserManager
      */
     public synchronized List<Object> loadUserAccount(final String userGuid) throws UserManagementException
     {
-        final String methodName = FileUserManager.CNAME + "#loadUserAccount(final String guid) throws UserManagementException";
+        final String methodName = AutoResponseUserManager.CNAME + "#loadUserAccount(final String guid) throws UserManagementException";
         
         if(DEBUG)
         {
@@ -199,7 +131,7 @@ public class FileUserManager implements UserManager
      */
     public synchronized List<String[]> listUserAccounts() throws UserManagementException
     {
-        final String methodName = FileUserManager.CNAME + "#listUserAccounts() throws UserManagementException";
+        final String methodName = AutoResponseUserManager.CNAME + "#listUserAccounts() throws UserManagementException";
 
         if (DEBUG)
         {
@@ -216,7 +148,7 @@ public class FileUserManager implements UserManager
      */
     public synchronized boolean modifyUserEmail(final String userId, final String value) throws UserManagementException
     {
-        final String methodName = FileUserManager.CNAME + "#modifyUserEmail(final String userId, final String value) throws UserManagementException";
+        final String methodName = AutoResponseUserManager.CNAME + "#modifyUserEmail(final String userId, final String value) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -235,7 +167,7 @@ public class FileUserManager implements UserManager
      */
     public synchronized boolean modifyUserContact(final String userId, final List<String> values) throws UserManagementException
     {
-        final String methodName = FileUserManager.CNAME + "#modifyUserContact(final String userId, final List<String> values) throws UserManagementException";
+        final String methodName = AutoResponseUserManager.CNAME + "#modifyUserContact(final String userId, final List<String> values) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -254,7 +186,7 @@ public class FileUserManager implements UserManager
      */
     public synchronized boolean modifyUserSuspension(final String userId, final boolean isSuspended) throws UserManagementException
     {
-        final String methodName = FileUserManager.CNAME + "#modifyUserSuspension(final String userId, final boolean isSuspended) throws UserManagementException";
+        final String methodName = AutoResponseUserManager.CNAME + "#modifyUserSuspension(final String userId, final boolean isSuspended) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -273,7 +205,7 @@ public class FileUserManager implements UserManager
      */
     public synchronized boolean modifyUserGroups(final String userId, final Object[] values) throws UserManagementException
     {
-        final String methodName = FileUserManager.CNAME + "#modifyUserGroups(final String userId, final Object[] values) throws UserManagementException";
+        final String methodName = AutoResponseUserManager.CNAME + "#modifyUserGroups(final String userId, final Object[] values) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -292,7 +224,7 @@ public class FileUserManager implements UserManager
      */
     public synchronized boolean modifyOlrLock(final String userId, final boolean isLocked) throws UserManagementException
     {
-        final String methodName = FileUserManager.CNAME + "#modifyOlrLock(final String userId, final boolean value) throws UserManagementException";
+        final String methodName = AutoResponseUserManager.CNAME + "#modifyOlrLock(final String userId, final boolean value) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -311,7 +243,7 @@ public class FileUserManager implements UserManager
      */
     public synchronized boolean modifyUserLock(final String userId, final boolean isLocked, final int increment) throws UserManagementException
     {
-        final String methodName = FileUserManager.CNAME + "#modifyUserLock(final String userId, final boolean int, final boolean increment) throws UserManagementException";
+        final String methodName = AutoResponseUserManager.CNAME + "#modifyUserLock(final String userId, final boolean int, final boolean increment) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -331,7 +263,7 @@ public class FileUserManager implements UserManager
      */
     public synchronized boolean modifyUserPassword(final String userId, final String newPass) throws UserManagementException
     {
-        final String methodName = FileUserManager.CNAME + "#modifyUserPassword(final String userId, final String newPass) throws UserManagementException";
+        final String methodName = AutoResponseUserManager.CNAME + "#modifyUserPassword(final String userId, final String newPass) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -349,7 +281,7 @@ public class FileUserManager implements UserManager
      */
     public synchronized boolean modifyOtpSecret(final String userId, final boolean addSecret, final String secret) throws UserManagementException
     {
-        final String methodName = FileUserManager.CNAME + "#modifyOtpSecret(final String userId, final boolean addSecret, final String secret) throws UserManagementException";
+        final String methodName = AutoResponseUserManager.CNAME + "#modifyOtpSecret(final String userId, final boolean addSecret, final String secret) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -367,7 +299,7 @@ public class FileUserManager implements UserManager
      */
     public synchronized boolean modifyUserSecurity(final String userId, final List<String> values) throws UserManagementException
     {
-        final String methodName = FileUserManager.CNAME + "#modifyUserSecurity(final String userId, final List<String> values) throws UserManagementException";
+        final String methodName = AutoResponseUserManager.CNAME + "#modifyUserSecurity(final String userId, final List<String> values) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -385,7 +317,7 @@ public class FileUserManager implements UserManager
      */
     public synchronized boolean performSuccessfulLogin(final String userId, final String guid, final int lockCount, final Long timestamp) throws UserManagementException
     {
-        final String methodName = FileUserManager.CNAME + "#performSuccessfulLogin(final String userId, final String guid, final int lockCount, final Long timestamp) throws UserManagementException";
+        final String methodName = AutoResponseUserManager.CNAME + "#performSuccessfulLogin(final String userId, final String guid, final int lockCount, final Long timestamp) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -396,78 +328,6 @@ public class FileUserManager implements UserManager
             DEBUGGER.debug("Value: {}", timestamp);
         }
 
-        String lineEntry = null;
-        String inputString = null;
-        boolean isComplete = false;
-        StringBuffer sBuffer = null;
-        BufferedReader bReader = null;
-        FileOutputStream fileOut = null;
-        File textFile = new File(passwordConfig.getPasswordFile());
-
-        try
-        {
-            bReader = new BufferedReader(new FileReader(textFile));
-            sBuffer = new StringBuffer();
-            lineEntry = null;
-
-            while ((lineEntry = bReader.readLine()) != null)
-            {
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("lineEntry: {}", lineEntry);
-                }
-
-                sBuffer.append(lineEntry);
-                sBuffer.append(System.lineSeparator());
-            }
-
-            inputString = sBuffer.toString();
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("inputString: {}", inputString);
-            }
-
-            if ((inputString.contains(userId)) && inputString.contains(guid))
-            {
-                inputString = inputString.replace(String.valueOf(timestamp), String.valueOf(System.currentTimeMillis()));
-                inputString = inputString.replace(String.valueOf(lockCount), String.valueOf(0));
-            }
-
-            fileOut = new FileOutputStream(textFile);
-            fileOut.write(inputString.getBytes());
-
-            isComplete = true;
-        }
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        finally
-        {
-            try
-            {
-                if (fileOut != null)
-                {
-                    fileOut.flush();
-                    fileOut.close();
-                }
-
-                if (bReader != null)
-                {
-                    bReader.close();
-                }
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-        }
-
-        return isComplete;
+        return true;
     }
 }

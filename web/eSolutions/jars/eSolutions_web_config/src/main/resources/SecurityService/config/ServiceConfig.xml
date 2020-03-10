@@ -44,8 +44,8 @@
         <smsCodeLength>8</smsCodeLength> <!-- how long should the sms reset id be ? -->
         <resetTimeout>30</resetTimeout> <!-- reset timeout length (minutes) -->
         <authConfig>jdbc/cwssec</authConfig>
-        <authManager>com.cws.esolutions.security.dao.userauth.impl.SQLAuthenticator</authManager>
-        <userManager>com.cws.esolutions.security.dao.usermgmt.impl.SQLUserManager</userManager>
+        <authManager>com.cws.esolutions.security.dao.userauth.impl.AutoResponseAuthenticator</authManager>
+        <userManager>com.cws.esolutions.security.dao.usermgmt.impl.AutoResponseUserManager</userManager>
     </security-config>
 
     <!-- this should correlate back to the data obtained from -->
