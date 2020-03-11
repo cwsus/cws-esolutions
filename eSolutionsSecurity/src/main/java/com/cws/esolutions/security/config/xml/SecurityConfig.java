@@ -53,6 +53,7 @@ public final class SecurityConfig implements Serializable
     private int smsCodeLength = 8; // default of 8
     private int iterations = 65535; // default to 65535
     private int resetIdLength = 32; // default of 32
+    private String userSecDAO = null;
     private String authConfig = null; // FULL path to connection configuration file
     private String authManager = null;
     private String userManager = null;
@@ -273,6 +274,19 @@ public final class SecurityConfig implements Serializable
         }
 
         this.userManager = value;
+    }
+
+    public final void setUserSecDAO(final String value)
+    {
+        final String methodName = SecurityConfig.CNAME + "#setUserSecDAO(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.userSecDAO = value;
     }
 
     public final void setPerformAudit(final boolean value)
@@ -629,6 +643,20 @@ public final class SecurityConfig implements Serializable
         }
 
         return this.userManager;
+    }
+
+    @XmlElement(name = "userSecDAO")
+    public final String getUserSecDAO()
+    {
+        final String methodName = SecurityConfig.CNAME + "#getUserSecDAO()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.userSecDAO);
+        }
+
+        return this.userSecDAO;
     }
 
     @XmlElement(name = "performAudit")

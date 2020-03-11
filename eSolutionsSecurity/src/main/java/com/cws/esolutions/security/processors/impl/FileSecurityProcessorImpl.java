@@ -164,35 +164,38 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
         }
         finally
         {
-            // audit
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.SIGNFILE);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getAppName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
+        	if (secConfig.getSecurityConfig().getPerformAudit())
+        	{
+	            // audit
+	            try
+	            {
+	                AuditEntry auditEntry = new AuditEntry();
+	                auditEntry.setHostInfo(reqInfo);
+	                auditEntry.setAuditType(AuditType.SIGNFILE);
+	                auditEntry.setUserAccount(userAccount);
+	                auditEntry.setAuthorized(Boolean.TRUE);
+	                auditEntry.setApplicationId(request.getApplicationId());
+	                auditEntry.setApplicationName(request.getAppName());
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+	                }
+	
+	                AuditRequest auditRequest = new AuditRequest();
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+	                }
+	
+	                auditor.auditRequest(auditRequest);
+	            }
+	            catch (AuditServiceException asx)
+	            {
+	                ERROR_RECORDER.error(asx.getMessage(), asx);
+	            }
+        	}
         }
 
         return response;
@@ -293,36 +296,38 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
         }
         finally
         {
-            // audit
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.VERIFYFILE);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getAppName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
+        	if (secConfig.getSecurityConfig().getPerformAudit())
+        	{
+	            // audit
+	            try
+	            {
+	                AuditEntry auditEntry = new AuditEntry();
+	                auditEntry.setHostInfo(reqInfo);
+	                auditEntry.setAuditType(AuditType.SIGNFILE);
+	                auditEntry.setUserAccount(userAccount);
+	                auditEntry.setAuthorized(Boolean.TRUE);
+	                auditEntry.setApplicationId(request.getApplicationId());
+	                auditEntry.setApplicationName(request.getAppName());
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+	                }
+	
+	                AuditRequest auditRequest = new AuditRequest();
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+	                }
+	
+	                auditor.auditRequest(auditRequest);
+	            }
+	            catch (AuditServiceException asx)
+	            {
+	                ERROR_RECORDER.error(asx.getMessage(), asx);
+	            }
+        	}
         }
 
         return response;
@@ -428,36 +433,38 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
         }
         finally
         {
-            // audit
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.ENCRYPTFILE);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getAppName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
+        	if (secConfig.getSecurityConfig().getPerformAudit())
+        	{
+	            // audit
+	            try
+	            {
+	                AuditEntry auditEntry = new AuditEntry();
+	                auditEntry.setHostInfo(reqInfo);
+	                auditEntry.setAuditType(AuditType.SIGNFILE);
+	                auditEntry.setUserAccount(userAccount);
+	                auditEntry.setAuthorized(Boolean.TRUE);
+	                auditEntry.setApplicationId(request.getApplicationId());
+	                auditEntry.setApplicationName(request.getAppName());
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+	                }
+	
+	                AuditRequest auditRequest = new AuditRequest();
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+	                }
+	
+	                auditor.auditRequest(auditRequest);
+	            }
+	            catch (AuditServiceException asx)
+	            {
+	                ERROR_RECORDER.error(asx.getMessage(), asx);
+	            }
+        	}
         }
 
         return response;
@@ -552,36 +559,38 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
         }
         finally
         {
-            // audit
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.DECRYPTFILE);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getAppName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
+        	if (secConfig.getSecurityConfig().getPerformAudit())
+        	{
+	            // audit
+	            try
+	            {
+	                AuditEntry auditEntry = new AuditEntry();
+	                auditEntry.setHostInfo(reqInfo);
+	                auditEntry.setAuditType(AuditType.SIGNFILE);
+	                auditEntry.setUserAccount(userAccount);
+	                auditEntry.setAuthorized(Boolean.TRUE);
+	                auditEntry.setApplicationId(request.getApplicationId());
+	                auditEntry.setApplicationName(request.getAppName());
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+	                }
+	
+	                AuditRequest auditRequest = new AuditRequest();
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+	                }
+	
+	                auditor.auditRequest(auditRequest);
+	            }
+	            catch (AuditServiceException asx)
+	            {
+	                ERROR_RECORDER.error(asx.getMessage(), asx);
+	            }
+        	}
         }
 
         return response;

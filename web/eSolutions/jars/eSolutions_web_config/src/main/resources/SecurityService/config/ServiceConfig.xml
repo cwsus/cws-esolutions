@@ -46,6 +46,7 @@
         <authConfig>jdbc/cwssec</authConfig>
         <authManager>com.cws.esolutions.security.dao.userauth.impl.AutoResponseAuthenticator</authManager>
         <userManager>com.cws.esolutions.security.dao.usermgmt.impl.AutoResponseUserManager</userManager>
+        <userSecDAO>com.cws.esolutions.security.dao.reference.impl.AutoResponseDAOImpl</userSecDAO>
     </security-config>
 
     <!-- this should correlate back to the data obtained from -->

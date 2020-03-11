@@ -115,6 +115,42 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
             throw new AccountResetException(umx.getMessage(), umx);
         }
+        finally
+        {
+        	if (secConfig.getPerformAudit())
+        	{
+	            // audit
+	            try
+	            {
+	                AuditEntry auditEntry = new AuditEntry();
+	                auditEntry.setHostInfo(reqInfo);
+	                auditEntry.setAuditType(AuditType.LOADSECURITY);
+	                auditEntry.setUserAccount(request.getUserAccount());
+	                auditEntry.setAuthorized(Boolean.TRUE);
+	                auditEntry.setApplicationId(request.getApplicationId());
+	                auditEntry.setApplicationName(request.getApplicationName());
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+	                }
+	
+	                AuditRequest auditRequest = new AuditRequest();
+	                auditRequest.setAuditEntry(auditEntry);
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+	                }
+	
+	                auditor.auditRequest(auditRequest);
+	            }
+	            catch (AuditServiceException asx)
+	            {
+	                ERROR_RECORDER.error(asx.getMessage(), asx);
+	            }
+        	}
+        }
 
         return response;
     }
@@ -198,36 +234,39 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
         }
         finally
         {
-            // audit
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.LOADSECURITY);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
+        	if (secConfig.getPerformAudit())
+        	{
+	            // audit
+	            try
+	            {
+	                AuditEntry auditEntry = new AuditEntry();
+	                auditEntry.setHostInfo(reqInfo);
+	                auditEntry.setAuditType(AuditType.LOADSECURITY);
+	                auditEntry.setUserAccount(userAccount);
+	                auditEntry.setAuthorized(Boolean.TRUE);
+	                auditEntry.setApplicationId(request.getApplicationId());
+	                auditEntry.setApplicationName(request.getApplicationName());
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+	                }
+	
+	                AuditRequest auditRequest = new AuditRequest();
+	                auditRequest.setAuditEntry(auditEntry);
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+	                }
+	
+	                auditor.auditRequest(auditRequest);
+	            }
+	            catch (AuditServiceException asx)
+	            {
+	                ERROR_RECORDER.error(asx.getMessage(), asx);
+	            }
+        	}
         }
 
         return response;
@@ -320,36 +359,39 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
         }
         finally
         {
-            // audit
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.VERIFYSECURITY);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
+        	if (secConfig.getPerformAudit())
+        	{
+	            // audit
+	            try
+	            {
+	                AuditEntry auditEntry = new AuditEntry();
+	                auditEntry.setHostInfo(reqInfo);
+	                auditEntry.setAuditType(AuditType.VERIFYSECURITY);
+	                auditEntry.setUserAccount(userAccount);
+	                auditEntry.setAuthorized(Boolean.TRUE);
+	                auditEntry.setApplicationId(request.getApplicationId());
+	                auditEntry.setApplicationName(request.getApplicationName());
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+	                }
+	
+	                AuditRequest auditRequest = new AuditRequest();
+	                auditRequest.setAuditEntry(auditEntry);
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+	                }
+	
+	                auditor.auditRequest(auditRequest);
+	            }
+	            catch (AuditServiceException asx)
+	            {
+	                ERROR_RECORDER.error(asx.getMessage(), asx);
+	            }
+        	}
         }
 
         return authResponse;
@@ -464,36 +506,39 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
         }
         finally
         {
-            // audit
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.RESETPASS);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
+        	if (secConfig.getPerformAudit())
+        	{
+	            // audit
+	            try
+	            {
+	                AuditEntry auditEntry = new AuditEntry();
+	                auditEntry.setHostInfo(reqInfo);
+	                auditEntry.setAuditType(AuditType.RESETPASS);
+	                auditEntry.setUserAccount(userAccount);
+	                auditEntry.setAuthorized(Boolean.TRUE);
+	                auditEntry.setApplicationId(request.getApplicationId());
+	                auditEntry.setApplicationName(request.getApplicationName());
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+	                }
+	
+	                AuditRequest auditRequest = new AuditRequest();
+	                auditRequest.setAuditEntry(auditEntry);
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+	                }
+	
+	                auditor.auditRequest(auditRequest);
+	            }
+	            catch (AuditServiceException asx)
+	            {
+	                ERROR_RECORDER.error(asx.getMessage(), asx);
+	            }
+        	}
         }
 
         return response;

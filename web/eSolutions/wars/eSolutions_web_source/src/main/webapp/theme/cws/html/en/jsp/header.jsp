@@ -81,7 +81,7 @@
             <!--
                 var timeout = ${pageContext.session.maxInactiveInterval} * 1000;
                 var documentURI = location.pathname.substring(1);
-                var ignoreURIs = new Array("esolutions/ui/auth/login", "esolutions/ui/auth/logout", "esolutions/ui/auth/default", "esolutions/ui/online-reset", "esolutions/ui/common/submit-contact");
+                var ignoreURIs = new Array("esolutions/ui/auth/login", "esolutions/ui/auth/logout", "esolutions/ui/auth/default", "esolutions/ui/auth/submit", "esolutions/ui/online-reset", "esolutions/ui/common/submit-contact");
     
                 for (var x = 0; x < ignoreURIs.length; x++)
                 {

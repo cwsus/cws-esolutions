@@ -27,7 +27,6 @@ package com.cws.esolutions.security.dao.usermgmt.factory;
  */
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.lang.reflect.InvocationTargetException;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
@@ -70,7 +69,7 @@ public class UserManagerFactory
         {
             try
             {
-                userManager = UserManager.class.getDeclaredConstructor(Class.forName(className)).newInstance();
+            	userManager = (UserManager) Class.forName(className).newInstance();
 
                 if (DEBUG)
                 {
@@ -92,14 +91,6 @@ public class UserManagerFactory
             catch (IllegalArgumentException iax)
             {
                 ERROR_RECORDER.error(iax.getMessage(), iax);
-            }
-            catch (InvocationTargetException itx)
-            {
-                ERROR_RECORDER.error(itx.getMessage(), itx);
-            }
-            catch (NoSuchMethodException nsx)
-            {
-                ERROR_RECORDER.error(nsx.getMessage(), nsx);
             }
             catch (SecurityException sx)
             {

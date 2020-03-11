@@ -46,8 +46,8 @@ import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
-import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
+import com.cws.esolutions.security.dao.reference.factory.UserSecurityInformationDAOFactory;
 /**
  * API allowing user authentication request processing.
  *
@@ -64,9 +64,9 @@ public interface IAuthenticationProcessor
     static final IAccessControlService accessControl = new AccessControlServiceImpl();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
     static final IAccountControlProcessor controlProcessor = new AccountControlProcessorImpl();
-    static final IUserSecurityInformationDAO userSec = new UserSecurityInformationDAOImpl();
+    static final IUserSecurityInformationDAO userSec = UserSecurityInformationDAOFactory.getUserSecurityDAO(secConfig.getUserSecDAO());
     static final Authenticator authenticator = AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());
-    static final UserManager userManager = UserManagerFactory.getUserManager(secBean.getConfigData().getSecurityConfig().getUserManager());
+    static final UserManager userManager = UserManagerFactory.getUserManager(secConfig.getUserManager());
 
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);

@@ -166,36 +166,39 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
         }
         finally
         {
-            // audit
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.LISTCSR);
-                auditEntry.setUserAccount(authUser);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
+        	if (secConfig.getPerformAudit())
+        	{
+		        // audit
+		        try
+		        {
+		            AuditEntry auditEntry = new AuditEntry();
+		            auditEntry.setHostInfo(reqInfo);
+		            auditEntry.setAuditType(AuditType.APPLYCERT);
+		            auditEntry.setUserAccount(authUser);
+		            auditEntry.setAuthorized(Boolean.TRUE);
+		            auditEntry.setApplicationId(request.getApplicationId());
+		            auditEntry.setApplicationName(request.getApplicationName());
+		
+		            if (DEBUG)
+		            {
+		                DEBUGGER.debug("AuditEntry: {}", auditEntry);
+		            }
+		
+		            AuditRequest auditRequest = new AuditRequest();
+		            auditRequest.setAuditEntry(auditEntry);
+		
+		            if (DEBUG)
+		            {
+		                DEBUGGER.debug("AuditRequest: {}", auditRequest);
+		            }
+		
+		            auditor.auditRequest(auditRequest);
+		        }
+		        catch (AuditServiceException asx)
+		        {
+		            ERROR_RECORDER.error(asx.getMessage(), asx);
+		        }
+        	}
         }
 
         return response;
@@ -350,36 +353,39 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
         }
         finally
         {
-            // audit
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.GENERATECERT);
-                auditEntry.setUserAccount(authUser);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
+        	if (secConfig.getPerformAudit())
+        	{
+		        // audit
+		        try
+		        {
+		            AuditEntry auditEntry = new AuditEntry();
+		            auditEntry.setHostInfo(reqInfo);
+		            auditEntry.setAuditType(AuditType.APPLYCERT);
+		            auditEntry.setUserAccount(authUser);
+		            auditEntry.setAuthorized(Boolean.TRUE);
+		            auditEntry.setApplicationId(request.getApplicationId());
+		            auditEntry.setApplicationName(request.getApplicationName());
+		
+		            if (DEBUG)
+		            {
+		                DEBUGGER.debug("AuditEntry: {}", auditEntry);
+		            }
+		
+		            AuditRequest auditRequest = new AuditRequest();
+		            auditRequest.setAuditEntry(auditEntry);
+		
+		            if (DEBUG)
+		            {
+		                DEBUGGER.debug("AuditRequest: {}", auditRequest);
+		            }
+		
+		            auditor.auditRequest(auditRequest);
+		        }
+		        catch (AuditServiceException asx)
+		        {
+		            ERROR_RECORDER.error(asx.getMessage(), asx);
+		        }
+        	}
         }
 
         return response;
@@ -489,36 +495,39 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
         }
         finally
         {
-            // audit
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.APPLYCERT);
-                auditEntry.setUserAccount(authUser);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
+        	if (secConfig.getPerformAudit())
+        	{
+		        // audit
+		        try
+		        {
+		            AuditEntry auditEntry = new AuditEntry();
+		            auditEntry.setHostInfo(reqInfo);
+		            auditEntry.setAuditType(AuditType.APPLYCERT);
+		            auditEntry.setUserAccount(authUser);
+		            auditEntry.setAuthorized(Boolean.TRUE);
+		            auditEntry.setApplicationId(request.getApplicationId());
+		            auditEntry.setApplicationName(request.getApplicationName());
+		
+		            if (DEBUG)
+		            {
+		                DEBUGGER.debug("AuditEntry: {}", auditEntry);
+		            }
+		
+		            AuditRequest auditRequest = new AuditRequest();
+		            auditRequest.setAuditEntry(auditEntry);
+		
+		            if (DEBUG)
+		            {
+		                DEBUGGER.debug("AuditRequest: {}", auditRequest);
+		            }
+		
+		            auditor.auditRequest(auditRequest);
+		        }
+		        catch (AuditServiceException asx)
+		        {
+		            ERROR_RECORDER.error(asx.getMessage(), asx);
+		        }
+        	}
         }
 
         return response;

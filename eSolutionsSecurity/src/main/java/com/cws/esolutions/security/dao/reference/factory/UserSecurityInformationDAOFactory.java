@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.security.dao.userauth.factory;
+package com.cws.esolutions.security.dao.reference.factory;
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security.dao.userauth.factory
@@ -27,9 +27,11 @@ package com.cws.esolutions.security.dao.userauth.factory;
  */
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.lang.reflect.InvocationTargetException;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
-import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
+import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl;
+import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -38,11 +40,11 @@ import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
  * @author cws-khuntly
  * @version 1.0
  */
-public class AuthenticatorFactory
+public class UserSecurityInformationDAOFactory
 {
-    private static Authenticator authenticator = null;
+    private static IUserSecurityInformationDAO userSecDAO = null;
 
-    private static final String CNAME = AuthenticatorFactory.class.getName();
+    private static final String CNAME = UserSecurityInformationDAOFactory.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -55,7 +57,7 @@ public class AuthenticatorFactory
      * @param className - The fully qualified class name to return
      * @return an instance of a {@link com.cws.esolutions.security.dao.userauth.interfaces.Authenticator} singleton
      */
-    public static final Authenticator getAuthenticator(final String className)
+    public static final IUserSecurityInformationDAO getUserSecurityDAO(final String className)
     {
         final String methodName = CNAME + "#getAuthenticator(final String className)";
 
@@ -65,15 +67,15 @@ public class AuthenticatorFactory
             DEBUGGER.debug("Value: {}", className);
         }
 
-        if (authenticator == null)
+        if (userSecDAO == null)
         {
             try
             {
-            	authenticator = (Authenticator) Class.forName(className).newInstance();
+            	userSecDAO = (IUserSecurityInformationDAO) Class.forName(className).newInstance();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("Authenticator: {}", authenticator);
+                    DEBUGGER.debug("UserSecurityInformationDAOImpl: {}", userSecDAO);
                 }
             }
             catch (InstantiationException ix)
@@ -98,6 +100,6 @@ public class AuthenticatorFactory
             }
         }
 
-        return authenticator;
+        return userSecDAO;
     }
 }

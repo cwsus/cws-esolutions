@@ -321,36 +321,39 @@ public class AuditProcessorImpl implements IAuditProcessor
         }
         finally
         {
-            // audit
-            try
-            {
-                AuditEntry entry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.SHOWAUDIT);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setUserAccount(request.getUserAccount());
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(entry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditRequest(auditRequest);
-            }
-            catch (AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
+        	if (secConfig.getPerformAudit())
+        	{
+	            // audit
+	            try
+	            {
+	                AuditEntry entry = new AuditEntry();
+	                auditEntry.setHostInfo(reqInfo);
+	                auditEntry.setAuditType(AuditType.SHOWAUDIT);
+	                auditEntry.setAuthorized(Boolean.TRUE);
+	                auditEntry.setUserAccount(request.getUserAccount());
+	                auditEntry.setApplicationId(request.getApplicationId());
+	                auditEntry.setApplicationName(request.getApplicationName());
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+	                }
+	
+	                AuditRequest auditRequest = new AuditRequest();
+	                auditRequest.setAuditEntry(entry);
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+	                }
+	
+	                auditRequest(auditRequest);
+	            }
+	            catch (AuditServiceException asx)
+	            {
+	                ERROR_RECORDER.error(asx.getMessage(), asx);
+	            }
+        	}
         }
 
         return response;

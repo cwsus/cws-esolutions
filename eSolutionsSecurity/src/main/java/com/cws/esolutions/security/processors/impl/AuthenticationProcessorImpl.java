@@ -84,7 +84,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
         try
         {
-        	System.out.println(userManager);
             List<String[]> userInfo = userManager.searchUsers(authUser.getUsername());
 
             if (DEBUG)
@@ -164,8 +163,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             }
 
             // have a user account, run with it
-            if ((userAccount.getExpiryDate() < System.currentTimeMillis())
-                    || (userAccount.getExpiryDate() == System.currentTimeMillis()))
+            if ((userAccount.getExpiryDate() < System.currentTimeMillis()) || (userAccount.getExpiryDate() == System.currentTimeMillis()))
             {
                 userAccount.setStatus(LoginStatus.EXPIRED);
 
