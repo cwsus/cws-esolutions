@@ -25,11 +25,9 @@ package com.cws.esolutions.security.dao.userauth.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          12/17/2019 22:39:20             Created.
  */
-import java.sql.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.Arrays;
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
@@ -59,8 +57,10 @@ public class AutoResponseAuthenticator implements Authenticator
         		Arrays.asList(
         				UUID.randomUUID().toString(),
         				username,
+        				"",
         				0,
-        				Date.valueOf(LocalDate.now()),
+        				System.currentTimeMillis(),
+        				"1584017373915",
         				"Test",
         				"User",
         				"Test User",
