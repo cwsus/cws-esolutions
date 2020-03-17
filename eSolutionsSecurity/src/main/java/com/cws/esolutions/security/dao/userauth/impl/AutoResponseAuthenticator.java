@@ -60,7 +60,7 @@ public class AutoResponseAuthenticator implements Authenticator
         				"",
         				0,
         				System.currentTimeMillis(),
-        				"1584017373915",
+        				Long.valueOf("1584017373915"),
         				"Test",
         				"User",
         				"Test User",

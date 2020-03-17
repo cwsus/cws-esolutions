@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.io.IOException;
 import java.util.Enumeration;
 import org.slf4j.LoggerFactory;
+import org.springframework.ui.Model;
 import org.apache.commons.io.IOUtils;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringUtils;
@@ -53,6 +54,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.esolutions.web.Constants;
+import com.cws.esolutions.web.model.SearchRequest;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.Server;
@@ -407,7 +409,7 @@ public class ApplicationManagementController
             return mView;
         }
 
-        mView.addObject(Constants.COMMAND, new Application());
+        mView.addObject(Constants.COMMAND, new SearchRequest());
         mView.setViewName(this.defaultPage);
 
         if (DEBUG)
@@ -419,18 +421,17 @@ public class ApplicationManagementController
     }
 
     @RequestMapping(value = "/search/terms/{terms}/page/{page}", method = RequestMethod.GET)
-    public final ModelAndView showSearchPage(@PathVariable("terms") final String terms, @PathVariable("page") final int page)
+    public final String showSearchPage(@PathVariable("terms") final String terms, @PathVariable("page") final int page, final Model model)
     {
-        final String methodName = ApplicationManagementController.CNAME + "#showSearchPage(@PathVariable(\"terms\") final String terms, @PathVariable(\"page\") final int page)";
+        final String methodName = ApplicationManagementController.CNAME + "#showSearchPage(@PathVariable(\"terms\") final String terms, @PathVariable(\"page\") final int page, final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", terms);
             DEBUGGER.debug("Value: {}", page);
+            DEBUGGER.debug("Model: {}", model);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -482,9 +483,12 @@ public class ApplicationManagementController
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
+            return this.appConfig.getUnavailablePage();
+        }
 
-            return mView;
+        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
+        {
+        	return this.appConfig.getLogonRedirect();
         }
 
         try
@@ -528,37 +532,32 @@ public class ApplicationManagementController
 
             if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
             {
-                mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
-                mView.addObject("page", page);
-                mView.addObject("searchTerms", terms);
-                mView.addObject(Constants.SEARCH_RESULTS, response.getApplicationList());
-                mView.addObject(Constants.COMMAND, new Application());
-                mView.setViewName(this.defaultPage);
+                model.addAttribute("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
+                model.addAttribute("page", page);
+                model.addAttribute("searchTerms", terms);
+                model.addAttribute(Constants.SEARCH_RESULTS, response.getApplicationList());
+                model.addAttribute(Constants.COMMAND, new SearchRequest());
+
+                return this.defaultPage;
             }
             else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
+                return this.appConfig.getUnauthorizedPage();
             }
             else
             {
-                mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                mView.addObject(Constants.COMMAND, new Application());
-                mView.setViewName(this.defaultPage);
+            	model.addAttribute(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+            	model.addAttribute(Constants.COMMAND, new SearchRequest());
+
+            	return this.defaultPage;
             }
         }
         catch (ApplicationManagementException amx)
         {
             ERROR_RECORDER.error(amx.getMessage(), amx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
     }
 
     @RequestMapping(value = "/list-applications", method = RequestMethod.GET)

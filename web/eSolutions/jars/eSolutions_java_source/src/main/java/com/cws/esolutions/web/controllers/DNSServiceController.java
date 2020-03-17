@@ -42,6 +42,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.esolutions.web.Constants;
+import com.cws.esolutions.web.model.SearchRequest;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.DNSRecord;
@@ -50,6 +51,7 @@ import com.cws.esolutions.core.processors.dto.DNSServiceRequest;
 import com.cws.esolutions.core.processors.dto.DNSServiceResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
+import com.cws.esolutions.core.processors.enums.DNSRecordType;
 import com.cws.esolutions.core.processors.exception.DNSServiceException;
 import com.cws.esolutions.core.processors.impl.DNSServiceRequestProcessorImpl;
 import com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor;
@@ -251,7 +253,7 @@ public class DNSServiceController
         }
 
         model.addAttribute("serviceTypes", this.serviceTypes);
-        model.addAttribute(Constants.COMMAND, new DNSRecord());
+        model.addAttribute(Constants.COMMAND, new SearchRequest());
 
         if (DEBUG)
         {
@@ -262,9 +264,9 @@ public class DNSServiceController
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
-    public final String submitLookup(@ModelAttribute("entry") final DNSRecord request, final BindingResult bindResult, final Model model)
+    public final String submitLookup(@ModelAttribute("entry") final SearchRequest request, final BindingResult bindResult, final Model model)
     {
-        final String methodName = DNSServiceController.CNAME + "#submitLookup(@ModelAttribute(\"entry\") final DNSRecord request, final BindingResult bindResult)";
+        final String methodName = DNSServiceController.CNAME + "#submitLookup(@ModelAttribute(\"entry\") final SearchRequest request, final BindingResult bindResult)";
 
         if (DEBUG)
         {
@@ -338,8 +340,17 @@ public class DNSServiceController
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
+            DNSRecord record = new DNSRecord();
+            record.setRecordName(request.getSearchTerms());
+            record.setRecordType(DNSRecordType.valueOf(request.getSearchExtras()));
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("DNSRecord: {}", record);
+            }
+
             DNSServiceRequest dnsRequest = new DNSServiceRequest();
-            dnsRequest.setRecord(request);
+            dnsRequest.setRecord(record);
             dnsRequest.setRequestInfo(reqInfo);
             dnsRequest.setUserAccount(userAccount);
             dnsRequest.setServiceId(this.serviceId);
@@ -383,7 +394,7 @@ public class DNSServiceController
             }
 
             model.addAttribute("serviceTypes", this.serviceTypes);
-            model.addAttribute(Constants.COMMAND, new DNSRecord());
+            model.addAttribute(Constants.COMMAND, new SearchRequest());
         }
         catch (DNSServiceException dsx)
         {

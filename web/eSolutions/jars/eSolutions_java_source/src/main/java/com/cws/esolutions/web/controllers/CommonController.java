@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import org.slf4j.LoggerFactory;
+import org.springframework.ui.Model;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
@@ -59,7 +60,7 @@ import com.cws.esolutions.core.config.xml.CoreConfigurationData;
  * @see org.springframework.stereotype.Controller
  */
 @Controller
-@RequestMapping("/home")
+@RequestMapping("/common")
 public class CommonController
 {
     private String homePage = null;
@@ -126,17 +127,14 @@ public class CommonController
     }
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
-    public final ModelAndView showDefaultPage()
+    public final String showDefaultPage(final Model model)
     {
-        final String methodName = CommonController.CNAME + "#showDefaultPage()";
+        final String methodName = CommonController.CNAME + "#showDefaultPage(final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
         }
-
-        ModelAndView mView = new ModelAndView();
-        mView.setViewName(this.homePage);
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -159,7 +157,7 @@ public class CommonController
                 String element = (String) sessionEnumeration.nextElement();
                 Object value = hSession.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
+                DEBUGGER.debug("Session Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
@@ -170,7 +168,7 @@ public class CommonController
                 String element = (String) requestEnumeration.nextElement();
                 Object value = hRequest.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
+                DEBUGGER.debug("Request Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
@@ -181,30 +179,34 @@ public class CommonController
                 String element = (String) paramsEnumeration.nextElement();
                 Object value = hRequest.getParameter(element);
 
-                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
+                DEBUGGER.debug("Request Parameter: {}; Value: {}", element, value);
             }
+        }
+
+        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
+        {
+        	return this.appConfig.getLogonRedirect(); // try it ?
         }
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ModelAndView: {}", mView);
+            DEBUGGER.debug("ModelAndView: {}", model);
         }
 
         // in here, we're going to get all the messages to display and such
-        return mView;
+        return this.homePage;
     }
 
     @RequestMapping(value = "/unauthorized", method = RequestMethod.GET)
-    public final ModelAndView showUnauthorizedPage()
+    public final String showUnauthorizedPage(final Model model)
     {
-        final String methodName = CommonController.CNAME + "#showUnauthorizedPage()";
+        final String methodName = CommonController.CNAME + "#showUnauthorizedPage(final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Model: {}", model);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -253,9 +255,7 @@ public class CommonController
             }
         }
 
-        mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-        return mView;
+        return this.appConfig.getUnauthorizedPage();
     }
 
     @RequestMapping(value = "/contact", method = RequestMethod.GET)

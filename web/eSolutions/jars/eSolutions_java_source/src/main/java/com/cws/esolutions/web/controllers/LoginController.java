@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -361,19 +362,21 @@ public class LoginController
 
     // combined logon
     @RequestMapping(value = "/submit", method = RequestMethod.POST)
-    public final ModelAndView doCombinedLogin(@ModelAttribute("LoginRequest") final LoginRequest loginRequest, final BindingResult bindResult)
+    public final String doCombinedLogin(@ModelAttribute("LoginRequest") final LoginRequest loginRequest, final BindingResult bindResult, final Model model, final RedirectAttributes redirectAttributes)
     {
-        final String methodName = LoginController.CNAME + "#doCombinedLogin(@ModelAttribute(\"AuthenticationData\") final LoginRequest loginRequest, final BindingResult bindResult)";
+        final String methodName = LoginController.CNAME + "#doCombinedLogin(@ModelAttribute(\"AuthenticationData\") final LoginRequest loginRequest, final BindingResult bindResult, final Model model, final RedirectAttributes redirectAttributes)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("LoginRequest: {}", loginRequest);
             DEBUGGER.debug("BindingResult: {}", bindResult);
+            DEBUGGER.debug("Model: {}", model);
+            DEBUGGER.debug("RedirectAttributes: {}", redirectAttributes);
         }
 
-        ModelAndView mView = new ModelAndView();
-        mView.addObject(Constants.ALLOW_RESET, this.allowUserReset);
+        model.addAttribute(Constants.ALLOW_RESET, this.allowUserReset);
+        redirectAttributes.addFlashAttribute(Constants.ALLOW_RESET, this.allowUserReset);
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -428,12 +431,11 @@ public class LoginController
             // validation failed
             ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
 
-            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
-            mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
-            mView.addObject(Constants.COMMAND, new LoginRequest());
-            mView.setViewName(this.loginPage);
+            model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+            model.addAttribute(Constants.BIND_RESULT, bindResult.getAllErrors());
+            model.addAttribute(Constants.COMMAND, new LoginRequest());
 
-            return mView;
+            return this.loginPage;
         }
 
         try
@@ -495,72 +497,51 @@ public class LoginController
                 switch (userAccount.getStatus())
                 {
                     case SUCCESS:
-                        hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
-
-                        mView = new ModelAndView(new RedirectView());
+                    	hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
                         if (StringUtils.isNotBlank(hRequest.getParameter("vpath")))
                         {
-                            mView.setViewName("redirect:" + hRequest.getParameter("vpath"));
+                            return "redirect:/" + hRequest.getParameter("vpath");
                         }
                         else
                         {
-                            mView.setViewName(this.appConfig.getHomeRedirect());
+                            return this.appConfig.getHomePage();
                         }
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("ModelAndView: {}", mView);
-                        }
-
-                        break;
                     case EXPIRED:
                         // password expired - redirect to change password page
                         hSession.invalidate();
 
-                        mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessagePasswordExpired());
-                        mView.addObject(Constants.COMMAND, new LoginRequest());
-                        mView.setViewName(this.loginPage);
+                        model.addAttribute(Constants.RESPONSE_MESSAGE, this.appConfig.getMessagePasswordExpired());
+                        model.addAttribute(Constants.COMMAND, new LoginRequest());
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("ModelAndView: {}", mView);
-                        }
-
-                        break;
+                        return this.loginPage;
                     default:
                         // no dice (but its also an unspecified failure)
                         ERROR_RECORDER.error("An unspecified error occurred during authentication.");
 
-                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
-                        mView.addObject(Constants.COMMAND, new LoginRequest());
-                        mView.setViewName(this.loginPage);
+                        model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
+                        model.addAttribute(Constants.COMMAND, new LoginRequest());
 
-                        break;
+                        return this.loginPage;
                 }
             }
             else
             {
-                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
-                mView.addObject(Constants.COMMAND, new LoginRequest());
-                mView.setViewName(this.loginPage);
+            	model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
+            	model.addAttribute(Constants.COMMAND, new LoginRequest());
+
+            	return this.loginPage;
             }
         }
         catch (AuthenticationException ax)
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
 
-            mView.addObject(Constants.COMMAND, new LoginRequest());
-            mView.setViewName(this.loginPage);
-            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
-        }
+            model.addAttribute(Constants.COMMAND, new LoginRequest());
+            model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
 
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
+            return this.loginPage;
         }
-
-        return mView;
     }
 
     // otp logon

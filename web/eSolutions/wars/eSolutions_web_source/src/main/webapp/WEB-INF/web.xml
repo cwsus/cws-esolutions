@@ -71,6 +71,12 @@
         <filter-name>ResponseTimeFilter</filter-name>
         <filter-class>com.cws.esolutions.core.filters.ResponseTimeFilter</filter-class>
     </filter>
+    <filter id="SessionFixationFilter">
+        <description>Session Fixation Filter</description>
+        <display-name>SessionFixationFilter</display-name>
+        <filter-name>SessionFixationFilter</filter-name>
+        <filter-class>com.cws.esolutions.security.filters.SessionFixationFilter</filter-class>
+    </filter>
     <filter id="SpringEncodingFilter">
         <description>Spring Encoding Filter</description>
         <display-name>SpringEncodingFilter</display-name>
@@ -84,6 +90,10 @@
 
     <filter-mapping id="ResponseTimeFilter_mapping">
         <filter-name>ResponseTimeFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping id="SessionFixationFilter_mapping">
+        <filter-name>SessionFixationFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
     <filter-mapping id="SpringEncodingFilter_mapping">

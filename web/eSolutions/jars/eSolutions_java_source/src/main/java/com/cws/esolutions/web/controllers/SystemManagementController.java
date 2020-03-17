@@ -44,6 +44,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.esolutions.web.Constants;
+import com.cws.esolutions.web.model.SearchRequest;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.Server;
@@ -359,7 +360,7 @@ public class SystemManagementController
             return mView;
         }
 
-        mView.addObject(Constants.COMMAND, new Server());
+        mView.addObject(Constants.COMMAND, new SearchRequest());
         mView.setViewName(this.defaultPage);        
 
         if (DEBUG)
@@ -476,7 +477,7 @@ public class SystemManagementController
                 mView.addObject("page", page);
                 mView.addObject("searchTerms", terms);
                 mView.addObject(Constants.SEARCH_RESULTS, response.getServerList());
-                mView.addObject(Constants.COMMAND, new Server());
+                mView.addObject(Constants.COMMAND, new SearchRequest());
                 mView.setViewName(this.defaultPage);
             }
             else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)

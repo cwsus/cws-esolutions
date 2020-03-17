@@ -42,8 +42,8 @@
         </div>
         <div id="footer-left">
             <c:if test="${not empty fn:trim(sessionScope.userAccount)}">
-				<spring:message code="theme.welcome.message" arguments="${sessionScope.userAccount.username}, ${sessionScope.userAccount.lastLogin}" /><br />
-				<a href="${pageContext.request.contextPath}/ui/logout" title="<spring:message code='theme.navbar.logoff' />">
+				<spring:message code="theme.welcome.message" arguments="${sessionScope.userAccount.username}" /><br />
+				<a href="${pageContext.request.contextPath}/ui/auth/logout" title="<spring:message code='theme.navbar.logoff' />">
 				<spring:message code='theme.navbar.logoff' /></a> |
 				<a href="${pageContext.request.contextPath}/ui/user-account/default" title="<spring:message code='theme.navbar.myaccount' />">
 				<spring:message code="theme.navbar.myaccount" /></a> |
