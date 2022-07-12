@@ -6,14 +6,14 @@
     <name>CaspersBox Web Services</name>
     <groupId>com.cws</groupId>
     <artifactId>cws</artifactId>
-    <version>4.5</version>
+    <version>4.7</version>
     <packaging>pom</packaging>
     <description>CWS SuperPom</description>
     <url>http://www.caspersbox.com/</url>
 
     <properties>
         <servlet.version>4.0.1</servlet.version>
-        <junit.version>5.6.0</junit.version>
+        <junit.version>5.8.2</junit.version>
         <commons-codec.version>1.9</commons-codec.version>
         <commons-collections.version>4.0</commons-collections.version>
         <commons-logging.version>1.2</commons-logging.version>
@@ -125,10 +125,16 @@
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
+            <artifactId>junit-jupiter-api</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+	          <artifactId>junit-jupiter-engine</artifactId>
+	          <version>${junit.version}</version>
+	          <scope>test</scope>
+	      </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
