@@ -25,11 +25,11 @@ package com.cws.esolutions.security.dao.reference.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.junit.Test;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Assert;
 import java.sql.SQLException;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
@@ -38,7 +38,7 @@ public class SecurityReferenceDAOImplTest
 {
     private static final ISecurityReferenceDAO secRef = new SecurityReferenceDAOImpl();
 
-    @Before public void setUp()
+    @BeforeAll public void setUp()
     {
         try
         {
@@ -46,7 +46,7 @@ public class SecurityReferenceDAOImplTest
         }
         catch (Exception e)
         {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
             System.exit(1);
         }
     }
@@ -55,11 +55,11 @@ public class SecurityReferenceDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(secRef.obtainApprovedServers());
+        	Assertions.assertThat(secRef.obtainApprovedServers()).isNotNull();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+        	Assertions.fail(sqx.getMessage());
         }
     }
 
@@ -67,15 +67,15 @@ public class SecurityReferenceDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(secRef.obtainSecurityQuestionList());
+            Assertions.assertThat(secRef.obtainSecurityQuestionList()).isNotNull();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+        	Assertions.fail(sqx.getMessage());
         }
     }
 
-    @After public void tearDown()
+    @AfterAll public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

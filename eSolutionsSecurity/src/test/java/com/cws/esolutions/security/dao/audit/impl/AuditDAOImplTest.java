@@ -26,13 +26,13 @@ package com.cws.esolutions.security.dao.audit.impl;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
-import org.junit.Test;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.processors.enums.AuditType;
@@ -43,7 +43,8 @@ public class AuditDAOImplTest
 {
     private static final IAuditDAO auditDAO = new AuditDAOImpl();
 
-    @Before public void setUp()
+    @BeforeAll
+    public void setUp()
     {
         try
         {
@@ -51,13 +52,14 @@ public class AuditDAOImplTest
         }
         catch (Exception e)
         {
-            Assert.fail(e.getMessage());
+        	Assertions.fail(e.getMessage());
 
             System.exit(1);
         }
     }
 
-    @Test public void auditRequestedOperation()
+    @Test
+    public void auditRequestedOperation()
     {
         for (int x = 0; x < 50; x++)
         {
@@ -74,29 +76,30 @@ public class AuditDAOImplTest
 
             try
             {
-            
                 auditDAO.auditRequestedOperation(auditList);
             }
             catch (SQLException sqx)
             {
-                Assert.fail(sqx.getMessage());
+                Assertions.fail(sqx.getMessage());
             }
         }
     }
 
-    @Test public void getAuditInterval()
+    @Test
+    public void getAuditInterval()
     {
         try
         {
-            Assert.assertNotNull(auditDAO.getAuditInterval("f42fb0ba-4d1e-1126-986f-800cd2650000", 1));
+        	Assertions.assertThat(auditDAO.getAuditInterval("f42fb0ba-4d1e-1126-986f-800cd2650000", 1)).isNotEmpty();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+        	Assertions.fail(sqx.getMessage());
         }
     }
 
-    @After public void tearDown()
+    @AfterAll
+    public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

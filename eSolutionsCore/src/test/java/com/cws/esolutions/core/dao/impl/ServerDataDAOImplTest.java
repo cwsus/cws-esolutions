@@ -26,13 +26,13 @@ package com.cws.esolutions.core.dao.impl;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
-import org.junit.Test;
-import org.junit.After;
 import java.util.Arrays;
-import org.junit.Assert;
-import org.junit.Before;
 import java.util.ArrayList;
 import java.sql.SQLException;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.core.processors.enums.ServerType;
@@ -46,7 +46,7 @@ public class ServerDataDAOImplTest
     private String guid = "77adebf4-a7b7-4aea-8dbd-a54bc0b5897f";
     private static final IServerDataDAO dao = new ServerDataDAOImpl();
 
-    @Before public void setUp()
+    @BeforeAll public void setUp()
     {
         try
         {
@@ -54,7 +54,7 @@ public class ServerDataDAOImplTest
         }
         catch (Exception ex)
         {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
 
             System.exit(-1);
         }
@@ -98,11 +98,11 @@ public class ServerDataDAOImplTest
 
         try
         {
-            Assert.assertTrue(dao.addServer(data));
+            Assertions.assertThat(dao.addServer(data)).isTrue();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+            Assertions.fail(sqx.getMessage());
         }
     }
 
@@ -144,11 +144,11 @@ public class ServerDataDAOImplTest
 
         try
         {
-            Assert.assertNotNull(dao.updateServer("DMGRSERVER", data));
+            Assertions.assertThat(dao.updateServer("DMGRSERVER", data)).isNotNull();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+            Assertions.fail(sqx.getMessage());
         }
     }
 
@@ -156,11 +156,11 @@ public class ServerDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(dao.getServer("DMGRSERVER"));
+            Assertions.assertThat(dao.getServer("DMGRSERVER")).isNotEmpty();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+            Assertions.fail(sqx.getMessage());
         }
     }
 
@@ -168,11 +168,11 @@ public class ServerDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(dao.listServers(0));
+            Assertions.assertThat(dao.listServers(0)).isNotEmpty();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+            Assertions.fail(sqx.getMessage());
         }
     }
 
@@ -180,11 +180,11 @@ public class ServerDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(dao.getServersByAttribute("DMGRSERVER DEV", 0));
+            Assertions.assertThat(dao.getServersByAttribute("DMGRSERVER DEV", 0)).isNotEmpty();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+            Assertions.fail(sqx.getMessage());
         }
     }
 
@@ -192,15 +192,15 @@ public class ServerDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(dao.removeServer(this.guid));
+            Assertions.assertThat(dao.removeServer(this.guid)).isNotNull();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+            Assertions.fail(sqx.getMessage());
         }
     }
 
-    @After public void tearDown()
+    @AfterAll public void tearDown()
     {
         CoreServiceInitializer.shutdown();
     }

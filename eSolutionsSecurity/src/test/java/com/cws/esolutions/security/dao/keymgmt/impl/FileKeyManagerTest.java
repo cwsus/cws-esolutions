@@ -25,10 +25,10 @@ package com.cws.esolutions.security.dao.keymgmt.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.junit.Test;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
@@ -45,7 +45,7 @@ public class FileKeyManagerTest
 
     private static final KeyManager processor = KeyManagementFactory.getKeyManager("com.cws.esolutions.security.dao.keymgmt.impl.FileKeyManager");
 
-    @Before public void setUp()
+    @BeforeAll public void setUp()
     {
         try
         {
@@ -60,7 +60,7 @@ public class FileKeyManagerTest
         }
         catch (Exception ex)
         {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
 
             System.exit(-1);
         }
@@ -73,11 +73,11 @@ public class FileKeyManagerTest
     {
         try
         {
-            Assert.assertTrue(processor.createKeys(userAccount.getGuid()));
+        	Assertions.assertThat(processor.createKeys(userAccount.getGuid())).isTrue();
         }
         catch (Exception kmx)
         {
-            Assert.fail(kmx.getMessage());
+        	Assertions.fail(kmx.getMessage());
         }
     }
 
@@ -85,11 +85,11 @@ public class FileKeyManagerTest
     {
         try
         {
-            Assert.assertNotNull(processor.returnKeys(userAccount.getGuid()));
+        	Assertions.assertThat(processor.returnKeys(userAccount.getGuid())).isNotNull();
         }
         catch (KeyManagementException kmx)
         {
-            Assert.fail(kmx.getMessage());
+        	Assertions.fail(kmx.getMessage());
         }
     }
 
@@ -97,15 +97,15 @@ public class FileKeyManagerTest
     {
         try
         {
-            Assert.assertTrue(processor.removeKeys(userAccount.getGuid()));
+        	Assertions.assertThat(processor.removeKeys(userAccount.getGuid())).isTrue();
         }
         catch (KeyManagementException kmx)
         {
-            Assert.fail(kmx.getMessage());
+        	Assertions.fail(kmx.getMessage());
         }
     }
 
-    @After public void tearDown()
+    @AfterAll public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

@@ -25,10 +25,10 @@ package com.cws.esolutions.security.dao.userauth.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.junit.Test;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
@@ -36,7 +36,7 @@ import com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory;
 
 public class AutoResponseAuthenticatorTest {
 
-	@Before public void setUp()
+	@BeforeAll public void setUp()
     {
         try
         {
@@ -58,12 +58,12 @@ public class AutoResponseAuthenticatorTest {
 
 		try
 		{
-			authenticator.performLogon("khuntly", "mypass");
+			authenticator.performLogon("khuntly", "some random salt", "mypass");
 		}
 		catch (Exception ex)
 		{
 			ex.printStackTrace();
-			Assert.fail(ex.getMessage());
+			Assertions.fail(ex.getMessage());
 		}
 	}
 
@@ -73,7 +73,7 @@ public class AutoResponseAuthenticatorTest {
 	@Test
 	public final void testObtainSecurityData()
 	{
-		Assert.fail("Not yet implemented"); // TODO
+		Assertions.fail("Not yet implemented"); // TODO
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class AutoResponseAuthenticatorTest {
 	@Test
 	public final void testObtainOtpSecret()
 	{
-		Assert.fail("Not yet implemented"); // TODO
+		Assertions.fail("Not yet implemented"); // TODO
 	}
 
 	/**
@@ -91,10 +91,10 @@ public class AutoResponseAuthenticatorTest {
 	@Test
 	public final void testVerifySecurityData()
 	{
-		Assert.fail("Not yet implemented"); // TODO
+		Assertions.fail("Not yet implemented"); // TODO
 	}
 
-    @After public void tearDown()
+    @AfterAll public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

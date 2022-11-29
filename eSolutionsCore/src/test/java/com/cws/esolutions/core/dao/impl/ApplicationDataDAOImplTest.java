@@ -26,13 +26,13 @@ package com.cws.esolutions.core.dao.impl;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
-import org.junit.Test;
-import org.junit.After;
 import java.util.Arrays;
-import org.junit.Assert;
-import org.junit.Before;
 import java.util.ArrayList;
 import java.sql.SQLException;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO;
@@ -48,7 +48,7 @@ public class ApplicationDataDAOImplTest
     private String platformGuid = "0e78acfe-eb16-4a40-9e6a-b79a3def9b4c";
     private static final IApplicationDataDAO dao = new ApplicationDataDAOImpl();
 
-    @Before public void setUp()
+    @BeforeAll public void setUp()
     {
         try
         {
@@ -57,7 +57,7 @@ public class ApplicationDataDAOImplTest
         }
         catch (Exception ex)
         {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
 
             System.exit(-1);
         }
@@ -83,7 +83,7 @@ public class ApplicationDataDAOImplTest
         catch (SQLException sqx)
         {
             sqx.printStackTrace();
-            Assert.fail(sqx.getMessage());
+            Assertions.fail(sqx.getMessage());
         }
     }
 
@@ -107,7 +107,7 @@ public class ApplicationDataDAOImplTest
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+            Assertions.fail(sqx.getMessage());
         }
     }
 
@@ -115,11 +115,11 @@ public class ApplicationDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(dao.listApplications(0));
+            Assertions.assertThat(dao.listApplications(0)).isNotEmpty();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+            Assertions.fail(sqx.getMessage());
         }
     }
 
@@ -127,11 +127,11 @@ public class ApplicationDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(dao.getApplication(this.appGuid));
+            Assertions.assertThat(dao.getApplication(this.appGuid)).isNotEmpty();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+            Assertions.fail(sqx.getMessage());
         }
     }
 
@@ -139,11 +139,11 @@ public class ApplicationDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(dao.getApplicationsByAttribute("eSolutions", 0));
+            Assertions.assertThat(dao.getApplicationsByAttribute("eSolutions", 0)).isNotEmpty();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+            Assertions.fail(sqx.getMessage());
         }
     }
 
@@ -155,11 +155,11 @@ public class ApplicationDataDAOImplTest
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+            Assertions.fail(sqx.getMessage());
         }
     }
 
-    @After public void tearDown()
+    @AfterAll public void tearDown()
     {
         CoreServiceInitializer.shutdown();
     }

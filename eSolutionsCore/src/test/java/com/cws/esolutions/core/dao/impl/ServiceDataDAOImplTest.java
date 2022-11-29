@@ -26,13 +26,13 @@ package com.cws.esolutions.core.dao.impl;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
-import org.junit.Test;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 
 import com.cws.esolutions.core.processors.enums.ServiceType;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
@@ -47,7 +47,7 @@ public class ServiceDataDAOImplTest
     private static final String pGuid = "a5299180-73d5-11e3-981f-0800200c9a66";
     private static final String dGuid = "e5f4cab8-038c-46f2-bbdd-fab9b84638cb";
 
-    @Before public void setUp()
+    @BeforeAll public void setUp()
     {
         try
         {
@@ -55,7 +55,7 @@ public class ServiceDataDAOImplTest
         }
         catch (Exception ex)
         {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
 
             System.exit(-1);
         }
@@ -83,11 +83,11 @@ public class ServiceDataDAOImplTest
 
         try
         {
-            Assert.assertTrue(dao.addService(serviceData));
+            Assertions.assertThat(dao.addService(serviceData)).isTrue();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+            Assertions.fail(sqx.getMessage());
         }
     }
 
@@ -106,11 +106,11 @@ public class ServiceDataDAOImplTest
 
         try
         {
-            Assert.assertTrue(dao.addService(serviceData));
+            Assertions.assertThat(dao.addService(serviceData)).isTrue();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+            Assertions.fail(sqx.getMessage());
         }
     }
 
@@ -136,11 +136,11 @@ public class ServiceDataDAOImplTest
 
         try
         {
-            Assert.assertTrue(dao.addService(serviceData));
+            Assertions.assertThat(dao.addService(serviceData)).isTrue();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+            Assertions.fail(sqx.getMessage());
         }
     }
 
@@ -159,11 +159,11 @@ public class ServiceDataDAOImplTest
 
         try
         {
-            Assert.assertTrue(dao.addService(serviceData));
+            Assertions.assertThat(dao.addService(serviceData)).isTrue();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+            Assertions.fail(sqx.getMessage());
         }
     }
 
@@ -171,11 +171,11 @@ public class ServiceDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(dao.listServices(0));
+            Assertions.assertThat(dao.listServices(0)).isNotEmpty();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+            Assertions.fail(sqx.getMessage());
         }
     }
 
@@ -183,11 +183,11 @@ public class ServiceDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(dao.getServicesByAttribute("TDC", 0));
+            Assertions.assertThat(dao.getServicesByAttribute("TDC", 0)).isNotEmpty();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+            Assertions.fail(sqx.getMessage());
         }
     }
 
@@ -195,11 +195,11 @@ public class ServiceDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(dao.getService(pGuid));
+            Assertions.assertThat(dao.getService(pGuid)).isNotEmpty();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+            Assertions.fail(sqx.getMessage());
         }
     }
 
@@ -207,11 +207,11 @@ public class ServiceDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(dao.getService(dGuid));
+            Assertions.assertThat(dao.getService(dGuid)).isNotEmpty();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+            Assertions.fail(sqx.getMessage());
         }
     }
 
@@ -219,11 +219,11 @@ public class ServiceDataDAOImplTest
     {
         try
         {
-            Assert.assertTrue(dao.removeService(pGuid));
+            Assertions.assertThat(dao.removeService(pGuid));
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+            Assertions.fail(sqx.getMessage());
         }
     }
 
@@ -231,15 +231,15 @@ public class ServiceDataDAOImplTest
     {
         try
         {
-            Assert.assertTrue(dao.removeService(dGuid));
+            Assertions.assertThat(dao.removeService(dGuid));
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+            Assertions.fail(sqx.getMessage());
         }
     }
 
-    @After public void tearDown()
+    @AfterAll public void tearDown()
     {
         CoreServiceInitializer.shutdown();
     }

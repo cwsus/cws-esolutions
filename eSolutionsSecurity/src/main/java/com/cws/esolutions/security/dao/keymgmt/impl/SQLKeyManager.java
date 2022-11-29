@@ -77,7 +77,6 @@ public class SQLKeyManager implements KeyManager
                 throw new SQLException("Unable to obtain application datasource connection");
             }
 
-
             sqlConn.setAutoCommit(true);
 
             KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(keyConfig.getKeyAlgorithm());
@@ -254,7 +253,6 @@ public class SQLKeyManager implements KeyManager
         }
         catch (SQLException sqx)
         {
-
             throw new KeyManagementException(sqx.getMessage(), sqx);
         }
         finally

@@ -26,10 +26,10 @@ package com.cws.esolutions.security.processors.impl;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.io.File;
-import org.junit.Test;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
@@ -51,7 +51,7 @@ public final class CertificateRequestProcessorTest
     private static AuthenticationData userSecurity = new AuthenticationData();
     private static final ICertificateRequestProcessor processor = new CertificateRequestProcessorImpl();
 
-    @Before public void setUp()
+    @BeforeAll public void setUp()
     {
         try
         {
@@ -68,7 +68,7 @@ public final class CertificateRequestProcessorTest
         }
         catch (Exception ex)
         {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
 
             System.exit(-1);
         }
@@ -85,11 +85,12 @@ public final class CertificateRequestProcessorTest
         try
         {
             CertificateResponse response = processor.listActiveRequests(request);
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (Exception ex)
         {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
     }
 
@@ -114,11 +115,12 @@ public final class CertificateRequestProcessorTest
         try
         {
             CertificateResponse response = processor.generateCertificateRequest(request);
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (Exception ex)
         {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
     }
 
@@ -136,16 +138,17 @@ public final class CertificateRequestProcessorTest
         try
         {
             CertificateResponse response = processor.applyCertificateResponse(request);
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (Exception ex)
         {
             ex.printStackTrace();
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
     }
 
-    @After public void tearDown()
+    @AfterAll public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

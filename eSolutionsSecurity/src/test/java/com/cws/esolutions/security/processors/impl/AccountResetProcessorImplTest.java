@@ -25,10 +25,10 @@ package com.cws.esolutions.security.processors.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.junit.Test;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
@@ -46,7 +46,7 @@ public class AccountResetProcessorImplTest
 
     private static final IAccountResetProcessor processor = new AccountResetProcessorImpl();
 
-    @Before public void setUp()
+    @BeforeAll public void setUp()
     {
         try
         {
@@ -58,7 +58,7 @@ public class AccountResetProcessorImplTest
         }
         catch (Exception e)
         {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
             System.exit(1);
         }
     }
@@ -75,11 +75,11 @@ public class AccountResetProcessorImplTest
         {
             AccountResetResponse response = processor.findUserAccount(request);
 
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (AccountResetException ax)
         {
-            Assert.fail(ax.getMessage());
+            Assertions.fail(ax.getMessage());
         }
     }
 
@@ -99,11 +99,11 @@ public class AccountResetProcessorImplTest
         {
             AccountResetResponse response = processor.obtainUserSecurityConfig(request);
 
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (AccountResetException ax)
         {
-            Assert.fail(ax.getMessage());
+            Assertions.fail(ax.getMessage());
         }
     }
 
@@ -128,11 +128,11 @@ public class AccountResetProcessorImplTest
         {
             AccountResetResponse response = processor.verifyUserSecurityConfig(request);
 
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (AccountResetException ax)
         {
-            Assert.fail(ax.getMessage());
+            Assertions.fail(ax.getMessage());
         }
     }
 
@@ -152,12 +152,12 @@ public class AccountResetProcessorImplTest
         {
             AccountResetResponse response = processor.resetUserPassword(request);
 
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (AccountResetException arx)
         {
             arx.printStackTrace();
-            Assert.fail(arx.getMessage());
+            Assertions.fail(arx.getMessage());
         }
     }
 
@@ -172,15 +172,15 @@ public class AccountResetProcessorImplTest
         {
             AccountResetResponse response = processor.verifyResetRequest(request);
 
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (AccountResetException arx)
         {
-            Assert.fail(arx.getMessage());
+            Assertions.fail(arx.getMessage());
         }
     }
 
-    @After public void tearDown()
+    @AfterAll public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

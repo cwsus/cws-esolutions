@@ -25,13 +25,13 @@ package com.cws.esolutions.security.dao.certmgmt.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.junit.Test;
 import java.util.List;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Assert;
 import java.util.Arrays;
 import java.util.ArrayList;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 import org.apache.commons.io.FileUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
@@ -46,7 +46,7 @@ public class CertificateManagerTest
     private static RequestHostInfo hostInfo = new RequestHostInfo();
     private static ICertificateManager processor = new CertificateManagerImpl();
 
-    @Before public void setUp()
+    @BeforeAll public void setUp()
     {
         try
         {
@@ -62,7 +62,7 @@ public class CertificateManagerTest
         catch (Exception ex)
         {
             ex.printStackTrace();
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
 
             System.exit(-1);
         }
@@ -86,7 +86,7 @@ public class CertificateManagerTest
         }
         catch (Exception ex)
         {
-            Assert.fail(ex.getMessage());
+        	Assertions.fail(ex.getMessage());
         }
     }
 
@@ -99,11 +99,11 @@ public class CertificateManagerTest
         catch (Exception ex)
         {
             ex.printStackTrace();
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
         }
     }
 
-    @After public void tearDown()
+    @AfterAll public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

@@ -26,12 +26,12 @@ package com.cws.esolutions.security.dao.usermgmt.impl;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.UUID;
-import org.junit.Test;
-import org.junit.After;
 import java.util.Arrays;
-import org.junit.Before;
-import org.junit.Assert;
 import java.util.ArrayList;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
@@ -45,7 +45,7 @@ public class SQLUserManagerTest
 
     private static final String GUID = UUID.randomUUID().toString();
 
-    @Before public void setUp()
+    @BeforeAll public void setUp()
     {
         try
         {
@@ -54,7 +54,7 @@ public class SQLUserManagerTest
         catch (Exception e)
         {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
             System.exit(1);
         }
     }
@@ -63,11 +63,11 @@ public class SQLUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.validateUserAccount("junit-test", SQLUserManagerTest.GUID));
+            Assertions.assertThat(manager.validateUserAccount("junit-test", SQLUserManagerTest.GUID)).isTrue();
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+            Assertions.fail(umx.getMessage());
         }
     }
 
@@ -75,7 +75,7 @@ public class SQLUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.addUserAccount(
+            Assertions.assertThat(manager.addUserAccount(
                     new ArrayList<String>(
                             Arrays.asList(
                                     "junit-test",
@@ -87,11 +87,11 @@ public class SQLUserManagerTest
                                     "Test User")),
                     new ArrayList<String>(
                             Arrays.asList(
-                                    "USER"))));
+                                    "USER")))).isTrue();
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+            Assertions.fail(umx.getMessage());
         }
     }
 
@@ -99,11 +99,11 @@ public class SQLUserManagerTest
     {
         try
         {
-            Assert.assertNotNull(manager.listUserAccounts());
+            Assertions.assertThat(manager.listUserAccounts()).isNotEmpty();
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+            Assertions.fail(umx.getMessage());
         }
     }
 
@@ -111,11 +111,11 @@ public class SQLUserManagerTest
     {
         try
         {
-            Assert.assertNotNull(manager.searchUsers("junit-test"));
+            Assertions.assertThat(manager.searchUsers("junit-test")).isNotEmpty();
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+            Assertions.fail(umx.getMessage());
         }
     }
 
@@ -123,11 +123,11 @@ public class SQLUserManagerTest
     {
         try
         {
-            Assert.assertNotNull(manager.loadUserAccount(SQLUserManagerTest.GUID));
+            Assertions.assertThat(manager.loadUserAccount(SQLUserManagerTest.GUID)).isNotEmpty();
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+            Assertions.fail(umx.getMessage());
         }
     }
 
@@ -135,11 +135,11 @@ public class SQLUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyUserEmail(SQLUserManagerTest.GUID, "test@test.com"));
+            Assertions.assertThat(manager.modifyUserEmail(SQLUserManagerTest.GUID, "test@test.com")).isTrue();
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+            Assertions.fail(umx.getMessage());
         }
     }
 
@@ -147,13 +147,13 @@ public class SQLUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyUserContact(SQLUserManagerTest.GUID,
+            Assertions.assertThat(manager.modifyUserContact(SQLUserManagerTest.GUID,
                     new ArrayList<String>(
                             Arrays.asList("555-555-1212", "555-555-1213"))));
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+            Assertions.fail(umx.getMessage());
         }
     }
 
@@ -161,12 +161,12 @@ public class SQLUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyUserSuspension(SQLUserManagerTest.GUID, true));
-            Assert.assertTrue(manager.modifyUserSuspension(SQLUserManagerTest.GUID, false));
+            Assertions.assertThat(manager.modifyUserSuspension(SQLUserManagerTest.GUID, true));
+            Assertions.assertThat(manager.modifyUserSuspension(SQLUserManagerTest.GUID, false));
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+            Assertions.fail(umx.getMessage());
         }
     }
 
@@ -174,11 +174,11 @@ public class SQLUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyUserGroups(SQLUserManagerTest.GUID, new Object[] { "Service Admins" }));
+            Assertions.assertThat(manager.modifyUserGroups(SQLUserManagerTest.GUID, new Object[] { "Service Admins" }));
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+            Assertions.fail(umx.getMessage());
         }
     }
 
@@ -186,12 +186,12 @@ public class SQLUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyOlrLock(SQLUserManagerTest.GUID, true));
-            Assert.assertTrue(manager.modifyOlrLock(SQLUserManagerTest.GUID, false));
+            Assertions.assertThat(manager.modifyOlrLock(SQLUserManagerTest.GUID, true));
+            Assertions.assertThat(manager.modifyOlrLock(SQLUserManagerTest.GUID, false));
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+            Assertions.fail(umx.getMessage());
         }
     }
 
@@ -199,13 +199,13 @@ public class SQLUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyUserLock(SQLUserManagerTest.GUID, true, 0));
-            Assert.assertTrue(manager.modifyUserLock(SQLUserManagerTest.GUID, false, 1));
-            Assert.assertTrue(manager.modifyUserLock(SQLUserManagerTest.GUID, false, 0));
+            Assertions.assertThat(manager.modifyUserLock(SQLUserManagerTest.GUID, true, 0));
+            Assertions.assertThat(manager.modifyUserLock(SQLUserManagerTest.GUID, false, 1));
+            Assertions.assertThat(manager.modifyUserLock(SQLUserManagerTest.GUID, false, 0));
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+            Assertions.fail(umx.getMessage());
         }
     }
 
@@ -213,11 +213,11 @@ public class SQLUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyUserPassword(SQLUserManagerTest.GUID, RandomStringUtils.randomAlphanumeric(64)));
+            Assertions.assertThat(manager.modifyUserPassword(SQLUserManagerTest.GUID, RandomStringUtils.randomAlphanumeric(64)));
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+            Assertions.fail(umx.getMessage());
         }
     }
 
@@ -225,7 +225,7 @@ public class SQLUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyUserSecurity(SQLUserManagerTest.GUID, new ArrayList<String>(
+            Assertions.assertThat(manager.modifyUserSecurity(SQLUserManagerTest.GUID, new ArrayList<String>(
                     Arrays.asList(
                             RandomStringUtils.randomAlphanumeric(64),
                             RandomStringUtils.randomAlphanumeric(64),
@@ -234,7 +234,7 @@ public class SQLUserManagerTest
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+            Assertions.fail(umx.getMessage());
         }
     }
 
@@ -242,12 +242,12 @@ public class SQLUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyOtpSecret(SQLUserManagerTest.GUID, true, RandomStringUtils.randomAlphanumeric(64)));
-            Assert.assertTrue(manager.modifyOtpSecret(SQLUserManagerTest.GUID, false, null));
+            Assertions.assertThat(manager.modifyOtpSecret(SQLUserManagerTest.GUID, true, RandomStringUtils.randomAlphanumeric(64)));
+            Assertions.assertThat(manager.modifyOtpSecret(SQLUserManagerTest.GUID, false, null));
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+            Assertions.fail(umx.getMessage());
         }
     }
 
@@ -255,15 +255,15 @@ public class SQLUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.removeUserAccount(SQLUserManagerTest.GUID));
+            Assertions.assertThat(manager.removeUserAccount(SQLUserManagerTest.GUID));
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+            Assertions.fail(umx.getMessage());
         }
     }
 
-    @After public void tearDown()
+    @AfterAll public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

@@ -25,12 +25,12 @@ package com.cws.esolutions.core.processors.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.junit.Test;
 import java.util.List;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
 import java.util.ArrayList;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Service;
@@ -52,7 +52,7 @@ public class ApplicationManagementProcessorImplTest
 
     private static final IApplicationManagementProcessor processor = new ApplicationManagementProcessorImpl();
 
-    @Before public void setUp()
+    @BeforeAll public void setUp()
     {
         hostInfo.setHostAddress("junit");
         hostInfo.setHostName("junit");
@@ -68,7 +68,7 @@ public class ApplicationManagementProcessorImplTest
         }
         catch (Exception ex)
         {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
 
             System.exit(-1);
         }
@@ -110,11 +110,11 @@ public class ApplicationManagementProcessorImplTest
         {
             ApplicationManagementResponse response = processor.addNewApplication(request);
 
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
         catch (ApplicationManagementException amx)
         {
-            Assert.fail(amx.getMessage());
+            Assertions.fail(amx.getMessage());
         }
     }
 
@@ -135,11 +135,11 @@ public class ApplicationManagementProcessorImplTest
         {
             ApplicationManagementResponse response = processor.deleteApplicationData(request);
 
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
         catch (ApplicationManagementException amx)
         {
-            Assert.fail(amx.getMessage());
+            Assertions.fail(amx.getMessage());
         }
     }
 
@@ -156,11 +156,11 @@ public class ApplicationManagementProcessorImplTest
         {
             ApplicationManagementResponse response = processor.listApplications(request);
 
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
         catch (ApplicationManagementException amx)
         {
-            Assert.fail(amx.getMessage());
+            Assertions.fail(amx.getMessage());
         }
     }
 
@@ -181,15 +181,15 @@ public class ApplicationManagementProcessorImplTest
         {
             ApplicationManagementResponse response = processor.getApplicationData(request);
 
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
         catch (ApplicationManagementException amx)
         {
-            Assert.fail(amx.getMessage());
+            Assertions.fail(amx.getMessage());
         }
     }
 
-    @After public void tearDown()
+    @AfterAll public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
         CoreServiceInitializer.shutdown();

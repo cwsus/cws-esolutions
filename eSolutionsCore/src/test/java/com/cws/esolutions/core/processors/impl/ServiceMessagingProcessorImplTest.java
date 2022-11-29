@@ -25,10 +25,10 @@ package com.cws.esolutions.core.processors.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.junit.Test;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
@@ -46,7 +46,7 @@ public class ServiceMessagingProcessorImplTest
 
     private static final IWebMessagingProcessor processor = new ServiceMessagingProcessorImpl();
 
-    @Before public void setUp() throws Exception
+    @BeforeAll public void setUp() throws Exception
     {
         hostInfo.setHostAddress("junit");
         hostInfo.setHostName("junit");
@@ -62,7 +62,7 @@ public class ServiceMessagingProcessorImplTest
         }
         catch (Exception ex)
         {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
 
             System.exit(-1);
         }
@@ -80,7 +80,7 @@ public class ServiceMessagingProcessorImplTest
         }
         catch (MessagingServiceException msx)
         {
-            Assert.fail(msx.getMessage());
+            Assertions.fail(msx.getMessage());
         }
     }
 
@@ -96,7 +96,7 @@ public class ServiceMessagingProcessorImplTest
         }
         catch (MessagingServiceException msx)
         {
-            Assert.fail(msx.getMessage());
+            Assertions.fail(msx.getMessage());
         }
     }
 
@@ -112,7 +112,7 @@ public class ServiceMessagingProcessorImplTest
         }
         catch (MessagingServiceException msx)
         {
-            Assert.fail(msx.getMessage());
+            Assertions.fail(msx.getMessage());
         }
     }
 
@@ -128,7 +128,7 @@ public class ServiceMessagingProcessorImplTest
         }
         catch (MessagingServiceException msx)
         {
-            Assert.fail(msx.getMessage());
+            Assertions.fail(msx.getMessage());
         }
     }
 
@@ -144,11 +144,11 @@ public class ServiceMessagingProcessorImplTest
         }
         catch (MessagingServiceException msx)
         {
-            Assert.fail(msx.getMessage());
+            Assertions.fail(msx.getMessage());
         }
     }
 
-    @After public void tearDown() throws Exception
+    @AfterAll public void tearDown() throws Exception
     {
         SecurityServiceInitializer.shutdown();
         CoreServiceInitializer.shutdown();

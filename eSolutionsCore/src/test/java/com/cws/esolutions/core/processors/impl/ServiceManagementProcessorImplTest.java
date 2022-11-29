@@ -26,12 +26,12 @@ package com.cws.esolutions.core.processors.impl;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
-import org.junit.Test;
-import org.junit.After;
 import java.util.Arrays;
-import org.junit.Assert;
-import org.junit.Before;
 import java.util.ArrayList;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
@@ -58,7 +58,7 @@ public class ServiceManagementProcessorImplTest
 
     private static final IServiceManagementProcessor processor = new ServiceManagementProcessorImpl();
 
-    @Before public void setUp()
+    @BeforeAll public void setUp()
     {
         hostInfo.setHostAddress("junit");
         hostInfo.setHostName("junit");
@@ -75,7 +75,7 @@ public class ServiceManagementProcessorImplTest
         catch (Exception ex)
         {
             ex.printStackTrace();
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
 
             System.exit(-1);
         }
@@ -205,11 +205,11 @@ public class ServiceManagementProcessorImplTest
             {
                 ServiceManagementResponse response = processor.addNewService(request);
 
-                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+                Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
             catch (ServiceManagementException pmx)
             {
-                Assert.fail(pmx.getMessage());
+                Assertions.fail(pmx.getMessage());
             }
         }
     }
@@ -236,11 +236,11 @@ public class ServiceManagementProcessorImplTest
         {
             ServiceManagementResponse response = processor.addNewService(request);
 
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
         catch (ServiceManagementException pmx)
         {
-            Assert.fail(pmx.getMessage());
+            Assertions.fail(pmx.getMessage());
         }
     }
 
@@ -257,11 +257,11 @@ public class ServiceManagementProcessorImplTest
         {
             ServiceManagementResponse response = processor.listServices(request);
 
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
         catch (ServiceManagementException pmx)
         {
-            Assert.fail(pmx.getMessage());
+            Assertions.fail(pmx.getMessage());
         }
     }
 
@@ -278,11 +278,11 @@ public class ServiceManagementProcessorImplTest
         {
             ServiceManagementResponse response = processor.listServices(request);
 
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
         catch (ServiceManagementException pmx)
         {
-            Assert.fail(pmx.getMessage());
+            Assertions.fail(pmx.getMessage());
         }
     }
 
@@ -303,11 +303,11 @@ public class ServiceManagementProcessorImplTest
         {
             ServiceManagementResponse response = processor.getServiceByAttribute(request);
 
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
         catch (ServiceManagementException pmx)
         {
-            Assert.fail(pmx.getMessage());
+            Assertions.fail(pmx.getMessage());
         }
     }
 
@@ -328,11 +328,11 @@ public class ServiceManagementProcessorImplTest
         {
             ServiceManagementResponse response = processor.getServiceData(request);
 
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
         catch (ServiceManagementException pmx)
         {
-            Assert.fail(pmx.getMessage());
+            Assertions.fail(pmx.getMessage());
         }
     }
 
@@ -353,15 +353,15 @@ public class ServiceManagementProcessorImplTest
         {
             ServiceManagementResponse response = processor.getServiceData(request);
 
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
         catch (ServiceManagementException pmx)
         {
-            Assert.fail(pmx.getMessage());
+            Assertions.fail(pmx.getMessage());
         }
     }
 
-    @After public void tearDown()
+    @AfterAll public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
         CoreServiceInitializer.shutdown();

@@ -25,18 +25,18 @@ package com.cws.esolutions.core.utils;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.junit.Test;
 import java.util.List;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 
 import com.cws.esolutions.core.utils.exception.UtilityException;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 
 public class NetworkUtilsTest
 {
-    @Before public void setUp()
+    @BeforeAll public void setUp()
     {
         try
         {
@@ -44,7 +44,7 @@ public class NetworkUtilsTest
         }
         catch (Exception ex)
         {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
 
             System.exit(-1);
         }
@@ -58,7 +58,7 @@ public class NetworkUtilsTest
         }
         catch (UtilityException ux)
         {
-            Assert.fail(ux.getMessage());
+            Assertions.fail(ux.getMessage());
         }
     }
 
@@ -68,15 +68,15 @@ public class NetworkUtilsTest
         {
             List<List<String>> responseData = NetworkUtils.executeDNSLookup(null, "google.com", "A", null);
 
-            Assert.assertNotNull(responseData);
+            Assertions.assertThat(responseData).isNotEmpty();
         }
         catch (UtilityException ux)
         {
-            Assert.fail(ux.getMessage());
+            Assertions.fail(ux.getMessage());
         }
     }
 
-    @After public void tearDown()
+    @AfterAll public void tearDown()
     {
         CoreServiceInitializer.shutdown();
     }

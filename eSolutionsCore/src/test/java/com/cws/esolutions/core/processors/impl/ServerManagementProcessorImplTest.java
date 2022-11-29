@@ -25,10 +25,10 @@ package com.cws.esolutions.core.processors.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.junit.Test;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
@@ -55,7 +55,7 @@ public class ServerManagementProcessorImplTest
 
     private static final IServerManagementProcessor processor = new ServerManagementProcessorImpl();
 
-    @Before public void setUp()
+    @BeforeAll public void setUp()
     {
         hostInfo.setHostAddress("junit");
         hostInfo.setHostName("junit");
@@ -71,7 +71,7 @@ public class ServerManagementProcessorImplTest
         }
         catch (Exception ex)
         {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
 
             System.exit(-1);
         }
@@ -137,11 +137,11 @@ public class ServerManagementProcessorImplTest
             {
                 ServerManagementResponse response = processor.addNewServer(request);
 
-                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+                Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
             catch (ServerManagementException smx)
             {
-                Assert.fail(smx.getMessage());
+                Assertions.fail(smx.getMessage());
             }
         }
     }
@@ -195,11 +195,11 @@ public class ServerManagementProcessorImplTest
             {
                 ServerManagementResponse response = processor.addNewServer(request);
 
-                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+                Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
             catch (ServerManagementException smx)
             {
-                Assert.fail(smx.getMessage());
+                Assertions.fail(smx.getMessage());
             }
         }
     }
@@ -249,11 +249,11 @@ public class ServerManagementProcessorImplTest
             {
                 ServerManagementResponse response = processor.addNewServer(request);
 
-                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+                Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
             catch (ServerManagementException smx)
             {
-                Assert.fail(smx.getMessage());
+                Assertions.fail(smx.getMessage());
             }
         }
     }
@@ -307,11 +307,11 @@ public class ServerManagementProcessorImplTest
             {
                 ServerManagementResponse response = processor.addNewServer(request);
 
-                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+                Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
             catch (ServerManagementException smx)
             {
-                Assert.fail(smx.getMessage());
+                Assertions.fail(smx.getMessage());
             }
         }
     }
@@ -361,11 +361,11 @@ public class ServerManagementProcessorImplTest
             {
                 ServerManagementResponse response = processor.addNewServer(request);
 
-                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+                Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
             catch (ServerManagementException smx)
             {
-                Assert.fail(smx.getMessage());
+                Assertions.fail(smx.getMessage());
             }
         }
     }
@@ -419,11 +419,11 @@ public class ServerManagementProcessorImplTest
             {
                 ServerManagementResponse response = processor.addNewServer(request);
 
-                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+                Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
             catch (ServerManagementException smx)
             {
-                Assert.fail(smx.getMessage());
+                Assertions.fail(smx.getMessage());
             }
         }
     }
@@ -473,11 +473,11 @@ public class ServerManagementProcessorImplTest
             {
                 ServerManagementResponse response = processor.addNewServer(request);
 
-                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+                Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
             catch (ServerManagementException smx)
             {
-                Assert.fail(smx.getMessage());
+                Assertions.fail(smx.getMessage());
             }
         }
     }
@@ -525,11 +525,11 @@ public class ServerManagementProcessorImplTest
         {
             ServerManagementResponse response = processor.addNewServer(request);
 
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
         catch (ServerManagementException smx)
         {
-            Assert.fail(smx.getMessage());
+            Assertions.fail(smx.getMessage());
         }
     }
 
@@ -576,11 +576,11 @@ public class ServerManagementProcessorImplTest
         {
             ServerManagementResponse response = processor.addNewServer(request);
 
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
         catch (ServerManagementException smx)
         {
-            Assert.fail(smx.getMessage());
+            Assertions.fail(smx.getMessage());
         }
     }
 
@@ -627,11 +627,11 @@ public class ServerManagementProcessorImplTest
         {
             ServerManagementResponse response = processor.addNewServer(request);
 
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
         catch (ServerManagementException smx)
         {
-            Assert.fail(smx.getMessage());
+            Assertions.fail(smx.getMessage());
         }
     }
 
@@ -680,11 +680,11 @@ public class ServerManagementProcessorImplTest
             {
                 ServerManagementResponse response = processor.addNewServer(request);
 
-                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+                Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
             catch (ServerManagementException smx)
             {
-                Assert.fail(smx.getMessage());
+                Assertions.fail(smx.getMessage());
             }
         }
     }
@@ -734,11 +734,11 @@ public class ServerManagementProcessorImplTest
             {
                 ServerManagementResponse response = processor.addNewServer(request);
 
-                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+                Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
             catch (ServerManagementException smx)
             {
-                Assert.fail(smx.getMessage());
+                Assertions.fail(smx.getMessage());
             }
         }
     }
@@ -788,11 +788,11 @@ public class ServerManagementProcessorImplTest
             {
                 ServerManagementResponse response = processor.addNewServer(request);
 
-                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+                Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
             catch (ServerManagementException smx)
             {
-                Assert.fail(smx.getMessage());
+                Assertions.fail(smx.getMessage());
             }
         }
     }
@@ -842,11 +842,11 @@ public class ServerManagementProcessorImplTest
             {
                 ServerManagementResponse response = processor.addNewServer(request);
     
-                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+                Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
             catch (ServerManagementException smx)
             {
-                Assert.fail(smx.getMessage());
+                Assertions.fail(smx.getMessage());
             }
         }
     }
@@ -896,11 +896,11 @@ public class ServerManagementProcessorImplTest
             {
                 ServerManagementResponse response = processor.addNewServer(request);
     
-                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+                Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
             catch (ServerManagementException smx)
             {
-                Assert.fail(smx.getMessage());
+                Assertions.fail(smx.getMessage());
             }
         }
     }
@@ -950,11 +950,11 @@ public class ServerManagementProcessorImplTest
             {
                 ServerManagementResponse response = processor.addNewServer(request);
     
-                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+                Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
             catch (ServerManagementException smx)
             {
-                Assert.fail(smx.getMessage());
+                Assertions.fail(smx.getMessage());
             }
         }
     }
@@ -1002,11 +1002,11 @@ public class ServerManagementProcessorImplTest
         {
             ServerManagementResponse response = processor.addNewServer(request);
 
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
         catch (ServerManagementException smx)
         {
-            Assert.fail(smx.getMessage());
+            Assertions.fail(smx.getMessage());
         }
     }
 
@@ -1054,11 +1054,11 @@ public class ServerManagementProcessorImplTest
         {
             ServerManagementResponse response = processor.addNewServer(request);
 
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
         catch (ServerManagementException smx)
         {
-            Assert.fail(smx.getMessage());
+            Assertions.fail(smx.getMessage());
         }
     }
 
@@ -1106,11 +1106,11 @@ public class ServerManagementProcessorImplTest
         {
             ServerManagementResponse response = processor.addNewServer(request);
 
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
         catch (ServerManagementException smx)
         {
-            Assert.fail(smx.getMessage());
+            Assertions.fail(smx.getMessage());
         }
     }
 
@@ -1147,11 +1147,11 @@ public class ServerManagementProcessorImplTest
         {
             ServerManagementResponse response = processor.updateServerData(request);
 
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
         catch (ServerManagementException smx)
         {
-            Assert.fail(smx.getMessage());
+            Assertions.fail(smx.getMessage());
         }
     }
 
@@ -1169,11 +1169,11 @@ public class ServerManagementProcessorImplTest
         {
             ServerManagementResponse response = processor.listServersByAttribute(request);
 
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
         catch (ServerManagementException smx)
         {
-            Assert.fail(smx.getMessage());
+            Assertions.fail(smx.getMessage());
         }
     }
 
@@ -1194,16 +1194,16 @@ public class ServerManagementProcessorImplTest
         {
             ServerManagementResponse response = processor.getServerData(request);
 
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
         catch (ServerManagementException smx)
         {
-            Assert.fail(smx.getMessage());
+            Assertions.fail(smx.getMessage());
         }
     }
     */
 
-    @After public void tearDown()
+    @AfterAll public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
         CoreServiceInitializer.shutdown();

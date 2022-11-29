@@ -25,10 +25,10 @@ package com.cws.esolutions.security.processors.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.junit.Test;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
@@ -47,8 +47,7 @@ public class AccountControlProcessorImplTest
     private static RequestHostInfo hostInfo = new RequestHostInfo();
     private static final IAccountControlProcessor processor = new AccountControlProcessorImpl();
 
-    @Before
-    public void setUp()
+    @BeforeAll public void setUp()
     {
         try
         {
@@ -71,7 +70,7 @@ public class AccountControlProcessorImplTest
         }
         catch (Exception ex)
         {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
 
             System.exit(-1);
         }
@@ -90,12 +89,12 @@ public class AccountControlProcessorImplTest
         {
             AccountControlResponse response = processor.createNewUser(request);
 
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (AccountControlException acx)
         {
             acx.printStackTrace();
-            Assert.fail(acx.getMessage());
+            Assertions.fail(acx.getMessage());
         }
     }
 
@@ -112,11 +111,11 @@ public class AccountControlProcessorImplTest
         {
             AccountControlResponse response = processor.searchAccounts(request);
 
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (AccountControlException acx)
         {
-            Assert.fail(acx.getMessage());
+            Assertions.fail(acx.getMessage());
         }
     }
 
@@ -133,11 +132,11 @@ public class AccountControlProcessorImplTest
         {
             AccountControlResponse response = processor.loadUserAccount(request);
 
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (AccountControlException acx)
         {
-            Assert.fail(acx.getMessage());
+            Assertions.fail(acx.getMessage());
         }
     }
 
@@ -155,11 +154,11 @@ public class AccountControlProcessorImplTest
         {
             AccountControlResponse response = processor.modifyUserSuspension(request);
 
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (AccountControlException acx)
         {
-            Assert.fail(acx.getMessage());
+            Assertions.fail(acx.getMessage());
         }
     }
 
@@ -179,11 +178,11 @@ public class AccountControlProcessorImplTest
         {
             AccountControlResponse response = processor.modifyUserRole(request);
 
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (AccountControlException acx)
         {
-            Assert.fail(acx.getMessage());
+            Assertions.fail(acx.getMessage());
         }
     }
 
@@ -201,11 +200,11 @@ public class AccountControlProcessorImplTest
         {
             AccountControlResponse response = processor.modifyUserPassword(request);
 
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (AccountControlException acx)
         {
-            Assert.fail(acx.getMessage());
+            Assertions.fail(acx.getMessage());
         }
     }
 
@@ -225,11 +224,11 @@ public class AccountControlProcessorImplTest
         {
             AccountControlResponse response = processor.modifyUserLockout(request);
 
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (AccountControlException acx)
         {
-            Assert.fail(acx.getMessage());
+            Assertions.fail(acx.getMessage());
         }
     }
 
@@ -247,16 +246,15 @@ public class AccountControlProcessorImplTest
         {
             AccountControlResponse response = processor.removeUserAccount(request);
 
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (AccountControlException acx)
         {
-            Assert.fail(acx.getMessage());
+            Assertions.fail(acx.getMessage());
         }
     }
 
-    @After
-    public void tearDown()
+    @AfterAll public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

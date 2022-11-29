@@ -25,12 +25,12 @@ package com.cws.esolutions.security.dao.userauth.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.junit.Test;
-import org.junit.After;
 import java.util.Arrays;
-import org.junit.Before;
-import org.junit.Assert;
 import java.util.ArrayList;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
@@ -39,7 +39,7 @@ import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException
 
 public class SQLAuthenticatorTest
 {
-    @Before public void setUp()
+    @BeforeAll public void setUp()
     {
         try
         {
@@ -47,7 +47,7 @@ public class SQLAuthenticatorTest
         }
         catch (Exception e)
         {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
             System.exit(1);
         }
     }
@@ -58,11 +58,11 @@ public class SQLAuthenticatorTest
 
         try
         {
-            Assert.assertNotNull(authenticator.performLogon("junit", "VOpqGWznp1flygXFED8FVTxXTRHG9QG/Dj+apuuyeh59JWVbYd9hOgZTOfpLdBWRlPDb1TZnvt7XE3llHOPQQQ=="));
+            Assertions.assertThat(authenticator.performLogon("junit", "", "VOpqGWznp1flygXFED8FVTxXTRHG9QG/Dj+apuuyeh59JWVbYd9hOgZTOfpLdBWRlPDb1TZnvt7XE3llHOPQQQ==")).isNotEmpty();
         }
         catch (AuthenticatorException e)
         {
-            Assert.fail(e.getMessage());
+        	Assertions.fail(e.getMessage());
         }
     }
 
@@ -72,11 +72,11 @@ public class SQLAuthenticatorTest
 
         try
         {
-            Assert.assertNotNull(authenticator.obtainSecurityData("junit", "f42fb0ba-4d1e-1126-986f-800cd2650000"));
+        	Assertions.assertThat(authenticator.obtainSecurityData("junit", "f42fb0ba-4d1e-1126-986f-800cd2650000")).isNotEmpty();
         }
         catch (AuthenticatorException e)
         {
-            Assert.fail(e.getMessage());
+        	Assertions.fail(e.getMessage());
         }
     }
 
@@ -86,11 +86,11 @@ public class SQLAuthenticatorTest
 
         try
         {
-            Assert.assertNotNull(authenticator.obtainOtpSecret("junit", "f42fb0ba-4d1e-1126-986f-800cd2650000"));
+        	Assertions.assertThat(authenticator.obtainOtpSecret("junit", "f42fb0ba-4d1e-1126-986f-800cd2650000")).isNotEmpty();
         }
         catch (AuthenticatorException e)
         {
-            Assert.fail(e.getMessage());
+        	Assertions.fail(e.getMessage());
         }
     }
 
@@ -100,19 +100,19 @@ public class SQLAuthenticatorTest
 
         try
         {
-            Assert.assertTrue(authenticator.verifySecurityData("junit", "f42fb0ba-4d1e-1126-986f-800cd2650000",
+            Assertions.assertThat(authenticator.verifySecurityData("junit", "f42fb0ba-4d1e-1126-986f-800cd2650000",
                     new ArrayList<String>(
                             Arrays.asList("nnVRD0xm0quQrHv2k9AHSfQIHJLoJ6Hp9HWPgiqpiV9zOMDUaboAUOUzI4Vn5lWlqczMl/TzjWWrt6YhHhRjng==",
-                                    "FEwX3hCErzIAaeZThAznod4cIOG1eboOwttIBiW6Fz1Rbe/JzczTN6ANjIdW9KNkKx6Q+g1fDtIZgYX/xEYlOA=="))));
+                                    "FEwX3hCErzIAaeZThAznod4cIOG1eboOwttIBiW6Fz1Rbe/JzczTN6ANjIdW9KNkKx6Q+g1fDtIZgYX/xEYlOA==")))).isTrue();
                                     
         }
         catch (AuthenticatorException e)
         {
-            Assert.fail(e.getMessage());
+        	Assertions.fail(e.getMessage());
         }
     }
 
-    @After public void tearDown()
+    @AfterAll public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

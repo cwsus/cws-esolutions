@@ -25,10 +25,10 @@ package com.cws.esolutions.security.processors.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.junit.Test;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
@@ -49,7 +49,7 @@ public final class AccountChangeProcessorImplTest
     private static AuthenticationData userSecurity = new AuthenticationData();
     private static final IAccountChangeProcessor processor = new AccountChangeProcessorImpl();
 
-    @Before public void setUp()
+    @BeforeAll public void setUp()
     {
         try
         {
@@ -66,7 +66,7 @@ public final class AccountChangeProcessorImplTest
         }
         catch (Exception ex)
         {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
 
             System.exit(-1);
         }
@@ -87,11 +87,11 @@ public final class AccountChangeProcessorImplTest
         {
             AccountChangeResponse response = processor.enableOtpAuth(request);
 
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (AccountChangeException acx)
         {
-            Assert.fail(acx.getMessage());
+        	Assertions.fail(acx.getMessage());
         }
     }
 
@@ -110,11 +110,11 @@ public final class AccountChangeProcessorImplTest
         {
             AccountChangeResponse response = processor.disableOtpAuth(request);
 
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (AccountChangeException acx)
         {
-            Assert.fail(acx.getMessage());
+        	Assertions.fail(acx.getMessage());
         }
     }
 
@@ -135,11 +135,11 @@ public final class AccountChangeProcessorImplTest
         {
             AccountChangeResponse response = processor.changeUserEmail(request);
 
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (AccountChangeException acx)
         {
-            Assert.fail(acx.getMessage());
+        	Assertions.fail(acx.getMessage());
         }
     }
 
@@ -164,11 +164,11 @@ public final class AccountChangeProcessorImplTest
         {
             AccountChangeResponse response = processor.changeUserSecurity(request);
 
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (AccountChangeException acx)
         {
-            Assert.fail(acx.getMessage());
+        	Assertions.fail(acx.getMessage());
         }
     }
 
@@ -190,11 +190,11 @@ public final class AccountChangeProcessorImplTest
         {
             AccountChangeResponse response = processor.changeUserContact(request);
 
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (AccountChangeException acx)
         {
-            Assert.fail(acx.getMessage());
+        	Assertions.fail(acx.getMessage());
         }
     }
 
@@ -213,12 +213,12 @@ public final class AccountChangeProcessorImplTest
         {
             AccountChangeResponse response = processor.changeUserKeys(request);
 
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (AccountChangeException acx)
         {
             acx.printStackTrace();
-            Assert.fail(acx.getMessage());
+            Assertions.fail(acx.getMessage());
         }
     }
 
@@ -239,15 +239,15 @@ public final class AccountChangeProcessorImplTest
         {
             AccountChangeResponse response = processor.changeUserPassword(request);
 
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (AccountChangeException acx)
         {
-            Assert.fail(acx.getMessage());
+        	Assertions.fail(acx.getMessage());
         }
     }
 
-    @After public void tearDown()
+    @AfterAll public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

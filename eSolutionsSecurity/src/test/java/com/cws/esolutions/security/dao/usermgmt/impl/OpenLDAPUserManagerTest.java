@@ -26,12 +26,12 @@ package com.cws.esolutions.security.dao.usermgmt.impl;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.UUID;
-import org.junit.Test;
-import org.junit.After;
 import java.util.Arrays;
-import org.junit.Before;
-import org.junit.Assert;
 import java.util.ArrayList;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
@@ -44,7 +44,7 @@ public class OpenLDAPUserManagerTest
     private static final String GUID = UUID.randomUUID().toString();
     private static final UserManager manager = UserManagerFactory.getUserManager("com.cws.esolutions.security.dao.usermgmt.impl.OpenLDAPUserManager");
 
-    @Before public void setUp()
+    @BeforeAll public void setUp()
     {
         try
         {
@@ -53,7 +53,7 @@ public class OpenLDAPUserManagerTest
         catch (Exception e)
         {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
             System.exit(1);
         }
     }
@@ -62,11 +62,11 @@ public class OpenLDAPUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.validateUserAccount("junit-test", OpenLDAPUserManagerTest.GUID));
+        	Assertions.assertThat(manager.validateUserAccount("junit-test", OpenLDAPUserManagerTest.GUID)).isTrue();
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+        	Assertions.fail(umx.getMessage());
         }
     }
 
@@ -74,7 +74,7 @@ public class OpenLDAPUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.addUserAccount(
+        	Assertions.assertThat(manager.addUserAccount(
                     new ArrayList<String>(
                             Arrays.asList(
                                     "junit-test",
@@ -86,11 +86,11 @@ public class OpenLDAPUserManagerTest
                                     "Test User")),
                     new ArrayList<String>(
                             Arrays.asList(
-                                    "USER"))));
+                                    "USER")))).isTrue();
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+        	Assertions.fail(umx.getMessage());
         }
     }
 
@@ -98,11 +98,11 @@ public class OpenLDAPUserManagerTest
     {
         try
         {
-            Assert.assertNotNull(manager.listUserAccounts());
+        	Assertions.assertThat(manager.listUserAccounts()).isNotEmpty();
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+        	Assertions.fail(umx.getMessage());
         }
     }
 
@@ -110,11 +110,11 @@ public class OpenLDAPUserManagerTest
     {
         try
         {
-            Assert.assertFalse(manager.searchUsers("cws-khuntly@HSBC").isEmpty());
+        	Assertions.assertThat(manager.searchUsers("cws-khuntly").isEmpty()).isFalse();
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+        	Assertions.fail(umx.getMessage());
         }
     }
 
@@ -122,11 +122,11 @@ public class OpenLDAPUserManagerTest
     {
         try
         {
-            Assert.assertFalse(manager.loadUserAccount("cws-khuntly").isEmpty());
+        	Assertions.assertThat(manager.loadUserAccount("cws-khuntly").isEmpty()).isFalse();
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+        	Assertions.fail(umx.getMessage());
         }
     }
 
@@ -134,11 +134,11 @@ public class OpenLDAPUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyUserEmail(OpenLDAPUserManagerTest.GUID, "test@test.com"));
+        	Assertions.assertThat(manager.modifyUserEmail(OpenLDAPUserManagerTest.GUID, "test@test.com")).isTrue();
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+        	Assertions.fail(umx.getMessage());
         }
     }
 
@@ -146,13 +146,13 @@ public class OpenLDAPUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyUserContact(OpenLDAPUserManagerTest.GUID,
+        	Assertions.assertThat(manager.modifyUserContact(OpenLDAPUserManagerTest.GUID,
                     new ArrayList<String>(
-                            Arrays.asList("555-555-1212", "555-555-1213"))));
+                            Arrays.asList("555-555-1212", "555-555-1213")))).isTrue();
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+        	Assertions.fail(umx.getMessage());
         }
     }
 
@@ -160,12 +160,12 @@ public class OpenLDAPUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyUserSuspension(OpenLDAPUserManagerTest.GUID, true));
-            Assert.assertTrue(manager.modifyUserSuspension(OpenLDAPUserManagerTest.GUID, false));
+        	Assertions.assertThat(manager.modifyUserSuspension(OpenLDAPUserManagerTest.GUID, true)).isTrue();
+        	Assertions.assertThat(manager.modifyUserSuspension(OpenLDAPUserManagerTest.GUID, false)).isTrue();
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+        	Assertions.fail(umx.getMessage());
         }
     }
 
@@ -173,11 +173,11 @@ public class OpenLDAPUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyUserGroups(OpenLDAPUserManagerTest.GUID, new Object[] { "Service Admins" }));
+        	Assertions.assertThat(manager.modifyUserGroups(OpenLDAPUserManagerTest.GUID, new Object[] { "Service Admins" })).isTrue();
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+        	Assertions.fail(umx.getMessage());
         }
     }
 
@@ -185,12 +185,12 @@ public class OpenLDAPUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyOlrLock(OpenLDAPUserManagerTest.GUID, true));
-            Assert.assertTrue(manager.modifyOlrLock(OpenLDAPUserManagerTest.GUID, false));
+        	Assertions.assertThat(manager.modifyOlrLock(OpenLDAPUserManagerTest.GUID, true)).isTrue();
+        	Assertions.assertThat(manager.modifyOlrLock(OpenLDAPUserManagerTest.GUID, false)).isTrue();
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+        	Assertions.fail(umx.getMessage());
         }
     }
 
@@ -198,13 +198,13 @@ public class OpenLDAPUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyUserLock(OpenLDAPUserManagerTest.GUID, true, 0));
-            Assert.assertTrue(manager.modifyUserLock(OpenLDAPUserManagerTest.GUID, false, 1));
-            Assert.assertTrue(manager.modifyUserLock(OpenLDAPUserManagerTest.GUID, false, 0));
+            Assertions.assertThat(manager.modifyUserLock(OpenLDAPUserManagerTest.GUID, true, 0)).isTrue();
+            Assertions.assertThat(manager.modifyUserLock(OpenLDAPUserManagerTest.GUID, false, 1)).isTrue();
+            Assertions.assertThat(manager.modifyUserLock(OpenLDAPUserManagerTest.GUID, false, 0)).isTrue();
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+            Assertions.fail(umx.getMessage());
         }
     }
 
@@ -212,11 +212,11 @@ public class OpenLDAPUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyUserPassword(OpenLDAPUserManagerTest.GUID, RandomStringUtils.randomAlphanumeric(64)));
+            Assertions.assertThat(manager.modifyUserPassword(OpenLDAPUserManagerTest.GUID, RandomStringUtils.randomAlphanumeric(64))).isTrue();
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+            Assertions.fail(umx.getMessage());
         }
     }
 
@@ -224,16 +224,16 @@ public class OpenLDAPUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyUserSecurity(OpenLDAPUserManagerTest.GUID, new ArrayList<String>(
+            Assertions.assertThat(manager.modifyUserSecurity(OpenLDAPUserManagerTest.GUID, new ArrayList<String>(
                     Arrays.asList(
                             RandomStringUtils.randomAlphanumeric(64),
                             RandomStringUtils.randomAlphanumeric(64),
                             RandomStringUtils.randomAlphanumeric(64),
-                            RandomStringUtils.randomAlphanumeric(64)))));
+                            RandomStringUtils.randomAlphanumeric(64))))).isTrue();
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+            Assertions.fail(umx.getMessage());
         }
     }
 
@@ -241,12 +241,12 @@ public class OpenLDAPUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.modifyOtpSecret(OpenLDAPUserManagerTest.GUID, true, RandomStringUtils.randomAlphanumeric(64)));
-            Assert.assertTrue(manager.modifyOtpSecret(OpenLDAPUserManagerTest.GUID, false, null));
+            Assertions.assertThat(manager.modifyOtpSecret(OpenLDAPUserManagerTest.GUID, true, RandomStringUtils.randomAlphanumeric(64))).isTrue();
+            Assertions.assertThat(manager.modifyOtpSecret(OpenLDAPUserManagerTest.GUID, false, null)).isTrue();
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+            Assertions.fail(umx.getMessage());
         }
     }
 
@@ -254,15 +254,15 @@ public class OpenLDAPUserManagerTest
     {
         try
         {
-            Assert.assertTrue(manager.removeUserAccount(OpenLDAPUserManagerTest.GUID));
+            Assertions.assertThat(manager.removeUserAccount(OpenLDAPUserManagerTest.GUID)).isTrue();
         }
         catch (UserManagementException umx)
         {
-            Assert.fail(umx.getMessage());
+            Assertions.fail(umx.getMessage());
         }
     }
 
-    @After public void tearDown()
+    @AfterAll public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

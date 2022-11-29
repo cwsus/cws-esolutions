@@ -26,17 +26,17 @@ package com.cws.esolutions.core.utils;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.Map;
-import org.junit.Test;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Assert;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.io.FileInputStream;
+import org.junit.jupiter.api.Test;
 import javax.mail.MessagingException;
 import java.io.FileNotFoundException;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 import org.apache.commons.io.FileUtils;
 
 import com.cws.esolutions.core.CoreServicesBean;
@@ -47,7 +47,7 @@ public class EmailUtilsTest
 {
     private static final CoreServicesBean bean = CoreServicesBean.getInstance();
 
-    @Before public void setUp()
+    @BeforeAll public void setUp()
     {
         try
         {
@@ -55,7 +55,7 @@ public class EmailUtilsTest
         }
         catch (Exception ex)
         {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
 
             System.exit(-1);
         }
@@ -78,7 +78,7 @@ public class EmailUtilsTest
         }
         catch (MessagingException mx)
         {
-            Assert.fail(mx.getMessage());
+            Assertions.fail(mx.getMessage());
         }
     }
 
@@ -109,11 +109,11 @@ public class EmailUtilsTest
         }
         catch (MessagingException mx)
         {
-            Assert.fail(mx.getMessage());
+            Assertions.fail(mx.getMessage());
         }
         catch (FileNotFoundException fnfx)
         {
-            Assert.fail(fnfx.getMessage());
+            Assertions.fail(fnfx.getMessage());
         }
     }
 
@@ -134,7 +134,7 @@ public class EmailUtilsTest
         }
         catch (MessagingException mx)
         {
-            Assert.fail(mx.getMessage());
+            Assertions.fail(mx.getMessage());
         }
     }
 
@@ -147,12 +147,12 @@ public class EmailUtilsTest
         }
         catch (MessagingException mx)
         {
-            Assert.fail(mx.getMessage());
+            Assertions.fail(mx.getMessage());
         }
     }
     */
 
-    @After public void tearDown()
+    @AfterAll public void tearDown()
     {
         CoreServiceInitializer.shutdown();
     }

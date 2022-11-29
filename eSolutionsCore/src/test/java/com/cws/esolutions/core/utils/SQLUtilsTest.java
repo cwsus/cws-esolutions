@@ -26,11 +26,11 @@ package com.cws.esolutions.core.utils;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.Map;
-import org.junit.Test;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
 import java.util.HashMap;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.core.utils.exception.UtilityException;
@@ -41,7 +41,7 @@ import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
  */
 public class SQLUtilsTest {
 
-    @Before public void setUp()
+    @BeforeAll public void setUp()
     {
         try
         {
@@ -51,7 +51,7 @@ public class SQLUtilsTest {
         catch (Exception ex)
         {
             ex.printStackTrace();
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
 
             System.exit(-1);
         }
@@ -77,11 +77,11 @@ public class SQLUtilsTest {
         catch (UtilityException ux)
         {
             ux.printStackTrace();
-            Assert.fail("Exception: " + ux.getMessage() + " : " + ux);
+            Assertions.fail("Exception: " + ux.getMessage() + " : " + ux);
         }
     }
 
-    @After public void tearDown()
+    @AfterAll public void tearDown()
     {
         CoreServiceInitializer.shutdown();
     }

@@ -25,11 +25,11 @@ package com.cws.esolutions.security.dao.reference.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.junit.Test;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
 import java.sql.SQLException;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.processors.enums.SaltType;
@@ -44,7 +44,7 @@ public class UserSecurityInformationDAOImplTest
     private static final String logonSalt = RandomStringUtils.randomAlphanumeric(64);
     private static final IUserSecurityInformationDAO dao = new UserSecurityInformationDAOImpl();
 
-    @Before public void setUp()
+    @BeforeAll public void setUp()
     {
         try
         {
@@ -52,7 +52,7 @@ public class UserSecurityInformationDAOImplTest
         }
         catch (Exception e)
         {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
             System.exit(1);
         }
     }
@@ -61,11 +61,11 @@ public class UserSecurityInformationDAOImplTest
     {
         try
         {
-            Assert.assertTrue(dao.addOrUpdateSalt(UserSecurityInformationDAOImplTest.GUID, logonSalt, SaltType.LOGON.name()));
+        	Assertions.assertThat(dao.addOrUpdateSalt(UserSecurityInformationDAOImplTest.GUID, logonSalt, SaltType.LOGON.name())).isTrue();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+            Assertions.fail(sqx.getMessage());
         }
     }
 
@@ -73,11 +73,11 @@ public class UserSecurityInformationDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(dao.getUserSalt(UserSecurityInformationDAOImplTest.GUID, SaltType.LOGON.name()));
+            Assertions.assertThat(dao.getUserSalt(UserSecurityInformationDAOImplTest.GUID, SaltType.LOGON.name())).isNotEmpty();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+            Assertions.fail(sqx.getMessage());
         }
     }
 
@@ -85,11 +85,11 @@ public class UserSecurityInformationDAOImplTest
     {
         try
         {
-            Assert.assertTrue(dao.insertResetData(UserSecurityInformationDAOImplTest.GUID, resetId, null));
+        	Assertions.assertThat(dao.insertResetData(UserSecurityInformationDAOImplTest.GUID, resetId, null)).isTrue();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+        	Assertions.fail(sqx.getMessage());
         }
     }
 
@@ -97,11 +97,11 @@ public class UserSecurityInformationDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(dao.listActiveResets());
+        	Assertions.assertThat(dao.listActiveResets()).isNotEmpty();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+        	Assertions.fail(sqx.getMessage());
         }
     }
 
@@ -109,11 +109,11 @@ public class UserSecurityInformationDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(dao.getResetData("EgSEz9uTDeaCKvekHLB0PbKT9uzNj7vxm6yo8JklXnXRwNSUicI9ikx6dhpP1iGv"));
+        	Assertions.assertThat(dao.getResetData("EgSEz9uTDeaCKvekHLB0PbKT9uzNj7vxm6yo8JklXnXRwNSUicI9ikx6dhpP1iGv")).isNotEmpty();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+        	Assertions.fail(sqx.getMessage());
         }
     }
 
@@ -121,11 +121,11 @@ public class UserSecurityInformationDAOImplTest
     {
         try
         {
-            Assert.assertTrue(dao.verifySmsForReset(UserSecurityInformationDAOImplTest.GUID, resetId, smsCode));
+        	Assertions.assertThat(dao.verifySmsForReset(UserSecurityInformationDAOImplTest.GUID, resetId, smsCode)).isTrue();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+        	Assertions.fail(sqx.getMessage());
         }
     }
 
@@ -133,11 +133,11 @@ public class UserSecurityInformationDAOImplTest
     {
         try
         {
-            Assert.assertTrue(dao.removeResetData(UserSecurityInformationDAOImplTest.GUID, "EgSEz9uTDeaCKvekHLB0PbKT9uzNj7vxm6yo8JklXnXRwNSUicI9ikx6dhpP1iGv"));
+        	Assertions.assertThat(dao.removeResetData(UserSecurityInformationDAOImplTest.GUID, "EgSEz9uTDeaCKvekHLB0PbKT9uzNj7vxm6yo8JklXnXRwNSUicI9ikx6dhpP1iGv")).isTrue();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+        	Assertions.fail(sqx.getMessage());
         }
     }
 
@@ -145,15 +145,15 @@ public class UserSecurityInformationDAOImplTest
     {
         try
         {
-            Assert.assertTrue(dao.removeUserData(UserSecurityInformationDAOImplTest.GUID, null));
+        	Assertions.assertThat(dao.removeUserData(UserSecurityInformationDAOImplTest.GUID, null)).isTrue();
         }
         catch (SQLException sqx)
         {
-            Assert.fail(sqx.getMessage());
+        	Assertions.fail(sqx.getMessage());
         }
     }
 
-    @After public void tearDown()
+    @AfterAll public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

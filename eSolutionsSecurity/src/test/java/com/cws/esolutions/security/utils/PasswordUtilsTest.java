@@ -25,10 +25,10 @@ package com.cws.esolutions.security.utils;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.junit.Test;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.utils.PasswordUtils;
@@ -38,7 +38,7 @@ public class PasswordUtilsTest
 {
     private static final SecurityServiceBean bean = SecurityServiceBean.getInstance();
 
-    @Before public void setUp()
+    @BeforeAll public void setUp()
     {
         try
         {
@@ -47,7 +47,7 @@ public class PasswordUtilsTest
         catch (Exception e)
         {
             e.printStackTrace();
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
 
             System.exit(1);
         }
@@ -68,20 +68,22 @@ public class PasswordUtilsTest
                     bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
                     bean.getConfigData().getSystemConfig().getEncoding());
 
-        	Assert.assertNotNull(encrypted); // make sure we got a value back
+        	Assertions.assertThat(encrypted);
 
-            Assert.assertEquals(plainText, PasswordUtils.decryptText(encrypted, salt, //decrypt and validate
+        	String decrypted = PasswordUtils.decryptText(encrypted, salt, //decrypt and validate
                     bean.getConfigData().getSecurityConfig().getSecretAlgorithm(),
                     bean.getConfigData().getSecurityConfig().getIterations(),
                     bean.getConfigData().getSecurityConfig().getKeyBits(),
                     bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
                     bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                    bean.getConfigData().getSystemConfig().getEncoding()));
+                    bean.getConfigData().getSystemConfig().getEncoding());
+
+        	Assertions.assertThat(decrypted);
         }
         catch (Exception sx)
         {
             sx.printStackTrace();
-            Assert.fail();
+            Assertions.fail(sx.getMessage());
         }
     }
 
@@ -89,19 +91,19 @@ public class PasswordUtilsTest
     {
         try
         {
-            Assert.assertTrue(PasswordUtils.validateOtpValue(bean.getConfigData().getSecurityConfig().getOtpVariance(),
+            Assertions.assertThat(PasswordUtils.validateOtpValue(bean.getConfigData().getSecurityConfig().getOtpVariance(),
                     bean.getConfigData().getSecurityConfig().getOtpAlgorithm(),
                     bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                    "the secret", 0));
+                    "the secret", 0)).isTrue();
         }
         catch (SecurityException sx)
         {
             sx.printStackTrace();
-            Assert.fail();
+            Assertions.fail(sx.getMessage());
         }
     }
 
-    @After public void tearDown()
+    @AfterAll public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

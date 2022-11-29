@@ -21,10 +21,10 @@ package com.cws.esolutions.security.services.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.junit.Test;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
@@ -40,7 +40,7 @@ public class AccessControlServiceImplTest
     private static RequestHostInfo hostInfo = new RequestHostInfo();
     private static final IAccessControlService processor = new AccessControlServiceImpl();
 
-    @Before public void setUp()
+    @BeforeAll public void setUp()
     {
         try
         {
@@ -55,7 +55,7 @@ public class AccessControlServiceImplTest
         }
         catch (Exception ex)
         {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
 
             System.exit(-1);
         }
@@ -69,15 +69,15 @@ public class AccessControlServiceImplTest
             accessRequest.setUserAccount(userAccount);
             accessRequest.setServiceGuid("test");
 
-            Assert.assertNotNull(processor.isUserAuthorized(accessRequest));
+            Assertions.assertThat(processor.isUserAuthorized(accessRequest)).isNotNull();
         }
         catch (AccessControlServiceException acsx)
         {
-            Assert.fail(acsx.getMessage());
+            Assertions.fail(acsx.getMessage());
         }
     }
 
-    @After public void tearDown()
+    @AfterAll public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

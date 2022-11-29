@@ -25,14 +25,14 @@ package com.cws.esolutions.core.processors.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.junit.Test;
-import org.junit.After;
 import java.util.Arrays;
-import org.junit.Assert;
-import org.junit.Before;
 import java.util.Calendar;
 import java.util.ArrayList;
 import java.text.SimpleDateFormat;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.DNSEntry;
@@ -58,7 +58,7 @@ public class DNSServiceRequestImplTest
 
     private static final IDNSServiceRequestProcessor dnsService = new DNSServiceRequestProcessorImpl();
 
-    @Before public void setUp()
+    @BeforeAll public void setUp()
     {
         hostInfo.setHostAddress("junit");
         hostInfo.setHostName("junit");
@@ -74,7 +74,7 @@ public class DNSServiceRequestImplTest
         }
         catch (Exception ex)
         {
-            Assert.fail(ex.getMessage());
+            Assertions.fail(ex.getMessage());
 
             System.exit(-1);
         }
@@ -100,11 +100,11 @@ public class DNSServiceRequestImplTest
         {
             DNSServiceResponse response = dnsService.performLookup(request);
 
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
         catch (DNSServiceException dnsx)
         {
-            Assert.fail(dnsx.getMessage());
+            Assertions.fail(dnsx.getMessage());
         }
     }
 
@@ -275,15 +275,15 @@ public class DNSServiceRequestImplTest
         {
             DNSServiceResponse response = dnsService.createNewService(request);
 
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
         catch (DNSServiceException dnsx)
         {
-            Assert.fail(dnsx.getMessage());
+            Assertions.fail(dnsx.getMessage());
         }
     }
 
-    @After public void tearDown()
+    @AfterAll public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
         CoreServiceInitializer.shutdown();

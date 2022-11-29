@@ -25,10 +25,10 @@ package com.cws.esolutions.security.processors.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.junit.Test;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.api.Assertions;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
@@ -46,7 +46,7 @@ public class AuthenticationProcessorImplTest
 
     private static final IAuthenticationProcessor agentAuth = new AuthenticationProcessorImpl();
 
-    @Before public void setUp()
+    @BeforeAll public void setUp()
     {
         try
         {
@@ -58,7 +58,7 @@ public class AuthenticationProcessorImplTest
         }
         catch (Exception e)
         {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
             System.exit(1);
         }
     }
@@ -81,11 +81,11 @@ public class AuthenticationProcessorImplTest
         {
             AuthenticationResponse response = agentAuth.processAgentLogon(request);
 
-            Assert.assertEquals(response.getRequestStatus(), SecurityRequestStatus.SUCCESS);
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (AuthenticationException ax)
         {
-            Assert.fail(ax.getMessage());
+            Assertions.fail(ax.getMessage());
         }
     }
 
@@ -110,16 +110,16 @@ public class AuthenticationProcessorImplTest
         {
             AuthenticationResponse response = agentAuth.processOtpLogon(request);
 
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+            Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (AuthenticationException ax)
         {
             ax.printStackTrace();
-            Assert.fail(ax.getMessage());
+            Assertions.fail(ax.getMessage());
         }
     }
 
-    @After public void tearDown()
+    @AfterAll public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }
