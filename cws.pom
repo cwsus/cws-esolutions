@@ -6,14 +6,23 @@
     <name>CaspersBox Web Services</name>
     <groupId>com.cws</groupId>
     <artifactId>cws</artifactId>
+<<<<<<< HEAD
     <version>4.7</version>
+=======
+    <version>4.8</version>
+>>>>>>> 3123f2aa (push message here)
     <packaging>pom</packaging>
     <description>CWS SuperPom</description>
     <url>http://www.caspersbox.com/</url>
 
     <properties>
         <servlet.version>4.0.1</servlet.version>
+<<<<<<< HEAD
         <junit.version>5.8.2</junit.version>
+=======
+        <junit.version>5.9.1</junit.version>
+        <assertj.version>3.23.1</assertj.version>
+>>>>>>> 3123f2aa (push message here)
         <commons-codec.version>1.9</commons-codec.version>
         <commons-collections.version>4.0</commons-collections.version>
         <commons-logging.version>1.2</commons-logging.version>
@@ -36,6 +45,7 @@
         <commons-cli.version>1.2</commons-cli.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <jaxb-runtime.version>2.3.2</jaxb-runtime.version>
+        <!--
         <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
         <maven-assembly-plugin.version>3.1.1</maven-assembly-plugin.version>
         <maven-deploy-plugin.version>3.8.1</maven-deploy-plugin.version>
@@ -56,6 +66,7 @@
         <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
         <maven-war-plugin.version>3.2.3</maven-war-plugin.version>
+        -->
     </properties>
 
     <licenses>
