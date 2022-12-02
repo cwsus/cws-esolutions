@@ -124,6 +124,7 @@
         <res-auth>Container</res-auth>
         <res-sharing-scope>Unshareable</res-sharing-scope>
     </resource-ref>
+    <!--
     <resource-ref id="esolutionssvc">
         <description>Application Datasource</description>
         <res-ref-name>jdbc/esolutionssvc</res-ref-name>
@@ -131,6 +132,7 @@
         <res-auth>Container</res-auth>
         <res-sharing-scope>Unshareable</res-sharing-scope>
     </resource-ref>
+    -->
     <resource-ref id="cwssec">
         <description>Application Datasource</description>
         <res-ref-name>jdbc/cwssec</res-ref-name>

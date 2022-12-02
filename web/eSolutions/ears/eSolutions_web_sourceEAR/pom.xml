@@ -17,6 +17,10 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     <name>${project.artifactId}</name>
     <description>EAR file for eSolutions_web_source</description>
 
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
     <dependencies>
         <dependency>
             <groupId>eSolutions</groupId>

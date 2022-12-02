@@ -17,6 +17,10 @@
     <name>${project.artifactId}</name>
     <description>Application code for eSolutions_web_source</description>
 
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
     <dependencies>
         <!-- cws-shared -->
         <dependency>
