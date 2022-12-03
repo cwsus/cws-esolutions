@@ -33,7 +33,7 @@ import org.assertj.core.api.Assertions;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
-import com.cws.esolutions.core.listeners.CoreServiceInitializer;
+import com.cws.esolutions.core.listeners.CoreServicesInitializer;
 import com.cws.esolutions.core.processors.dto.SystemCheckRequest;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.SystemCheckResponse;
@@ -61,7 +61,7 @@ public class SystemCheckProcessorImplTest
         try
         {
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", false);
-            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, true);
+            CoreServicesInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, true);
         }
         catch (Exception ex)
         {
@@ -155,6 +155,6 @@ public class SystemCheckProcessorImplTest
     @AfterAll public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
-        CoreServiceInitializer.shutdown();
+        CoreServicesInitializer.shutdown();
     }
 }

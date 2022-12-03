@@ -38,7 +38,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
-import com.cws.esolutions.core.listeners.CoreServiceInitializer;
+import com.cws.esolutions.core.listeners.CoreServicesInitializer;
 import com.cws.esolutions.core.dao.interfaces.IServerDataDAO;
 
 public class ServerDataDAOImplTest
@@ -50,7 +50,7 @@ public class ServerDataDAOImplTest
     {
         try
         {
-            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "logging/logging.xml", true, false);
+            CoreServicesInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "logging/logging.xml", true, false);
         }
         catch (Exception ex)
         {
@@ -202,6 +202,6 @@ public class ServerDataDAOImplTest
 
     @AfterAll public void tearDown()
     {
-        CoreServiceInitializer.shutdown();
+        CoreServicesInitializer.shutdown();
     }
 }

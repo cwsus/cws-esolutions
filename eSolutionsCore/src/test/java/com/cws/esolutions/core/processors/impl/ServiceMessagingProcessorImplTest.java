@@ -31,7 +31,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.assertj.core.api.Assertions;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.core.listeners.CoreServiceInitializer;
+import com.cws.esolutions.core.listeners.CoreServicesInitializer;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
@@ -58,7 +58,7 @@ public class ServiceMessagingProcessorImplTest
         try
         {
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", false);
-            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, true);
+            CoreServicesInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, true);
         }
         catch (Exception ex)
         {
@@ -151,6 +151,6 @@ public class ServiceMessagingProcessorImplTest
     @AfterAll public void tearDown() throws Exception
     {
         SecurityServiceInitializer.shutdown();
-        CoreServiceInitializer.shutdown();
+        CoreServicesInitializer.shutdown();
     }
 }

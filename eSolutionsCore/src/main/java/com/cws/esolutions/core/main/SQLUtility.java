@@ -36,7 +36,7 @@ import org.apache.commons.cli.ParseException;
 
 import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.exception.CoreServicesException;
-import com.cws.esolutions.core.listeners.CoreServiceInitializer;
+import com.cws.esolutions.core.listeners.CoreServicesInitializer;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 /**
@@ -124,7 +124,7 @@ public class SQLUtility
         try
         {
             SecurityServiceInitializer.initializeService(securityConfiguration, securityLogging, false);
-            CoreServiceInitializer.initializeService(coreConfiguration, coreLogging, false, true);
+            CoreServicesInitializer.initializeService(coreConfiguration, coreLogging, false, true);
         }
         catch (CoreServicesException csx)
         {

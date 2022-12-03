@@ -41,7 +41,7 @@ import org.apache.commons.io.FileUtils;
 
 import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
-import com.cws.esolutions.core.listeners.CoreServiceInitializer;
+import com.cws.esolutions.core.listeners.CoreServicesInitializer;
 
 public class EmailUtilsTest
 {
@@ -51,7 +51,7 @@ public class EmailUtilsTest
     {
         try
         {
-            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", false, false);
+            CoreServicesInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", false, false);
         }
         catch (Exception ex)
         {
@@ -154,6 +154,6 @@ public class EmailUtilsTest
 
     @AfterAll public void tearDown()
     {
-        CoreServiceInitializer.shutdown();
+        CoreServicesInitializer.shutdown();
     }
 }

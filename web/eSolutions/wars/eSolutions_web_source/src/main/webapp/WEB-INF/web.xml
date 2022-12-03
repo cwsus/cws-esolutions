@@ -59,7 +59,7 @@
         <listener-class>com.cws.esolutions.security.listeners.SecurityServiceListener</listener-class>
     </listener>
     <listener>
-        <listener-class>com.cws.esolutions.core.listeners.CoreServiceListener</listener-class>
+        <listener-class>com.cws.esolutions.core.listeners.CoreServicesListener</listener-class>
     </listener>
     <listener>
         <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
@@ -124,15 +124,6 @@
         <res-auth>Container</res-auth>
         <res-sharing-scope>Unshareable</res-sharing-scope>
     </resource-ref>
-    <!--
-    <resource-ref id="esolutionssvc">
-        <description>Application Datasource</description>
-        <res-ref-name>jdbc/esolutionssvc</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
-        <res-sharing-scope>Unshareable</res-sharing-scope>
-    </resource-ref>
-    -->
     <resource-ref id="cwssec">
         <description>Application Datasource</description>
         <res-ref-name>jdbc/cwssec</res-ref-name>
@@ -212,9 +203,11 @@
             <description>Enforce SSL</description>
             <url-pattern>/*</url-pattern>
         </web-resource-collection>
-        <!--<user-data-constraint>
+        <!--
+        <user-data-constraint>
             <transport-guarantee>CONFIDENTIAL</transport-guarantee>
-        </user-data-constraint>-->
+        </user-data-constraint>
+        -->
     </security-constraint>
 
     <session-config>

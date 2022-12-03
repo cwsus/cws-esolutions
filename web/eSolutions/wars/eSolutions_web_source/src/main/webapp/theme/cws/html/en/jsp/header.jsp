@@ -85,12 +85,16 @@
     
                 for (var x = 0; x < ignoreURIs.length; x++)
                 {
-                    if (documentURI == ignoreURIs[x])
+                    if (documentURI != ignoreURIs[x])
                     {
-                        break;
+                        x++;
+
+                        continue;
                     }
 
                     setInterval(function() { window.location.href = '${pageContext.request.contextPath}/ui/auth/logout'; }, timeout);
+
+					break;
                 }
             //-->
         </script>

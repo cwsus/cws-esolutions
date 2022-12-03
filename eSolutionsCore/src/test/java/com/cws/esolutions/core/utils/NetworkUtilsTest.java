@@ -32,7 +32,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.assertj.core.api.Assertions;
 
 import com.cws.esolutions.core.utils.exception.UtilityException;
-import com.cws.esolutions.core.listeners.CoreServiceInitializer;
+import com.cws.esolutions.core.listeners.CoreServicesInitializer;
 
 public class NetworkUtilsTest
 {
@@ -40,7 +40,7 @@ public class NetworkUtilsTest
     {
         try
         {
-            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", false, false);
+            CoreServicesInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", false, false);
         }
         catch (Exception ex)
         {
@@ -78,6 +78,6 @@ public class NetworkUtilsTest
 
     @AfterAll public void tearDown()
     {
-        CoreServiceInitializer.shutdown();
+        CoreServicesInitializer.shutdown();
     }
 }

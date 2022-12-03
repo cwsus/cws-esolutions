@@ -50,7 +50,7 @@ import com.cws.esolutions.core.config.xml.CoreConfigurationData;
  * @version 1.0
  * @see javax.servlet.ServletContextListener
  */
-public class CoreServiceListener implements ServletContextListener
+public class CoreServicesListener implements ServletContextListener
 {
     private static final CoreServicesBean appBean = CoreServicesBean.getInstance();
 
@@ -66,24 +66,24 @@ public class CoreServiceListener implements ServletContextListener
         CoreConfigurationData configData = null;
 
         final ServletContext sContext = contextEvent.getServletContext();
-        final ClassLoader classLoader = CoreServiceListener.class.getClassLoader();
+        final ClassLoader classLoader = CoreServicesListener.class.getClassLoader();
 
         try
         {
             if (sContext != null)
             {
-                if (sContext.getInitParameter(CoreServiceListener.INIT_SYSLOGGING_FILE) == null)
+                if (sContext.getInitParameter(CoreServicesListener.INIT_SYSLOGGING_FILE) == null)
                 {
                     System.err.println("Logging configuration not found. No logging enabled !");
                 }
                 else
                 {
-                    DOMConfigurator.configure(Loader.getResource(sContext.getInitParameter(CoreServiceListener.INIT_SYSLOGGING_FILE)));
+                    DOMConfigurator.configure(Loader.getResource(sContext.getInitParameter(CoreServicesListener.INIT_SYSLOGGING_FILE)));
                 }
 
-                if (sContext.getInitParameter(CoreServiceListener.INIT_SYSAPP_FILE) != null)
+                if (sContext.getInitParameter(CoreServicesListener.INIT_SYSAPP_FILE) != null)
                 {
-                    xmlURL = classLoader.getResource(sContext.getInitParameter(CoreServiceListener.INIT_SYSAPP_FILE));
+                    xmlURL = classLoader.getResource(sContext.getInitParameter(CoreServicesListener.INIT_SYSAPP_FILE));
                 }
                 else
                 {
@@ -97,11 +97,11 @@ public class CoreServiceListener implements ServletContextListener
                     marshaller = context.createUnmarshaller();
                     configData = (CoreConfigurationData) marshaller.unmarshal(xmlURL);
 
-                    CoreServiceListener.appBean.setConfigData(configData);
+                    CoreServicesListener.appBean.setConfigData(configData);
 
                     // set up the resource connections
                     Context initContext = new InitialContext();
-                    Context envContext = (Context) initContext.lookup(CoreServiceListener.DS_CONTEXT);
+                    Context envContext = (Context) initContext.lookup(CoreServicesListener.DS_CONTEXT);
 
                     Map<String, DataSource> dsMap = new HashMap<String, DataSource>();
 
@@ -110,7 +110,7 @@ public class CoreServiceListener implements ServletContextListener
                         dsMap.put(mgr.getDsName(), (DataSource) envContext.lookup(mgr.getDataSource()));
                     }
 
-                    CoreServiceListener.appBean.setDataSources(dsMap);
+                    CoreServicesListener.appBean.setDataSources(dsMap);
                 }
             }
             else

@@ -55,9 +55,9 @@ import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
  * @author cws-khuntly
  * @version 1.0
  */
-public class CoreServiceInitializer
+public class CoreServicesInitializer
 {
-    private static final String CNAME = CoreServiceInitializer.class.getName();
+    private static final String CNAME = CoreServicesInitializer.class.getName();
     private static final CoreServicesBean appBean = CoreServicesBean.getInstance();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
@@ -113,7 +113,7 @@ public class CoreServiceInitializer
                 }
             }
 
-            xmlURL = CoreServiceInitializer.class.getClassLoader().getResource(serviceConfig);
+            xmlURL = CoreServicesInitializer.class.getClassLoader().getResource(serviceConfig);
 
             if (xmlURL == null)
             {
@@ -125,11 +125,11 @@ public class CoreServiceInitializer
             marshaller = context.createUnmarshaller();
             configData = (CoreConfigurationData) marshaller.unmarshal(xmlURL);
 
-            CoreServiceInitializer.appBean.setConfigData(configData);
+            CoreServicesInitializer.appBean.setConfigData(configData);
 
             if (startConnections)
             {
-                Map<String, DataSource> dsMap = CoreServiceInitializer.appBean.getDataSources();
+                Map<String, DataSource> dsMap = CoreServicesInitializer.appBean.getDataSources();
 
                 if (DEBUG)
                 {
@@ -179,7 +179,7 @@ public class CoreServiceInitializer
                     DEBUGGER.debug("dsMap: {}", dsMap);
                 }
 
-                CoreServiceInitializer.appBean.setDataSources(dsMap);
+                CoreServicesInitializer.appBean.setDataSources(dsMap);
             }
         }
         catch (JAXBException jx)
@@ -199,14 +199,14 @@ public class CoreServiceInitializer
      */
     public static void shutdown()
     {
-        final String methodName = CoreServiceInitializer.CNAME + "#shutdown()";
+        final String methodName = CoreServicesInitializer.CNAME + "#shutdown()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
         }
 
-        final Map<String, DataSource> datasources = CoreServiceInitializer.appBean.getDataSources();
+        final Map<String, DataSource> datasources = CoreServicesInitializer.appBean.getDataSources();
 
         try
         {

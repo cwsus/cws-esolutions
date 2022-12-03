@@ -38,7 +38,7 @@ import com.cws.esolutions.core.processors.enums.ServiceType;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
 import com.cws.esolutions.core.dao.interfaces.IServiceDataDAO;
-import com.cws.esolutions.core.listeners.CoreServiceInitializer;
+import com.cws.esolutions.core.listeners.CoreServicesInitializer;
 import com.cws.esolutions.core.processors.enums.NetworkPartition;
 
 public class ServiceDataDAOImplTest
@@ -51,7 +51,7 @@ public class ServiceDataDAOImplTest
     {
         try
         {
-            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "logging/logging.xml", true, false);
+            CoreServicesInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "logging/logging.xml", true, false);
         }
         catch (Exception ex)
         {
@@ -241,6 +241,6 @@ public class ServiceDataDAOImplTest
 
     @AfterAll public void tearDown()
     {
-        CoreServiceInitializer.shutdown();
+        CoreServicesInitializer.shutdown();
     }
 }

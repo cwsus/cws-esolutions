@@ -50,7 +50,7 @@ import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.exception.CoreServicesException;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
-import com.cws.esolutions.core.listeners.CoreServiceInitializer;
+import com.cws.esolutions.core.listeners.CoreServicesInitializer;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
@@ -279,7 +279,7 @@ public final class NetworkUtility
             }
 
             SecurityServiceInitializer.initializeService(securityConfiguration, securityLogging, false);
-            CoreServiceInitializer.initializeService(coreConfiguration, coreLogging, false, true);
+            CoreServicesInitializer.initializeService(coreConfiguration, coreLogging, false, true);
 
             final CoreConfigurationData coreConfigData = NetworkUtility.appBean.getConfigData();
             final SecurityConfigurationData secConfigData = NetworkUtility.secBean.getConfigData();

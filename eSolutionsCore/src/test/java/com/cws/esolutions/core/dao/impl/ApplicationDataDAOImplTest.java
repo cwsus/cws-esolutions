@@ -34,7 +34,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.assertj.core.api.Assertions;
 
-import com.cws.esolutions.core.listeners.CoreServiceInitializer;
+import com.cws.esolutions.core.listeners.CoreServicesInitializer;
 import com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 /**
@@ -53,7 +53,7 @@ public class ApplicationDataDAOImplTest
         try
         {
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
-            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, true);
+            CoreServicesInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, true);
         }
         catch (Exception ex)
         {
@@ -161,6 +161,6 @@ public class ApplicationDataDAOImplTest
 
     @AfterAll public void tearDown()
     {
-        CoreServiceInitializer.shutdown();
+        CoreServicesInitializer.shutdown();
     }
 }

@@ -43,6 +43,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 import javax.servlet.UnavailableException;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.annotation.WebInitParam;
+
 import java.util.MissingResourceException;
 import org.apache.commons.lang.StringUtils;
 import javax.servlet.http.HttpServletRequest;
@@ -54,6 +57,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 /**
  * @see javax.servlet.Filter
  */
+@WebFilter(filterName = "SSLEnforcementFilter", urlPatterns = {"/*"}, initParams = @WebInitParam(name = "filter-config", value = "config/FilterConfig"))
 public class SSLEnforcementFilter implements Filter
 {
     private String[] ignoreURIs = null;

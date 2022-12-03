@@ -27,10 +27,8 @@ package com.cws.esolutions.security.dao.reference.factory;
  */
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.lang.reflect.InvocationTargetException;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
-import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 /**
  * Interface for the Application Data DAO layer. Allows access

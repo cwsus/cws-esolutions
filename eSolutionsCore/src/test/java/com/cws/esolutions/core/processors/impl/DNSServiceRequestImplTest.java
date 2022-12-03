@@ -41,7 +41,7 @@ import com.cws.esolutions.core.processors.enums.DNSRecordType;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.core.processors.enums.DNSRecordClass;
 import com.cws.esolutions.core.processors.enums.DNSRequestType;
-import com.cws.esolutions.core.listeners.CoreServiceInitializer;
+import com.cws.esolutions.core.listeners.CoreServicesInitializer;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.core.processors.dto.DNSServiceRequest;
 import com.cws.esolutions.core.processors.dto.DNSServiceResponse;
@@ -70,7 +70,7 @@ public class DNSServiceRequestImplTest
         try
         {
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", false);
-            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, false);
+            CoreServicesInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, false);
         }
         catch (Exception ex)
         {
@@ -286,6 +286,6 @@ public class DNSServiceRequestImplTest
     @AfterAll public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
-        CoreServiceInitializer.shutdown();
+        CoreServicesInitializer.shutdown();
     }
 }
