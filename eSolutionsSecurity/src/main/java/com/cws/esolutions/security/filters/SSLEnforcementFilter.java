@@ -57,7 +57,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 /**
  * @see javax.servlet.Filter
  */
-@WebFilter(filterName = "SSLEnforcementFilter", urlPatterns = {"/*"}, initParams = @WebInitParam(name = "filter-config", value = "config/FilterConfig"))
+@WebFilter(filterName = "SSLEnforcementFilter", urlPatterns = {"/*"}, initParams = @WebInitParam(name = "filter-config", value = "SecurityService/filters/SSLEnforcementFilter"))
 public class SSLEnforcementFilter implements Filter
 {
     private String[] ignoreURIs = null;

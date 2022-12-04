@@ -2,14 +2,14 @@
 <!DOCTYPE log4j:configuration SYSTEM "./log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
     <appender name="esolutionssvc-error" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${LOG_ROOT}/esolutionssvc-error.log" />
+        <param name="File" value="${ESOLUTIONS_LOG_ROOT}/esolutionssvc-error.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread: %t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
         </layout>
     </appender>
     <appender name="esolutionssvc-debug" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${LOG_ROOT}/esolutionssvc-debug.log" />
+        <param name="File" value="${ESOLUTIONS_LOG_ROOT}/esolutionssvc-debug.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
         <param name="Threshold" value="DEBUG" />
         <layout class="org.apache.log4j.PatternLayout">
@@ -24,42 +24,42 @@
 
     <!-- third party appenders -->
     <appender name="apache-commons" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${LOG_ROOT}/apache-commons.log" />
+        <param name="File" value="${ESOLUTIONS_LOG_ROOT}/apache-commons.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread: %t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
         </layout>
     </appender>
     <appender name="quartz" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${LOG_ROOT}/quartz.log" />
+        <param name="File" value="${ESOLUTIONS_LOG_ROOT}/quartz.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread: %t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
         </layout>
     </appender>
     <appender name="virtualbox" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${LOG_ROOT}/virtualbox.log" />
+        <param name="File" value="${ESOLUTIONS_LOG_ROOT}/virtualbox.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread: %t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
         </layout>
     </appender>
     <appender name="j2ssh" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${LOG_ROOT}/j2ssh.log" />
+        <param name="File" value="${ESOLUTIONS_LOG_ROOT}/j2ssh.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread: %t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
         </layout>
     </appender>
     <appender name="jsch" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${LOG_ROOT}/jsch.log" />
+        <param name="File" value="${ESOLUTIONS_LOG_ROOT}/jsch.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread: %t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
         </layout>
     </appender>
     <appender name="xbill" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${LOG_ROOT}/xbill.log" />
+        <param name="File" value="${ESOLUTIONS_LOG_ROOT}/xbill.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread: %t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />

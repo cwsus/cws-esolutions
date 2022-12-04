@@ -76,6 +76,20 @@
         <display-name>SessionFixationFilter</display-name>
         <filter-name>SessionFixationFilter</filter-name>
         <filter-class>com.cws.esolutions.security.filters.SessionFixationFilter</filter-class>
+        <init-param>
+        	<param-name>filter-config</param-name>
+        	<param-value>SecurityService/filters/SessionAuthenticationFilter</param-value>
+        </init-param>
+    </filter>
+    <filter id="SSLEnforcementFilter">
+        <description>SSL Enforcement Filter</description>
+        <display-name>SSLEnforcementFilter</display-name>
+        <filter-name>SSLEnforcementFilter</filter-name>
+        <filter-class>com.cws.esolutions.security.filters.SSLEnforcementFilter</filter-class>
+        <init-param>
+        	<param-name>filter-config</param-name>
+        	<param-value>SecurityService/filters/SSLEnforcementFilter</param-value>
+        </init-param>
     </filter>
     <filter id="SpringEncodingFilter">
         <description>Spring Encoding Filter</description>
@@ -139,6 +153,7 @@
         <res-sharing-scope>Unshareable</res-sharing-scope>
     </resource-ref>
 
+	<!--
     <error-page>
         <error-code>400</error-code>
         <location>/theme/cws/html/en/jsp/errHandler.jsp</location>
@@ -171,6 +186,7 @@
         <exception-type>java.lang.Exception</exception-type>
         <location>/theme/cws/html/en/jsp/errHandler.jsp</location>
     </error-page>
+    -->
 
     <welcome-file-list>
         <welcome-file>index.htm</welcome-file>

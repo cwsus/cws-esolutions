@@ -104,7 +104,7 @@
     <resource-config>
         <DataSourceManager>
             <dsName>ApplicationDataSource</dsName>
-            <datasource>jdbc/esolutionssvc</datasource>
+            <datasource>jdbc/esolutions</datasource>
         </DataSourceManager>
     </resource-config>
 </configuration>

@@ -16,7 +16,7 @@ body
     padding: 0;
     font: 70%/1.5em  Arial, Helvetica, sans-serif;
     color: #333;
-    background: #FFF url("/html/eSolutions/img/bg.gif") repeat-x;
+    background: #FFF url("/static/img/bg.gif") repeat-x;
     text-align: center;
 }
 
@@ -117,7 +117,7 @@ blockquote
 {
     margin: 10px;
     padding: 0 0 0 32px;
-    background: #FAFAFA url("/html/eSolutions/img/quote.gif") no-repeat 5px 10px !important;
+    background: #FAFAFA url("/static/img/quote.gif") no-repeat 5px 10px !important;
     background-position: 8px 10px;
     border: 1px solid #f2f2f2;
     border-left: 4px solid #FF9966;
@@ -193,7 +193,7 @@ input.submit
     font: bolder 12px;
     border: 1px solid #CCC;
     padding: 2px 3px;
-    background: #FFF url("/html/eSolutions/img/btn.gif") top center repeat-x;
+    background: #FFF url("/static/img/btn.gif") top center repeat-x;
     color: #75A54B;
     width: 80px;
 }
@@ -271,7 +271,7 @@ table td, table th
 #menu
 {
     clear: both;
-    background: #FF9966 url("/html/eSolutions/img/menubg.gif") repeat-x;
+    background: #FF9966 url("/static/img/menubg.gif") repeat-x;
     height: 30px;
     margin: 0;
     font: bolder 1.2em/30px;
@@ -301,13 +301,13 @@ table td, table th
 #menu ul li a:hover
 {
     color: #333;
-    background: url("/html/eSolutions/img/menu-hover-bg.gif") repeat-x;
+    background: url("/static/img/menu-hover-bg.gif") repeat-x;
 }
 
 #menu ul li#current a
 {
     color: #333;
-    background: url("/html/eSolutions/img/menu-current-bg.gif") repeat-x;
+    background: url("/static/img/menu-current-bg.gif") repeat-x;
 }
 
 /* sidebar */
@@ -332,7 +332,7 @@ table td, table th
 #sidebar ul.sidemenu li
 {
     border-bottom: 1px solid #EFF0F1;
-    background: url("/html/eSolutions/img/arrow.gif") no-repeat 3px 6px;
+    background: url("/static/img/arrow.gif") no-repeat 3px 6px;
     padding: 2px 5px 2px 20px;
 }
 
@@ -371,21 +371,21 @@ table td, table th
 
 .post-footer .date
 {
-    background: url("/html/eSolutions/img/clock.gif") no-repeat left center;
+    background: url("/static/img/clock.gif") no-repeat left center;
     padding-left: 20px;
     margin: 0 10px 0 5px;
 }
 
 .post-footer .comments
 {
-    background: url("/html/eSolutions/img/comment.gif") no-repeat left center;
+    background: url("/static/img/comment.gif") no-repeat left center;
     padding-left: 20px;
     margin: 0 10px 0 5px;
 }
 
 .post-footer .readmore
 {
-    background: url("/html/eSolutions/img/page.gif") no-repeat left center;
+    background: url("/static/img/page.gif") no-repeat left center;
     padding-left: 20px;
     margin: 0 10px 0 5px;
 }
@@ -396,7 +396,7 @@ table td, table th
     clear: both;
     color: #666666;
     padding: 0;
-    background: #FFF url("/html/eSolutions/img/footerbg.gif") repeat-x;
+    background: #FFF url("/static/img/footerbg.gif") repeat-x;
     height: 60px
 }
 
