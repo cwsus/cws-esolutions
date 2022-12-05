@@ -33,6 +33,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.utils.PasswordUtils;
+import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.security.processors.enums.SaltType;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.security.processors.enums.AuditType;
@@ -98,14 +99,22 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 return response;
             }
 
-            String userSalt = userSec.getUserSalt(authUser.getUsername(), SaltType.LOGON.name());
+            if (DEBUG)
+            {
+            	for (int x = 0; x < userInfo.size(); x++)
+            	{
+            		DEBUGGER.debug("UserInfo: {}", (Object) userInfo.get(x));
+            	}
+            }
+
+            String userSalt = userSec.getUserSalt(userInfo.get(0)[0], SaltType.LOGON.name());
 
             if (StringUtils.isEmpty(userSalt))
             {
                 throw new AuthenticationException("Unable to obtain configured user salt. Cannot continue");
             }
 
-            List<Object> authObject = authenticator.performLogon(authUser.getUsername(),
+            List<Object> authObject = authenticator.performLogon(userInfo.get(0)[0], authUser.getUsername(),
             		userSalt, authSec.getPassword());
 
             if (DEBUG)
@@ -118,7 +127,15 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 throw new AuthenticationException("Authentication processing failed. Cannot continue.");
             }
 
-            if (((Integer) authObject.get(3) >= secConfig.getMaxAttempts()) || ((Boolean) authObject.get(13)))
+            if (DEBUG)
+            {
+            	for (Object entry : authObject)
+            	{
+            		DEBUGGER.debug("Entry: {}", entry);
+            	}
+            }
+
+            if ((Integer) authObject.get(6) >= secConfig.getMaxAttempts())
             {
                 // user locked
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
@@ -127,6 +144,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             }
 
             // if the user has enabled otp auth, do it here
+            // TODO
             if (StringUtils.isNotEmpty((String) authObject.get(2)))
             {
                 userAccount = new UserAccount();
@@ -141,21 +159,21 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             }
 
             userAccount = new UserAccount();
-            userAccount.setGuid((String) authObject.get(0));
-            userAccount.setUsername((String) authObject.get(1));
-            userAccount.setFailedCount((Integer) authObject.get(3));
-            userAccount.setLastLogin((long) authObject.get(4));
-            userAccount.setExpiryDate((long) authObject.get(5));
-            userAccount.setSurname((String) authObject.get(6));
-            userAccount.setGivenName((String) authObject.get(7));
-            userAccount.setDisplayName((String) authObject.get(8));
-            userAccount.setEmailAddr((String) authObject.get(9));
-            userAccount.setPagerNumber((String) authObject.get(10));
-            userAccount.setTelephoneNumber((String) authObject.get(11));
-            userAccount.setGroups(StringUtils.split((String) authObject.get(12), ","));
-            userAccount.setSuspended((Boolean) authObject.get(13));
-            userAccount.setOlrSetup((Boolean) authObject.get(14));
-            userAccount.setOlrLocked((Boolean) authObject.get(15));
+            userAccount.setGuid((String) authObject.get(0)); // CN
+            userAccount.setUsername((String) authObject.get(1)); // UID
+            userAccount.setGivenName((String) authObject.get(2)); // SN
+            userAccount.setSurname((String) authObject.get(3)); // givenName
+            userAccount.setDisplayName((String) authObject.get(4)); // displayName
+            userAccount.setUserRole(SecurityUserRole.valueOf((String) authObject.get(5))); //cwsrole
+            userAccount.setFailedCount((int) authObject.get(6)); // cwsfailedpwdcount
+            userAccount.setLastLogin((long) authObject.get(7)); // cwslastlogin
+            userAccount.setExpiryDate((long) authObject.get(8)); // cwsexpirydate
+            userAccount.setSuspended((boolean) authObject.get(9)); // cwsissuspended
+            userAccount.setOlrSetup((boolean) authObject.get(10)); // cwsisolrsetup
+            userAccount.setOlrLocked((boolean) authObject.get(11)); // cwsisolrlocked
+            userAccount.setAccepted((boolean) authObject.get(12)); // cwsistcaccepted
+            userAccount.setTelephoneNumber((String) authObject.get(13)); // telephoneNumber
+            userAccount.setPagerNumber((String) authObject.get(14)); // pager
 
             if (DEBUG)
             {

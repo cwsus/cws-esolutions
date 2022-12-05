@@ -27,6 +27,7 @@ package com.cws.esolutions.security.dao.userauth.interfaces;
  */
 import java.util.List;
 import org.slf4j.Logger;
+import javax.sql.DataSource;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.SecurityServiceBean;
@@ -48,6 +49,7 @@ import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException
 public interface Authenticator
 {
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
+    static final DataSource dataSource = (DataSource) svcBean.getAuthDataSource();
     static final RepositoryConfig repoConfig = svcBean.getConfigData().getRepoConfig();
     static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
     static final UserReturningAttributes userAttributes = repoConfig.getUserAttributes();
@@ -66,13 +68,14 @@ public interface Authenticator
      * necessary flags are sent back to the frontend for further
      * handling.
      *
+     * @param guid - The user's UUID
      * @param userId - the username to validate data against
      * @param salt - The salt for the password to be hashed against
      * @param password - the password to validate data against
      * @return List - The account information for the authenticated user
      * @throws AuthenticatorException {@link com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException} if an exception occurs during processing
      */
-    List<Object> performLogon(final String userId, final String salt, final String password) throws AuthenticatorException;
+    List<Object> performLogon(final String guid, final String userId, final String salt, final String password) throws AuthenticatorException;
 
     /**
      * Processes an agent logon request via an LDAP user datastore. If the

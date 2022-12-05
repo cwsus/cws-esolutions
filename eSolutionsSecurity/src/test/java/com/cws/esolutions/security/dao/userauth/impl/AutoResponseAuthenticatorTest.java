@@ -58,7 +58,7 @@ public class AutoResponseAuthenticatorTest {
 
 		try
 		{
-			authenticator.performLogon("khuntly", "some random salt", "mypass");
+			authenticator.performLogon("0f645ed1-a8bb-4d5c-b4d6-2276f1dba592", "khuntly", "some random salt", "mypass");
 		}
 		catch (Exception ex)
 		{

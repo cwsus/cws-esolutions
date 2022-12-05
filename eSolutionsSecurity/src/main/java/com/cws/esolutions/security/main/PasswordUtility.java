@@ -84,6 +84,7 @@ public class PasswordUtility
     {
     	System.out.println("instantiate");
     }
+
     static
     {
         Option entryNameOption = OptionBuilder.withLongOpt("entry")

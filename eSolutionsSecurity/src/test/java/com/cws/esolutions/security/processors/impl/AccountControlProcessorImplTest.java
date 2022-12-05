@@ -39,6 +39,7 @@ import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
+import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 /**
@@ -65,7 +66,6 @@ public class AccountControlProcessorImplTest
             userAccount.setGroups(new String[] { "SiteAdmin" });
             userAccount.setUserRole(SecurityUserRole.SITE_ADMIN);
 
-            testAccount.setGuid("860e873f-8593-4c43-9ec6-a301e0e9840d");
             testAccount.setUsername("junit-test");
             testAccount.setSuspended(false);
             testAccount.setSurname("test");
@@ -86,12 +86,16 @@ public class AccountControlProcessorImplTest
 
     @Test public void createNewUser()
     {
+        AuthenticationData authSec = new AuthenticationData();
+        authSec.setPassword("1508Hailey27*");
+
         AccountControlRequest request = new AccountControlRequest();
         request.setHostInfo(hostInfo);
         request.setRequestor(userAccount);
         request.setUserAccount(testAccount);
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setApplicationName("eSolutions");
+        request.setUserSecurity(authSec);
 
         try
         {

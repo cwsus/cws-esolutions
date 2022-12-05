@@ -45,7 +45,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 public interface ISecurityReferenceDAO
 {
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
-    static final DataSource dataSource = svcBean.getDataSources().get(SecurityServiceConstants.INIT_SECURITYDS_MANAGER);
+    static final DataSource dataSource = (DataSource) svcBean.getAuthDataSource();
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

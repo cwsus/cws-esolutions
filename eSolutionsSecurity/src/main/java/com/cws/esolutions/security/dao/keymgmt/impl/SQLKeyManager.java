@@ -27,7 +27,6 @@ package com.cws.esolutions.security.dao.keymgmt.impl;
  */
 import java.sql.ResultSet;
 import java.sql.Connection;
-import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.security.KeyPair;
 import java.security.PublicKey;
@@ -49,7 +48,6 @@ import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
 public class SQLKeyManager implements KeyManager
 {
     private static final String CNAME = SQLKeyManager.class.getName();
-    private static final DataSource dataSource = (DataSource) svcBean.getAuthDataSource();
 
     /**
      * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#createKeys(java.lang.String)

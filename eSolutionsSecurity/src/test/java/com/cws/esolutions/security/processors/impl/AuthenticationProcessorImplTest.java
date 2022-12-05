@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.TestInstance;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
@@ -40,6 +41,7 @@ import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AuthenticationProcessorImplTest
 {
     private static RequestHostInfo hostInfo = null;
@@ -58,7 +60,7 @@ public class AuthenticationProcessorImplTest
         }
         catch (Exception e)
         {
-            Assertions.fail(e.getMessage());
+        	Assertions.fail(e.getMessage());
             System.exit(1);
         }
     }
@@ -66,14 +68,14 @@ public class AuthenticationProcessorImplTest
     @Test public void processAgentLogon()
     {
         UserAccount account = new UserAccount();
-        account.setUsername("junit");
+        account.setUsername("junit-test");
         account.setDisplayName("JUnit Test Account");
         account.setEmailAddr("webdev@caspersbox.com");
         account.setGivenName("JUnit");
         account.setSurname("JUnit");
 
         AuthenticationData userSecurity = new AuthenticationData();
-        userSecurity.setPassword("junit");
+        userSecurity.setPassword("Dcs5/bktmt1aEeVZn/kvKSrSP+AdS3q/E56E8Gfq23vjhcJIPenmvlLhrD+PvTTfLChqudUeK/biHp/nKl2/GA==");
 
         AuthenticationRequest request = new AuthenticationRequest();
         request.setApplicationName("esolutions");

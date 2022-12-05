@@ -30,7 +30,6 @@ import java.util.Arrays;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.Connection;
-import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.security.KeyPair;
 import java.security.PublicKey;
@@ -57,7 +56,6 @@ import com.unboundid.ldap.sdk.ModificationType;
 import com.unboundid.ldap.sdk.LDAPConnectionPool;
 import java.security.spec.InvalidKeySpecException;
 
-import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
 /**
@@ -66,7 +64,6 @@ import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
 public class LDAPKeyManager implements KeyManager
 {
     private static final String CNAME = LDAPKeyManager.class.getName();
-    private static final DataSource dataSource = svcBean.getDataSources().get(SecurityServiceConstants.INIT_SECURITYDS_MANAGER);
 
     /**
      * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#createKeys(java.lang.String)

@@ -30,9 +30,6 @@ import java.util.Arrays;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.Connection;
-
-import javax.sql.DataSource;
-
 import java.sql.SQLException;
 import java.sql.CallableStatement;
 
@@ -46,18 +43,18 @@ import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException
 public class SQLAuthenticator implements Authenticator
 {
     private static final String CNAME = SQLAuthenticator.class.getName();
-    private static final DataSource dataSource = (DataSource) svcBean.getAuthDataSource();
 
     /**
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String)
      */
-    public synchronized List<Object> performLogon(final String username, final String salt, final String password) throws AuthenticatorException
+    public synchronized List<Object> performLogon(final String userGuid, final String username, final String salt, final String password) throws AuthenticatorException
     {
-        final String methodName = SQLAuthenticator.CNAME + "#performLogon(final String user, final String salt, final String password) throws AuthenticatorException";
+        final String methodName = SQLAuthenticator.CNAME + "#performLogon(final String userGuid, final String userGuid, final String user, final String salt, final String password) throws AuthenticatorException";
         
         if(DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("String: {}", userGuid);
             DEBUGGER.debug("String: {}", username);
         }
 
@@ -68,7 +65,7 @@ public class SQLAuthenticator implements Authenticator
 
         try
         {
-            sqlConn = SQLAuthenticator.dataSource.getConnection();
+            sqlConn = dataSource.getConnection();
 
             if (DEBUG)
             {
@@ -82,9 +79,10 @@ public class SQLAuthenticator implements Authenticator
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL performAuthentication(?, ?)}");
-            stmt.setString(1, username); // username
-            stmt.setString(2, password); // password
+            stmt = sqlConn.prepareCall("{CALL performAuthentication(?, ?, ?)}");
+            stmt.setString(1, userGuid); // guid
+            stmt.setString(2, username); // username
+            stmt.setString(3, password); // password
 
             if (DEBUG)
             {
@@ -107,6 +105,7 @@ public class SQLAuthenticator implements Authenticator
             {
                 resultSet.first();
 
+                int x = 0;
                 userAccount = new ArrayList<Object>();
 
                 for (String returningAttribute : userAttributes.getReturningAttributes())
@@ -116,7 +115,9 @@ public class SQLAuthenticator implements Authenticator
                         DEBUGGER.debug("returningAttribute: {}", returningAttribute);
                     }
 
-                    userAccount.add(resultSet.getString(returningAttribute));
+                    System.out.println("Adding attribute :" + x + " " + returningAttribute);
+                    userAccount.add(resultSet.getObject(returningAttribute));
+                    x++;
                 }
 
                 if (DEBUG)

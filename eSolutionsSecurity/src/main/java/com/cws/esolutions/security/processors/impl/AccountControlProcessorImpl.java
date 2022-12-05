@@ -203,20 +203,32 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if (isSaltInserted)
             {
-                String newPassword = PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()), newUserSalt,
-                        secConfig.getAuthAlgorithm(), secConfig.getIterations(),
-                        secBean.getConfigData().getSystemConfig().getEncoding());
+            	String newPassword = null;
 
+            	if (StringUtils.isEmpty(userSecurity.getPassword()))
+            	{
+                    newPassword = PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()), newUserSalt,
+                            secConfig.getAuthAlgorithm(), secConfig.getIterations(),
+                            secBean.getConfigData().getSystemConfig().getEncoding());	
+            	}
+            	else
+            	{
+                    newPassword = PasswordUtils.encryptText(userSecurity.getPassword(), newUserSalt,
+                            secConfig.getAuthAlgorithm(), secConfig.getIterations(),
+                            secBean.getConfigData().getSystemConfig().getEncoding());
+            	}
+
+                // default to lock the account (we need to TODO this)
                 List<String> accountData = new ArrayList<String>(
                     Arrays.asList(
-                            userGuid,
-                            userAccount.getUsername(),
-                            newPassword,
-                            String.valueOf(userAccount.isSuspended()),
+                    		userAccount.getUsername(),
+                    		newPassword,
+                    		String.valueOf(userAccount.getUserRole()),
                             userAccount.getSurname(),
                             userAccount.getGivenName(),
-                            userAccount.getGivenName() + " " + userAccount.getSurname(), 
-                            userAccount.getEmailAddr()));
+                            userAccount.getEmailAddr(),
+                            userGuid,
+                            userAccount.getGivenName() + " " + userAccount.getSurname()));
 
                 if (DEBUG)
                 {

@@ -81,9 +81,8 @@ public class SQLUserManager implements UserManager
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{ CALL getUserByAttribute(?, ?) }");
+            stmt = sqlConn.prepareCall("{ CALL getUserByAttribute(?) }");
             stmt.setString(1, userId);
-            stmt.setInt(2, 0);
 
             if (DEBUG)
             {
@@ -185,14 +184,14 @@ public class SQLUserManager implements UserManager
             sqlConn.setAutoCommit(true);
 
             stmt = sqlConn.prepareCall("{ CALL addUserAccount(?, ?, ?, ?, ?, ?, ?, ?) }");
-            stmt.setString(1, userAccount.get(0)); // guid
-            stmt.setString(2, userAccount.get(1)); // username
-            stmt.setString(3, userAccount.get(2)); // password
-            stmt.setBoolean(4, Boolean.valueOf(userAccount.get(3))); // suspended
-            stmt.setString(5, userAccount.get(4)); // surname
-            stmt.setString(6, userAccount.get(5)); // givenname
-            stmt.setString(7, userAccount.get(6)); // displayname
-            stmt.setString(8, userAccount.get(7)); // email
+            stmt.setString(1, userAccount.get(0)); // username
+            stmt.setString(2, userAccount.get(1)); // password
+            stmt.setString(3, userAccount.get(2)); // cwsRole
+            stmt.setString(4, userAccount.get(3)); // surname
+            stmt.setString(5, userAccount.get(4)); // givenname
+            stmt.setString(6, userAccount.get(5)); // email
+            stmt.setString(7, userAccount.get(6)); // commonName (CN)
+            stmt.setString(8, userAccount.get(7)); // displayName
 
             if (DEBUG)
             {
@@ -338,9 +337,8 @@ public class SQLUserManager implements UserManager
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{ CALL getUserByAttribute(?, ?) }");
+            stmt = sqlConn.prepareCall("{ CALL getUserByAttribute(?) }");
             stmt.setString(1, searchData);
-            stmt.setInt(2, 0);
 
             if (DEBUG)
             {

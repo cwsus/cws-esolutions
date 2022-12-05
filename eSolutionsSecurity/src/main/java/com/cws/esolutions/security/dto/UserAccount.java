@@ -27,6 +27,7 @@ package com.cws.esolutions.security.dto;
  */
 import org.slf4j.Logger;
 import java.io.Serializable;
+import java.security.KeyPair;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +49,8 @@ public class UserAccount implements Serializable
     private String[] groups = null;
     private String emailAddr = null;
     private String givenName = null;
+    private KeyPair userKeys = null;
+    private boolean accepted = false;
     private boolean olrSetup = false;
     private String managerName = null;
     private String managerGuid = null;
@@ -176,6 +179,22 @@ public class UserAccount implements Serializable
         }
 
         this.olrSetup = value;
+    }
+
+    /**
+     * @param value - The OLR setup flag associated with the account
+     */
+    public final void setAccepted(final boolean value)
+    {
+        final String methodName = UserAccount.CNAME + "#setAccepted(final boolean value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.accepted = value;
     }
 
     /**
@@ -371,6 +390,22 @@ public class UserAccount implements Serializable
     }
 
     /**
+     * @param value - The SecurityUserRole for the provided user
+     */
+    public final void setUserKeys(final KeyPair value)
+    {
+        final String methodName = UserAccount.CNAME + "#setUserKeys(final KeyPair value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.userKeys = value;
+    }
+
+    /**
      * @return The {@link com.cws.esolutions.security.processors.enums.LoginStatus} for the account
      */
     public final LoginStatus getStatus()
@@ -469,22 +504,6 @@ public class UserAccount implements Serializable
     /**
      * @return The OLR lockout flag associated with the account
      */
-    public final boolean getOlrLocked()
-    {
-        final String methodName = UserAccount.CNAME + "#getOlrLocked()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.olrLocked);
-        }
-
-        return this.olrLocked;
-    }
-
-    /**
-     * @return The OLR lockout flag associated with the account
-     */
     public final boolean isOlrLocked()
     {
         final String methodName = UserAccount.CNAME + "#isOlrLocked()";
@@ -501,9 +520,9 @@ public class UserAccount implements Serializable
     /**
      * @return The OLR setup flag associated with the account
      */
-    public final boolean getOlrSetup()
+    public final boolean isOlrSetup()
     {
-        final String methodName = UserAccount.CNAME + "#getOlrSetup()";
+        final String methodName = UserAccount.CNAME + "#isOlrSetup()";
 
         if (DEBUG)
         {
@@ -528,6 +547,22 @@ public class UserAccount implements Serializable
         }
 
         return this.suspended;
+    }
+
+    /**
+     * @return The suspension flag associated with the account
+     */
+    public final boolean isAccepted()
+    {
+        final String methodName = UserAccount.CNAME + "#isAccepted()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.accepted);
+        }
+
+        return this.accepted;
     }
 
     /**
@@ -688,6 +723,22 @@ public class UserAccount implements Serializable
         }
 
         return this.userRole;
+    }
+
+    /**
+     * @return KeyPair
+     */
+    public final KeyPair getUserKeys()
+    {
+        final String methodName = UserAccount.CNAME + "#getUserKeys()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.userKeys);
+        }
+
+        return this.userKeys;
     }
 
     /**

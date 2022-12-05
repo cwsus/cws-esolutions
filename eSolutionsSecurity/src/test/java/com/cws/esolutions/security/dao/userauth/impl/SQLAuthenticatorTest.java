@@ -31,12 +31,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.TestInstance;
 
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SQLAuthenticatorTest
 {
     @BeforeAll public void setUp()
@@ -58,7 +60,7 @@ public class SQLAuthenticatorTest
 
         try
         {
-            Assertions.assertThat(authenticator.performLogon("junit", "", "VOpqGWznp1flygXFED8FVTxXTRHG9QG/Dj+apuuyeh59JWVbYd9hOgZTOfpLdBWRlPDb1TZnvt7XE3llHOPQQQ==")).isNotEmpty();
+        	authenticator.performLogon("0f645ed1-a8bb-4d5c-b4d6-2276f1dba592", "junit-test", "Tsu4hEW6erzJNvfExXuh5IBcofinTxxL", "Dcs5/bktmt1aEeVZn/kvKSrSP+AdS3q/E56E8Gfq23vjhcJIPenmvlLhrD+PvTTfLChqudUeK/biHp/nKl2/GA==");
         }
         catch (AuthenticatorException e)
         {

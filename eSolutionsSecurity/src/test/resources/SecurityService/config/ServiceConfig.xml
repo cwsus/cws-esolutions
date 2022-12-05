@@ -46,6 +46,7 @@
         <authConfig>/opt/cws/eSolutions/etc/repository.properties</authConfig>
         <authManager>com.cws.esolutions.security.dao.userauth.impl.SQLAuthenticator</authManager>
         <userManager>com.cws.esolutions.security.dao.usermgmt.impl.SQLUserManager</userManager>
+        <userSecDAO>com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl</userSecDAO>
     </security-config>
 
     <password-repository>
@@ -82,6 +83,7 @@
                 <attributeName>cwsissuspended</attributeName>
                 <attributeName>cwsisolrsetup</attributeName>
                 <attributeName>cwsisolrlocked</attributeName>
+                <attributeName>cwsistcaccepted</attributeName>
                 <attributeName>telephoneNumber</attributeName>
                 <attributeName>pager</attributeName>
             </returningAttributes>
@@ -136,7 +138,7 @@
     <resource-config>
         <DataSourceManager>
             <dsName>SecurityDataSource</dsName>
-            <datasource>jdbc:mysql://127.0.0.1/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
+            <datasource>jdbc:mysql://localhost/CWSSEC?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
             <dsUser>appadm</dsUser>
             <dsPass>OW1IaHJTamtic1JQa1pwVmVTU1BBQT09Om1uNHpJK2pUYlF6L0pwU09tcnhaME5vYXBRYmUxOFJsTno2ODhuUmpkdG89</dsPass>
@@ -146,7 +148,7 @@
         </DataSourceManager>
         <DataSourceManager>
             <dsName>AuditDataSource</dsName>
-            <datasource>jdbc:mysql://127.0.0.1/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
+            <datasource>jdbc:mysql://localhost/CWSSEC?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
             <dsUser>appadm</dsUser>
             <dsPass>OW1IaHJTamtic1JQa1pwVmVTU1BBQT09Om1uNHpJK2pUYlF6L0pwU09tcnhaME5vYXBRYmUxOFJsTno2ODhuUmpkdG89</dsPass>

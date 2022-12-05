@@ -72,10 +72,9 @@ public class PasswordUtilsTest
                     bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
                     bean.getConfigData().getSystemConfig().getEncoding());
 
-        	System.out.println(encrypted);
         	Assertions.assertThat(encrypted);
 
-        	String decrypted = PasswordUtils.decryptText(encrypted, salt, //decrypt and validate
+        	String decrypted = PasswordUtils.decryptText(encrypted, "SG4oZgiGEHw1XHOY3fDDuKpTRuvWlYHK", //decrypt and validate
                     bean.getConfigData().getSecurityConfig().getSecretAlgorithm(),
                     bean.getConfigData().getSecurityConfig().getIterations(),
                     bean.getConfigData().getSecurityConfig().getKeyBits(),
@@ -83,7 +82,6 @@ public class PasswordUtilsTest
                     bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
                     bean.getConfigData().getSystemConfig().getEncoding());
 
-        	System.out.println(decrypted);
         	Assertions.assertThat(decrypted);
         }
         catch (Exception sx)

@@ -53,13 +53,14 @@ public class ActiveDirectoryAuthenticator implements Authenticator
     /**
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String)
      */
-    public synchronized List<Object> performLogon(final String username, final String salt, final String password) throws AuthenticatorException
+    public synchronized List<Object> performLogon(final String userGuid, final String username, final String salt, final String password) throws AuthenticatorException
     {
-        final String methodName = ActiveDirectoryAuthenticator.CNAME + "#performLogon(final String username, final String salt, final String password) throws AuthenticatorException";
+        final String methodName = ActiveDirectoryAuthenticator.CNAME + "#performLogon(final String userGuid, final String username, final String salt, final String password) throws AuthenticatorException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("String: {}", userGuid);
             DEBUGGER.debug("String: {}", username);
         }
 

@@ -57,7 +57,7 @@ public class OpenLDAPAuthenticatorTest
 
         try
         {
-            Assertions.assertThat(authenticator.performLogon("junit", "salt value", "4Uq2ssAjH4S1jquzLkgh466xswdpcrPPNKeQjFFG6jpxV6L9mD5U+bSFF7slFWY6mKK6bJiy84u24qwDmXfuWA==")).isNotEmpty();
+            Assertions.assertThat(authenticator.performLogon("0f645ed1-a8bb-4d5c-b4d6-2276f1dba592", "junit", "salt value", "4Uq2ssAjH4S1jquzLkgh466xswdpcrPPNKeQjFFG6jpxV6L9mD5U+bSFF7slFWY6mKK6bJiy84u24qwDmXfuWA==")).isNotEmpty();
         }
         catch (AuthenticatorException e)
         {
