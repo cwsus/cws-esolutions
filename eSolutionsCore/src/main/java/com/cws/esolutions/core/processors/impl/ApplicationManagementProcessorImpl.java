@@ -91,7 +91,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
-            accessRequest.setServiceGuid(request.getServiceId());
 
             if (DEBUG)
             {
@@ -307,7 +306,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
-            accessRequest.setServiceGuid(request.getServiceId());
 
             if (DEBUG)
             {
@@ -466,7 +464,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
-            accessRequest.setServiceGuid(request.getServiceId());
 
             if (DEBUG)
             {
@@ -608,7 +605,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
-            accessRequest.setServiceGuid(request.getServiceId());
 
             if (DEBUG)
             {
@@ -783,7 +779,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
-            accessRequest.setServiceGuid(request.getServiceId());
 
             if (DEBUG)
             {
@@ -959,7 +954,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
-            accessRequest.setServiceGuid(request.getServiceId());
 
             if (DEBUG)
             {
@@ -1136,7 +1130,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
-            accessRequest.setServiceGuid(request.getServiceId());
 
             if (DEBUG)
             {
@@ -1373,7 +1366,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
-            accessRequest.setServiceGuid(request.getServiceId());
 
             if (DEBUG)
             {

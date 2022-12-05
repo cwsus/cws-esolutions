@@ -117,14 +117,14 @@ public class SecurityServiceInitializer
             marshaller = context.createUnmarshaller();
             configData = (SecurityConfigurationData) marshaller.unmarshal(xmlURL);
 
-            SecurityServiceInitializer.svcBean.setConfigData(configData);
+            svcBean.setConfigData(configData);
 
             if (startConnections)
             {
                 DAOInitializer.configureAndCreateAuthConnection(new FileInputStream(FileUtils.getFile(configData.getSecurityConfig().getAuthConfig())),
-                        false, SecurityServiceInitializer.svcBean);
+                        false, svcBean);
 
-                Map<String, DataSource> dsMap = SecurityServiceInitializer.svcBean.getDataSources();
+                Map<String, DataSource> dsMap = svcBean.getDataSources();
 
                 if (DEBUG)
                 {
@@ -180,7 +180,7 @@ public class SecurityServiceInitializer
                         DEBUGGER.debug("dsMap: {}", dsMap);
                     }
 
-                    SecurityServiceInitializer.svcBean.setDataSources(dsMap);
+                    svcBean.setDataSources(dsMap);
                 }
             }
         }

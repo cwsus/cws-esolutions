@@ -70,7 +70,12 @@ public class SQLAuthenticator implements Authenticator
         {
             sqlConn = SQLAuthenticator.dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((sqlConn == null) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -175,7 +180,12 @@ public class SQLAuthenticator implements Authenticator
         {
             sqlConn = SQLAuthenticator.dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((sqlConn == null) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -313,7 +323,12 @@ public class SQLAuthenticator implements Authenticator
         {
             sqlConn = SQLAuthenticator.dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((sqlConn == null) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -399,11 +414,15 @@ public class SQLAuthenticator implements Authenticator
         {
             sqlConn = SQLAuthenticator.dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((sqlConn == null) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-
             sqlConn.setAutoCommit(true);
 
             stmt = sqlConn.prepareCall("{CALL verifySecurityQuestions(?, ?, ?, ?)}");

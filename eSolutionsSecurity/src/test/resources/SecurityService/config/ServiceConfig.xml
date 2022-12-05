@@ -138,9 +138,9 @@
             <dsName>SecurityDataSource</dsName>
             <datasource>jdbc:mysql://127.0.0.1/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
-            <dsUser>appuser</dsUser>
-            <dsPass>WXqPmuPqSdJ+GP9f7OZimjng+7fH7L/TpNJiWfwgJdeHlyO0B32Cx1YfDDiK8HfAr+YPZwnoIrbzG7OGPqzcWaV73WNMXc8xVTIDjcMK2jI=</dsPass>
-            <salt>UwIYAukl5JYFozRndeZouh1xVljS3vAF7sbq6RftXC6KNoq7XMjXNJmWMneFxdv8</salt>
+            <dsUser>appadm</dsUser>
+            <dsPass>OW1IaHJTamtic1JQa1pwVmVTU1BBQT09Om1uNHpJK2pUYlF6L0pwU09tcnhaME5vYXBRYmUxOFJsTno2ODhuUmpkdG89</dsPass>
+            <dsSalt>hg4Q1qymhVY5ZICwyXuYFvdegQVyrAbg</dsSalt>
             <connectTimeout>10</connectTimeout>
             <autoReconnect>true</autoReconnect>
         </DataSourceManager>
@@ -148,9 +148,9 @@
             <dsName>AuditDataSource</dsName>
             <datasource>jdbc:mysql://127.0.0.1/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
-            <dsUser>appuser</dsUser>
-            <dsPass>NdDASbgU6eTvHQFtThgMbgquxjvxIZCmixqatVYdBNjtLqRyfQh2Vb/CuBLLjlSJWgoxacq6P8pZSgvcr8Aah/SKaVQs2OH9nRRvMdgbwZw=</dsPass>
-            <salt>99QNfoFBjLGskvIiyGmDNOD0Eq9s4pFQsxdTz4DxvXkovrz8x8HXddRE8PwpVhkP</salt>
+            <dsUser>appadm</dsUser>
+            <dsPass>OW1IaHJTamtic1JQa1pwVmVTU1BBQT09Om1uNHpJK2pUYlF6L0pwU09tcnhaME5vYXBRYmUxOFJsTno2ODhuUmpkdG89</dsPass>
+            <dsSalt>hg4Q1qymhVY5ZICwyXuYFvdegQVyrAbg</dsSalt>
             <connectTimeout>10</connectTimeout>
             <autoReconnect>true</autoReconnect>
         </DataSourceManager>

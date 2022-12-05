@@ -25,9 +25,6 @@ package com.cws.esolutions.security.services.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.util.List;
-import java.sql.SQLException;
-
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
 import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
@@ -54,39 +51,30 @@ public class AccessControlServiceImpl implements IAccessControlService
         }
 
         final UserAccount userAccount = request.getUserAccount();
-        final String userServiceId = request.getServiceGuid();
+
+        if (DEBUG)
+        {
+        	DEBUGGER.debug("UserAccount: {}", userAccount);
+        }
 
         AccessControlServiceResponse response = new AccessControlServiceResponse();
 
         if (secConfig.getEnableSecurity())
         {
-            for (String group : userAccount.getGroups())
-            {
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserGroup: {}", group);
-                }
-    
-                try
-                {
-                    List<String> services = ref.listServicesForGroup(group);
-    
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("List<String>: {}", services);
-                    }
-    
-                    if (services.contains(userServiceId))
-                    {
-                        response.setIsUserAuthorized(Boolean.TRUE);
-                    }
-                }
-                catch (SQLException sqx)
-                {
-                    ERROR_RECORDER.error(sqx.getMessage(), sqx);
+        	switch (userAccount.getUserRole())
+        	{
+	        	case SITE_ADMIN:
+	        		response.setIsUserAuthorized(Boolean.TRUE);
 
-                    response.setIsUserAuthorized(Boolean.FALSE);
-                }
+	        		break;
+	        	case ADMIN:
+	        		response.setIsUserAuthorized(Boolean.TRUE);
+
+	        		break;
+	        	default:
+					response.setIsUserAuthorized(Boolean.FALSE);
+
+					break;
             }
         }
         else

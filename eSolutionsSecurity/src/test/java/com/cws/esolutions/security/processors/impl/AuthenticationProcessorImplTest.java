@@ -67,6 +67,10 @@ public class AuthenticationProcessorImplTest
     {
         UserAccount account = new UserAccount();
         account.setUsername("junit");
+        account.setDisplayName("JUnit Test Account");
+        account.setEmailAddr("webdev@caspersbox.com");
+        account.setGivenName("JUnit");
+        account.setSurname("JUnit");
 
         AuthenticationData userSecurity = new AuthenticationData();
         userSecurity.setPassword("junit");

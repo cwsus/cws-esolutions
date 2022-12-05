@@ -25,8 +25,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.TestInstance;
 
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
@@ -34,6 +36,7 @@ import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AccessControlServiceImplTest
 {
     private static UserAccount userAccount = new UserAccount();
@@ -50,6 +53,7 @@ public class AccessControlServiceImplTest
             userAccount.setStatus(LoginStatus.SUCCESS);
             userAccount.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
             userAccount.setUsername("khuntly");
+            userAccount.setUserRole(SecurityUserRole.SITE_ADMIN);
 
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
@@ -67,7 +71,6 @@ public class AccessControlServiceImplTest
         {
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
-            accessRequest.setServiceGuid("test");
 
             Assertions.assertThat(processor.isUserAuthorized(accessRequest)).isNotNull();
         }

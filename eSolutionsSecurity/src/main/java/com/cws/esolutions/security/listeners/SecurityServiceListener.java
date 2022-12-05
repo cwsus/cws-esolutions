@@ -85,7 +85,7 @@ public class SecurityServiceListener implements ServletContextListener
 
                 if (StringUtils.isBlank(SecurityServiceListener.INIT_SYSCONFIG_FILE))
                 {
-                    throw new SecurityServiceException("System configuration file location not provided by application. Cannot continue.");                    
+                    throw new SecurityServiceException("System configuration file location not provided by application. Cannot continue.");
                 }
                 else
                 {
@@ -94,25 +94,26 @@ public class SecurityServiceListener implements ServletContextListener
 
                 if (xmlURL != null)
                 {
+                	System.out.println("xmlURL provided was valid and found, continuing configuration");
+
                     context = JAXBContext.newInstance(SecurityConfigurationData.class);
                     marshaller = context.createUnmarshaller();
                     configData = (SecurityConfigurationData) marshaller.unmarshal(xmlURL);
-
-                    SecurityServiceListener.svcBean.setConfigData(configData);
+                    svcBean.setConfigData(configData);
 
                     Context initContext = new InitialContext();
                     Context envContext = (Context) initContext.lookup(SecurityServiceConstants.DS_CONTEXT);
 
-                    DAOInitializer.configureAndCreateAuthConnection(null, true, SecurityServiceListener.svcBean);
+                    DAOInitializer.configureAndCreateAuthConnection(null, true, svcBean);
 
                     Map<String, DataSource> dsMap = new HashMap<String, DataSource>();
 
                     for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())
                     {
-                        dsMap.put(mgr.getDsName(), (DataSource) envContext.lookup(mgr.getDataSource()));
+                    	dsMap.put(mgr.getDsName(), (DataSource) envContext.lookup(mgr.getDataSource()));
                     }
 
-                    SecurityServiceListener.svcBean.setDataSources(dsMap);
+                    svcBean.setDataSources(dsMap);
                 }
                 else
                 {

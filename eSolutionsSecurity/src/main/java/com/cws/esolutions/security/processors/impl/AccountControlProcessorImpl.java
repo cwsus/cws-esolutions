@@ -94,8 +94,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
-            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(request.getRequestor());
 
             if (DEBUG)
             {
@@ -152,7 +151,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if (DEBUG)
             {
-                DEBUGGER.debug("Value: {}", userGuid);
+                DEBUGGER.debug("New user UUID: {}", userGuid);
             }
 
             int x = 0;
@@ -350,7 +349,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
-            accessRequest.setServiceGuid(request.getServiceId());
 
             if (DEBUG)
             {
@@ -500,7 +498,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
-            accessRequest.setServiceGuid(request.getServiceId());
 
             if (DEBUG)
             {
@@ -668,7 +665,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
-            accessRequest.setServiceGuid(request.getServiceId());
 
             if (DEBUG)
             {
@@ -878,7 +874,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
-            accessRequest.setServiceGuid(request.getServiceId());
 
             if (DEBUG)
             {
@@ -1089,7 +1084,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
-            accessRequest.setServiceGuid(request.getServiceId());
 
             if (DEBUG)
             {
@@ -1252,7 +1246,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
-            accessRequest.setServiceGuid(request.getServiceId());
 
             if (DEBUG)
             {
@@ -1432,7 +1425,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
-            accessRequest.setServiceGuid(request.getServiceId());
 
             if (DEBUG)
             {
@@ -1606,7 +1598,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
-            accessRequest.setServiceGuid(request.getServiceId());
 
             if (DEBUG)
             {

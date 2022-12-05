@@ -30,6 +30,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
+import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 /**
@@ -57,13 +58,13 @@ public class UserAccount implements Serializable
     private String pagerNumber = null;
     private Integer failedCount = null;
     private String telephoneNumber = null;
+    private SecurityUserRole userRole = null;
 
     private static final String CNAME = UserAccount.class.getName();
     private static final long serialVersionUID = -1860442834878637721L;
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
 
     /**
      * @param value - The {@link com.cws.esolutions.security.processors.enums.LoginStatus} for the account
@@ -351,6 +352,22 @@ public class UserAccount implements Serializable
         }
 
         this.managerName = value;
+    }
+
+    /**
+     * @param value - The SecurityUserRole for the provided user
+     */
+    public final void setUserRole(final SecurityUserRole value)
+    {
+        final String methodName = UserAccount.CNAME + "#setUserRole(final SecurityUserRole value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.userRole = value;
     }
 
     /**
@@ -658,6 +675,22 @@ public class UserAccount implements Serializable
     }
 
     /**
+     * @return SecurityUserRole
+     */
+    public final SecurityUserRole getUserRole()
+    {
+        final String methodName = UserAccount.CNAME + "#getUserRole()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.userRole);
+        }
+
+        return this.userRole;
+    }
+
+    /**
      * @see java.lang.Object#toString()
      */
     @Override
@@ -675,11 +708,6 @@ public class UserAccount implements Serializable
 
         for (Field field : this.getClass().getDeclaredFields())
         {
-            if (DEBUG)
-            {
-                DEBUGGER.debug("field: {}", field);
-            }
-
             if (!(field.getName().equals("methodName")) &&
                     (!(field.getName().equals("CNAME"))) &&
                     (!(field.getName().equals("DEBUGGER"))) &&
@@ -695,10 +723,7 @@ public class UserAccount implements Serializable
                         sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + SecurityServiceConstants.LINE_BREAK);
                     }
                 }
-                catch (IllegalAccessException iax)
-                {
-                    ERROR_RECORDER.error(iax.getMessage(), iax);
-                }
+                catch (IllegalAccessException iax) {}
             }
         }
 

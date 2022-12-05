@@ -29,8 +29,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.TestInstance;
 
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
@@ -39,7 +41,10 @@ import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
-
+/**
+ * @author khuntly
+ */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AccountControlProcessorImplTest
 {
     private static UserAccount testAccount = new UserAccount();
@@ -55,8 +60,10 @@ public class AccountControlProcessorImplTest
             hostInfo.setHostName("junit");
 
             userAccount.setStatus(LoginStatus.SUCCESS);
-            userAccount.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
+            userAccount.setGuid("5c276875-90fa-4cc6-85ab-b2fcc2d27ed6");
             userAccount.setUsername("khuntly");
+            userAccount.setGroups(new String[] { "SiteAdmin" });
+            userAccount.setUserRole(SecurityUserRole.SITE_ADMIN);
 
             testAccount.setGuid("860e873f-8593-4c43-9ec6-a301e0e9840d");
             testAccount.setUsername("junit-test");
@@ -70,8 +77,9 @@ public class AccountControlProcessorImplTest
         }
         catch (Exception ex)
         {
-            Assertions.fail(ex.getMessage());
+        	ex.printStackTrace();
 
+        	Assertions.fail(ex.getMessage());
             System.exit(-1);
         }
     }

@@ -249,7 +249,6 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
-            accessRequest.setServiceGuid(request.getServiceId());
 
             if (DEBUG)
             {
@@ -496,7 +495,6 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
-            accessRequest.setServiceGuid(request.getServiceId());
 
             if (DEBUG)
             {
@@ -630,7 +628,6 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
-            accessRequest.setServiceGuid(request.getServiceId());
 
             if (DEBUG)
             {
@@ -763,7 +760,6 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(userAccount);
-            accessRequest.setServiceGuid(request.getServiceId());
 
             if (DEBUG)
             {

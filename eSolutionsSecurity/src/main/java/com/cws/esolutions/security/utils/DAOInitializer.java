@@ -310,18 +310,18 @@ public final class DAOInitializer
 	
 	                    break;
 	                case SQL:
-	                        BasicDataSource dataSource = new BasicDataSource();
-	                        dataSource.setInitialSize(Integer.parseInt(connProps.getProperty(DAOInitializer.MIN_CONNECTIONS)));
-	                        dataSource.setMaxActive(Integer.parseInt(connProps.getProperty(DAOInitializer.MAX_CONNECTIONS)));
-	                        dataSource.setDriverClassName(connProps.getProperty(DAOInitializer.CONN_DRIVER));
-	                        dataSource.setUrl(connProps.getProperty(DAOInitializer.REPOSITORY_HOST));
-	                        dataSource.setUsername(connProps.getProperty(DAOInitializer.REPOSITORY_USER));
-	                        dataSource.setPassword(PasswordUtils.decryptText(
-	                                connProps.getProperty(DAOInitializer.REPOSITORY_PASS), connProps.getProperty(DAOInitializer.REPOSITORY_SALT),
-	                                secConfig.getSecretAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
-	                                secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), systemConfig.getEncoding()));
-	
-	                        bean.setAuthDataSource(dataSource);
+	                    BasicDataSource dataSource = new BasicDataSource();
+	                    dataSource.setInitialSize(Integer.parseInt(connProps.getProperty(DAOInitializer.MIN_CONNECTIONS)));
+	                    dataSource.setMaxActive(Integer.parseInt(connProps.getProperty(DAOInitializer.MAX_CONNECTIONS)));
+	                    dataSource.setDriverClassName(connProps.getProperty(DAOInitializer.CONN_DRIVER));
+	                    dataSource.setUrl(connProps.getProperty(DAOInitializer.REPOSITORY_HOST));
+	                    dataSource.setUsername(connProps.getProperty(DAOInitializer.REPOSITORY_USER));
+	                    dataSource.setPassword(PasswordUtils.decryptText(
+	                    connProps.getProperty(DAOInitializer.REPOSITORY_PASS), connProps.getProperty(DAOInitializer.REPOSITORY_SALT),
+	                    secConfig.getSecretAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
+	                    secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), systemConfig.getEncoding()));
+
+	                    bean.setAuthDataSource(dataSource);
 	
 	                    break;
 	                case NONE:

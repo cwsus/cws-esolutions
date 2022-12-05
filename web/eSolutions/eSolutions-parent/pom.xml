@@ -36,8 +36,6 @@
     </properties>
 
     <modules>
-        <module>../../../eSolutionsSecurity</module>
-        <module>../../../eSolutionsCore</module>
         <module>../jars/eSolutions_java_source</module>
         <module>../jars/eSolutions_web_config</module>
         <module>../wars/eSolutions_web_source</module>
@@ -67,7 +65,7 @@
                 <artifactId>eSolutionsCore</artifactId>
                 <version>${eSolutionsCore.version}</version>
                 <type>jar</type>
-                <scope>compile</scope>
+                <scope>provided</scope>
                 <exclusions>
                     <exclusion>
                         <groupId>com.cws</groupId>
@@ -108,7 +106,7 @@
                 <artifactId>eSolutionsSecurity</artifactId>
                 <version>${eSolutionsSecurity.version}</version>
                 <type>jar</type>
-                <scope>compile</scope>
+                <scope>provided</scope>
                 <exclusions>
                     <exclusion>
                         <groupId>org.quartz-scheduler</groupId>

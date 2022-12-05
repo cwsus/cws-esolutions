@@ -29,11 +29,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.TestInstance;
 
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
-
+/**
+ * @author khuntly
+ */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class PasswordUtilsTest
 {
     private static final SecurityServiceBean bean = SecurityServiceBean.getInstance();
@@ -55,8 +59,8 @@ public class PasswordUtilsTest
 
     @Test public void testEncryption()
     {
-        final String plainText = "appuser10";
-        final String salt = "hg4Q1qymhVY5ZICwyXuYFvdegQVyrAbg";
+        final String plainText = "aQPqJsO1sbrPXmFdxwJi";
+        final String salt = "QYosWmY0q8o3xMb8Arsaq7rJFdbFukbG";
 
         try
         {
@@ -68,6 +72,7 @@ public class PasswordUtilsTest
                     bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
                     bean.getConfigData().getSystemConfig().getEncoding());
 
+        	System.out.println(encrypted);
         	Assertions.assertThat(encrypted);
 
         	String decrypted = PasswordUtils.decryptText(encrypted, salt, //decrypt and validate
@@ -78,6 +83,7 @@ public class PasswordUtilsTest
                     bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
                     bean.getConfigData().getSystemConfig().getEncoding());
 
+        	System.out.println(decrypted);
         	Assertions.assertThat(decrypted);
         }
         catch (Exception sx)

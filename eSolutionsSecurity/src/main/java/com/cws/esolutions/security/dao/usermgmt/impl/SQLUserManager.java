@@ -67,9 +67,14 @@ public class SQLUserManager implements UserManager
 
         try
         {
-            sqlConn = SQLUserManager.dataSource.getConnection();
+            sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((sqlConn == null) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -114,6 +119,7 @@ public class SQLUserManager implements UserManager
         }
         catch (SQLException sqx)
         {
+        	sqx.printStackTrace();
             throw new UserManagementException(sqx.getMessage(), sqx);
         }
         finally
@@ -164,9 +170,14 @@ public class SQLUserManager implements UserManager
 
         try
         {
-            sqlConn = SQLUserManager.dataSource.getConnection();
+            sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((sqlConn == null) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -239,9 +250,14 @@ public class SQLUserManager implements UserManager
 
         try
         {
-            sqlConn = SQLUserManager.dataSource.getConnection();
+            sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((sqlConn == null) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -308,9 +324,14 @@ public class SQLUserManager implements UserManager
 
         try
         {
-            sqlConn = SQLUserManager.dataSource.getConnection();
+            sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((sqlConn == null) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -410,9 +431,19 @@ public class SQLUserManager implements UserManager
 
         try
         {
-            sqlConn = SQLUserManager.dataSource.getConnection();
+            sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((sqlConn == null) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -532,9 +563,14 @@ public class SQLUserManager implements UserManager
 
         try
         {
-            sqlConn = SQLUserManager.dataSource.getConnection();
+            sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((sqlConn == null) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -635,9 +671,14 @@ public class SQLUserManager implements UserManager
 
         try
         {
-            sqlConn = SQLUserManager.dataSource.getConnection();
+            sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((sqlConn == null) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -707,9 +748,14 @@ public class SQLUserManager implements UserManager
 
         try
         {
-            sqlConn = SQLUserManager.dataSource.getConnection();
+            sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((sqlConn == null) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -780,9 +826,14 @@ public class SQLUserManager implements UserManager
 
         try
         {
-            sqlConn = SQLUserManager.dataSource.getConnection();
+            sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((sqlConn == null) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -857,9 +908,14 @@ public class SQLUserManager implements UserManager
 
         try
         {
-            sqlConn = SQLUserManager.dataSource.getConnection();
+            sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((sqlConn == null) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -929,9 +985,14 @@ public class SQLUserManager implements UserManager
 
         try
         {
-            sqlConn = SQLUserManager.dataSource.getConnection();
+            sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((sqlConn == null) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -1001,9 +1062,14 @@ public class SQLUserManager implements UserManager
 
         try
         {
-            sqlConn = SQLUserManager.dataSource.getConnection();
+            sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((sqlConn == null) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -1072,9 +1138,14 @@ public class SQLUserManager implements UserManager
 
         try
         {
-            sqlConn = SQLUserManager.dataSource.getConnection();
+            sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((sqlConn == null) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -1143,9 +1214,14 @@ public class SQLUserManager implements UserManager
 
         try
         {
-            sqlConn = SQLUserManager.dataSource.getConnection();
+            sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((sqlConn == null) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -1220,9 +1296,14 @@ public class SQLUserManager implements UserManager
 
         try
         {
-            sqlConn = SQLUserManager.dataSource.getConnection();
+            sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((sqlConn == null) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -1297,9 +1378,14 @@ public class SQLUserManager implements UserManager
 
         try
         {
-            sqlConn = SQLUserManager.dataSource.getConnection();
+            sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((sqlConn == null) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }

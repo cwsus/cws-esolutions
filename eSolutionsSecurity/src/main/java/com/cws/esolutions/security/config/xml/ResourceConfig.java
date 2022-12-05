@@ -53,7 +53,6 @@ public final class ResourceConfig implements Serializable
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
 
     public final void setDsManager(final List<DataSourceManager> value)
     {
@@ -97,11 +96,6 @@ public final class ResourceConfig implements Serializable
 
         for (Field field : this.getClass().getDeclaredFields())
         {
-            if (DEBUG)
-            {
-                DEBUGGER.debug("field: {}", field);
-            }
-
             if (!(field.getName().equals("methodName")) &&
                     (!(field.getName().equals("CNAME"))) &&
                     (!(field.getName().equals("DEBUGGER"))) &&
@@ -116,10 +110,7 @@ public final class ResourceConfig implements Serializable
                         sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + SecurityServiceConstants.LINE_BREAK);
                     }
                 }
-                catch (IllegalAccessException iax)
-                {
-                    ERROR_RECORDER.error(iax.getMessage(), iax);
-                }
+                catch (IllegalAccessException iax) {}
             }
         }
 

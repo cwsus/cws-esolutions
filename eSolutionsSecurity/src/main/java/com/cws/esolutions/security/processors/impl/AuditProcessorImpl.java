@@ -165,7 +165,6 @@ public class AuditProcessorImpl implements IAuditProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setUserAccount(reqAccount);
-            accessRequest.setServiceGuid(request.getApplicationId());
 
             if (DEBUG)
             {
