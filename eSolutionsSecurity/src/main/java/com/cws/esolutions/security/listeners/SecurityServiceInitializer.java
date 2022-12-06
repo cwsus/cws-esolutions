@@ -158,13 +158,9 @@ public class SecurityServiceInitializer
                             dataSource.setUrl(mgr.getDataSource());
                             dataSource.setUsername(mgr.getDsUser());
                             dataSource.setConnectionProperties(sBuilder.toString());
-                            dataSource.setPassword(PasswordUtils.decryptText(mgr.getDsPass(), mgr.getDsSalt(),
-                                    configData.getSecurityConfig().getSecretAlgorithm(),
-                                    configData.getSecurityConfig().getIterations(),
-                                    configData.getSecurityConfig().getKeyBits(),
-                                    configData.getSecurityConfig().getEncryptionAlgorithm(),
-                                    configData.getSecurityConfig().getEncryptionInstance(),
-                                    configData.getSystemConfig().getEncoding()));
+                            dataSource.setPassword(PasswordUtils.decryptText(mgr.getDsPass(), mgr.getDsSalt(), svcBean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(), svcBean.getConfigData().getSecurityConfig().getIterations(),
+                        			svcBean.getConfigData().getSecurityConfig().getKeyBits(), svcBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(), svcBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                        			svcBean.getConfigData().getSystemConfig().getEncoding()));
 
                             if (DEBUG)
                             {

@@ -254,7 +254,7 @@ public class PasswordUtility
                 final String encodedSalt = PasswordUtils.base64Encode(salt);
                 final String encodedUserName = PasswordUtils.base64Encode(username);
                 final String encryptedPassword = PasswordUtils.encryptText(password, salt,
-                        secConfig.getSecretAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
+                        secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
                         secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), systemConfig.getEncoding());
                 final String encodedPassword = PasswordUtils.base64Encode(encryptedPassword);
 
@@ -430,7 +430,7 @@ public class PasswordUtility
                         String decodedPassword = PasswordUtils.base64Decode(lineEntry.split(",")[2]);
 
                         decryptedPassword = PasswordUtils.decryptText(decodedPassword, saltEntryValue,
-                                secConfig.getSecretAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
+                                secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
                                 secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), systemConfig.getEncoding());
 
                         break;

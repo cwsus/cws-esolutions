@@ -75,7 +75,7 @@ public interface Authenticator
      * @return List - The account information for the authenticated user
      * @throws AuthenticatorException {@link com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException} if an exception occurs during processing
      */
-    List<Object> performLogon(final String guid, final String userId, final String salt, final String password) throws AuthenticatorException;
+    boolean performLogon(final String guid, final String userId, final String password) throws AuthenticatorException;
 
     /**
      * Processes an agent logon request via an LDAP user datastore. If the

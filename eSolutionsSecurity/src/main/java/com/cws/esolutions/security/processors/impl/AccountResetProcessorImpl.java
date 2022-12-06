@@ -307,10 +307,10 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                     new ArrayList<String>(
                         Arrays.asList(
                             PasswordUtils.encryptText(userSecurity.getSecAnswerOne(), userSalt,
-                                secConfig.getAuthAlgorithm(), secConfig.getIterations(),
+                                secConfig.getMessageDigest(), secConfig.getIterations(),
                                 secBean.getConfigData().getSystemConfig().getEncoding()),
                             PasswordUtils.encryptText(userSecurity.getSecAnswerTwo(), userSalt,
-                                secConfig.getAuthAlgorithm(), secConfig.getIterations(),
+                                secConfig.getMessageDigest(), secConfig.getIterations(),
                                 secBean.getConfigData().getSystemConfig().getEncoding()))));
 
                 if (DEBUG)

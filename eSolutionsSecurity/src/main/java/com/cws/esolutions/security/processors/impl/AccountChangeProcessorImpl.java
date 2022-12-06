@@ -113,7 +113,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 // we aren't getting the data back here because we don't need it. if the request
                 // fails we'll get an exception and not process further. this might not be the
                 // best flow control, but it does exactly what we need where we need it.
-                authenticator.performLogon(userAccount.getGuid(), userAccount.getUsername(), userSalt, reqSecurity.getPassword());
+                authenticator.performLogon(userAccount.getGuid(), userAccount.getUsername(), reqSecurity.getPassword());
 
                 boolean isComplete = userManager.modifyUserEmail(userAccount.getUsername(), userAccount.getEmailAddr());
 
@@ -244,7 +244,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 // we aren't getting the data back here because we don't need it. if the request
                 // fails we'll get an exception and not process further. this might not be the
                 // best flow control, but it does exactly what we need where we need it.
-            	authenticator.performLogon(userAccount.getGuid(), userAccount.getUsername(), userSalt, reqSecurity.getPassword());
+            	authenticator.performLogon(userAccount.getGuid(), userAccount.getUsername(), reqSecurity.getPassword());
 
                 boolean isComplete = userManager.modifyUserContact(userAccount.getUsername(),
                         new ArrayList<String>(
@@ -403,7 +403,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                         // we aren't getting the data back here because we don't need it. if the request
                         // fails we'll get an exception and not process further. this might not be the
                         // best flow control, but it does exactly what we need where we need it.
-                    	authenticator.performLogon(userAccount.getGuid(), userAccount.getUsername(), userSalt, reqSecurity.getPassword());
+                    	authenticator.performLogon(userAccount.getGuid(), userAccount.getUsername(), reqSecurity.getPassword());
                     }
                 }
 
@@ -429,7 +429,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                             // make the modification in the user repository
                             userManager.modifyUserPassword(userAccount.getGuid(),
                                     PasswordUtils.encryptText(reqSecurity.getNewPassword(), newUserSalt,
-                                            secConfig.getAuthAlgorithm(), secConfig.getIterations(),
+                                            secConfig.getMessageDigest(), secConfig.getIterations(),
                                             secBean.getConfigData().getSystemConfig().getEncoding()));
 
                             if (DEBUG)
@@ -606,7 +606,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                     // we aren't getting the data back here because we don't need it. if the request
                     // fails we'll get an exception and not process further. this might not be the
                     // best flow control, but it does exactly what we need where we need it.
-                	authenticator.performLogon(userAccount.getGuid(), userAccount.getUsername(), userSalt, reqSecurity.getPassword());
+                	authenticator.performLogon(userAccount.getGuid(), userAccount.getUsername(), reqSecurity.getPassword());
 
                     // ok, thats out of the way. lets keep moving.
                     String newUserSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
@@ -630,10 +630,10 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                             reqSecurity.getSecQuestionOne(),
                                             reqSecurity.getSecQuestionTwo(),
                                             PasswordUtils.encryptText(reqSecurity.getSecAnswerOne(), newUserSalt,
-                                                secConfig.getAuthAlgorithm(), secConfig.getIterations(),
+                                                secConfig.getMessageDigest(), secConfig.getIterations(),
                                                 secBean.getConfigData().getSystemConfig().getEncoding()),
                                             PasswordUtils.encryptText(reqSecurity.getSecAnswerTwo(), newUserSalt,
-                                                secConfig.getAuthAlgorithm(), secConfig.getIterations(),
+                                                secConfig.getMessageDigest(), secConfig.getIterations(),
                                                 secBean.getConfigData().getSystemConfig().getEncoding()))));
 
                             if (DEBUG)
@@ -931,7 +931,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 // we aren't getting the data back here because we don't need it. if the request
                 // fails we'll get an exception and not process further. this might not be the
                 // best flow control, but it does exactly what we need where we need it.
-            	authenticator.performLogon(userAccount.getGuid(), userAccount.getUsername(), userSalt, reqSecurity.getPassword());
+            	authenticator.performLogon(userAccount.getGuid(), userAccount.getUsername(), reqSecurity.getPassword());
 
                 String secret = new String(new Base32().encode(RandomStringUtils.randomAlphanumeric(10).getBytes()));
 
@@ -960,7 +960,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                     boolean isComplete = userManager.modifyOtpSecret(userAccount.getUsername(), true,
                             PasswordUtils.encryptText(secret, otpSalt,
-                                    secBean.getConfigData().getSecurityConfig().getSecretAlgorithm(),
+                                    secBean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
                                     secBean.getConfigData().getSecurityConfig().getIterations(),
                                     secBean.getConfigData().getSecurityConfig().getKeyBits(),
                                     secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
@@ -1118,7 +1118,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 // we aren't getting the data back here because we don't need it. if the request
                 // fails we'll get an exception and not process further. this might not be the
                 // best flow control, but it does exactly what we need where we need it.
-            	authenticator.performLogon(userAccount.getGuid(), userAccount.getUsername(), userSalt, reqSecurity.getPassword());
+            	authenticator.performLogon(userAccount.getGuid(), userAccount.getUsername(), reqSecurity.getPassword());
 
                 // delete entries here
                 boolean isSecretRemoved = userManager.modifyOtpSecret(userAccount.getGuid(), false, null);

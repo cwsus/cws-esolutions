@@ -68,14 +68,14 @@ public class AuthenticationProcessorImplTest
     @Test public void processAgentLogon()
     {
         UserAccount account = new UserAccount();
-        account.setUsername("junit-test");
+        account.setUsername("junit-runner");
         account.setDisplayName("JUnit Test Account");
         account.setEmailAddr("webdev@caspersbox.com");
         account.setGivenName("JUnit");
         account.setSurname("JUnit");
 
         AuthenticationData userSecurity = new AuthenticationData();
-        userSecurity.setPassword("Dcs5/bktmt1aEeVZn/kvKSrSP+AdS3q/E56E8Gfq23vjhcJIPenmvlLhrD+PvTTfLChqudUeK/biHp/nKl2/GA==");
+        userSecurity.setPassword("naB8QUXNTWFA7MCpFYvT");
 
         AuthenticationRequest request = new AuthenticationRequest();
         request.setApplicationName("esolutions");
@@ -91,6 +91,7 @@ public class AuthenticationProcessorImplTest
         }
         catch (AuthenticationException ax)
         {
+        	ax.printStackTrace();
             Assertions.fail(ax.getMessage());
         }
     }

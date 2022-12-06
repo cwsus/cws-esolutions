@@ -152,9 +152,9 @@ public class SQLUserManager implements UserManager
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#addUserAccount(java.util.List, java.util.List)
      */
-    public synchronized boolean addUserAccount(final List<String> userAccount, final List<String> roles) throws UserManagementException
+    public synchronized boolean addUserAccount(final List<Object> userAccount, final List<String> roles) throws UserManagementException
     {
-        final String methodName = SQLUserManager.CNAME + "#addUserAccount(final List<String> userAccount, final List<String> roles) throws UserManagementException";
+        final String methodName = SQLUserManager.CNAME + "#addUserAccount(final List<Object> userAccount, final List<String> roles) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -183,15 +183,22 @@ public class SQLUserManager implements UserManager
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{ CALL addUserAccount(?, ?, ?, ?, ?, ?, ?, ?) }");
-            stmt.setString(1, userAccount.get(0)); // username
-            stmt.setString(2, userAccount.get(1)); // password
-            stmt.setString(3, userAccount.get(2)); // cwsRole
-            stmt.setString(4, userAccount.get(3)); // surname
-            stmt.setString(5, userAccount.get(4)); // givenname
-            stmt.setString(6, userAccount.get(5)); // email
-            stmt.setString(7, userAccount.get(6)); // commonName (CN)
-            stmt.setString(8, userAccount.get(7)); // displayName
+            stmt = sqlConn.prepareCall("{ CALL addUserAccount(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }");
+            stmt.setString(1, (String) userAccount.get(0)); // commonName NVARCHAR(128),
+            stmt.setString(2, (String) userAccount.get(1)); // uid NVARCHAR(45),
+            stmt.setString(3, (String) userAccount.get(2)); // givenname NVARCHAR(100),
+            stmt.setString(4, (String) userAccount.get(3)); // sn NVARCHAR(100),
+            stmt.setString(5, (String) userAccount.get(4)); // displayname NVARCHAR(100),
+            stmt.setString(6, (String) userAccount.get(5)); // email NVARCHAR(50),
+            stmt.setString(7, (String) userAccount.get(6)); // cwsrole NVARCHAR(45),
+            stmt.setInt(8, (int) userAccount.get(7)); // cwsfailedpwdcount MEDIUMINT(9),
+            stmt.setBoolean(9, (Boolean) userAccount.get(8)); // cwsissuspended BOOLEAN,
+            stmt.setBoolean(10, (Boolean) userAccount.get(9)); // cwsisolrsetup BOOLEAN,
+            stmt.setBoolean(11, (Boolean) userAccount.get(10)); // cwsisolrlocked BOOLEAN,
+            stmt.setBoolean(12, (Boolean) userAccount.get(11)); // cwsistcaccepted BOOLEAN,
+            stmt.setString(13, (String) userAccount.get(12)); // telephonenumber NVARCHAR(10),
+            stmt.setString(14, (String) userAccount.get(13)); // pager NVARCHAR(10),
+            stmt.setString(15, (String) userAccount.get(14)); // userpassword NVARCHAR(255)
 
             if (DEBUG)
             {
@@ -359,7 +366,8 @@ public class SQLUserManager implements UserManager
                         String[] userData = new String[]
                         {
                             resultSet.getString("cn"),
-                            resultSet.getString("uid")
+                            resultSet.getString("uid"),
+                            resultSet.getString("userpassword")
                         };
 
                         if (DEBUG)
@@ -481,27 +489,21 @@ public class SQLUserManager implements UserManager
                     }
 
                     resultSet.first();
+                    userAccount = new ArrayList<Object>();
 
-                    userAccount = new ArrayList<Object>(
-                            Arrays.asList(
-                                resultSet.getString(userAttributes.getCommonName()),
-                                resultSet.getString(userAttributes.getUserId()),
-                                resultSet.getString(securityAttributes.getLockCount()),
-                                resultSet.getString(securityAttributes.getLastLogin()),
-                                resultSet.getString(securityAttributes.getExpiryDate()),
-                                resultSet.getString(userAttributes.getSurname()),
-                                resultSet.getString(userAttributes.getGivenName()),
-                                resultSet.getString(userAttributes.getDisplayName()),
-                                resultSet.getString(userAttributes.getEmailAddr()),
-                                resultSet.getString(userAttributes.getTelephoneNumber()),
-                                resultSet.getString(userAttributes.getMemberOf()),
-                                resultSet.getString(securityAttributes.getIsSuspended()),
-                                resultSet.getString(securityAttributes.getOlrSetupReq()),
-                                resultSet.getString(securityAttributes.getOlrLocked())));
+                    for (int y = 1; y != 18; y++)
+                    {
+                    	if (DEBUG)
+                    	{
+                    		DEBUGGER.debug("Data: {}", resultSet.getObject(y));
+                    	}
+
+                    	userAccount.add(resultSet.getObject(y));
+                    }
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("UserAccount: {}", userAccount);
+                        DEBUGGER.debug("userAccount: {}", userAccount);
                     }
                 }
             }
@@ -1081,7 +1083,7 @@ public class SQLUserManager implements UserManager
             }
             else
             {
-                stmt = sqlConn.prepareCall("{ CALL incrementLockCount(?) }");
+                stmt = sqlConn.prepareCall("{ CALL lockUserAccount(?) }");
                 stmt.setString(1, userId);
             }
 
@@ -1392,11 +1394,9 @@ public class SQLUserManager implements UserManager
 
             // first make sure the existing password is proper
             // then make sure the new password doesnt match the existing password
-            stmt = sqlConn.prepareCall("{ CALL updateLastLogin(?, ?, ?, ?) }");
+            stmt = sqlConn.prepareCall("{ CALL performSuccessfulLogin(?, ?) }");
             stmt.setString(1, userId);
             stmt.setString(2, guid);
-            stmt.setInt(3, lockCount);
-            stmt.setLong(4, timestamp);
 
             if (DEBUG)
             {

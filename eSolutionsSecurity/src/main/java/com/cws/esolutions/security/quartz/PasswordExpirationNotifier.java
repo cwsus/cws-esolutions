@@ -139,7 +139,7 @@ public class PasswordExpirationNotifier implements Job
                     {
                         email.setAuthenticator(new DefaultAuthenticator((String) jobData.get("username"),
                                 PasswordUtils.decryptText((String) (String) jobData.get("password"), (String) jobData.get("salt"),
-                                        secConfig.getSecretAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
+                                        secConfig.getMessageDigest(), secConfig.getIterations(), secConfig.getKeyBits(),
                                         secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(), systemConfig.getEncoding())));
                     }
 

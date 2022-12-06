@@ -26,9 +26,6 @@ package com.cws.esolutions.security.dao.userauth.impl;
  * cws-khuntly          12/17/2019 22:39:20             Created.
  */
 import java.util.List;
-import java.util.UUID;
-import java.util.Arrays;
-import java.util.ArrayList;
 
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
@@ -43,9 +40,9 @@ public class AutoResponseAuthenticator implements Authenticator
     /**
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String)
      */
-    public synchronized List<Object> performLogon(final String userGuid, final String username, final String salt, final String password) throws AuthenticatorException
+    public synchronized boolean performLogon(final String userGuid, final String username, final String password) throws AuthenticatorException
     {
-        final String methodName = AutoResponseAuthenticator.CNAME + "#performLogon(final String userGuid, final String username, final String salt, final String password) throws AuthenticatorException";
+        final String methodName = AutoResponseAuthenticator.CNAME + "#performLogon(final String userGuid, final String username, final String password) throws AuthenticatorException";
 
         if (DEBUG)
         {
@@ -54,26 +51,7 @@ public class AutoResponseAuthenticator implements Authenticator
             DEBUGGER.debug("String: {}", username);
         }
 
-        List<Object> userAccount = new ArrayList<Object>(
-        		Arrays.asList(
-        				UUID.randomUUID().toString(),
-        				username,
-        				"",
-        				0,
-        				System.currentTimeMillis(),
-        				Long.valueOf("1584017373915"),
-        				"Test",
-        				"User",
-        				"Test User",
-        				"testuser@test.com",
-        				"7165555555",
-        				"7165555555",
-        				"SITEADMIN",
-        				false,
-        				false,
-        				false));
-
-        return userAccount;
+        return true;
     }
 
     /**

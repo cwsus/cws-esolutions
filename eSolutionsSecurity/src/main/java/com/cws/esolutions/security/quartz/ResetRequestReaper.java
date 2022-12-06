@@ -63,7 +63,7 @@ public class ResetRequestReaper implements Job
 
         try
         {
-            IUserSecurityInformationDAO dao = new UserSecurityInformationDAOImpl();
+            IUserSecurityInformationDAO dao = (IUserSecurityInformationDAO) new UserSecurityInformationDAOImpl();
 
             if (DEBUG)
             {

@@ -36,6 +36,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.security.SecurityServiceConstants;
 /**
  * @author cws-khuntly
@@ -57,6 +58,7 @@ public final class UserReturningAttributes implements Serializable
     private String commonName = null;
     private String displayName = null;
     private String telephoneNumber = null;
+    private SecurityUserRole userRole = null;
     private List<String> returningAttributes = null;
 
     private static final long serialVersionUID = -4767557511096921048L;
@@ -221,6 +223,19 @@ public final class UserReturningAttributes implements Serializable
         this.lockCount = value;
     }
 
+    public final void setUserRole(final SecurityUserRole value)
+    {
+        final String methodName = UserReturningAttributes.CNAME + "#setUserRole(final SecurityUserRole value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.userRole = value;
+    }
+
     @XmlElement(name = "commonName")
     public final String getCommonName()
     {
@@ -373,6 +388,20 @@ public final class UserReturningAttributes implements Serializable
         }
         
         return this.memberOf;
+    }
+
+    @XmlElement(name = "userRole")
+    public final SecurityUserRole getUserRole()
+    {
+        final String methodName = UserReturningAttributes.CNAME + "#getUserRole()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.userRole);
+        }
+        
+        return this.userRole;
     }
 
     @XmlElement(name = "attributeName")

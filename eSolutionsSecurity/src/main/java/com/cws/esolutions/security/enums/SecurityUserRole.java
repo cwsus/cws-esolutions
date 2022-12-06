@@ -34,5 +34,6 @@ public enum SecurityUserRole
 	SITE_ADMIN,
 	ADMIN,
 	USER_ADMIN,
-	USER;
+	USER,
+	NONE;
 }

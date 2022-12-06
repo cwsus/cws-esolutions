@@ -27,6 +27,8 @@ package com.cws.esolutions.security.processors.dto;
  */
 import org.slf4j.Logger;
 import java.io.Serializable;
+import java.lang.reflect.Field;
+
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
@@ -293,5 +295,36 @@ public class AuthenticationData implements Serializable
         }
 
         return this.secret;
+    }
+
+    @Override
+    public final String toString()
+    {
+        StringBuilder sBuilder = new StringBuilder()
+            .append("[" + this.getClass().getName() + "]" + SecurityServiceConstants.LINE_BREAK + "{" + SecurityServiceConstants.LINE_BREAK);
+
+        for (Field field : this.getClass().getDeclaredFields())
+        {
+            if (!(field.getName().equals("methodName")) &&
+                    (!(field.getName().equals("CNAME"))) &&
+                    (!(field.getName().equals("DEBUGGER"))) &&
+                    (!(field.getName().equals("DEBUG"))) &&
+                    (!(field.getName().equals("ERROR_RECORDER"))) &&
+                    (!(field.getName().equals("serialVersionUID"))))
+            {
+                try
+                {
+                    if (field.get(this) != null)
+                    {
+                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + SecurityServiceConstants.LINE_BREAK);
+                    }
+                }
+                catch (IllegalAccessException iax) {}
+            }
+        }
+
+        sBuilder.append('}');
+
+        return sBuilder.toString();
     }
 }

@@ -222,7 +222,7 @@ public final class DataSourceManager implements Serializable
     @XmlElement(name = "dsPass")
     public final String getDsPass()
     {
-        final String methodName = DataSourceManager.CNAME + "#getPassword()";
+        final String methodName = DataSourceManager.CNAME + "#getDsPass()";
 
         if (DEBUG)
         {

@@ -63,8 +63,8 @@ public interface IAuthenticationProcessor
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final IAccessControlService accessControl = new AccessControlServiceImpl();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
-    static final IAccountControlProcessor controlProcessor = new AccountControlProcessorImpl();
-    static final IUserSecurityInformationDAO userSec = UserSecurityInformationDAOFactory.getUserSecurityDAO(secConfig.getUserSecDAO());
+    static final IAccountControlProcessor controlProcessor = (IAccountControlProcessor) new AccountControlProcessorImpl();
+    static final IUserSecurityInformationDAO userSec = (IUserSecurityInformationDAO) UserSecurityInformationDAOFactory.getUserSecurityDAO(secConfig.getUserSecDAO());
     static final Authenticator authenticator = AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());
     static final UserManager userManager = UserManagerFactory.getUserManager(secConfig.getUserManager());
 

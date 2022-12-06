@@ -205,30 +205,46 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             {
             	String newPassword = null;
 
-            	if (StringUtils.isEmpty(userSecurity.getPassword()))
+            	if (StringUtils.isEmpty(request.getUserSecurity().getNewPassword()))
             	{
-                    newPassword = PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()), newUserSalt,
-                            secConfig.getAuthAlgorithm(), secConfig.getIterations(),
-                            secBean.getConfigData().getSystemConfig().getEncoding());	
+            		newPassword = PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()), newUserSalt,
+            				secConfig.getSecretKeyAlgorithm(),
+            				secConfig.getIterations(),
+            				secConfig.getKeyBits(),
+            				secConfig.getEncryptionAlgorithm(),
+            				secConfig.getEncryptionInstance(),
+                			secBean.getConfigData().getSystemConfig().getEncoding());
             	}
             	else
             	{
-                    newPassword = PasswordUtils.encryptText(userSecurity.getPassword(), newUserSalt,
-                            secConfig.getAuthAlgorithm(), secConfig.getIterations(),
-                            secBean.getConfigData().getSystemConfig().getEncoding());
+            		newPassword = PasswordUtils.encryptText(request.getUserSecurity().getNewPassword(), newUserSalt,
+            				secConfig.getSecretKeyAlgorithm(),
+            				secConfig.getIterations(),
+            				secConfig.getKeyBits(),
+            				secConfig.getEncryptionAlgorithm(),
+            				secConfig.getEncryptionInstance(),
+                			secBean.getConfigData().getSystemConfig().getEncoding());
             	}
 
-                // default to lock the account (we need to TODO this)
-                List<String> accountData = new ArrayList<String>(
+                // meh
+                List<Object> accountData = new ArrayList<Object>(
                     Arrays.asList(
-                    		userAccount.getUsername(),
-                    		newPassword,
-                    		String.valueOf(userAccount.getUserRole()),
-                            userAccount.getSurname(),
-                            userAccount.getGivenName(),
-                            userAccount.getEmailAddr(),
-                            userGuid,
-                            userAccount.getGivenName() + " " + userAccount.getSurname()));
+                    		userGuid, // commonName
+                    		userAccount.getUsername(), // uid
+                    		userAccount.getGivenName(), // gvenName
+                    		userAccount.getSurname(), // surname
+                    		userAccount.getGivenName() + " " + userAccount.getSurname(), // displayname
+                    		userAccount.getEmailAddr(), // email
+                    		userAccount.getUserRole().toString(), // cwsrole
+                    		0, // cwsfailedpwdcount
+                    		false, // cwsissuspended
+                    		true, // cwsisolrsetup
+                    		false, // cwsisolrlocked
+                    		false, // cwsistcaccepted
+                    		userAccount.getTelephoneNumber(), // telnum
+                    		userAccount.getPagerNumber(), // pagernum
+                    		newPassword // password
+                    		));
 
                 if (DEBUG)
                 {
@@ -277,6 +293,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         }
         catch (UserManagementException umx)
         {
+        	umx.printStackTrace();
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
             throw new AccountControlException(umx.getMessage(), umx);
@@ -947,7 +964,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // coming as a result of a possible compromise
             String tmpPassword = PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()),
                     RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength()),
-                    secConfig.getAuthAlgorithm(), secConfig.getIterations(),
+                    secConfig.getMessageDigest(), secConfig.getIterations(),
                     secBean.getConfigData().getSystemConfig().getEncoding());
             String tmpSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
 

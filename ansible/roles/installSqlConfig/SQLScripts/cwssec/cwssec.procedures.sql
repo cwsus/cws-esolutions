@@ -130,6 +130,23 @@ BEGIN
 END //
 COMMIT //
 
+DELIMITER //
+CREATE PROCEDURE `CWSSEC`.`retrLogonData`(
+       IN username VARCHAR(100),
+       IN guid VARCHAR(128)
+)
+BEGIN
+    SELECT DISTINCT
+        USERS.CN,
+        USERS.UID,
+        USERS.USERPASSWORD,
+        LOGON_DATA.SALT
+    FROM USERS
+    INNER JOIN LOGON_DATA ON USERS.CN = LOGON_DATA.CN
+    WHERE USERS.CN = guid
+    AND USERS.UID = username;
+END //
+
 CREATE PROCEDURE `CWSSEC`.`updateUserAccount`(
     IN commonName VARCHAR(128),
     IN cwsRole VARCHAR(45),

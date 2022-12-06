@@ -57,7 +57,7 @@ public class AutoResponseUserManager implements UserManager
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#addUserAccount(java.util.List, java.util.List)
      */
-    public synchronized boolean addUserAccount(final List<String> userAccount, final List<String> roles) throws UserManagementException
+    public synchronized boolean addUserAccount(final List<Object> userAccount, final List<String> roles) throws UserManagementException
     {
         final String methodName = AutoResponseUserManager.CNAME + "#addUserAccount(final List<String> userAccount, final List<String> roles) throws UserManagementException";
 

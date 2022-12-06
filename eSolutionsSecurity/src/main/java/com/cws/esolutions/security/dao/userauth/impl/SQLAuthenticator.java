@@ -36,6 +36,7 @@ import java.sql.CallableStatement;
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
+import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 /**
  * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator
@@ -47,9 +48,9 @@ public class SQLAuthenticator implements Authenticator
     /**
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String)
      */
-    public synchronized List<Object> performLogon(final String userGuid, final String username, final String salt, final String password) throws AuthenticatorException
+    public synchronized boolean performLogon(final String userGuid, final String username, final String password) throws AuthenticatorException
     {
-        final String methodName = SQLAuthenticator.CNAME + "#performLogon(final String userGuid, final String userGuid, final String user, final String salt, final String password) throws AuthenticatorException";
+        final String methodName = SQLAuthenticator.CNAME + "#performLogon(final String userGuid, final String userGuid, final String user, final String password) throws AuthenticatorException";
         
         if(DEBUG)
         {
@@ -58,10 +59,10 @@ public class SQLAuthenticator implements Authenticator
             DEBUGGER.debug("String: {}", username);
         }
 
+        boolean isValid = false;
         Connection sqlConn = null;
         ResultSet resultSet = null;
         CallableStatement stmt = null;
-        List<Object> userAccount = null;
 
         try
         {
@@ -79,10 +80,9 @@ public class SQLAuthenticator implements Authenticator
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL performAuthentication(?, ?, ?)}");
-            stmt.setString(1, userGuid); // guid
-            stmt.setString(2, username); // username
-            stmt.setString(3, password); // password
+            stmt = sqlConn.prepareCall("{CALL retrLogonData(?, ?)}");
+            stmt.setString(1, username); // guid
+            stmt.setString(2, userGuid); // username
 
             if (DEBUG)
             {
@@ -103,27 +103,19 @@ public class SQLAuthenticator implements Authenticator
 
             if (resultSet.next())
             {
-                resultSet.first();
+            	resultSet.first();
 
-                int x = 0;
-                userAccount = new ArrayList<Object>();
+            	String decrypted = PasswordUtils.decryptText(resultSet.getString(3), resultSet.getString(4), secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(),
+            			secConfig.getKeyBits(), secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
+            			svcBean.getConfigData().getSystemConfig().getEncoding());
 
-                for (String returningAttribute : userAttributes.getReturningAttributes())
-                {
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("returningAttribute: {}", returningAttribute);
-                    }
+            	if (!(StringUtils.equals(password, decrypted)))
+            	{
+            		throw new AuthenticatorException("Authentication failed");
+            	}
 
-                    System.out.println("Adding attribute :" + x + " " + returningAttribute);
-                    userAccount.add(resultSet.getObject(returningAttribute));
-                    x++;
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("List<Object>: {}", userAccount);
-                }
+            	// user authentication succeeded, we can drop now
+            	isValid = true;
             }
         }
         catch (SQLException sqx)
@@ -155,7 +147,7 @@ public class SQLAuthenticator implements Authenticator
             }
         }
 
-        return userAccount;
+        return isValid;
     }
 
     /**

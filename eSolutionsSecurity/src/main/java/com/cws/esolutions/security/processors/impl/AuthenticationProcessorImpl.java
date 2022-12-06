@@ -27,8 +27,8 @@ package com.cws.esolutions.security.processors.impl;
  */
 import java.util.List;
 import java.util.Date;
+import java.sql.Timestamp;
 import java.sql.SQLException;
-import com.unboundid.ldap.sdk.ResultCode;
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
@@ -47,9 +47,7 @@ import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
-import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor;
-import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 /**
  * @see com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor
  */
@@ -107,35 +105,35 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             	}
             }
 
-            String userSalt = userSec.getUserSalt(userInfo.get(0)[0], SaltType.LOGON.name());
+            String userSalt = userSec.getUserSalt(userInfo.get(0)[0], SaltType.LOGON.name()); // user salt as obtained from the database
+            String userGuid = userInfo.get(0)[0]; // this should be the guid
 
-            if (StringUtils.isEmpty(userSalt))
+            if ((StringUtils.isEmpty(userGuid)) || (StringUtils.isEmpty(userSalt)))
             {
-                throw new AuthenticationException("Unable to obtain configured user salt. Cannot continue");
+                throw new AuthenticationException("Unable to obtain configured user security information. Cannot continue");
             }
 
-            List<Object> authObject = authenticator.performLogon(userInfo.get(0)[0], authUser.getUsername(),
-            		userSalt, authSec.getPassword());
+            boolean isValid = authenticator.performLogon(userGuid, authUser.getUsername(), authSec.getPassword()); // the password provided here is decrypted. it must be 
 
             if (DEBUG)
             {
-                DEBUGGER.debug("List<Object>: {}", authObject);
+                DEBUGGER.debug("isValid: {}", isValid);
             }
 
-            if (authObject.size() == 0)
+            if (!(isValid))
             {
-                throw new AuthenticationException("Authentication processing failed. Cannot continue.");
+                throw new AuthenticationException("Failed to load user account information!");
             }
+
+            // load the user account here
+            List<Object> authObject = userManager.loadUserAccount(userGuid);
 
             if (DEBUG)
             {
-            	for (Object entry : authObject)
-            	{
-            		DEBUGGER.debug("Entry: {}", entry);
-            	}
+            	DEBUGGER.debug("authObject: {}", authObject);
             }
 
-            if ((Integer) authObject.get(6) >= secConfig.getMaxAttempts())
+            if ((Integer) authObject.get(7) >= secConfig.getMaxAttempts())
             {
                 // user locked
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
@@ -143,9 +141,47 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 return response;
             }
 
+            // fuck with the last login
+            Timestamp tmLastLogin = (Timestamp) authObject.get(8);
+            Timestamp tmExpiryDate = (Timestamp) authObject.get(9); // idk fix this
+            long lastLogin = tmLastLogin.getTime();
+            long expiryDate = tmExpiryDate.getTime();
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("lastLogin: {}", lastLogin);
+            	DEBUGGER.debug("expiryDate: {}", expiryDate);
+            }
+
+            userAccount = new UserAccount();
+            userAccount.setGuid((String) authObject.get(0)); // CN
+            userAccount.setUsername((String) authObject.get(1)); // UID
+            userAccount.setGivenName((String) authObject.get(2)); // GIVENNAME
+            userAccount.setSurname((String) authObject.get(3)); // sn
+            userAccount.setDisplayName((String) authObject.get(4)); // displayName
+            userAccount.setEmailAddr((String) authObject.get(5)); // email
+            userAccount.setUserRole(SecurityUserRole.valueOf((String) authObject.get(6))); //cwsrole
+            userAccount.setFailedCount((int) authObject.get(7)); // cwsfailedpwdcount            
+            userAccount.setLastLogin(lastLogin); // cwslastlogin
+            userAccount.setExpiryDate(expiryDate); // cwsexpirydate
+            userAccount.setSuspended((boolean) authObject.get(10)); // cwsissuspended
+            userAccount.setOlrSetup((boolean) authObject.get(11)); // cwsisolrsetup
+            userAccount.setOlrLocked((boolean) authObject.get(12)); // cwsisolrlocked
+            userAccount.setAccepted((boolean) authObject.get(13)); // cwsistcaccepted
+            userAccount.setTelephoneNumber((String) authObject.get(14)); // telephoneNumber
+            userAccount.setPagerNumber((String) authObject.get(15)); // pager
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("UserAccount: {}", userAccount);
+            }
+
+            // get otp salt if available
+            String returnedSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.OTP.toString());
+
             // if the user has enabled otp auth, do it here
             // TODO
-            if (StringUtils.isNotEmpty((String) authObject.get(2)))
+            if (StringUtils.isNotEmpty(returnedSalt))
             {
                 userAccount = new UserAccount();
                 userAccount.setGuid((String) authObject.get(0));
@@ -156,28 +192,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 response.setUserAccount(userAccount);
 
                 return response;
-            }
-
-            userAccount = new UserAccount();
-            userAccount.setGuid((String) authObject.get(0)); // CN
-            userAccount.setUsername((String) authObject.get(1)); // UID
-            userAccount.setGivenName((String) authObject.get(2)); // SN
-            userAccount.setSurname((String) authObject.get(3)); // givenName
-            userAccount.setDisplayName((String) authObject.get(4)); // displayName
-            userAccount.setUserRole(SecurityUserRole.valueOf((String) authObject.get(5))); //cwsrole
-            userAccount.setFailedCount((int) authObject.get(6)); // cwsfailedpwdcount
-            userAccount.setLastLogin((long) authObject.get(7)); // cwslastlogin
-            userAccount.setExpiryDate((long) authObject.get(8)); // cwsexpirydate
-            userAccount.setSuspended((boolean) authObject.get(9)); // cwsissuspended
-            userAccount.setOlrSetup((boolean) authObject.get(10)); // cwsisolrsetup
-            userAccount.setOlrLocked((boolean) authObject.get(11)); // cwsisolrlocked
-            userAccount.setAccepted((boolean) authObject.get(12)); // cwsistcaccepted
-            userAccount.setTelephoneNumber((String) authObject.get(13)); // telephoneNumber
-            userAccount.setPagerNumber((String) authObject.get(14)); // pager
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("UserAccount: {}", userAccount);
             }
 
             // have a user account, run with it
@@ -204,36 +218,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 DEBUGGER.debug("UserAccount: {}", userAccount);
                 DEBUGGER.debug("AuthenticationResponse: {}", response);
             }
-        }
-        catch (AuthenticatorException ax)
-        {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            try
-            {
-                if (ax.getResultCode() == ResultCode.INVALID_CREDENTIALS)
-                {
-                    // failed authentication, update counter
-                    // find out if this is a valid user...
-                    List<String[]> userList = userManager.searchUsers(authUser.getUsername());
-
-                    // only do the work if the userlist is equal to 1.
-                    // if there were 150 users found then we dont want
-                    // to shoot them all
-                    if ((userList != null) && (userList.size() == 1))
-                    {
-                        // do it
-                        userManager.modifyUserLock(userList.get(0)[0], false, request.getCount() + 1);
-                    }
-                }
-            }
-            catch (UserManagementException umx)
-            {
-                ERROR_RECORDER.error(umx.getMessage(), umx);
-            }
-
-            response.setCount(request.getCount() + 1);
-            response.setRequestStatus(SecurityRequestStatus.FAILURE);
         }
         catch (SecurityServiceException ssx)
         {
@@ -330,7 +314,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
             boolean isAuthorized = PasswordUtils.validateOtpValue(secConfig.getOtpVariance(), secConfig.getOtpAlgorithm(),
                     PasswordUtils.decryptText(otpSecret, otpSalt,
-                            secBean.getConfigData().getSecurityConfig().getSecretAlgorithm(),
+                            secBean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
                             secBean.getConfigData().getSecurityConfig().getIterations(),
                             secBean.getConfigData().getSecurityConfig().getKeyBits(),
                             secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),

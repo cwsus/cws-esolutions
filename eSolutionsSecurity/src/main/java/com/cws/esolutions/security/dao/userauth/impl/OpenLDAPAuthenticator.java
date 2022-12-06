@@ -42,7 +42,6 @@ import com.unboundid.ldap.sdk.SimpleBindRequest;
 import com.unboundid.ldap.sdk.LDAPConnectionPool;
 
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
-import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 /**
  * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator
@@ -54,9 +53,9 @@ public class OpenLDAPAuthenticator implements Authenticator
     /**
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String)
      */
-    public synchronized List<Object> performLogon(final String userGuid, final String username, final String salt, final String password) throws AuthenticatorException
+    public synchronized boolean performLogon(final String userGuid, final String username, final String password) throws AuthenticatorException
     {
-        final String methodName = OpenLDAPAuthenticator.CNAME + "#performLogon(final String userGuid, final String username, final String salt, final String password) throws AuthenticatorException";
+        final String methodName = OpenLDAPAuthenticator.CNAME + "#performLogon(final String userGuid, final String username, final String password) throws AuthenticatorException";
 
         if (DEBUG)
         {
@@ -65,8 +64,8 @@ public class OpenLDAPAuthenticator implements Authenticator
             DEBUGGER.debug("String: {}", username);
         }
 
+        boolean isValid = false;
         LDAPConnection ldapConn = null;
-        List<Object> userAccount = null;
         LDAPConnectionPool ldapPool = null;
 
         try
@@ -133,94 +132,15 @@ public class OpenLDAPAuthenticator implements Authenticator
             }
 
             // encrypt password first
-            BindRequest bindRequest = new SimpleBindRequest(entry.getDN(), PasswordUtils.encryptText(
-                    salt,
-                    password,
-                    svcBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
-                    svcBean.getConfigData().getSecurityConfig().getIterations(),
-                    svcBean.getConfigData().getSystemConfig().getEncoding()));
+            // change this because we're getting an encrypted pass
+            BindRequest bindRequest = new SimpleBindRequest(entry.getDN(), password);
 
             if (DEBUG)
             {
                 DEBUGGER.debug("BindRequest: {}", bindRequest);
             }
 
-            userAccount = new ArrayList<Object>();
-
-            for (String returningAttribute : userAttributes.getReturningAttributes())
-            {
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("returningAttribute: {}", returningAttribute);
-                }
-
-                userAccount.add(entry.getAttributeValue(returningAttribute));
-            }
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("userAccount: {}", userAccount);
-            }
-
-            Filter roleFilter = Filter.create("(&(objectClass=groupOfUniqueNames)" +
-                    "(&(uniqueMember=" + entry.getDN() + ")))");
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("SearchFilter: {}", roleFilter);
-            }
-
-            SearchRequest roleSearch = new SearchRequest(
-                repoConfig.getRepositoryRoleBase(),
-                SearchScope.SUB,
-                roleFilter,
-                userAttributes.getCommonName());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("SearchRequest: {}", roleSearch);
-            }
-
-            SearchResult roleResult = ldapConn.search(roleSearch);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("searchResult: {}", roleResult);
-            }
-
-            if ((roleResult.getResultCode() == ResultCode.SUCCESS) && (roleResult.getEntryCount() != 0))
-            {
-                StringBuilder sBuilder = new StringBuilder();
-
-                for (int x = 0; x < roleResult.getSearchEntries().size(); x++)
-                {
-                    SearchResultEntry role = roleResult.getSearchEntries().get(x);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("SearchResultEntry: {}", role);
-                    }
-
-                    if (x == roleResult.getSearchEntries().size())
-                    {
-                        sBuilder.append(role);
-                    }
-
-                    sBuilder.append(role + ", ");
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("sBuilder: {}", sBuilder.toString());
-                    }
-                }
-
-                userAccount.add(sBuilder.toString());
-            }
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("UserAccount: {}", userAccount);
-            }
+            isValid = true;
         }
         catch (LDAPException lx)
         {
@@ -239,7 +159,7 @@ public class OpenLDAPAuthenticator implements Authenticator
             }
         }
 
-        return userAccount;
+        return isValid;
     }
 
     /**

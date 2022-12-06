@@ -747,13 +747,6 @@ public class UserAccount implements Serializable
     @Override
     public final String toString()
     {
-        final String methodName = UserAccount.CNAME + "#toString()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
         StringBuilder sBuilder = new StringBuilder()
             .append("[" + this.getClass().getName() + "]" + SecurityServiceConstants.LINE_BREAK + "{" + SecurityServiceConstants.LINE_BREAK);
 
@@ -779,11 +772,6 @@ public class UserAccount implements Serializable
         }
 
         sBuilder.append('}');
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("sBuilder: {}", sBuilder);
-        }
 
         return sBuilder.toString();
     }

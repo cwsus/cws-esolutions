@@ -61,7 +61,7 @@ public final class SecurityConfig implements Serializable
     private String otpAlgorithm = null;
     private int passwordMaxLength = 128; // default of 32 characters
     private int passwordExpiration = 45; // 90 day lifetime
-    private String authAlgorithm = null;
+    private String messageDigest = null;
     private String applicationId = null; // only required if its not already fed
     private boolean performAudit = true; // default true to perform audit
     private boolean enableSecurity = true;
@@ -69,7 +69,7 @@ public final class SecurityConfig implements Serializable
     private UserAccount svcAccount = null; // service account, if necessary
     private boolean smsResetEnabled = false;
     private String encryptionAlgorithm = "AES"; // algorithm
-    private String secretAlgorithm = "PBKDF2WithHmacSHA512"; // secret instance
+    private String secretKeyAlgorithm = "PBKDF2WithHmacSHA512"; // secret instance
     private String encryptionInstance = "AES/CBC/PKCS5Padding";  // cipher instance
 
     private static final long serialVersionUID = -338675198961732554L;
@@ -181,9 +181,9 @@ public final class SecurityConfig implements Serializable
         }
     }
 
-    public final void setAuthAlgorithm(final String value)
+    public final void setMessageDigest(final String value)
     {
-        final String methodName = SecurityConfig.CNAME + "#setAuthAlgorithm(final String value)";
+        final String methodName = SecurityConfig.CNAME + "#setMessageDigest(final String value)";
 
         if (DEBUG)
         {
@@ -191,7 +191,7 @@ public final class SecurityConfig implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.authAlgorithm = value;
+        this.messageDigest = value;
     }
 
     public final void setOtpAlgorithm(final String value)
@@ -421,9 +421,9 @@ public final class SecurityConfig implements Serializable
         }
     }
 
-    public final void setSecretAlgorithm(final String value)
+    public final void setSecretKeyAlgorithm(final String value)
     {
-        final String methodName = SecurityConfig.CNAME + "#setSecretAlgorithm(final String value)";
+        final String methodName = SecurityConfig.CNAME + "#setSecretKeyAlgorithm(final String value)";
 
         if (DEBUG)
         {
@@ -431,7 +431,7 @@ public final class SecurityConfig implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.secretAlgorithm = value;
+        this.secretKeyAlgorithm = value;
     }
 
     @XmlElement(name = "applicationId")
@@ -504,18 +504,18 @@ public final class SecurityConfig implements Serializable
         return this.iterations;
     }
 
-    @XmlElement(name = "authAlgorithm")
-    public final String getAuthAlgorithm()
+    @XmlElement(name = "messageDigest")
+    public final String getMessageDigest()
     {
-        final String methodName = SecurityConfig.CNAME + "#getAuthAlgorithm()";
+        final String methodName = SecurityConfig.CNAME + "#getMessageDigest()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.authAlgorithm);
+            DEBUGGER.debug("Value: {}", this.messageDigest);
         }
 
-        return this.authAlgorithm;
+        return this.messageDigest;
     }
 
     @XmlElement(name = "otpAlgorithm")
@@ -784,18 +784,18 @@ public final class SecurityConfig implements Serializable
         return this.keyBits;
     }
 
-    @XmlElement(name = "secretAlgorithm")
-    public final String getSecretAlgorithm()
+    @XmlElement(name = "secretKeyAlgorithm")
+    public final String getSecretKeyAlgorithm()
     {
-        final String methodName = SecurityConfig.CNAME + "#getSecretAlgorithm()";
+        final String methodName = SecurityConfig.CNAME + "#getSecretKeyAlgorithm()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.secretAlgorithm);
+            DEBUGGER.debug("Value: {}", this.secretKeyAlgorithm);
         }
 
-        return this.secretAlgorithm;
+        return this.secretKeyAlgorithm;
     }
 
     @Override

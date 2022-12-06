@@ -57,32 +57,47 @@ public class PasswordUtilsTest
         }
     }
 
-    @Test public void testEncryption()
+    @Test public void testTwoWayEncryption()
     {
-        final String plainText = "aQPqJsO1sbrPXmFdxwJi";
-        final String salt = "QYosWmY0q8o3xMb8Arsaq7rJFdbFukbG";
+        final String plainText = "U1Y5RkFIdzZ3VXZBdW9DRHlyM0syZz09OmUvR2szWDJvdHVoWmhqZTZPNU9MTVFWeXkrWUpETTRwOVA1WWplRnpaWU09";
+        final String salt = "hg4Q1qymhVY5ZICwyXuYFvdegQVyrAbg";
 
         try
         {
-        	String encrypted = PasswordUtils.encryptText(plainText, salt, // encrypt
-                    bean.getConfigData().getSecurityConfig().getSecretAlgorithm(),
-                    bean.getConfigData().getSecurityConfig().getIterations(),
-                    bean.getConfigData().getSecurityConfig().getKeyBits(),
-                    bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                    bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                    bean.getConfigData().getSystemConfig().getEncoding());
+        	String encr = PasswordUtils.encryptText(plainText, salt,
+        			bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
+        			bean.getConfigData().getSecurityConfig().getIterations(),
+        			bean.getConfigData().getSecurityConfig().getKeyBits(),
+        			bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+        			bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+        			bean.getConfigData().getSystemConfig().getEncoding());
 
-        	Assertions.assertThat(encrypted);
+        	Assertions.assertThat(encr).isNotEmpty();
 
-        	String decrypted = PasswordUtils.decryptText(encrypted, "SG4oZgiGEHw1XHOY3fDDuKpTRuvWlYHK", //decrypt and validate
-                    bean.getConfigData().getSecurityConfig().getSecretAlgorithm(),
-                    bean.getConfigData().getSecurityConfig().getIterations(),
-                    bean.getConfigData().getSecurityConfig().getKeyBits(),
-                    bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                    bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                    bean.getConfigData().getSystemConfig().getEncoding());
+        	String decr = PasswordUtils.decryptText(encr, salt, bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(), bean.getConfigData().getSecurityConfig().getIterations(),
+        			bean.getConfigData().getSecurityConfig().getKeyBits(), bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(), bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+        			bean.getConfigData().getSystemConfig().getEncoding());
 
-        	Assertions.assertThat(decrypted);
+        	Assertions.assertThat(decr).isEqualTo(plainText);
+        }
+        catch (Exception sx)
+        {
+            Assertions.fail(sx.getMessage());
+        }
+    }
+
+    @Test public void testOneWayEncryption()
+    {
+        final String plainText = "some-password";
+        final String salt = "ToqXs54ODtiENnlb8217Hq6LfIi9xYAg";
+        final String expected = "wDkPVRWF4VehbzWNrP25iR6jZeGiEzLhqtjJlcXOwK8nWw6f31LYXmtovfl/0nGJgM+yMgyV+r+J2VfZntIL/w==";
+
+        try
+        {
+        	String encrypted = PasswordUtils.encryptText(plainText, salt, bean.getConfigData().getSecurityConfig().getMessageDigest(),
+        			bean.getConfigData().getSecurityConfig().getIterations(), bean.getConfigData().getSystemConfig().getEncoding());
+
+        	Assertions.assertThat(encrypted).isEqualTo(expected);
         }
         catch (Exception sx)
         {

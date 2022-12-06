@@ -75,7 +75,7 @@ public class OpenLDAPUserManagerTest
         try
         {
         	Assertions.assertThat(manager.addUserAccount(
-                    new ArrayList<String>(
+                    new ArrayList<Object>(
                             Arrays.asList(
                                     "junit-test",
                                     RandomStringUtils.randomAlphanumeric(64),

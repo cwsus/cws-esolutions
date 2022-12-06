@@ -157,7 +157,7 @@ public class OpenLDAPUserManager implements UserManager
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#addUserAccount(java.util.List, java.util.List)
      */
-    public synchronized boolean addUserAccount(final List<String> userAccount, final List<String> roles) throws UserManagementException
+    public synchronized boolean addUserAccount(final List<Object> userAccount, final List<String> roles) throws UserManagementException
     {
         final String methodName = OpenLDAPUserManager.CNAME + "#addUserAccount(final List<String> userAccount, final List<String> roles) throws UserManagementException";
 
@@ -211,13 +211,13 @@ public class OpenLDAPUserManager implements UserManager
             List<Attribute> newAttributes = new ArrayList<Attribute>(
                 Arrays.asList(
                     new Attribute("objectClass", repoConfig.getBaseObject()),
-                    new Attribute(userAttributes.getCommonName(), userAccount.get(0)),
-                    new Attribute(userAttributes.getUserId(), userAccount.get(1)),
-                    new Attribute(userAttributes.getEmailAddr(), userAccount.get(2)),
-                    new Attribute(userAttributes.getGivenName(), userAccount.get(3)),
-                    new Attribute(userAttributes.getSurname(), userAccount.get(4)),
-                    new Attribute(userAttributes.getDisplayName(), userAccount.get(3) + " " + userAccount.get(4)),
-                    new Attribute(securityAttributes.getIsSuspended(), userAccount.get(5)),
+                    new Attribute(userAttributes.getCommonName(), (String) userAccount.get(0)),
+                    new Attribute(userAttributes.getUserId(),  (String) userAccount.get(1)),
+                    new Attribute(userAttributes.getEmailAddr(),  (String) userAccount.get(2)),
+                    new Attribute(userAttributes.getGivenName(),  (String) userAccount.get(3)),
+                    new Attribute(userAttributes.getSurname(),  (String) userAccount.get(4)),
+                    new Attribute(userAttributes.getDisplayName(),  (String) userAccount.get(3) + " " +  (String) userAccount.get(4)),
+                    new Attribute(securityAttributes.getIsSuspended(),  (String) userAccount.get(5)),
                     new Attribute(securityAttributes.getLockCount(), "0"),
                     new Attribute(securityAttributes.getExpiryDate(), new Date().toString())));
 

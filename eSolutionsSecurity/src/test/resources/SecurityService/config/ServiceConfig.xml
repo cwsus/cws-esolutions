@@ -30,7 +30,7 @@
         <passwordExpiration>90</passwordExpiration> <!-- how long before a password MUST be changed -->
         <passwordMinLength>8</passwordMinLength> <!--  minimum allowed password length -->
         <passwordMaxLength>64</passwordMaxLength> <!--  maximum allowed password length (0 or null -> no limit) -->
-        <authAlgorithm>SHA-512</authAlgorithm> <!-- MessageDigest: http://docs.oracle.com/javase/6/docs/technotes/guides/security/StandardNames.html#MessageDigest -->
+        <messageDigest>SHA-512</messageDigest> <!-- MessageDigest: http://docs.oracle.com/javase/6/docs/technotes/guides/security/StandardNames.html#MessageDigest -->
         <otpAlgorithm>HmacSHA1</otpAlgorithm>
         <keyBits>256</keyBits>
         <secretKeyAlgorithm>PBKDF2WithHmacSHA1</secretKeyAlgorithm>
@@ -70,6 +70,7 @@
             <emailAddr>mail</emailAddr>
             <displayName>displayName</displayName>
             <telephoneNumber>telephoneNumber</telephoneNumber>
+            <userRole>cwsrole</userRole>
             <returningAttributes>
                 <attributeName>cn</attributeName>
                 <attributeName>uid</attributeName>
@@ -141,7 +142,7 @@
             <datasource>jdbc:mysql://localhost/CWSSEC?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
             <dsUser>appadm</dsUser>
-            <dsPass>OW1IaHJTamtic1JQa1pwVmVTU1BBQT09Om1uNHpJK2pUYlF6L0pwU09tcnhaME5vYXBRYmUxOFJsTno2ODhuUmpkdG89</dsPass>
+            <dsPass>U1Y5RkFIdzZ3VXZBdW9DRHlyM0syZz09OmUvR2szWDJvdHVoWmhqZTZPNU9MTVFWeXkrWUpETTRwOVA1WWplRnpaWU09</dsPass>
             <dsSalt>hg4Q1qymhVY5ZICwyXuYFvdegQVyrAbg</dsSalt>
             <connectTimeout>10</connectTimeout>
             <autoReconnect>true</autoReconnect>
@@ -151,7 +152,7 @@
             <datasource>jdbc:mysql://localhost/CWSSEC?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
             <dsUser>appadm</dsUser>
-            <dsPass>OW1IaHJTamtic1JQa1pwVmVTU1BBQT09Om1uNHpJK2pUYlF6L0pwU09tcnhaME5vYXBRYmUxOFJsTno2ODhuUmpkdG89</dsPass>
+            <dsPass>U1Y5RkFIdzZ3VXZBdW9DRHlyM0syZz09OmUvR2szWDJvdHVoWmhqZTZPNU9MTVFWeXkrWUpETTRwOVA1WWplRnpaWU09</dsPass>
             <dsSalt>hg4Q1qymhVY5ZICwyXuYFvdegQVyrAbg</dsSalt>
             <connectTimeout>10</connectTimeout>
             <autoReconnect>true</autoReconnect>

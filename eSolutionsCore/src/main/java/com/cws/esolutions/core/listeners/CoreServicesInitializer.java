@@ -162,7 +162,7 @@ public class CoreServicesInitializer
                             dataSource.setUsername(mgr.getDsUser());
                             dataSource.setConnectionProperties(sBuilder.toString());
                             dataSource.setPassword(PasswordUtils.decryptText(mgr.getDsPass(), mgr.getSalt(),
-                                    secConfig.getSecretAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
+                                    secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
                                     secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
                                     configData.getAppConfig().getEncoding()));
                         if (DEBUG)

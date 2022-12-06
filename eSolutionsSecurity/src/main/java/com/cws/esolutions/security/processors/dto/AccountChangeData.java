@@ -55,7 +55,6 @@ public final class AccountChangeData implements Serializable
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
 
     public final void setIsReset(final boolean value)
     {
@@ -453,33 +452,17 @@ public final class AccountChangeData implements Serializable
     @Override
     public final String toString()
     {
-        final String methodName = AccountChangeData.CNAME + "#toString()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
         StringBuilder sBuilder = new StringBuilder()
             .append("[" + this.getClass().getName() + "]" + SecurityServiceConstants.LINE_BREAK + "{" + SecurityServiceConstants.LINE_BREAK);
 
         for (Field field : this.getClass().getDeclaredFields())
         {
-            if (DEBUG)
-            {
-                DEBUGGER.debug("field: {}", field);
-            }
-
             if (!(field.getName().equals("methodName")) &&
                     (!(field.getName().equals("CNAME"))) &&
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
                     (!(field.getName().equals("ERROR_RECORDER"))) &&
-                    (!(field.getName().equals("newPassword"))) &&
-                    (!(field.getName().equals("secAnswerOne"))) &&
-                    (!(field.getName().equals("secAnswerTwo"))) &&
-                    (!(field.getName().equals("currentPassword"))) &&
-                    (!(field.getName().equals("confirmPassword"))) &&
+                    (!(field.getName().equals("userSecurity"))) &&
                     (!(field.getName().equals("serialVersionUID"))))
             {
                 try
@@ -489,19 +472,11 @@ public final class AccountChangeData implements Serializable
                         sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + SecurityServiceConstants.LINE_BREAK);
                     }
                 }
-                catch (IllegalAccessException iax)
-                {
-                    ERROR_RECORDER.error(iax.getMessage(), iax);
-                }
+                catch (IllegalAccessException iax) {}
             }
         }
 
         sBuilder.append('}');
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("sBuilder: {}", sBuilder);
-        }
 
         return sBuilder.toString();
     }

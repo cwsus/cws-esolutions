@@ -36,10 +36,10 @@ import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
+import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
-import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 /**
@@ -48,7 +48,7 @@ import com.cws.esolutions.security.processors.interfaces.IAccountControlProcesso
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AccountControlProcessorImplTest
 {
-    private static UserAccount testAccount = new UserAccount();
+    private static UserAccount newAccount = new UserAccount();
     private static UserAccount userAccount = new UserAccount();
     private static RequestHostInfo hostInfo = new RequestHostInfo();
     private static final IAccountControlProcessor processor = new AccountControlProcessorImpl();
@@ -66,12 +66,15 @@ public class AccountControlProcessorImplTest
             userAccount.setGroups(new String[] { "SiteAdmin" });
             userAccount.setUserRole(SecurityUserRole.SITE_ADMIN);
 
-            testAccount.setUsername("junit-test");
-            testAccount.setSuspended(false);
-            testAccount.setSurname("test");
-            testAccount.setGivenName("junit");
-            testAccount.setEmailAddr("junit@test.com");
-            testAccount.setGroups(new String[] { "DNS Operator" });
+            newAccount.setUsername("junit-runner");
+            newAccount.setSuspended(false);
+            newAccount.setSurname("test");
+            newAccount.setGivenName("junit");
+            newAccount.setEmailAddr("junit@test.com");
+            newAccount.setGroups(new String[] { "DNS Operator" });
+            newAccount.setUserRole(SecurityUserRole.NONE);
+            newAccount.setTelephoneNumber("5555551212");
+            newAccount.setPagerNumber("5555551213");
 
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
@@ -87,12 +90,13 @@ public class AccountControlProcessorImplTest
     @Test public void createNewUser()
     {
         AuthenticationData authSec = new AuthenticationData();
-        authSec.setPassword("1508Hailey27*");
+        authSec.setNewPassword("naB8QUXNTWFA7MCpFYvT");
+        authSec.setUsername("junit-runner");
 
         AccountControlRequest request = new AccountControlRequest();
         request.setHostInfo(hostInfo);
         request.setRequestor(userAccount);
-        request.setUserAccount(testAccount);
+        request.setUserAccount(newAccount);
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setApplicationName("eSolutions");
         request.setUserSecurity(authSec);
@@ -105,7 +109,6 @@ public class AccountControlProcessorImplTest
         }
         catch (AccountControlException acx)
         {
-            acx.printStackTrace();
             Assertions.fail(acx.getMessage());
         }
     }
@@ -117,7 +120,7 @@ public class AccountControlProcessorImplTest
         request.setApplicationName("eSolutions");
         request.setHostInfo(hostInfo);
         request.setRequestor(userAccount);
-        request.setUserAccount(testAccount);
+        request.setUserAccount(newAccount);
 
         try
         {
@@ -138,7 +141,7 @@ public class AccountControlProcessorImplTest
         request.setApplicationName("eSolutions");
         request.setHostInfo(hostInfo);
         request.setRequestor(userAccount);
-        request.setUserAccount(testAccount);
+        request.setUserAccount(newAccount);
 
         try
         {
@@ -156,7 +159,7 @@ public class AccountControlProcessorImplTest
     {
         AccountControlRequest request = new AccountControlRequest();
         request.setHostInfo(hostInfo);
-        request.setUserAccount(testAccount);
+        request.setUserAccount(newAccount);
         request.setApplicationName("esolutions");
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setRequestor(userAccount);
@@ -176,11 +179,11 @@ public class AccountControlProcessorImplTest
 
     @Test public void modifyUserRole()
     {
-        testAccount.setFailedCount(0);
+        newAccount.setFailedCount(0);
 
         AccountControlRequest request = new AccountControlRequest();
         request.setHostInfo(hostInfo);
-        request.setUserAccount(testAccount);
+        request.setUserAccount(newAccount);
         request.setApplicationName("esolutions");
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setRequestor(userAccount);
@@ -202,7 +205,7 @@ public class AccountControlProcessorImplTest
     {
         AccountControlRequest request = new AccountControlRequest();
         request.setHostInfo(hostInfo);
-        request.setUserAccount(testAccount);
+        request.setUserAccount(newAccount);
         request.setApplicationName("esolutions");
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setRequestor(userAccount);
@@ -222,11 +225,11 @@ public class AccountControlProcessorImplTest
 
     @Test public void modifyUserLockout()
     {
-        testAccount.setFailedCount(0);
+        newAccount.setFailedCount(0);
 
         AccountControlRequest request = new AccountControlRequest();
         request.setHostInfo(hostInfo);
-        request.setUserAccount(testAccount);
+        request.setUserAccount(newAccount);
         request.setApplicationName("esolutions");
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setRequestor(userAccount);
@@ -248,7 +251,7 @@ public class AccountControlProcessorImplTest
     {
         AccountControlRequest request = new AccountControlRequest();
         request.setHostInfo(hostInfo);
-        request.setUserAccount(testAccount);
+        request.setUserAccount(newAccount);
         request.setApplicationName("esolutions");
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setRequestor(userAccount);

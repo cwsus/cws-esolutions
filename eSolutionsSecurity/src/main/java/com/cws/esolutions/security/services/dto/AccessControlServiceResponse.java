@@ -75,13 +75,6 @@ public class AccessControlServiceResponse implements Serializable
     @Override
     public final String toString()
     {
-        final String methodName = AccessControlServiceResponse.CNAME + "#toString()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
         StringBuilder sBuilder = new StringBuilder()
             .append("[" + this.getClass().getName() + "]" + SecurityServiceConstants.LINE_BREAK + "{" + SecurityServiceConstants.LINE_BREAK);
 
@@ -92,6 +85,7 @@ public class AccessControlServiceResponse implements Serializable
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
                     (!(field.getName().equals("ERROR_RECORDER"))) &&
+                    (!(field.getName().equals("userSecurity"))) &&
                     (!(field.getName().equals("serialVersionUID"))))
             {
                 try
@@ -106,11 +100,6 @@ public class AccessControlServiceResponse implements Serializable
         }
 
         sBuilder.append('}');
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("sBuilder: {}", sBuilder);
-        }
 
         return sBuilder.toString();
     }

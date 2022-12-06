@@ -60,7 +60,7 @@ public class SQLAuthenticatorTest
 
         try
         {
-        	authenticator.performLogon("0f645ed1-a8bb-4d5c-b4d6-2276f1dba592", "junit-test", "Tsu4hEW6erzJNvfExXuh5IBcofinTxxL", "Dcs5/bktmt1aEeVZn/kvKSrSP+AdS3q/E56E8Gfq23vjhcJIPenmvlLhrD+PvTTfLChqudUeK/biHp/nKl2/GA==");
+        	authenticator.performLogon("0f645ed1-a8bb-4d5c-b4d6-2276f1dba592", "junit-test", "Dcs5/bktmt1aEeVZn/kvKSrSP+AdS3q/E56E8Gfq23vjhcJIPenmvlLhrD+PvTTfLChqudUeK/biHp/nKl2/GA==");
         }
         catch (AuthenticatorException e)
         {
