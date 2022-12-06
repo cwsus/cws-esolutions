@@ -426,7 +426,7 @@ public class CommonController
             mView.setViewName(this.appConfig.getContactAdminsRedirect());
             mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessageEmailSentSuccess());
         }
-        catch (MessagingException mx)
+        catch (final MessagingException mx)
         {
             ERROR_RECORDER.error(mx.getMessage(), mx);
 

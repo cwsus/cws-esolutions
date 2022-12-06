@@ -83,7 +83,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
                 DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
@@ -168,7 +168,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
@@ -270,7 +270,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
@@ -372,7 +372,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
@@ -449,7 +449,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
                 DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
@@ -513,7 +513,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
                 DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
@@ -650,7 +650,7 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 

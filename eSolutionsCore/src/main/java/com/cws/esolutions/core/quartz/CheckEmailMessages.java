@@ -141,11 +141,11 @@ public class CheckEmailMessages implements Job
                 }
             }
         }
-        catch (MessagingException mx)
+        catch (final MessagingException mx)
         {
             ERROR_RECORDER.error(mx.getMessage(), mx);
         }
-        catch (IOException iox)
+        catch (final IOException iox)
         {
             ERROR_RECORDER.error(iox.getMessage(), iox);
         }

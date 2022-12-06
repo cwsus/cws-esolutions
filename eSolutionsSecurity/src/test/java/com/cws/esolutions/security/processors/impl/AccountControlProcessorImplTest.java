@@ -78,7 +78,7 @@ public class AccountControlProcessorImplTest
 
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
         	ex.printStackTrace();
 
@@ -107,7 +107,7 @@ public class AccountControlProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (AccountControlException acx)
+        catch (final AccountControlException acx)
         {
             Assertions.fail(acx.getMessage());
         }
@@ -128,7 +128,7 @@ public class AccountControlProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (AccountControlException acx)
+        catch (final AccountControlException acx)
         {
             Assertions.fail(acx.getMessage());
         }
@@ -149,7 +149,7 @@ public class AccountControlProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (AccountControlException acx)
+        catch (final AccountControlException acx)
         {
             Assertions.fail(acx.getMessage());
         }
@@ -171,7 +171,7 @@ public class AccountControlProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (AccountControlException acx)
+        catch (final AccountControlException acx)
         {
             Assertions.fail(acx.getMessage());
         }
@@ -195,7 +195,7 @@ public class AccountControlProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (AccountControlException acx)
+        catch (final AccountControlException acx)
         {
             Assertions.fail(acx.getMessage());
         }
@@ -217,7 +217,7 @@ public class AccountControlProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (AccountControlException acx)
+        catch (final AccountControlException acx)
         {
             Assertions.fail(acx.getMessage());
         }
@@ -241,7 +241,7 @@ public class AccountControlProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (AccountControlException acx)
+        catch (final AccountControlException acx)
         {
             Assertions.fail(acx.getMessage());
         }
@@ -263,7 +263,7 @@ public class AccountControlProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (AccountControlException acx)
+        catch (final AccountControlException acx)
         {
             Assertions.fail(acx.getMessage());
         }

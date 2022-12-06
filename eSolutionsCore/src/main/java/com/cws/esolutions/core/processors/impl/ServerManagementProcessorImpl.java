@@ -140,7 +140,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -169,7 +169,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                     return response;
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 ERROR_RECORDER.error(sqx.getMessage(), sqx);
             }
@@ -244,13 +244,13 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new ServerManagementException(sqx.getMessage(), sqx);
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
@@ -284,7 +284,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -368,7 +368,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -443,13 +443,13 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
             throw new ServerManagementException(acsx.getMessage(), acsx);
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
@@ -483,7 +483,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -567,7 +567,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -589,13 +589,13 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
             throw new ServerManagementException(acsx.getMessage(), acsx);
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
@@ -629,7 +629,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -711,7 +711,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -760,13 +760,13 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new ServerManagementException(sqx.getMessage(), sqx);
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
@@ -800,7 +800,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -882,7 +882,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -930,13 +930,13 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new ServerManagementException(sqx.getMessage(), sqx);
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
@@ -970,7 +970,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -1058,7 +1058,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -1147,7 +1147,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                             server.setAssignedEngineer(searchResponse.getUserAccount()); // ASSIGNED_ENGINEER
                         }
                     }
-                    catch (AccountControlException acx)
+                    catch (final AccountControlException acx)
                     {
                         ERROR_RECORDER.error(acx.getMessage(), acx);
                     }
@@ -1210,13 +1210,13 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 throw new ServerManagementException("No server search data was provided. Cannot continue");
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new ServerManagementException(sqx.getMessage(), sqx);
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
@@ -1250,7 +1250,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }

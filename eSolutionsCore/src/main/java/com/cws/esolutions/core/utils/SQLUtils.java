@@ -115,7 +115,7 @@ public class SQLUtils
                 resultSet = rs;
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new UtilityException(sqx.getMessage(), sqx);
         }
@@ -138,7 +138,7 @@ public class SQLUtils
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new UtilityException(sqx.getMessage(), sqx);
             }
@@ -225,7 +225,7 @@ public class SQLUtils
                 resultSet = rs;
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new UtilityException(sqx.getMessage(), sqx);
         }
@@ -248,7 +248,7 @@ public class SQLUtils
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 ERROR_RECORDER.error(sqx.getMessage(), sqx);
             }
@@ -306,7 +306,7 @@ public class SQLUtils
                 throw new SQLException("An error occured while performing the requested operation.");
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new UtilityException(sqx.getMessage(), sqx);
         }
@@ -324,7 +324,7 @@ public class SQLUtils
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new UtilityException(sqx.getMessage(), sqx);
             }
@@ -395,7 +395,7 @@ public class SQLUtils
                 throw new SQLException("An error occured while performing the requested operation.");
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new UtilityException(sqx.getMessage(), sqx);
         }
@@ -413,7 +413,7 @@ public class SQLUtils
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new UtilityException(sqx.getMessage(), sqx);
             }

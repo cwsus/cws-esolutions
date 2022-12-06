@@ -156,23 +156,23 @@ public final class EmailUtility
             {
                 EmailUtils.sendEmailMessage(configData.getMailConfig(), message, false);
             }
-            catch (MessagingException mx)
+            catch (final MessagingException mx)
             {
                 System.err.println("An error occurred while sending the requested message. Exception: " + mx.getMessage());
             }
         }
-        catch (ParseException px)
+        catch (final ParseException px)
         {
             px.printStackTrace();
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp(EmailUtility.CNAME, options, true);
         }
-        catch (MalformedURLException mx)
+        catch (final MalformedURLException mx)
         {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp(EmailUtility.CNAME, options, true);
         }
-        catch (JAXBException jx)
+        catch (final JAXBException jx)
         {
             jx.printStackTrace();
             System.err.println("An error occurred while loading the provided configuration file. Cannot continue.");

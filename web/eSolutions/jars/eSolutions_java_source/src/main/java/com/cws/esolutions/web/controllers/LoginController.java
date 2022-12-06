@@ -533,7 +533,7 @@ public class LoginController
             	return this.loginPage;
             }
         }
-        catch (AuthenticationException ax)
+        catch (final AuthenticationException ax)
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
 
@@ -687,7 +687,7 @@ public class LoginController
                 mView.addObject(Constants.ERROR_RESPONSE, this.messageSubmissionFailed);
             }
         }
-        catch (AuthenticationException ax)
+        catch (final AuthenticationException ax)
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
 

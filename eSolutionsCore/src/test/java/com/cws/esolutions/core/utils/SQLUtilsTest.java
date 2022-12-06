@@ -48,7 +48,7 @@ public class SQLUtilsTest {
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
             CoreServicesInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, true);
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             ex.printStackTrace();
             Assertions.fail(ex.getMessage());
@@ -74,7 +74,7 @@ public class SQLUtilsTest {
         {
             SQLUtils.addOrDeleteData("{CALL insertNewApplication(?, ?, ?, ?, ?, ?, ?, ?, ?)}", params);
         }
-        catch (UtilityException ux)
+        catch (final UtilityException ux)
         {
             ux.printStackTrace();
             Assertions.fail("Exception: " + ux.getMessage() + " : " + ux);

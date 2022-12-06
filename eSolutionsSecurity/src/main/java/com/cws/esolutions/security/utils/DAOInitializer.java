@@ -340,23 +340,23 @@ public final class DAOInitializer
                 bean.setAuthDataSource(envContext.lookup(secConfig.getAuthConfig()));            	
             }
         }
-        catch (LDAPException lx)
+        catch (final LDAPException lx)
         {
             throw new SecurityServiceException(lx.getMessage(), lx);
         }
-        catch (GeneralSecurityException gsx)
+        catch (final GeneralSecurityException gsx)
         {
             throw new SecurityServiceException(gsx.getMessage(), gsx);
         }
-        catch (NamingException nx)
+        catch (final NamingException nx)
         {
             throw new SecurityServiceException(nx.getMessage(), nx);
         }
-        catch (FileNotFoundException fnfx)
+        catch (final FileNotFoundException fnfx)
         {
             throw new SecurityServiceException(fnfx.getMessage(), fnfx);
         }
-        catch (IOException iox)
+        catch (final IOException iox)
         {
             throw new SecurityServiceException(iox.getMessage(), iox);
         }
@@ -443,15 +443,15 @@ public final class DAOInitializer
         		return;
         	}
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
         }
-        catch (FileNotFoundException fnfx)
+        catch (final FileNotFoundException fnfx)
         {
             ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
         }
-        catch (IOException iox)
+        catch (final IOException iox)
         {
             ERROR_RECORDER.error(iox.getMessage(), iox);
         }

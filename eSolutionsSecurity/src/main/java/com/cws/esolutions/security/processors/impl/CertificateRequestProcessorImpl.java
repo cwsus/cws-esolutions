@@ -158,7 +158,7 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
             response.setRequestStatus(SecurityRequestStatus.SUCCESS);
             response.setAvailableRequests(availableRequests);
         }
-        catch (IOException iox)
+        catch (final IOException iox)
         {
             ERROR_RECORDER.error(iox.getMessage(), iox);
 
@@ -194,7 +194,7 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
 		
 		            auditor.auditRequest(auditRequest);
 		        }
-		        catch (AuditServiceException asx)
+		        catch (final AuditServiceException asx)
 		        {
 		            ERROR_RECORDER.error(asx.getMessage(), asx);
 		        }
@@ -326,13 +326,13 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
-        catch (IOException iox)
+        catch (final IOException iox)
         {
             ERROR_RECORDER.error(iox.getMessage(), iox);
 
             throw new CertificateRequestException(iox.getMessage(), iox);
         }
-        catch (CertificateManagementException cmx)
+        catch (final CertificateManagementException cmx)
         {
             // clean up
             try
@@ -342,7 +342,7 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
                 FileUtils.forceDelete(csrDirectory);
                 FileUtils.forceDelete(storeDirectory);
             }
-            catch (IOException iox)
+            catch (final IOException iox)
             {
                 ERROR_RECORDER.error(iox.getMessage(), iox);
             }
@@ -381,7 +381,7 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
 		
 		            auditor.auditRequest(auditRequest);
 		        }
-		        catch (AuditServiceException asx)
+		        catch (final AuditServiceException asx)
 		        {
 		            ERROR_RECORDER.error(asx.getMessage(), asx);
 		        }
@@ -481,13 +481,13 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
-        catch (IOException iox)
+        catch (final IOException iox)
         {
             ERROR_RECORDER.error(iox.getMessage(), iox);
 
             throw new CertificateRequestException(iox.getMessage(), iox);
         }
-        catch (CertificateManagementException cmx)
+        catch (final CertificateManagementException cmx)
         {
             ERROR_RECORDER.error(cmx.getMessage(), cmx);
 
@@ -523,7 +523,7 @@ public class CertificateRequestProcessorImpl implements ICertificateRequestProce
 		
 		            auditor.auditRequest(auditRequest);
 		        }
-		        catch (AuditServiceException asx)
+		        catch (final AuditServiceException asx)
 		        {
 		            ERROR_RECORDER.error(asx.getMessage(), asx);
 		        }

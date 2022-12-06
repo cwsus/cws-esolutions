@@ -66,7 +66,7 @@ public final class CertificateRequestProcessorTest
 
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", false);
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             Assertions.fail(ex.getMessage());
 
@@ -88,7 +88,7 @@ public final class CertificateRequestProcessorTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             Assertions.fail(ex.getMessage());
         }
@@ -118,7 +118,7 @@ public final class CertificateRequestProcessorTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             Assertions.fail(ex.getMessage());
         }
@@ -141,7 +141,7 @@ public final class CertificateRequestProcessorTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             ex.printStackTrace();
             Assertions.fail(ex.getMessage());

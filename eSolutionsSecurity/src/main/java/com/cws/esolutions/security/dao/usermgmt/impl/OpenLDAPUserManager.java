@@ -134,11 +134,11 @@ public class OpenLDAPUserManager implements UserManager
                 return true;
             }
         }
-        catch (LDAPException lx)
+        catch (final LDAPException lx)
         {
             throw new UserManagementException(lx.getMessage(), lx);
         }
-        catch (ConnectException cx)
+        catch (final ConnectException cx)
         {
             throw new UserManagementException(cx.getMessage(), cx);
         }
@@ -280,11 +280,11 @@ public class OpenLDAPUserManager implements UserManager
                 return true;
             }
         }
-        catch (ConnectException cx)
+        catch (final ConnectException cx)
         {
             throw new UserManagementException(cx.getMessage(), cx);
         }
-        catch (LDAPException lx)
+        catch (final LDAPException lx)
         {
             throw new UserManagementException(lx.getMessage(), lx);
         }
@@ -364,11 +364,11 @@ public class OpenLDAPUserManager implements UserManager
                 isComplete = true;
             }
         }
-        catch (LDAPException lx)
+        catch (final LDAPException lx)
         {
             throw new UserManagementException(lx.getMessage(), lx);
         }
-        catch (ConnectException cx)
+        catch (final ConnectException cx)
         {
             throw new UserManagementException(cx.getMessage(), cx);
         }
@@ -483,11 +483,11 @@ public class OpenLDAPUserManager implements UserManager
                 throw new UserManagementException("No users were located with the search data provided");
             }
         }
-        catch (LDAPException lx)
+        catch (final LDAPException lx)
         {
             throw new UserManagementException(lx.getMessage(), lx);
         }
-        catch (ConnectException cx)
+        catch (final ConnectException cx)
         {
             throw new UserManagementException(cx.getMessage(), cx);
         }
@@ -663,11 +663,11 @@ public class OpenLDAPUserManager implements UserManager
                 throw new UserManagementException("Search request failed: " + searchResult.getResultCode());
             }
         }
-        catch (LDAPException lx)
+        catch (final LDAPException lx)
         {
             throw new UserManagementException(lx.getMessage(), lx);
         }
-        catch (ConnectException cx)
+        catch (final ConnectException cx)
         {
             throw new UserManagementException(cx.getMessage(), cx);
         }
@@ -769,11 +769,11 @@ public class OpenLDAPUserManager implements UserManager
                 throw new ConnectException("No users were located with the search data provided");
             }
         }
-        catch (LDAPException lx)
+        catch (final LDAPException lx)
         {
             throw new UserManagementException(lx.getMessage(), lx);
         }
-        catch (ConnectException cx)
+        catch (final ConnectException cx)
         {
             throw new UserManagementException(cx.getMessage(), cx);
         }
@@ -853,11 +853,11 @@ public class OpenLDAPUserManager implements UserManager
                 DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
-        catch (LDAPException lx)
+        catch (final LDAPException lx)
         {
             throw new UserManagementException(lx.getMessage(), lx);
         }
-        catch (ConnectException cx)
+        catch (final ConnectException cx)
         {
             throw new UserManagementException(cx.getMessage(), cx);
         }
@@ -937,11 +937,11 @@ public class OpenLDAPUserManager implements UserManager
                 DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
-        catch (LDAPException lx)
+        catch (final LDAPException lx)
         {
             throw new UserManagementException(lx.getMessage(), lx);
         }
-        catch (ConnectException cx)
+        catch (final ConnectException cx)
         {
             throw new UserManagementException(cx.getMessage(), cx);
         }
@@ -1028,11 +1028,11 @@ public class OpenLDAPUserManager implements UserManager
                 isComplete = true;
             }
         }
-        catch (LDAPException lx)
+        catch (final LDAPException lx)
         {
             throw new UserManagementException(lx.getMessage(), lx);
         }
-        catch (ConnectException cx)
+        catch (final ConnectException cx)
         {
             throw new UserManagementException(cx.getMessage(), cx);
         }
@@ -1131,11 +1131,11 @@ public class OpenLDAPUserManager implements UserManager
                 }
             }
         }
-        catch (LDAPException lx)
+        catch (final LDAPException lx)
         {
             throw new UserManagementException(lx.getMessage(), lx);
         }
-        catch (ConnectException cx)
+        catch (final ConnectException cx)
         {
             throw new UserManagementException(cx.getMessage(), cx);
         }
@@ -1216,11 +1216,11 @@ public class OpenLDAPUserManager implements UserManager
                 DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
-        catch (LDAPException lx)
+        catch (final LDAPException lx)
         {
             throw new UserManagementException(lx.getMessage(), lx);
         }
-        catch (ConnectException cx)
+        catch (final ConnectException cx)
         {
             throw new UserManagementException(cx.getMessage(), cx);
         }
@@ -1308,11 +1308,11 @@ public class OpenLDAPUserManager implements UserManager
                 DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
-        catch (LDAPException lx)
+        catch (final LDAPException lx)
         {
             throw new UserManagementException(lx.getMessage(), lx);
         }
-        catch (ConnectException cx)
+        catch (final ConnectException cx)
         {
             throw new UserManagementException(cx.getMessage(), cx);
         }
@@ -1395,11 +1395,11 @@ public class OpenLDAPUserManager implements UserManager
                 DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
-        catch (LDAPException lx)
+        catch (final LDAPException lx)
         {
             throw new UserManagementException(lx.getMessage(), lx);
         }
-        catch (ConnectException cx)
+        catch (final ConnectException cx)
         {
             throw new UserManagementException(cx.getMessage(), cx);
         }
@@ -1491,11 +1491,11 @@ public class OpenLDAPUserManager implements UserManager
                 DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
-        catch (LDAPException lx)
+        catch (final LDAPException lx)
         {
             throw new UserManagementException(lx.getMessage(), lx);
         }
-        catch (ConnectException cx)
+        catch (final ConnectException cx)
         {
             throw new UserManagementException(cx.getMessage(), cx);
         }
@@ -1580,11 +1580,11 @@ public class OpenLDAPUserManager implements UserManager
                 isComplete = true;
             }
         }
-        catch (LDAPException lx)
+        catch (final LDAPException lx)
         {
             throw new UserManagementException(lx.getMessage(), lx);
         }
-        catch (ConnectException cx)
+        catch (final ConnectException cx)
         {
             throw new UserManagementException(cx.getMessage(), cx);
         }
@@ -1670,11 +1670,11 @@ public class OpenLDAPUserManager implements UserManager
                 isComplete = true;
             }
         }
-        catch (LDAPException lx)
+        catch (final LDAPException lx)
         {
             throw new UserManagementException(lx.getMessage(), lx);
         }
-        catch (ConnectException cx)
+        catch (final ConnectException cx)
         {
             throw new UserManagementException(cx.getMessage(), cx);
         }

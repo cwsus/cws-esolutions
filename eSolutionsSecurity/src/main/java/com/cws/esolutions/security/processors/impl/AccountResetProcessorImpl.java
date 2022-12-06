@@ -109,7 +109,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             response.setRequestStatus(SecurityRequestStatus.SUCCESS);
             response.setUserAccount(userInfo);
         }
-        catch (UserManagementException umx)
+        catch (final UserManagementException umx)
         {
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
@@ -145,7 +145,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 	
 	                auditor.auditRequest(auditRequest);
 	            }
-	            catch (AuditServiceException asx)
+	            catch (final AuditServiceException asx)
 	            {
 	                ERROR_RECORDER.error(asx.getMessage(), asx);
 	            }
@@ -226,7 +226,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                 }
             }
         }
-        catch (AuthenticatorException ax)
+        catch (final AuthenticatorException ax)
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
 
@@ -262,7 +262,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 	
 	                auditor.auditRequest(auditRequest);
 	            }
-	            catch (AuditServiceException asx)
+	            catch (final AuditServiceException asx)
 	            {
 	                ERROR_RECORDER.error(asx.getMessage(), asx);
 	            }
@@ -330,7 +330,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                         {
                             userManager.modifyOlrLock(userAccount.getUsername(), true);
                         }
-                        catch (UserManagementException umx)
+                        catch (final UserManagementException umx)
                         {
                             ERROR_RECORDER.error(umx.getMessage(), umx);
                         }
@@ -345,13 +345,13 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                 throw new AccountResetException("Unable to obtain user salt value. Cannot continue.");
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new AccountResetException(sqx.getMessage(), sqx);
         }
-        catch (AuthenticatorException ax)
+        catch (final AuthenticatorException ax)
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
 
@@ -387,7 +387,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 	
 	                auditor.auditRequest(auditRequest);
 	            }
-	            catch (AuditServiceException asx)
+	            catch (final AuditServiceException asx)
 	            {
 	                ERROR_RECORDER.error(asx.getMessage(), asx);
 	            }
@@ -492,13 +492,13 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new AccountResetException(sqx.getMessage(), sqx);
         }
-        catch (UserManagementException umx)
+        catch (final UserManagementException umx)
         {
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
@@ -534,7 +534,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 	
 	                auditor.auditRequest(auditRequest);
 	            }
-	            catch (AuditServiceException asx)
+	            catch (final AuditServiceException asx)
 	            {
 	                ERROR_RECORDER.error(asx.getMessage(), asx);
 	            }
@@ -644,13 +644,13 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                 DEBUGGER.debug("AccountResetResponse: {}", response);
             }
         }
-        catch (SecurityServiceException ssx)
+        catch (final SecurityServiceException ssx)
         {
             ERROR_RECORDER.error(ssx.getMessage(), ssx);
 
             throw new AccountResetException(ssx.getMessage(), ssx);
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 

@@ -95,7 +95,7 @@ public class AccessControlServiceResponse implements Serializable
                         sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + SecurityServiceConstants.LINE_BREAK);
                     }
                 }
-                catch (IllegalAccessException iax) {}
+                catch (final IllegalAccessException iax) {}
             }
         }
 

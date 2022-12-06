@@ -135,25 +135,25 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 throw new AccountChangeException("Unable to obtain configured user salt. Cannot continue");
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new AccountChangeException(sqx.getMessage(), sqx);
         }
-        catch (AuthenticatorException ax)
+        catch (final AuthenticatorException ax)
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
 
             throw new AccountChangeException(ax.getMessage(), ax);
         }
-        catch (UserManagementException umx)
+        catch (final UserManagementException umx)
         {
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
             throw new AccountChangeException(umx.getMessage(), umx);
         }
-        catch (SecurityException sx)
+        catch (final SecurityException sx)
         {
             ERROR_RECORDER.error(sx.getMessage(), sx);
 
@@ -187,7 +187,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -271,25 +271,25 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 throw new AccountChangeException("Unable to obtain configured user salt. Cannot continue");
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new AccountChangeException(sqx.getMessage(), sqx);
         }
-        catch (AuthenticatorException ax)
+        catch (final AuthenticatorException ax)
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
 
             throw new AccountChangeException(ax.getMessage(), ax);
         }
-        catch (UserManagementException umx)
+        catch (final UserManagementException umx)
         {
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
             throw new AccountChangeException(umx.getMessage(), umx);
         }
-        catch (SecurityException sx)
+        catch (final SecurityException sx)
         {
             ERROR_RECORDER.error(sx.getMessage(), sx);
 
@@ -323,7 +323,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -483,25 +483,25 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new AccountChangeException(sqx.getMessage(), sqx);
         }
-        catch (UserManagementException umx)
+        catch (final UserManagementException umx)
         {
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
             throw new AccountChangeException(umx.getMessage(), umx);
         }
-        catch (AuthenticatorException ax)
+        catch (final AuthenticatorException ax)
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
 
             throw new AccountChangeException(ax.getMessage(), ax);
         }
-        catch (SecurityException sx)
+        catch (final SecurityException sx)
         {
             ERROR_RECORDER.error(sx.getMessage(), sx);
 
@@ -535,7 +535,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -711,25 +711,25 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new AccountChangeException(sqx.getMessage(), sqx);
         }
-        catch (UserManagementException umx)
+        catch (final UserManagementException umx)
         {
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
             throw new AccountChangeException(umx.getMessage(), umx);
         }
-        catch (AuthenticatorException ax)
+        catch (final AuthenticatorException ax)
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
 
             throw new AccountChangeException(ax.getMessage(), ax);
         }
-        catch (SecurityException sx)
+        catch (final SecurityException sx)
         {
             ERROR_RECORDER.error(sx.getMessage(), sx);
 
@@ -763,7 +763,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -844,7 +844,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
-        catch (KeyManagementException kmx)
+        catch (final KeyManagementException kmx)
         {
             ERROR_RECORDER.error(kmx.getMessage(), kmx);
 
@@ -878,7 +878,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -1013,25 +1013,25 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new AccountChangeException(sqx.getMessage(), sqx);
         }
-        catch (AuthenticatorException ax)
+        catch (final AuthenticatorException ax)
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
 
             throw new AccountChangeException(ax.getMessage(), ax);
         }
-        catch (SecurityException sx)
+        catch (final SecurityException sx)
         {
             ERROR_RECORDER.error(sx.getMessage(), sx);
 
             throw new SecurityException(sx.getMessage(), sx);
         }
-        catch (UserManagementException umx)
+        catch (final UserManagementException umx)
         {
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
@@ -1065,7 +1065,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -1158,25 +1158,25 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new AccountChangeException(sqx.getMessage(), sqx);
         }
-        catch (AuthenticatorException ax)
+        catch (final AuthenticatorException ax)
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
 
             throw new AccountChangeException(ax.getMessage(), ax);
         }
-        catch (SecurityException sx)
+        catch (final SecurityException sx)
         {
             ERROR_RECORDER.error(sx.getMessage(), sx);
 
             throw new SecurityException(sx.getMessage(), sx);
         }
-        catch (UserManagementException umx)
+        catch (final UserManagementException umx)
         {
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
@@ -1210,7 +1210,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }

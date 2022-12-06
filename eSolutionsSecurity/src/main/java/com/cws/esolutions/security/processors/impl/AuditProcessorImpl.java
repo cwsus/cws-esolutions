@@ -125,7 +125,7 @@ public class AuditProcessorImpl implements IAuditProcessor
                 // .. and stuff in in the db
                 auditDAO.auditRequestedOperation(auditList);
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
@@ -209,7 +209,7 @@ public class AuditProcessorImpl implements IAuditProcessor
 
                     auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -306,13 +306,13 @@ public class AuditProcessorImpl implements IAuditProcessor
                 response.setRequestStatus(SecurityRequestStatus.SUCCESS);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new AuditServiceException(sqx.getMessage(), sqx);
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
@@ -348,7 +348,7 @@ public class AuditProcessorImpl implements IAuditProcessor
 	
 	                auditRequest(auditRequest);
 	            }
-	            catch (AuditServiceException asx)
+	            catch (final AuditServiceException asx)
 	            {
 	                ERROR_RECORDER.error(asx.getMessage(), asx);
 	            }

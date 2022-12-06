@@ -90,31 +90,31 @@ public class KeyManagementFactory
                     DEBUGGER.debug("KeyManager: {}", keyManager);
                 }
             }
-            catch (InstantiationException ix)
+            catch (final InstantiationException ix)
             {
                 ERROR_RECORDER.error(ix.getMessage(), ix);
             }
-            catch (IllegalAccessException iax)
+            catch (final IllegalAccessException iax)
             {
                 ERROR_RECORDER.error(iax.getMessage(), iax);
             }
-            catch (ClassNotFoundException cnx)
+            catch (final ClassNotFoundException cnx)
             {
                 ERROR_RECORDER.error(cnx.getMessage(), cnx);
             }
-            catch (IllegalArgumentException iax)
+            catch (final IllegalArgumentException iax)
             {
                 ERROR_RECORDER.error(iax.getMessage(), iax);
             }
-            catch (InvocationTargetException itx)
+            catch (final InvocationTargetException itx)
             {
                 ERROR_RECORDER.error(itx.getMessage(), itx);
             }
-            catch (NoSuchMethodException nsx)
+            catch (final NoSuchMethodException nsx)
             {
                 ERROR_RECORDER.error(nsx.getMessage(), nsx);
             }
-            catch (SecurityException sx)
+            catch (final SecurityException sx)
             {
                 ERROR_RECORDER.error(sx.getMessage(), sx);
             }

@@ -96,7 +96,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
                 DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
@@ -179,7 +179,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
@@ -279,7 +279,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
@@ -379,7 +379,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
@@ -454,7 +454,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
                 DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
@@ -516,7 +516,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
                 DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
@@ -651,7 +651,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 

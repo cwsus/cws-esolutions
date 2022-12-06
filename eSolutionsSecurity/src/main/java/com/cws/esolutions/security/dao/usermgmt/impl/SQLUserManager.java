@@ -116,7 +116,7 @@ public class SQLUserManager implements UserManager
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
         	sqx.printStackTrace();
             throw new UserManagementException(sqx.getMessage(), sqx);
@@ -140,7 +140,7 @@ public class SQLUserManager implements UserManager
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new UserManagementException(sqx.getMessage(), sqx);
             }
@@ -210,7 +210,7 @@ public class SQLUserManager implements UserManager
                 isComplete = true;
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new UserManagementException(sqx.getMessage(), sqx);
         }
@@ -228,7 +228,7 @@ public class SQLUserManager implements UserManager
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new UserManagementException(sqx.getMessage(), sqx);
             }
@@ -283,7 +283,7 @@ public class SQLUserManager implements UserManager
                 isComplete = true;
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new UserManagementException(sqx.getMessage(), sqx);
         }
@@ -301,7 +301,7 @@ public class SQLUserManager implements UserManager
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new UserManagementException(sqx.getMessage(), sqx);
             }
@@ -385,7 +385,7 @@ public class SQLUserManager implements UserManager
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new UserManagementException(sqx.getMessage(), sqx);
         }
@@ -408,7 +408,7 @@ public class SQLUserManager implements UserManager
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new UserManagementException(sqx.getMessage(), sqx);
             }
@@ -512,7 +512,7 @@ public class SQLUserManager implements UserManager
                 throw new UserManagementException("No users were located with the provided information");
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new UserManagementException(sqx.getMessage(), sqx);
         }
@@ -535,7 +535,7 @@ public class SQLUserManager implements UserManager
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new UserManagementException(sqx.getMessage(), sqx);
             }
@@ -619,7 +619,7 @@ public class SQLUserManager implements UserManager
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new UserManagementException(sqx.getMessage(), sqx);
         }
@@ -642,7 +642,7 @@ public class SQLUserManager implements UserManager
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new UserManagementException(sqx.getMessage(), sqx);
             }
@@ -701,7 +701,7 @@ public class SQLUserManager implements UserManager
                 isComplete = true;
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new UserManagementException(sqx.getMessage(), sqx);
         }
@@ -719,7 +719,7 @@ public class SQLUserManager implements UserManager
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new UserManagementException(sqx.getMessage(), sqx);
             }
@@ -779,7 +779,7 @@ public class SQLUserManager implements UserManager
                 isComplete = true;
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new UserManagementException(sqx.getMessage(), sqx);
         }
@@ -797,7 +797,7 @@ public class SQLUserManager implements UserManager
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new UserManagementException(sqx.getMessage(), sqx);
             }
@@ -861,7 +861,7 @@ public class SQLUserManager implements UserManager
                 isComplete = true;
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new UserManagementException(sqx.getMessage(), sqx);
         }
@@ -879,7 +879,7 @@ public class SQLUserManager implements UserManager
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new UserManagementException(sqx.getMessage(), sqx);
             }
@@ -938,7 +938,7 @@ public class SQLUserManager implements UserManager
                 isComplete = true;
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new UserManagementException(sqx.getMessage(), sqx);
         }
@@ -956,7 +956,7 @@ public class SQLUserManager implements UserManager
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new UserManagementException(sqx.getMessage(), sqx);
             }
@@ -1015,7 +1015,7 @@ public class SQLUserManager implements UserManager
                 isComplete = true;
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new UserManagementException(sqx.getMessage(), sqx);
         }
@@ -1033,7 +1033,7 @@ public class SQLUserManager implements UserManager
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new UserManagementException(sqx.getMessage(), sqx);
             }
@@ -1094,7 +1094,7 @@ public class SQLUserManager implements UserManager
 
             return (stmt.executeUpdate() == 0);
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new UserManagementException(sqx.getMessage(), sqx);
         }
@@ -1112,7 +1112,7 @@ public class SQLUserManager implements UserManager
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new UserManagementException(sqx.getMessage(), sqx);
             }
@@ -1168,7 +1168,7 @@ public class SQLUserManager implements UserManager
                 isComplete = true;
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new UserManagementException(sqx.getMessage(), sqx);
         }
@@ -1186,7 +1186,7 @@ public class SQLUserManager implements UserManager
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new UserManagementException(sqx.getMessage(), sqx);
             }
@@ -1250,7 +1250,7 @@ public class SQLUserManager implements UserManager
                 isComplete = true;
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new UserManagementException(sqx.getMessage(), sqx);
         }
@@ -1268,7 +1268,7 @@ public class SQLUserManager implements UserManager
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new UserManagementException(sqx.getMessage(), sqx);
             }
@@ -1329,7 +1329,7 @@ public class SQLUserManager implements UserManager
                 isComplete = true;
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new UserManagementException(sqx.getMessage(), sqx);
         }
@@ -1347,7 +1347,7 @@ public class SQLUserManager implements UserManager
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new UserManagementException(sqx.getMessage(), sqx);
             }
@@ -1408,7 +1408,7 @@ public class SQLUserManager implements UserManager
                 isComplete = true;
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new UserManagementException(sqx.getMessage(), sqx);
         }
@@ -1426,7 +1426,7 @@ public class SQLUserManager implements UserManager
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new UserManagementException(sqx.getMessage(), sqx);
             }

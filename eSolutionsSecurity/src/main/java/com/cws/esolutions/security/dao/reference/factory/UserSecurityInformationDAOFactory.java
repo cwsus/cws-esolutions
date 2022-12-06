@@ -76,23 +76,23 @@ public class UserSecurityInformationDAOFactory
                     DEBUGGER.debug("UserSecurityInformationDAOImpl: {}", userSecDAO);
                 }
             }
-            catch (InstantiationException ix)
+            catch (final InstantiationException ix)
             {
                 ERROR_RECORDER.error(ix.getMessage(), ix);
             }
-            catch (IllegalAccessException iax)
+            catch (final IllegalAccessException iax)
             {
                 ERROR_RECORDER.error(iax.getMessage(), iax);
             }
-            catch (ClassNotFoundException cnx)
+            catch (final ClassNotFoundException cnx)
             {
                 ERROR_RECORDER.error(cnx.getMessage(), cnx);
             }
-            catch (IllegalArgumentException iax)
+            catch (final IllegalArgumentException iax)
             {
                 ERROR_RECORDER.error(iax.getMessage(), iax);
             }
-            catch (SecurityException sx)
+            catch (final SecurityException sx)
             {
                 ERROR_RECORDER.error(sx.getMessage(), sx);
             }

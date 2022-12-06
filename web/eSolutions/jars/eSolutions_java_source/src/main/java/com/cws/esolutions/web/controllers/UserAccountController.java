@@ -633,7 +633,7 @@ public class UserAccountController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (AccountResetException acx)
+        catch (final AccountResetException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
@@ -984,7 +984,7 @@ public class UserAccountController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (AccountChangeException acx)
+        catch (final AccountChangeException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
@@ -1177,7 +1177,7 @@ public class UserAccountController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (AccountChangeException acx)
+        catch (final AccountChangeException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
@@ -1322,7 +1322,7 @@ public class UserAccountController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (AccountChangeException acx)
+        catch (final AccountChangeException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
@@ -1473,7 +1473,7 @@ public class UserAccountController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (AccountChangeException acx)
+        catch (final AccountChangeException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
@@ -1630,7 +1630,7 @@ public class UserAccountController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (AccountChangeException acx)
+        catch (final AccountChangeException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
@@ -1788,7 +1788,7 @@ public class UserAccountController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (AccountChangeException acx)
+        catch (final AccountChangeException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 

@@ -63,7 +63,7 @@ public class SystemCheckProcessorImplTest
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", false);
             CoreServicesInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, true);
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             Assertions.fail(ex.getMessage());
 
@@ -91,7 +91,7 @@ public class SystemCheckProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
-        catch (SystemCheckException scx)
+        catch (final SystemCheckException scx)
         {
             Assertions.fail(scx.getMessage());
         }
@@ -121,7 +121,7 @@ public class SystemCheckProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
-        catch (SystemCheckException scx)
+        catch (final SystemCheckException scx)
         {
             Assertions.fail(scx.getMessage());
         }
@@ -146,7 +146,7 @@ public class SystemCheckProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
-        catch (SystemCheckException scx)
+        catch (final SystemCheckException scx)
         {
             Assertions.fail(scx.getMessage());
         }

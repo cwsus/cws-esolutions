@@ -142,7 +142,7 @@ public class IdleAccountLocker implements Job
                 }
             }
         }
-        catch (UserManagementException umx)
+        catch (final UserManagementException umx)
         {
             ERROR_RECORDER.error(umx.getMessage(), umx);
         }

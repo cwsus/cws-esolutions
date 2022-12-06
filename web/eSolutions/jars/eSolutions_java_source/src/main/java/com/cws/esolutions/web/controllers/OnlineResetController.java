@@ -332,7 +332,7 @@ public class OnlineResetController
             	model.addAttribute("alertMessages", messageResponse.getSvcMessages());
             }
         }
-        catch (MessagingServiceException msx)
+        catch (final MessagingServiceException msx)
         {
             // don't do anything with it
         }
@@ -530,7 +530,7 @@ public class OnlineResetController
                 return this.appConfig.getLogonRedirect();
             }
         }
-        catch (AccountResetException arx)
+        catch (final AccountResetException arx)
         {
             ERROR_RECORDER.error(arx.getMessage(), arx);
 
@@ -751,7 +751,7 @@ public class OnlineResetController
 
                     EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), message, true);
                 }
-                catch (MessagingException mx)
+                catch (final MessagingException mx)
                 {
                     ERROR_RECORDER.error(mx.getMessage(), mx);
 
@@ -766,7 +766,7 @@ public class OnlineResetController
                 return this.appConfig.getErrorResponsePage();
             }
         }
-        catch (AccountControlException acx)
+        catch (final AccountControlException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
@@ -923,7 +923,7 @@ public class OnlineResetController
                 return this.appConfig.getErrorResponsePage();
             }
         }
-        catch (AccountResetException arx)
+        catch (final AccountResetException arx)
         {
             ERROR_RECORDER.error(arx.getMessage(), arx);
 
@@ -1124,7 +1124,7 @@ public class OnlineResetController
 
                         EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), message, true);
                     }
-                    catch (MessagingException mx)
+                    catch (final MessagingException mx)
                     {
                         ERROR_RECORDER.error(mx.getMessage(), mx);
 
@@ -1149,7 +1149,7 @@ public class OnlineResetController
                         {
                             EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), smsMessage, true);
                         }
-                        catch (MessagingException mx)
+                        catch (final MessagingException mx)
                         {
                             ERROR_RECORDER.error(mx.getMessage(), mx);
 
@@ -1180,7 +1180,7 @@ public class OnlineResetController
                 return this.submitAnswersPage;
             }
         }
-        catch (AccountResetException arx)
+        catch (final AccountResetException arx)
         {
             ERROR_RECORDER.error(arx.getMessage(), arx);
 

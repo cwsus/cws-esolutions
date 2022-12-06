@@ -639,7 +639,7 @@ public class UserManagementController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (AccountControlException acx)
+        catch (final AccountControlException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
@@ -864,7 +864,7 @@ public class UserManagementController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (AccountControlException acx)
+        catch (final AccountControlException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
@@ -1019,7 +1019,7 @@ public class UserManagementController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (AuditServiceException asx)
+        catch (final AuditServiceException asx)
         {
             ERROR_RECORDER.error(asx.getMessage(), asx);
 
@@ -1176,7 +1176,7 @@ public class UserManagementController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (AuditServiceException asx)
+        catch (final AuditServiceException asx)
         {
             ERROR_RECORDER.error(asx.getMessage(), asx);
 
@@ -1309,7 +1309,7 @@ public class UserManagementController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (AccountControlException acx)
+        catch (final AccountControlException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
@@ -1442,7 +1442,7 @@ public class UserManagementController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (AccountControlException acx)
+        catch (final AccountControlException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
@@ -1576,7 +1576,7 @@ public class UserManagementController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (AccountControlException acx)
+        catch (final AccountControlException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
@@ -1709,7 +1709,7 @@ public class UserManagementController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (AccountControlException acx)
+        catch (final AccountControlException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
@@ -1899,7 +1899,7 @@ public class UserManagementController
 
                         EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), message, true);
                     }
-                    catch (MessagingException mx)
+                    catch (final MessagingException mx)
                     {
                         ERROR_RECORDER.error(mx.getMessage(), mx);
 
@@ -1924,7 +1924,7 @@ public class UserManagementController
                         {
                             EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), smsMessage, true);
                         }
-                        catch (MessagingException mx)
+                        catch (final MessagingException mx)
                         {
                             ERROR_RECORDER.error(mx.getMessage(), mx);
 
@@ -1956,7 +1956,7 @@ public class UserManagementController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (AccountControlException acx)
+        catch (final AccountControlException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
@@ -2095,7 +2095,7 @@ public class UserManagementController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (AccountControlException acx)
+        catch (final AccountControlException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
@@ -2277,7 +2277,7 @@ public class UserManagementController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (AccountControlException acx)
+        catch (final AccountControlException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
@@ -2507,7 +2507,7 @@ public class UserManagementController
 
                         EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), message, true);
                     }
-                    catch (MessagingException mx)
+                    catch (final MessagingException mx)
                     {
                         ERROR_RECORDER.error(mx.getMessage(), mx);
 
@@ -2532,7 +2532,7 @@ public class UserManagementController
                         {
                             EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), smsMessage, true);
                         }
-                        catch (MessagingException mx)
+                        catch (final MessagingException mx)
                         {
                             ERROR_RECORDER.error(mx.getMessage(), mx);
 
@@ -2560,7 +2560,7 @@ public class UserManagementController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (AccountControlException acx)
+        catch (final AccountControlException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 

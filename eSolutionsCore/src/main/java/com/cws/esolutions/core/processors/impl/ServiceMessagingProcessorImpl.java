@@ -124,7 +124,7 @@ public class ServiceMessagingProcessorImpl implements IWebMessagingProcessor
                 DEBUGGER.debug("MessagingResponse: {}", response);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
@@ -158,7 +158,7 @@ public class ServiceMessagingProcessorImpl implements IWebMessagingProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -233,7 +233,7 @@ public class ServiceMessagingProcessorImpl implements IWebMessagingProcessor
                 DEBUGGER.debug("MessagingResponse: {}", response);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
@@ -267,7 +267,7 @@ public class ServiceMessagingProcessorImpl implements IWebMessagingProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -380,7 +380,7 @@ public class ServiceMessagingProcessorImpl implements IWebMessagingProcessor
                         message.setMessageAuthor(searchResponse.getUserAccount()); // svc_message_author
                     }
                 }
-                catch (AccountControlException acx)
+                catch (final AccountControlException acx)
                 {
                     ERROR_RECORDER.error(acx.getMessage(), acx);
                 }
@@ -406,7 +406,7 @@ public class ServiceMessagingProcessorImpl implements IWebMessagingProcessor
                 DEBUGGER.debug("MessageResponse: {}", response);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
@@ -440,7 +440,7 @@ public class ServiceMessagingProcessorImpl implements IWebMessagingProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -514,7 +514,7 @@ public class ServiceMessagingProcessorImpl implements IWebMessagingProcessor
                 DEBUGGER.debug("MessageResponse: {}", response);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
@@ -621,7 +621,7 @@ public class ServiceMessagingProcessorImpl implements IWebMessagingProcessor
                     message.setMessageAuthor(searchResponse.getUserAccount()); // svc_message_author
                 }
             }
-            catch (AccountControlException acx)
+            catch (final AccountControlException acx)
             {
                 ERROR_RECORDER.error(acx.getMessage(), acx);
             }
@@ -644,7 +644,7 @@ public class ServiceMessagingProcessorImpl implements IWebMessagingProcessor
                 DEBUGGER.debug("MessagingResponse: {}", response);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
@@ -678,7 +678,7 @@ public class ServiceMessagingProcessorImpl implements IWebMessagingProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }

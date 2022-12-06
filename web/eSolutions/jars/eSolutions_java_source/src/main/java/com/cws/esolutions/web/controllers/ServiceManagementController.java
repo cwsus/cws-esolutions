@@ -455,7 +455,7 @@ public class ServiceManagementController
                 return this.defaultPage;
             }
         }
-        catch (ServiceManagementException smx)
+        catch (final ServiceManagementException smx)
         {
             ERROR_RECORDER.error(smx.getMessage(), smx);
 
@@ -592,7 +592,7 @@ public class ServiceManagementController
                 return this.addServiceRedirect;
             }
         }
-        catch (ServiceManagementException pmx)
+        catch (final ServiceManagementException pmx)
         {
             ERROR_RECORDER.error(pmx.getMessage(), pmx);
 
@@ -730,7 +730,7 @@ public class ServiceManagementController
                 return this.defaultPage;
             }
         }
-        catch (ServiceManagementException pmx)
+        catch (final ServiceManagementException pmx)
         {
             ERROR_RECORDER.error(pmx.getMessage(), pmx);
 
@@ -877,7 +877,7 @@ public class ServiceManagementController
                 return this.addServiceRedirect;
             }
         }
-        catch (ServiceManagementException smx)
+        catch (final ServiceManagementException smx)
         {
             ERROR_RECORDER.error(smx.getMessage(), smx);
 
@@ -1017,7 +1017,7 @@ public class ServiceManagementController
                 mView.setViewName(this.defaultPage);
             }
         }
-        catch (ServiceManagementException smx)
+        catch (final ServiceManagementException smx)
         {
             ERROR_RECORDER.error(smx.getMessage(), smx);
 
@@ -1162,7 +1162,7 @@ public class ServiceManagementController
                 mView.setViewName(this.defaultPage);
             }
         }
-        catch (ServiceManagementException pmx)
+        catch (final ServiceManagementException pmx)
         {
             ERROR_RECORDER.error(pmx.getMessage(), pmx);
 
@@ -1383,7 +1383,7 @@ public class ServiceManagementController
                 mView.setViewName(this.defaultPage);
             }
         }
-        catch (ServiceManagementException smx)
+        catch (final ServiceManagementException smx)
         {
             ERROR_RECORDER.error(smx.getMessage(), smx);
 
@@ -1531,7 +1531,7 @@ public class ServiceManagementController
                 mView.setViewName(this.addServicePage);
             }
         }
-        catch (ServiceManagementException smx)
+        catch (final ServiceManagementException smx)
         {
             ERROR_RECORDER.error(smx.getMessage(), smx);
 

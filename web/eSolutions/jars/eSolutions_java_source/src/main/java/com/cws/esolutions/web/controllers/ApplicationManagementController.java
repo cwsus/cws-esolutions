@@ -552,7 +552,7 @@ public class ApplicationManagementController
             	return this.defaultPage;
             }
         }
-        catch (ApplicationManagementException amx)
+        catch (final ApplicationManagementException amx)
         {
             ERROR_RECORDER.error(amx.getMessage(), amx);
 
@@ -688,7 +688,7 @@ public class ApplicationManagementController
                 mView.setViewName(this.addApplicationRedirect);
             }
         }
-        catch (ApplicationManagementException amx)
+        catch (final ApplicationManagementException amx)
         {
             ERROR_RECORDER.error(amx.getMessage(), amx);
 
@@ -833,7 +833,7 @@ public class ApplicationManagementController
                 mView.setViewName(this.defaultPage);
             }
         }
-        catch (ApplicationManagementException amx)
+        catch (final ApplicationManagementException amx)
         {
             ERROR_RECORDER.error(amx.getMessage(), amx);
 
@@ -995,7 +995,7 @@ public class ApplicationManagementController
                 mView.setViewName(this.addPlatformRedirect);
             }
         }
-        catch (ServiceManagementException pmx)
+        catch (final ServiceManagementException pmx)
         {
             mView = new ModelAndView(new RedirectView());
             mView.setViewName(this.addPlatformRedirect);
@@ -1134,7 +1134,7 @@ public class ApplicationManagementController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (ApplicationManagementException amx)
+        catch (final ApplicationManagementException amx)
         {
             ERROR_RECORDER.error(amx.getMessage(), amx);
 
@@ -1302,7 +1302,7 @@ public class ApplicationManagementController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (ApplicationManagementException amx)
+        catch (final ApplicationManagementException amx)
         {
             ERROR_RECORDER.error(amx.getMessage(), amx);
 
@@ -1471,7 +1471,7 @@ public class ApplicationManagementController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (ServiceManagementException pmx)
+        catch (final ServiceManagementException pmx)
         {
             ERROR_RECORDER.error(pmx.getMessage(), pmx);
 
@@ -1640,7 +1640,7 @@ public class ApplicationManagementController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (ApplicationManagementException amx)
+        catch (final ApplicationManagementException amx)
         {
             ERROR_RECORDER.error(amx.getMessage(), amx);
 
@@ -1883,13 +1883,13 @@ public class ApplicationManagementController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (ApplicationManagementException amx)
+        catch (final ApplicationManagementException amx)
         {
             ERROR_RECORDER.error(amx.getMessage(), amx);
 
             mView.setViewName(this.appConfig.getErrorResponsePage());
         }
-        catch (IOException iox)
+        catch (final IOException iox)
         {
             ERROR_RECORDER.error(iox.getMessage(), iox);
 
@@ -2024,7 +2024,7 @@ public class ApplicationManagementController
                 mView.setViewName(this.defaultPage);
             }
         }
-        catch (ApplicationManagementException amx)
+        catch (final ApplicationManagementException amx)
         {
             ERROR_RECORDER.error(amx.getMessage(), amx);
 
@@ -2193,7 +2193,7 @@ public class ApplicationManagementController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (ApplicationManagementException amx)
+        catch (final ApplicationManagementException amx)
         {
             ERROR_RECORDER.error(amx.getMessage(), amx);
 

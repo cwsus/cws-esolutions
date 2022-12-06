@@ -52,7 +52,7 @@ public class ServerDataDAOImplTest
         {
             CoreServicesInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "logging/logging.xml", true, false);
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             Assertions.fail(ex.getMessage());
 
@@ -100,7 +100,7 @@ public class ServerDataDAOImplTest
         {
             Assertions.assertThat(dao.addServer(data)).isTrue();
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             Assertions.fail(sqx.getMessage());
         }
@@ -146,7 +146,7 @@ public class ServerDataDAOImplTest
         {
             Assertions.assertThat(dao.updateServer("DMGRSERVER", data)).isNotNull();
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             Assertions.fail(sqx.getMessage());
         }
@@ -158,7 +158,7 @@ public class ServerDataDAOImplTest
         {
             Assertions.assertThat(dao.getServer("DMGRSERVER")).isNotEmpty();
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             Assertions.fail(sqx.getMessage());
         }
@@ -170,7 +170,7 @@ public class ServerDataDAOImplTest
         {
             Assertions.assertThat(dao.listServers(0)).isNotEmpty();
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             Assertions.fail(sqx.getMessage());
         }
@@ -182,7 +182,7 @@ public class ServerDataDAOImplTest
         {
             Assertions.assertThat(dao.getServersByAttribute("DMGRSERVER DEV", 0)).isNotEmpty();
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             Assertions.fail(sqx.getMessage());
         }
@@ -194,7 +194,7 @@ public class ServerDataDAOImplTest
         {
             Assertions.assertThat(dao.removeServer(this.guid)).isNotNull();
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             Assertions.fail(sqx.getMessage());
         }

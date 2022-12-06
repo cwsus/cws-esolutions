@@ -286,7 +286,7 @@ public class ServiceMessagingController
                 mView.setViewName(this.createMessageRedirect);
             }
         }
-        catch (MessagingServiceException msx)
+        catch (final MessagingServiceException msx)
         {
             ERROR_RECORDER.error(msx.getMessage(), msx);
 
@@ -491,7 +491,7 @@ public class ServiceMessagingController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (MessagingServiceException msx)
+        catch (final MessagingServiceException msx)
         {
             ERROR_RECORDER.error(msx.getMessage(), msx);
 
@@ -626,7 +626,7 @@ public class ServiceMessagingController
             mView.addObject(Constants.COMMAND, new ServiceMessage());
             mView.setViewName(this.createMessageRedirect);
         }
-        catch (MessagingServiceException msx)
+        catch (final MessagingServiceException msx)
         {
             ERROR_RECORDER.error(msx.getMessage(), msx);
 

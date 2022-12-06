@@ -69,7 +69,7 @@ public class ServerManagementProcessorImplTest
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", false);
             CoreServicesInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, true);
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             Assertions.fail(ex.getMessage());
 
@@ -139,7 +139,7 @@ public class ServerManagementProcessorImplTest
 
                 Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
-            catch (ServerManagementException smx)
+            catch (final ServerManagementException smx)
             {
                 Assertions.fail(smx.getMessage());
             }
@@ -197,7 +197,7 @@ public class ServerManagementProcessorImplTest
 
                 Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
-            catch (ServerManagementException smx)
+            catch (final ServerManagementException smx)
             {
                 Assertions.fail(smx.getMessage());
             }
@@ -251,7 +251,7 @@ public class ServerManagementProcessorImplTest
 
                 Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
-            catch (ServerManagementException smx)
+            catch (final ServerManagementException smx)
             {
                 Assertions.fail(smx.getMessage());
             }
@@ -309,7 +309,7 @@ public class ServerManagementProcessorImplTest
 
                 Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
-            catch (ServerManagementException smx)
+            catch (final ServerManagementException smx)
             {
                 Assertions.fail(smx.getMessage());
             }
@@ -363,7 +363,7 @@ public class ServerManagementProcessorImplTest
 
                 Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
-            catch (ServerManagementException smx)
+            catch (final ServerManagementException smx)
             {
                 Assertions.fail(smx.getMessage());
             }
@@ -421,7 +421,7 @@ public class ServerManagementProcessorImplTest
 
                 Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
-            catch (ServerManagementException smx)
+            catch (final ServerManagementException smx)
             {
                 Assertions.fail(smx.getMessage());
             }
@@ -475,7 +475,7 @@ public class ServerManagementProcessorImplTest
 
                 Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
-            catch (ServerManagementException smx)
+            catch (final ServerManagementException smx)
             {
                 Assertions.fail(smx.getMessage());
             }
@@ -527,7 +527,7 @@ public class ServerManagementProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
-        catch (ServerManagementException smx)
+        catch (final ServerManagementException smx)
         {
             Assertions.fail(smx.getMessage());
         }
@@ -578,7 +578,7 @@ public class ServerManagementProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
-        catch (ServerManagementException smx)
+        catch (final ServerManagementException smx)
         {
             Assertions.fail(smx.getMessage());
         }
@@ -629,7 +629,7 @@ public class ServerManagementProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
-        catch (ServerManagementException smx)
+        catch (final ServerManagementException smx)
         {
             Assertions.fail(smx.getMessage());
         }
@@ -682,7 +682,7 @@ public class ServerManagementProcessorImplTest
 
                 Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
-            catch (ServerManagementException smx)
+            catch (final ServerManagementException smx)
             {
                 Assertions.fail(smx.getMessage());
             }
@@ -736,7 +736,7 @@ public class ServerManagementProcessorImplTest
 
                 Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
-            catch (ServerManagementException smx)
+            catch (final ServerManagementException smx)
             {
                 Assertions.fail(smx.getMessage());
             }
@@ -790,7 +790,7 @@ public class ServerManagementProcessorImplTest
 
                 Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
-            catch (ServerManagementException smx)
+            catch (final ServerManagementException smx)
             {
                 Assertions.fail(smx.getMessage());
             }
@@ -844,7 +844,7 @@ public class ServerManagementProcessorImplTest
     
                 Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
-            catch (ServerManagementException smx)
+            catch (final ServerManagementException smx)
             {
                 Assertions.fail(smx.getMessage());
             }
@@ -898,7 +898,7 @@ public class ServerManagementProcessorImplTest
     
                 Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
-            catch (ServerManagementException smx)
+            catch (final ServerManagementException smx)
             {
                 Assertions.fail(smx.getMessage());
             }
@@ -952,7 +952,7 @@ public class ServerManagementProcessorImplTest
     
                 Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
-            catch (ServerManagementException smx)
+            catch (final ServerManagementException smx)
             {
                 Assertions.fail(smx.getMessage());
             }
@@ -1004,7 +1004,7 @@ public class ServerManagementProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
-        catch (ServerManagementException smx)
+        catch (final ServerManagementException smx)
         {
             Assertions.fail(smx.getMessage());
         }
@@ -1056,7 +1056,7 @@ public class ServerManagementProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
-        catch (ServerManagementException smx)
+        catch (final ServerManagementException smx)
         {
             Assertions.fail(smx.getMessage());
         }
@@ -1108,7 +1108,7 @@ public class ServerManagementProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
-        catch (ServerManagementException smx)
+        catch (final ServerManagementException smx)
         {
             Assertions.fail(smx.getMessage());
         }
@@ -1149,7 +1149,7 @@ public class ServerManagementProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
-        catch (ServerManagementException smx)
+        catch (final ServerManagementException smx)
         {
             Assertions.fail(smx.getMessage());
         }
@@ -1171,7 +1171,7 @@ public class ServerManagementProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
-        catch (ServerManagementException smx)
+        catch (final ServerManagementException smx)
         {
             Assertions.fail(smx.getMessage());
         }
@@ -1196,7 +1196,7 @@ public class ServerManagementProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
-        catch (ServerManagementException smx)
+        catch (final ServerManagementException smx)
         {
             Assertions.fail(smx.getMessage());
         }

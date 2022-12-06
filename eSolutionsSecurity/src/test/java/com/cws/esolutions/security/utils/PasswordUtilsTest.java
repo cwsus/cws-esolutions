@@ -48,7 +48,7 @@ public class PasswordUtilsTest
         {
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", false);
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             e.printStackTrace();
             Assertions.fail(e.getMessage());
@@ -80,7 +80,7 @@ public class PasswordUtilsTest
 
         	Assertions.assertThat(decr).isEqualTo(plainText);
         }
-        catch (Exception sx)
+        catch (final Exception sx)
         {
             Assertions.fail(sx.getMessage());
         }
@@ -99,7 +99,7 @@ public class PasswordUtilsTest
 
         	Assertions.assertThat(encrypted).isEqualTo(expected);
         }
-        catch (Exception sx)
+        catch (final Exception sx)
         {
             sx.printStackTrace();
             Assertions.fail(sx.getMessage());
@@ -115,7 +115,7 @@ public class PasswordUtilsTest
                     bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
                     "the secret", 0)).isTrue();
         }
-        catch (SecurityException sx)
+        catch (final SecurityException sx)
         {
             sx.printStackTrace();
             Assertions.fail(sx.getMessage());

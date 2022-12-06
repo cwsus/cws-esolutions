@@ -44,7 +44,7 @@ public class SecurityReferenceDAOImplTest
         {
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             Assertions.fail(e.getMessage());
             System.exit(1);
@@ -57,7 +57,7 @@ public class SecurityReferenceDAOImplTest
         {
         	Assertions.assertThat(secRef.obtainApprovedServers()).isNotNull();
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
         	Assertions.fail(sqx.getMessage());
         }
@@ -69,7 +69,7 @@ public class SecurityReferenceDAOImplTest
         {
             Assertions.assertThat(secRef.obtainSecurityQuestionList()).isNotNull();
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
         	Assertions.fail(sqx.getMessage());
         }

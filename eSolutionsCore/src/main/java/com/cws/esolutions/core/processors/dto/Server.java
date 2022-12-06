@@ -1004,7 +1004,7 @@ public class Server implements Serializable
                         sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + CoreServicesConstants.LINE_BREAK);
                     }
                 }
-                catch (IllegalAccessException iax)
+                catch (final IllegalAccessException iax)
                 {
                     ERROR_RECORDER.error(iax.getMessage(), iax);
                 }

@@ -193,13 +193,13 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 }
             }
         }
-        catch (UtilityException ux)
+        catch (final UtilityException ux)
         {
             ERROR_RECORDER.error(ux.getMessage(), ux);
 
             throw new DNSServiceException(ux.getMessage(), ux);
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
@@ -212,7 +212,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
             {
                 Security.setProperty("networkaddress.cache.ttl", currentTimeout);
             }
-            catch (NullPointerException npx) {}
+            catch (final NullPointerException npx) {}
         }
 
         return response;
@@ -293,7 +293,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -415,13 +415,13 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
             response.setRequestStatus(CoreServicesStatus.SUCCESS);
             response.setZoneData(pBuilder);
         }
-        catch (SecurityException sx)
+        catch (final SecurityException sx)
         {
             ERROR_RECORDER.error(sx.getMessage(), sx);
 
             throw new DNSServiceException(sx.getMessage(), sx);
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
@@ -455,7 +455,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -539,7 +539,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -549,13 +549,13 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
             // build me
         }
-        catch (SecurityException sx)
+        catch (final SecurityException sx)
         {
             ERROR_RECORDER.error(sx.getMessage(), sx);
 
             throw new DNSServiceException(sx.getMessage(), sx);
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
@@ -589,7 +589,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -672,7 +672,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -682,13 +682,13 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
             // build me
         }
-        catch (SecurityException sx)
+        catch (final SecurityException sx)
         {
             ERROR_RECORDER.error(sx.getMessage(), sx);
 
             throw new DNSServiceException(sx.getMessage(), sx);
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
@@ -722,7 +722,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -804,7 +804,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -818,13 +818,13 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
             // out to the associated servers and continues from there to the
             // slaves
         }
-        catch (SecurityException sx)
+        catch (final SecurityException sx)
         {
             ERROR_RECORDER.error(sx.getMessage(), sx);
 
             throw new DNSServiceException(sx.getMessage(), sx);
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
@@ -857,7 +857,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }

@@ -56,7 +56,7 @@ public class SQLKeyManagerTest
 
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             Assertions.fail(ex.getMessage());
 
@@ -72,7 +72,7 @@ public class SQLKeyManagerTest
         {
         	Assertions.assertThat(processor.createKeys(userAccount.getGuid())).isTrue();
         }
-        catch (KeyManagementException kmx)
+        catch (final KeyManagementException kmx)
         {
         	Assertions.fail(kmx.getMessage());
         }
@@ -86,7 +86,7 @@ public class SQLKeyManagerTest
         {
         	Assertions.assertThat(processor.returnKeys(userAccount.getGuid())).isNotNull();
         }
-        catch (KeyManagementException kmx)
+        catch (final KeyManagementException kmx)
         {
         	Assertions.fail(kmx.getMessage());
         }
@@ -100,7 +100,7 @@ public class SQLKeyManagerTest
         {
         	Assertions.assertThat(processor.removeKeys(userAccount.getGuid())).isTrue();
         }
-        catch (KeyManagementException kmx)
+        catch (final KeyManagementException kmx)
         {
         	Assertions.fail(kmx.getMessage());
         }

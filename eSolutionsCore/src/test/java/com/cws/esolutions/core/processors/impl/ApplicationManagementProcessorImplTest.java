@@ -66,7 +66,7 @@ public class ApplicationManagementProcessorImplTest
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", false);
             CoreServicesInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, true);
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             Assertions.fail(ex.getMessage());
 
@@ -112,7 +112,7 @@ public class ApplicationManagementProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
-        catch (ApplicationManagementException amx)
+        catch (final ApplicationManagementException amx)
         {
             Assertions.fail(amx.getMessage());
         }
@@ -137,7 +137,7 @@ public class ApplicationManagementProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
-        catch (ApplicationManagementException amx)
+        catch (final ApplicationManagementException amx)
         {
             Assertions.fail(amx.getMessage());
         }
@@ -158,7 +158,7 @@ public class ApplicationManagementProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
-        catch (ApplicationManagementException amx)
+        catch (final ApplicationManagementException amx)
         {
             Assertions.fail(amx.getMessage());
         }
@@ -183,7 +183,7 @@ public class ApplicationManagementProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
-        catch (ApplicationManagementException amx)
+        catch (final ApplicationManagementException amx)
         {
             Assertions.fail(amx.getMessage());
         }

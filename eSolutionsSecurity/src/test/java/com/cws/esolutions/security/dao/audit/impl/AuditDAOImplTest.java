@@ -50,7 +50,7 @@ public class AuditDAOImplTest
         {
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
         	Assertions.fail(e.getMessage());
 
@@ -78,7 +78,7 @@ public class AuditDAOImplTest
             {
                 auditDAO.auditRequestedOperation(auditList);
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 Assertions.fail(sqx.getMessage());
             }
@@ -92,7 +92,7 @@ public class AuditDAOImplTest
         {
         	Assertions.assertThat(auditDAO.getAuditInterval("f42fb0ba-4d1e-1126-986f-800cd2650000", 1)).isNotEmpty();
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
         	Assertions.fail(sqx.getMessage());
         }

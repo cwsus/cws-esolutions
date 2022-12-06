@@ -317,35 +317,35 @@ public class CertificateManagerImpl implements ICertificateManager
                 throw new CertificateManagementException("Failed to generate keypair. Cannot continue.");
             }
         }
-        catch (FileNotFoundException fnfx)
+        catch (final FileNotFoundException fnfx)
         {
             throw new CertificateManagementException(fnfx.getMessage(), fnfx);
         }
-        catch (IOException iox)
+        catch (final IOException iox)
         {
             throw new CertificateManagementException(iox.getMessage(), iox);
         }
-        catch (NoSuchAlgorithmException nsax)
+        catch (final NoSuchAlgorithmException nsax)
         {
             throw new CertificateManagementException(nsax.getMessage(), nsax);
         }
-        catch (IllegalStateException isx)
+        catch (final IllegalStateException isx)
         {
             throw new CertificateManagementException(isx.getMessage(), isx);
         }
-        catch (InvalidKeyException ikx)
+        catch (final InvalidKeyException ikx)
         {
             throw new CertificateManagementException(ikx.getMessage(), ikx);
         }
-        catch (OperatorCreationException ocx)
+        catch (final OperatorCreationException ocx)
         {
             throw new CertificateManagementException(ocx.getMessage(), ocx);
         }
-        catch (KeyStoreException ksx)
+        catch (final KeyStoreException ksx)
         {
             throw new CertificateManagementException(ksx.getMessage(), ksx);
         }
-        catch (CertificateException cx)
+        catch (final CertificateException cx)
         {
             throw new CertificateManagementException(cx.getMessage(), cx);
         }
@@ -521,31 +521,31 @@ public class CertificateManagerImpl implements ICertificateManager
 
             isComplete = true;
         }
-        catch (FileNotFoundException fnfx)
+        catch (final FileNotFoundException fnfx)
         {
             throw new CertificateManagementException(fnfx.getMessage(), fnfx);
         }
-        catch (IOException iox)
+        catch (final IOException iox)
         {
             throw new CertificateManagementException(iox.getMessage(), iox);
         }
-        catch (NoSuchAlgorithmException nsax)
+        catch (final NoSuchAlgorithmException nsax)
         {
             throw new CertificateManagementException(nsax.getMessage(), nsax);
         }
-        catch (IllegalStateException isx)
+        catch (final IllegalStateException isx)
         {
             throw new CertificateManagementException(isx.getMessage(), isx);
         }
-        catch (KeyStoreException ksx)
+        catch (final KeyStoreException ksx)
         {
             throw new CertificateManagementException(ksx.getMessage(), ksx);
         }
-        catch (CertificateException cx)
+        catch (final CertificateException cx)
         {
             throw new CertificateManagementException(cx.getMessage(), cx);
         }
-        catch (UnrecoverableKeyException ukx)
+        catch (final UnrecoverableKeyException ukx)
         {
             throw new CertificateManagementException(ukx.getMessage(), ukx);
         }

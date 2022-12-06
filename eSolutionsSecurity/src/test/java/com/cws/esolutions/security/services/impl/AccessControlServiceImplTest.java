@@ -57,7 +57,7 @@ public class AccessControlServiceImplTest
 
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             Assertions.fail(ex.getMessage());
 
@@ -74,7 +74,7 @@ public class AccessControlServiceImplTest
 
             Assertions.assertThat(processor.isUserAuthorized(accessRequest)).isNotNull();
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             Assertions.fail(acsx.getMessage());
         }

@@ -489,7 +489,7 @@ public class SystemManagementController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (ServerManagementException smx)
+        catch (final ServerManagementException smx)
         {
             ERROR_RECORDER.error(smx.getMessage(), smx);
 
@@ -632,7 +632,7 @@ public class SystemManagementController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (ServerManagementException smx)
+        catch (final ServerManagementException smx)
         {
             ERROR_RECORDER.error(smx.getMessage(), smx);
 
@@ -804,7 +804,7 @@ public class SystemManagementController
                 }
             }
         }
-        catch (ServerManagementException smx)
+        catch (final ServerManagementException smx)
         {
             ERROR_RECORDER.error(smx.getMessage(), smx);
 
@@ -1008,7 +1008,7 @@ public class SystemManagementController
                 return mView;
             }
         }
-        catch (ServerManagementException smx)
+        catch (final ServerManagementException smx)
         {
             ERROR_RECORDER.error(smx.getMessage(), smx);
         }
@@ -1059,7 +1059,7 @@ public class SystemManagementController
                 mView.setViewName(this.addDatacenterRedirect);
             }
         }
-        catch (ServiceManagementException smx)
+        catch (final ServiceManagementException smx)
         {
             ERROR_RECORDER.error(smx.getMessage(), smx);
 
@@ -1342,7 +1342,7 @@ public class SystemManagementController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (ServerManagementException smx)
+        catch (final ServerManagementException smx)
         {
             ERROR_RECORDER.error(smx.getMessage(), smx);
 
@@ -1557,7 +1557,7 @@ public class SystemManagementController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (ServerManagementException smx)
+        catch (final ServerManagementException smx)
         {
             ERROR_RECORDER.error(smx.getMessage(), smx);
 

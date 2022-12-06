@@ -131,7 +131,7 @@ public class ResetRequestReaper implements Job
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
         }

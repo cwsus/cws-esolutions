@@ -99,13 +99,13 @@ public class CoreServicesInitializer
             {
                 DOMConfigurator.configure(Loader.getResource(loggingConfig));
             }
-            catch (NullPointerException npx)
+            catch (final NullPointerException npx)
             {
                 try
                 {
                     DOMConfigurator.configure(FileUtils.getFile(loggingConfig).toURI().toURL());
                 }
-                catch (NullPointerException npx1)
+                catch (final NullPointerException npx1)
                 {
                     System.err.println("Unable to load logging configuration. No logging enabled!");
                     System.err.println("");
@@ -182,12 +182,12 @@ public class CoreServicesInitializer
                 CoreServicesInitializer.appBean.setDataSources(dsMap);
             }
         }
-        catch (JAXBException jx)
+        catch (final JAXBException jx)
         {
             jx.printStackTrace();
             throw new CoreServicesException(jx.getMessage(), jx);
         }
-        catch (MalformedURLException mux)
+        catch (final MalformedURLException mux)
         {
             mux.printStackTrace();
             throw new CoreServicesException(mux.getMessage(), mux);
@@ -233,7 +233,7 @@ public class CoreServicesInitializer
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
         }

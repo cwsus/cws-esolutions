@@ -64,7 +64,7 @@ public final class AccountChangeProcessorImplTest
 
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             Assertions.fail(ex.getMessage());
 
@@ -89,7 +89,7 @@ public final class AccountChangeProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (AccountChangeException acx)
+        catch (final AccountChangeException acx)
         {
         	Assertions.fail(acx.getMessage());
         }
@@ -112,7 +112,7 @@ public final class AccountChangeProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (AccountChangeException acx)
+        catch (final AccountChangeException acx)
         {
         	Assertions.fail(acx.getMessage());
         }
@@ -137,7 +137,7 @@ public final class AccountChangeProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (AccountChangeException acx)
+        catch (final AccountChangeException acx)
         {
         	Assertions.fail(acx.getMessage());
         }
@@ -166,7 +166,7 @@ public final class AccountChangeProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (AccountChangeException acx)
+        catch (final AccountChangeException acx)
         {
         	Assertions.fail(acx.getMessage());
         }
@@ -192,7 +192,7 @@ public final class AccountChangeProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (AccountChangeException acx)
+        catch (final AccountChangeException acx)
         {
         	Assertions.fail(acx.getMessage());
         }
@@ -215,7 +215,7 @@ public final class AccountChangeProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (AccountChangeException acx)
+        catch (final AccountChangeException acx)
         {
             acx.printStackTrace();
             Assertions.fail(acx.getMessage());
@@ -241,7 +241,7 @@ public final class AccountChangeProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (AccountChangeException acx)
+        catch (final AccountChangeException acx)
         {
         	Assertions.fail(acx.getMessage());
         }

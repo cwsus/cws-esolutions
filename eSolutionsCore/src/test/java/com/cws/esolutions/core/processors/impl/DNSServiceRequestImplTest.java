@@ -72,7 +72,7 @@ public class DNSServiceRequestImplTest
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", false);
             CoreServicesInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, false);
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             Assertions.fail(ex.getMessage());
 
@@ -102,7 +102,7 @@ public class DNSServiceRequestImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
-        catch (DNSServiceException dnsx)
+        catch (final DNSServiceException dnsx)
         {
             Assertions.fail(dnsx.getMessage());
         }
@@ -277,7 +277,7 @@ public class DNSServiceRequestImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
-        catch (DNSServiceException dnsx)
+        catch (final DNSServiceException dnsx)
         {
             Assertions.fail(dnsx.getMessage());
         }

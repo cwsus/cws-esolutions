@@ -367,31 +367,31 @@ public final class NetworkUtility
                 }
             }
         }
-        catch (ParseException px)
+        catch (final ParseException px)
         {
             ERROR_RECORDER.error(px.getMessage(), px);
 
             System.err.println("An error occurred during processing: " + px.getMessage());
         }
-        catch (SecurityException sx)
+        catch (final SecurityException sx)
         {
             ERROR_RECORDER.error(sx.getMessage(), sx);
 
             System.err.println("An error occurred during processing: " + sx.getMessage());
         }
-        catch (SecurityServiceException ssx)
+        catch (final SecurityServiceException ssx)
         {
             ERROR_RECORDER.error(ssx.getMessage(), ssx);
 
             System.err.println("An error occurred during processing: " + ssx.getMessage());
         }
-        catch (CoreServicesException csx)
+        catch (final CoreServicesException csx)
         {
             ERROR_RECORDER.error(csx.getMessage(), csx);
 
             System.err.println("An error occurred during processing: " + csx.getMessage());
         }
-        catch (MalformedURLException mux)
+        catch (final MalformedURLException mux)
         {
             ERROR_RECORDER.error(mux.getMessage(), mux);
 

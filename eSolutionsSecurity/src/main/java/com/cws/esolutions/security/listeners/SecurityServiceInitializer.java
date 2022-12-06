@@ -91,13 +91,13 @@ public class SecurityServiceInitializer
             {
                 DOMConfigurator.configure(Loader.getResource(loggingConfig));
             }
-            catch (NullPointerException npx)
+            catch (final NullPointerException npx)
             {
                 try
                 {
                     DOMConfigurator.configure(FileUtils.getFile(loggingConfig).toURI().toURL());
                 }
-                catch (NullPointerException npx1)
+                catch (final NullPointerException npx1)
                 {
                     System.err.println("Unable to load logging configuration. No logging enabled!");
                     System.err.println("");
@@ -180,22 +180,22 @@ public class SecurityServiceInitializer
                 }
             }
         }
-        catch (JAXBException jx)
+        catch (final JAXBException jx)
         {
             jx.printStackTrace();
             throw new SecurityServiceException(jx.getMessage(), jx);
         }
-        catch (FileNotFoundException fnfx)
+        catch (final FileNotFoundException fnfx)
         {
             fnfx.printStackTrace();
             throw new SecurityServiceException(fnfx.getMessage(), fnfx);
         }
-        catch (MalformedURLException mux)
+        catch (final MalformedURLException mux)
         {
             mux.printStackTrace();
             throw new SecurityServiceException(mux.getMessage(), mux);
         }
-        catch (SecurityException sx)
+        catch (final SecurityException sx)
         {
             sx.printStackTrace();
             throw new SecurityServiceException(sx.getMessage(), sx);
@@ -249,11 +249,11 @@ public class SecurityServiceInitializer
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
         }
-        catch (FileNotFoundException fnfx)
+        catch (final FileNotFoundException fnfx)
         {
             ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
         }

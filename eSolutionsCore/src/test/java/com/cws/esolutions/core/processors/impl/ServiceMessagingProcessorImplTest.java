@@ -60,7 +60,7 @@ public class ServiceMessagingProcessorImplTest
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", false);
             CoreServicesInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, true);
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             Assertions.fail(ex.getMessage());
 
@@ -78,7 +78,7 @@ public class ServiceMessagingProcessorImplTest
         {
             processor.addNewMessage(request);
         }
-        catch (MessagingServiceException msx)
+        catch (final MessagingServiceException msx)
         {
             Assertions.fail(msx.getMessage());
         }
@@ -94,7 +94,7 @@ public class ServiceMessagingProcessorImplTest
         {
             processor.updateExistingMessage(request);
         }
-        catch (MessagingServiceException msx)
+        catch (final MessagingServiceException msx)
         {
             Assertions.fail(msx.getMessage());
         }
@@ -110,7 +110,7 @@ public class ServiceMessagingProcessorImplTest
         {
             processor.showMessage(request);
         }
-        catch (MessagingServiceException msx)
+        catch (final MessagingServiceException msx)
         {
             Assertions.fail(msx.getMessage());
         }
@@ -126,7 +126,7 @@ public class ServiceMessagingProcessorImplTest
         {
         processor.showAlertMessages(request);
         }
-        catch (MessagingServiceException msx)
+        catch (final MessagingServiceException msx)
         {
             Assertions.fail(msx.getMessage());
         }
@@ -142,7 +142,7 @@ public class ServiceMessagingProcessorImplTest
         {
             processor.showMessage(request);
         }
-        catch (MessagingServiceException msx)
+        catch (final MessagingServiceException msx)
         {
             Assertions.fail(msx.getMessage());
         }

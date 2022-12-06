@@ -42,7 +42,7 @@ public class NetworkUtilsTest
         {
             CoreServicesInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", false, false);
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             Assertions.fail(ex.getMessage());
 
@@ -56,7 +56,7 @@ public class NetworkUtilsTest
         {
             NetworkUtils.executeTelnetRequest("proxy.caspersbox.com", 8080, 10000);
         }
-        catch (UtilityException ux)
+        catch (final UtilityException ux)
         {
             Assertions.fail(ux.getMessage());
         }
@@ -70,7 +70,7 @@ public class NetworkUtilsTest
 
             Assertions.assertThat(responseData).isNotEmpty();
         }
-        catch (UtilityException ux)
+        catch (final UtilityException ux)
         {
             Assertions.fail(ux.getMessage());
         }

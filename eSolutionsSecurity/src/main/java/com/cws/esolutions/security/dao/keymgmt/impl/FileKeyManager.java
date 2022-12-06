@@ -112,19 +112,19 @@ public class FileKeyManager implements KeyManager
                 throw new KeyManagementException("Failed to locate user keys");
             }
         }
-        catch (FileNotFoundException fnfx)
+        catch (final FileNotFoundException fnfx)
         {
             throw new KeyManagementException(fnfx.getMessage(), fnfx);
         }
-        catch (InvalidKeySpecException iksx)
+        catch (final InvalidKeySpecException iksx)
         {
             throw new KeyManagementException(iksx.getMessage(), iksx);
         }
-        catch (IOException iox)
+        catch (final IOException iox)
         {
             throw new KeyManagementException(iox.getMessage(), iox);
         }
-        catch (NoSuchAlgorithmException nsax)
+        catch (final NoSuchAlgorithmException nsax)
         {
             throw new KeyManagementException(nsax.getMessage(), nsax);
         }
@@ -212,19 +212,19 @@ public class FileKeyManager implements KeyManager
                 throw new KeyManagementException("Failed to generate keypair. Cannot continue.");
             }
         }
-        catch (FileNotFoundException fnfx)
+        catch (final FileNotFoundException fnfx)
         {
             throw new KeyManagementException(fnfx.getMessage(), fnfx);
         }
-        catch (IOException iox)
+        catch (final IOException iox)
         {
             throw new KeyManagementException(iox.getMessage(), iox);
         }
-        catch (NoSuchAlgorithmException nsax)
+        catch (final NoSuchAlgorithmException nsax)
         {
             throw new KeyManagementException(nsax.getMessage(), nsax);
         }
-        catch (NullPointerException npe)
+        catch (final NullPointerException npe)
         {
         	throw new KeyManagementException(npe.getMessage(), npe);
         }
@@ -295,11 +295,11 @@ public class FileKeyManager implements KeyManager
                 throw new IOException("Unable to remove user keys");
             }
         }
-        catch (FileNotFoundException fnfx)
+        catch (final FileNotFoundException fnfx)
         {
             throw new KeyManagementException(fnfx.getMessage(), fnfx);
         }
-        catch (IOException iox)
+        catch (final IOException iox)
         {
             throw new KeyManagementException(iox.getMessage(), iox);
         }

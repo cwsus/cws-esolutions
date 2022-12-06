@@ -115,7 +115,7 @@ public class SessionAuthenticationFilter implements Filter
                 }
             }
         }
-        catch (MissingResourceException mre)
+        catch (final MissingResourceException mre)
         {
             ERROR_RECORDER.error(mre.getMessage(), mre);
 

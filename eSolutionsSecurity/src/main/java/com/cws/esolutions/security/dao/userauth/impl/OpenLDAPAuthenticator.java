@@ -142,11 +142,11 @@ public class OpenLDAPAuthenticator implements Authenticator
 
             isValid = true;
         }
-        catch (LDAPException lx)
+        catch (final LDAPException lx)
         {
             throw new AuthenticatorException(lx.getResultCode(), lx.getMessage(), lx);
         }
-        catch (ConnectException cx)
+        catch (final ConnectException cx)
         {
             throw new AuthenticatorException(cx.getMessage(), cx);
         }
@@ -244,11 +244,11 @@ public class OpenLDAPAuthenticator implements Authenticator
                 DEBUGGER.debug("List<String>: {}", userSecurity);
             }
         }
-        catch (LDAPException lx)
+        catch (final LDAPException lx)
         {
             throw new AuthenticatorException(lx.getMessage(), lx);
         }
-        catch (ConnectException cx)
+        catch (final ConnectException cx)
         {
             throw new AuthenticatorException(cx.getMessage(), cx);
         }
@@ -337,11 +337,11 @@ public class OpenLDAPAuthenticator implements Authenticator
 
             otpSecret = searchResult.getSearchEntries().get(0).getAttributeValue(securityAttributes.getSecret());
         }
-        catch (LDAPException lx)
+        catch (final LDAPException lx)
         {
             throw new AuthenticatorException(lx.getMessage(), lx);
         }
-        catch (ConnectException cx)
+        catch (final ConnectException cx)
         {
             throw new AuthenticatorException(cx.getMessage(), cx);
         }
@@ -430,11 +430,11 @@ public class OpenLDAPAuthenticator implements Authenticator
                 return true;
             }
         }
-        catch (LDAPException lx)
+        catch (final LDAPException lx)
         {
             throw new AuthenticatorException(lx.getMessage(), lx);
         }
-        catch (ConnectException cx)
+        catch (final ConnectException cx)
         {
             throw new AuthenticatorException(cx.getMessage(), cx);
         }

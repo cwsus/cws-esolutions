@@ -339,7 +339,7 @@ public class PasswordUtility
                         FileUtils.writeStringToFile(saltFile, entryName + "," + encodedUserName + "," + encodedSalt + System.getProperty("line.separator"), true);
                         FileUtils.writeStringToFile(passwordFile, entryName + "," + encodedUserName + "," + encodedPassword + System.getProperty("line.separator"), true);
                     }
-                    catch (IOException iox)
+                    catch (final IOException iox)
                     {
                         ERROR_RECORDER.error(iox.getMessage(), iox);
                     }
@@ -453,28 +453,28 @@ public class PasswordUtility
                 System.out.println(PasswordUtils.base64Decode((String) commandLine.getArgList().get(0)));
             }
         }
-        catch (IOException iox)
+        catch (final IOException iox)
         {
             ERROR_RECORDER.error(iox.getMessage(), iox);
 
             System.err.println("An error occurred during processing: " + iox.getMessage());
             System.exit(1);
         }
-        catch (ParseException px)
+        catch (final ParseException px)
         {
             ERROR_RECORDER.error(px.getMessage(), px);
 
             System.err.println("An error occurred during processing: " + px.getMessage());
             System.exit(1);
         }
-        catch (SecurityException sx)
+        catch (final SecurityException sx)
         {
             ERROR_RECORDER.error(sx.getMessage(), sx);
 
             System.err.println("An error occurred during processing: " + sx.getMessage());
             System.exit(1);
         }
-        catch (SecurityServiceException ssx)
+        catch (final SecurityServiceException ssx)
         {
             ERROR_RECORDER.error(ssx.getMessage(), ssx);
             System.exit(1);
@@ -493,7 +493,7 @@ public class PasswordUtility
                     bReader.close();
                 }
             }
-            catch (IOException iox) {}
+            catch (final IOException iox) {}
         }
 
         System.exit(0);

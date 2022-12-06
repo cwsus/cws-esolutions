@@ -216,19 +216,19 @@ public class LDAPKeyManager implements KeyManager
 
             return true;
         }
-        catch (NoSuchAlgorithmException nsax)
+        catch (final NoSuchAlgorithmException nsax)
         {
             throw new KeyManagementException(nsax.getMessage(), nsax);
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new KeyManagementException(sqx.getMessage(), sqx);
         }
-        catch (LDAPException lx)
+        catch (final LDAPException lx)
         {
             throw new KeyManagementException(lx.getMessage(), lx);
         }
-        catch (ConnectException cx)
+        catch (final ConnectException cx)
         {
             throw new KeyManagementException(cx.getMessage(), cx);
         }
@@ -257,7 +257,7 @@ public class LDAPKeyManager implements KeyManager
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new KeyManagementException(sqx.getMessage(), sqx);
             }
@@ -404,23 +404,23 @@ public class LDAPKeyManager implements KeyManager
 
             return new KeyPair(pubKey, privKey);
         }
-        catch (InvalidKeySpecException iksx)
+        catch (final InvalidKeySpecException iksx)
         {
             throw new KeyManagementException(iksx.getMessage(), iksx);
         }
-        catch (NoSuchAlgorithmException nsax)
+        catch (final NoSuchAlgorithmException nsax)
         {
             throw new KeyManagementException(nsax.getMessage(), nsax);
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new KeyManagementException(sqx.getMessage(), sqx);
         }
-        catch (LDAPException lx)
+        catch (final LDAPException lx)
         {
             throw new KeyManagementException(lx.getMessage(), lx);
         }
-        catch (ConnectException cx)
+        catch (final ConnectException cx)
         {
             throw new KeyManagementException(cx.getMessage(), cx);
         }
@@ -449,7 +449,7 @@ public class LDAPKeyManager implements KeyManager
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new KeyManagementException(sqx.getMessage(), sqx);
             }
@@ -563,15 +563,15 @@ public class LDAPKeyManager implements KeyManager
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new KeyManagementException(sqx.getMessage(), sqx);
         }
-        catch (LDAPException lx)
+        catch (final LDAPException lx)
         {
             throw new KeyManagementException(lx.getMessage(), lx);
         }
-        catch (ConnectException cx)
+        catch (final ConnectException cx)
         {
             throw new KeyManagementException(cx.getMessage(), cx);
         }
@@ -600,7 +600,7 @@ public class LDAPKeyManager implements KeyManager
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new KeyManagementException(sqx.getMessage(), sqx);
             }

@@ -58,7 +58,7 @@ public class AuthenticationProcessorImplTest
             hostInfo.setHostAddress("junit");
             hostInfo.setHostName("junit");
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
         	Assertions.fail(e.getMessage());
             System.exit(1);
@@ -89,7 +89,7 @@ public class AuthenticationProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (AuthenticationException ax)
+        catch (final AuthenticationException ax)
         {
         	ax.printStackTrace();
             Assertions.fail(ax.getMessage());
@@ -119,7 +119,7 @@ public class AuthenticationProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (AuthenticationException ax)
+        catch (final AuthenticationException ax)
         {
             ax.printStackTrace();
             Assertions.fail(ax.getMessage());

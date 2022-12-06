@@ -58,7 +58,7 @@ public class FileKeyManagerTest
 
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             Assertions.fail(ex.getMessage());
 
@@ -75,7 +75,7 @@ public class FileKeyManagerTest
         {
         	Assertions.assertThat(processor.createKeys(userAccount.getGuid())).isTrue();
         }
-        catch (Exception kmx)
+        catch (final Exception kmx)
         {
         	Assertions.fail(kmx.getMessage());
         }
@@ -87,7 +87,7 @@ public class FileKeyManagerTest
         {
         	Assertions.assertThat(processor.returnKeys(userAccount.getGuid())).isNotNull();
         }
-        catch (KeyManagementException kmx)
+        catch (final KeyManagementException kmx)
         {
         	Assertions.fail(kmx.getMessage());
         }
@@ -99,7 +99,7 @@ public class FileKeyManagerTest
         {
         	Assertions.assertThat(processor.removeKeys(userAccount.getGuid())).isTrue();
         }
-        catch (KeyManagementException kmx)
+        catch (final KeyManagementException kmx)
         {
         	Assertions.fail(kmx.getMessage());
         }

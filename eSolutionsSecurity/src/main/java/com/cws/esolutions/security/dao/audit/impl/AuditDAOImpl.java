@@ -82,7 +82,7 @@ public class AuditDAOImpl implements IAuditDAO
 
             stmt.execute();
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new SQLException(sqx.getMessage(), sqx);
         }
@@ -100,7 +100,7 @@ public class AuditDAOImpl implements IAuditDAO
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new SQLException(sqx.getMessage(), sqx);
             }
@@ -199,7 +199,7 @@ public class AuditDAOImpl implements IAuditDAO
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new SQLException(sqx.getMessage(), sqx);
         }
@@ -222,7 +222,7 @@ public class AuditDAOImpl implements IAuditDAO
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new SQLException(sqx.getMessage(), sqx);
             }

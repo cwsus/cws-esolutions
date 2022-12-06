@@ -47,7 +47,7 @@ public class SQLAuthenticatorTest
         {
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             Assertions.fail(e.getMessage());
             System.exit(1);
@@ -62,7 +62,7 @@ public class SQLAuthenticatorTest
         {
         	authenticator.performLogon("0f645ed1-a8bb-4d5c-b4d6-2276f1dba592", "junit-test", "Dcs5/bktmt1aEeVZn/kvKSrSP+AdS3q/E56E8Gfq23vjhcJIPenmvlLhrD+PvTTfLChqudUeK/biHp/nKl2/GA==");
         }
-        catch (AuthenticatorException e)
+        catch (final AuthenticatorException e)
         {
         	Assertions.fail(e.getMessage());
         }
@@ -76,7 +76,7 @@ public class SQLAuthenticatorTest
         {
         	Assertions.assertThat(authenticator.obtainSecurityData("junit", "f42fb0ba-4d1e-1126-986f-800cd2650000")).isNotEmpty();
         }
-        catch (AuthenticatorException e)
+        catch (final AuthenticatorException e)
         {
         	Assertions.fail(e.getMessage());
         }
@@ -90,7 +90,7 @@ public class SQLAuthenticatorTest
         {
         	Assertions.assertThat(authenticator.obtainOtpSecret("junit", "f42fb0ba-4d1e-1126-986f-800cd2650000")).isNotEmpty();
         }
-        catch (AuthenticatorException e)
+        catch (final AuthenticatorException e)
         {
         	Assertions.fail(e.getMessage());
         }
@@ -108,7 +108,7 @@ public class SQLAuthenticatorTest
                                     "FEwX3hCErzIAaeZThAznod4cIOG1eboOwttIBiW6Fz1Rbe/JzczTN6ANjIdW9KNkKx6Q+g1fDtIZgYX/xEYlOA==")))).isTrue();
                                     
         }
-        catch (AuthenticatorException e)
+        catch (final AuthenticatorException e)
         {
         	Assertions.fail(e.getMessage());
         }

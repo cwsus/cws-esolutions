@@ -219,19 +219,19 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 DEBUGGER.debug("AuthenticationResponse: {}", response);
             }
         }
-        catch (SecurityServiceException ssx)
+        catch (final SecurityServiceException ssx)
         {
             ERROR_RECORDER.error(ssx.getMessage(), ssx);
 
             throw new AuthenticationException(ssx.getMessage(), ssx);
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new AuthenticationException(sqx.getMessage(), sqx);
         }
-        catch (SecurityException sx)
+        catch (final SecurityException sx)
         {
             ERROR_RECORDER.error(sx.getMessage(), sx);
         }
@@ -265,7 +265,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 	
 	                auditor.auditRequest(auditRequest);
 	            }
-	            catch (AuditServiceException asx)
+	            catch (final AuditServiceException asx)
 	            {
 	                ERROR_RECORDER.error(asx.getMessage(), asx);
 	            }
@@ -382,13 +382,13 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 DEBUGGER.debug("AuthenticationResponse: {}", response);
             }
         }
-        catch (SecurityServiceException ssx)
+        catch (final SecurityServiceException ssx)
         {
             ERROR_RECORDER.error(ssx.getMessage(), ssx);
 
             throw new AuthenticationException(ssx.getMessage(), ssx);
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
@@ -424,7 +424,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 	
 	                auditor.auditRequest(auditRequest);
 	            }
-	            catch (AuditServiceException asx)
+	            catch (final AuditServiceException asx)
 	            {
 	                ERROR_RECORDER.error(asx.getMessage(), asx);
 	            }

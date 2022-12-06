@@ -118,7 +118,7 @@ public class SQLAuthenticator implements Authenticator
             	isValid = true;
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new AuthenticatorException(sqx.getMessage(), sqx);
         }
@@ -141,7 +141,7 @@ public class SQLAuthenticator implements Authenticator
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new AuthenticatorException(sqx.getMessage(), sqx);
             }
@@ -261,7 +261,7 @@ public class SQLAuthenticator implements Authenticator
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new AuthenticatorException(sqx.getMessage(), sqx);
         }
@@ -284,7 +284,7 @@ public class SQLAuthenticator implements Authenticator
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new AuthenticatorException(sqx.getMessage(), sqx);
             }
@@ -354,7 +354,7 @@ public class SQLAuthenticator implements Authenticator
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new AuthenticatorException(sqx.getMessage(), sqx);
         }
@@ -377,7 +377,7 @@ public class SQLAuthenticator implements Authenticator
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new AuthenticatorException(sqx.getMessage(), sqx);
             }
@@ -431,7 +431,7 @@ public class SQLAuthenticator implements Authenticator
 
             return stmt.execute();
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new AuthenticatorException(sqx.getMessage(), sqx);
         }
@@ -449,7 +449,7 @@ public class SQLAuthenticator implements Authenticator
                     sqlConn.close();
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new AuthenticatorException(sqx.getMessage(), sqx);
             }

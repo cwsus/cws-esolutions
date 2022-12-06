@@ -283,15 +283,15 @@ public final class NetworkUtils
 
             channel.disconnect();
         }
-        catch (IOException iox)
+        catch (final IOException iox)
         {
             throw new UtilityException(iox.getMessage(), iox);
         }
-        catch (SftpException sx)
+        catch (final SftpException sx)
         {
             throw new UtilityException(sx.getMessage(), sx);
         }
-        catch (JSchException jx)
+        catch (final JSchException jx)
         {
             throw new UtilityException(jx.getMessage(), jx);
         }
@@ -482,11 +482,11 @@ public final class NetworkUtils
                 }
             }
         }
-        catch (IOException iox)
+        catch (final IOException iox)
         {
             throw new UtilityException(iox.getMessage(), iox);
         }
-        catch (JSchException jx)
+        catch (final JSchException jx)
         {
             throw new UtilityException(jx.getMessage(), jx);
         }
@@ -605,7 +605,7 @@ public final class NetworkUtils
                 DEBUGGER.debug("Reply: {}", client.getReplyString());
             }
         }
-        catch (IOException iox)
+        catch (final IOException iox)
         {
             throw new UtilityException(iox.getMessage(), iox);
         }
@@ -619,7 +619,7 @@ public final class NetworkUtils
                     client.disconnect();
                 }
             }
-            catch (IOException iox)
+            catch (final IOException iox)
             {
                 ERROR_RECORDER.error(iox.getMessage(), iox);
             }
@@ -686,19 +686,19 @@ public final class NetworkUtils
                 pWriter.close();
             }
         }
-        catch (ConnectException cx)
+        catch (final ConnectException cx)
         {
             throw new UtilityException(cx.getMessage(), cx);
         }
-        catch (UnknownHostException ux)
+        catch (final UnknownHostException ux)
         {
             throw new UtilityException(ux.getMessage(), ux);
         }
-        catch (SocketException sx)
+        catch (final SocketException sx)
         {
             throw new UtilityException(sx.getMessage(), sx);
         }
-        catch (IOException iox)
+        catch (final IOException iox)
         {
             throw new UtilityException(iox.getMessage(), iox);
         }
@@ -711,7 +711,7 @@ public final class NetworkUtils
                     socket.close();
                 }
             }
-            catch (IOException iox)
+            catch (final IOException iox)
             {
                 // log it - this could cause problems later on
                 ERROR_RECORDER.error(iox.getMessage(), iox);
@@ -902,23 +902,23 @@ public final class NetworkUtils
                 return httpResponse.getEntity().toString();
             }
         }
-        catch (ConnectException cx)
+        catch (final ConnectException cx)
         {
             throw new UtilityException(cx.getMessage(), cx);
         }
-        catch (UnknownHostException ux)
+        catch (final UnknownHostException ux)
         {
             throw new UtilityException(ux.getMessage(), ux);
         }
-        catch (SocketException sx)
+        catch (final SocketException sx)
         {
             throw new UtilityException(sx.getMessage(), sx);
         }
-        catch (IOException iox)
+        catch (final IOException iox)
         {
             throw new UtilityException(iox.getMessage(), iox);
         }
-        catch (URISyntaxException usx)
+        catch (final URISyntaxException usx)
         {
             throw new UtilityException(usx.getMessage(), usx);
         }
@@ -930,7 +930,7 @@ public final class NetworkUtils
                 {
                     httpResponse.close();
                 }
-                catch (IOException iox) {} // dont do anything with it
+                catch (final IOException iox) {} // dont do anything with it
             }
         }
     }
@@ -1015,23 +1015,23 @@ public final class NetworkUtils
                 pWriter.close();
             }
         }
-        catch (ConnectException cx)
+        catch (final ConnectException cx)
         {
             throw new UtilityException(cx.getMessage(), cx);
         }
-        catch (UnknownHostException ux)
+        catch (final UnknownHostException ux)
         {
             throw new UtilityException(ux.getMessage(), ux);
         }
-        catch (SocketException sx)
+        catch (final SocketException sx)
         {
             throw new UtilityException(sx.getMessage(), sx);
         }
-        catch (IOException iox)
+        catch (final IOException iox)
         {
             throw new UtilityException(iox.getMessage(), iox);
         }
-        catch (ClassNotFoundException cnfx)
+        catch (final ClassNotFoundException cnfx)
         {
             throw new UtilityException(cnfx.getMessage(), cnfx);
         }
@@ -1044,7 +1044,7 @@ public final class NetworkUtils
                     socket.close();
                 }
             }
-            catch (IOException iox)
+            catch (final IOException iox)
             {
                 // log it - this could cause problems later on
                 ERROR_RECORDER.error(iox.getMessage(), iox);
@@ -1236,13 +1236,13 @@ public final class NetworkUtils
                 DEBUGGER.debug("response: {}", response);
             }
         }
-        catch (TextParseException tpx)
+        catch (final TextParseException tpx)
         {
             ERROR_RECORDER.error(tpx.getMessage(), tpx);
 
             throw new UtilityException(tpx.getMessage(), tpx);
         }
-        catch (UnknownHostException uhx)
+        catch (final UnknownHostException uhx)
         {
             ERROR_RECORDER.error(uhx.getMessage(), uhx);
 
@@ -1255,7 +1255,7 @@ public final class NetworkUtils
             {
                 Security.setProperty("networkaddress.cache.ttl", currentTimeout);
             }
-            catch (NullPointerException npx) {}
+            catch (final NullPointerException npx) {}
         }
 
         return response;

@@ -42,7 +42,7 @@ public class AutoResponseAuthenticatorTest {
         {
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", false);
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             System.exit(1);
         }
@@ -60,7 +60,7 @@ public class AutoResponseAuthenticatorTest {
 		{
 			authenticator.performLogon("0f645ed1-a8bb-4d5c-b4d6-2276f1dba592", "khuntly", "mypass");
 		}
-		catch (Exception ex)
+		catch (final Exception ex)
 		{
 			ex.printStackTrace();
 			Assertions.fail(ex.getMessage());

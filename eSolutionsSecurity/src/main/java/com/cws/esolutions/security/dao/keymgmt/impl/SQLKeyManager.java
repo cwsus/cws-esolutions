@@ -132,11 +132,11 @@ public class SQLKeyManager implements KeyManager
                 return true;
             }
         }
-        catch (NoSuchAlgorithmException nsax)
+        catch (final NoSuchAlgorithmException nsax)
         {
             throw new KeyManagementException(nsax.getMessage(), nsax);
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new KeyManagementException(sqx.getMessage(), sqx);
         }
@@ -156,7 +156,7 @@ public class SQLKeyManager implements KeyManager
                     sqlConn = null;
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new KeyManagementException(sqx.getMessage(), sqx);
             }
@@ -241,15 +241,15 @@ public class SQLKeyManager implements KeyManager
 
             keyPair = new KeyPair(pubKey, privKey);
         }
-        catch (InvalidKeySpecException iksx)
+        catch (final InvalidKeySpecException iksx)
         {
             throw new KeyManagementException(iksx.getMessage(), iksx);
         }
-        catch (NoSuchAlgorithmException nsax)
+        catch (final NoSuchAlgorithmException nsax)
         {
             throw new KeyManagementException(nsax.getMessage(), nsax);
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new KeyManagementException(sqx.getMessage(), sqx);
         }
@@ -275,7 +275,7 @@ public class SQLKeyManager implements KeyManager
                     sqlConn = null;
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new KeyManagementException(sqx.getMessage(), sqx);
             }
@@ -327,7 +327,7 @@ public class SQLKeyManager implements KeyManager
                 isComplete = true;
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new KeyManagementException(sqx.getMessage(), sqx);
         }
@@ -347,7 +347,7 @@ public class SQLKeyManager implements KeyManager
                     sqlConn = null;
                 }
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 throw new KeyManagementException(sqx.getMessage(), sqx);
             }

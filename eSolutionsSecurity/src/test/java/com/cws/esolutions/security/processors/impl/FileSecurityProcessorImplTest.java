@@ -62,7 +62,7 @@ public class FileSecurityProcessorImplTest
 
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             Assertions.fail(ex.getMessage());
 
@@ -84,7 +84,7 @@ public class FileSecurityProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (FileSecurityException fsx)
+        catch (final FileSecurityException fsx)
         {
             Assertions.fail(fsx.getMessage());
         }
@@ -104,7 +104,7 @@ public class FileSecurityProcessorImplTest
 
             Assertions.assertThat(response.isSignatureValid()).isTrue();
         }
-        catch (FileSecurityException fsx)
+        catch (final FileSecurityException fsx)
         {
             Assertions.fail(fsx.getMessage());
         }
@@ -124,7 +124,7 @@ public class FileSecurityProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (FileSecurityException fsx)
+        catch (final FileSecurityException fsx)
         {
             Assertions.fail(fsx.getMessage());
         }
@@ -144,7 +144,7 @@ public class FileSecurityProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (FileSecurityException fsx)
+        catch (final FileSecurityException fsx)
         {
             Assertions.fail(fsx.getMessage());
         }

@@ -126,37 +126,37 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
-        catch (NoSuchAlgorithmException nsax)
+        catch (final NoSuchAlgorithmException nsax)
         {
             ERROR_RECORDER.error(nsax.getMessage(), nsax);
 
             throw new FileSecurityException(nsax.getMessage(), nsax);
         }
-        catch (FileNotFoundException fnfx)
+        catch (final FileNotFoundException fnfx)
         {
             ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
 
             throw new FileSecurityException(fnfx.getMessage(), fnfx);
         }
-        catch (InvalidKeyException ikx)
+        catch (final InvalidKeyException ikx)
         {
             ERROR_RECORDER.error(ikx.getMessage(), ikx);
 
             throw new FileSecurityException(ikx.getMessage(), ikx);
         }
-        catch (SignatureException sx)
+        catch (final SignatureException sx)
         {
             ERROR_RECORDER.error(sx.getMessage(), sx);
 
             throw new FileSecurityException(sx.getMessage(), sx);
         }
-        catch (IOException iox)
+        catch (final IOException iox)
         {
             ERROR_RECORDER.error(iox.getMessage(), iox);
 
             throw new FileSecurityException(iox.getMessage(), iox);
         }
-        catch (KeyManagementException kmx)
+        catch (final KeyManagementException kmx)
         {
             ERROR_RECORDER.error(kmx.getMessage(), kmx);
 
@@ -191,7 +191,7 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 	
 	                auditor.auditRequest(auditRequest);
 	            }
-	            catch (AuditServiceException asx)
+	            catch (final AuditServiceException asx)
 	            {
 	                ERROR_RECORDER.error(asx.getMessage(), asx);
 	            }
@@ -258,37 +258,37 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
-        catch (NoSuchAlgorithmException nsax)
+        catch (final NoSuchAlgorithmException nsax)
         {
             ERROR_RECORDER.error(nsax.getMessage(), nsax);
 
             throw new FileSecurityException(nsax.getMessage(), nsax);
         }
-        catch (FileNotFoundException fnfx)
+        catch (final FileNotFoundException fnfx)
         {
             ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
 
             throw new FileSecurityException(fnfx.getMessage(), fnfx);
         }
-        catch (InvalidKeyException ikx)
+        catch (final InvalidKeyException ikx)
         {
             ERROR_RECORDER.error(ikx.getMessage(), ikx);
 
             throw new FileSecurityException(ikx.getMessage(), ikx);
         }
-        catch (SignatureException sx)
+        catch (final SignatureException sx)
         {
             ERROR_RECORDER.error(sx.getMessage(), sx);
 
             throw new FileSecurityException(sx.getMessage(), sx);
         }
-        catch (IOException iox)
+        catch (final IOException iox)
         {
             ERROR_RECORDER.error(iox.getMessage(), iox);
 
             throw new FileSecurityException(iox.getMessage(), iox);
         }
-        catch (KeyManagementException kmx)
+        catch (final KeyManagementException kmx)
         {
             ERROR_RECORDER.error(kmx.getMessage(), kmx);
 
@@ -323,7 +323,7 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 	
 	                auditor.auditRequest(auditRequest);
 	            }
-	            catch (AuditServiceException asx)
+	            catch (final AuditServiceException asx)
 	            {
 	                ERROR_RECORDER.error(asx.getMessage(), asx);
 	            }
@@ -401,31 +401,31 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
-        catch (IOException iox)
+        catch (final IOException iox)
         {
             ERROR_RECORDER.error(iox.getMessage(), iox);
 
             throw new FileSecurityException(iox.getMessage(), iox);
         }
-        catch (NoSuchAlgorithmException nsax)
+        catch (final NoSuchAlgorithmException nsax)
         {
             ERROR_RECORDER.error(nsax.getMessage(), nsax);
 
             throw new FileSecurityException(nsax.getMessage(), nsax);
         }
-        catch (NoSuchPaddingException nspx)
+        catch (final NoSuchPaddingException nspx)
         {
             ERROR_RECORDER.error(nspx.getMessage(), nspx);
 
             throw new FileSecurityException(nspx.getMessage(), nspx);
         }
-        catch (InvalidKeyException ikx)
+        catch (final InvalidKeyException ikx)
         {
             ERROR_RECORDER.error(ikx.getMessage(), ikx);
 
             throw new FileSecurityException(ikx.getMessage(), ikx);
         }
-        catch (KeyManagementException kmx)
+        catch (final KeyManagementException kmx)
         {
             ERROR_RECORDER.error(kmx.getMessage(), kmx);
 
@@ -460,7 +460,7 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 	
 	                auditor.auditRequest(auditRequest);
 	            }
-	            catch (AuditServiceException asx)
+	            catch (final AuditServiceException asx)
 	            {
 	                ERROR_RECORDER.error(asx.getMessage(), asx);
 	            }
@@ -527,31 +527,31 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
-        catch (IOException iox)
+        catch (final IOException iox)
         {
             ERROR_RECORDER.error(iox.getMessage(), iox);
 
             throw new FileSecurityException(iox.getMessage(), iox);
         }
-        catch (NoSuchAlgorithmException nsax)
+        catch (final NoSuchAlgorithmException nsax)
         {
             ERROR_RECORDER.error(nsax.getMessage(), nsax);
 
             throw new FileSecurityException(nsax.getMessage(), nsax);
         }
-        catch (NoSuchPaddingException nspx)
+        catch (final NoSuchPaddingException nspx)
         {
             ERROR_RECORDER.error(nspx.getMessage(), nspx);
 
             throw new FileSecurityException(nspx.getMessage(), nspx);
         }
-        catch (InvalidKeyException ikx)
+        catch (final InvalidKeyException ikx)
         {
             ERROR_RECORDER.error(ikx.getMessage(), ikx);
 
             throw new FileSecurityException(ikx.getMessage(), ikx);
         }
-        catch (KeyManagementException kmx)
+        catch (final KeyManagementException kmx)
         {
             ERROR_RECORDER.error(kmx.getMessage(), kmx);
 
@@ -586,7 +586,7 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 	
 	                auditor.auditRequest(auditRequest);
 	            }
-	            catch (AuditServiceException asx)
+	            catch (final AuditServiceException asx)
 	            {
 	                ERROR_RECORDER.error(asx.getMessage(), asx);
 	            }

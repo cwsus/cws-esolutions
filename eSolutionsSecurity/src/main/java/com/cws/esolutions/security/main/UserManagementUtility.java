@@ -200,7 +200,7 @@ public class UserManagementUtility
                 reqInfo.setHostAddress(InetAddress.getLocalHost().getHostAddress());
                 reqInfo.setHostName(InetAddress.getLocalHost().getHostName());
             }
-            catch (UnknownHostException uhx)
+            catch (final UnknownHostException uhx)
             {
                 reqInfo.setHostAddress("127.0.0.1");
                 reqInfo.setHostName("localhost");
@@ -283,19 +283,19 @@ public class UserManagementUtility
                 System.out.println(account);
             }
         }
-        catch (ParseException px)
+        catch (final ParseException px)
         {
             ERROR_RECORDER.error(px.getMessage(), px);
 
             System.err.println("An error occurred during processing: " + px.getMessage());
         }
-        catch (SecurityException sx)
+        catch (final SecurityException sx)
         {
             ERROR_RECORDER.error(sx.getMessage(), sx);
 
             System.err.println("An error occurred during processing: " + sx.getMessage());
         }
-        catch (SecurityServiceException ssx)
+        catch (final SecurityServiceException ssx)
         {
             ERROR_RECORDER.error(ssx.getMessage(), ssx);
 

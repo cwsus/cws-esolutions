@@ -304,7 +304,7 @@ public class SystemCheckController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (SystemCheckException scx)
+        catch (final SystemCheckException scx)
         {
             ERROR_RECORDER.error(scx.getMessage(), scx);
 
@@ -705,7 +705,7 @@ public class SystemCheckController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (SystemCheckException scx)
+        catch (final SystemCheckException scx)
         {
             ERROR_RECORDER.error(scx.getMessage(), scx);
 
@@ -841,7 +841,7 @@ public class SystemCheckController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (SystemCheckException scx)
+        catch (final SystemCheckException scx)
         {
             ERROR_RECORDER.error(scx.getMessage(), scx);
 
@@ -978,7 +978,7 @@ public class SystemCheckController
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
-        catch (SystemCheckException scx)
+        catch (final SystemCheckException scx)
         {
             ERROR_RECORDER.error(scx.getMessage(), scx);
 

@@ -115,35 +115,35 @@ public final class PasswordUtils
 
             encPass = Base64.getEncoder().encodeToString(combined.getBytes());
         }
-        catch (InvalidKeyException ikx)
+        catch (final InvalidKeyException ikx)
         {
             throw new SecurityException(ikx.getMessage(), ikx);
         }
-        catch (NoSuchAlgorithmException nsx)
+        catch (final NoSuchAlgorithmException nsx)
         {
             throw new SecurityException(nsx.getMessage(), nsx);
         }
-        catch (NoSuchPaddingException npx)
+        catch (final NoSuchPaddingException npx)
         {
             throw new SecurityException(npx.getMessage(), npx);
         }
-        catch (IllegalBlockSizeException ibx)
+        catch (final IllegalBlockSizeException ibx)
         {
             throw new SecurityException(ibx.getMessage(), ibx);
         }
-        catch (BadPaddingException bpx)
+        catch (final BadPaddingException bpx)
         {
             throw new SecurityException(bpx.getMessage(), bpx);
         }
-        catch (UnsupportedEncodingException uex)
+        catch (final UnsupportedEncodingException uex)
         {
             throw new SecurityException(uex.getMessage(), uex);
         }
-        catch (InvalidKeySpecException iksx)
+        catch (final InvalidKeySpecException iksx)
         {
             throw new SecurityException(iksx.getMessage(), iksx);
         }
-        catch (InvalidParameterSpecException ipsx)
+        catch (final InvalidParameterSpecException ipsx)
         {
             throw new SecurityException(ipsx.getMessage(), ipsx);
         }
@@ -193,11 +193,11 @@ public final class PasswordUtils
 
             response = Base64.getEncoder().encodeToString(input);
         }
-        catch (NoSuchAlgorithmException nsx)
+        catch (final NoSuchAlgorithmException nsx)
         {
             throw new SecurityException(nsx.getMessage(), nsx);
         }
-        catch (UnsupportedEncodingException uex)
+        catch (final UnsupportedEncodingException uex)
         {
             throw new SecurityException(uex.getMessage(), uex);
         }
@@ -252,35 +252,35 @@ public final class PasswordUtils
             pbeCipher.init(Cipher.DECRYPT_MODE, sks, new IvParameterSpec(Base64.getDecoder().decode(iv)));
             decPass = new String(pbeCipher.doFinal(Base64.getDecoder().decode(property)), encoding);
         }
-        catch (InvalidKeyException ikx)
+        catch (final InvalidKeyException ikx)
         {
             throw new SecurityException(ikx.getMessage(), ikx);
         }
-        catch (NoSuchAlgorithmException nsx)
+        catch (final NoSuchAlgorithmException nsx)
         {
             throw new SecurityException(nsx.getMessage(), nsx);
         }
-        catch (NoSuchPaddingException npx)
+        catch (final NoSuchPaddingException npx)
         {
             throw new SecurityException(npx.getMessage(), npx);
         }
-        catch (IllegalBlockSizeException ibx)
+        catch (final IllegalBlockSizeException ibx)
         {
             throw new SecurityException(ibx.getMessage(), ibx);
         }
-        catch (BadPaddingException bpx)
+        catch (final BadPaddingException bpx)
         {
             throw new SecurityException(bpx.getMessage(), bpx);
         }
-        catch (UnsupportedEncodingException uex)
+        catch (final UnsupportedEncodingException uex)
         {
             throw new SecurityException(uex.getMessage(), uex);
         }
-        catch (InvalidAlgorithmParameterException iapx)
+        catch (final InvalidAlgorithmParameterException iapx)
         {
             throw new SecurityException(iapx.getMessage(), iapx);
         }
-        catch (InvalidKeySpecException iksx)
+        catch (final InvalidKeySpecException iksx)
         {
             throw new SecurityException(iksx.getMessage(), iksx);
         }
@@ -394,11 +394,11 @@ public final class PasswordUtils
 
             return (truncatedHash == code);
         }
-        catch (InvalidKeyException ikx)
+        catch (final InvalidKeyException ikx)
         {
             throw new SecurityException(ikx.getMessage(), ikx);
         }
-        catch (NoSuchAlgorithmException nsx)
+        catch (final NoSuchAlgorithmException nsx)
         {
             throw new SecurityException(nsx.getMessage(), nsx);
         }

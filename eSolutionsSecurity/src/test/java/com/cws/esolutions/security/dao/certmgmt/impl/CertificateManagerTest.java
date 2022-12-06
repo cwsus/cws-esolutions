@@ -59,7 +59,7 @@ public class CertificateManagerTest
 
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             ex.printStackTrace();
             Assertions.fail(ex.getMessage());
@@ -84,7 +84,7 @@ public class CertificateManagerTest
         {
             processor.createCertificateRequest(subjectData, "junit", 365, 4096);
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
         	Assertions.fail(ex.getMessage());
         }
@@ -96,7 +96,7 @@ public class CertificateManagerTest
         {
             processor.applyCertificateRequest("test.junit.com", FileUtils.getFile("/opt/cws/eSolutions/certs/certificates/test.junit.com.crt"), FileUtils.getFile("/opt/cws/eSolutions/certs/keystores/test.junit.com.jks"), "junit");
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             ex.printStackTrace();
             Assertions.fail(ex.getMessage());

@@ -125,15 +125,15 @@ public class SecurityServiceListener implements ServletContextListener
                 throw new SecurityServiceException("Unable to load configuration. Cannot continue.");
             }
         }
-        catch (NamingException nx)
+        catch (final NamingException nx)
         {
         	System.err.println(nx.getMessage());
         }
-        catch (SecurityServiceException ssx)
+        catch (final SecurityServiceException ssx)
         {
         	System.err.println(ssx.getMessage());
         }
-        catch (JAXBException jx)
+        catch (final JAXBException jx)
         {
         	System.err.println(jx.getMessage());
         }

@@ -50,7 +50,7 @@ public class UserSecurityInformationDAOImplTest
         {
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             Assertions.fail(e.getMessage());
             System.exit(1);
@@ -63,7 +63,7 @@ public class UserSecurityInformationDAOImplTest
         {
         	Assertions.assertThat(dao.addOrUpdateSalt(UserSecurityInformationDAOImplTest.GUID, logonSalt, SaltType.LOGON.name())).isTrue();
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             Assertions.fail(sqx.getMessage());
         }
@@ -75,7 +75,7 @@ public class UserSecurityInformationDAOImplTest
         {
             Assertions.assertThat(dao.getUserSalt(UserSecurityInformationDAOImplTest.GUID, SaltType.LOGON.name())).isNotEmpty();
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             Assertions.fail(sqx.getMessage());
         }
@@ -87,7 +87,7 @@ public class UserSecurityInformationDAOImplTest
         {
         	Assertions.assertThat(dao.insertResetData(UserSecurityInformationDAOImplTest.GUID, resetId, null)).isTrue();
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
         	Assertions.fail(sqx.getMessage());
         }
@@ -99,7 +99,7 @@ public class UserSecurityInformationDAOImplTest
         {
         	Assertions.assertThat(dao.listActiveResets()).isNotEmpty();
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
         	Assertions.fail(sqx.getMessage());
         }
@@ -111,7 +111,7 @@ public class UserSecurityInformationDAOImplTest
         {
         	Assertions.assertThat(dao.getResetData("EgSEz9uTDeaCKvekHLB0PbKT9uzNj7vxm6yo8JklXnXRwNSUicI9ikx6dhpP1iGv")).isNotEmpty();
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
         	Assertions.fail(sqx.getMessage());
         }
@@ -123,7 +123,7 @@ public class UserSecurityInformationDAOImplTest
         {
         	Assertions.assertThat(dao.verifySmsForReset(UserSecurityInformationDAOImplTest.GUID, resetId, smsCode)).isTrue();
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
         	Assertions.fail(sqx.getMessage());
         }
@@ -135,7 +135,7 @@ public class UserSecurityInformationDAOImplTest
         {
         	Assertions.assertThat(dao.removeResetData(UserSecurityInformationDAOImplTest.GUID, "EgSEz9uTDeaCKvekHLB0PbKT9uzNj7vxm6yo8JklXnXRwNSUicI9ikx6dhpP1iGv")).isTrue();
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
         	Assertions.fail(sqx.getMessage());
         }
@@ -147,7 +147,7 @@ public class UserSecurityInformationDAOImplTest
         {
         	Assertions.assertThat(dao.removeUserData(UserSecurityInformationDAOImplTest.GUID, null)).isTrue();
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
         	Assertions.fail(sqx.getMessage());
         }

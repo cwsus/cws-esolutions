@@ -115,7 +115,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
                 DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new SQLException(sqx.getMessage(), sqx);
         }
@@ -211,7 +211,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
                 DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new SQLException(sqx.getMessage(), sqx);
         }
@@ -274,7 +274,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
                 DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new SQLException(sqx.getMessage(), sqx);
         }
@@ -382,7 +382,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new SQLException(sqx.getMessage(), sqx);
         }
@@ -508,7 +508,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new SQLException(sqx.getMessage(), sqx);
         }
@@ -627,7 +627,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new SQLException(sqx.getMessage(), sqx);
         }

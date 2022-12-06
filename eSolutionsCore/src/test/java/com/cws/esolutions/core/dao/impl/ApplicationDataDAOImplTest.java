@@ -55,7 +55,7 @@ public class ApplicationDataDAOImplTest
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
             CoreServicesInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, true);
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             Assertions.fail(ex.getMessage());
 
@@ -80,7 +80,7 @@ public class ApplicationDataDAOImplTest
         {
             dao.addApplication(appData);
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             sqx.printStackTrace();
             Assertions.fail(sqx.getMessage());
@@ -105,7 +105,7 @@ public class ApplicationDataDAOImplTest
         {
             dao.addApplication(appData);
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             Assertions.fail(sqx.getMessage());
         }
@@ -117,7 +117,7 @@ public class ApplicationDataDAOImplTest
         {
             Assertions.assertThat(dao.listApplications(0)).isNotEmpty();
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             Assertions.fail(sqx.getMessage());
         }
@@ -129,7 +129,7 @@ public class ApplicationDataDAOImplTest
         {
             Assertions.assertThat(dao.getApplication(this.appGuid)).isNotEmpty();
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             Assertions.fail(sqx.getMessage());
         }
@@ -141,7 +141,7 @@ public class ApplicationDataDAOImplTest
         {
             Assertions.assertThat(dao.getApplicationsByAttribute("eSolutions", 0)).isNotEmpty();
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             Assertions.fail(sqx.getMessage());
         }
@@ -153,7 +153,7 @@ public class ApplicationDataDAOImplTest
         {
             dao.removeApplication(this.appGuid);
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             Assertions.fail(sqx.getMessage());
         }

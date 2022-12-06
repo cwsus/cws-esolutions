@@ -396,7 +396,7 @@ public class DNSServiceController
             model.addAttribute("serviceTypes", this.serviceTypes);
             model.addAttribute(Constants.COMMAND, new SearchRequest());
         }
-        catch (DNSServiceException dsx)
+        catch (final DNSServiceException dsx)
         {
             ERROR_RECORDER.error(dsx.getMessage(), dsx);
 

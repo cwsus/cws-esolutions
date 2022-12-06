@@ -76,7 +76,7 @@ public class ResponseTimeFilter implements Filter
         	Context envContext = (Context) initContext.lookup(SecurityServiceConstants.DS_CONTEXT);
         	environment = (String) envContext.lookup("env");
         }
-        catch (NamingException nx)
+        catch (final NamingException nx)
         {
         	ERROR_RECORDER.error(nx.getMessage(), nx);
         }

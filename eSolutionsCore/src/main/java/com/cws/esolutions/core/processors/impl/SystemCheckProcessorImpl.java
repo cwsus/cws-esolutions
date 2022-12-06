@@ -128,7 +128,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -194,7 +194,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
@@ -228,7 +228,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -313,7 +313,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -380,7 +380,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
@@ -414,7 +414,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -499,7 +499,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -565,7 +565,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
@@ -599,7 +599,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -684,7 +684,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -749,7 +749,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
@@ -783,7 +783,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }

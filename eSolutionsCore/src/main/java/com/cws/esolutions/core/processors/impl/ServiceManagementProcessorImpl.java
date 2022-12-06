@@ -132,7 +132,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -152,7 +152,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
             {
                 validator = serviceDao.getServicesByAttribute(service.getName(), request.getStartPage());
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 ERROR_RECORDER.error(sqx.getMessage(), sqx);
             }
@@ -221,13 +221,13 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new ServiceManagementException(sqx.getMessage(), sqx);
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
@@ -261,7 +261,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -345,7 +345,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -403,13 +403,13 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
             throw new ServiceManagementException(acsx.getMessage(), acsx);
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
@@ -443,7 +443,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -527,7 +527,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -551,13 +551,13 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
             throw new ServiceManagementException(acsx.getMessage(), acsx);
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
@@ -591,7 +591,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -673,7 +673,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -721,13 +721,13 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new ServiceManagementException(sqx.getMessage(), sqx);
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
@@ -761,7 +761,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -845,7 +845,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -896,13 +896,13 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new ServiceManagementException(sqx.getMessage(), sqx);
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
@@ -936,7 +936,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -1020,7 +1020,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -1067,13 +1067,13 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new ServiceManagementException(sqx.getMessage(), sqx);
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
@@ -1107,7 +1107,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -1191,7 +1191,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -1278,13 +1278,13 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new ServiceManagementException(sqx.getMessage(), sqx);
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
@@ -1318,7 +1318,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }

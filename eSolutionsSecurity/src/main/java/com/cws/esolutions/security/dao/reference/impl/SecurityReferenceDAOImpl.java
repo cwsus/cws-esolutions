@@ -111,7 +111,7 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new SQLException(sqx.getMessage(), sqx);
         }
@@ -203,7 +203,7 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new SQLException(sqx.getMessage(), sqx);
         }
@@ -288,7 +288,7 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new SQLException(sqx.getMessage(), sqx);
         }
@@ -385,7 +385,7 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new SQLException(sqx.getMessage(), sqx);
         }

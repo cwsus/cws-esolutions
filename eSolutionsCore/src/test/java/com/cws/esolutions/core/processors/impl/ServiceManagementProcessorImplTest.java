@@ -72,7 +72,7 @@ public class ServiceManagementProcessorImplTest
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", false);
             CoreServicesInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, true);
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             ex.printStackTrace();
             Assertions.fail(ex.getMessage());
@@ -207,7 +207,7 @@ public class ServiceManagementProcessorImplTest
 
                 Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
             }
-            catch (ServiceManagementException pmx)
+            catch (final ServiceManagementException pmx)
             {
                 Assertions.fail(pmx.getMessage());
             }
@@ -238,7 +238,7 @@ public class ServiceManagementProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
-        catch (ServiceManagementException pmx)
+        catch (final ServiceManagementException pmx)
         {
             Assertions.fail(pmx.getMessage());
         }
@@ -259,7 +259,7 @@ public class ServiceManagementProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
-        catch (ServiceManagementException pmx)
+        catch (final ServiceManagementException pmx)
         {
             Assertions.fail(pmx.getMessage());
         }
@@ -280,7 +280,7 @@ public class ServiceManagementProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
-        catch (ServiceManagementException pmx)
+        catch (final ServiceManagementException pmx)
         {
             Assertions.fail(pmx.getMessage());
         }
@@ -305,7 +305,7 @@ public class ServiceManagementProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
-        catch (ServiceManagementException pmx)
+        catch (final ServiceManagementException pmx)
         {
             Assertions.fail(pmx.getMessage());
         }
@@ -330,7 +330,7 @@ public class ServiceManagementProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
-        catch (ServiceManagementException pmx)
+        catch (final ServiceManagementException pmx)
         {
             Assertions.fail(pmx.getMessage());
         }
@@ -355,7 +355,7 @@ public class ServiceManagementProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
         }
-        catch (ServiceManagementException pmx)
+        catch (final ServiceManagementException pmx)
         {
             Assertions.fail(pmx.getMessage());
         }

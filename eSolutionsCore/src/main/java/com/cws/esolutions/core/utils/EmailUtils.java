@@ -182,18 +182,18 @@ public final class EmailUtils
                 {
                     mailProps.load(EmailUtils.class.getClassLoader().getResourceAsStream(mailConfig.getPropertyFile()));
                 }
-                catch (NullPointerException npx)
+                catch (final NullPointerException npx)
                 {
                     try
                     {
                         mailProps.load(new FileInputStream(mailConfig.getPropertyFile()));
                     }
-                    catch (IOException iox)
+                    catch (final IOException iox)
                     {
                         throw new MessagingException(iox.getMessage(), iox);
                     }
                 }
-                catch (IOException iox)
+                catch (final IOException iox)
                 {
                     throw new MessagingException(iox.getMessage(), iox);
                 }
@@ -275,11 +275,11 @@ public final class EmailUtils
                 }
             }
         }
-        catch (MessagingException mex)
+        catch (final MessagingException mex)
         {
             throw new MessagingException(mex.getMessage(), mex);
         }
-        catch (NamingException nx)
+        catch (final NamingException nx)
         {
             throw new MessagingException(nx.getMessage(), nx);
         }
@@ -491,11 +491,11 @@ public final class EmailUtils
                 }
             }
         }
-        catch (IOException iox)
+        catch (final IOException iox)
         {
             throw new MessagingException(iox.getMessage(), iox);
         }
-        catch (MessagingException mex)
+        catch (final MessagingException mex)
         {
             throw new MessagingException(mex.getMessage(), mex);
         }
@@ -513,7 +513,7 @@ public final class EmailUtils
                     archiveFolder.close(false);
                 }
             }
-            catch (MessagingException mx)
+            catch (final MessagingException mx)
             {
                 ERROR_RECORDER.error(mx.getMessage(), mx);
             }

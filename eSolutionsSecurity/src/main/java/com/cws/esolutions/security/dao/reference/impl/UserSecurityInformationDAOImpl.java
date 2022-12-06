@@ -80,7 +80,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
                 isComplete = true;
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new SQLException(sqx.getMessage(), sqx);
         }
@@ -153,7 +153,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new SQLException(sqx.getMessage(), sqx);
         }
@@ -226,7 +226,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
                 DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new SQLException(sqx.getMessage(), sqx);
         }
@@ -288,7 +288,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
                 DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new SQLException(sqx.getMessage(), sqx);
         }
@@ -366,7 +366,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new SQLException(sqx.getMessage(), sqx);
         }
@@ -441,7 +441,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new SQLException(sqx.getMessage(), sqx);
         }
@@ -509,7 +509,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
                 DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new SQLException(sqx.getMessage(), sqx);
         }
@@ -573,7 +573,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
                 DEBUGGER.debug("isVerified: {}", isVerified);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new SQLException(sqx.getMessage(), sqx);
         }

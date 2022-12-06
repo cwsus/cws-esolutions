@@ -75,7 +75,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         {
             SQLUtils.addOrDeleteData("{CALL insertNewApplication(?, ?, ?, ?, ?, ?, ?, ?, ?)}", params);
         }
-        catch (UtilityException ux)
+        catch (final UtilityException ux)
         {
             throw new SQLException(ux.getMessage(), ux);
         }
@@ -108,7 +108,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         {
             SQLUtils.addOrDeleteData("{CALL updateApplicationData(?, ?, ?, ?, ?, ?, ?, ?, ?)}", params);
         }
-        catch (UtilityException ux)
+        catch (final UtilityException ux)
         {
             throw new SQLException(ux.getMessage(), ux);
         }
@@ -134,7 +134,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         {
             SQLUtils.addOrDeleteData("{CALL removeApplicationData(?)}", params);
         }
-        catch (UtilityException ux)
+        catch (final UtilityException ux)
         {
             throw new SQLException(ux.getMessage(), ux);
         }
@@ -215,7 +215,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new SQLException(sqx.getMessage(), sqx);
         }
@@ -341,7 +341,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new SQLException(sqx.getMessage(), sqx);
         }
@@ -438,7 +438,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                 }
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             throw new SQLException(sqx.getMessage(), sqx);
         }

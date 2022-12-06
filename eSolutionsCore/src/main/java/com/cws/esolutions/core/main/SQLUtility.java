@@ -126,13 +126,13 @@ public class SQLUtility
             SecurityServiceInitializer.initializeService(securityConfiguration, securityLogging, false);
             CoreServicesInitializer.initializeService(coreConfiguration, coreLogging, false, true);
         }
-        catch (CoreServicesException csx)
+        catch (final CoreServicesException csx)
         {
             System.err.println("An error occurred while loading configuration data: " + csx.getCause().getMessage());
 
             System.exit(1);
         }
-        catch (SecurityServiceException sx)
+        catch (final SecurityServiceException sx)
         {
             System.err.println("An error occurred while loading configuration data: " + sx.getCause().getMessage());
 
@@ -145,7 +145,7 @@ public class SQLUtility
         {
             throw new ParseException("nothing to see here");
         }
-        catch (ParseException px)
+        catch (final ParseException px)
         {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp(SQLUtility.CNAME, options, true);

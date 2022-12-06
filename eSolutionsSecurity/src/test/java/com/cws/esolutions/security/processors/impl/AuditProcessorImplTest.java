@@ -62,7 +62,7 @@ public class AuditProcessorImplTest
 
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             Assertions.fail(ex.getMessage());
 
@@ -86,7 +86,7 @@ public class AuditProcessorImplTest
         {
             AuditProcessorImplTest.processor.auditRequest(auditRequest);
         }
-        catch (AuditServiceException asx)
+        catch (final AuditServiceException asx)
         {
             Assertions.fail(asx.getMessage());
         }
@@ -111,7 +111,7 @@ public class AuditProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (AuditServiceException asx)
+        catch (final AuditServiceException asx)
         {
             Assertions.fail(asx.getMessage());
         }

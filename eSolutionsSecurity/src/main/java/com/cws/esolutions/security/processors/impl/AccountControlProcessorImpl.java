@@ -139,7 +139,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -169,7 +169,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                     break;
                 }
-                catch (UserManagementException umx)
+                catch (final UserManagementException umx)
                 {
                     ERROR_RECORDER.error(umx.getMessage(), umx);
 
@@ -279,32 +279,32 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
-        catch (AccountControlException acx)
+        catch (final AccountControlException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
             throw new AccountControlException(acx.getMessage(), acx);
         }
-        catch (AccessControlServiceException acx)
+        catch (final AccessControlServiceException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
             throw new AccountControlException(acx.getMessage(), acx);
         }
-        catch (UserManagementException umx)
+        catch (final UserManagementException umx)
         {
         	umx.printStackTrace();
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
             throw new AccountControlException(umx.getMessage(), umx);
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new AccountControlException(sqx.getMessage(), sqx);
         }
-        catch (SecurityException sx)
+        catch (final SecurityException sx)
         {
             ERROR_RECORDER.error(sx.getMessage(), sx);
 
@@ -338,7 +338,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -422,7 +422,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -447,13 +447,13 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
             throw new AccountControlException(acsx.getMessage(), acsx);
         }
-        catch (UserManagementException umx)
+        catch (final UserManagementException umx)
         {
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
@@ -487,7 +487,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -571,7 +571,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -613,13 +613,13 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
             throw new AccountControlException(acsx.getMessage(), acsx);
         }
-        catch (UserManagementException umx)
+        catch (final UserManagementException umx)
         {
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
@@ -653,7 +653,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -738,7 +738,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -818,13 +818,13 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
             throw new AccountControlException(acsx.getMessage(), acsx);
         }
-        catch (UserManagementException umx)
+        catch (final UserManagementException umx)
         {
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
@@ -858,7 +858,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -947,7 +947,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -1021,25 +1021,25 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 response.setRequestStatus(SecurityRequestStatus.SUCCESS);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new AccountControlException(sqx.getMessage(), sqx);
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
             throw new AccountControlException(acsx.getMessage(), acsx);
         }
-        catch (UserManagementException umx)
+        catch (final UserManagementException umx)
         {
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
             throw new AccountControlException(umx.getMessage(), umx);
         }
-        catch (SecurityException sx)
+        catch (final SecurityException sx)
         {
             ERROR_RECORDER.error(sx.getMessage(), sx);
 
@@ -1073,7 +1073,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -1157,7 +1157,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -1194,13 +1194,13 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
             throw new AccountControlException(acsx.getMessage(), acsx);
         }
-        catch (UserManagementException umx)
+        catch (final UserManagementException umx)
         {
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
@@ -1234,7 +1234,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -1319,7 +1319,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -1375,13 +1375,13 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
-        catch (UserManagementException umx)
+        catch (final UserManagementException umx)
         {
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
             throw new AccountControlException(umx.getMessage(), umx);
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
@@ -1414,7 +1414,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -1498,7 +1498,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -1547,13 +1547,13 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 DEBUGGER.debug("AccountControlResponse: {}", response);
             }
         }
-        catch (UserManagementException umx)
+        catch (final UserManagementException umx)
         {
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
             throw new AccountControlException(umx.getMessage(), umx);
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
@@ -1587,7 +1587,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -1671,7 +1671,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -1728,13 +1728,13 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
-        catch (UserManagementException umx)
+        catch (final UserManagementException umx)
         {
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
             throw new AccountControlException(umx.getMessage(), umx);
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
@@ -1768,7 +1768,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }

@@ -118,15 +118,15 @@ public class CoreServicesListener implements ServletContextListener
                 throw new CoreServicesException("Failed to load servlet context");
             }
         }
-        catch (NamingException nx)
+        catch (final NamingException nx)
         {
         	System.out.println(nx.getMessage());
         }
-        catch (JAXBException jx)
+        catch (final JAXBException jx)
         {
         	System.out.println(jx.getMessage());
         }
-        catch (CoreServicesException csx)
+        catch (final CoreServicesException csx)
         {
         	System.out.println(csx.getMessage());
         }

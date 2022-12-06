@@ -53,7 +53,7 @@ public class EmailUtilsTest
         {
             CoreServicesInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", false, false);
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             Assertions.fail(ex.getMessage());
 
@@ -76,7 +76,7 @@ public class EmailUtilsTest
         {
             EmailUtils.sendEmailMessage(EmailUtilsTest.bean.getConfigData().getMailConfig(), message, false);
         }
-        catch (MessagingException mx)
+        catch (final MessagingException mx)
         {
             Assertions.fail(mx.getMessage());
         }
@@ -107,11 +107,11 @@ public class EmailUtilsTest
 
             EmailUtils.sendEmailMessage(EmailUtilsTest.bean.getConfigData().getMailConfig(), message, false);
         }
-        catch (MessagingException mx)
+        catch (final MessagingException mx)
         {
             Assertions.fail(mx.getMessage());
         }
-        catch (FileNotFoundException fnfx)
+        catch (final FileNotFoundException fnfx)
         {
             Assertions.fail(fnfx.getMessage());
         }
@@ -132,7 +132,7 @@ public class EmailUtilsTest
         {
             EmailUtils.sendEmailMessage(EmailUtilsTest.bean.getConfigData().getMailConfig(), message, false);
         }
-        catch (MessagingException mx)
+        catch (final MessagingException mx)
         {
             Assertions.fail(mx.getMessage());
         }
@@ -145,7 +145,7 @@ public class EmailUtilsTest
         {
             EmailUtils.readEmailMessages(appBean.getConfigData().getMailConfig(), false, null);
         }
-        catch (MessagingException mx)
+        catch (final MessagingException mx)
         {
             Assertions.fail(mx.getMessage());
         }

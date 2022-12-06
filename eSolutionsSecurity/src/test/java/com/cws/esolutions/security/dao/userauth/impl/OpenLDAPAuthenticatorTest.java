@@ -45,7 +45,7 @@ public class OpenLDAPAuthenticatorTest
         {
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             System.exit(1);
         }
@@ -59,7 +59,7 @@ public class OpenLDAPAuthenticatorTest
         {
             Assertions.assertThat(authenticator.performLogon("0f645ed1-a8bb-4d5c-b4d6-2276f1dba592", "junit", "4Uq2ssAjH4S1jquzLkgh466xswdpcrPPNKeQjFFG6jpxV6L9mD5U+bSFF7slFWY6mKK6bJiy84u24qwDmXfuWA==")).isTrue();
         }
-        catch (AuthenticatorException e)
+        catch (final AuthenticatorException e)
         {
         	Assertions.fail(e.getMessage());
         }
@@ -73,7 +73,7 @@ public class OpenLDAPAuthenticatorTest
         {
         	Assertions.assertThat(authenticator.obtainSecurityData("junit", "f42fb0ba-4d1e-1126-986f-800cd2650000")).isNotEmpty();
         }
-        catch (AuthenticatorException e)
+        catch (final AuthenticatorException e)
         {
         	Assertions.fail(e.getMessage());
         }
@@ -87,7 +87,7 @@ public class OpenLDAPAuthenticatorTest
         {
         	Assertions.assertThat(authenticator.obtainOtpSecret("junit", "f42fb0ba-4d1e-1126-986f-800cd2650000")).isNotEmpty();
         }
-        catch (AuthenticatorException e)
+        catch (final AuthenticatorException e)
         {
         	Assertions.fail(e.getMessage());
         }
@@ -105,7 +105,7 @@ public class OpenLDAPAuthenticatorTest
                                     "zd48ynVDm0t07RRzY07Gs9OqhI7YjUKa0CYrmcp2ESRR4neQOQ8nIgsNJhPVlIGo8n1rfbkYU11VoCqoNv2qPg==")))).isTrue();
                                     
         }
-        catch (AuthenticatorException e)
+        catch (final AuthenticatorException e)
         {
         	Assertions.fail(e.getMessage());
         }

@@ -156,17 +156,17 @@ public class PasswordExpirationNotifier implements Job
 
                     email.send();
                 }
-                catch (EmailException ex)
+                catch (final EmailException ex)
                 {
                     ERROR_RECORDER.error(ex.getMessage(), ex);
                 }
-                catch (SecurityException sx)
+                catch (final SecurityException sx)
                 {
                     ERROR_RECORDER.error(sx.getMessage(), sx);
                 }
             }
         }
-        catch (UserManagementException umx)
+        catch (final UserManagementException umx)
         {
             ERROR_RECORDER.error(umx.getMessage(), umx);
         }

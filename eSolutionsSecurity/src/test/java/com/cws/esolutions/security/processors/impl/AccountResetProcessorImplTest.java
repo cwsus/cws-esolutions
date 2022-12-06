@@ -56,7 +56,7 @@ public class AccountResetProcessorImplTest
             hostInfo.setHostAddress("junit");
             hostInfo.setHostName("junit");
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             Assertions.fail(e.getMessage());
             System.exit(1);
@@ -77,7 +77,7 @@ public class AccountResetProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (AccountResetException ax)
+        catch (final AccountResetException ax)
         {
             Assertions.fail(ax.getMessage());
         }
@@ -101,7 +101,7 @@ public class AccountResetProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (AccountResetException ax)
+        catch (final AccountResetException ax)
         {
             Assertions.fail(ax.getMessage());
         }
@@ -130,7 +130,7 @@ public class AccountResetProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (AccountResetException ax)
+        catch (final AccountResetException ax)
         {
             Assertions.fail(ax.getMessage());
         }
@@ -154,7 +154,7 @@ public class AccountResetProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (AccountResetException arx)
+        catch (final AccountResetException arx)
         {
             arx.printStackTrace();
             Assertions.fail(arx.getMessage());
@@ -174,7 +174,7 @@ public class AccountResetProcessorImplTest
 
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
-        catch (AccountResetException arx)
+        catch (final AccountResetException arx)
         {
             Assertions.fail(arx.getMessage());
         }

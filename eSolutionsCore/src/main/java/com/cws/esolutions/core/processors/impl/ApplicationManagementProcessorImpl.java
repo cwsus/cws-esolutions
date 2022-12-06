@@ -135,7 +135,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -157,7 +157,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             {
                 validator = appDAO.getApplication(applGuid);
             }
-            catch (SQLException sqx)
+            catch (final SQLException sqx)
             {
                 ERROR_RECORDER.error(sqx.getMessage(), sqx);
             }
@@ -226,13 +226,13 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 DEBUGGER.debug("ApplicationManagementResponse: {}", response);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new ApplicationManagementException(sqx.getMessage(), sqx);
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
@@ -266,7 +266,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -350,7 +350,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -384,13 +384,13 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 DEBUGGER.debug("ApplicationManagementResponse: {}", response);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new ApplicationManagementException(sqx.getMessage(), sqx);
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
@@ -424,7 +424,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -508,7 +508,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -525,13 +525,13 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 DEBUGGER.debug("ApplicationManagementResponse: {}", response);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new ApplicationManagementException(sqx.getMessage(), sqx);
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
@@ -565,7 +565,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -649,7 +649,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -699,13 +699,13 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 DEBUGGER.debug("ApplicationManagementResponse: {}", response);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new ApplicationManagementException(sqx.getMessage(), sqx);
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
@@ -739,7 +739,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -823,7 +823,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -874,13 +874,13 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 DEBUGGER.debug("ApplicationManagementResponse: {}", response);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new ApplicationManagementException(sqx.getMessage(), sqx);
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
@@ -914,7 +914,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -998,7 +998,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -1047,13 +1047,13 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 DEBUGGER.debug("ApplicationManagementResponse: {}", response);
             }
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new ApplicationManagementException(sqx.getMessage(), sqx);
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
@@ -1087,7 +1087,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -1174,7 +1174,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -1286,13 +1286,13 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 DEBUGGER.debug("ApplicationManagementResponse: {}", response);
             }
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
             throw new ApplicationManagementException(acsx.getMessage(), acsx);
         }
-        catch (SQLException sqx)
+        catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
@@ -1326,7 +1326,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
@@ -1410,7 +1410,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                     auditor.auditRequest(auditRequest);
                 }
-                catch (AuditServiceException asx)
+                catch (final AuditServiceException asx)
                 {
                     ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
@@ -1425,7 +1425,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 DEBUGGER.debug("ApplicationManagementResponse: {}", response);
             }
         }
-        catch (AccessControlServiceException acsx)
+        catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
@@ -1459,7 +1459,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                 auditor.auditRequest(auditRequest);
             }
-            catch (AuditServiceException asx)
+            catch (final AuditServiceException asx)
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
