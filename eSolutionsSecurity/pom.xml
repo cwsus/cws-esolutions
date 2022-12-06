@@ -23,7 +23,7 @@
     <properties>
         <quartz.version>2.3.2</quartz.version>
         <qrgen.version>1.4</qrgen.version>
-        <bouncycastle.version>1.56</bouncycastle.version>
+        <bouncycastle.version>1.67</bouncycastle.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
