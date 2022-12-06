@@ -123,6 +123,8 @@ public class SecurityServiceInitializer
             {
                 DAOInitializer.configureAndCreateAuthConnection(new FileInputStream(FileUtils.getFile(configData.getSecurityConfig().getAuthConfig())),
                         false, svcBean);
+                DAOInitializer.configureAndCreateAuditConnection(new FileInputStream(FileUtils.getFile(configData.getSecurityConfig().getAuditConfig())),
+                        false, svcBean);
 
                 Map<String, DataSource> dsMap = svcBean.getDataSources();
 
@@ -225,6 +227,7 @@ public class SecurityServiceInitializer
         try
         {
             DAOInitializer.closeAuthConnection(new FileInputStream(FileUtils.getFile(config.getSecurityConfig().getAuthConfig())), false, svcBean);
+            DAOInitializer.closeAuditConnection(new FileInputStream(FileUtils.getFile(config.getSecurityConfig().getAuditConfig())), false, svcBean);
 
             if (dsMap != null)
             {

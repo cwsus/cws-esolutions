@@ -55,6 +55,7 @@ public final class SecurityConfig implements Serializable
     private int resetIdLength = 32; // default of 32
     private String userSecDAO = null;
     private String authConfig = null; // FULL path to connection configuration file
+    private String auditConfig = null; // FULL path to connection configuration file
     private String authManager = null;
     private String userManager = null;
     private int passwordMinLength = 8; // default of 8 characters
@@ -364,6 +365,19 @@ public final class SecurityConfig implements Serializable
         }
 
         this.authConfig = value;
+    }
+
+    public final void setAuditConfig(final String value)
+    {
+        final String methodName = SecurityConfig.CNAME + "#setAuditConfig(final File value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.auditConfig = value;
     }
 
     public final void setOtpVariance(final int value)
@@ -742,6 +756,20 @@ public final class SecurityConfig implements Serializable
         return this.authConfig;
     }
 
+    @XmlElement(name = "auditConfig")
+    public final String getAuditConfig()
+    {
+        final String methodName = SecurityConfig.CNAME + "#getAuditConfig()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.auditConfig);
+        }
+        
+        return this.auditConfig;
+    }
+
     @XmlElement(name = "otpVariance")
     public final int getOtpVariance()
     {
@@ -801,13 +829,6 @@ public final class SecurityConfig implements Serializable
     @Override
     public final String toString()
     {
-        final String methodName = SecurityConfig.CNAME + "#toString()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
         StringBuilder sBuilder = new StringBuilder()
             .append("[" + this.getClass().getName() + "]" + SecurityServiceConstants.LINE_BREAK + "{" + SecurityServiceConstants.LINE_BREAK);
 
@@ -832,11 +853,6 @@ public final class SecurityConfig implements Serializable
         }
 
         sBuilder.append('}');
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("sBuilder: {}", sBuilder);
-        }
 
         return sBuilder.toString();
     }

@@ -222,14 +222,7 @@ public final class KeyConfig implements Serializable
     @Override
     public final String toString()
     {
-        final String methodName = KeyConfig.CNAME + "#toString()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        StringBuilder sBuilder = new StringBuilder()
+    	StringBuilder sBuilder = new StringBuilder()
             .append("[" + this.getClass().getName() + "]" + SecurityServiceConstants.LINE_BREAK + "{" + SecurityServiceConstants.LINE_BREAK);
 
         for (Field field : this.getClass().getDeclaredFields())
@@ -253,11 +246,6 @@ public final class KeyConfig implements Serializable
         }
 
         sBuilder.append('}');
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("sBuilder: {}", sBuilder);
-        }
 
         return sBuilder.toString();
     }

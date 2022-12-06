@@ -44,7 +44,6 @@ import javax.servlet.ServletContextListener;
 
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.utils.DAOInitializer;
-import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.DataSourceManager;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
@@ -101,16 +100,15 @@ public class SecurityServiceListener implements ServletContextListener
                     configData = (SecurityConfigurationData) marshaller.unmarshal(xmlURL);
                     svcBean.setConfigData(configData);
 
-                    Context initContext = new InitialContext();
-                    Context envContext = (Context) initContext.lookup(SecurityServiceConstants.DS_CONTEXT);
-
                     DAOInitializer.configureAndCreateAuthConnection(null, true, svcBean);
+                    DAOInitializer.configureAndCreateAuditConnection(null, true, svcBean);
 
+                    Context initContext = new InitialContext();
                     Map<String, DataSource> dsMap = new HashMap<String, DataSource>();
 
                     for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())
                     {
-                    	dsMap.put(mgr.getDsName(), (DataSource) envContext.lookup(mgr.getDataSource()));
+                    	dsMap.put(mgr.getDsName(), (DataSource) initContext.lookup(mgr.getDataSource()));
                     }
 
                     svcBean.setDataSources(dsMap);
@@ -145,5 +143,6 @@ public class SecurityServiceListener implements ServletContextListener
     public void contextDestroyed(final ServletContextEvent sContextEvent)
     {
         DAOInitializer.closeAuthConnection(null, true, svcBean);
+        DAOInitializer.closeAuditConnection(null, true, svcBean);
     }
 }

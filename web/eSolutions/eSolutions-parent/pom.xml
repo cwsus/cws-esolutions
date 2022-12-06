@@ -65,7 +65,7 @@
                 <artifactId>eSolutionsCore</artifactId>
                 <version>${eSolutionsCore.version}</version>
                 <type>jar</type>
-                <scope>provided</scope>
+                <scope>compile</scope>
                 <exclusions>
                     <exclusion>
                         <groupId>com.cws</groupId>
@@ -106,7 +106,7 @@
                 <artifactId>eSolutionsSecurity</artifactId>
                 <version>${eSolutionsSecurity.version}</version>
                 <type>jar</type>
-                <scope>provided</scope>
+                <scope>compile</scope>
                 <exclusions>
                     <exclusion>
                         <groupId>org.quartz-scheduler</groupId>

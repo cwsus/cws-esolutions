@@ -44,6 +44,7 @@
         <smsCodeLength>8</smsCodeLength> <!-- how long should the sms reset id be ? -->
         <resetTimeout>30</resetTimeout> <!-- reset timeout length (minutes) -->
         <authConfig>jdbc/cwssec</authConfig>
+        <auditConfig>jdbc/audit</auditConfig>
         <authManager>com.cws.esolutions.security.dao.userauth.impl.SQLAuthenticator</authManager>
         <userManager>com.cws.esolutions.security.dao.usermgmt.impl.SQLUserManager</userManager>
         <userSecDAO>com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl</userSecDAO>
@@ -53,6 +54,7 @@
         <passwordFile>F:/mytest.txt</passwordFile>
         <saltFile>F:/mysalt.txt</saltFile>
     </password-repository>
+
     <!-- this should correlate back to the data obtained from -->
     <!-- the authentication repository. the objects below -->
     <!-- are the *minimum* required to populate the user object -->

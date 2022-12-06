@@ -54,7 +54,6 @@ public class CoreServicesListener implements ServletContextListener
 {
     private static final CoreServicesBean appBean = CoreServicesBean.getInstance();
 
-    private static final String DS_CONTEXT = "java:comp/env/";
     private static final String INIT_SYSAPP_FILE = "eSolutionsCoreConfig";
     private static final String INIT_SYSLOGGING_FILE = "eSolutionsCoreLogger";
 
@@ -101,13 +100,11 @@ public class CoreServicesListener implements ServletContextListener
 
                     // set up the resource connections
                     Context initContext = new InitialContext();
-                    Context envContext = (Context) initContext.lookup(CoreServicesListener.DS_CONTEXT);
-
                     Map<String, DataSource> dsMap = new HashMap<String, DataSource>();
 
                     for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())
                     {
-                        dsMap.put(mgr.getDsName(), (DataSource) envContext.lookup(mgr.getDataSource()));
+                        dsMap.put(mgr.getDsName(), (DataSource) initContext.lookup(mgr.getDataSource()));
                     }
 
                     CoreServicesListener.appBean.setDataSources(dsMap);

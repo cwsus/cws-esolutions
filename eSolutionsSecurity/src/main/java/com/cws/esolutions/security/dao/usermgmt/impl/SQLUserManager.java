@@ -30,12 +30,10 @@ import java.util.Arrays;
 import java.sql.ResultSet;
 import java.sql.Connection;
 import java.util.ArrayList;
-import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.sql.CallableStatement;
 import org.apache.commons.lang.StringUtils;
 
-import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 /**
@@ -44,7 +42,6 @@ import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementExceptio
 public class SQLUserManager implements UserManager
 {
     private static final String CNAME = SQLUserManager.class.getName();
-    private static final DataSource dataSource = svcBean.getDataSources().get(SecurityServiceConstants.INIT_SECURITYDS_MANAGER);
 
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#validateUserAccount(String, String)

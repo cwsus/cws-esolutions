@@ -41,6 +41,7 @@ import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 public class SecurityServiceBean implements Serializable
 {
     private Object authDataSource = null;
+    private Object auditDataSource = null;
     private Map<String, DataSource> dataSources = null;
     private SecurityConfigurationData configData = null;
 
@@ -96,6 +97,19 @@ public class SecurityServiceBean implements Serializable
         this.authDataSource = value;
     }
 
+    public final void setAuditDataSource(final Object value)
+    {
+        final String methodName = SecurityServiceBean.CNAME + "#setAuditDataSource(final Object value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.auditDataSource = value;
+    }
+
     public final void setDataSources(final Map<String, DataSource> value)
     {
         final String methodName = SecurityServiceBean.CNAME + "#setDataSources(final Map<String, DataSource> value)";
@@ -133,6 +147,19 @@ public class SecurityServiceBean implements Serializable
         }
 
         return this.authDataSource;
+    }
+
+    public final Object getAuditDataSource()
+    {
+        final String methodName = SecurityServiceBean.CNAME + "#getAuditDataSource()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.auditDataSource);
+        }
+
+        return this.auditDataSource;
     }
 
     public final Map<String, DataSource> getDataSources()

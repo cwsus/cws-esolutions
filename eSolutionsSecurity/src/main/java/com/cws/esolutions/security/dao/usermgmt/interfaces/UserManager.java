@@ -27,14 +27,15 @@ package com.cws.esolutions.security.dao.usermgmt.interfaces;
  */
 import java.util.List;
 import org.slf4j.Logger;
+import javax.sql.DataSource;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
+import com.cws.esolutions.security.config.xml.RepositoryConfig;
 import com.cws.esolutions.security.config.xml.UserReturningAttributes;
 import com.cws.esolutions.security.config.xml.PasswordRepositoryConfig;
-import com.cws.esolutions.security.config.xml.RepositoryConfig;
 import com.cws.esolutions.security.config.xml.SecurityReturningAttributes;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 /**
@@ -48,6 +49,7 @@ import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementExceptio
 public interface UserManager
 {
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
+    static final DataSource dataSource = (DataSource) svcBean.getAuthDataSource();
     static final RepositoryConfig repoConfig = svcBean.getConfigData().getRepoConfig();
     static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
     static final UserReturningAttributes userAttributes = repoConfig.getUserAttributes();

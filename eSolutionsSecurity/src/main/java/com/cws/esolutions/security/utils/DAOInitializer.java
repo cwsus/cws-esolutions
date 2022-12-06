@@ -73,7 +73,6 @@ public final class DAOInitializer
     private static final String TRUST_SALT = "trustStoreSalt";
     private static final String TRUST_PASS = "trustStorePass";
     private static final String TRUST_TYPE = "trustStoreType";
-    private static final String DS_CONTEXT = "java:comp/env/";
     private static final String CONN_DRIVER = "repositoryDriver";
     private static final String REPOSITORY_HOST = "repositoryHost";
     private static final String REPOSITORY_PORT = "repositoryPort";
@@ -310,18 +309,16 @@ public final class DAOInitializer
 	
 	                    break;
 	                case SQL:
-	                	String decr = PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.REPOSITORY_PASS), connProps.getProperty(DAOInitializer.REPOSITORY_SALT),
-	                			bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(), bean.getConfigData().getSecurityConfig().getIterations(),
-	                			bean.getConfigData().getSecurityConfig().getKeyBits(), bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-	                			bean.getConfigData().getSecurityConfig().getEncryptionInstance(), bean.getConfigData().getSystemConfig().getEncoding());
-
-	                    BasicDataSource dataSource = new BasicDataSource();
+	                	BasicDataSource dataSource = new BasicDataSource();
 	                    dataSource.setInitialSize(Integer.parseInt(connProps.getProperty(DAOInitializer.MIN_CONNECTIONS)));
 	                    dataSource.setMaxActive(Integer.parseInt(connProps.getProperty(DAOInitializer.MAX_CONNECTIONS)));
 	                    dataSource.setDriverClassName(connProps.getProperty(DAOInitializer.CONN_DRIVER));
 	                    dataSource.setUrl(connProps.getProperty(DAOInitializer.REPOSITORY_HOST));
 	                    dataSource.setUsername(connProps.getProperty(DAOInitializer.REPOSITORY_USER));
-	                    dataSource.setPassword(decr);
+	                    dataSource.setPassword(PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.REPOSITORY_PASS), connProps.getProperty(DAOInitializer.REPOSITORY_SALT),
+	                			bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(), bean.getConfigData().getSecurityConfig().getIterations(),
+	                			bean.getConfigData().getSecurityConfig().getKeyBits(), bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+	                			bean.getConfigData().getSecurityConfig().getEncryptionInstance(), bean.getConfigData().getSystemConfig().getEncoding()));
 
 	                    bean.setAuthDataSource(dataSource);
 	
@@ -335,9 +332,8 @@ public final class DAOInitializer
             else
             {
                 Context initContext = new InitialContext();
-                Context envContext = (Context) initContext.lookup(DAOInitializer.DS_CONTEXT);
 
-                bean.setAuthDataSource(envContext.lookup(secConfig.getAuthConfig()));            	
+                bean.setAuthDataSource(initContext.lookup(secConfig.getAuthConfig()));            	
             }
         }
         catch (final LDAPException lx)
@@ -347,6 +343,71 @@ public final class DAOInitializer
         catch (final GeneralSecurityException gsx)
         {
             throw new SecurityServiceException(gsx.getMessage(), gsx);
+        }
+        catch (final NamingException nx)
+        {
+            throw new SecurityServiceException(nx.getMessage(), nx);
+        }
+        catch (final FileNotFoundException fnfx)
+        {
+            throw new SecurityServiceException(fnfx.getMessage(), fnfx);
+        }
+        catch (final IOException iox)
+        {
+            throw new SecurityServiceException(iox.getMessage(), iox);
+        }
+    }
+
+    /**
+     * @param properties - The <code>AuthRepo</code> object containing connection information
+     * @param isContainer - A <code>boolean</code> flag indicating if this is in a container
+     * @param bean - The {@link com.cws.esolutions.security.SecurityServiceBean} <code>SecurityServiceBean</code> that holds the connection
+     * @throws SecurityServiceException {@link com.cws.esolutions.security.exception.SecurityServiceException}
+     * if an exception occurs opening the connection
+     */
+    public synchronized static void configureAndCreateAuditConnection(final InputStream properties, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException
+    {
+        String methodName = DAOInitializer.CNAME + "#configureAndCreateAuditConnection(final String properties, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("InputStream: {}", properties);
+            DEBUGGER.debug("isContainer: {}", isContainer);
+            DEBUGGER.debug("SecurityServiceBean: {}", bean);
+        }
+
+        try
+        {
+            if (!(isContainer))
+            {
+                Properties connProps = new Properties();
+                connProps.load(properties);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Properties: {}", connProps);
+                }
+
+            	BasicDataSource dataSource = new BasicDataSource();
+                dataSource.setInitialSize(Integer.parseInt(connProps.getProperty(DAOInitializer.MIN_CONNECTIONS)));
+                dataSource.setMaxActive(Integer.parseInt(connProps.getProperty(DAOInitializer.MAX_CONNECTIONS)));
+                dataSource.setDriverClassName(connProps.getProperty(DAOInitializer.CONN_DRIVER));
+                dataSource.setUrl(connProps.getProperty(DAOInitializer.REPOSITORY_HOST));
+                dataSource.setUsername(connProps.getProperty(DAOInitializer.REPOSITORY_USER));
+                dataSource.setPassword(PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.REPOSITORY_PASS), connProps.getProperty(DAOInitializer.REPOSITORY_SALT),
+            			bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(), bean.getConfigData().getSecurityConfig().getIterations(),
+            			bean.getConfigData().getSecurityConfig().getKeyBits(), bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+            			bean.getConfigData().getSecurityConfig().getEncryptionInstance(), bean.getConfigData().getSystemConfig().getEncoding()));
+
+                bean.setAuditDataSource(dataSource);
+            }
+            else
+            {
+                Context initContext = new InitialContext();
+
+                bean.setAuditDataSource(initContext.lookup(secConfig.getAuditConfig()));            	
+            }
         }
         catch (final NamingException nx)
         {
@@ -436,6 +497,69 @@ public final class DAOInitializer
 	                    return;
 	                default:
 	                    return;
+	            }
+        	}
+        	else
+        	{
+        		return;
+        	}
+        }
+        catch (final SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+        }
+        catch (final FileNotFoundException fnfx)
+        {
+            ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
+        }
+        catch (final IOException iox)
+        {
+            ERROR_RECORDER.error(iox.getMessage(), iox);
+        }
+    }
+
+    /**
+     * @param properties - The <code>AuthRepo</code> object containing connection information
+     * @param isContainer - A <code>boolean</code> flag indicating if this is in a container
+     * @param bean - The {@link com.cws.esolutions.security.SecurityServiceBean} <code>SecurityServiceBean</code> that holds the connection
+     */
+    public synchronized static void closeAuditConnection(final InputStream properties, final boolean isContainer, final SecurityServiceBean bean)
+    {
+        String methodName = DAOInitializer.CNAME + "#closeAuditConnection(final InputStream properties, final boolean isContainer, final SecurityServiceBean bean)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("InputStream: {}", properties);
+            DEBUGGER.debug("isContainer: {}", isContainer);
+            DEBUGGER.debug("SecurityServiceBean: {}", bean);
+        }
+
+        try
+        {
+        	if (properties != null)
+        	{
+	            Properties connProps = new Properties();
+	            connProps.load(properties);
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("Properties: {}", connProps);
+	            }
+	
+	            if (!(isContainer))
+	            {
+                    BasicDataSource dataSource = (BasicDataSource) bean.getAuditDataSource();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("BasicDataSource: {}", dataSource);
+                    }
+
+                    if ((dataSource != null) && (!(dataSource.isClosed())))
+                    {
+                        dataSource.close();
+                    }
 	            }
         	}
         	else
