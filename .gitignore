@@ -1,7 +1,0 @@
-bin
-*.class
-.sts4-cache
-*.bak
-eSolutions/.project
-eSolutions/.settings/org.eclipse.m2e.core.prefs
-*.log

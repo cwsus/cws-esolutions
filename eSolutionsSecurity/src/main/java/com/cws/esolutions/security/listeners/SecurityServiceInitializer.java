@@ -82,7 +82,7 @@ public class SecurityServiceInitializer
         SecurityConfigurationData configData = null;
 
         final ClassLoader classLoader = SecurityServiceInitializer.class.getClassLoader();
-        final String serviceConfig = (StringUtils.isBlank(configFile)) ? System.getProperty("configFileFile") : configFile;
+        final String serviceConfig = (StringUtils.isBlank(configFile)) ? System.getProperty("configFile") : configFile;
         final String loggingConfig = (StringUtils.isBlank(logConfig)) ? System.getProperty("secLogConfig") : logConfig;
 
         try

@@ -58,15 +58,15 @@ public interface IAuthenticationProcessor
 {
     static final String ATTRIBUTE_UID = "uid";
     static final String ATTRIBUTE_GUID = "cn";
-    static final IAuditProcessor auditor = new AuditProcessorImpl();
-    static final ISecurityReferenceDAO secRef = new SecurityReferenceDAOImpl();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
-    static final IAccessControlService accessControl = new AccessControlServiceImpl();
+    static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
+    static final ISecurityReferenceDAO secRef = (ISecurityReferenceDAO) new SecurityReferenceDAOImpl();
+    static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
     static final IAccountControlProcessor controlProcessor = (IAccountControlProcessor) new AccountControlProcessorImpl();
     static final IUserSecurityInformationDAO userSec = (IUserSecurityInformationDAO) UserSecurityInformationDAOFactory.getUserSecurityDAO(secConfig.getUserSecDAO());
-    static final Authenticator authenticator = AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());
-    static final UserManager userManager = UserManagerFactory.getUserManager(secConfig.getUserManager());
+    static final Authenticator authenticator = (Authenticator) AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());
+    static final UserManager userManager = (UserManager) UserManagerFactory.getUserManager(secConfig.getUserManager());
 
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
