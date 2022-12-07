@@ -70,7 +70,7 @@ import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor
  * @see org.springframework.stereotype.Controller
  */
 @Controller
-@RequestMapping("/user-account")
+@RequestMapping("user-account")
 public class UserAccountController
 {
     private String enableOtpPage = null;
@@ -304,7 +304,7 @@ public class UserAccountController
         this.messageSecurityChangeSuccess = value;
     }
 
-    @RequestMapping(value = "/default", method = RequestMethod.GET)
+    @RequestMapping(value = "default", method = RequestMethod.GET)
     public final String showDefaultPage(final Model model)
     {
         final String methodName = UserAccountController.CNAME + "#showDefaultPage(final Model model)";
@@ -367,16 +367,11 @@ public class UserAccountController
         	return this.appConfig.getLogonRedirect(); // try it ?
         }
 
-        if (DEBUG)
-        {
-            DEBUGGER.debug("model: {}", model);
-        }
-
         // in here, we're going to get all the messages to display and such
         return this.myAccountPage;
     }
 
-    @RequestMapping(value = "/password", method = RequestMethod.GET)
+    @RequestMapping(value = "password", method = RequestMethod.GET)
     public final ModelAndView showPasswordChange()
     {
         final String methodName = UserAccountController.CNAME + "#showPasswordChange()";

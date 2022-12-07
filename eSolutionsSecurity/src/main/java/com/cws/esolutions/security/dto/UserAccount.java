@@ -26,6 +26,7 @@ package com.cws.esolutions.security.dto;
  * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
+import java.sql.Timestamp;
 import java.io.Serializable;
 import java.security.KeyPair;
 import java.lang.reflect.Field;
@@ -42,8 +43,6 @@ import com.cws.esolutions.security.processors.enums.LoginStatus;
 public class UserAccount implements Serializable
 {
     private String guid = null;
-    private long lastLogin = -1;
-    private long expiryDate = -1;
     private String surname = null;
     private String username = null;
     private String[] groups = null;
@@ -60,6 +59,8 @@ public class UserAccount implements Serializable
     private LoginStatus status = null;
     private String pagerNumber = null;
     private Integer failedCount = null;
+    private Timestamp lastLogin = null;
+    private Timestamp expiryDate = null;
     private String telephoneNumber = null;
     private SecurityUserRole userRole = null;
 
@@ -120,9 +121,9 @@ public class UserAccount implements Serializable
     /**
      * @param value - The expiration date associated with the account
      */
-    public final void setExpiryDate(final long value)
+    public final void setExpiryDate(final Timestamp value)
     {
-        final String methodName = UserAccount.CNAME + "#setExpiryDate(final long value)";
+        final String methodName = UserAccount.CNAME + "#setExpiryDate(final Timestamp value)";
 
         if (DEBUG)
         {
@@ -216,9 +217,9 @@ public class UserAccount implements Serializable
     /**
      * @param value - The last login timestamp associated with the account
      */
-    public final void setLastLogin(final long value)
+    public final void setLastLogin(final Timestamp value)
     {
-        final String methodName = UserAccount.CNAME + "#setLastLogin(final long value)";
+        final String methodName = UserAccount.CNAME + "#setLastLogin(final Timestamp value)";
 
         if (DEBUG)
         {
@@ -472,7 +473,7 @@ public class UserAccount implements Serializable
     /**
      * @return The expiration date associated with the account
      */
-    public final long getExpiryDate()
+    public final Timestamp getExpiryDate()
     {
         final String methodName = UserAccount.CNAME + "#getExpiryDate()";
 
@@ -568,7 +569,7 @@ public class UserAccount implements Serializable
     /**
      * @return The last login timestamp associated with the account
      */
-    public final long getLastLogin()
+    public final Timestamp getLastLogin()
     {
         final String methodName = UserAccount.CNAME + "#getLastLogin()";
 

@@ -42,7 +42,6 @@ public class LoginRequest implements Serializable
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
 
     public final void setLoginUser(final String value)
     {
@@ -121,14 +120,7 @@ public class LoginRequest implements Serializable
     @Override
     public final String toString()
     {
-        final String methodName = LoginRequest.CNAME + "#toString()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        StringBuilder sBuilder = new StringBuilder()
+       StringBuilder sBuilder = new StringBuilder()
             .append("[" + this.getClass().getName() + "]" + Constants.LINE_BREAK + "{" + Constants.LINE_BREAK);
 
         for (Field field : this.getClass().getDeclaredFields())
@@ -143,8 +135,6 @@ public class LoginRequest implements Serializable
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
                     (!(field.getName().equals("ERROR_RECORDER"))) &&
-                    (!(field.getName().equals("loginPass"))) &&
-                    (!(field.getName().equals("otpValue"))) &&
                     (!(field.getName().equals("serialVersionUID"))))
             {
                 try
@@ -154,19 +144,11 @@ public class LoginRequest implements Serializable
                         sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + Constants.LINE_BREAK);
                     }
                 }
-                catch (final IllegalAccessException iax)
-                {
-                    ERROR_RECORDER.error(iax.getMessage(), iax);
-                }
+                catch (final IllegalAccessException iax) {}
             }
         }
 
         sBuilder.append('}');
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("sBuilder: {}", sBuilder);
-        }
 
         return sBuilder.toString();
     }

@@ -161,17 +161,15 @@ public final class EmailUtils
             if (isWeb)
             {
                 Context initContext = new InitialContext();
-                Context envContext = (Context) initContext.lookup(EmailUtils.INIT_DS_CONTEXT);
 
                 if (DEBUG)
                 {
                     DEBUGGER.debug("InitialContext: {}", initContext);
-                    DEBUGGER.debug("Context: {}", envContext);
                 }
 
-                if (envContext != null)
+                if (initContext != null)
                 {
-                    mailSession = (Session) envContext.lookup(mailConfig.getDataSourceName());
+                    mailSession = (Session) initContext.lookup(mailConfig.getDataSourceName());
                 }
             }
             else

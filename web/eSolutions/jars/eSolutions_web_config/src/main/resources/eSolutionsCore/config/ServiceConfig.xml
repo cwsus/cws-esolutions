@@ -46,6 +46,7 @@
 
     <mail-config>
         <propertyFile>eSolutionsCore/mail/MailConfig.properties</propertyFile>
+        <dataSourceName>mail/MailSession</dataSourceName>
     </mail-config>
 
     <!-- how do we talk to the agent? -->

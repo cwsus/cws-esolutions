@@ -25,11 +25,11 @@ package com.cws.esolutions.security.processors.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import org.apache.commons.lang.StringUtils;
@@ -47,12 +47,12 @@ import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
+import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
+import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
-import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
-import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /**
  * @see com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor
@@ -784,8 +784,8 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         resAccount.setPagerNumber((userData.get(6) == null) ? SecurityServiceConstants.NOT_SET : (String) userData.get(6));
                         resAccount.setTelephoneNumber((userData.get(7) == null) ? SecurityServiceConstants.NOT_SET : (String) userData.get(7));
                         resAccount.setFailedCount(((userData.get(9) == null) ? 0 : (Integer) userData.get(9)));
-                        resAccount.setLastLogin(((userData.get(10) == null) ? new Date(System.currentTimeMillis()).getTime() : (long) userData.get(10)));
-                        resAccount.setExpiryDate(((userData.get(11) == null) ? new Date(System.currentTimeMillis()).getTime() : (long) userData.get(11)));
+                        resAccount.setLastLogin(((userData.get(10) == null) ? new Timestamp(System.currentTimeMillis()) : (Timestamp) userData.get(10)));
+                        resAccount.setExpiryDate(((userData.get(11) == null) ? new Timestamp(System.currentTimeMillis()) : (Timestamp) userData.get(11)));
                         resAccount.setSuspended(((userData.get(12) == null) ? Boolean.FALSE : (Boolean) userData.get(12)));
                         resAccount.setOlrSetup(((userData.get(13) == null) ? Boolean.FALSE : (Boolean) userData.get(13)));
                         resAccount.setOlrLocked(((userData.get(14) == null) ? Boolean.FALSE : (Boolean) userData.get(14)));

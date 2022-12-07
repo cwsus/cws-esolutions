@@ -61,7 +61,7 @@ import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcesso
  * @see org.springframework.stereotype.Controller
  */
 @Controller
-@RequestMapping("/auth")
+@RequestMapping("auth")
 public class LoginController
 {
     private String loginPage = null;
@@ -155,10 +155,10 @@ public class LoginController
         this.allowUserReset = value;
     }
 
-    @RequestMapping(value = {"/default", "login"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"default", "login"}, method = RequestMethod.GET)
     public final String showDefaultPage(final Model model)
     {
-        final String methodName = LoginController.CNAME + "#showLoginPage()";
+        final String methodName = LoginController.CNAME + "#showLoginPage(final Model model)";
 
         if (DEBUG)
         {
@@ -275,7 +275,7 @@ public class LoginController
         return this.loginPage;
     }
 
-    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    @RequestMapping(value = "logout", method = RequestMethod.GET)
     public final String performLogout(final Model model)
     {
         final String methodName = LoginController.CNAME + "#performLogout(final Model model)";
@@ -345,7 +345,7 @@ public class LoginController
     }
 
     // combined logon
-    @RequestMapping(value = "/submit", method = RequestMethod.POST)
+    @RequestMapping(value = "submit", method = RequestMethod.POST)
     public final String doCombinedLogin(@ModelAttribute("LoginRequest") final LoginRequest loginRequest, final BindingResult bindResult, final Model model, final RedirectAttributes redirectAttributes)
     {
         final String methodName = LoginController.CNAME + "#doCombinedLogin(@ModelAttribute(\"AuthenticationData\") final LoginRequest loginRequest, final BindingResult bindResult, final Model model, final RedirectAttributes redirectAttributes)";
@@ -571,7 +571,7 @@ public class LoginController
     }
 
     // otp logon
-    @RequestMapping(value = "/otp", method = RequestMethod.POST)
+    @RequestMapping(value = "otp", method = RequestMethod.POST)
     public final String submitOtpLogin(@ModelAttribute("security") final AuthenticationData security, final Model model, final BindingResult bindResult)
     {
         final String methodName = LoginController.CNAME + "#submitOtpLogin(@ModelAttribute(\"security\") final AuthenticationData security, final Model model, final BindingResult bindResult)";

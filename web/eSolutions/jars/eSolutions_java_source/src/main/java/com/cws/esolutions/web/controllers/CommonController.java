@@ -39,8 +39,6 @@ import org.springframework.stereotype.Controller;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -188,11 +186,6 @@ public class CommonController
         	return this.appConfig.getLogonRedirect(); // try it ?
         }
 
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", model);
-        }
-
         // in here, we're going to get all the messages to display and such
         return this.homePage;
     }
@@ -259,16 +252,14 @@ public class CommonController
     }
 
     @RequestMapping(value = "/contact", method = RequestMethod.GET)
-    public final ModelAndView showContactPage()
+    public final String showContactPage(final Model model)
     {
-        final String methodName = CommonController.CNAME + "#showContactPage()";
+        final String methodName = CommonController.CNAME + "#showContactPage(final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -317,17 +308,16 @@ public class CommonController
             }
         }
 
-        mView.addObject("serviceEmail", this.coreConfig.getAppConfig().getEmailAliasId());
-        mView.addObject(Constants.COMMAND, new EmailMessage());
-        mView.setViewName(this.appConfig.getContactAdminsPage());
+        model.addAttribute("serviceEmail", this.appConfig.getEmailAddress());
+        model.addAttribute(Constants.COMMAND, new EmailMessage());
 
-        return mView;
+        return this.appConfig.getContactAdminsPage();
     }
 
     @RequestMapping(value = "/contact", method = RequestMethod.POST)
-    public final ModelAndView doSubmitMessage(@ModelAttribute("message") final EmailMessage message, final BindingResult bindResult)
+    public final String doSubmitMessage(@ModelAttribute("message") final EmailMessage message, final Model model, final BindingResult bindResult)
     {
-        final String methodName = CommonController.CNAME + "#doSubmitMessage(@ModelAttribute(\"message\") final EmailMessage message, final BindingResult bindResult)";
+        final String methodName = CommonController.CNAME + "#doSubmitMessage(@ModelAttribute(\"message\") final EmailMessage message, final Model model, final BindingResult bindResult)";
 
         if (DEBUG)
         {
@@ -335,8 +325,6 @@ public class CommonController
             DEBUGGER.debug("EmailMessage: {}", message);
             DEBUGGER.debug("BindingResult: {}", bindResult);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -393,12 +381,11 @@ public class CommonController
             // validation failed
             ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
 
-            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
-            mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
-            mView.addObject(Constants.COMMAND, message);
-            mView.setViewName(this.appConfig.getContactAdminsPage());
+            model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+            model.addAttribute(Constants.BIND_RESULT, bindResult.getAllErrors());
+            model.addAttribute(Constants.COMMAND, message);
 
-            return mView;
+            return this.appConfig.getContactAdminsPage();
         }
 
         try
@@ -422,24 +409,19 @@ public class CommonController
 
             EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), autoResponse, true);
 
-            mView = new ModelAndView(new RedirectView());
-            mView.setViewName(this.appConfig.getContactAdminsRedirect());
-            mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessageEmailSentSuccess());
+            model.addAttribute("serviceEmail", this.appConfig.getEmailAddress());
+            model.addAttribute(Constants.COMMAND, new EmailMessage());
+            model.addAttribute(Constants.RESPONSE_MESSAGE, this.appConfig.getMessageEmailSentSuccess());
+            
+            return this.appConfig.getContactAdminsRedirect();
         }
         catch (final MessagingException mx)
         {
             ERROR_RECORDER.error(mx.getMessage(), mx);
 
-            mView = new ModelAndView(new RedirectView());
-            mView.setViewName(this.appConfig.getContactAdminsPage());
-            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
-        }
+            model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
 
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
+            return this.appConfig.getContactAdminsPage();
         }
-
-        return mView;
     }
 }

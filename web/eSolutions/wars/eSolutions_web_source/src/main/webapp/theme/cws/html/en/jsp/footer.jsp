@@ -36,7 +36,7 @@
 <div id="footer">
     <div id="footer-content">
         <div id="footer-right">
-            &copy; <a href="http://www.caspersbox.com/"><spring:message code="theme.footer.copyright" /></a><br />
+            &copy; <a href="http://www.caspersbox.com/" target="_blank"><spring:message code="theme.footer.copyright" /></a><br />
             <strong><spring:message code="theme.footer.more.info" /></strong><a href="http://www.caspersbox.com/cws/ui/contact/default"
                 title="<spring:message code="theme.contact.us" />" target="_blank"><spring:message code="theme.contact.us" /></a><br />
         </div>

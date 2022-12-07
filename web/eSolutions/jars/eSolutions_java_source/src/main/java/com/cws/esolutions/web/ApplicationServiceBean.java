@@ -79,7 +79,6 @@ public class ApplicationServiceBean implements Serializable
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
 
     public final void setFileEncoding(final String value)
     {
@@ -864,7 +863,7 @@ public class ApplicationServiceBean implements Serializable
     @Override
     public final String toString()
     {
-        StringBuilder sBuilder = new StringBuilder()
+       StringBuilder sBuilder = new StringBuilder()
             .append("[" + this.getClass().getName() + "]" + Constants.LINE_BREAK + "{" + Constants.LINE_BREAK);
 
         for (Field field : this.getClass().getDeclaredFields())
@@ -888,10 +887,7 @@ public class ApplicationServiceBean implements Serializable
                         sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + Constants.LINE_BREAK);
                     }
                 }
-                catch (final IllegalAccessException iax)
-                {
-                    ERROR_RECORDER.error(iax.getMessage(), iax);
-                }
+                catch (final IllegalAccessException iax) {}
             }
         }
 
