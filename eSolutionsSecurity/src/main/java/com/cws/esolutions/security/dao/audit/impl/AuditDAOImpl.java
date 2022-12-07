@@ -60,20 +60,22 @@ public class AuditDAOImpl implements IAuditDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if ((sqlConn == null) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain audit datasource connection");
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL insertAuditEntry(?, ?, ?, ?, ?, ?, ?)}");
-            stmt.setString(2, auditRequest.get(0)); // usr_audit_userid
-            stmt.setString(3, auditRequest.get(1)); // usr_audit_userguid
-            stmt.setString(4, auditRequest.get(2)); // usr_audit_applid
-            stmt.setString(5, auditRequest.get(3)); // usr_audit_applname
-            stmt.setString(6, auditRequest.get(4)); // usr_audit_action
-            stmt.setString(7, auditRequest.get(5)); // usr_audit_srcaddr
-            stmt.setString(8, auditRequest.get(6)); // usr_audit_srchost
+
+            stmt = sqlConn.prepareCall("{CALL insertAuditEntry(?, ?, ?, ?, ?, ?, ?, ?)}");
+            stmt.setString(1, auditRequest.get(0)); // username
+            stmt.setString(2, auditRequest.get(1)); // userguid
+            stmt.setString(3, auditRequest.get(2)); // userrole
+            stmt.setString(4, auditRequest.get(3)); // applid
+            stmt.setString(5, auditRequest.get(4)); // applname
+            stmt.setString(6, auditRequest.get(5)); // useraction
+            stmt.setString(7, auditRequest.get(6)); // srcaddr
+            stmt.setString(8, auditRequest.get(6)); // srchost
 
             if (DEBUG)
             {

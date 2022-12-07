@@ -33,6 +33,7 @@ import org.junit.jupiter.api.TestInstance;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
+import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
@@ -46,7 +47,7 @@ public class AuthenticationProcessorImplTest
 {
     private static RequestHostInfo hostInfo = null;
 
-    private static final IAuthenticationProcessor agentAuth = new AuthenticationProcessorImpl();
+    private static final IAuthenticationProcessor agentAuth = (IAuthenticationProcessor) new AuthenticationProcessorImpl();
 
     @BeforeAll public void setUp()
     {
@@ -73,12 +74,14 @@ public class AuthenticationProcessorImplTest
         account.setEmailAddr("webdev@caspersbox.com");
         account.setGivenName("JUnit");
         account.setSurname("JUnit");
+        account.setUserRole(SecurityUserRole.NONE);
 
         AuthenticationData userSecurity = new AuthenticationData();
         userSecurity.setPassword("naB8QUXNTWFA7MCpFYvT");
 
         AuthenticationRequest request = new AuthenticationRequest();
         request.setApplicationName("esolutions");
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setUserAccount(account);
         request.setUserSecurity(userSecurity);
         request.setHostInfo(hostInfo);
@@ -91,7 +94,6 @@ public class AuthenticationProcessorImplTest
         }
         catch (final AuthenticationException ax)
         {
-        	ax.printStackTrace();
             Assertions.fail(ax.getMessage());
         }
     }

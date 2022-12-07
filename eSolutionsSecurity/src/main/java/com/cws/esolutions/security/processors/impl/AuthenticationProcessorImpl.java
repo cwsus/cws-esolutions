@@ -68,6 +68,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             DEBUGGER.debug("AuthenticationRequest: {}", request);
         }
 
+        boolean isValid = false;
         UserAccount userAccount = null;
         AuthenticationResponse response = new AuthenticationResponse();
 
@@ -113,7 +114,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 throw new AuthenticationException("Unable to obtain configured user security information. Cannot continue");
             }
 
-            boolean isValid = authenticator.performLogon(userGuid, authUser.getUsername(), authSec.getPassword()); // the password provided here is decrypted. it must be 
+            isValid = authenticator.performLogon(userGuid, authUser.getUsername(), authSec.getPassword()); // the password provided here is decrypted. it must be 
 
             if (DEBUG)
             {
@@ -237,15 +238,16 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
         }
         finally
         {
-        	if (secConfig.getPerformAudit())
+        	if ((secConfig.getPerformAudit()) && (isValid))
         	{
-	            // audit
+	            // audit if a valid account. if not valid we cant audit much,
+        		// but we should try anyway. not sure how thats going to work
 	            try
 	            {
 	                AuditEntry auditEntry = new AuditEntry();
 	                auditEntry.setHostInfo(reqInfo);
 	                auditEntry.setAuditType(AuditType.LOGON);
-	                auditEntry.setUserAccount(authUser);
+	                auditEntry.setUserAccount(userAccount);
 	                auditEntry.setAuthorized(Boolean.TRUE);
 	                auditEntry.setApplicationId(request.getApplicationId());
 	                auditEntry.setApplicationName(request.getApplicationName());
@@ -262,7 +264,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 	                {
 	                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
 	                }
-	
+
 	                auditor.auditRequest(auditRequest);
 	            }
 	            catch (final AuditServiceException asx)

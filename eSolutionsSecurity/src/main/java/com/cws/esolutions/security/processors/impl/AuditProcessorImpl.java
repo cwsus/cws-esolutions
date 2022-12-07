@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.sql.SQLException;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
@@ -39,9 +38,9 @@ import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.security.processors.dto.AuditResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
-import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
 import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
+import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /**
  * @see com.cws.esolutions.security.processors.interfaces.IAuditProcessor
@@ -82,30 +81,14 @@ public class AuditProcessorImpl implements IAuditProcessor
             }
 
             List<String> auditList = new ArrayList<String>();
-
-            switch (auditEntry.getAuditType())
-            {
-                case LOGON:
-                    auditList.add(userAccount.getUsername()); // usr_audit_userid
-                    auditList.add(SecurityServiceConstants.NOT_SET); // usr_audit_userguid
-                    auditList.add(auditEntry.getApplicationId()); // usr_audit_applid
-                    auditList.add(auditEntry.getApplicationName()); // usr_audit_applname
-                    auditList.add(auditEntry.getAuditType().toString()); // usr_audit_action
-                    auditList.add(hostInfo.getHostAddress()); // usr_audit_srcaddr
-                    auditList.add(hostInfo.getHostName()); // usr_audit_srchost
-
-                    break;
-                default:
-                    auditList.add(userAccount.getUsername()); // usr_audit_userid
-                    auditList.add(userAccount.getGuid()); // usr_audit_userguid
-                    auditList.add(auditEntry.getApplicationId()); // usr_audit_applid
-                    auditList.add(auditEntry.getApplicationName()); // usr_audit_applname
-                    auditList.add(auditEntry.getAuditType().toString()); // usr_audit_action
-                    auditList.add(hostInfo.getHostAddress()); // usr_audit_srcaddr
-                    auditList.add(hostInfo.getHostName()); // usr_audit_srchost
-
-                    break;
-            }
+            auditList.add(userAccount.getUsername()); // username
+            auditList.add(userAccount.getGuid()); // userguid
+            auditList.add(userAccount.getUserRole().toString()); // userrole
+            auditList.add(auditEntry.getApplicationId()); // applid
+            auditList.add(auditEntry.getApplicationName()); // applname
+            auditList.add(auditEntry.getAuditType().toString()); // useraction
+            auditList.add(hostInfo.getHostAddress()); // srcaddr
+            auditList.add(hostInfo.getHostName()); // srchost
 
             if (DEBUG)
             {
