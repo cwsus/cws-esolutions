@@ -37,7 +37,7 @@
 <!--
     function validateForm(theForm)
     {
-        if (theForm.recordName.value == '')
+        if (theForm.searchTerms.value == '')
         {
             clearText(theForm);
 
@@ -45,11 +45,11 @@
             document.getElementById('txtServiceName').style.color = '#FF0000';
             document.getElementById('execute').disabled = false;
             document.getElementById('searchTerms').focus();
+
+			return;
         }
-        else
-        {
-            theForm.submit();
-        }
+
+		theForm.submit();
     }
 //-->
 </script>
@@ -87,7 +87,7 @@
                 <form:input path="searchTerms" />
                 <form:errors path="searchTerms" cssClass="error" />
                 <label id="txtLookupType"><spring:message code="dns.lookup.record.type" /></label>
-                <form:select path="searchExtras" onchange="showReverseDisclaimer(this);">
+                <form:select path="searchExtras">
                     <option><spring:message code="theme.option.select" /></option>
                     <option><spring:message code="theme.option.spacer" /></option>
                     <form:options items="${serviceTypes}" />

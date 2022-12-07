@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <configuration>
+    <system-config>
+        <encoding>UTF-8</encoding>
+    </system-config>
+
     <application-config>
         <appName>eSolutionsCore</appName>
         <emailAlias>esolutions@caspersbox.com</emailAlias>
@@ -84,11 +88,11 @@
     <resource-config>
         <DataSourceManager>
             <dsName>ApplicationDataSource</dsName>
-            <datasource>jdbc:mysql://127.0.0.1/esolutionssvc?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
+            <datasource>jdbc:mysql://localhost/ESOLUTIONSSVC?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
-            <dsUser>appuser</dsUser>
-            <dsPass>rpIxrjHDiIjUq2XYR8/2DC7CqI9+2woUxDh/WxK7/IdRRVXGyn1FQfx8n0/qAU3THtevR5/dgkHeUt8rtEtwAoDJfPAtg3lYSjwt+WWw7Mo=</dsPass>
-            <salt>LY4TsLiiqTQUM5nyeyw6qE6N8ectYhzTo2RJF9jwrQBaLTYwKMXuLOia15hSs0oE</salt>
+            <dsUser>appadm</dsUser>
+            <dsPass>U1Y5RkFIdzZ3VXZBdW9DRHlyM0syZz09OmUvR2szWDJvdHVoWmhqZTZPNU9MTVFWeXkrWUpETTRwOVA1WWplRnpaWU09</dsPass>
+            <dsSalt>hg4Q1qymhVY5ZICwyXuYFvdegQVyrAbg</dsSalt>
             <connectTimeout>10</connectTimeout>
             <autoReconnect>true</autoReconnect>
         </DataSourceManager>

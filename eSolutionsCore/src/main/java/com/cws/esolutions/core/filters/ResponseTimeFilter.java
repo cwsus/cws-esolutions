@@ -43,7 +43,6 @@ import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
 
 import com.cws.esolutions.core.CoreServicesConstants;
-import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
 /**
  * @author cws-khuntly
@@ -73,8 +72,7 @@ public class ResponseTimeFilter implements Filter
         try
         {
         	Context initContext = new InitialContext();
-        	Context envContext = (Context) initContext.lookup(SecurityServiceConstants.DS_CONTEXT);
-        	environment = (String) envContext.lookup("env");
+        	environment = (String) initContext.lookup("env");
         }
         catch (final NamingException nx)
         {

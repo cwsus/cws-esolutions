@@ -28,6 +28,7 @@ package com.cws.esolutions.core.utils;
 import java.util.Map;
 import java.util.HashMap;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.assertj.core.api.Assertions;
@@ -39,8 +40,9 @@ import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
  * @author cws-khuntly
  * @version 1.0
  */
-public class SQLUtilsTest {
-
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+public class SQLUtilsTest
+{
     @BeforeAll public void setUp()
     {
         try

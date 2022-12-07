@@ -47,10 +47,10 @@ import com.cws.esolutions.security.processors.exception.FileSecurityException;
  */
 public interface IFileSecurityProcessor
 {
-    static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final KeyConfig keyConfig = secBean.getConfigData().getKeyConfig();
     static final SecurityConfigurationData secConfig = secBean.getConfigData();
+    static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
     static final FileSecurityConfig fileSecurityConfig = secConfig.getFileSecurityConfig();
 
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);

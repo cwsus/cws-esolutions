@@ -27,6 +27,7 @@ package com.cws.esolutions.core.utils;
  */
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.assertj.core.api.Assertions;
@@ -34,6 +35,7 @@ import org.assertj.core.api.Assertions;
 import com.cws.esolutions.core.utils.exception.UtilityException;
 import com.cws.esolutions.core.listeners.CoreServicesInitializer;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class NetworkUtilsTest
 {
     @BeforeAll public void setUp()
@@ -54,7 +56,7 @@ public class NetworkUtilsTest
     {
         try
         {
-            NetworkUtils.executeTelnetRequest("proxy.caspersbox.com", 8080, 10000);
+            NetworkUtils.executeTelnetRequest("www.google.com", 80, 10000);
         }
         catch (final UtilityException ux)
         {

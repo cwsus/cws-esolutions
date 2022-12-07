@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
@@ -304,16 +305,15 @@ public class UserAccountController
     }
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
-    public final ModelAndView showDefaultPage()
+    public final String showDefaultPage(final Model model)
     {
-        final String methodName = UserAccountController.CNAME + "#showDefaultPage()";
+        final String methodName = UserAccountController.CNAME + "#showDefaultPage(final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Model: {}", model);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -329,47 +329,51 @@ public class UserAccountController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<?> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String element = sessionEnumeration.nextElement();
+                String element = (String) sessionEnumeration.nextElement();
                 Object value = hSession.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
+                DEBUGGER.debug("Session Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<?> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
-                String element = requestEnumeration.nextElement();
+                String element = (String) requestEnumeration.nextElement();
                 Object value = hRequest.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
+                DEBUGGER.debug("Request Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<?> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String element = paramsEnumeration.nextElement();
+                String element = (String) paramsEnumeration.nextElement();
                 Object value = hRequest.getParameter(element);
 
-                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
+                DEBUGGER.debug("Request Parameter: {}; Value: {}", element, value);
             }
         }
 
-        mView.setViewName(this.myAccountPage);
+        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
+        {
+        	return this.appConfig.getLogonRedirect(); // try it ?
+        }
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ModelAndView: {}", mView);
+            DEBUGGER.debug("model: {}", model);
         }
 
-        return mView;
+        // in here, we're going to get all the messages to display and such
+        return this.myAccountPage;
     }
 
     @RequestMapping(value = "/password", method = RequestMethod.GET)
@@ -430,6 +434,13 @@ public class UserAccountController
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
+        }
+
+        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
+        {
+        	mView.setViewName(this.appConfig.getLogonRedirect());
+
+        	return mView;
         }
 
         if ((userAccount.getStatus() == LoginStatus.RESET) || (userAccount.getStatus() == LoginStatus.EXPIRED))
@@ -515,6 +526,13 @@ public class UserAccountController
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
+        }
+
+        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
+        {
+        	mView.setViewName(this.appConfig.getLogonRedirect());
+
+        	return mView;
         }
 
         mView.addObject(Constants.COMMAND, new AccountChangeData());
@@ -638,6 +656,13 @@ public class UserAccountController
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
             mView.setViewName(this.appConfig.getErrorResponsePage());
+        }
+
+        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
+        {
+        	mView.setViewName(this.appConfig.getLogonRedirect());
+
+        	return mView;
         }
 
         if (DEBUG)

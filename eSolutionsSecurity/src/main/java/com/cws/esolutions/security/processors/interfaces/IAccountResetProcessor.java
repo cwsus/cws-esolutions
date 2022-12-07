@@ -54,14 +54,14 @@ import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInforma
  */
 public interface IAccountResetProcessor
 {
-    static final IAuditProcessor auditor = new AuditProcessorImpl();
-    static final ISecurityReferenceDAO secRef = new SecurityReferenceDAOImpl();
+    static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
-    static final IAccessControlService accessControl = new AccessControlServiceImpl();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
-    static final IUserSecurityInformationDAO userSec = new UserSecurityInformationDAOImpl();
-    static final Authenticator authenticator = AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());
-    static final UserManager userManager = UserManagerFactory.getUserManager(secBean.getConfigData().getSecurityConfig().getUserManager());
+    static final ISecurityReferenceDAO secRef = (ISecurityReferenceDAO) new SecurityReferenceDAOImpl();
+    static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
+    static final IUserSecurityInformationDAO userSec = (IUserSecurityInformationDAO) new UserSecurityInformationDAOImpl();
+    static final Authenticator authenticator = (Authenticator) AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());
+    static final UserManager userManager = (UserManager) UserManagerFactory.getUserManager(secBean.getConfigData().getSecurityConfig().getUserManager());
 
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);

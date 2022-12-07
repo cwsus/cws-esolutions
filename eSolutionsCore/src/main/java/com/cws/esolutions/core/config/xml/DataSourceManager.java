@@ -44,11 +44,11 @@ import com.cws.esolutions.core.CoreServicesConstants;
 @XmlAccessorType(XmlAccessType.NONE)
 public final class DataSourceManager implements Serializable
 {
-    private String salt = null;
     private String dsName = null;
     private String driver = null;
     private String dsUser = null;
     private String dsPass = null;
+    private String dsSalt = null;
     private String datasource = null;
     private int connectTimeout = 10000; // default to 10 seconds
     private boolean autoReconnect = true; // default to true
@@ -58,7 +58,6 @@ public final class DataSourceManager implements Serializable
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER);
 
     public final void setDsName(final String value)
     {
@@ -125,9 +124,9 @@ public final class DataSourceManager implements Serializable
         this.dsPass = value;
     }
 
-    public final void setSalt(final String value)
+    public final void setDsSalt(final String value)
     {
-        final String methodName = DataSourceManager.CNAME + "#setSalt(final String value)";
+        final String methodName = DataSourceManager.CNAME + "#setDsSalt(final String value)";
 
         if (DEBUG)
         {
@@ -135,7 +134,7 @@ public final class DataSourceManager implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.salt = value;
+        this.dsSalt = value;
     }
 
     public final void setConnectTimeout(final int value)
@@ -234,18 +233,18 @@ public final class DataSourceManager implements Serializable
         return this.dsPass;
     }
 
-    @XmlElement(name = "salt")
-    public final String getSalt()
+    @XmlElement(name = "dsSalt")
+    public final String getDsSalt()
     {
-        final String methodName = DataSourceManager.CNAME + "#getSalt()";
+        final String methodName = DataSourceManager.CNAME + "#getDsSalt()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.salt);
+            DEBUGGER.debug("Value: {}", this.dsSalt);
         }
 
-        return this.salt;
+        return this.dsSalt;
     }
 
     @XmlElement(name = "connectTimeout")
@@ -279,14 +278,7 @@ public final class DataSourceManager implements Serializable
     @Override
     public final String toString()
     {
-        final String methodName = DataSourceManager.CNAME + "#toString()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        StringBuilder sBuilder = new StringBuilder()
+    	StringBuilder sBuilder = new StringBuilder()
             .append("[" + this.getClass().getName() + "]" + CoreServicesConstants.LINE_BREAK + "{" + CoreServicesConstants.LINE_BREAK);
 
         for (Field field : this.getClass().getDeclaredFields())
@@ -310,19 +302,11 @@ public final class DataSourceManager implements Serializable
                         sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + CoreServicesConstants.LINE_BREAK);
                     }
                 }
-                catch (final IllegalAccessException iax)
-                {
-                    ERROR_RECORDER.error(iax.getMessage(), iax);
-                }
+                catch (final IllegalAccessException iax) {}
             }
         }
 
         sBuilder.append('}');
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("sBuilder: {}", sBuilder);
-        }
 
         return sBuilder.toString();
     }

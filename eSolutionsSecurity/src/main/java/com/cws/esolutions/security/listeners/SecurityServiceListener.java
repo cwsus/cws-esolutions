@@ -73,7 +73,7 @@ public class SecurityServiceListener implements ServletContextListener
         {
             if (sContext != null)
             {
-            	if (StringUtils.isBlank(SecurityServiceListener.INIT_SYSLOGGING_FILE))
+            	if (StringUtils.isEmpty(sContext.getInitParameter(SecurityServiceListener.INIT_SYSLOGGING_FILE)))
                 {
                     System.err.println("Logging configuration not found. No logging enabled !");
                 }

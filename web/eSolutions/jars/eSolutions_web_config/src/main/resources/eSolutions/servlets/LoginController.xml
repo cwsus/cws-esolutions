@@ -25,6 +25,5 @@
         <property name="logoffCompleteString" value="login.user.logoff" />
         <property name="loginPage" value=".login/jsp/html/en/Login" />
         <property name="otpLoginPage" value=".login/jsp/html/en/LoginOTP" />
-        <property name="messageSubmissionFailed" value="login.request.failed" />
     </bean>
 </beans>

@@ -46,10 +46,10 @@ import com.cws.esolutions.security.processors.exception.AuditServiceException;
  */
 public interface IAuditProcessor
 {
-    static final IAuditDAO auditDAO = new AuditDAOImpl();
+    static final IAuditDAO auditDAO = (IAuditDAO) new AuditDAOImpl();
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
-    static final IAccessControlService accessControl = new AccessControlServiceImpl();
     static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
+    static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
 
     static final String SERVICE_ID = "360144AC-7234-406A-B152-08CD080459A6";
 

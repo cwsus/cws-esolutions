@@ -60,7 +60,7 @@ public class PasswordUtilsTest
     @Test public void testTwoWayEncryption()
     {
         final String plainText = "U1Y5RkFIdzZ3VXZBdW9DRHlyM0syZz09OmUvR2szWDJvdHVoWmhqZTZPNU9MTVFWeXkrWUpETTRwOVA1WWplRnpaWU09";
-        final String salt = "hg4Q1qymhVY5ZICwyXuYFvdegQVyrAbg";
+        final String salt = "2YETtHagNl36dQanQ3P1M3mJNjwRHaoa";
 
         try
         {
@@ -72,6 +72,7 @@ public class PasswordUtilsTest
         			bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
         			bean.getConfigData().getSystemConfig().getEncoding());
 
+        	System.out.println(encr);
         	Assertions.assertThat(encr).isNotEmpty();
 
         	String decr = PasswordUtils.decryptText(encr, salt, bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(), bean.getConfigData().getSecurityConfig().getIterations(),

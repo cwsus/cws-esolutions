@@ -56,12 +56,12 @@ public interface IAccountControlProcessor
 {
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
 
-    static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final ISecurityReferenceDAO secRef = new SecurityReferenceDAOImpl();
-    static final IAccessControlService accessControl = new AccessControlServiceImpl();
+    static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();    
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
-    static final IUserSecurityInformationDAO userSec = new UserSecurityInformationDAOImpl();
-    static final UserManager userManager = UserManagerFactory.getUserManager(secConfig.getUserManager());
+    static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
+    static final UserManager userManager = (UserManager) UserManagerFactory.getUserManager(secConfig.getUserManager());
+    static final IUserSecurityInformationDAO userSec = (IUserSecurityInformationDAO) new UserSecurityInformationDAOImpl();
     
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);

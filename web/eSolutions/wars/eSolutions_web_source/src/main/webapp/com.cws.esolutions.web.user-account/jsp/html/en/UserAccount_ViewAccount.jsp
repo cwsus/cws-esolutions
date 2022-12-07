@@ -98,7 +98,7 @@
             </tr>
             <tr>
                 <td><label><spring:message code="user.account.role" /></label></td>
-                <td>${sessionScope.userAccount.role}</td>
+                <td>${sessionScope.userAccount.userRole}</td>
             </tr>
         </table>
     </p>

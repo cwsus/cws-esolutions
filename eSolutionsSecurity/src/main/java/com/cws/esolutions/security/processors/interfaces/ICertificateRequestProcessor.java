@@ -49,12 +49,12 @@ import com.cws.esolutions.security.processors.exception.CertificateRequestExcept
  */
 public interface ICertificateRequestProcessor
 {
-    static final IAuditProcessor auditor = new AuditProcessorImpl();
-    static final ICertificateManager processor = new CertificateManagerImpl();
-    static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
-    static final IAccessControlService accessControl = new AccessControlServiceImpl();
+	static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
+    static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
     static final CertificateConfig certConfig = secBean.getConfigData().getCertConfig();
+    static final ICertificateManager processor = (ICertificateManager) new CertificateManagerImpl();
+    static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
 
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);

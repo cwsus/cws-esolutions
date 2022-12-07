@@ -80,6 +80,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
         {
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", authUser);
+            DEBUGGER.debug("AuthenticationData: {}", authSec); // TODO: remove me
         }
 
         try
@@ -108,6 +109,12 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
             String userSalt = userSec.getUserSalt(userInfo.get(0)[0], SaltType.LOGON.name()); // user salt as obtained from the database
             String userGuid = userInfo.get(0)[0]; // this should be the guid
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("userSalt: {}", userSalt);
+                DEBUGGER.debug("userGuid: {}", userGuid); // TODO: remove me
+            }
 
             if ((StringUtils.isEmpty(userGuid)) || (StringUtils.isEmpty(userSalt)))
             {

@@ -48,7 +48,7 @@
             <ref bean="appConfig" />
         </property>
         <property name="enableOtpPage" value=".user-account/jsp/html/en/UserAccount_EnableOTP" />
-        <property name="myAccountPage" value=".user-account/jsp/html/en/UserAccount_ShowUser" />
+        <property name="myAccountPage" value=".user-account/jsp/html/en/UserAccount_ViewAccount" />
         <property name="changeEmailPage" value=".user-account/jsp/html/en/UserAccount_ChangeEmail" />
         <property name="changeSecurityPage" value=".user-account/jsp/html/en/UserAccount_ChangeSecurity" />
         <property name="changePasswordPage" value=".user-account/jsp/html/en/UserAccount_ChangePassword" />

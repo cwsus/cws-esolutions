@@ -46,12 +46,11 @@ import com.cws.esolutions.web.model.SearchRequest;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.DNSRecord;
+import com.cws.esolutions.core.processors.enums.DNSRecordType;
 import com.cws.esolutions.core.processors.enums.DNSRequestType;
 import com.cws.esolutions.core.processors.dto.DNSServiceRequest;
 import com.cws.esolutions.core.processors.dto.DNSServiceResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
-import com.cws.esolutions.core.processors.enums.DNSRecordType;
 import com.cws.esolutions.core.processors.exception.DNSServiceException;
 import com.cws.esolutions.core.processors.impl.DNSServiceRequestProcessorImpl;
 import com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor;
@@ -275,6 +274,8 @@ public class DNSServiceController
             DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
+        String responsePage = null;
+
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
@@ -372,29 +373,43 @@ public class DNSServiceController
                 DEBUGGER.debug("DNSServiceResponse: {}", response);
             }
 
-            if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+            switch (response.getRequestStatus())
             {
-                if ((response.getDnsRecords() != null) && (response.getDnsRecords().size() != 0))
-                {
-                    // multiple records were returned
-                    model.addAttribute("dnsEntries", response.getDnsRecords());
-                }
-                else if (response.getDnsRecord() != null)
-                {
-                	model.addAttribute("dnsEntry", response.getDnsRecord());
-                }
-                else
-                {
-                	model.addAttribute(Constants.ERROR_RESPONSE, this.messageNoSearchResults);
-                }
-            }
-            else
-            {
-                return this.appConfig.getErrorResponsePage();
-            }
+	            case SUCCESS:
+	                if ((response.getDnsRecords() != null) && (response.getDnsRecords().size() != 0))
+	                {
+	                    // multiple records were returned
+	                    model.addAttribute("dnsEntries", response.getDnsRecords());
+	                }
+	                else if (response.getDnsRecord() != null)
+	                {
+	                	model.addAttribute("dnsEntry", response.getDnsRecord());
+	                }
+	                else
+	                {
+	                	model.addAttribute(Constants.ERROR_RESPONSE, this.messageNoSearchResults);
+	                }
 
-            model.addAttribute("serviceTypes", this.serviceTypes);
-            model.addAttribute(Constants.COMMAND, new SearchRequest());
+	                model.addAttribute("serviceTypes", this.serviceTypes);
+	                model.addAttribute(Constants.COMMAND, new SearchRequest());
+
+	                responsePage = this.lookupPage;
+
+	                break;
+	            case FAILURE:
+	            	responsePage = this.appConfig.getErrorResponsePage();
+
+	            	break;
+	            case EXCEPTION:
+	            	responsePage = this.appConfig.getErrorResponsePage();
+
+	            	break;
+	            case UNAUTHORIZED:
+	            	responsePage = this.appConfig.getUnauthorizedPage();
+
+	            	break;
+            	default:
+            }
         }
         catch (final DNSServiceException dsx)
         {
@@ -408,6 +423,6 @@ public class DNSServiceController
             DEBUGGER.debug("ModelAndView: {}", model);
         }
  
-        return this.lookupPage;
+        return responsePage;
     }
 }

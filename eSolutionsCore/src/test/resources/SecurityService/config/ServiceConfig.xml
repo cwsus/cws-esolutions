@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*
+ * Copyright (c) 2009 - 2020 CaspersBox Web Services
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+-->
 <configuration>
     <system-config>
         <encoding>UTF-8</encoding>
@@ -11,24 +29,31 @@
         <iterations>65535</iterations> <!-- number of times to hash over the password -->
         <passwordExpiration>90</passwordExpiration> <!-- how long before a password MUST be changed -->
         <passwordMinLength>8</passwordMinLength> <!--  minimum allowed password length -->
-        <passwordMaxLength>64</passwordMaxLength> <!--  maximum allowed password length (0 or null -> no limit)-->
-        <authAlgorithm>SHA-512</authAlgorithm> <!-- MessageDigest: http://docs.oracle.com/javase/6/docs/technotes/guides/security/StandardNames.html#MessageDigest -->
+        <passwordMaxLength>64</passwordMaxLength> <!--  maximum allowed password length (0 or null -> no limit) -->
+        <messageDigest>SHA-512</messageDigest> <!-- MessageDigest: http://docs.oracle.com/javase/6/docs/technotes/guides/security/StandardNames.html#MessageDigest -->
         <otpAlgorithm>HmacSHA1</otpAlgorithm>
         <keyBits>256</keyBits>
         <secretKeyAlgorithm>PBKDF2WithHmacSHA1</secretKeyAlgorithm>
         <encryptionAlgorithm>AES</encryptionAlgorithm>
         <encryptionInstance>AES/CBC/PKCS5Padding</encryptionInstance>
-        <saltLength>64</saltLength> <!-- salt string length (bigger is better) -->
-        <performAudit>false</performAudit> <!-- should we audit stuff ? (default true) -->
-        <enableSecurity>false</enableSecurity>
+        <saltLength>32</saltLength> <!-- salt string length (bigger is better) -->
+        <performAudit>true</performAudit> <!-- should we audit stuff ? (default true) -->
+        <enableSecurity>true</enableSecurity>
         <resetIdLength>64</resetIdLength> <!-- reset id length (bigger is better) -->
         <smsResetEnabled>false</smsResetEnabled> <!-- do we send the reset email AND an sms ? -->
         <smsCodeLength>8</smsCodeLength> <!-- how long should the sms reset id be ? -->
         <resetTimeout>30</resetTimeout> <!-- reset timeout length (minutes) -->
-        <authConfig>/opt/cws/eSolutions/etc/repository.properties</authConfig>
-        <authManager>com.cws.esolutions.security.dao.userauth.impl.OpenLDAPAuthenticator</authManager>
-        <userManager>com.cws.esolutions.security.dao.usermgmt.impl.OpenLDAPUserManager</userManager>
+        <authConfig>/opt/cws/eSolutions/etc/auth.properties</authConfig>
+        <auditConfig>/opt/cws/eSolutions/etc/audit.properties</auditConfig>
+        <authManager>com.cws.esolutions.security.dao.userauth.impl.SQLAuthenticator</authManager>
+        <userManager>com.cws.esolutions.security.dao.usermgmt.impl.SQLUserManager</userManager>
+        <userSecDAO>com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl</userSecDAO>
     </security-config>
+
+    <password-repository>
+        <passwordFile>F:/mytest.txt</passwordFile>
+        <saltFile>F:/mysalt.txt</saltFile>
+    </password-repository>
 
     <!-- this should correlate back to the data obtained from -->
     <!-- the authentication repository. the objects below -->
@@ -41,12 +66,12 @@
         <userReturningAttributes>
             <commonName>cn</commonName>
             <userId>uid</userId>
-            <userGuid>guid</userGuid>
             <surname>sn</surname>
             <givenName>givenName</givenName>
             <emailAddr>mail</emailAddr>
             <displayName>displayName</displayName>
             <telephoneNumber>telephoneNumber</telephoneNumber>
+            <userRole>cwsrole</userRole>
             <returningAttributes>
                 <attributeName>cn</attributeName>
                 <attributeName>uid</attributeName>
@@ -60,6 +85,7 @@
                 <attributeName>cwsissuspended</attributeName>
                 <attributeName>cwsisolrsetup</attributeName>
                 <attributeName>cwsisolrlocked</attributeName>
+                <attributeName>cwsistcaccepted</attributeName>
                 <attributeName>telephoneNumber</attributeName>
                 <attributeName>pager</attributeName>
             </returningAttributes>
@@ -75,18 +101,13 @@
         </securityReturningAttributes>
     </repository-config>
 
-    <password-repository>
-        <passwordFile>/opt/cws/eSolutions/etc/password.properties</passwordFile>
-        <saltFile>/opt/cws/eSolutions/etc/salt.properties</saltFile>
-    </password-repository>
-
     <!-- only required if file-based signing is used. the keys arent used for anything else. -->
     <key-config>
         <keyAlgorithm>RSA</keyAlgorithm> <!-- keygen algorithm -->
         <signatureAlgorithm>SHA512withRSA</signatureAlgorithm>
         <keySize>4096</keySize> <!-- if algorithm is DSA, this MUST be 1024: http://docs.oracle.com/javase/6/docs/technotes/guides/security/SunProviders.html -->
         <keyDirectory>/opt/cws/eSolutions/keys</keyDirectory> <!-- this is ONLY required if you're using a file-based keymanager -->
-        <keyManager>com.cws.esolutions.security.dao.keymgmt.impl.SQLKeyManager</keyManager>
+        <keyManager>com.cws.esolutions.security.dao.keymgmt.impl.FileKeyManager</keyManager>
     </key-config>
 
     <certificate-config>
@@ -99,11 +120,11 @@
         <certificateType>X509</certificateType>
         <certificateAlgorithm>RSA</certificateAlgorithm>
         <signatureAlgorithm>SHA512withRSA</signatureAlgorithm>
-         <certificateKeySize>2048</certificateKeySize>
-         <rootCertificateName>CWS Root CA v1</rootCertificateName>
-         <intermediateCertificateName>CWS Intermediate CA v1</intermediateCertificateName>
-         <rootCertificateFile>/opt/cws/eSolutions/certs/cacerts/CWS Root CA v1.crt</rootCertificateFile>
-         <intermediateCertificateFile>/opt/cws/eSolutions/certs/cacerts/CWS Intermediate CA v1.crt</intermediateCertificateFile>
+        <certificateKeySize>2048</certificateKeySize>
+        <rootCertificateName>CWS Root CA v1</rootCertificateName>
+        <intermediateCertificateName>CWS Intermediate CA v1</intermediateCertificateName>
+        <rootCertificateFile>/opt/cws/eSolutions/certs/cacerts/CWS Root CA v1.crt</rootCertificateFile>
+        <intermediateCertificateFile>/opt/cws/eSolutions/certs/cacerts/CWS Intermediate CA v1.crt</intermediateCertificateFile>
     </certificate-config>
 
     <!-- only required if file-based signing is used. if this is configured then key-config MUST be configured. -->
@@ -119,21 +140,21 @@
     <resource-config>
         <DataSourceManager>
             <dsName>SecurityDataSource</dsName>
-            <datasource>jdbc:mysql://127.0.0.1/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
+            <datasource>jdbc:mysql://localhost/CWSSEC?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
-            <dsUser>appuser</dsUser>
-            <dsPass>ami8+6beMei9zMTADAlHlg6iVqGEwrZp3UUPclDWi57ilw2kDIr9hGyvOivhO1Tu8K0npKrRlg0unzjVqhY9ernjIVtG44ZJeNjkLiVZ3vo=</dsPass>
-            <salt>ENNAhjkAm9AZmpOPrMbAuqVyETKPTjLkXYpNX6tRL950AO6HoQzvY7fjOvTeBgVz</salt>
+            <dsUser>appadm</dsUser>
+            <dsPass>U1Y5RkFIdzZ3VXZBdW9DRHlyM0syZz09OmUvR2szWDJvdHVoWmhqZTZPNU9MTVFWeXkrWUpETTRwOVA1WWplRnpaWU09</dsPass>
+            <dsSalt>hg4Q1qymhVY5ZICwyXuYFvdegQVyrAbg</dsSalt>
             <connectTimeout>10</connectTimeout>
             <autoReconnect>true</autoReconnect>
         </DataSourceManager>
         <DataSourceManager>
             <dsName>AuditDataSource</dsName>
-            <datasource>jdbc:mysql://127.0.0.1/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
+            <datasource>jdbc:mysql://localhost/CWSSEC?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
-            <dsUser>appuser</dsUser>
-            <dsPass>o7jOZqxB0waoa0qKUBSwPkQR3vgm78jm/Q9zZkqysSaEeFlBEzm+qRZhHnGLeCab6V8twuMVeA08eT1CG4NO8/y/TLHQTeg4AbVCGRE4HTY=</dsPass>
-            <salt>hg4Q1qymhVY5ZICwyXuYFvdegQVyrAbAwgUINiVVsAZaM3ytFYH376JBL60hQXBy</salt>
+            <dsUser>appadm</dsUser>
+            <dsPass>U1Y5RkFIdzZ3VXZBdW9DRHlyM0syZz09OmUvR2szWDJvdHVoWmhqZTZPNU9MTVFWeXkrWUpETTRwOVA1WWplRnpaWU09</dsPass>
+            <dsSalt>hg4Q1qymhVY5ZICwyXuYFvdegQVyrAbg</dsSalt>
             <connectTimeout>10</connectTimeout>
             <autoReconnect>true</autoReconnect>
         </DataSourceManager>

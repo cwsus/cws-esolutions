@@ -35,13 +35,11 @@ import org.apache.commons.lang.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.esolutions.web.Constants;
@@ -49,7 +47,7 @@ import com.cws.esolutions.web.model.LoginRequest;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.web.validators.LoginValidator;
-import com.cws.esolutions.security.enums.SecurityRequestStatus;
+import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
@@ -71,7 +69,6 @@ public class LoginController
     private boolean allowUserReset = true;
     private LoginValidator validator = null;
     private String logoffCompleteString = null;
-    private String messageSubmissionFailed = null;
     private ApplicationServiceBean appConfig = null;
 
     private static final String CNAME = LoginController.class.getName();
@@ -156,19 +153,6 @@ public class LoginController
         }
 
         this.allowUserReset = value;
-    }
-
-    public final void setMessageSubmissionFailed(final String value)
-    {
-        final String methodName = LoginController.CNAME + "#setMessageSubmissionFailed(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageSubmissionFailed = value;
     }
 
     @RequestMapping(value = {"/default", "login"}, method = RequestMethod.GET)
@@ -485,56 +469,98 @@ public class LoginController
                 DEBUGGER.debug("AuthenticationResponse: {}", authResponse);
             }
 
-            if (authResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            switch (authResponse.getRequestStatus())
             {
-                UserAccount userAccount = authResponse.getUserAccount();
+            	case SUCCESS:
+            		UserAccount userAccount = authResponse.getUserAccount();
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserAccount: {}", userAccount);
-                }
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("UserAccount: {}", userAccount);
+                    }
 
-                switch (userAccount.getStatus())
-                {
-                    case SUCCESS:
-                    	hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
+                    if (userAccount.getUserRole() == SecurityUserRole.NONE)
+                    {
+                    	hSession.invalidate();
 
-                        if (StringUtils.isNotBlank(hRequest.getParameter("vpath")))
-                        {
-                            return "redirect:/" + hRequest.getParameter("vpath");
-                        }
-                        else
-                        {
-                            return this.appConfig.getHomePage();
-                        }
-                    case EXPIRED:
-                        // password expired - redirect to change password page
-                        hSession.invalidate();
-
-                        model.addAttribute(Constants.RESPONSE_MESSAGE, this.appConfig.getMessagePasswordExpired());
+                        model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageAccountNotAuthorized());
                         model.addAttribute(Constants.COMMAND, new LoginRequest());
 
                         return this.loginPage;
-                    default:
-                        // no dice (but its also an unspecified failure)
-                        ERROR_RECORDER.error("An unspecified error occurred during authentication.");
+                    }
 
-                        model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
-                        model.addAttribute(Constants.COMMAND, new LoginRequest());
+                    switch (userAccount.getStatus())
+                    {
+                        case SUCCESS:
+                        	hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
-                        return this.loginPage;
-                }
-            }
-            else
-            {
-            	model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
-            	model.addAttribute(Constants.COMMAND, new LoginRequest());
+                            if (StringUtils.isNotBlank(hRequest.getParameter("vpath")))
+                            {
+                                return "redirect:/" + hRequest.getParameter("vpath");
+                            }
+                            else
+                            {
+                                return this.appConfig.getHomePage();
+                            }
+                        case EXPIRED:
+                            // password expired - redirect to change password page
+                            hSession.invalidate();
 
-            	return this.loginPage;
+                            model.addAttribute(Constants.RESPONSE_MESSAGE, this.appConfig.getMessagePasswordExpired());
+                            model.addAttribute(Constants.COMMAND, new LoginRequest());
+
+                            return this.loginPage;
+                        default:
+                            // no dice (but its also an unspecified failure)
+                            ERROR_RECORDER.error("An unspecified error occurred during authentication.");
+
+                            model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
+                            model.addAttribute(Constants.COMMAND, new LoginRequest());
+
+                            return this.loginPage;
+                    }
+            	case FAILURE:
+            		hSession.invalidate();
+
+                    ERROR_RECORDER.error("An error occurred while processing the logon request.");
+
+                    model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
+                    model.addAttribute(Constants.COMMAND, new LoginRequest());
+
+                    return this.loginPage;
+            	case UNAUTHORIZED:
+            		hSession.invalidate();
+
+                    ERROR_RECORDER.error("The requested account is unauthorized for this application.");
+
+                    model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageAccountNotAuthorized());
+                    model.addAttribute(Constants.COMMAND, new LoginRequest());
+
+                    return this.loginPage;
+            	case DISABLED:
+            		hSession.invalidate();
+
+                    ERROR_RECORDER.error("The requested account is is disabled.");
+
+                    model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageAccountNotAuthorized());
+                    model.addAttribute(Constants.COMMAND, new LoginRequest());
+
+                    return this.loginPage;
+            	default:
+            		hSession.invalidate();
+
+            		ERROR_RECORDER.error("An unknown error occurred while authenticating.");
+
+                	model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
+                	model.addAttribute(Constants.COMMAND, new LoginRequest());
+
+                	return this.loginPage;
             }
         }
         catch (final AuthenticationException ax)
         {
+        	hSession.invalidate();
+
             ERROR_RECORDER.error(ax.getMessage(), ax);
 
             model.addAttribute(Constants.COMMAND, new LoginRequest());
@@ -546,9 +572,9 @@ public class LoginController
 
     // otp logon
     @RequestMapping(value = "/otp", method = RequestMethod.POST)
-    public final ModelAndView submitOtpLogin(@ModelAttribute("security") final AuthenticationData security, final BindingResult bindResult)
+    public final String submitOtpLogin(@ModelAttribute("security") final AuthenticationData security, final Model model, final BindingResult bindResult)
     {
-        final String methodName = LoginController.CNAME + "#submitOtpLogin(@ModelAttribute(\"security\") final AuthenticationData security, final BindingResult bindResult)";
+        final String methodName = LoginController.CNAME + "#submitOtpLogin(@ModelAttribute(\"security\") final AuthenticationData security, final Model model, final BindingResult bindResult)";
 
         if (DEBUG)
         {
@@ -557,8 +583,7 @@ public class LoginController
             DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
-        ModelAndView mView = new ModelAndView();
-        mView.addObject(Constants.ALLOW_RESET, this.allowUserReset);
+        model.addAttribute(Constants.ALLOW_RESET, this.allowUserReset);
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -637,70 +662,104 @@ public class LoginController
                 DEBUGGER.debug("AuthenticationResponse: {}", authResponse);
             }
 
-            if (authResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            switch (authResponse.getRequestStatus())
             {
-                UserAccount userAccount = authResponse.getUserAccount();
+            	case SUCCESS:
+            		UserAccount userAccount = authResponse.getUserAccount();
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserAccount: {}", userAccount);
-                }
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("UserAccount: {}", userAccount);
+                    }
 
-                switch (userAccount.getStatus())
-                {
-                    case SUCCESS:
-                        // username validated
-                        // check logon type
-                        hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
+                    if (userAccount.getUserRole() == SecurityUserRole.NONE)
+                    {
+                    	hSession.invalidate();
 
-                        if (StringUtils.isNotBlank(hRequest.getParameter("vpath")))
-                        {
-                            mView = new ModelAndView(new RedirectView("redirect:" + hRequest.getParameter("vpath"), false));
-                        }
-                        else
-                        {
-                            mView = new ModelAndView(new RedirectView(this.appConfig.getHomeRedirect(), true));
-                        }
+                        model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageAccountNotAuthorized());
+                        model.addAttribute(Constants.COMMAND, new LoginRequest());
 
-                        break;
-                    case EXPIRED:
-                        // password expired - redirect to change password page
-                        hSession.invalidate();
+                        return this.loginPage;
+                    }
 
-                        mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessagePasswordExpired());
-                        mView.addObject(Constants.COMMAND, new LoginRequest());
-                        mView.setViewName(this.loginPage);
+                    switch (userAccount.getStatus())
+                    {
+                        case SUCCESS:
+                        	hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
-                        break;
-                    default:
-                        mView.addObject(Constants.COMMAND, new LoginRequest());
-                        mView.setViewName(this.otpLoginPage);
-                        mView.addObject(Constants.ERROR_RESPONSE, this.messageSubmissionFailed);
+                            if (StringUtils.isNotBlank(hRequest.getParameter("vpath")))
+                            {
+                                return "redirect:/" + hRequest.getParameter("vpath");
+                            }
+                            else
+                            {
+                                return this.appConfig.getHomePage();
+                            }
+                        case EXPIRED:
+                            // password expired - redirect to change password page
+                            hSession.invalidate();
 
-                        break;
-                }
-            }
-            else
-            {
-                mView.addObject(Constants.COMMAND, new AuthenticationData());
-                mView.setViewName(this.otpLoginPage);
-                mView.addObject(Constants.ERROR_RESPONSE, this.messageSubmissionFailed);
+                            model.addAttribute(Constants.RESPONSE_MESSAGE, this.appConfig.getMessagePasswordExpired());
+                            model.addAttribute(Constants.COMMAND, new LoginRequest());
+
+                            return this.loginPage;
+                        default:
+                            // no dice (but its also an unspecified failure)
+                            ERROR_RECORDER.error("An unspecified error occurred during authentication.");
+
+                            model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
+                            model.addAttribute(Constants.COMMAND, new LoginRequest());
+
+                            return this.otpLoginPage;
+                    }
+            	case FAILURE:
+            		hSession.invalidate();
+
+                    ERROR_RECORDER.error("An error occurred while processing the logon request.");
+
+                    model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
+                    model.addAttribute(Constants.COMMAND, new LoginRequest());
+
+                    return this.loginPage;
+            	case UNAUTHORIZED:
+            		hSession.invalidate();
+
+                    ERROR_RECORDER.error("The requested account is unauthorized for this application.");
+
+                    model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageAccountNotAuthorized());
+                    model.addAttribute(Constants.COMMAND, new LoginRequest());
+
+                    return this.loginPage;
+            	case DISABLED:
+            		hSession.invalidate();
+
+                    ERROR_RECORDER.error("The requested account is is disabled.");
+
+                    model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageAccountNotAuthorized());
+                    model.addAttribute(Constants.COMMAND, new LoginRequest());
+
+                    return this.loginPage;
+            	default:
+            		hSession.invalidate();
+
+            		ERROR_RECORDER.error("An unknown error occurred while authenticating.");
+
+                	model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
+                	model.addAttribute(Constants.COMMAND, new LoginRequest());
+
+                	return this.loginPage;
             }
         }
         catch (final AuthenticationException ax)
         {
+        	hSession.invalidate();
+
             ERROR_RECORDER.error(ax.getMessage(), ax);
 
-            mView.addObject(Constants.COMMAND, new AuthenticationData());
-            mView.setViewName(this.otpLoginPage);
-            mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageRequestProcessingFailure());
-        }
+            model.addAttribute(Constants.COMMAND, new LoginRequest());
+            model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
 
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
+            return this.loginPage;
         }
-
-        return mView;
     }
 }

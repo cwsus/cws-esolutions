@@ -38,6 +38,7 @@ import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 import org.apache.log4j.helpers.Loader;
 import javax.servlet.ServletContextEvent;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.xml.DOMConfigurator;
 import javax.servlet.ServletContextListener;
 
@@ -71,7 +72,7 @@ public class CoreServicesListener implements ServletContextListener
         {
             if (sContext != null)
             {
-                if (sContext.getInitParameter(CoreServicesListener.INIT_SYSLOGGING_FILE) == null)
+            	if (StringUtils.isEmpty(sContext.getInitParameter(CoreServicesListener.INIT_SYSLOGGING_FILE)))
                 {
                     System.err.println("Logging configuration not found. No logging enabled !");
                 }

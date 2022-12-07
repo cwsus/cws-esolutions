@@ -54,7 +54,6 @@ public final class FTPConfig implements Serializable
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER);
 
     public final void setFtpAccount(final String value)
     {
@@ -167,14 +166,7 @@ public final class FTPConfig implements Serializable
     @Override
     public final String toString()
     {
-        final String methodName = FTPConfig.CNAME + "#toString()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        StringBuilder sBuilder = new StringBuilder()
+    	StringBuilder sBuilder = new StringBuilder()
             .append("[" + this.getClass().getName() + "]" + CoreServicesConstants.LINE_BREAK + "{" + CoreServicesConstants.LINE_BREAK);
 
         for (Field field : this.getClass().getDeclaredFields())
@@ -198,19 +190,11 @@ public final class FTPConfig implements Serializable
                         sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + CoreServicesConstants.LINE_BREAK);
                     }
                 }
-                catch (final IllegalAccessException iax)
-                {
-                    ERROR_RECORDER.error(iax.getMessage(), iax);
-                }
+                catch (final IllegalAccessException iax) {}
             }
         }
 
         sBuilder.append('}');
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("sBuilder: {}", sBuilder);
-        }
 
         return sBuilder.toString();
     }

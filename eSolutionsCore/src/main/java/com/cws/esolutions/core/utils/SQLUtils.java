@@ -384,6 +384,7 @@ public class SQLUtils
                     stmt.setObject(key, params.get(key));
                 }
             }
+            System.out.println(stmt);
 
             if (DEBUG)
             {
@@ -397,6 +398,7 @@ public class SQLUtils
         }
         catch (final SQLException sqx)
         {
+        	sqx.printStackTrace();
             throw new UtilityException(sqx.getMessage(), sqx);
         }
         finally

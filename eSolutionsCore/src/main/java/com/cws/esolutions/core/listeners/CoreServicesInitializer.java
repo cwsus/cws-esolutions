@@ -47,10 +47,8 @@ import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.config.xml.DataSourceManager;
-import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.core.exception.CoreServicesException;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
-import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 /**
  * @author cws-khuntly
  * @version 1.0
@@ -59,6 +57,7 @@ public class CoreServicesInitializer
 {
     private static final String CNAME = CoreServicesInitializer.class.getName();
     private static final CoreServicesBean appBean = CoreServicesBean.getInstance();
+    private static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -80,15 +79,7 @@ public class CoreServicesInitializer
         URL xmlURL = null;
         JAXBContext context = null;
         Unmarshaller marshaller = null;
-        SecurityConfig secConfig = null;
         CoreConfigurationData configData = null;
-        SecurityConfigurationData secConfigData = null;
-
-        if (loadSecurity)
-        {
-            secConfigData = SecurityServiceBean.getInstance().getConfigData();
-            secConfig = secConfigData.getSecurityConfig();
-        }
 
         final String serviceConfig = (StringUtils.isBlank(configFile)) ? System.getProperty("coreConfigFile") : configFile;
         final String loggingConfig = (StringUtils.isBlank(logConfig)) ? System.getProperty("coreLogConfig") : logConfig;
@@ -161,10 +152,14 @@ public class CoreServicesInitializer
                             dataSource.setUrl(mgr.getDataSource());
                             dataSource.setUsername(mgr.getDsUser());
                             dataSource.setConnectionProperties(sBuilder.toString());
-                            dataSource.setPassword(PasswordUtils.decryptText(mgr.getDsPass(), mgr.getSalt(),
-                                    secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyBits(),
-                                    secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
-                                    configData.getAppConfig().getEncoding()));
+                            dataSource.setPassword(PasswordUtils.decryptText(mgr.getDsPass(), mgr.getDsSalt(),
+                            		secBean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
+                            		secBean.getConfigData().getSecurityConfig().getIterations(),
+                            		secBean.getConfigData().getSecurityConfig().getKeyBits(),
+                            		secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
+                            		secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
+                            		appBean.getConfigData().getSystemConfig().getEncoding()));
+
                         if (DEBUG)
                         {
                             DEBUGGER.debug("BasicDataSource: {}", dataSource);

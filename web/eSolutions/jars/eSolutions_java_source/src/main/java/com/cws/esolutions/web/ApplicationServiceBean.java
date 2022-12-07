@@ -69,6 +69,7 @@ public class ApplicationServiceBean implements Serializable
     private String messageUserNotLoggedIn = null;
     private String messageValidationFailed = null;
     private String messageEmailSentSuccess = null;
+    private String messageAccountNotAuthorized = null;
     private EmailAddressValidator emailValidator = null;
     private EmailMessageValidator messageValidator = null;
     private String messageRequestProcessingFailure = null;
@@ -351,6 +352,19 @@ public class ApplicationServiceBean implements Serializable
         }
 
         this.messageUserNotLoggedIn = value;
+    }
+
+    public final void setMessageAccountNotAuthorized(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setMessageAccountNotAuthorized(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageAccountNotAuthorized = value;
     }
 
     public final void setMessageRequestProcessingFailure(final String value)
@@ -704,6 +718,19 @@ public class ApplicationServiceBean implements Serializable
         return this.messagePasswordExpired;
     }
 
+    public final String getMessageAccountNotAuthorized()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getMessageAccountNotAuthorized()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.messageAccountNotAuthorized);
+        }
+
+        return this.messageAccountNotAuthorized;
+    }
+
     public final String getMessageUserNotLoggedIn()
     {
         final String methodName = ApplicationServiceBean.CNAME + "#getMessageUserNotLoggedIn()";
@@ -837,13 +864,6 @@ public class ApplicationServiceBean implements Serializable
     @Override
     public final String toString()
     {
-        final String methodName = ApplicationServiceBean.CNAME + "#toString()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
         StringBuilder sBuilder = new StringBuilder()
             .append("[" + this.getClass().getName() + "]" + Constants.LINE_BREAK + "{" + Constants.LINE_BREAK);
 
@@ -876,11 +896,6 @@ public class ApplicationServiceBean implements Serializable
         }
 
         sBuilder.append('}');
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("sBuilder: {}", sBuilder);
-        }
 
         return sBuilder.toString();
     }

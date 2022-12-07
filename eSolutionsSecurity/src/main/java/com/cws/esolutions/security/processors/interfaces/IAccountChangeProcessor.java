@@ -61,13 +61,13 @@ public interface IAccountChangeProcessor
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final String KEY_URI_FORMAT = "otpauth://totp/%s?secret=%s&issuer=%s&algorithm=%s"; // https://code.google.com/p/google-authenticator/wiki/KeyUriFormat
 
-    static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final KeyConfig keyConfig = secBean.getConfigData().getKeyConfig();
-    static final ISecurityReferenceDAO secRef = new SecurityReferenceDAOImpl();
+    static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
-    static final IUserSecurityInformationDAO userSec = new UserSecurityInformationDAOImpl();
-    static final UserManager userManager = UserManagerFactory.getUserManager(secConfig.getUserManager());
-    static final Authenticator authenticator = AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());
+    static final ISecurityReferenceDAO secRef = (ISecurityReferenceDAO) new SecurityReferenceDAOImpl();
+    static final UserManager userManager = (UserManager) UserManagerFactory.getUserManager(secConfig.getUserManager());
+    static final IUserSecurityInformationDAO userSec = (IUserSecurityInformationDAO) new UserSecurityInformationDAOImpl();
+    static final Authenticator authenticator = (Authenticator) AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());
 
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
