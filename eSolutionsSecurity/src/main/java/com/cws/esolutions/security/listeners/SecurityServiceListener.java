@@ -93,7 +93,7 @@ public class SecurityServiceListener implements ServletContextListener
 
                 if (xmlURL != null)
                 {
-                	System.out.println("xmlURL provided was valid and found, continuing configuration");
+                	System.out.println("SecurityService: xmlURL provided was valid and found, continuing configuration");
 
                     context = JAXBContext.newInstance(SecurityConfigurationData.class);
                     marshaller = context.createUnmarshaller();
@@ -115,12 +115,12 @@ public class SecurityServiceListener implements ServletContextListener
                 }
                 else
                 {
-                    throw new SecurityServiceException("Unable to load configuration. Cannot continue.");
+                    throw new SecurityServiceException("SecurityService: Unable to load configuration. Cannot continue.");
                 }
             }
             else
             {
-                throw new SecurityServiceException("Unable to load configuration. Cannot continue.");
+                throw new SecurityServiceException("SecurityService: Servlet context was null. Cannot continue.");
             }
         }
         catch (final NamingException nx)

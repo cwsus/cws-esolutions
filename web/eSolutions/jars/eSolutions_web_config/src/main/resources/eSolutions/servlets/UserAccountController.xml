@@ -15,9 +15,8 @@
     </bean>
 
     <bean id="passwordValidator" class="com.cws.esolutions.web.validators.PasswordValidator">
-        <property name="secConfig">
-            <ref bean="secConfig" />
-        </property>
+    	<property name="passwordMinLength" value="8" />
+    	<property name="passwordMaxLength" value="128" />
         <property name="messagePasswordFailedValidation" value="error.password.requirement.failure" />
         <property name="messagePasswordMatch" value="user.account.current.matches.new" />
         <property name="messageConfirmPasswordRequired" value="user.account.confirm.password.empty" />

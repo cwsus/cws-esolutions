@@ -38,7 +38,9 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.apache.commons.lang.RandomStringUtils;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -48,15 +50,16 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.esolutions.web.Constants;
+import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
+import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.web.validators.OnlineResetValidator;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
-import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.security.processors.dto.AccountChangeData;
@@ -87,14 +90,14 @@ public class OnlineResetController
 {
     private String resetURL = null;
     private String submitAnswersPage = null;
+    private JavaMailSender mailSender = null;
     private String submitUsernamePage = null;
     private String submitEmailAddrPage = null;
     private String messageRequestFailure = null;
     private String messageRequestComplete = null;
     private OnlineResetValidator validator = null;
     private ApplicationServiceBean appConfig = null;
-    private CoreConfigurationData coreConfig = null;
-    private SecurityConfigurationData secConfig = null;
+
     private SimpleMailMessage forgotUsernameEmail = null;
     private SimpleMailMessage forgotPasswordEmail = null;
 
@@ -105,9 +108,9 @@ public class OnlineResetController
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
 
-    public final void setCoreConfig(final CoreConfigurationData value)
+    public final void setMailSender(final JavaMailSender value)
     {
-        final String methodName = OnlineResetController.CNAME + "#setCoreConfig(final CoreConfigurationData value)";
+        final String methodName = OnlineResetController.CNAME + "#setMailSender(final JavaMailSender value)";
 
         if (DEBUG)
         {
@@ -115,20 +118,7 @@ public class OnlineResetController
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.coreConfig = value;
-    }
-
-    public final void setSecConfig(final SecurityConfigurationData value)
-    {
-        final String methodName = OnlineResetController.CNAME + "#setSecConfig(final SecurityConfigurationData value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.secConfig = value;
+        this.mailSender = value;
     }
 
     public final void setResetURL(final String value)
@@ -488,7 +478,7 @@ public class OnlineResetController
             resetReq.setApplicationId(this.appConfig.getApplicationId());
             resetReq.setApplicationName(this.appConfig.getApplicationName());
 
-            IAccountResetProcessor resetProcessor = new AccountResetProcessorImpl();
+            IAccountResetProcessor resetProcessor = (IAccountResetProcessor) new AccountResetProcessorImpl();
             AccountResetResponse resetRes = resetProcessor.verifyResetRequest(resetReq);
 
             if (DEBUG)
@@ -749,9 +739,33 @@ public class OnlineResetController
                         DEBUGGER.debug("EmailMessage: {}", message);
                     }
 
-                    EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), message, true);
+                    // TODO
+                	SimpleMailMessage emailMessage = new SimpleMailMessage();
+                	emailMessage.setTo(message.getEmailAddr().get(0));
+                	emailMessage.setSubject(message.getMessageSubject());
+                	emailMessage.setText(message.getMessageBody());
+
+                	if (DEBUG)
+                	{
+                		DEBUGGER.debug("SimpleMailMessage: {}", emailMessage);
+                	}
+
+                	mailSender.send(emailMessage);
+
+                	SimpleMailMessage autoResponse = new SimpleMailMessage();
+                	autoResponse.setReplyTo(this.appConfig.getEmailAddress());
+                	autoResponse.setTo(message.getEmailAddr().get(0));
+                	autoResponse.setSubject(message.getMessageSubject());
+                	autoResponse.setText(message.getMessageBody());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("EmailMessage: {}", autoResponse);
+                    }
+
+                    mailSender.send(autoResponse);
                 }
-                catch (final MessagingException mx)
+                catch (final MailException mx)
                 {
                     ERROR_RECORDER.error(mx.getMessage(), mx);
 
@@ -1100,56 +1114,48 @@ public class OnlineResetController
                         
                     try
                     {
-                        EmailMessage message = new EmailMessage();
-                        message.setIsAlert(false);
-                        message.setMessageSubject(this.forgotPasswordEmail.getSubject());
-                        message.setMessageTo(new ArrayList<String>(
-                                Arrays.asList(
-                                        String.format(this.forgotPasswordEmail.getTo()[0], userAccount.getEmailAddr()))));
-                        message.setEmailAddr(new ArrayList<String>(
-                                Arrays.asList(
-                                        String.format(this.forgotPasswordEmail.getTo()[0], this.appConfig.getEmailAddress()))));
-                        message.setMessageBody(String.format(this.forgotPasswordEmail.getText(),
-                            responseAccount.getGivenName(),
-                            new Date(System.currentTimeMillis()),
-                            reqInfo.getHostName(),
-                            targetURL.toString(),
-                            this.secConfig.getSecurityConfig().getPasswordMinLength(),
-                            this.secConfig.getSecurityConfig().getPasswordMaxLength()));
+                    	SimpleMailMessage emailMessage = new SimpleMailMessage();
+                    	emailMessage.setTo(this.forgotPasswordEmail.getTo());
+                    	emailMessage.setSubject(this.forgotPasswordEmail.getSubject());
+                    	emailMessage.setFrom(this.appConfig.getEmailAddress());
+                    	emailMessage.setText(String.format(this.forgotPasswordEmail.getText(),
+                    			userAccount.getGivenName(),
+                                new Date(System.currentTimeMillis()),
+                                reqInfo.getHostName(),
+                                targetURL.toString(),
+                                8, 128));
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("EmailMessage: {}", message);
-                        }
+                    	if (DEBUG)
+                    	{
+                    		DEBUGGER.debug("SimpleMailMessage: {}", emailMessage);
+                    	}
 
-                        EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), message, true);
+                    	mailSender.send(emailMessage);
                     }
-                    catch (final MessagingException mx)
+                    catch (final MailException mx)
                     {
                         ERROR_RECORDER.error(mx.getMessage(), mx);
 
                         model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                     }
 
-                    if (this.secConfig.getSecurityConfig().getSmsResetEnabled())
+                    if (this.appConfig.getIsSmsEnabled())
                     {
                         // send an sms code
-                        EmailMessage smsMessage = new EmailMessage();
-                        smsMessage.setIsAlert(true); // set this to alert so it shows as high priority
-                        smsMessage.setMessageBody(resetRes.getSmsCode());
-                        smsMessage.setMessageTo(new ArrayList<String>(Arrays.asList(responseAccount.getPagerNumber())));
-                        smsMessage.setEmailAddr(new ArrayList<String>(Arrays.asList(this.appConfig.getEmailAddress())));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("EmailMessage: {}", smsMessage);
-                        }
-
                         try
                         {
-                            EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), smsMessage, true);
+                        	SimpleMailMessage emailMessage = new SimpleMailMessage();
+                        	emailMessage.setTo(userAccount.getPagerNumber());
+                        	emailMessage.setText(resetRes.getSmsCode());
+
+                        	if (DEBUG)
+                        	{
+                        		DEBUGGER.debug("SimpleMailMessage: {}", emailMessage);
+                        	}
+
+                        	mailSender.send(emailMessage);
                         }
-                        catch (final MessagingException mx)
+                        catch (final MailException mx)
                         {
                             ERROR_RECORDER.error(mx.getMessage(), mx);
 

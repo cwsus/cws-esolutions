@@ -24,6 +24,23 @@
         <property name="jndiName" value="java:comp/env/jdbc/esolutions" />
     </bean>
 
+	<!-- email -->
+	<bean id="appMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+    	<!-- SMTP settings -->
+    	<property name="host" value="smtp.gmail.com" />
+    	<property name="port" value="587" />
+    	<property name="username" value="kmhuntly@gmail.com" />
+	    <property name="password" value="my-password" />
+ 
+    	<property name="javaMailProperties">
+        	<props>
+    	        <prop key="mail.transport.protocol">smtp</prop>
+	            <prop key="mail.smtp.auth">true</prop>
+            	<prop key="mail.smtp.starttls.enable">true</prop>
+        	</props>
+    	</property>
+	</bean>
+
     <bean id="messageValidator" class="com.cws.esolutions.web.validators.EmailMessageValidator">
         <property name="messageSubjectRequired" value="theme.subject.required" />
         <property name="messageBodyRequired" value="theme.body.required" />
@@ -33,9 +50,6 @@
     <bean id="addressValidator" class="com.cws.esolutions.web.validators.EmailAddressValidator">
         <property name="messageEmailAddressRequired" value="email.source.addr.required" />
     </bean>
-
-    <bean id="secConfig" class="com.cws.esolutions.security.config.xml.SecurityConfigurationData" />
-    <bean id="coreConfig" class="com.cws.esolutions.core.config.xml.CoreConfigurationData" />
 
     <!-- application configuration -->
     <bean id="appConfig" class="com.cws.esolutions.web.ApplicationServiceBean" scope="application">
@@ -51,6 +65,7 @@
         <property name="requestTimeout" value="10" /> <!-- timeout value (primarily for connections) -->
         <property name="dateFormat" value="MM/dd/yyyy hh:mm" /> <!-- date format (displayed on jsp's) -->
         <property name="emailAddress" value="esolutions@caspersbox.com" />
+        <property name="isSmsEnabled" value="true" />
         <!-- enable/disable services. true for on, false for off -->
         <property name="services">
             <map>

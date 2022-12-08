@@ -27,18 +27,17 @@ package com.cws.esolutions.web.controllers;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
-import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import org.slf4j.LoggerFactory;
 import org.springframework.ui.Model;
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.mail.MailException;
 import org.springframework.stereotype.Controller;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.validation.BindingResult;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,12 +45,10 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.web.validators.EmailMessageValidator;
-import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 /**
  * @author cws-khuntly
  * @version 1.0
@@ -62,7 +59,7 @@ import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 public class CommonController
 {
     private String homePage = null;
-    private CoreConfigurationData coreConfig = null;
+    private JavaMailSender mailSender = null;
     private ApplicationServiceBean appConfig = null;
     private SimpleMailMessage contactResponseEmail = null;
 
@@ -85,9 +82,9 @@ public class CommonController
         this.appConfig = value;
     }
 
-    public final void setCoreConfig(final CoreConfigurationData value)
+    public final void setMailSender(final JavaMailSender value)
     {
-        final String methodName = CommonController.CNAME + "#setCoreConfig(final CoreConfigurationData value)";
+        final String methodName = CommonController.CNAME + "#setMailSender(final JavaMailSender value)";
 
         if (DEBUG)
         {
@@ -95,7 +92,7 @@ public class CommonController
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.coreConfig = value;
+        this.mailSender = value;
     }
 
     public final void setHomePage(final String value)
@@ -390,24 +387,30 @@ public class CommonController
 
         try
         {
-            EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), message, true);
+        	SimpleMailMessage emailMessage = new SimpleMailMessage();
+        	emailMessage.setTo(message.getEmailAddr().get(0));
+        	emailMessage.setSubject(message.getMessageSubject());
+        	emailMessage.setText(message.getMessageBody());
 
-            EmailMessage autoResponse = new EmailMessage();
-            autoResponse.setIsAlert(false);
-            autoResponse.setMessageSubject(this.contactResponseEmail.getSubject());
-            autoResponse.setMessageTo(new ArrayList<String>(Arrays.asList(String.format(this.contactResponseEmail.getTo()[0], message.getEmailAddr().get(0)))));
-            autoResponse.setEmailAddr(new ArrayList<String>(Arrays.asList(String.format(this.contactResponseEmail.getFrom()))));
-            autoResponse.setMessageBody(String.format(
-                this.contactResponseEmail.getText(),
-                message.getEmailAddr(),
-                message.getMessageBody()));
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("SimpleMailMessage: {}", emailMessage);
+        	}
+
+        	mailSender.send(emailMessage);
+
+        	SimpleMailMessage autoResponse = new SimpleMailMessage();
+        	autoResponse.setReplyTo(this.contactResponseEmail.getFrom());
+        	autoResponse.setTo(this.contactResponseEmail.getTo()[0]);
+        	autoResponse.setSubject(this.contactResponseEmail.getSubject());
+        	autoResponse.setText(message.getMessageBody());
 
             if (DEBUG)
             {
                 DEBUGGER.debug("EmailMessage: {}", autoResponse);
             }
 
-            EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), autoResponse, true);
+            mailSender.send(autoResponse);
 
             model.addAttribute("serviceEmail", this.appConfig.getEmailAddress());
             model.addAttribute(Constants.COMMAND, new EmailMessage());
@@ -415,7 +418,7 @@ public class CommonController
             
             return this.appConfig.getContactAdminsRedirect();
         }
-        catch (final MessagingException mx)
+        catch (final MailException mx)
         {
             ERROR_RECORDER.error(mx.getMessage(), mx);
 

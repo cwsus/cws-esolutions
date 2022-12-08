@@ -35,7 +35,6 @@ import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
 
 import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 import com.cws.esolutions.security.processors.dto.AccountChangeData;
 /**
  * @author cws-khuntly
@@ -44,9 +43,10 @@ import com.cws.esolutions.security.processors.dto.AccountChangeData;
  */
 public class PasswordValidator implements Validator
 {
+	private int passwordMinLength = 8; // default
+	private int passwordMaxLength = 128; // default
     private String messagePasswordMatch = null;
     private String messageNewPasswordRequired = null;
-    private SecurityConfigurationData secConfig = null;
     private String messageConfirmPasswordRequired = null;
     private String messageCurrentPasswordRequired = null;
     private String messagePasswordFailedValidation = null;
@@ -56,9 +56,9 @@ public class PasswordValidator implements Validator
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
-    public final void setSecConfig(final SecurityConfigurationData value)
+    public final void setPasswordMinLength(final int value)
     {
-        final String methodName = PasswordValidator.CNAME + "#setSecConfig(final SecurityConfigurationData value)";
+        final String methodName = PasswordValidator.CNAME + "#setPasswordMinLength(final int value)";
 
         if (DEBUG)
         {
@@ -66,7 +66,20 @@ public class PasswordValidator implements Validator
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.secConfig = value;
+        this.passwordMinLength = value;
+    }
+
+    public final void setPasswordMaxLength(final int value)
+    {
+        final String methodName = PasswordValidator.CNAME + "#setPasswordMaxLength(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.passwordMaxLength = value;
     }
 
     public final void setMessageCurrentPasswordRequired(final String value)
@@ -167,8 +180,8 @@ public class PasswordValidator implements Validator
         final AccountChangeData changeReq = (AccountChangeData) target;
         final String newPassword = changeReq.getNewPassword();
         final String existingPassword = changeReq.getCurrentPassword();
-        final int minLength = (this.secConfig.getSecurityConfig().getPasswordMinLength() >= 8) ? this.secConfig.getSecurityConfig().getPasswordMinLength() : 8;
-        final int maxLength = (this.secConfig.getSecurityConfig().getPasswordMaxLength() <= 128) ? this.secConfig.getSecurityConfig().getPasswordMaxLength() : 128;
+        final int minLength = this.passwordMinLength;
+        final int maxLength = this.passwordMaxLength;
         final Pattern pattern = Pattern.compile("((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~`!@#\\$%\\^\\&\\*()\\_\\-\\+\\=\\{\\}\\[\\]\\/|'\";:.,<>?]).{" + minLength + "," + maxLength + "})");
 
         if (DEBUG)

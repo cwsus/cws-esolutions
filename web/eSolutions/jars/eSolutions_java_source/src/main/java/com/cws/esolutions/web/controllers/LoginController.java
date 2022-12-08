@@ -158,7 +158,7 @@ public class LoginController
     @RequestMapping(value = {"default", "login"}, method = RequestMethod.GET)
     public final String showDefaultPage(final Model model)
     {
-        final String methodName = LoginController.CNAME + "#showLoginPage(final Model model)";
+    	final String methodName = LoginController.CNAME + "#showLoginPage(final Model model)";
 
         if (DEBUG)
         {
@@ -365,7 +365,7 @@ public class LoginController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
-        final IAuthenticationProcessor authProcessor = new AuthenticationProcessorImpl();
+        final IAuthenticationProcessor authProcessor = (IAuthenticationProcessor) new AuthenticationProcessorImpl();
 
         if (DEBUG)
         {

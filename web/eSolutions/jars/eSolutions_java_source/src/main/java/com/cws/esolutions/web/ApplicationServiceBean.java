@@ -51,6 +51,7 @@ public class ApplicationServiceBean implements Serializable
     private String emailAddress = null;
     private String logonRedirect = null;
     private String applicationId = null;
+    private boolean isSmsEnabled = false;
     private String expiredRedirect = null;
     private String applicationName = null;
     private String unavailablePage = null;
@@ -470,6 +471,19 @@ public class ApplicationServiceBean implements Serializable
         this.emailValidator = value;
     }
 
+    public final void setIsSmsEnabled(final boolean value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setIsSmsEnabled(final boolean value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.isSmsEnabled = value;
+    }
+
     public final String getFileEncoding()
     {
         final String methodName = ApplicationServiceBean.CNAME + "#getFileEncoding()";
@@ -859,6 +873,19 @@ public class ApplicationServiceBean implements Serializable
 
         return this.expiredRedirect;
     }
+
+	public final boolean getIsSmsEnabled()
+	{
+        final String methodName = ApplicationServiceBean.CNAME + "#getIsSmsEnabled()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.isSmsEnabled);
+        }
+
+        return this.isSmsEnabled;
+	}
 
     @Override
     public final String toString()

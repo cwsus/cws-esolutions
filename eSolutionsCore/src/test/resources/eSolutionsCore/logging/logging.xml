@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE log4j:configuration SYSTEM "./log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
-    <appender name="esolutionssvc-error" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${ESOLUTIONS_LOG_ROOT}/esolutionssvc-error.log" />
+    <appender name="eSolutionsCore-error" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${ESOLUTIONS_LOG_ROOT}/eSolutionsCore-error.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread: %t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
         </layout>
     </appender>
-    <appender name="esolutionssvc-debug" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${ESOLUTIONS_LOG_ROOT}/esolutionssvc-debug.log" />
+    <appender name="eSolutionsCore-debug" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${ESOLUTIONS_LOG_ROOT}/eSolutionsCore-debug.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
         <param name="Threshold" value="DEBUG" />
         <layout class="org.apache.log4j.PatternLayout">
@@ -51,6 +51,13 @@
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread: %t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
         </layout>
     </appender>
+    <appender name="jsch" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${ESOLUTIONS_LOG_ROOT}/jsch.log" />
+        <param name="DatePattern" value="'.'yy-MM-dd" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread: %t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
+        </layout>
+    </appender>
     <appender name="xbill" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="${ESOLUTIONS_LOG_ROOT}/xbill.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
@@ -61,11 +68,11 @@
 
     <category name="ERROR_RECORDER.com.cws.esolutions.core" additivity="false">
         <priority value="ERROR" />
-        <appender-ref ref="esolutionssvc-error" />
+        <appender-ref ref="eSolutionsCore-error" />
     </category>
     <category name="CORE_DEBUGGER" additivity="false">
         <priority value="DEBUG" />
-        <appender-ref ref="esolutionssvc-debug" />
+        <appender-ref ref="eSolutionsCore-debug" />
     </category>
 
     <!-- third-party loggers -->
@@ -92,6 +99,10 @@
     <category name="com.sshtools.j2ssh" additivity="false">
         <priority value="DEBUG" />
         <appender-ref ref="j2ssh" />
+    </category>
+    <category name="com.jcraft.jsch" additivity="false">
+        <priority value="DEBUG" />
+        <appender-ref ref="jsch" />
     </category>
     <!-- xbill -->
     <category name="org.xbill" additivity="false">

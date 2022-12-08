@@ -21,12 +21,6 @@
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
-        <property name="secConfig">
-            <ref bean="secConfig" />
-        </property>
-        <property name="coreConfig">
-            <ref bean="coreConfig" />
-        </property>
         <property name="validator">
             <ref bean="onlineResetValidator" />
         </property>

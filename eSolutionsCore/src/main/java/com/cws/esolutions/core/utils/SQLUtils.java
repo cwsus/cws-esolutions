@@ -384,7 +384,6 @@ public class SQLUtils
                     stmt.setObject(key, params.get(key));
                 }
             }
-            System.out.println(stmt);
 
             if (DEBUG)
             {

@@ -72,7 +72,6 @@ public class PasswordUtilsTest
         			bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
         			bean.getConfigData().getSystemConfig().getEncoding());
 
-        	System.out.println(encr);
         	Assertions.assertThat(encr).isNotEmpty();
 
         	String decr = PasswordUtils.decryptText(encr, salt, bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(), bean.getConfigData().getSecurityConfig().getIterations(),

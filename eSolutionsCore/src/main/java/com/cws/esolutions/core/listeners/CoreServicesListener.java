@@ -74,7 +74,7 @@ public class CoreServicesListener implements ServletContextListener
             {
             	if (StringUtils.isEmpty(sContext.getInitParameter(CoreServicesListener.INIT_SYSLOGGING_FILE)))
                 {
-                    System.err.println("Logging configuration not found. No logging enabled !");
+                    System.err.println("eSolutionsCore: Logging configuration not found. No logging enabled !");
                 }
                 else
                 {
@@ -87,17 +87,18 @@ public class CoreServicesListener implements ServletContextListener
                 }
                 else
                 {
-                    throw new CoreServicesException("System configuration file location not provided by application. Cannot continue.");
+                    throw new CoreServicesException("eSolutionsCore: System configuration file location not provided by application. Cannot continue.");
                 }
 
                 if (xmlURL != null)
                 {
+                	System.out.println("eSolutionsCore: xmlURL provided was valid and found, continuing configuration");
+
                     // set the app configuration
                     context = JAXBContext.newInstance(CoreConfigurationData.class);
                     marshaller = context.createUnmarshaller();
                     configData = (CoreConfigurationData) marshaller.unmarshal(xmlURL);
-
-                    CoreServicesListener.appBean.setConfigData(configData);
+                    appBean.setConfigData(configData);
 
                     // set up the resource connections
                     Context initContext = new InitialContext();
@@ -108,12 +109,16 @@ public class CoreServicesListener implements ServletContextListener
                         dsMap.put(mgr.getDsName(), (DataSource) initContext.lookup(mgr.getDataSource()));
                     }
 
-                    CoreServicesListener.appBean.setDataSources(dsMap);
+                    appBean.setDataSources(dsMap);
+                }
+                else
+                {
+                    throw new CoreServicesException("eSolutionsCore: Unable to load configuration. Cannot continue.");
                 }
             }
             else
             {
-                throw new CoreServicesException("Failed to load servlet context");
+                throw new CoreServicesException("eSolutionsCore: Failed to load servlet context!");
             }
         }
         catch (final NamingException nx)

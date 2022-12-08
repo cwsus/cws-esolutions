@@ -29,7 +29,9 @@
     <security-config />
 
     <mail-config>
+    	<mailFrom>esolutions@caspersbox.com</mailFrom>
         <propertyFile>eSolutionsCore/mail/MailConfig.properties</propertyFile>
+        <dataSourceName>mail/MailSession</dataSourceName>
     </mail-config>
 
     <!-- how do we talk to the agent? -->

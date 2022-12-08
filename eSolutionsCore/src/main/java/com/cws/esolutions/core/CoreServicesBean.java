@@ -28,6 +28,7 @@ package com.cws.esolutions.core;
 import java.util.Map;
 import org.slf4j.Logger;
 import javax.sql.DataSource;
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +37,7 @@ import com.cws.esolutions.core.config.xml.CoreConfigurationData;
  * @author cws-khuntly
  * @version 1.0
  */
-public class CoreServicesBean
+public class CoreServicesBean implements Serializable
 {
     private String osType = null;
     private String hostName = null;
@@ -45,6 +46,7 @@ public class CoreServicesBean
 
     private static CoreServicesBean instance = null;
 
+    private static final long serialVersionUID = -246438369655482396L;
     private static final String CNAME = CoreServicesBean.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);

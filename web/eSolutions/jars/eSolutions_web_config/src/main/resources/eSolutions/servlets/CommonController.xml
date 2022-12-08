@@ -15,8 +15,8 @@
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
-        <property name="coreConfig">
-            <ref bean="coreConfig" />
+        <property name="mailSender">
+        	<ref bean="appMailSender" />
         </property>
         <property name="homePage" value="/jsp/html/en/CommonLandingPage" />
         <property name="contactResponseEmail" ref="contactResponseEmail" />

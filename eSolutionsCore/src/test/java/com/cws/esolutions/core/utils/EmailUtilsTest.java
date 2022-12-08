@@ -38,11 +38,13 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.assertj.core.api.Assertions;
 import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.TestInstance;
 
 import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.core.listeners.CoreServicesInitializer;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class EmailUtilsTest
 {
     private static final CoreServicesBean bean = CoreServicesBean.getInstance();

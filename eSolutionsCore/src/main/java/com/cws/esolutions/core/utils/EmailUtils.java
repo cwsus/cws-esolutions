@@ -71,7 +71,6 @@ import com.cws.esolutions.core.utils.dto.EmailMessage;
  */
 public final class EmailUtils
 {
-    private static final String INIT_DS_CONTEXT = "java:comp/env/";
     private static final String CNAME = EmailUtils.class.getName();
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
@@ -170,6 +169,11 @@ public final class EmailUtils
                 if (initContext != null)
                 {
                     mailSession = (Session) initContext.lookup(mailConfig.getDataSourceName());
+
+                    if (mailSession == null)
+                    {
+                    	throw new MessagingException("Failed to obtain a mail session from the container.");
+                    }
                 }
             }
             else
@@ -222,7 +226,11 @@ public final class EmailUtils
                 throw new MessagingException("Unable to configure email services");
             }
 
-            mailSession.setDebug(DEBUG);
+            if (DEBUG)
+            {
+            	mailSession.setDebug(DEBUG);	
+            }
+
             MimeMessage mailMessage = new MimeMessage(mailSession);
 
             // Our emailList parameter should contain the following
