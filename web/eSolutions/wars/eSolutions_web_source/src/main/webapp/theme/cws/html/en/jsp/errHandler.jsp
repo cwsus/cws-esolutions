@@ -41,6 +41,9 @@
     <h1><spring:message code="theme.error.system.failure" /></h1>
     <p>
         <spring:message code="theme.system.service.failure" />
+        <pre>
+        	<%= exception.getMessage() %>
+        </pre>
     </p>
 </div>
 

@@ -60,7 +60,7 @@ import com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor
  * @see org.springframework.stereotype.Controller
  */
 @Controller
-@RequestMapping("/dns-service")
+@RequestMapping("dns-service")
 public class DNSServiceController
 {
     private String serviceId = null;
@@ -189,7 +189,7 @@ public class DNSServiceController
     	this.messageNoSearchResults = value;
     }
 
-    @RequestMapping(value = {"/default", "/lookup"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"default", "lookup", "search"}, method = RequestMethod.GET)
     public final String showDefaultPage(final Model model)
     {
         final String methodName = DNSServiceController.CNAME + "#showLookupPage(final Model model)";
@@ -262,7 +262,7 @@ public class DNSServiceController
         return this.lookupPage;
     }
 
-    @RequestMapping(value = "/search", method = RequestMethod.POST)
+    @RequestMapping(value = "search", method = RequestMethod.POST)
     public final String submitLookup(@ModelAttribute("entry") final SearchRequest request, final BindingResult bindResult, final Model model)
     {
         final String methodName = DNSServiceController.CNAME + "#submitLookup(@ModelAttribute(\"entry\") final SearchRequest request, final BindingResult bindResult)";
@@ -418,11 +418,6 @@ public class DNSServiceController
             return this.appConfig.getErrorResponsePage();
         }
 
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", model);
-        }
- 
         return responsePage;
     }
 }

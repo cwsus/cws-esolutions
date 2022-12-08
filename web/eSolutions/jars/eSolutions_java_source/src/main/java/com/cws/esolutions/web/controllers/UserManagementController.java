@@ -95,7 +95,6 @@ public class UserManagementController
     private String messageAccountUnlockSuccess = null;
     private String messageAccountSuspendSuccess = null;
     private String messageAccountUnsuspendSuccess = null;
-    private SimpleMailMessage accountCreatedEmail = null;
     private SimpleMailMessage forgotPasswordEmail = null;
 
     private static final String CNAME = UserManagementController.class.getName();
@@ -324,19 +323,6 @@ public class UserManagementController
         }
 
         this.resetURL = value;
-    }
-
-    public final void setAccountCreatedEmail(final SimpleMailMessage value)
-    {
-        final String methodName = UserManagementController.CNAME + "#setAccountCreatedEmail(final SimpleMailMessage value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.accountCreatedEmail = value;
     }
 
     public final void setForgotPasswordEmail(final SimpleMailMessage value)

@@ -107,13 +107,13 @@
             <c:when test="${not empty dnsEntry}">
                 <spring:message code="dns.service.hostname" /> <a href="${dnsEntry.recordName}" title="${dnsEntry.recordName}">${dnsEntry.recordName}</a><br />
                 <spring:message code="dns.lookup.record.type" /> ${dnsEntry.recordType}<br />
-                <spring:message code="dns.lookup.record.address" /> ${dnsEntry.primaryAddress}<br />
+                <spring:message code="dns.lookup.record.address" /> ${dnsEntry.recordAddress}<br />
             </c:when>
             <c:when test="${not empty dnsEntries}">
                 <c:forEach var="dnsEntry" items="${dnsEntries}">
                     <spring:message code="dns.service.hostname" /> <a href="${dnsEntry.recordName}" title="${dnsEntry.recordName}">${dnsEntry.recordName}</a><br />
                     <spring:message code="dns.lookup.record.type" /> ${dnsEntry.recordType}<br />
-                    <spring:message code="dns.lookup.record.address" /> ${dnsEntry.primaryAddress}<br />
+                    <spring:message code="dns.lookup.record.address" /> ${dnsEntry.recordAddress}<br />
                     <br />
                 </c:forEach>
             </c:when>
