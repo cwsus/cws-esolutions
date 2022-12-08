@@ -29,7 +29,7 @@
     	<!-- SMTP settings -->
     	<property name="host" value="smtp.gmail.com" />
     	<property name="port" value="587" />
-    	<property name="username" value="kmhuntly@gmail.com" />
+    	<property name="username" value="my-email" />
 	    <property name="password" value="my-password" />
  
     	<property name="javaMailProperties">

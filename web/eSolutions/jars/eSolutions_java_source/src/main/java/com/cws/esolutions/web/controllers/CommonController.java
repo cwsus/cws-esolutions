@@ -55,7 +55,7 @@ import com.cws.esolutions.web.validators.EmailMessageValidator;
  * @see org.springframework.stereotype.Controller
  */
 @Controller
-@RequestMapping("/common")
+@RequestMapping("common")
 public class CommonController
 {
     private String homePage = null;
@@ -121,7 +121,7 @@ public class CommonController
         this.contactResponseEmail = value;
     }
 
-    @RequestMapping(value = "/default", method = RequestMethod.GET)
+    @RequestMapping(value = "default", method = RequestMethod.GET)
     public final String showDefaultPage(final Model model)
     {
         final String methodName = CommonController.CNAME + "#showDefaultPage(final Model model)";
@@ -187,68 +187,7 @@ public class CommonController
         return this.homePage;
     }
 
-    @RequestMapping(value = "/unauthorized", method = RequestMethod.GET)
-    public final String showUnauthorizedPage(final Model model)
-    {
-        final String methodName = CommonController.CNAME + "#showUnauthorizedPage(final Model model)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Model: {}", model);
-        }
-
-        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        final HttpServletRequest hRequest = requestAttributes.getRequest();
-        final HttpSession hSession = hRequest.getSession();
-        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
-            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
-            DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("Session ID: {}", hSession.getId());
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-
-            DEBUGGER.debug("Dumping session content:");
-            Enumeration<?> sessionEnumeration = hSession.getAttributeNames();
-
-            while (sessionEnumeration.hasMoreElements())
-            {
-                String element = (String) sessionEnumeration.nextElement();
-                Object value = hSession.getAttribute(element);
-
-                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
-            }
-
-            DEBUGGER.debug("Dumping request content:");
-            Enumeration<?> requestEnumeration = hRequest.getAttributeNames();
-
-            while (requestEnumeration.hasMoreElements())
-            {
-                String element = (String) requestEnumeration.nextElement();
-                Object value = hRequest.getAttribute(element);
-
-                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
-            }
-
-            DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<?> paramsEnumeration = hRequest.getParameterNames();
-
-            while (paramsEnumeration.hasMoreElements())
-            {
-                String element = (String) paramsEnumeration.nextElement();
-                Object value = hRequest.getParameter(element);
-
-                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
-            }
-        }
-
-        return this.appConfig.getUnauthorizedPage();
-    }
-
-    @RequestMapping(value = "/contact", method = RequestMethod.GET)
+    @RequestMapping(value = "contact", method = RequestMethod.GET)
     public final String showContactPage(final Model model)
     {
         final String methodName = CommonController.CNAME + "#showContactPage(final Model model)";
@@ -311,7 +250,7 @@ public class CommonController
         return this.appConfig.getContactAdminsPage();
     }
 
-    @RequestMapping(value = "/contact", method = RequestMethod.POST)
+    @RequestMapping(value = "contact", method = RequestMethod.POST)
     public final String doSubmitMessage(@ModelAttribute("message") final EmailMessage message, final Model model, final BindingResult bindResult)
     {
         final String methodName = CommonController.CNAME + "#doSubmitMessage(@ModelAttribute(\"message\") final EmailMessage message, final Model model, final BindingResult bindResult)";
@@ -378,9 +317,10 @@ public class CommonController
             // validation failed
             ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
 
+            model.addAttribute("serviceEmail", this.appConfig.getEmailAddress());
             model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
             model.addAttribute(Constants.BIND_RESULT, bindResult.getAllErrors());
-            model.addAttribute(Constants.COMMAND, message);
+            model.addAttribute(Constants.COMMAND, new EmailMessage()); //TODO
 
             return this.appConfig.getContactAdminsPage();
         }
@@ -422,6 +362,8 @@ public class CommonController
         {
             ERROR_RECORDER.error(mx.getMessage(), mx);
 
+            model.addAttribute("serviceEmail", this.appConfig.getEmailAddress());
+            model.addAttribute(Constants.COMMAND, new EmailMessage());
             model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
 
             return this.appConfig.getContactAdminsPage();
