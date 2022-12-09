@@ -28,6 +28,7 @@ package com.cws.esolutions.security.processors.impl;
 import java.util.List;
 import java.util.Date;
 import java.sql.Timestamp;
+import java.security.KeyPair;
 import java.sql.SQLException;
 import org.apache.commons.lang.StringUtils;
 
@@ -157,8 +158,9 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             userAccount.setOlrSetup((boolean) authObject.get(11)); // cwsisolrsetup
             userAccount.setOlrLocked((boolean) authObject.get(12)); // cwsisolrlocked
             userAccount.setAccepted((boolean) authObject.get(13)); // cwsistcaccepted
-            userAccount.setTelephoneNumber((String) authObject.get(14)); // telephoneNumber
-            userAccount.setPagerNumber((String) authObject.get(15)); // pager
+            userAccount.setUserKeys((KeyPair) authObject.get(14)); // cwspublickey
+            userAccount.setTelephoneNumber((String) authObject.get(15)); // telephoneNumber
+            userAccount.setPagerNumber((String) authObject.get(16)); // pager
 
             if (DEBUG)
             {
@@ -172,9 +174,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             // TODO
             if (StringUtils.isNotEmpty(returnedSalt))
             {
-                userAccount = new UserAccount();
-                userAccount.setGuid((String) authObject.get(0));
-                userAccount.setUsername((String) authObject.get(1));
                 userAccount.setStatus(LoginStatus.CONTINUE);
 
                 response.setRequestStatus(SecurityRequestStatus.SUCCESS);
