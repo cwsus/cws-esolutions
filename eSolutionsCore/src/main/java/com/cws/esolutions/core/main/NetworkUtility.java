@@ -38,7 +38,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.PosixParser;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.ParseException;
@@ -303,6 +303,7 @@ public final class NetworkUtility
 
                 // NetworkUtils.executeSshConnection(commandLine.getOptionValue("hostname"), commandList);
             }
+            /*
             else if (commandLine.hasOption("http"))
             {
                 if (!(commandLine.hasOption("hostname")) || (!(StringUtils.isBlank(commandLine.getOptionValue("hostname")))))
@@ -316,6 +317,7 @@ public final class NetworkUtility
 
                 NetworkUtils.executeHttpConnection(new URL(commandLine.getOptionValue("hostname")), commandLine.getOptionValue("method"));
             }
+            */
             else if (commandLine.hasOption("copyFiles"))
             {
                 if (!(commandLine.hasOption("hostname")) || (StringUtils.isBlank(commandLine.getOptionValue("hostname"))))
@@ -390,12 +392,6 @@ public final class NetworkUtility
             ERROR_RECORDER.error(csx.getMessage(), csx);
 
             System.err.println("An error occurred during processing: " + csx.getMessage());
-        }
-        catch (final MalformedURLException mux)
-        {
-            ERROR_RECORDER.error(mux.getMessage(), mux);
-
-            System.err.println("An error occurred during processing: " + mux.getMessage());
         }
     }
 }

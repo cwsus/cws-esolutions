@@ -42,6 +42,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@page import="com.cws.esolutions.security.enums.SecurityUserRole" %>
 
 <spring:htmlEscape defaultHtmlEscape="true" />
 
@@ -85,7 +86,7 @@
     
                 for (var x = 0; x < ignoreURIs.length; x++)
                 {
-                    if (documentURI != ignoreURIs[x])
+                    if (documentURI == ignoreURIs[x])
                     {
                         x++;
 
@@ -102,9 +103,11 @@
 
     <body>
         <div id="wrap">
+        	<%--
             <div id="header">
                 <h1 id="logo"><img src="/static/img/logo.gif" alt="CaspersBox Web Services" /></h1>
             </div>
+            --%>
 
             <div id="menu">
                 <ul>
@@ -135,14 +138,14 @@
                                     <spring:message code='theme.contact.us' /></a>
                             </li>
                         </c:if>
-                        <c:forEach var="role" items="${sessionScope.userAccount.groups}">
-                            <c:if test="${role eq 'USERADMIN' or role eq 'ADMIN' or role eq 'SITEADMIN'}">
-                                <li class="last">
-                                    <a href="${pageContext.request.contextPath}/ui/user-management/default" title="<spring:message code='theme.navbar.useradmin' />">
-                                        <spring:message code='theme.navbar.useradmin' /></a>
-                                </li>
-                            </c:if>
-                        </c:forEach>
+                        <c:set var="roleName" scope="page" value="${sessionScope.userAccount.userRole}" />
+
+                        <c:if test="${roleName eq SecurityUserRole.USER_ADMIN or roleName eq SecurityUserRole.ADMIN or roleName eq SecurityUserRole.SITE_ADMIN}">
+	                        <li class="last">
+                            	<a href="${pageContext.request.contextPath}/ui/user-management/default" title="<spring:message code='theme.navbar.useradmin' />">
+                                	<spring:message code='theme.navbar.useradmin' /></a>
+                            </li>
+                        </c:if>
                     </c:if>
                 </ul>
             </div>

@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.cws</groupId>
         <artifactId>cws</artifactId>
-        <version>4.10</version>
+        <version>5.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -22,16 +22,12 @@
     </scm>
 
     <properties>
-        <taglibs.version>1.1.2</taglibs.version>
-        <jstl.version>1.1.2</jstl.version>
-        <jsp-api.version>2.0</jsp-api.version>
-        <spring.version>5.2.3.RELEASE</spring.version>
+        <taglibs.version>1.2.5</taglibs.version>
+        <jstl.version>1.2</jstl.version>
+        <jsp-api.version>2.3.3</jsp-api.version>
+        <spring.version>5.3.24</spring.version>
         <eSolutionsCore.version>1.0-SNAPSHOT</eSolutionsCore.version>
         <eSolutionsSecurity.version>1.0-SNAPSHOT</eSolutionsSecurity.version>
-        <spnego.version>7</spnego.version>
-        <webservices-api.version>2.0.1</webservices-api.version>
-        <javax.annotation-api.version>1.3.2</javax.annotation-api.version>
-        <jaxb-api.version>2.3.1</jaxb-api.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -116,22 +112,22 @@
             </dependency>
             <!-- servlet/jstl -->
             <dependency>
-                <groupId>taglibs</groupId>
-                <artifactId>standard</artifactId>
+                <groupId>org.apache.taglibs</groupId>
+                <artifactId>taglibs-standard-impl</artifactId>
                 <version>${taglibs.version}</version>
                 <type>jar</type>
                 <scope>compile</scope>
             </dependency>
             <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>jstl</artifactId>
+                <groupId>javax.servlet.jsp.jstl</groupId>
+                <artifactId>jstl-api</artifactId>
                 <version>${jstl.version}</version>
                 <type>jar</type>
                 <scope>compile</scope>
             </dependency>
             <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>jsp-api</artifactId>
+                <groupId>javax.servlet.jsp</groupId>
+                <artifactId>javax.servlet.jsp-api</artifactId>
                 <version>${jsp-api.version}</version>
                 <type>jar</type>
                 <scope>compile</scope>
@@ -189,47 +185,6 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-web</artifactId>
-                <version>${spring.version}</version>
-                <type>jar</type>
-                <scope>compile</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-config</artifactId>
-                <version>${spring.version}</version>
-                <type>jar</type>
-                <scope>compile</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-			</dependency>
-			<!-- spnego -->
-            <dependency>
-                <groupId>net.sourceforge.spnego</groupId>
-                <artifactId>spnego</artifactId>
-                <version>${spnego.version}</version>
-                <type>jar</type>
-                <scope>compile</scope>
-            </dependency>
-			<dependency>
-			    <groupId>javax.xml.bind</groupId>
-			    <artifactId>jaxb-api</artifactId>
-			    <version>${jaxb-api.version}</version>
-			    <type>jar</type>
-			    <scope>compile</scope>
-			</dependency>
         </dependencies>
     </dependencyManagement>
 </project>

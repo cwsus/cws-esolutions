@@ -49,11 +49,6 @@
 				<spring:message code="theme.navbar.myaccount" /></a> |
 				<a href="${pageContext.request.contextPath}/ui/common/default"><spring:message code="theme.navbar.home" /></a>
 	        </c:if>
-
-            <br />
-            <a href="?lang=en"><img class="img-flag" src="/static/img/img_flag_england.gif" title="<spring:message code="theme.top-nav.switch.en" />" alt=""/></a> | 
-            <a href="?lang=es"><img class="img-flag" src="/static/img/img_flag_spain.gif" title="<spring:message code="theme.top-nav.switch.es" />" alt=""/></a> | 
-            <a href="?lang=fr"><img class="img-flag" src="/static/img/img_flag_france.gif" title="<spring:message code="theme.top-nav.switch.fr" />" alt=""/></a>
         </div>
     </div>
 </div>

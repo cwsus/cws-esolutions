@@ -33,7 +33,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.CallableStatement;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.utils.PasswordUtils;
@@ -80,7 +80,7 @@ public class SQLAuthenticator implements Authenticator
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL retrLogonData(?, ?)}");
+            stmt = sqlConn.prepareCall("{CALL retrLogonData(?, ?)}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, username); // guid
             stmt.setString(2, userGuid); // username
 
@@ -185,9 +185,8 @@ public class SQLAuthenticator implements Authenticator
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL getUserByAttribute(?, ?)}");
+            stmt = sqlConn.prepareCall("{CALL getUserByAttribute(?)}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, userName); // guid
-            stmt.setInt(2, 0); // count
 
             if (DEBUG)
             {
@@ -328,7 +327,7 @@ public class SQLAuthenticator implements Authenticator
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL getOtpSecret(?, ?)}");
+            stmt = sqlConn.prepareCall("{CALL getOtpSecret(?, ?)}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, userGuid); // guid
             stmt.setString(2, userName);
 
@@ -418,7 +417,7 @@ public class SQLAuthenticator implements Authenticator
             }
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL verifySecurityQuestions(?, ?, ?, ?)}");
+            stmt = sqlConn.prepareCall("{CALL verifySecurityQuestions(?, ?, ?, ?)}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, userGuid); // guid
             stmt.setString(2, userId);
             stmt.setString(3, attributes.get(0)); // username

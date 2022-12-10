@@ -31,12 +31,13 @@ import java.util.List;
 import org.slf4j.Logger;
 import java.util.Enumeration;
 import org.slf4j.LoggerFactory;
+import org.springframework.ui.Model;
 import javax.servlet.http.HttpSession;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Controller;
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
@@ -365,16 +366,14 @@ public class UserManagementController
     }
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
-    public final ModelAndView showDefaultPage()
+    public final String showDefaultPage(final Model model)
     {
-        final String methodName = UserManagementController.CNAME + "#showDefaultPage()";
+        final String methodName = UserManagementController.CNAME + "#showDefaultPage(final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -423,28 +422,25 @@ public class UserManagementController
             }
         }
 
+        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
+        {
+        	return this.appConfig.getLogonRedirect();
+        }
+
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
-        mView.addObject(Constants.COMMAND, new UserAccount());
-        mView.setViewName(this.searchUsersPage);
+        model.addAttribute(Constants.COMMAND, new UserAccount());
 
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
+        return this.searchUsersPage;
     }
 
     @RequestMapping(value = "/search/terms/{terms}/type/{type}/page/{page}", method = RequestMethod.GET)
-    public final ModelAndView showSearchPage(@PathVariable("terms") final String terms, @PathVariable("type") final String type, @PathVariable("page") final int page)
+    public final String showSearchPage(@PathVariable("terms") final String terms, @PathVariable("type") final String type, @PathVariable("page") final int page, final Model model)
     {
-        final String methodName = UserManagementController.CNAME + "#showSearchPage(@PathVariable(\"terms\") final String terms, @PathVariable(\"type\") final String type, @PathVariable(\"page\") final int page)";
+        final String methodName = UserManagementController.CNAME + "#showSearchPage(@PathVariable(\"terms\") final String terms, @PathVariable(\"type\") final String type, @PathVariable(\"page\") final int page, final Model model)";
 
         if (DEBUG)
         {
@@ -454,8 +450,6 @@ public class UserManagementController
             DEBUGGER.debug("Value: {}", page);
         }
 
-        ModelAndView mView = new ModelAndView();
-
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
@@ -503,11 +497,14 @@ public class UserManagementController
             }
         }
 
+        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
+        {
+        	return this.appConfig.getLogonRedirect();
+        }
+
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
         try
@@ -582,56 +579,48 @@ public class UserManagementController
                         DEBUGGER.debug("List<UserAccount> {}", userList);
                     }
 
-                    mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
-                    mView.addObject("page", page);
-                    mView.addObject(Constants.COMMAND, new UserAccount());
-                    mView.addObject("searchAccount", searchAccount);
-                    mView.addObject("searchResults", userList);
-                    mView.setViewName(this.searchUsersPage);
+                    model.addAttribute("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
+                    model.addAttribute("page", page);
+                    model.addAttribute(Constants.COMMAND, new UserAccount());
+                    model.addAttribute("searchAccount", searchAccount);
+                    model.addAttribute("searchResults", userList);
+
+                    return this.searchUsersPage;
                 }
                 else
                 {
-                    mView.addObject(Constants.COMMAND, new UserAccount());
-                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                	model.addAttribute(Constants.COMMAND, new UserAccount());
+                	model.addAttribute(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
                 }
 
-                mView.setViewName(this.searchUsersPage);
+                return this.searchUsersPage;
             }
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
+                return this.appConfig.getUnauthorizedPage();
             }
             else
             {
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+                return this.appConfig.getErrorResponsePage();
             }
         }
         catch (final AccountControlException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
     }
 
     @RequestMapping(value = "/add-user", method = RequestMethod.GET)
-    public final ModelAndView showAddUser()
+    public final String showAddUser(final Model model)
     {
-        final String methodName = UserManagementController.CNAME + "#showAddUser()";
+        final String methodName = UserManagementController.CNAME + "#showAddUser(final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -680,29 +669,26 @@ public class UserManagementController
             }
         }
 
+        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
+        {
+        	return this.appConfig.getLogonRedirect();
+        }
+
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
         // mView.addObject("roles", availableRoles);
-        mView.addObject(Constants.COMMAND, new UserAccount());
-        mView.setViewName(this.createUserPage);
+        model.addAttribute(Constants.COMMAND, new UserAccount());
 
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
+        return this.createUserPage;
     }
 
     @RequestMapping(value = "/view/account/{userGuid}", method = RequestMethod.GET)
-    public final ModelAndView showAccountData(@PathVariable("userGuid") final String userGuid)
+    public final String showAccountData(@PathVariable("userGuid") final String userGuid, final Model model)
     {
-        final String methodName = UserManagementController.CNAME + "#showAccountData(@PathVariable(\"userGuid\") final String userGuid)";
+        final String methodName = UserManagementController.CNAME + "#showAccountData(@PathVariable(\"userGuid\") final String userGuid, final Model model)";
 
         if (DEBUG)
         {
@@ -710,13 +696,11 @@ public class UserManagementController
             DEBUGGER.debug("userGuid: {}", userGuid);
         }
 
-        ModelAndView mView = new ModelAndView();
-
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAccountControlProcessor processor = new AccountControlProcessorImpl();
+        final IAccountControlProcessor processor = (IAccountControlProcessor) new AccountControlProcessorImpl();
 
         if (DEBUG)
         {
@@ -760,11 +744,14 @@ public class UserManagementController
             }
         }
 
+        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
+        {
+        	return this.appConfig.getLogonRedirect();
+        }
+
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
         try
@@ -813,46 +800,44 @@ public class UserManagementController
                 if (response.getUserAccount() != null)
                 {
                     // mView.addObject("userRoles", Role.values());
-                    mView.addObject("userAccount", response.getUserAccount());
-                    mView.setViewName(this.viewUserPage);
+                	model.addAttribute("userAccount", response.getUserAccount());
+
+                	return this.viewUserPage;
                 }
                 else
                 {
-                    mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageNoSearchResults());
-                    mView.setViewName(this.searchUsersPage);
+                	model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageNoSearchResults());
+
+                	return this.searchUsersPage;
                 }
             }
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
+                return this.appConfig.getUnauthorizedPage();
             }
             else
             {
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+                return this.appConfig.getErrorResponsePage();
             }
         }
         catch (final AccountControlException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        return mView;
     }
 
     @RequestMapping(value = "/audit/account/{userGuid}", method = RequestMethod.GET)
-    public final ModelAndView showAuditData(@PathVariable("userGuid") final String userGuid)
+    public final String showAuditData(@PathVariable("userGuid") final String userGuid, final Model model)
     {
-        final String methodName = UserManagementController.CNAME + "#showAuditData(@PathVariable(\"userGuid\") final String userGuid)";
+        final String methodName = UserManagementController.CNAME + "#showAuditData(@PathVariable(\"userGuid\") final String userGuid, final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", userGuid);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -902,11 +887,14 @@ public class UserManagementController
             }
         }
 
+        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
+        {
+        	return this.appConfig.getLogonRedirect();
+        }
+
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
         try
@@ -966,40 +954,38 @@ public class UserManagementController
 
                 if ((auditEntries != null) && (auditEntries.size() != 0))
                 {
-                    mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
-                    mView.addObject("page", 1);
-                    mView.addObject("auditEntries", auditEntries);
+                    model.addAttribute("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
+                    model.addAttribute("page", 1);
+                    model.addAttribute("auditEntries", auditEntries);
                 }
                 else
                 {
-                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                	model.addAttribute(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
                 }
 
-                mView.setViewName(this.viewAuditPage);
+                return this.viewAuditPage;
             }
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
+                return this.appConfig.getUnauthorizedPage();
             }
             else
             {
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+                return this.appConfig.getErrorResponsePage();
             }
         }
         catch (final AuditServiceException asx)
         {
             ERROR_RECORDER.error(asx.getMessage(), asx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        return mView;
     }
 
     @RequestMapping(value = "/audit/account/{userGuid}/page/{page}", method = RequestMethod.GET)
-    public final ModelAndView showAuditData(@PathVariable("userGuid") final String userGuid, @PathVariable("page") final int page)
+    public final String showAuditData(@PathVariable("userGuid") final String userGuid, @PathVariable("page") final int page, final Model model)
     {
-        final String methodName = UserManagementController.CNAME + "#showAuditData(@PathVariable(\"userGuid\") final String userGuid, @PathVariable(\"page\") final int page)";
+        final String methodName = UserManagementController.CNAME + "#showAuditData(@PathVariable(\"userGuid\") final String userGuid, @PathVariable(\"page\") final int page, final Model model)";
 
         if (DEBUG)
         {
@@ -1007,8 +993,6 @@ public class UserManagementController
             DEBUGGER.debug("Value: {}", userGuid);
             DEBUGGER.debug("Value: {}", page);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -1058,11 +1042,14 @@ public class UserManagementController
             }
         }
 
+        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
+        {
+        	return this.appConfig.getLogonRedirect();
+        }
+
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
         try
@@ -1123,48 +1110,44 @@ public class UserManagementController
 
                 if ((auditEntries != null) && (auditEntries.size() != 0))
                 {
-                    mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
-                    mView.addObject("page", page);
-                    mView.addObject("auditEntries", auditEntries);
+                    model.addAttribute("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
+                    model.addAttribute("page", page);
+                    model.addAttribute("auditEntries", auditEntries);
                 }
                 else
                 {
-                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                	model.addAttribute(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
                 }
 
-                mView.setViewName(this.viewAuditPage);
+                return this.viewAuditPage;
             }
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
+                return this.appConfig.getUnauthorizedPage();
             }
             else
             {
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+                return this.appConfig.getErrorResponsePage();
             }
         }
         catch (final AuditServiceException asx)
         {
             ERROR_RECORDER.error(asx.getMessage(), asx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        return mView;
     }
 
     @RequestMapping(value = "/lock/account/{userGuid}", method = RequestMethod.GET)
-    public final ModelAndView lockUserAccount(@PathVariable("userGuid") final String userGuid)
+    public final String lockUserAccount(@PathVariable("userGuid") final String userGuid, final Model model)
     {
-        final String methodName = UserManagementController.CNAME + "#lockUserAccount(@PathVariable(\"userGuid\") final String userGuid)";
+        final String methodName = UserManagementController.CNAME + "#lockUserAccount(@PathVariable(\"userGuid\") final String userGuid, final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", userGuid);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -1214,11 +1197,14 @@ public class UserManagementController
             }
         }
 
+        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
+        {
+        	return this.appConfig.getLogonRedirect();
+        }
+
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
         try
@@ -1263,41 +1249,38 @@ public class UserManagementController
 
             if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
             {
-                mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountLockSuccess);
-                mView.addObject("userAccount", response.getUserAccount());
-                mView.setViewName(this.viewUserPage);
+            	model.addAttribute(Constants.RESPONSE_MESSAGE, this.messageAccountLockSuccess);
+            	model.addAttribute("userAccount", response.getUserAccount());
+
+                return this.viewUserPage;
             }
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
+                return this.appConfig.getUnauthorizedPage();
             }
             else
             {
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+                return this.appConfig.getErrorResponsePage();
             }
         }
         catch (final AccountControlException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        return mView;
     }
 
     @RequestMapping(value = "/unlock/account/{userGuid}", method = RequestMethod.GET)
-    public final ModelAndView unlockUserAccount(@PathVariable("userGuid") final String userGuid)
+    public final String unlockUserAccount(@PathVariable("userGuid") final String userGuid, final Model model)
     {
-        final String methodName = UserManagementController.CNAME + "#unlockUserAccount(@PathVariable(\"userGuid\") final String userGuid)";
+        final String methodName = UserManagementController.CNAME + "#unlockUserAccount(@PathVariable(\"userGuid\") final String userGuid, final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", userGuid);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -1347,11 +1330,14 @@ public class UserManagementController
             }
         }
 
+        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
+        {
+        	return this.appConfig.getLogonRedirect();
+        }
+
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
         try
@@ -1396,41 +1382,38 @@ public class UserManagementController
 
             if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
             {
-                mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountUnlockSuccess);
-                mView.addObject("userAccount", response.getUserAccount());
-                mView.setViewName(this.viewUserPage);
+            	model.addAttribute(Constants.RESPONSE_MESSAGE, this.messageAccountUnlockSuccess);
+            	model.addAttribute("userAccount", response.getUserAccount());
+
+            	return this.viewUserPage;
             }
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
+                return this.appConfig.getUnauthorizedPage();
             }
             else
             {
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+                return this.appConfig.getErrorResponsePage();
             }
         }
         catch (final AccountControlException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        return mView;
     }
 
     @RequestMapping(value = "/suspend/account/{userGuid}", method = RequestMethod.GET)
-    public final ModelAndView suspendUserAccount(@PathVariable("userGuid") final String userGuid)
+    public final String suspendUserAccount(@PathVariable("userGuid") final String userGuid, final Model model)
     {
-        final String methodName = UserManagementController.CNAME + "#suspendUserAccount(@PathVariable(\"userGuid\") final String userGuid)";
+        final String methodName = UserManagementController.CNAME + "#suspendUserAccount(@PathVariable(\"userGuid\") final String userGuid, final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", userGuid);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -1480,11 +1463,14 @@ public class UserManagementController
             }
         }
 
+        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
+        {
+        	return this.appConfig.getLogonRedirect();
+        }
+
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
         try
@@ -1529,42 +1515,39 @@ public class UserManagementController
 
             if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
             {
-                mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountSuspendSuccess);
-                // mView.addObject("userRoles", Role.values());
-                mView.addObject("userAccount", response.getUserAccount());
-                mView.setViewName(this.viewUserPage);
+            	model.addAttribute(Constants.RESPONSE_MESSAGE, this.messageAccountSuspendSuccess);
+                // model.addAttribute("userRoles", Role.values());
+            	model.addAttribute("userAccount", response.getUserAccount());
+
+                return this.viewUserPage;
             }
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
+                return this.appConfig.getUnauthorizedPage();
             }
             else
             {
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+                return this.appConfig.getErrorResponsePage();
             }
         }
         catch (final AccountControlException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        return mView;
     }
 
     @RequestMapping(value = "/unsuspend/account/{userGuid}", method = RequestMethod.GET)
-    public final ModelAndView unsuspendUserAccount(@PathVariable("userGuid") final String userGuid)
+    public final String unsuspendUserAccount(@PathVariable("userGuid") final String userGuid, final Model model)
     {
-        final String methodName = UserManagementController.CNAME + "#unsuspendUserAccount(@PathVariable(\"userGuid\") final String userGuid)";
+        final String methodName = UserManagementController.CNAME + "#unsuspendUserAccount(@PathVariable(\"userGuid\") final String userGuid, final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", userGuid);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -1614,11 +1597,14 @@ public class UserManagementController
             }
         }
 
+        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
+        {
+        	return this.appConfig.getLogonRedirect();
+        }
+
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
         try
@@ -1663,46 +1649,38 @@ public class UserManagementController
 
             if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
             {
-                mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountUnsuspendSuccess);
-                mView.addObject("userAccount", response.getUserAccount());
-                mView.setViewName(this.viewUserPage);
+            	model.addAttribute(Constants.RESPONSE_MESSAGE, this.messageAccountUnsuspendSuccess);
+            	model.addAttribute("userAccount", response.getUserAccount());
+
+            	return this.viewUserPage;
             }
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
+                return this.appConfig.getUnauthorizedPage();
             }
             else
             {
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+                return this.appConfig.getErrorResponsePage();
             }
         }
         catch (final AccountControlException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
     }
 
     @RequestMapping(value = "/reset/account/{userGuid}", method = RequestMethod.GET)
-    public final ModelAndView resetUserAccount(@PathVariable("userGuid") final String userGuid)
+    public final String resetUserAccount(@PathVariable("userGuid") final String userGuid, final Model model)
     {
-        final String methodName = UserManagementController.CNAME + "#resetUserAccount(@PathVariable(\"userGuid\") final String userGuid)";
+        final String methodName = UserManagementController.CNAME + "#resetUserAccount(@PathVariable(\"userGuid\") final String userGuid, final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", userGuid);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -1752,11 +1730,14 @@ public class UserManagementController
             }
         }
 
+        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
+        {
+        	return this.appConfig.getLogonRedirect();
+        }
+
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
         try
@@ -1864,7 +1845,7 @@ public class UserManagementController
                     {
                         ERROR_RECORDER.error(mx.getMessage(), mx);
 
-                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
+                        model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                     }
 
                     if (this.appConfig.getIsSmsEnabled())
@@ -1887,53 +1868,47 @@ public class UserManagementController
                         {
                             ERROR_RECORDER.error(mx.getMessage(), mx);
 
-                            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
+                            model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                         }
                     }
 
-                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountResetSuccess);
-                    mView.addObject("userAccount", response.getUserAccount());
-                    mView.setViewName(this.viewUserPage);
+                    model.addAttribute(Constants.RESPONSE_MESSAGE, this.messageAccountResetSuccess);
+                    model.addAttribute("userAccount", response.getUserAccount());
+
+                    return this.viewUserPage;
                 }
                 else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
+                    return this.appConfig.getUnauthorizedPage();
                 }
                 else
                 {
                     // some failure occurred
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+                    return this.appConfig.getErrorResponsePage();
                 }
             }
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
+                return this.appConfig.getUnauthorizedPage();
             }
             else
             {
                 // some failure occurred
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+                return this.appConfig.getErrorResponsePage();
             }
         }
         catch (final AccountControlException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
     }
 
     @RequestMapping(value = "/change-role/account/{userGuid}/role/{role}", method = RequestMethod.GET)
-    public final ModelAndView changeUserRole(@PathVariable("userGuid") final String userGuid, @PathVariable("role") final String role)
+    public final String changeUserRole(@PathVariable("userGuid") final String userGuid, @PathVariable("role") final String role, final Model model)
     {
-        final String methodName = UserManagementController.CNAME + "#changeUserRole(@PathVariable(\"userGuid\") final String userGuid, @PathVariable(\"role\") final String role)";
+        final String methodName = UserManagementController.CNAME + "#changeUserRole(@PathVariable(\"userGuid\") final String userGuid, @PathVariable(\"role\") final String role, final Model model)";
 
         if (DEBUG)
         {
@@ -1941,8 +1916,6 @@ public class UserManagementController
             DEBUGGER.debug("Value: {}", userGuid);
             DEBUGGER.debug("Value: {}", role);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -1992,11 +1965,14 @@ public class UserManagementController
             }
         }
 
+        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
+        {
+        	return this.appConfig.getLogonRedirect();
+        }
+
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
         try
@@ -2041,33 +2017,32 @@ public class UserManagementController
 
             if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
             {
-                mView.addObject("userAccount", response.getUserAccount());
-                mView.addObject(Constants.RESPONSE_MESSAGE, this.messageRoleChangeSuccess);
-                mView.setViewName(this.viewUserPage);
+            	model.addAttribute("userAccount", response.getUserAccount());
+            	model.addAttribute(Constants.RESPONSE_MESSAGE, this.messageRoleChangeSuccess);
+
+            	return this.viewUserPage;
             }
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
+                return this.appConfig.getUnauthorizedPage();
             }
             else
             {
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+                return this.appConfig.getErrorResponsePage();
             }
         }
         catch (final AccountControlException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        return mView;
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
-    public final ModelAndView doSearchUsers(@ModelAttribute("request") final UserAccount request, final BindingResult bindResult)
+    public final String doSearchUsers(@ModelAttribute("request") final UserAccount request, final BindingResult bindResult, final Model model)
     {
-        final String methodName = UserManagementController.CNAME + "#doSearchUsers(@ModelAttribute(\"request\") final UserAccount request, final BindingResult bindResult)";
+        final String methodName = UserManagementController.CNAME + "#doSearchUsers(@ModelAttribute(\"request\") final UserAccount request, final BindingResult bindResult, final Model model)";
 
         if (DEBUG)
         {
@@ -2075,8 +2050,6 @@ public class UserManagementController
             DEBUGGER.debug("Value: {}", request);
             DEBUGGER.debug("Value: {}", bindResult);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -2125,11 +2098,14 @@ public class UserManagementController
             }
         }
 
+        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
+        {
+        	return this.appConfig.getLogonRedirect();
+        }
+
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
         try
@@ -2211,50 +2187,44 @@ public class UserManagementController
                         DEBUGGER.debug("List<UserAccount> {}", userList);
                     }
 
-                    mView.addObject("searchAccount", searchAccount);
-                    mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
-                    mView.addObject("page", 1);
-                    mView.addObject("searchType", searchType);
-                    mView.addObject(Constants.COMMAND, new UserAccount());
-                    mView.addObject("searchResults", userList);
-                    mView.setViewName(this.searchUsersPage);
+                    model.addAttribute("searchAccount", searchAccount);
+                    model.addAttribute("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
+                    model.addAttribute("page", 1);
+                    model.addAttribute("searchType", searchType);
+                    model.addAttribute(Constants.COMMAND, new UserAccount());
+                    model.addAttribute("searchResults", userList);
+
+                    return this.searchUsersPage;
                 }
                 else
                 {
-                    mView.addObject(Constants.COMMAND, new UserAccount());
-                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                	model.addAttribute(Constants.COMMAND, new UserAccount());
+                	model.addAttribute(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
                 }
 
-                mView.setViewName(this.searchUsersPage);
+                return this.searchUsersPage;
             }
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
+                return this.appConfig.getUnauthorizedPage();
             }
             else
             {
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+                return this.appConfig.getErrorResponsePage();
             }
         }
         catch (final AccountControlException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
     }
 
     @RequestMapping(value = "/add-user", method = RequestMethod.POST)
-    public final ModelAndView doAddUser(@ModelAttribute("user") final UserAccount user, final BindingResult bindResult)
+    public final String doAddUser(@ModelAttribute("user") final UserAccount user, final BindingResult bindResult, final Model model)
     {
-        final String methodName = UserManagementController.CNAME + "#doAddUser(@ModelAttribute(\"user\") final UserAccount user, final BindingResult bindResult)";
+        final String methodName = UserManagementController.CNAME + "#doAddUser(@ModelAttribute(\"user\") final UserAccount user, final BindingResult bindResult, final Model model)";
 
         if (DEBUG)
         {
@@ -2262,8 +2232,6 @@ public class UserManagementController
             DEBUGGER.debug("Value: {}", user);
             DEBUGGER.debug("Value: {}", bindResult);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -2312,11 +2280,14 @@ public class UserManagementController
             }
         }
 
+        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
+        {
+        	return this.appConfig.getLogonRedirect();
+        }
+
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
         this.validator.validate(user, bindResult);
@@ -2325,10 +2296,11 @@ public class UserManagementController
         {
             ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
 
-            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
-            mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
-            mView.addObject(Constants.COMMAND, user);
-            mView.setViewName(this.createUserPage);
+            model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+            model.addAttribute(Constants.BIND_RESULT, bindResult.getAllErrors());
+            model.addAttribute(Constants.COMMAND, user);
+
+            return this.createUserPage;
         }
 
         try
@@ -2467,7 +2439,7 @@ public class UserManagementController
                     {
                         ERROR_RECORDER.error(mx.getMessage(), mx);
 
-                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
+                        model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                     }
 
                     if (this.appConfig.getIsSmsEnabled())
@@ -2490,42 +2462,36 @@ public class UserManagementController
                         {
                             ERROR_RECORDER.error(mx.getMessage(), mx);
 
-                            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
+                            model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                         }
                     }
 
-                    mView = new ModelAndView(new RedirectView());
-                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAddUserSuccess);
-                    mView.setViewName(UserManagementController.ADD_USER_REDIRECT);
+                    model.addAttribute(Constants.RESPONSE_MESSAGE, this.messageAddUserSuccess);
+
+                    return UserManagementController.ADD_USER_REDIRECT;
                 }
                 else
                 {
                     // some failure occurred
-                    mView.addObject(Constants.ERROR_RESPONSE, this.messageAddUserFailed);
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
+                	model.addAttribute(Constants.ERROR_RESPONSE, this.messageAddUserFailed);
+
+                    return this.appConfig.getErrorResponsePage();
                 }
             }
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
+                return this.appConfig.getUnauthorizedPage();
             }
             else
             {
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+                return this.appConfig.getErrorResponsePage();
             }
         }
         catch (final AccountControlException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
     }
 }

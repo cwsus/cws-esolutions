@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.TestInstance;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Service;
@@ -45,6 +46,7 @@ import com.cws.esolutions.core.processors.dto.ApplicationManagementResponse;
 import com.cws.esolutions.core.processors.exception.ApplicationManagementException;
 import com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ApplicationManagementProcessorImplTest
 {
     private static UserAccount userAccount = new UserAccount();

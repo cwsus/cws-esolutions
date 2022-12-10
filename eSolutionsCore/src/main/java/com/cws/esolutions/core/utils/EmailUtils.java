@@ -55,7 +55,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.mail.Message.RecipientType;
 import javax.mail.PasswordAuthentication;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import javax.mail.internet.InternetAddress;
 
 import com.cws.esolutions.core.CoreServicesConstants;

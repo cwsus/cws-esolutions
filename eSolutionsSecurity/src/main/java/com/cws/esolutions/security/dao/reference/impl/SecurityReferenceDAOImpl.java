@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.sql.SQLException;
 import java.sql.CallableStatement;
 import java.sql.ResultSetMetaData;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
 /**
@@ -71,7 +71,7 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL retrApprovedServers()}");
+            stmt = sqlConn.prepareCall("{CALL retrApprovedServers()}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
             if (DEBUG)
             {
@@ -163,7 +163,7 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL retrieve_user_questions()}");
+            stmt = sqlConn.prepareCall("{CALL retrieve_user_questions()}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
             if (DEBUG)
             {
@@ -255,7 +255,7 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL retrAvailableServices()}");
+            stmt = sqlConn.prepareCall("{CALL retrAvailableServices()}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
             if (DEBUG)
             {
@@ -346,7 +346,7 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL listServicesForGroup(?)}");
+            stmt = sqlConn.prepareCall("{CALL listServicesForGroup(?)}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, groupName);
 
             if (DEBUG)

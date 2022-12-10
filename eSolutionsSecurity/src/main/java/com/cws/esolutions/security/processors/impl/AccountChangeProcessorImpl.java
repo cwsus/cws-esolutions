@@ -33,9 +33,9 @@ import net.glxn.qrgen.QRCode;
 import java.sql.SQLException;
 import java.io.ByteArrayOutputStream;
 import net.glxn.qrgen.image.ImageType;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.codec.binary.Base32;
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.utils.PasswordUtils;

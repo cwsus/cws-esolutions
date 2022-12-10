@@ -31,7 +31,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.ArrayList;
 import java.net.ConnectException;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import com.unboundid.ldap.sdk.Filter;
 import com.unboundid.ldap.sdk.Attribute;
 import com.unboundid.ldap.sdk.ResultCode;

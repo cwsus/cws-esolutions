@@ -27,11 +27,12 @@ package com.cws.esolutions.web.controllers;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
+import java.util.Objects;
 import java.util.Enumeration;
 import org.slf4j.LoggerFactory;
 import org.springframework.ui.Model;
 import javax.servlet.http.HttpSession;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -155,7 +156,7 @@ public class LoginController
         this.allowUserReset = value;
     }
 
-    @RequestMapping(value = {"default", "login"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"default", "login", "submit"}, method = RequestMethod.GET)
     public final String showDefaultPage(final Model model)
     {
     	final String methodName = LoginController.CNAME + "#showLoginPage(final Model model)";
@@ -264,6 +265,11 @@ public class LoginController
             }
         }
 
+        if (!(Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT))))
+        {
+        	return this.appConfig.getHomePage();
+        }
+
         model.addAttribute(this.allowUserReset);
         model.addAttribute(Constants.COMMAND, new LoginRequest());
 
@@ -333,6 +339,7 @@ public class LoginController
         hSession.removeAttribute(Constants.USER_ACCOUNT);
         hSession.invalidate();
 
+        model.addAttribute(Constants.ALLOW_RESET, this.allowUserReset);
         model.addAttribute(Constants.RESPONSE_MESSAGE, this.logoffCompleteString);
         model.addAttribute(Constants.COMMAND, new LoginRequest());
 
@@ -504,12 +511,10 @@ public class LoginController
                             }
                         case EXPIRED:
                             // password expired - redirect to change password page
-                            hSession.invalidate();
-
+                        	hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
                             model.addAttribute(Constants.RESPONSE_MESSAGE, this.appConfig.getMessagePasswordExpired());
-                            model.addAttribute(Constants.COMMAND, new LoginRequest());
 
-                            return this.loginPage;
+                            return "redirect:/user-account/password";
                         default:
                             // no dice (but its also an unspecified failure)
                             ERROR_RECORDER.error("An unspecified error occurred during authentication.");

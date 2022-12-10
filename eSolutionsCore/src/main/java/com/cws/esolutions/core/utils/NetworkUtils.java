@@ -47,7 +47,6 @@ import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.Session;
 import java.io.FileInputStream;
 import org.slf4j.LoggerFactory;
-import org.apache.http.HttpHost;
 import java.io.FileOutputStream;
 import java.net.SocketException;
 import java.io.InputStreamReader;
@@ -58,34 +57,31 @@ import java.net.InetSocketAddress;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.ChannelExec;
 import java.net.URISyntaxException;
+import org.apache.hc.core5.net.Host;
 import org.xbill.DNS.SimpleResolver;
 import java.util.concurrent.TimeUnit;
 import java.net.UnknownHostException;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
-import org.apache.http.auth.AuthScope;
 import org.apache.commons.io.FileUtils;
 import org.xbill.DNS.TextParseException;
-import org.apache.http.auth.NTCredentials;
-import org.apache.commons.lang.StringUtils;
+import org.apache.hc.core5.net.URIBuilder;
+import org.apache.hc.core5.util.Timeout;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.ftp.FTPClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.commons.httpclient.auth.AuthPolicy;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.commons.httpclient.params.HttpClientParams;
-import org.apache.http.impl.client.SystemDefaultCredentialsProvider;
+import org.apache.hc.client5.http.auth.AuthScope;
+import org.apache.hc.client5.http.auth.NTCredentials;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.auth.CredentialsProvider;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
+import org.apache.hc.client5.http.impl.auth.SystemDefaultCredentialsProvider;
 
 import com.cws.esolutions.core.CoreServicesBean;
-import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.config.xml.FTPConfig;
 import com.cws.esolutions.core.config.xml.SSHConfig;
+import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.config.xml.HTTPConfig;
 import com.cws.esolutions.core.config.xml.ProxyConfig;
 import com.cws.esolutions.security.SecurityServiceBean;
@@ -729,6 +725,7 @@ public final class NetworkUtils
      * @return A object containing the response data
      * @throws UtilityException {@link com.cws.esolutions.core.utils.exception.UtilityException} if an error occurs processing
      */
+    /*
     public static final synchronized Object executeHttpConnection(final URL hostName, final String methodType) throws UtilityException
     {
         final String methodName = NetworkUtils.CNAME + "#executeHttpConnection(final URL hostName, final String methodType) throws UtilityException";
@@ -745,14 +742,12 @@ public final class NetworkUtils
         CredentialsProvider credsProvider = null;
         CloseableHttpResponse httpResponse = null;
 
-        final HttpClientParams httpParams = new HttpClientParams();
         final HTTPConfig httpConfig = appBean.getConfigData().getHttpConfig();
         final ProxyConfig proxyConfig = appBean.getConfigData().getProxyConfig();
 
         if (DEBUG)
         {
             DEBUGGER.debug("HttpClient: {}", httpClient);
-            DEBUGGER.debug("HttpClientParams: {}", httpParams);
             DEBUGGER.debug("HTTPConfig: {}", httpConfig);
             DEBUGGER.debug("ProxyConfig: {}", proxyConfig);
         }
@@ -819,10 +814,9 @@ public final class NetworkUtils
                     }
 
                     requestConfig = RequestConfig.custom()
-                        .setConnectionRequestTimeout((int) TimeUnit.SECONDS.toMillis(httpConfig.getConnTimeout()))
-                        .setConnectTimeout((int) TimeUnit.SECONDS.toMillis(httpConfig.getConnTimeout()))
                         .setContentCompressionEnabled(Boolean.TRUE)
-                        .setProxy(new HttpHost(proxyConfig.getProxyServerName(), proxyConfig.getProxyServerPort()))
+                        .set
+                        .setProxy(new Host(proxyConfig.getProxyServerName(), proxyConfig.getProxyServerPort()))
                         .setProxyPreferredAuthSchemes(authList)
                         .build();
 
@@ -934,6 +928,7 @@ public final class NetworkUtils
             }
         }
     }
+    */
 
     /**
      * Creates an telnet connection to a target host and port number. Silently

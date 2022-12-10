@@ -45,7 +45,7 @@ import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.ExtendedResult;
 import com.unboundid.ldap.sdk.LDAPConnection;
 import java.security.GeneralSecurityException;
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 
 import com.unboundid.ldap.sdk.SimpleBindRequest;
 import com.unboundid.ldap.sdk.LDAPConnectionPool;
@@ -140,8 +140,7 @@ public final class DAOInitializer
 	                    LDAPConnection ldapConn = null;
 	                    LDAPConnectionPool connPool = null;
 	                    LDAPConnectionOptions connOpts = new LDAPConnectionOptions();
-	
-	                    connOpts.setAutoReconnect(true);
+
 	                    connOpts.setAbandonOnTimeout(true);
 	                    connOpts.setBindWithDNRequiresPassword(true);
 	                    connOpts.setConnectTimeoutMillis(Integer.parseInt(connProps.getProperty(DAOInitializer.CONN_TIMEOUT)));
@@ -311,7 +310,7 @@ public final class DAOInitializer
 	                case SQL:
 	                	BasicDataSource dataSource = new BasicDataSource();
 	                    dataSource.setInitialSize(Integer.parseInt(connProps.getProperty(DAOInitializer.MIN_CONNECTIONS)));
-	                    dataSource.setMaxActive(Integer.parseInt(connProps.getProperty(DAOInitializer.MAX_CONNECTIONS)));
+	                    dataSource.setMaxTotal(Integer.parseInt(connProps.getProperty(DAOInitializer.MAX_CONNECTIONS)));
 	                    dataSource.setDriverClassName(connProps.getProperty(DAOInitializer.CONN_DRIVER));
 	                    dataSource.setUrl(connProps.getProperty(DAOInitializer.REPOSITORY_HOST));
 	                    dataSource.setUsername(connProps.getProperty(DAOInitializer.REPOSITORY_USER));
@@ -391,7 +390,7 @@ public final class DAOInitializer
 
             	BasicDataSource dataSource = new BasicDataSource();
                 dataSource.setInitialSize(Integer.parseInt(connProps.getProperty(DAOInitializer.MIN_CONNECTIONS)));
-                dataSource.setMaxActive(Integer.parseInt(connProps.getProperty(DAOInitializer.MAX_CONNECTIONS)));
+                dataSource.setMaxTotal(Integer.parseInt(connProps.getProperty(DAOInitializer.MAX_CONNECTIONS)));
                 dataSource.setDriverClassName(connProps.getProperty(DAOInitializer.CONN_DRIVER));
                 dataSource.setUrl(connProps.getProperty(DAOInitializer.REPOSITORY_HOST));
                 dataSource.setUsername(connProps.getProperty(DAOInitializer.REPOSITORY_USER));

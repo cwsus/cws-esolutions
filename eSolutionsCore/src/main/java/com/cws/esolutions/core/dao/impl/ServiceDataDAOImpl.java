@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.CallableStatement;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.core.dao.interfaces.IServiceDataDAO;
 /**

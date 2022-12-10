@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.sql.CallableStatement;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cws.esolutions.web.dao.interfaces.IMessagingDAO;

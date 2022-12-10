@@ -30,7 +30,7 @@ import java.util.Date;
 import java.sql.Timestamp;
 import java.security.KeyPair;
 import java.sql.SQLException;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.utils.PasswordUtils;

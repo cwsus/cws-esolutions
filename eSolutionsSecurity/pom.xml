@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.cws</groupId>
         <artifactId>cws</artifactId>
-        <version>4.10</version>
+        <version>5.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -23,7 +23,8 @@
     <properties>
         <quartz.version>2.3.2</quartz.version>
         <qrgen.version>1.4</qrgen.version>
-        <bouncycastle.version>1.56</bouncycastle.version>
+        <bouncycastle.version>1.72</bouncycastle.version>
+        <commons-cli.version>1.5.0</commons-cli.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -84,14 +85,14 @@
         <!-- bouncycastle -->
         <dependency>
             <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
+            <artifactId>bcprov-jdk18on</artifactId>
             <version>${bouncycastle.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpkix-jdk15on</artifactId>
+            <artifactId>bcpkix-jdk18on</artifactId>
             <version>${bouncycastle.version}</version>
             <type>jar</type>
             <scope>compile</scope>

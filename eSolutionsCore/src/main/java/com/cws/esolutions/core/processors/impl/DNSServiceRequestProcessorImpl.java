@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import java.security.Security;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.core.utils.NetworkUtils;
 import com.cws.esolutions.security.dto.UserAccount;

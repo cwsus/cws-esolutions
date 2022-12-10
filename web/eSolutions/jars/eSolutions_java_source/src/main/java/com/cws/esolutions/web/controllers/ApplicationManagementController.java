@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.Arrays;
 import org.slf4j.Logger;
+import java.util.Objects;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.io.IOException;
@@ -39,12 +40,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.ui.Model;
 import org.apache.commons.io.IOUtils;
 import javax.servlet.http.HttpSession;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -80,7 +79,7 @@ import com.cws.esolutions.core.processors.interfaces.IApplicationManagementProce
  * @see org.springframework.stereotype.Controller
  */
 @Controller
-@RequestMapping("/application-management")
+@RequestMapping("application-management")
 public class ApplicationManagementController
 {
     private String serviceId = null;
@@ -343,17 +342,15 @@ public class ApplicationManagementController
         this.addApplicationRedirect = value;
     }
 
-    @RequestMapping(value = "/default", method = RequestMethod.GET)
-    public final ModelAndView showDefaultPage()
+    @RequestMapping(value = "default", method = RequestMethod.GET)
+    public final String showDefaultPage(final Model model)
     {
-        final String methodName = ApplicationManagementController.CNAME + "#showDefaultPage()";
+        final String methodName = ApplicationManagementController.CNAME + "#showDefaultPage(final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
         }
-
-        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -402,25 +399,22 @@ public class ApplicationManagementController
             }
         }
 
+        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
+        {
+        	return this.appConfig.getLogonRedirect();
+        }
+
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
-        mView.addObject(Constants.COMMAND, new SearchRequest());
-        mView.setViewName(this.defaultPage);
+        model.addAttribute(Constants.COMMAND, new SearchRequest());
 
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
+        return this.defaultPage;
     }
 
-    @RequestMapping(value = "/search/terms/{terms}/page/{page}", method = RequestMethod.GET)
+    @RequestMapping(value = "search/terms/{terms}/page/{page}", method = RequestMethod.GET)
     public final String showSearchPage(@PathVariable("terms") final String terms, @PathVariable("page") final int page, final Model model)
     {
         final String methodName = ApplicationManagementController.CNAME + "#showSearchPage(@PathVariable(\"terms\") final String terms, @PathVariable(\"page\") final int page, final Model model)";
@@ -437,7 +431,7 @@ public class ApplicationManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IApplicationManagementProcessor processor = new ApplicationManagementProcessorImpl();
+        final IApplicationManagementProcessor processor = (IApplicationManagementProcessor) new ApplicationManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -481,14 +475,14 @@ public class ApplicationManagementController
             }
         }
 
+        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
+        {
+        	return this.appConfig.getLogonRedirect();
+        }
+
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
             return this.appConfig.getUnavailablePage();
-        }
-
-        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
-        {
-        	return this.appConfig.getLogonRedirect();
         }
 
         try
@@ -560,23 +554,21 @@ public class ApplicationManagementController
         }
     }
 
-    @RequestMapping(value = "/list-applications", method = RequestMethod.GET)
-    public final ModelAndView doListApplications()
+    @RequestMapping(value = "list-applications", method = RequestMethod.GET)
+    public final String doListApplications(final Model model)
     {
-        final String methodName = ApplicationManagementController.CNAME + "#doListApplications()";
+        final String methodName = ApplicationManagementController.CNAME + "#doListApplications(final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
         }
 
-        ModelAndView mView = new ModelAndView();
-
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IApplicationManagementProcessor appMgr = new ApplicationManagementProcessorImpl();
+        final IApplicationManagementProcessor appMgr = (IApplicationManagementProcessor) new ApplicationManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -620,11 +612,14 @@ public class ApplicationManagementController
             }
         }
 
+        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
+        {
+        	return this.appConfig.getLogonRedirect();
+        }
+
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
         try
@@ -668,45 +663,40 @@ public class ApplicationManagementController
 
                 if ((applicationList != null) && (applicationList.size() != 0))
                 {
-                    mView.addObject("applicationList", applicationList);
-                    mView.setViewName(this.viewApplicationsPage);
+                	model.addAttribute("applicationList", applicationList);
+
+                	return this.viewApplicationsPage;
                 }
                 else
                 {
-                    mView.addObject(Constants.ERROR_MESSAGE, this.messageNoApplicationsFound);
-                    mView.setViewName(this.defaultPage);
+                    model.addAttribute(Constants.ERROR_MESSAGE, this.messageNoApplicationsFound);
+
+                    return this.defaultPage;
                 }
             }
             else if (appResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
+                return this.appConfig.getUnauthorizedPage();
             }
             else
             {
-                mView = new ModelAndView(new RedirectView());
-                mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                mView.setViewName(this.addApplicationRedirect);
+            	model.addAttribute(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+
+                return this.addApplicationRedirect;
             }
         }
         catch (final ApplicationManagementException amx)
         {
             ERROR_RECORDER.error(amx.getMessage(), amx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
     }
 
-    @RequestMapping(value = "/application/{request}", method = RequestMethod.GET)
-    public final ModelAndView showApplication(@PathVariable("request") final String request)
+    @RequestMapping(value = "application/{request}", method = RequestMethod.GET)
+    public final String showApplication(@PathVariable("request") final String request, final Model model)
     {
-        final String methodName = ApplicationManagementController.CNAME + "#showApplication(@PathVariable(\"request\") final String request)";
+        final String methodName = ApplicationManagementController.CNAME + "#showApplication(@PathVariable(\"request\") final String request, final Model model)";
 
         if (DEBUG)
         {
@@ -714,13 +704,11 @@ public class ApplicationManagementController
             DEBUGGER.debug("request: {}", request);
         }
 
-        ModelAndView mView = new ModelAndView();
-
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IApplicationManagementProcessor appMgr = new ApplicationManagementProcessorImpl();
+        final IApplicationManagementProcessor appMgr = (IApplicationManagementProcessor) new ApplicationManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -764,11 +752,14 @@ public class ApplicationManagementController
             }
         }
 
+        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
+        {
+        	return this.appConfig.getLogonRedirect();
+        }
+
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+        	return this.appConfig.getUnavailablePage();
         }
 
         try
@@ -820,51 +811,44 @@ public class ApplicationManagementController
                     DEBUGGER.debug("Application: {}", resApplication);
                 }
 
-                mView.addObject("application", resApplication);
-                mView.setViewName(this.viewAppPage);
+                model.addAttribute("application", resApplication);
+
+                return this.viewAppPage;
             }
             else if (appResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
+                return this.appConfig.getUnauthorizedPage();
             }
             else
             {
-                mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                mView.setViewName(this.defaultPage);
+                model.addAttribute(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+
+                return this.defaultPage;
             }
         }
         catch (final ApplicationManagementException amx)
         {
             ERROR_RECORDER.error(amx.getMessage(), amx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
     }
 
-    @RequestMapping(value = "/add-application", method = RequestMethod.GET)
-    public final ModelAndView showAddApplication()
+    @RequestMapping(value = "add-application", method = RequestMethod.GET)
+    public final String showAddApplication(final Model model)
     {
-        final String methodName = ApplicationManagementController.CNAME + "#showAddApplication()";
+        final String methodName = ApplicationManagementController.CNAME + "#showAddApplication(final Model model)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
         }
 
-        ModelAndView mView = new ModelAndView();
-
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IServiceManagementProcessor processor = new ServiceManagementProcessorImpl();
+        final IServiceManagementProcessor processor = (IServiceManagementProcessor) new ServiceManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -908,11 +892,14 @@ public class ApplicationManagementController
             }
         }
 
+        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
+        {
+        	return this.appConfig.getLogonRedirect();
+        }
+
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
         RequestHostInfo reqInfo = new RequestHostInfo();
@@ -982,40 +969,34 @@ public class ApplicationManagementController
                         DEBUGGER.debug("platformListing: {}", platformListing);
                     }
 
-                    mView.addObject("platformListing", platformListing);
+                    model.addAttribute("platformListing", platformListing);
                 }
             }
             else if (platformResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
+                return this.appConfig.getUnauthorizedPage();
             }
             else
             {
-                mView = new ModelAndView(new RedirectView());
-                mView.setViewName(this.addPlatformRedirect);
+            	return "redirect:/" + this.addPlatformRedirect;
             }
         }
-        catch (final ServiceManagementException pmx)
+        catch (final ServiceManagementException smx)
         {
-            mView = new ModelAndView(new RedirectView());
-            mView.setViewName(this.addPlatformRedirect);
+        	ERROR_RECORDER.error(smx.getMessage(), smx);
+
+            return this.appConfig.getErrorResponsePage();
         }
 
-        mView.addObject(Constants.COMMAND, new Application());
-        mView.setViewName(this.addAppPage);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
+        model.addAttribute(Constants.COMMAND, new Application());
+        
+        return this.addAppPage;
     }
 
-    @RequestMapping(value = "/retire-application/application/{application}", method = RequestMethod.GET)
-    public final ModelAndView showRetireApplication(@PathVariable("application") final String application)
+    @RequestMapping(value = "retire-application/application/{application}", method = RequestMethod.GET)
+    public final String showRetireApplication(@PathVariable("application") final String application, final Model model)
     {
-        final String methodName = ApplicationManagementController.CNAME + "#showRetireApplication(@PathVariable(\"application\") final String application)";
+        final String methodName = ApplicationManagementController.CNAME + "#showRetireApplication(@PathVariable(\"application\") final String application, final Model model)";
 
         if (DEBUG)
         {
@@ -1023,13 +1004,11 @@ public class ApplicationManagementController
             DEBUGGER.debug("Value: {}", application);
         }
 
-        ModelAndView mView = new ModelAndView();
-
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IApplicationManagementProcessor appMgr = new ApplicationManagementProcessorImpl();
+        final IApplicationManagementProcessor appMgr = (IApplicationManagementProcessor) new ApplicationManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -1073,11 +1052,14 @@ public class ApplicationManagementController
             }
         }
 
+        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
+        {
+        	return this.appConfig.getLogonRedirect();
+        }
+
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
         try
@@ -1122,37 +1104,31 @@ public class ApplicationManagementController
 
             if (appRes.getRequestStatus() == CoreServicesStatus.SUCCESS)
             {
-                mView.addObject(Constants.RESPONSE_MESSAGE, this.messageApplicationRetired);
-                mView.setViewName(this.defaultPage);
+            	model.addAttribute(Constants.RESPONSE_MESSAGE, this.messageApplicationRetired);
+
+                return this.defaultPage;
             }
             else if (appRes.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
+                return this.appConfig.getUnauthorizedPage();
             }
             else
             {
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+                return this.appConfig.getErrorResponsePage();
             }
         }
         catch (final ApplicationManagementException amx)
         {
             ERROR_RECORDER.error(amx.getMessage(), amx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
     }
 
     @RequestMapping(value = "/retrieve-files/application/{application}", method = RequestMethod.GET)
-    public final ModelAndView showRetrieveFilesPage(@PathVariable("application") final String application)
+    public final String showRetrieveFilesPage(@PathVariable("application") final String application, final Model model)
     {
-        final String methodName = ApplicationManagementController.CNAME + "#showRetrieveFilesPage(@PathVariable(\"application\") final String application)";
+        final String methodName = ApplicationManagementController.CNAME + "#showRetrieveFilesPage(@PathVariable(\"application\") final String application, final Model model)";
 
         if (DEBUG)
         {
@@ -1160,13 +1136,11 @@ public class ApplicationManagementController
             DEBUGGER.debug("Value: {}", application);
         }
 
-        ModelAndView mView = new ModelAndView();
-
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IApplicationManagementProcessor appMgr = new ApplicationManagementProcessorImpl();
+        final IApplicationManagementProcessor appMgr = (IApplicationManagementProcessor) new ApplicationManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -1210,11 +1184,14 @@ public class ApplicationManagementController
             }
         }
 
+        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
+        {
+        	return this.appConfig.getLogonRedirect();
+        }
+
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
         // validate the user has access
@@ -1277,50 +1254,46 @@ public class ApplicationManagementController
 
                     if ((platformList != null) && (platformList.size() != 0))
                     {
-                        mView.addObject("platformList", platformList);
-                        mView.addObject("application", app);
-                        mView.setViewName(this.retrieveFilesPage);
+                    	model.addAttribute("platformList", platformList);
+                    	model.addAttribute("application", app);
+
+                        return this.retrieveFilesPage;
                     }
                     else
                     {
-                        mView.addObject(Constants.ERROR_MESSAGE, this.messageNoPlatformAssigned);
-                        mView.setViewName(this.defaultPage);
+                        model.addAttribute(Constants.ERROR_MESSAGE, this.messageNoPlatformAssigned);
+
+                        return this.defaultPage;
                     }
                 }
                 else
                 {
-                    mView.addObject(Constants.ERROR_MESSAGE, this.messageNoApplicationsFound);
-                    mView.setViewName(this.defaultPage);
+                    model.addAttribute(Constants.ERROR_MESSAGE, this.messageNoApplicationsFound);
+
+                    return this.defaultPage;
                 }
             }
             else if (appResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
+                return this.appConfig.getUnauthorizedPage();
             }
             else
             {
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+            	return this.appConfig.getErrorResponsePage();
             }
         }
         catch (final ApplicationManagementException amx)
         {
             ERROR_RECORDER.error(amx.getMessage(), amx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
     }
 
-    @RequestMapping(value = "/retrieve-files/application/{application}/platform/{platform}", method = RequestMethod.GET)
-    public final ModelAndView showRetrieveFilesPage(@PathVariable("application") final String application, @PathVariable("platform") final String platform)
+    @RequestMapping(value = "retrieve-files/application/{application}/platform/{platform}", method = RequestMethod.GET)
+    public final String showRetrieveFilesPage(@PathVariable("application") final String application, @PathVariable("platform") final String platform, final Model model)
     {
-        final String methodName = ApplicationManagementController.CNAME + "#showRetrieveFilesPage(@PathVariable(\"application\") final String application, @PathVariable(\"platform\") final String platform)";
+        final String methodName = ApplicationManagementController.CNAME + "#showRetrieveFilesPage(@PathVariable(\"application\") final String application, @PathVariable(\"platform\") final String platform, final Model model)";
 
         if (DEBUG)
         {
@@ -1328,13 +1301,11 @@ public class ApplicationManagementController
             DEBUGGER.debug("Value: {}", platform);
         }
 
-        ModelAndView mView = new ModelAndView();
-
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IServiceManagementProcessor processor = new ServiceManagementProcessorImpl();
+        final IServiceManagementProcessor processor = (IServiceManagementProcessor) new ServiceManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -1378,11 +1349,14 @@ public class ApplicationManagementController
             }
         }
 
+        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
+        {
+        	return this.appConfig.getLogonRedirect();
+        }
+
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+        	return this.appConfig.getUnavailablePage();
         }
 
         // validate the user has access
@@ -1451,45 +1425,41 @@ public class ApplicationManagementController
                         DEBUGGER.debug("List<Server>: {}", servers);
                     }
 
-                    mView.addObject("platform", resPlatform);
-                    mView.addObject("servers", servers);
-                    mView.addObject("application", app);
-                    mView.setViewName(this.retrieveFilesPage);
+                    
+                    model.addAttribute("platform", resPlatform);
+                    model.addAttribute("servers", servers);
+                    model.addAttribute("application", app);
+
+                    return this.retrieveFilesPage;
                 }
                 else
                 {
-                    mView.addObject(Constants.ERROR_MESSAGE, this.messageNoPlatformAssigned);
-                    mView.setViewName(this.defaultPage);
+                	model.addAttribute(Constants.ERROR_MESSAGE, this.messageNoPlatformAssigned);
+
+                    return this.defaultPage;
                 }
             }
             else if (platformResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
+                return this.appConfig.getUnauthorizedPage();
             }
             else
             {
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+                return this.appConfig.getErrorResponsePage();
             }
         }
         catch (final ServiceManagementException pmx)
         {
             ERROR_RECORDER.error(pmx.getMessage(), pmx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
     }
 
     @RequestMapping(value = "/retrieve-files/application/{application}/platform/{platform}/server/{server}", method = RequestMethod.GET)
-    public final ModelAndView showRetrieveFilesPage(@PathVariable("application") final String application, @PathVariable("platform") final String platform, @PathVariable("server") final String server)
+    public final String showRetrieveFilesPage(@PathVariable("application") final String application, @PathVariable("platform") final String platform, @PathVariable("server") final String server, final Model model)
     {
-        final String methodName = ApplicationManagementController.CNAME + "#showRetrieveFilesPage(@PathVariable(\"application\") final String application, @PathVariable(\"server\") final String server)";
+        final String methodName = ApplicationManagementController.CNAME + "#showRetrieveFilesPage(@PathVariable(\"application\") final String application, @PathVariable(\"server\") final String server, final Model model)";
 
         if (DEBUG)
         {
@@ -1498,13 +1468,11 @@ public class ApplicationManagementController
             DEBUGGER.debug("Value: {}", server);
         }
 
-        ModelAndView mView = new ModelAndView();
-
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IApplicationManagementProcessor appMgr = new ApplicationManagementProcessorImpl();
+        final IApplicationManagementProcessor appMgr = (IApplicationManagementProcessor) new ApplicationManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -1548,11 +1516,14 @@ public class ApplicationManagementController
             }
         }
 
+        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
+        {
+        	return this.appConfig.getLogonRedirect();
+        }
+
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
         // validate the user has access
@@ -1623,42 +1594,42 @@ public class ApplicationManagementController
 
                 if ((fileList != null) && (fileList.size() != 0))
                 {
-                    mView.addObject("fileList", fileList);
-                    mView.addObject("application", appl);
-                    mView.addObject("server", targetServer);
-                    mView.addObject("platform", reqPlatform);
-                    mView.addObject("currentPath", appResponse.getApplication().getInstallPath());
-                    mView.setViewName(this.retrieveFilesPage);
+                    model.addAttribute("fileList", fileList);
+                    model.addAttribute("application", appl);
+                    model.addAttribute("server", targetServer);
+                    model.addAttribute("platform", reqPlatform);
+                    model.addAttribute("currentPath", appResponse.getApplication().getInstallPath());
+
+                    return this.retrieveFilesPage;
+                }
+                else
+                {
+                	// no data was returned
+                	// TODO
+                	return this.appConfig.getErrorResponsePage();
                 }
             }
             else if (appResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
+                return this.appConfig.getUnauthorizedPage();
             }
             else
             {
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+                return this.appConfig.getErrorResponsePage();
             }
         }
         catch (final ApplicationManagementException amx)
         {
             ERROR_RECORDER.error(amx.getMessage(), amx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
     }
 
-    @RequestMapping(value = "/list-files/application/{application}/platform/{platform}/server/{server}", method = RequestMethod.GET)
-    public final ModelAndView showListFiles(@PathVariable("application") final String application, @PathVariable("platform") final String platform, @PathVariable("server") final String server, @RequestParam(value = "vpath", required = true) final String vpath)
+    @RequestMapping(value = "list-files/application/{application}/platform/{platform}/server/{server}", method = RequestMethod.GET)
+    public final String showListFiles(@PathVariable("application") final String application, @PathVariable("platform") final String platform, @PathVariable("server") final String server, @RequestParam(value = "vpath", required = true) final String vpath, final Model model)
     {
-        final String methodName = ApplicationManagementController.CNAME + "#showListFiles(@PathVariable(\"application\") final String application, @PathVariable(\"platform\") final String platform, @PathVariable(\"server\") final String server, @RequestParam(value = \"vpath\", required = true) final String vpath)";
+        final String methodName = ApplicationManagementController.CNAME + "#showListFiles(@PathVariable(\"application\") final String application, @PathVariable(\"platform\") final String platform, @PathVariable(\"server\") final String server, @RequestParam(value = \"vpath\", required = true) final String vpath, final Model model)";
 
         if (DEBUG)
         {
@@ -1668,13 +1639,11 @@ public class ApplicationManagementController
             DEBUGGER.debug("Value: {}", vpath);
         }
 
-        ModelAndView mView = new ModelAndView();
-
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IApplicationManagementProcessor appMgr = new ApplicationManagementProcessorImpl();
+        final IApplicationManagementProcessor appMgr = (IApplicationManagementProcessor) new ApplicationManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -1718,11 +1687,14 @@ public class ApplicationManagementController
             }
         }
 
+        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
+        {
+        	return this.appConfig.getLogonRedirect();
+        }
+
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
         // validate the user has access
@@ -1820,41 +1792,45 @@ public class ApplicationManagementController
 
                             if (StringUtils.isNotEmpty(dataString))
                             {
-                                mView.addObject("server", targetServer);
-                                mView.addObject("platform", reqPlatform);
-                                mView.addObject("fileData", dataString);
-                                mView.addObject("application", appResponse.getApplication());
-                                mView.addObject("currentPath", vpath);
-                                mView.setViewName(this.viewFilePage);
+                                model.addAttribute("server", targetServer);
+                                model.addAttribute("platform", reqPlatform);
+                                model.addAttribute("fileData", dataString);
+                                model.addAttribute("application", appResponse.getApplication());
+                                model.addAttribute("currentPath", vpath);
+
+                                return this.viewFilePage;
                             }
                             else
                             {
-                                mView.addObject(Constants.ERROR_MESSAGE, this.messageNoFileData);
-                                mView.addObject("platform", reqPlatform);
-                                mView.addObject("server", targetServer);
-                                mView.addObject("application", appResponse.getApplication());
-                                mView.addObject("currentPath", vpath);
-                                mView.setViewName(this.viewFilePage);
+                            	model.addAttribute(Constants.ERROR_MESSAGE, this.messageNoFileData);
+                            	model.addAttribute("platform", reqPlatform);
+                            	model.addAttribute("server", targetServer);
+                            	model.addAttribute("application", appResponse.getApplication());
+                            	model.addAttribute("currentPath", vpath);
+
+                                return this.viewFilePage;
                             }
                         }
                         else
                         {
-                            mView.addObject(Constants.ERROR_MESSAGE, this.messageNoFileData);
-                            mView.addObject("platform", reqPlatform);
-                            mView.addObject("server", targetServer);
-                            mView.addObject("application", appResponse.getApplication());
-                            mView.addObject("currentPath", vpath);
-                            mView.setViewName(this.viewFilePage);
+                        	model.addAttribute(Constants.ERROR_MESSAGE, this.messageNoFileData);
+                        	model.addAttribute("platform", reqPlatform);
+                        	model.addAttribute("server", targetServer);
+                        	model.addAttribute("application", appResponse.getApplication());
+                        	model.addAttribute("currentPath", vpath);
+
+                            return this.viewFilePage;
                         }
                     }
                     else
                     {
-                        mView.addObject(Constants.ERROR_MESSAGE, this.messageNoFileData);
-                        mView.addObject("platform", reqPlatform);
-                        mView.addObject("server", targetServer);
-                        mView.addObject("application", appResponse.getApplication());
-                        mView.addObject("currentPath", vpath);
-                        mView.setViewName(this.viewFilePage);
+                    	model.addAttribute(Constants.ERROR_MESSAGE, this.messageNoFileData);
+                    	model.addAttribute("platform", reqPlatform);
+                    	model.addAttribute("server", targetServer);
+                    	model.addAttribute("application", appResponse.getApplication());
+                    	model.addAttribute("currentPath", vpath);
+
+                        return this.viewFilePage;
                     }
                 }
                 else
@@ -1866,48 +1842,36 @@ public class ApplicationManagementController
                         DEBUGGER.debug("List<String>: {}", fileList);
                     }
 
-                    mView.addObject("platform", reqPlatform);
-                    mView.addObject("application", appResponse.getApplication());
-                    mView.addObject("currentPath", vpath);
-                    mView.addObject("server", targetServer);
-                    mView.addObject("fileList", fileList);
-                    mView.setViewName(this.retrieveFilesPage);
+                    model.addAttribute("platform", reqPlatform);
+                    model.addAttribute("application", appResponse.getApplication());
+                    model.addAttribute("currentPath", vpath);
+                    model.addAttribute("server", targetServer);
+                    model.addAttribute("fileList", fileList);
+
+                    return this.retrieveFilesPage;
                 }
             }
             else if (appResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
+                return this.appConfig.getUnauthorizedPage();
             }
             else
             {
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+                return this.appConfig.getErrorResponsePage();
             }
         }
         catch (final ApplicationManagementException amx)
         {
             ERROR_RECORDER.error(amx.getMessage(), amx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-        catch (final IOException iox)
-        {
-            ERROR_RECORDER.error(iox.getMessage(), iox);
-
-            mView.setViewName(this.appConfig.getErrorResponsePage());
-        }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
     }
 
-    @RequestMapping(value = "/search", method = RequestMethod.POST)
-    public final ModelAndView submitApplicationSearch(@ModelAttribute("application") final Application application, final BindingResult bindResult)
+    @RequestMapping(value = "search", method = RequestMethod.POST)
+    public final String submitApplicationSearch(@ModelAttribute("application") final Application application, final BindingResult bindResult, final Model model)
     {
-        final String methodName = ApplicationManagementController.CNAME + "#submitApplicationSearch(@ModelAttribute(\"application\") final Application application, final BindingResult bindResult)";
+        final String methodName = ApplicationManagementController.CNAME + "#submitApplicationSearch(@ModelAttribute(\"application\") final Application application, final BindingResult bindResult, final Model model)";
 
         if (DEBUG)
         {
@@ -1916,13 +1880,11 @@ public class ApplicationManagementController
             DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
-        ModelAndView mView = new ModelAndView();
-
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IApplicationManagementProcessor processor = new ApplicationManagementProcessorImpl();
+        final IApplicationManagementProcessor processor = (IApplicationManagementProcessor) new ApplicationManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -1966,11 +1928,14 @@ public class ApplicationManagementController
             }
         }
 
+        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
+        {
+        	return this.appConfig.getLogonRedirect();
+        }
+
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
         try
@@ -2006,43 +1971,38 @@ public class ApplicationManagementController
 
             if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
             {
-                mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
-                mView.addObject("page", 1);
-                mView.addObject("searchTerms", application.getName());
-                mView.addObject(Constants.SEARCH_RESULTS, response.getApplicationList());
-                mView.addObject(Constants.COMMAND, new Application());
-                mView.setViewName(this.defaultPage);
+                model.addAttribute("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
+                model.addAttribute("page", 1);
+                model.addAttribute("searchTerms", application.getName());
+                model.addAttribute(Constants.SEARCH_RESULTS, response.getApplicationList());
+                model.addAttribute(Constants.COMMAND, new Application());
+
+                return this.defaultPage;
             }
             else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
+                return this.appConfig.getUnauthorizedPage();
             }
             else
             {
-                mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                mView.addObject(Constants.COMMAND, new Application());
-                mView.setViewName(this.defaultPage);
+            	model.addAttribute(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+            	model.addAttribute(Constants.COMMAND, new Application());
+
+            	return this.defaultPage;
             }
         }
         catch (final ApplicationManagementException amx)
         {
             ERROR_RECORDER.error(amx.getMessage(), amx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
     }
 
-    @RequestMapping(value = "/add-application", method = RequestMethod.POST)
-    public final ModelAndView doAddApplication(@ModelAttribute("request") final Application request, final BindingResult bindResult)
+    @RequestMapping(value = "add-application", method = RequestMethod.POST)
+    public final String doAddApplication(@ModelAttribute("request") final Application request, final BindingResult bindResult, final Model model)
     {
-        final String methodName = ApplicationManagementController.CNAME + "#doAddApplication(@ModelAttribute(\"request\") final Application request, final BindingResult bindResult)";
+        final String methodName = ApplicationManagementController.CNAME + "#doAddApplication(@ModelAttribute(\"request\") final Application request, final BindingResult bindResult, final Model model)";
 
         if (DEBUG)
         {
@@ -2051,13 +2011,11 @@ public class ApplicationManagementController
             DEBUGGER.debug("Value: {}", bindResult);
         }
 
-        ModelAndView mView = new ModelAndView();
-
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IApplicationManagementProcessor processor = new ApplicationManagementProcessorImpl();
+        final IApplicationManagementProcessor processor = (IApplicationManagementProcessor) new ApplicationManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -2101,11 +2059,14 @@ public class ApplicationManagementController
             }
         }
 
+        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
+        {
+        	return this.appConfig.getLogonRedirect();
+        }
+
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-
-            return mView;
+            return this.appConfig.getUnavailablePage();
         }
 
         this.validator.validate(request, bindResult);
@@ -2115,12 +2076,11 @@ public class ApplicationManagementController
             // validation failed
             ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
 
-            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
-            mView.addObject(Constants.BIND_RESULT, bindResult.getAllErrors());
-            mView.addObject(Constants.COMMAND, new Application());
-            mView.setViewName(this.addAppPage);
+            model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+            model.addAttribute(Constants.BIND_RESULT, bindResult.getAllErrors());
+            model.addAttribute(Constants.COMMAND, new Application());
 
-            return mView;
+            return this.addAppPage;
         }
 
         try
@@ -2179,32 +2139,24 @@ public class ApplicationManagementController
             if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
             {
                 // app added
+                model.addAttribute(Constants.RESPONSE_MESSAGE, this.messageApplicationAdded);
 
-                mView = new ModelAndView(new RedirectView());
-                mView.addObject(Constants.RESPONSE_MESSAGE, this.messageApplicationAdded);
-                mView.setViewName(this.addApplicationRedirect);
+                return this.addApplicationRedirect;
             }
             else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
+                return this.appConfig.getUnauthorizedPage();
             }
             else
             {
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+                return this.appConfig.getErrorResponsePage();
             }
         }
         catch (final ApplicationManagementException amx)
         {
             ERROR_RECORDER.error(amx.getMessage(), amx);
 
-            mView.setViewName(this.appConfig.getErrorResponsePage());
+            return this.appConfig.getErrorResponsePage();
         }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
     }
 }

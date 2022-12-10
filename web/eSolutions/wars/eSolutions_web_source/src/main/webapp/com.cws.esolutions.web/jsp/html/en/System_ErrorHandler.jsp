@@ -32,6 +32,7 @@
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 --%>
+<%@page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" isThreadSafe="true" isErrorPage="true" %>
 
 <div id="sidebar">&nbsp;</div>
 
@@ -57,6 +58,12 @@
     <c:if test="${not empty fn:trim(param.errorMessage)}">
         <p id="error"><spring:message code="${param.errorMessage}" /></p>
     </c:if>
+
+	<c:if test="${not empty exception}">
+		Reported exception:
+		<br />
+		${exception}
+	</c:if>
 
     <c:choose>
         <c:when test="${empty fn:trim(sessionScope.userAccount) or empty fn:trim(sessionScope.userAccount.status)}">

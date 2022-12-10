@@ -31,8 +31,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.ArrayList;
 import java.sql.SQLException;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.utils.PasswordUtils;

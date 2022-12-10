@@ -153,6 +153,7 @@
         <res-sharing-scope>Unshareable</res-sharing-scope>
     </resource-ref>
 
+	<!--
     <error-page>
         <error-code>400</error-code>
         <location>/theme/cws/html/en/jsp/errHandler.jsp</location>
@@ -185,6 +186,7 @@
         <exception-type>java.lang.Exception</exception-type>
         <location>/theme/cws/html/en/jsp/errHandler.jsp</location>
     </error-page>
+    -->
 
     <welcome-file-list>
         <welcome-file>index.htm</welcome-file>

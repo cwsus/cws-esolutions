@@ -27,6 +27,7 @@ package com.cws.esolutions.web.controllers;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
+import java.util.Objects;
 import java.util.Enumeration;
 import org.slf4j.LoggerFactory;
 import org.springframework.ui.Model;
@@ -34,7 +35,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Controller;
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.validation.BindingResult;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -178,9 +179,9 @@ public class CommonController
             }
         }
 
-        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
+        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
         {
-        	return this.appConfig.getLogonRedirect(); // try it ?
+        	return this.appConfig.getLogonRedirect();
         }
 
         // in here, we're going to get all the messages to display and such
@@ -320,7 +321,7 @@ public class CommonController
             model.addAttribute("serviceEmail", this.appConfig.getEmailAddress());
             model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
             model.addAttribute(Constants.BIND_RESULT, bindResult.getAllErrors());
-            model.addAttribute(Constants.COMMAND, new EmailMessage()); //TODO
+            model.addAttribute(Constants.COMMAND, new EmailMessage());
 
             return this.appConfig.getContactAdminsPage();
         }

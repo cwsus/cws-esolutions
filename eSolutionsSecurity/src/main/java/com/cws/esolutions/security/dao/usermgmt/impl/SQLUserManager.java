@@ -32,7 +32,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import java.sql.CallableStatement;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
@@ -761,10 +761,9 @@ public class SQLUserManager implements UserManager
 
             // first make sure the existing password is proper
             // then make sure the new password doesnt match the existing password
-            stmt = sqlConn.prepareCall("{ CALL updateUserContact(?, ?, ?) }");
+            stmt = sqlConn.prepareCall("{ CALL updateUserContact(?, ?) }");
             stmt.setString(1, userId);
             stmt.setString(2, values.get(0));
-            stmt.setString(2, values.get(1));
 
             if (DEBUG)
             {
