@@ -620,7 +620,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                         if (StringUtils.isNotEmpty(existingSalt))
                         {
                             // make the backout
-                            List<String> currentSec = authenticator.obtainSecurityData(userAccount.getUsername(), userAccount.getGuid());
+                            List<Object> currentSec = authenticator.obtainSecurityData(userAccount.getUsername(), userAccount.getGuid());
 
                             // good, move forward
                             // make the modification in the user repository
@@ -659,10 +659,10 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                     boolean isReverted = userManager.modifyUserSecurity(userAccount.getUsername(), 
                                             new ArrayList<String>(
                                                 Arrays.asList(
-                                                        currentSec.get(0),
-                                                        currentSec.get(1),
-                                                        currentSec.get(2),
-                                                        currentSec.get(3))));
+                                                        (String) currentSec.get(0),
+                                                        (String) currentSec.get(1),
+                                                        (String) currentSec.get(2),
+                                                        (String) currentSec.get(3))));
 
                                     if (DEBUG)
                                     {

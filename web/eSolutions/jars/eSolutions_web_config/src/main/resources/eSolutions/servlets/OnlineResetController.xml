@@ -21,6 +21,9 @@
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
+        <property name="mailSender">
+        	<ref bean="appMailSender" />
+        </property>
         <property name="validator">
             <ref bean="onlineResetValidator" />
         </property>

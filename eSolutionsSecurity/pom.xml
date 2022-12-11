@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.cws</groupId>
         <artifactId>cws</artifactId>
-        <version>5.0</version>
+        <version>5.1.2</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -85,14 +85,14 @@
         <!-- bouncycastle -->
         <dependency>
             <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk18on</artifactId>
+            <artifactId>bcprov-jdk15to18</artifactId>
             <version>${bouncycastle.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpkix-jdk18on</artifactId>
+            <artifactId>bcpkix-jdk15to18</artifactId>
             <version>${bouncycastle.version}</version>
             <type>jar</type>
             <scope>compile</scope>

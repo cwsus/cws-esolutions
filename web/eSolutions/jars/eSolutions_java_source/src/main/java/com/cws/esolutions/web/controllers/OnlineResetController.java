@@ -54,10 +54,7 @@ import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.web.validators.OnlineResetValidator;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
-import com.cws.esolutions.core.processors.dto.MessagingRequest;
-import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.security.processors.dto.AccountChangeData;
 import com.cws.esolutions.security.processors.enums.ResetRequestType;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
@@ -65,10 +62,7 @@ import com.cws.esolutions.security.processors.dto.AccountResetRequest;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
-import com.cws.esolutions.core.processors.interfaces.IWebMessagingProcessor;
 import com.cws.esolutions.security.processors.impl.AccountResetProcessorImpl;
-import com.cws.esolutions.core.processors.impl.ServiceMessagingProcessorImpl;
-import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
@@ -260,7 +254,6 @@ public class OnlineResetController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
-        final IWebMessagingProcessor svcMessage = new ServiceMessagingProcessorImpl();
 
         if (DEBUG)
         {
@@ -301,25 +294,6 @@ public class OnlineResetController
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
-        }
-
-        try
-        {
-            MessagingResponse messageResponse = svcMessage.showAlertMessages(new MessagingRequest());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("MessagingResponse: {}", messageResponse);
-            }
-
-            if (messageResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-            {
-            	model.addAttribute("alertMessages", messageResponse.getSvcMessages());
-            }
-        }
-        catch (final MessagingServiceException msx)
-        {
-            // don't do anything with it
         }
 
         model.addAttribute("resetType", ResetRequestType.USERNAME);
@@ -606,7 +580,7 @@ public class OnlineResetController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
-        final IAccountControlProcessor acctController = new AccountControlProcessorImpl();
+        final IAccountControlProcessor acctController = (IAccountControlProcessor) new AccountControlProcessorImpl();
 
         if (DEBUG)
         {
@@ -689,6 +663,7 @@ public class OnlineResetController
             controlReq.setUserAccount(reqAccount);
             controlReq.setApplicationId(this.appConfig.getApplicationId());
             controlReq.setApplicationName(this.appConfig.getApplicationName());
+            controlReq.setIsResetRequest(true);
 
             if (DEBUG)
             {

@@ -46,7 +46,7 @@ public class SQLAuthenticator implements Authenticator
     private static final String CNAME = SQLAuthenticator.class.getName();
 
     /**
-     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String)
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String, java.lang.String)
      */
     public synchronized boolean performLogon(final String userGuid, final String username, final String password) throws AuthenticatorException
     {
@@ -153,7 +153,7 @@ public class SQLAuthenticator implements Authenticator
     /**
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainSecurityData(java.lang.String, java.lang.String)
      */
-    public synchronized List<String> obtainSecurityData(final String userName, final String userGuid) throws AuthenticatorException
+    public synchronized List<Object> obtainSecurityData(final String userName, final String userGuid) throws AuthenticatorException
     {
         final String methodName = SQLAuthenticator.CNAME + "#obtainSecurityData(final String userName, final String userGuid) throws AuthenticatorException";
         
@@ -167,7 +167,7 @@ public class SQLAuthenticator implements Authenticator
         Connection sqlConn = null;
         ResultSet resultSet = null;
         CallableStatement stmt = null;
-        List<String> userSecurity = null;
+        List<Object> userSecurity = null;
 
         try
         {
@@ -211,21 +211,18 @@ public class SQLAuthenticator implements Authenticator
                         if (StringUtils.equals(resultSet.getString(2), userName))
                         {
                             String cn = resultSet.getString(1);
-                            String username = resultSet.getString(2);
 
                             if (DEBUG)
                             {
                                 DEBUGGER.debug("String: {}", cn);
-                                DEBUGGER.debug("String: {}", username);
                             }
 
                             resultSet.close();
                             stmt.close();
 
                             // found the user we want
-                            stmt = sqlConn.prepareCall("{ CALL getSecurityQuestions(?, ?) }");
-                            stmt.setString(1, username); // common name
-                            stmt.setString(2, cn);
+                            stmt = sqlConn.prepareCall("{ CALL getSecurityQuestions(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                            stmt.setString(1, cn); // common name
 
                             if (DEBUG)
                             {
@@ -243,10 +240,13 @@ public class SQLAuthenticator implements Authenticator
 
                                 if (resultSet.next())
                                 {
-                                    userSecurity = new ArrayList<String>(
+                                    userSecurity = new ArrayList<Object>(
                                         Arrays.asList(
-                                            resultSet.getString(1),
-                                            resultSet.getString(2)));
+                                            resultSet.getString(1), // GUID
+                                            resultSet.getBoolean(2), // cwsisolrsetup
+                                        	resultSet.getBoolean(3), // cwsisolrlocked
+                                        	resultSet.getString(4), // cwssec1
+                                        	resultSet.getString(5))); // cwssecq2
 
                                     if (DEBUG)
                                     {
@@ -399,6 +399,7 @@ public class SQLAuthenticator implements Authenticator
             DEBUGGER.debug("Value: {}", userGuid);
         }
 
+        boolean isValid = false;
         Connection sqlConn = null;
         CallableStatement stmt = null;
 
@@ -417,7 +418,7 @@ public class SQLAuthenticator implements Authenticator
             }
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL verifySecurityQuestions(?, ?, ?, ?)}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareCall("{CALL verifySecurityQuestions(?, ?, ?, ?)}");
             stmt.setString(1, userGuid); // guid
             stmt.setString(2, userId);
             stmt.setString(3, attributes.get(0)); // username
@@ -428,7 +429,7 @@ public class SQLAuthenticator implements Authenticator
                 DEBUGGER.debug("Statement: {}", stmt.toString());
             }
 
-            return stmt.execute();
+            isValid = stmt.execute();
         }
         catch (final SQLException sqx)
         {
@@ -453,5 +454,7 @@ public class SQLAuthenticator implements Authenticator
                 throw new AuthenticatorException(sqx.getMessage(), sqx);
             }
         }
+
+        return isValid;
     }
 }

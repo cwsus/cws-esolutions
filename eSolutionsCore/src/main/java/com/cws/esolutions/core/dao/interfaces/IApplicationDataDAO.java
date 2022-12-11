@@ -75,7 +75,7 @@ public interface IApplicationDataDAO
      * @param applicationData - The information to store for the application, as outlined above.
      * @throws SQLException {@link java.sql.SQLException} if an error occurs during data processing
      */
-    void addApplication(final List<Object> applicationData) throws SQLException;
+    boolean addApplication(final List<Object> applicationData) throws SQLException;
 
     /**
      * Allows updates to be applied to an application in the asset management database. The
@@ -100,7 +100,7 @@ public interface IApplicationDataDAO
      * @param applicationData - The information to update for the application, as outlined above.
      * @throws SQLException {@link java.sql.SQLException} if an error occurs during data processing
      */
-    void updateApplication(final List<Object> applicationData) throws SQLException;
+    boolean updateApplication(final List<Object> applicationData) throws SQLException;
 
     /**
      * Allows addition of a new application into the asset management database. The
@@ -125,7 +125,7 @@ public interface IApplicationDataDAO
      * @param appGuid - The information to update for the application, as outlined above.
      * @throws SQLException {@link java.sql.SQLException} if an error occurs during data processing
      */
-    void removeApplication(final String appGuid) throws SQLException;
+    boolean removeApplication(final String appGuid) throws SQLException;
 
     /**
      * Lists applications stored within the asset management database. This listing

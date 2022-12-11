@@ -27,8 +27,12 @@ package com.cws.esolutions.security.processors.impl;
  */
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.ArrayList;
+import java.net.InetAddress;
 import java.sql.SQLException;
+import java.net.UnknownHostException;
+import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
@@ -80,28 +84,27 @@ public class AuditProcessorImpl implements IAuditProcessor
                 throw new AuditServiceException("Cannot perform audit: RequestHostInfo / UserAccount is missing");
             }
 
-            List<String> auditList = new ArrayList<String>();
-            auditList.add(userAccount.getUsername()); // username
-            auditList.add(userAccount.getGuid()); // userguid
-            auditList.add(userAccount.getUserRole().toString()); // userrole
-            auditList.add(auditEntry.getApplicationId()); // applid
-            auditList.add(auditEntry.getApplicationName()); // applname
-            auditList.add(auditEntry.getAuditType().toString()); // useraction
-            auditList.add(hostInfo.getHostAddress()); // srcaddr
-            auditList.add(hostInfo.getHostName()); // srchost
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("auditList: {}", auditList);
-
-                for (String str : auditList)
-                {
-                    DEBUGGER.debug(str);
-                }
-            }
-
             try
             {
+	            List<String> auditList = new ArrayList<String>();
+	            auditList.add((StringUtils.isEmpty(userAccount.getUsername())) ? "WEBUSR" : userAccount.getUsername()); // username
+	            auditList.add((StringUtils.isEmpty(userAccount.getGuid())) ? "918671b2-662e-4499-9fd3-1e4e88e0fba2" : userAccount.getGuid()); // userguid
+	            auditList.add((Objects.isNull(userAccount.getUserRole())) ? "NONE" : userAccount.getUserRole().toString()); // userrole
+	            auditList.add((StringUtils.isEmpty(auditEntry.getApplicationId())) ? "SecurityServicesDefault" : auditEntry.getApplicationId()); // applid
+	            auditList.add((StringUtils.isEmpty(auditEntry.getApplicationName())) ? "SecurityServicesDefault" : auditEntry.getApplicationName()); // applname
+	            auditList.add((StringUtils.isEmpty(auditEntry.getAuditType().toString())) ? "NONE" : auditEntry.getAuditType().toString()); // useraction
+	            auditList.add((StringUtils.isEmpty(hostInfo.getHostAddress())) ? InetAddress.getLocalHost().getHostAddress() : hostInfo.getHostAddress()); // srcaddr
+	            auditList.add((StringUtils.isEmpty(hostInfo.getHostName())) ? InetAddress.getLocalHost().getHostName() : hostInfo.getHostName()); // srchost
+
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("auditList: {}", auditList);
+
+	                for (String str : auditList)
+	                {
+	                	DEBUGGER.debug(str);
+	                }
+	            }
                 // log it ..
                 AUDIT_RECORDER.info("AUDIT: User: " + userAccount + ", Requested Action: " + auditEntry.getAuditType() + ", Host: " + hostInfo);
 
@@ -114,6 +117,7 @@ public class AuditProcessorImpl implements IAuditProcessor
 
                 throw new AuditServiceException(sqx.getMessage(), sqx);
             }
+            catch (UnknownHostException uhx) {} // dont do anything with it
         }
     }
 

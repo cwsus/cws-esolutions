@@ -181,25 +181,42 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
         try
         {
-            List<String> securityData = authenticator.obtainSecurityData(userAccount.getUsername(), userAccount.getGuid());
+            List<Object> securityData = authenticator.obtainSecurityData(userAccount.getUsername(), userAccount.getGuid());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("List<String>: {}", securityData);
+                DEBUGGER.debug("List<Object>: {}", securityData);
             }
 
             if ((securityData == null) || (securityData.isEmpty()))
             {
+            	ERROR_RECORDER.error("No user information was returned. Cannot continue.");
+
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
 
             if (securityData != null)
             {
-                if (StringUtils.isNotBlank(securityData.get(0)))
+                if (StringUtils.isNotBlank((String) (securityData.get(0))))
                 {
+                	if ((Boolean) securityData.get(1))
+                	{
+                		// user is in olrsetup, we can't do a reset here
+                		ERROR_RECORDER.error("User has not set up the online reset process. Cannot continue.");
+
+                		response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                	}
+                	else if ((Boolean) securityData.get(2))
+                	{
+                		// olr locked
+                		ERROR_RECORDER.error("User is currently OLR locked. Cannot continue.");
+
+                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                	}
+
                     UserAccount resAccount = new UserAccount();
-                    resAccount.setGuid(securityData.get(0));
-                    resAccount.setUsername(securityData.get(1));
+                    resAccount.setGuid((String) securityData.get(0));
+                    resAccount.setUsername(userAccount.getUsername());
 
                     if (DEBUG)
                     {
@@ -207,8 +224,8 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                     }
 
                     AuthenticationData userSecurity = new AuthenticationData();
-                    userSecurity.setSecQuestionOne(securityData.get(0));
-                    userSecurity.setSecQuestionTwo(securityData.get(1));
+                    userSecurity.setSecQuestionOne((String) securityData.get(3));
+                    userSecurity.setSecQuestionTwo((String) securityData.get(4));
 
                     if (DEBUG)
                     {

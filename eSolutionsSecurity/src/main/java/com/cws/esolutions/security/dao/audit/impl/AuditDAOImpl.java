@@ -69,13 +69,13 @@ public class AuditDAOImpl implements IAuditDAO
 
             stmt = sqlConn.prepareCall("{CALL insertAuditEntry(?, ?, ?, ?, ?, ?, ?, ?)}");
             stmt.setString(1, auditRequest.get(0)); // username
-            stmt.setString(2, auditRequest.get(1)); // userguid
-            stmt.setString(3, auditRequest.get(2)); // userrole
-            stmt.setString(4, auditRequest.get(3)); // applid
-            stmt.setString(5, auditRequest.get(4)); // applname
-            stmt.setString(6, auditRequest.get(5)); // useraction
-            stmt.setString(7, auditRequest.get(6)); // srcaddr
-            stmt.setString(8, auditRequest.get(6)); // srchost
+            stmt.setString(2, auditRequest.get(0)); // userguid
+            stmt.setString(3, auditRequest.get(0)); // userrole
+            stmt.setString(4, auditRequest.get(0)); // applid
+            stmt.setString(5, auditRequest.get(0)); // applname
+            stmt.setString(6, auditRequest.get(0)); // useraction
+            stmt.setString(7, auditRequest.get(0)); // srcaddr
+            stmt.setString(8, auditRequest.get(0)); // srchost
 
             if (DEBUG)
             {

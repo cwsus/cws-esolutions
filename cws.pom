@@ -6,7 +6,7 @@
     <name>CaspersBox Web Services</name>
     <groupId>com.cws</groupId>
     <artifactId>cws</artifactId>
-    <version>5.0</version>
+    <version>5.1.1</version>
     <packaging>pom</packaging>
     <description>CWS SuperPom</description>
     <url>http://www.caspersbox.com/</url>
@@ -31,7 +31,6 @@
         <slf4j.version>2.0.5</slf4j.version>
         <mail.version>2.1.0</mail.version>
         <activation.version>1.1.1</activation.version>
-        <mysql.version>8.0.31</mysql.version>
         <dnsjava.version>3.5.2</dnsjava.version>
         <unboundid-ldapsdk.version>6.0.7</unboundid-ldapsdk.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
@@ -249,10 +248,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j.version}</version>
-            <type>jar</type>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>2.19.0</version>
             <scope>compile</scope>
         </dependency>
         <!-- unbound id -->
@@ -271,13 +269,6 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>com.mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
         <!-- JAXB -->
         <dependency>
             <groupId>javax.xml.bind</groupId>
@@ -293,13 +284,15 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
             <version>${jaxb-runtime.version}</version>
             <type>jar</type>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
+        -->
     </dependencies>
 
     <build>
@@ -416,7 +409,6 @@
         </pluginManagement>
 
         <plugins>
-            <!--
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
@@ -434,7 +426,6 @@
                     </execution>
                 </executions>
             </plugin>
-            -->
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
@@ -497,6 +488,7 @@
                     </archive>
                 </configuration>
             </plugin>
+            <!-- commenting for now -->
             <!--
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>

@@ -38,9 +38,9 @@ import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 import org.apache.log4j.helpers.Loader;
 import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.xml.DOMConfigurator;
-import javax.servlet.ServletContextListener;
 
 import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.config.xml.DataSourceManager;

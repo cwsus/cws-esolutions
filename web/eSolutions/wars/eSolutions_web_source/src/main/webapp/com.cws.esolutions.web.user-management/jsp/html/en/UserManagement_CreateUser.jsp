@@ -32,6 +32,7 @@
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 --%>
+<%@page import="com.cws.esolutions.security.enums.SecurityUserRole" %>
 
 <script>
 <!--
@@ -131,21 +132,11 @@
             <form:select path="role" name="role" id="role">
                 <option value="<spring:message code='theme.option.select' />" selected="selected"><spring:message code='theme.option.select' /></option>
                 <option><spring:message code="theme.option.spacer" /></option>
-                <c:forEach var="role" items="${roles}">
-                    <option value="${role}">${role}</option>
-                </c:forEach>
+				<c:forEach items="<%= SecurityUserRole.values() %>" var="entry">
+    				<option>${entry.name }</option>
+				</c:forEach>
             </form:select>
-            <form:errors path="role" cssClass="error" />
-
-            <label id="txtUserType"><spring:message code="user.mgmt.user.type" /></label>
-            <form:select path="userType" name="userType" id="userType">
-                <option value="<spring:message code='theme.option.select' />" selected="selected"><spring:message code='theme.option.select' /></option>
-                <option><spring:message code="theme.option.spacer" /></option>
-                <c:forEach var="type" items="${userTypes}">
-                    <option value="${type}">${type}</option>
-                </c:forEach>
-            </form:select>
-            <form:errors path="userType" cssClass="error" />
+            <form:errors path="userRole" cssClass="error" />
 
             <label id="txtFirstName"><spring:message code="user.mgmt.user.givenname" /></label>
             <form:input path="givenName" type="text" size="20" value="" name="givenName" id="givenName" />

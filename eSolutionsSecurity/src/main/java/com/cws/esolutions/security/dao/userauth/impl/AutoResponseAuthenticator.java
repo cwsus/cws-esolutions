@@ -38,7 +38,7 @@ public class AutoResponseAuthenticator implements Authenticator
     private static final String CNAME = AutoResponseAuthenticator.class.getName();
 
     /**
-     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String)
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String, java.lang.String)
      */
     public synchronized boolean performLogon(final String userGuid, final String username, final String password) throws AuthenticatorException
     {
@@ -57,7 +57,7 @@ public class AutoResponseAuthenticator implements Authenticator
     /**
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainSecurityData(java.lang.String, java.lang.String)
      */
-    public synchronized List<String> obtainSecurityData(final String userId, final String userGuid) throws AuthenticatorException
+    public synchronized List<Object> obtainSecurityData(final String userId, final String userGuid) throws AuthenticatorException
     {
         final String methodName = AutoResponseAuthenticator.CNAME + "#obtainSecurityData(final String userId, final String userGuid) throws AuthenticatorException";
 
@@ -68,7 +68,7 @@ public class AutoResponseAuthenticator implements Authenticator
             DEBUGGER.debug("Value: {}", userGuid);
         }
 
-        List<String> userSecurity = null;
+        List<Object> userSecurity = null;
 
         return userSecurity;
     }

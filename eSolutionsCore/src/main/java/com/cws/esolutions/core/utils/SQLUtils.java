@@ -91,7 +91,7 @@ public class SQLUtils
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareStatement(query);
+            stmt = sqlConn.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
             if (DEBUG)
             {
@@ -188,7 +188,7 @@ public class SQLUtils
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall(query);
+            stmt = sqlConn.prepareCall(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
             if (!(params.isEmpty()))
             {

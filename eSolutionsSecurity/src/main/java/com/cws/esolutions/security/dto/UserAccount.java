@@ -51,8 +51,6 @@ public class UserAccount implements Serializable
     private KeyPair userKeys = null;
     private boolean accepted = false;
     private boolean olrSetup = false;
-    private String managerName = null;
-    private String managerGuid = null;
     private String displayName = null;
     private boolean olrLocked = false;
     private boolean suspended = false;
@@ -340,38 +338,6 @@ public class UserAccount implements Serializable
         }
 
         this.telephoneNumber = value;
-    }
-
-    /**
-     * @param value - The telephone number associated with the account
-     */
-    public final void setManagerGuid(final String value)
-    {
-        final String methodName = UserAccount.CNAME + "#setManagerGuid(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.managerGuid = value;
-    }
-
-    /**
-     * @param value - The telephone number associated with the account
-     */
-    public final void setManagerName(final String value)
-    {
-        final String methodName = UserAccount.CNAME + "#setManagerName(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.managerName = value;
     }
 
     /**
@@ -676,38 +642,6 @@ public class UserAccount implements Serializable
         }
 
         return this.telephoneNumber;
-    }
-
-    /**
-     * @return String
-     */
-    public final String getManagerGuid()
-    {
-        final String methodName = UserAccount.CNAME + "#getManagerGuid()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.managerGuid);
-        }
-
-        return this.managerGuid;
-    }
-
-    /**
-     * @return String
-     */
-    public final String getManagerName()
-    {
-        final String methodName = UserAccount.CNAME + "#getManagerName()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.managerName);
-        }
-
-        return this.managerName;
     }
 
     /**

@@ -1281,50 +1281,53 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
             }
 
-            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
-
-            if (DEBUG)
+            if (!(request.isResetRequest()))
             {
-                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-            }
+	            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
-            if (!(accessResponse.getIsUserAuthorized()))
-            {
-                // unauthorized
-                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-
-                // audit
-                try
-                {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.SEARCHACCOUNTS);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setAuthorized(Boolean.FALSE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
-                }
-
-                return response;
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+	            }
+	
+	            if (!(accessResponse.getIsUserAuthorized()))
+	            {
+	                // unauthorized
+	                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+	
+	                // audit
+	                try
+	                {
+	                    AuditEntry auditEntry = new AuditEntry();
+	                    auditEntry.setHostInfo(reqInfo);
+	                    auditEntry.setAuditType(AuditType.SEARCHACCOUNTS);
+	                    auditEntry.setUserAccount(userAccount);
+	                    auditEntry.setAuthorized(Boolean.FALSE);
+	                    auditEntry.setApplicationId(request.getApplicationId());
+	                    auditEntry.setApplicationName(request.getApplicationName());
+	
+	                    if (DEBUG)
+	                    {
+	                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+	                    }
+	
+	                    AuditRequest auditRequest = new AuditRequest();
+	                    auditRequest.setAuditEntry(auditEntry);
+	
+	                    if (DEBUG)
+	                    {
+	                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+	                    }
+	
+	                    auditor.auditRequest(auditRequest);
+	                }
+	                catch (final AuditServiceException asx)
+	                {
+	                    ERROR_RECORDER.error(asx.getMessage(), asx);
+	                }
+	
+	                return response;
+	            }
             }
 
             List<String[]> userList = userManager.searchUsers(userAccount.getEmailAddr());
@@ -1340,18 +1343,45 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 for (Object[] userData : userList)
                 {
-                    if (!(StringUtils.equals(reqAccount.getGuid(), (String) userData[0])))
-                    {
-                        UserAccount userInfo = new UserAccount();
-                        userInfo.setGuid((String) userData[0]);
-                        userInfo.setUsername((String) userData[1]);
+                	if (DEBUG)
+                	{
+                		DEBUGGER.debug("userData: {}", userData);
+                	}
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("UserAccount: {}", userInfo);
-                        }
+                	if (request.isResetRequest())
+                	{
+                		// we're looking for a single entry. if there's more than
+                		// one just dont do anything
+                		if (!(userList.size() == 0))
+                		{
+                			UserAccount userInfo = new UserAccount();
+                			userInfo.setGuid((String) userData[0]);
+                			userInfo.setUsername((String) userData[1]);
+                			userInfo.setEmailAddr((String) userData[2]);
 
-                        userAccounts.add(userInfo);
+	                        if (DEBUG)
+	                        {
+	                            DEBUGGER.debug("UserAccount: {}", userInfo);
+	                        }
+
+	                        userAccounts.add(userInfo);
+                		}
+                	}
+                	else
+                	{
+	                    if (!(StringUtils.equals(reqAccount.getGuid(), (String) userData[0])))
+	                    {
+	                        UserAccount userInfo = new UserAccount();
+	                        userInfo.setGuid((String) userData[0]);
+	                        userInfo.setUsername((String) userData[1]);
+
+	                        if (DEBUG)
+	                        {
+	                            DEBUGGER.debug("UserAccount: {}", userInfo);
+	                        }
+
+	                        userAccounts.add(userInfo);
+	                    }
                     }
                 }
 
@@ -1524,11 +1554,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 loadAccount.setDisplayName((String) userData.get(5));
                 loadAccount.setTelephoneNumber((userData.get(6) == null) ? SecurityServiceConstants.NOT_SET : (String) userData.get(6));
 
-                if (userData.size() > 7)
-                {
-                    loadAccount.setManagerGuid((String) userData.get(7));
-                    loadAccount.setManagerName((String) userData.get(8));
-                }
                 if (DEBUG)
                 {
                     DEBUGGER.debug("UserAccount: {}", loadAccount);

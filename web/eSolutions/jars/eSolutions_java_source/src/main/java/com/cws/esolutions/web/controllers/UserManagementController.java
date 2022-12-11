@@ -40,9 +40,7 @@ import org.springframework.stereotype.Controller;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -74,7 +72,7 @@ import com.cws.esolutions.security.processors.interfaces.IAccountControlProcesso
  * @see org.springframework.stereotype.Controller
  */
 @Controller
-@RequestMapping("/user-management")
+@RequestMapping("user-management")
 public class UserManagementController
 {
     private String resetURL = null;
@@ -455,6 +453,8 @@ public class UserManagementController
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
 
+        final IAccountControlProcessor processor = (IAccountControlProcessor) new AccountControlProcessorImpl();
+
         if (DEBUG)
         {
             DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
@@ -560,7 +560,6 @@ public class UserManagementController
                 DEBUGGER.debug("AccountControlRequest: {}", request);
             }
 
-            IAccountControlProcessor processor = new AccountControlProcessorImpl();
             AccountControlResponse response = processor.searchAccounts(request);
 
             if (DEBUG)

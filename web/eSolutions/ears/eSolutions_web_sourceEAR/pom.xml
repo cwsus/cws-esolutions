@@ -39,9 +39,10 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                         <webModule>
                             <groupId>${project.dependencies[0].groupId}</groupId>
                             <artifactId>${project.dependencies[0].artifactId}</artifactId>
-                            <contextRoot>/${project.groupId}</contextRoot>
+                            <contextRoot>/esolutions</contextRoot>
                         </webModule>
                     </modules>
+                    <packagingExcludes>**/*.jar</packagingExcludes>
                 </configuration>
             </plugin>
         </plugins>

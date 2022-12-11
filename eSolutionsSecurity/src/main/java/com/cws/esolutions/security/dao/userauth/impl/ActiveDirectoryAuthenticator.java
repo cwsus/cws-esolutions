@@ -51,7 +51,7 @@ public class ActiveDirectoryAuthenticator implements Authenticator
     private static final String CNAME = ActiveDirectoryAuthenticator.class.getName();
 
     /**
-     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String)
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String, java.lang.String	)
      */
     public synchronized boolean performLogon(final String userGuid, final String username, final String password) throws AuthenticatorException
     {
@@ -163,7 +163,7 @@ public class ActiveDirectoryAuthenticator implements Authenticator
     /**
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainSecurityData(java.lang.String, java.lang.String)
      */
-    public synchronized List<String> obtainSecurityData(final String userId, final String userGuid) throws AuthenticatorException
+    public synchronized List<Object> obtainSecurityData(final String userId, final String userGuid) throws AuthenticatorException
     {
         final String methodName = ActiveDirectoryAuthenticator.CNAME + "#obtainSecurityData(final String userId, final String userGuid) throws AuthenticatorException";
 
@@ -175,7 +175,7 @@ public class ActiveDirectoryAuthenticator implements Authenticator
         }
 
         LDAPConnection ldapConn = null;
-        List<String> userSecurity = null;
+        List<Object> userSecurity = null;
         LDAPConnectionPool ldapPool = null;
 
         try
@@ -232,7 +232,7 @@ public class ActiveDirectoryAuthenticator implements Authenticator
 
             SearchResultEntry entry = searchResult.getSearchEntries().get(0);
 
-            userSecurity = new ArrayList<String>(
+            userSecurity = new ArrayList<Object>(
                 Arrays.asList(
                     entry.getAttributeValue(securityAttributes.getSecQuestionOne()),
                     entry.getAttributeValue(securityAttributes.getSecQuestionTwo())));

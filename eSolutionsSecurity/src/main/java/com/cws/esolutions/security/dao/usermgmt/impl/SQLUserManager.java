@@ -78,7 +78,7 @@ public class SQLUserManager implements UserManager
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{ CALL getUserByAttribute(?) }");
+            stmt = sqlConn.prepareCall("{ CALL getUserByAttribute(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, userId);
 
             if (DEBUG)
@@ -341,7 +341,7 @@ public class SQLUserManager implements UserManager
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{ CALL getUserByAttribute(?) }");
+            stmt = sqlConn.prepareCall("{ CALL getUserByAttribute(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, searchData);
 
             if (DEBUG)
@@ -453,7 +453,7 @@ public class SQLUserManager implements UserManager
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{ CALL loadUserAccount(?) }");
+            stmt = sqlConn.prepareCall("{ CALL loadUserAccount(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, userGuid); // common name
 
             if (DEBUG)
@@ -574,7 +574,7 @@ public class SQLUserManager implements UserManager
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{ CALL listUserAccounts() }");
+            stmt = sqlConn.prepareCall("{ CALL listUserAccounts() }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
             if (DEBUG)
             {

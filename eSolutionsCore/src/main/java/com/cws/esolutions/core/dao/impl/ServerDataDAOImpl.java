@@ -323,7 +323,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL retrServerList(?)}");
+            stmt = sqlConn.prepareCall("{CALL retrServerList(?)}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setInt(1, startRow);
 
             if (DEBUG)
@@ -461,7 +461,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
                 sBuilder.append("+" + value);
             }
 
-            stmt = sqlConn.prepareCall("{CALL getServerByAttribute(?, ?)}");
+            stmt = sqlConn.prepareCall("{CALL getServerByAttribute(?, ?)}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, sBuilder.toString().trim());
             stmt.setInt(2, startRow);
 
@@ -564,7 +564,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
             // we dont know what we have here - it could be a guid or it could be a hostname
             // most commonly it'll be a guid, but we're going to search anyway
-            stmt = sqlConn.prepareCall("{ CALL retrServerData(?) }");
+            stmt = sqlConn.prepareCall("{ CALL retrServerData(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, attribute);
 
             if (DEBUG)

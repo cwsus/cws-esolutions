@@ -138,9 +138,7 @@
                                     <spring:message code='theme.contact.us' /></a>
                             </li>
                         </c:if>
-                        <c:set var="roleName" scope="page" value="${sessionScope.userAccount.userRole}" />
-
-                        <c:if test="${roleName eq SecurityUserRole.USER_ADMIN or roleName eq SecurityUserRole.ADMIN or roleName eq SecurityUserRole.SITE_ADMIN}">
+                        <c:if test="${sessionScope.userAccount.userRole eq SecurityUserRole.USER_ADMIN or roleName eq SecurityUserRole.ADMIN or roleName eq SecurityUserRole.SITE_ADMIN}">
 	                        <li class="last">
                             	<a href="${pageContext.request.contextPath}/ui/user-management/default" title="<spring:message code='theme.navbar.useradmin' />">
                                 	<spring:message code='theme.navbar.useradmin' /></a>

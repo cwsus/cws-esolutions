@@ -133,7 +133,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL retrUserSalt(?, ?)}");
+            stmt = sqlConn.prepareCall("{CALL retrUserSalt(?, ?)}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, commonName);
             stmt.setString(2, saltType);
 
@@ -341,7 +341,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL listActiveResetRequests()}");
+            stmt = sqlConn.prepareCall("{CALL listActiveResetRequests()}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
             if (DEBUG)
             {
@@ -423,7 +423,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL getResetData(?)}");
+            stmt = sqlConn.prepareCall("{CALL getResetData(?)}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, resetId);
 
             if (stmt.execute())

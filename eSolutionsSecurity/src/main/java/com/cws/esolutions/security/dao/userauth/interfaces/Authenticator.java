@@ -70,7 +70,6 @@ public interface Authenticator
      *
      * @param guid - The user's UUID
      * @param userId - the username to validate data against
-     * @param salt - The salt for the password to be hashed against
      * @param password - the password to validate data against
      * @return List - The account information for the authenticated user
      * @throws AuthenticatorException {@link com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException} if an exception occurs during processing
@@ -91,7 +90,7 @@ public interface Authenticator
      * @return List - The security data housed for the given user
      * @throws AuthenticatorException {@link com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException} if an exception occurs during processing
      */
-    List<String> obtainSecurityData(final String userId, final String guid) throws AuthenticatorException;
+    List<Object> obtainSecurityData(final String userId, final String guid) throws AuthenticatorException;
 
     /**
      * Processes an agent logon request via an LDAP user datastore. If the
