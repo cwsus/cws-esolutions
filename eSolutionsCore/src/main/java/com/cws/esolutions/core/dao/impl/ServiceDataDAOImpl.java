@@ -299,7 +299,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
 
                 if (resultSet.next())
                 {
-                    resultSet.beforeFirst();
+                    resultSet.absolute(startRow);
                     responseData = new ArrayList<String[]>();
 
                     while (resultSet.next())

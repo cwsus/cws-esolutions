@@ -279,7 +279,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
             stmt = sqlConn.prepareCall("{CALL listApplications(?, ?)}");
             stmt.setInt(1, startRow);
-            stmt.registerOutParameter(2, Types.INTEGER);
+            stmt.registerOutParameter(1, Types.INTEGER);
 
             if (DEBUG)
             {

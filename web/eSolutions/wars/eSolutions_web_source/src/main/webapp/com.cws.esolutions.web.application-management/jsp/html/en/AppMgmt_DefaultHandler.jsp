@@ -54,82 +54,95 @@
 //-->
 </script>
 
-<div id="sidebar">
-    <h1><spring:message code="app.mgmt.header" /></h1>
-    <ul>
-        <li><a href="${pageContext.request.contextPath}/ui/application-management/list-applications" title="<spring:message code='app.mgmt.list.applications' />"><spring:message code='app.mgmt.list.applications' /></a></li>
-        <li><a href="${pageContext.request.contextPath}/ui/application-management/add-application" title="<spring:message code='app.mgmt.add.application' />"><spring:message code='app.mgmt.add.application' /></a></li>
-    </ul>
+<div id="homecontent">
+	<div class="wrapper">
+	    <c:if test="${not empty fn:trim(messageResponse)}">
+	        <p id="info">${messageResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(errorResponse)}">
+	        <p id="error">${errorResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(responseMessage)}">
+	        <p id="info"><spring:message code="${responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(errorMessage)}">
+	        <p id="error"><spring:message code="${errorMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(param.responseMessage)}">
+	        <p id="info"><spring:message code="${param.responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(param.errorMessage)}">
+	        <p id="error"><spring:message code="${param.errorMessage}" /></p>
+	    </c:if>
+
+	    <h1><spring:message code="app.mgmt.header" /></h1>
+	    <ul>
+	        <li><a href="${pageContext.request.contextPath}/ui/application-management/list-applications" title="<spring:message code='app.mgmt.list.applications' />"><spring:message code='app.mgmt.list.applications' /></a></li>
+	        <li><a href="${pageContext.request.contextPath}/ui/application-management/add-application" title="<spring:message code='app.mgmt.add.application' />"><spring:message code='app.mgmt.add.application' /></a></li>
+	    </ul>
+	</div>
 </div>
 
-<div id="main">
-    <h1><spring:message code="theme.search.header" /></h1>
-
-    <div id="error"></div>
-
-    <c:if test="${not empty fn:trim(messageResponse)}">
-        <p id="info">${messageResponse}</p>
-    </c:if>
-    <c:if test="${not empty fn:trim(errorResponse)}">
-        <p id="error">${errorResponse}</p>
-    </c:if>
-    <c:if test="${not empty fn:trim(responseMessage)}">
-        <p id="info"><spring:message code="${responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(errorMessage)}">
-        <p id="error"><spring:message code="${errorMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(param.responseMessage)}">
-        <p id="info"><spring:message code="${param.responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(param.errorMessage)}">
-        <p id="error"><spring:message code="${param.errorMessage}" /></p>
-    </c:if>
-
-    <p>
-        <form:form id="searchRequest" name="searchRequest" action="${pageContext.request.contextPath}/ui/application-management/search" method="post">
-            <label id="txtAppName"><spring:message code="theme.search.terms" /></label>
-            <form:input path="searchTerms" />
-            <form:errors path="searchTerms" cssClass="error" />
-            <br /><br />
-            <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-            <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-            <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-        </form:form>
-    </p>
-
-    <c:if test="${not empty searchResults}">
-        <h1><spring:message code="theme.search.results" /></h1>
-        <table id="searchResults">
-            <c:forEach var="result" items="${searchResults}">
-                <tr>
-                    <td><a href="${pageContext.request.contextPath}/ui/application-management/application/${result.path}" title="${result.title}">${result.title}</a></td>
-                </tr>
-            </c:forEach>
-        </table>
-
-        <c:if test="${pages gt 1}">
-            <br />
-            <hr />
-            <br />
-            <table>
-                <tr>
-                    <c:forEach begin="1" end="${pages}" var="i">
-                        <c:choose>
-                            <c:when test="${page eq i}">
-                                <td>${i}</td>
-                            </c:when>
-                            <c:otherwise>
-                                <td>
-                                    <a href="${pageContext.request.contextPath}/application-management/search/terms/${searchTerms}/page/${i}" title="{i}">${i}</a>
-                                </td>
-                            </c:otherwise>
-                        </c:choose>
-                    </c:forEach>
-                </tr>
-            </table>
-        </c:if>
-    </c:if>
+<div id="container">
+	<div class="wrapper">
+		<div id="holder">
+			<h2><spring:message code="app.mgmt.search.applications" /></h2>
+			<ul id="latestnews">
+	      		<li>
+	      			<p>
+			        	<form:form id="searchRequest" name="searchRequest" action="${pageContext.request.contextPath}/ui/application-management/search" method="post">
+			            	<label id="txtAppName"><spring:message code="theme.search.terms" /></label>
+				            <form:input path="searchTerms" />
+				            <form:errors path="searchTerms" cssClass="error" />
+				            <br /><br />
+				            <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+			    	        <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+			        	    <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+			        	</form:form>
+			        </p>
+	      		</li>
+	    	</ul>
+		</div>
+		<br class="clear" />
+	</div>
 </div>
 
-<div id="rightbar">&nbsp;</div>
+<c:if test="${not empty searchResults}">
+	<div id="container">
+		<div class="wrapper">
+			<div id="content">
+		        <h1><spring:message code="theme.search.results" /></h1>
+		        <table id="searchResults">
+		            <c:forEach var="result" items="${searchResults}">
+		                <tr>
+		                    <td><a href="${pageContext.request.contextPath}/ui/application-management/application/${result.path}" title="${result.title}">${result.title}</a></td>
+		                </tr>
+		            </c:forEach>
+		        </table>
+		
+		        <c:if test="${pages gt 1}">
+		            <br />
+		            <hr />
+		            <br />
+		            <table>
+		                <tr>
+		                    <c:forEach begin="1" end="${pages}" var="i">
+		                        <c:choose>
+		                            <c:when test="${page eq i}">
+		                                <td>${i}</td>
+		                            </c:when>
+		                            <c:otherwise>
+		                                <td>
+		                                    <a href="${pageContext.request.contextPath}/application-management/search/terms/${searchTerms}/page/${i}" title="{i}">${i}</a>
+		                                </td>
+		                            </c:otherwise>
+		                        </c:choose>
+		                    </c:forEach>
+		                </tr>
+		            </table>
+		        </c:if>
+			</div>
+			<br class="clear" />
+		</div>
+	</div>
+</c:if>

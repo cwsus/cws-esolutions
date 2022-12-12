@@ -107,92 +107,96 @@
     //-->
 </script>
 
-<div id="sidebar">
-    <h1><spring:message code="app.mgmt.header" /></h1>
-    <ul>
-        <li><a href="${pageContext.request.contextPath}/ui/application-management/list-applications" title="<spring:message code='app.mgmt.list.applications' />"><spring:message code='app.mgmt.list.applications' /></a></li>
-    </ul>
+<div id="homecontent">
+    <div class="wrapper">
+        <c:if test="${not empty fn:trim(messageResponse)}">
+            <p id="info">${messageResponse}</p>
+        </c:if>
+        <c:if test="${not empty fn:trim(errorResponse)}">
+            <p id="error">${errorResponse}</p>
+        </c:if>
+        <c:if test="${not empty fn:trim(responseMessage)}">
+            <p id="info"><spring:message code="${responseMessage}" /></p>
+        </c:if>
+        <c:if test="${not empty fn:trim(errorMessage)}">
+            <p id="error"><spring:message code="${errorMessage}" /></p>
+        </c:if>
+        <c:if test="${not empty fn:trim(param.responseMessage)}">
+            <p id="info"><spring:message code="${param.responseMessage}" /></p>
+        </c:if>
+        <c:if test="${not empty fn:trim(param.errorMessage)}">
+            <p id="error"><spring:message code="${param.errorMessage}" /></p>
+        </c:if>
+
+        <h1><spring:message code="app.mgmt.header" /></h1>
+        <ul>
+            <li><a href="${pageContext.request.contextPath}/ui/application-management/list-applications" title="<spring:message code='app.mgmt.list.applications' />"><spring:message code='app.mgmt.list.applications' /></a></li>
+            <li><a href="${pageContext.request.contextPath}/ui/application-management/add-application" title="<spring:message code='app.mgmt.add.application' />"><spring:message code='app.mgmt.add.application' /></a></li>
+        </ul>
+    </div>
 </div>
 
-<div id="main">
-    <h1><spring:message code="app.mgmt.add.application" /></h1>
+<div id="container">
+    <div class="wrapper">
+        <div id="holder">
+            <h2><spring:message code="app.mgmt.search.applications" /></h2>
+            <ul id="latestnews">
+                <li>
+                    <p>
+                        <form:form id="createNewApplication" name="createNewApplication" action="${pageContext.request.contextPath}/ui/application-management/add-application" method="post">
+                            <label id="txtApplicationName"><spring:message code="app.mgmt.application.name" /></label>
+                            <form:input path="name" />
+                            <form:errors path="name" cssClass="error" />
 
-    <div id="error"></div>
+                            <label id="txtApplicationVersion"><spring:message code="app.mgmt.application.version" /></label>
+                            <form:input path="version" />
+                            <form:errors path="version" cssClass="error" />
 
-    <c:if test="${not empty fn:trim(messageResponse)}">
-        <p id="info">${messageResponse}</p>
-    </c:if>
-    <c:if test="${not empty fn:trim(errorResponse)}">
-        <p id="error">${errorResponse}</p>
-    </c:if>
-    <c:if test="${not empty fn:trim(bindResult)}">
-        <p id="error">${bindResult}</p>
-    </c:if>
-    <c:if test="${not empty fn:trim(responseMessage)}">
-        <p id="info"><spring:message code="${responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(errorMessage)}">
-        <p id="error"><spring:message code="${errorMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(param.responseMessage)}">
-        <p id="info"><spring:message code="${param.responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(param.errorMessage)}">
-        <p id="error"><spring:message code="${param.errorMessage}" /></p>
-    </c:if>
+                            <label id="txtApplicationPlatform"><spring:message code="app.mgmt.application.platform" /></label>
+                            <c:choose>
+                                <c:when test="${not empty platformListing}">
+                                    <form:select path="platform" multiple="true">
+                                        <c:forEach var="platform" items="${platformListing}">
+                                            <form:option value="${platform.key}" label="${platform.value}" />
+                                        </c:forEach>
+                                    </form:select>
+                                </c:when>
+                                <c:otherwise>
+                                    <a href="${pageContext.request.contextPath}/ui/application-management/add-platform"
+                                        title="<spring:message code='select.request.add.platform' />"><spring:message code='select.request.add.platform' /></a>
+                                </c:otherwise>
+                            </c:choose>
+                            <form:errors path="platform" cssClass="error" />
 
-    <p>
-        <form:form id="createNewApplication" name="createNewApplication" action="${pageContext.request.contextPath}/ui/application-management/add-application" method="post">
-            <label id="txtApplicationName"><spring:message code="app.mgmt.application.name" /></label>
-            <form:input path="name" />
-            <form:errors path="name" cssClass="error" />
+                            <label id="txtBasePath"><spring:message code="app.mgmt.base.path" /></label>
+                            <form:input path="basePath" />
+                            <form:errors path="basePath" cssClass="error" />
 
-            <label id="txtApplicationVersion"><spring:message code="app.mgmt.application.version" /></label>
-            <form:input path="version" />
-            <form:errors path="version" cssClass="error" />
+                            <label id="txtApplicationLogsPath"><spring:message code="app.mgmt.application.applogs.path" /></label>
+                            <form:input path="logsPath" />
+                            <form:errors path="logsPath" cssClass="error" />
 
-            <label id="txtApplicationPlatform"><spring:message code="app.mgmt.application.platform" /></label>
-            <c:choose>
-                <c:when test="${not empty platformListing}">
-                    <form:select path="platform" multiple="true">
-                        <c:forEach var="platform" items="${platformListing}">
-                            <form:option value="${platform.key}" label="${platform.value}" />
-                        </c:forEach>
-                    </form:select>
-                </c:when>
-                <c:otherwise>
-                    <a href="${pageContext.request.contextPath}/ui/application-management/add-platform"
-                        title="<spring:message code='select.request.add.platform' />"><spring:message code='select.request.add.platform' /></a>
-                </c:otherwise>
-            </c:choose>
-            <form:errors path="platform" cssClass="error" />
+                            <label id="txtApplicationInstallPath"><spring:message code="app.mgmt.application.install.path" /></label>
+                            <form:input path="installPath" />
+                            <form:errors path="installPath" cssClass="error" />
 
-            <label id="txtBasePath"><spring:message code="app.mgmt.base.path" /></label>
-            <form:input path="basePath" />
-            <form:errors path="basePath" cssClass="error" />
+                            <label id="txtIsScmEnabled"><spring:message code="app.mgmt.application.scm.enabled" /></label>
+                            <form:checkbox path="isScmEnabled" name="isScmEnabled" id="isScmEnabled" onclick="showScmData(this);" />
+                            <form:errors path="isScmEnabled" cssClass="error" />
 
-            <label id="txtApplicationLogsPath"><spring:message code="app.mgmt.application.applogs.path" /></label>
-            <form:input path="logsPath" />
-            <form:errors path="logsPath" cssClass="error" />
+                            <label id="txtScmPath"><spring:message code="app.mgmt.application.scm.path" /></label>
+                            <form:input path="scmPath" />
+                            <form:errors path="scmPath" cssClass="error" />
 
-            <label id="txtApplicationInstallPath"><spring:message code="app.mgmt.application.install.path" /></label>
-            <form:input path="installPath" />
-            <form:errors path="installPath" cssClass="error" />
-
-            <label id="txtIsScmEnabled"><spring:message code="app.mgmt.application.scm.enabled" /></label>
-            <form:checkbox path="isScmEnabled" name="isScmEnabled" id="isScmEnabled" onclick="showScmData(this);" />
-            <form:errors path="isScmEnabled" cssClass="error" />
-
-            <label id="txtScmPath"><spring:message code="app.mgmt.application.scm.path" /></label>
-            <form:input path="scmPath" />
-            <form:errors path="scmPath" cssClass="error" />
-
-            <br /><br />
-            <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-            <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-            <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-        </form:form>
-    </p>
+                            <br /><br />
+                            <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+                            <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+                            <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+                        </form:form>
+                    </p>
+                </li>
+            </ul>
+        </div>
+        <br class="clear" />
+    </div>
 </div>
-
-<div id="rightbar">&nbsp;</div>

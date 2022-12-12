@@ -96,9 +96,11 @@
 	                <label id="txtMessageSubject"><spring:message code="theme.add.contact.request.subject" /></label>
 	                <form:input path="messageSubject" />
 	                <form:errors path="messageSubject" cssClass="error" />
+	                <br /><br />
 	                <label id="txtRequestorEmail"><spring:message code="theme.add.contact.source.email" /></label>
 	                <form:input path="emailAddr" />
 	                <form:errors path="emailAddr" cssClass="error" />
+	                <br /><br />
 	                <label id="txtMessageBody"><spring:message code="theme.add.contact.request.body" /></label>
 	                <form:textarea path="messageBody" />
 	                <form:errors path="messageBody" cssClass="error" />
@@ -111,11 +113,3 @@
   		<br class="clear" />
 	</div>
 </div>
-
-<div id="sidebar">&nbsp;</div>
-
-<div id="main">
-
-</div>
-
-<div id="rightbar">&nbsp;</div>

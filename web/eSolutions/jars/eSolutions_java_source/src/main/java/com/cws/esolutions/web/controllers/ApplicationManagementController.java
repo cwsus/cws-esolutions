@@ -553,9 +553,9 @@ public class ApplicationManagementController
     }
 
     @RequestMapping(value = "list-applications", method = RequestMethod.GET)
-    public final String doListApplications(final Model model)
+    public final String listInstalledApplications(final Model model)
     {
-        final String methodName = ApplicationManagementController.CNAME + "#doListApplications(final Model model)";
+        final String methodName = ApplicationManagementController.CNAME + "#listInstalledApplications(final Model model)";
 
         if (DEBUG)
         {
