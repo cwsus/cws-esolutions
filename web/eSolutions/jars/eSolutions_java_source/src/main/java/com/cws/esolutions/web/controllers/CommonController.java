@@ -32,6 +32,7 @@ import java.util.Enumeration;
 import org.slf4j.LoggerFactory;
 import org.springframework.ui.Model;
 import javax.servlet.http.HttpSession;
+import org.springframework.mail.MailSender;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Controller;
@@ -60,7 +61,7 @@ import com.cws.esolutions.web.validators.EmailMessageValidator;
 public class CommonController
 {
     private String homePage = null;
-    private JavaMailSender mailSender = null;
+    private MailSender mailSender = null;
     private ApplicationServiceBean appConfig = null;
     private SimpleMailMessage contactResponseEmail = null;
 
@@ -260,7 +261,6 @@ public class CommonController
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("EmailMessage: {}", message);
-            DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();

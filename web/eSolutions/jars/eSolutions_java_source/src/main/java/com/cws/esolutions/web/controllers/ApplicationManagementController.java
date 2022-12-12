@@ -423,7 +423,6 @@ public class ApplicationManagementController
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", terms);
             DEBUGGER.debug("Value: {}", page);
-            DEBUGGER.debug("Model: {}", model);
         }
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
@@ -1876,7 +1875,6 @@ public class ApplicationManagementController
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("SearchRequest: {}", application);
-            DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
@@ -2007,7 +2005,6 @@ public class ApplicationManagementController
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", request);
-            DEBUGGER.debug("Value: {}", bindResult);
         }
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();

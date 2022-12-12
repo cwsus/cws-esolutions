@@ -271,7 +271,6 @@ public class DNSServiceController
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("DNSRecord: {}", request);
-            DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
         String responsePage = null;

@@ -1257,6 +1257,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             DEBUGGER.debug("AccountControlRequest: {}", request);
         }
 
+        List<UserAccount> userAccounts = new ArrayList<UserAccount>();
         AccountControlResponse response = new AccountControlResponse();
 
         final RequestHostInfo reqInfo = request.getHostInfo();
@@ -1330,79 +1331,94 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 	            }
             }
 
-            List<String[]> userList = userManager.searchUsers(userAccount.getEmailAddr());
-
-            if (DEBUG)
+            if (request.isResetRequest())
             {
-                DEBUGGER.debug("userList: {}", userList);
-            }
+            	List<Object> resetList = userManager.getUserByEmailAddress(userAccount.getEmailAddr());
 
-            if ((userList != null) && (userList.size() != 0))
-            {
-                List<UserAccount> userAccounts = new ArrayList<UserAccount>();
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("resetList: {}", resetList);
+	            }
 
-                for (Object[] userData : userList)
-                {
-                	if (DEBUG)
-                	{
-                		DEBUGGER.debug("userData: {}", userData);
-                	}
+	            if ((resetList != null) && (resetList.size() == 1))
+	            {
+	                for (Object userData : resetList)
+	                {
+	                	if (DEBUG)
+	                	{
+	                		DEBUGGER.debug("userData: {}", userData);
+	                	}
 
-                	if (request.isResetRequest())
-                	{
-                		// we're looking for a single entry. if there's more than
-                		// one just dont do anything
-                		if (!(userList.size() == 0))
-                		{
-                			UserAccount userInfo = new UserAccount();
-                			userInfo.setGuid((String) userData[0]);
-                			userInfo.setUsername((String) userData[1]);
-                			userInfo.setEmailAddr((String) userData[2]);
+	                	UserAccount userInfo = new UserAccount();
+	                	userInfo.setGuid((String) resetList.get(0));
+	                	userInfo.setUsername((String) resetList.get(1));
+	                	userInfo.setEmailAddr((String) resetList.get(2));
 
-	                        if (DEBUG)
-	                        {
-	                            DEBUGGER.debug("UserAccount: {}", userInfo);
-	                        }
+		                if (DEBUG)
+		                {
+		                	DEBUGGER.debug("UserAccount: {}", userInfo);
+		                }
 
-	                        userAccounts.add(userInfo);
-                		}
-                	}
-                	else
-                	{
-	                    if (!(StringUtils.equals(reqAccount.getGuid(), (String) userData[0])))
-	                    {
-	                        UserAccount userInfo = new UserAccount();
-	                        userInfo.setGuid((String) userData[0]);
-	                        userInfo.setUsername((String) userData[1]);
-
-	                        if (DEBUG)
-	                        {
-	                            DEBUGGER.debug("UserAccount: {}", userInfo);
-	                        }
-
-	                        userAccounts.add(userInfo);
-	                    }
-                    }
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("userAccounts: {}", userAccounts);
-                }
-
-                if (userAccounts.size() == 0)
-                {
-                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                }
-                else
-                {
-                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    response.setUserList(userAccounts);
-                }
+		                userAccounts.add(userInfo);
+	                }
+	            }
+	            else
+	            {
+	            	throw new AccountControlException("Failed to load account for the given information.");
+	            }
             }
             else
             {
-                response.setRequestStatus(SecurityRequestStatus.FAILURE);
+            	List<String[]> userList = userManager.searchUsers(userAccount.getEmailAddr());
+
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("userList: {}", userList);
+	            }
+
+	            if ((userList != null) && (userList.size() != 0))
+	            {
+	                for (Object[] userData : userList)
+	                {
+	                	if (DEBUG)
+	                	{
+	                		DEBUGGER.debug("userData: {}", userData);
+	                	}
+
+	                	if (!(StringUtils.equals(reqAccount.getGuid(), (String) userData[0])))
+	                	{
+	                		UserAccount userInfo = new UserAccount();
+	                		userInfo.setGuid((String) userData[0]);
+	                		userInfo.setUsername((String) userData[1]);
+
+	                		if (DEBUG)
+	                		{
+	                			DEBUGGER.debug("UserAccount: {}", userInfo);
+	                		}
+
+	                		userAccounts.add(userInfo);
+
+	                        if (DEBUG)
+	                        {
+	                        	DEBUGGER.debug("userAccounts: {}", userAccounts);
+	                        }
+
+	                        if (userAccounts.size() == 0)
+	                        {
+	                        	response.setRequestStatus(SecurityRequestStatus.FAILURE);
+	                        }
+	                        else
+	                        {
+	                        	response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+	                            response.setUserList(userAccounts);
+	                        }
+	                	}
+	                }
+	            }
+	            else
+	            {
+	            	throw new AccountControlException("Failed to load account for the given information.");
+	            }
             }
         }
         catch (final UserManagementException umx)

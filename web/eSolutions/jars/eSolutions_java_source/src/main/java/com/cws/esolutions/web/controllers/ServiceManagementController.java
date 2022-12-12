@@ -262,7 +262,6 @@ public class ServiceManagementController
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Model: {}", model);
         }
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
@@ -336,7 +335,6 @@ public class ServiceManagementController
             DEBUGGER.debug("Value: {}", terms);
             DEBUGGER.debug("Value: {}", type);
             DEBUGGER.debug("Value: {}", page);
-            DEBUGGER.debug("Value: {}", model);
         }
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
@@ -471,7 +469,6 @@ public class ServiceManagementController
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Model: {}", model);
         }
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
@@ -608,7 +605,7 @@ public class ServiceManagementController
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Model: {}", model);
+            DEBUGGER.debug("Page: {}", page);
         }
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
@@ -746,7 +743,6 @@ public class ServiceManagementController
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Model: {}", model);
         }
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
@@ -1264,7 +1260,6 @@ public class ServiceManagementController
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("SearchRequest: {}", service);
-            DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
         ModelAndView mView = new ModelAndView();
@@ -1407,7 +1402,6 @@ public class ServiceManagementController
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", service);
-            DEBUGGER.debug("Value: {}", bindResult);
         }
 
         ModelAndView mView = new ModelAndView();

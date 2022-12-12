@@ -452,7 +452,6 @@ public class UserManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-
         final IAccountControlProcessor processor = (IAccountControlProcessor) new AccountControlProcessorImpl();
 
         if (DEBUG)
@@ -842,7 +841,7 @@ public class UserManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAuditProcessor processor = new AuditProcessorImpl();
+        final IAuditProcessor processor = (IAuditProcessor) new AuditProcessorImpl();
 
         if (DEBUG)
         {
@@ -997,7 +996,7 @@ public class UserManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAuditProcessor processor = new AuditProcessorImpl();
+        final IAuditProcessor processor = (IAuditProcessor) new AuditProcessorImpl();
 
         if (DEBUG)
         {
@@ -1152,7 +1151,7 @@ public class UserManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAccountControlProcessor processor = new AccountControlProcessorImpl();
+        final IAccountControlProcessor processor = (IAccountControlProcessor) new AccountControlProcessorImpl();
 
         if (DEBUG)
         {
@@ -1285,7 +1284,7 @@ public class UserManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAccountControlProcessor processor = new AccountControlProcessorImpl();
+        final IAccountControlProcessor processor = (IAccountControlProcessor) new AccountControlProcessorImpl();
 
         if (DEBUG)
         {
@@ -1418,7 +1417,7 @@ public class UserManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAccountControlProcessor processor = new AccountControlProcessorImpl();
+        final IAccountControlProcessor processor = (IAccountControlProcessor) new AccountControlProcessorImpl();
 
         if (DEBUG)
         {
@@ -1552,7 +1551,7 @@ public class UserManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAccountControlProcessor processor = new AccountControlProcessorImpl();
+        final IAccountControlProcessor processor = (IAccountControlProcessor) new AccountControlProcessorImpl();
 
         if (DEBUG)
         {
@@ -1685,7 +1684,7 @@ public class UserManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAccountControlProcessor processor = new AccountControlProcessorImpl();
+        final IAccountControlProcessor processor = (IAccountControlProcessor) new AccountControlProcessorImpl();
 
         if (DEBUG)
         {
@@ -1920,7 +1919,7 @@ public class UserManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAccountControlProcessor processor = new AccountControlProcessorImpl();
+        final IAccountControlProcessor processor = (IAccountControlProcessor) new AccountControlProcessorImpl();
 
         if (DEBUG)
         {
@@ -2229,14 +2228,13 @@ public class UserManagementController
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", user);
-            DEBUGGER.debug("Value: {}", bindResult);
         }
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAccountControlProcessor processor = new AccountControlProcessorImpl();
+        final IAccountControlProcessor processor = (IAccountControlProcessor) new AccountControlProcessorImpl();
 
         if (DEBUG)
         {

@@ -59,7 +59,7 @@ import com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor;
  * @see org.springframework.stereotype.Controller
  */
 @Controller
-@RequestMapping("/system-check")
+@RequestMapping("system-check")
 public class SystemCheckController
 {
     private String serviceId = null;
@@ -597,7 +597,6 @@ public class SystemCheckController
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("SystemCheckRequest: {}", request);
-            DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
         ModelAndView mView = new ModelAndView();
@@ -729,7 +728,6 @@ public class SystemCheckController
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("SystemCheckRequest: {}", request);
-            DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
         ModelAndView mView = new ModelAndView();
@@ -865,7 +863,6 @@ public class SystemCheckController
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("SystemCheckRequest: {}", request);
-            DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
         ModelAndView mView = new ModelAndView();

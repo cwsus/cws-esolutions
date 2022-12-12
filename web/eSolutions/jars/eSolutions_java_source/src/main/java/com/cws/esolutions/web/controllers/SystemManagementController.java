@@ -389,7 +389,7 @@ public class SystemManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        IServerManagementProcessor processor = new ServerManagementProcessorImpl();
+        final IServerManagementProcessor processor = (IServerManagementProcessor) new ServerManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -520,7 +520,7 @@ public class SystemManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IServerManagementProcessor serverMgr = new ServerManagementProcessorImpl();
+        final IServerManagementProcessor serverMgr = (IServerManagementProcessor) new ServerManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -664,7 +664,7 @@ public class SystemManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IServerManagementProcessor serverMgr = new ServerManagementProcessorImpl();
+        final IServerManagementProcessor serverMgr = (IServerManagementProcessor) new ServerManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -912,8 +912,8 @@ public class SystemManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IServerManagementProcessor processor = new ServerManagementProcessorImpl();
-        final IServiceManagementProcessor svcProcessor = new ServiceManagementProcessorImpl();
+        final IServerManagementProcessor processor = (IServerManagementProcessor) new ServerManagementProcessorImpl();
+        final IServiceManagementProcessor svcProcessor = (IServiceManagementProcessor) new ServiceManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -1093,7 +1093,6 @@ public class SystemManagementController
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("ServerRequest: {}", request);
-            DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
         ModelAndView mView = new ModelAndView(new RedirectView());
@@ -1102,7 +1101,7 @@ public class SystemManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IServerManagementProcessor serverMgr = new ServerManagementProcessorImpl();
+        final IServerManagementProcessor serverMgr = (IServerManagementProcessor) new ServerManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -1366,7 +1365,6 @@ public class SystemManagementController
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("SystemCheckRequest: {}", request);
-            DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
         ModelAndView mView = new ModelAndView();
@@ -1448,7 +1446,6 @@ public class SystemManagementController
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", server);
-            DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
         ModelAndView mView = new ModelAndView();
@@ -1457,7 +1454,7 @@ public class SystemManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IServerManagementProcessor processor = new ServerManagementProcessorImpl();
+        final IServerManagementProcessor processor = (IServerManagementProcessor) new ServerManagementProcessorImpl();
 
         if (DEBUG)
         {

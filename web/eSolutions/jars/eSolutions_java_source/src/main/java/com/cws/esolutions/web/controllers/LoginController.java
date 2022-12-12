@@ -361,9 +361,6 @@ public class LoginController
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("LoginRequest: {}", loginRequest);
-            DEBUGGER.debug("BindingResult: {}", bindResult);
-            DEBUGGER.debug("Model: {}", model);
-            DEBUGGER.debug("RedirectAttributes: {}", redirectAttributes);
         }
 
         model.addAttribute(Constants.ALLOW_RESET, this.allowUserReset);
@@ -585,7 +582,6 @@ public class LoginController
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("AuthenticationData: {}", security);
-            DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
         model.addAttribute(Constants.ALLOW_RESET, this.allowUserReset);

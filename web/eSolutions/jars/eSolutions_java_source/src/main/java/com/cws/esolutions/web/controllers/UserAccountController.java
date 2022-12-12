@@ -312,7 +312,6 @@ public class UserAccountController
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Model: {}", model);
         }
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
@@ -916,7 +915,7 @@ public class UserAccountController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAccountChangeProcessor processor = new AccountChangeProcessorImpl();
+        final IAccountChangeProcessor processor = (IAccountChangeProcessor) new AccountChangeProcessorImpl();
 
         if (DEBUG)
         {
@@ -1028,7 +1027,6 @@ public class UserAccountController
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("UserChangeRequest: {}", changeReq);
-            DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
         AuthenticationData userSecurity = null;
@@ -1038,7 +1036,7 @@ public class UserAccountController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAccountChangeProcessor processor = new AccountChangeProcessorImpl();
+        final IAccountChangeProcessor processor = (IAccountChangeProcessor) new AccountChangeProcessorImpl();
 
         if (DEBUG)
         {
@@ -1223,7 +1221,6 @@ public class UserAccountController
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("UserChangeRequest: {}", changeReq);
-            DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
         ModelAndView mView = new ModelAndView();
@@ -1232,7 +1229,7 @@ public class UserAccountController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAccountChangeProcessor processor = new AccountChangeProcessorImpl();
+        final IAccountChangeProcessor processor = (IAccountChangeProcessor) new AccountChangeProcessorImpl();
 
         if (DEBUG)
         {
@@ -1368,7 +1365,6 @@ public class UserAccountController
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("UserChangeRequest: {}", changeReq);
-            DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
         ModelAndView mView = new ModelAndView();
@@ -1377,7 +1373,7 @@ public class UserAccountController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAccountChangeProcessor processor = new AccountChangeProcessorImpl();
+        final IAccountChangeProcessor processor = (IAccountChangeProcessor) new AccountChangeProcessorImpl();
 
         if (DEBUG)
         {
@@ -1517,7 +1513,6 @@ public class UserAccountController
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("UserChangeRequest: {}", changeReq);
-            DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
         ModelAndView mView = new ModelAndView();
@@ -1527,7 +1522,7 @@ public class UserAccountController
         final HttpSession hSession = hRequest.getSession();
         final EmailAddressValidator emailValidator = this.appConfig.getEmailValidator();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAccountChangeProcessor processor = new AccountChangeProcessorImpl();
+        final IAccountChangeProcessor processor = (IAccountChangeProcessor) new AccountChangeProcessorImpl();
 
         if (DEBUG)
         {
@@ -1674,7 +1669,6 @@ public class UserAccountController
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("UserChangeRequest: {}", changeReq);
-            DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
         ModelAndView mView = new ModelAndView();
@@ -1683,7 +1677,7 @@ public class UserAccountController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAccountChangeProcessor processor = new AccountChangeProcessorImpl();
+        final IAccountChangeProcessor processor = (IAccountChangeProcessor) new AccountChangeProcessorImpl();
 
         if (DEBUG)
         {

@@ -35,16 +35,14 @@
 
 <%@page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" isThreadSafe="true" isErrorPage="true" %>
 
-<div id="sidebar">&nbsp;</div>
-
-<div id="main">
-    <h1><spring:message code="theme.error.system.failure" /></h1>
-    <p>
-        <spring:message code="theme.system.service.failure" />
-       	<pre>
-       		<%= exception.getMessage() %>
-       	</pre>
-    </p>
+<div id="homecontent">
+	<div class="wrapper">
+	    <h1><spring:message code="theme.error.system.failure" /></h1>
+	    <p>
+        	<spring:message code="theme.system.service.failure" />
+       		<pre>
+    	   		<%= exception.getMessage() %>
+	       	</pre>
+	    </p>
+	</div>
 </div>
-
-<div id="rightbar">&nbsp;</div>	

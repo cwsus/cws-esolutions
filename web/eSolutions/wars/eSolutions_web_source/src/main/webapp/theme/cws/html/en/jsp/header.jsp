@@ -50,8 +50,8 @@
     xsi:schemaLocation="http://www.w3.org/1999/xhtml http://www.w3.org/MarkUp/SCHEMA/xhtml2.xsd">
 
     <head>
-        <title>eSolutions</title>
-        <link rel="stylesheet" type="text/css" media="all" href="/static/css/esolutions.css" />
+        <title><spring:message code="theme.title" /></title>
+        <link rel="stylesheet" href="/static/layout/styles/layout.css" type="text/css" />
         <link rel="image/x-icon" href="/static/img/favicon.ico" />
         <link rel="shortcut icon" href="/static/img/favicon.ico" type="image/x-icon" />
         <meta http-equiv="Content-Script-Type" content="text/javascript" />
@@ -61,15 +61,29 @@
         <meta http-equiv="expires" content="-1" />
         <meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate" />
         <meta http-equiv="max-age" content="0" />
-        <meta http-equiv="refresh" content="900; ${pageContext.request.contextPath}/ui/auth/logout" />
         <meta name="robots" content="index,follow,noarchive" />
         <meta name="GoogleBot" content="noarchive" />
         <meta name="Author" content="eSolutions" />
         <meta name="copyright" content="<spring:message code="theme.footer.copyright" />" />
         <meta name="description" content="eSolutionsService" />
         <meta name="keywords" content="incident, change management, incident management, infinix, caspersbox, caspersbox web services" />
+		<script type="text/javascript" src="/static/layout/scripts/jquery.min.js"></script>
+		<script type="text/javascript" src="/static/layout/scripts/jquery.easing.1.3.js"></script>
+		<script type="text/javascript" src="/static/layout/scripts/jquery.hslides.1.0.js"></script>
         <script type="text/javascript" src="/static/js/Scripts.js"></script>
         <script type="text/javascript" src="/static/js/FormHandler.js"></script>
+		<script type="text/javascript">
+			$((function () {
+			    $('#accordion').hSlides({
+			        totalWidth: 920,
+		    	    totalHeight: 300,
+		        	minPanelWidth: 111,
+			        maxPanelWidth: 476,
+					easing: "easeOutBack",
+					activeClass: 'current'
+		    	});
+			}));
+		</script>
         <script type="text/javascript">
             <!--
                 if (top != self)
@@ -101,49 +115,53 @@
         </script>
     </head>
 
-    <body>
-        <div id="wrap">
-        	<%--
-            <div id="header">
-                <h1 id="logo"><img src="/static/img/logo.gif" alt="CaspersBox Web Services" /></h1>
-            </div>
-            --%>
+	<body id="top">
+		<div id="header">
+			<div class="wrapper">
+    			<div class="fl_left">
+      				<h1><a href="#"><spring:message code="theme.title" /></a></h1>
+    			</div>
+  				<br class="clear" />
+  			</div>
+		</div>
 
-            <div id="menu">
-                <ul>
-                    <c:if test="${not empty fn:trim(sessionScope.userAccount)}">
-                        <c:if test="${sessionScope.userAccount.status == 'SUCCESS'}">
-                            <li>
-                                <a href="${pageContext.request.contextPath}/ui/application-management/default" title="<spring:message code='theme.navbar.application-mgmt' />">
-                                    <spring:message code='theme.navbar.application-mgmt' /></a>
-                            </li>
-                            <li>
-                                <a href="${pageContext.request.contextPath}/ui/dns-service/default" title="<spring:message code='theme.navbar.dns-services' />">
-                                    <spring:message code='theme.navbar.dns-services' /></a>
-                            </li>
-                            <li>
-                                <a href="${pageContext.request.contextPath}/ui/service-management/default" title="<spring:message code='theme.navbar.service-mgmt' />">
-                                    <spring:message code='theme.navbar.service-mgmt' /></a>
-                            </li>
-                            <li>
-                                <a href="${pageContext.request.contextPath}/ui/system-management/default" title="<spring:message code='theme.navbar.system-mgmt' />">
-                                    <spring:message code='theme.navbar.system-mgmt' /></a>
-                            </li>
-                            <li>
-                                <a href="${pageContext.request.contextPath}/ui/service-messaging/default" title="<spring:message code='theme.navbar.messaging' />">
-                                    <spring:message code='theme.navbar.messaging' /></a>
-                            </li>
+		<div id="topbar">
+  			<div class="wrapper">
+  				<c:if test="${empty fn:trim(sessionScope.userAccount)}">
+    				<div id="topnav">
+      					<ul>
+        					<li><a href="${pageContext.request.contextPath}/ui/auth/default">Login</a></li>
+        				</ul>
+    				</div>
+    			</c:if>
+    			<c:if test="${not empty fn:trim(sessionScope.userAccount)}">
+    				<div id="topnav">
+    					<ul>
+        					<li><a href="${pageContext.request.contextPath}/ui/common/default" title="<spring:message code='theme.navbar.homepage' />">
+        						<spring:message code='theme.navbar.homepage' /></a></li></a></li>
+        					<li><a href="${pageContext.request.contextPath}/ui/application-management/default" title="<spring:message code='theme.navbar.application-mgmt' />">
+                                    <spring:message code='theme.navbar.application-mgmt' /></a></li>
+        					<li><a href="${pageContext.request.contextPath}/ui/dns-service/default" title="<spring:message code='theme.navbar.dns-services' />">
+                                    <spring:message code='theme.navbar.dns-services' /></a></li>
+        					<li><a href="${pageContext.request.contextPath}/ui/service-management/default" title="<spring:message code='theme.navbar.service-mgmt' />">
+                                    <spring:message code='theme.navbar.service-mgmt' /></a></li>
+                            <li><a href="${pageContext.request.contextPath}/ui/system-management/default" title="<spring:message code='theme.navbar.system-mgmt' />">
+                                    <spring:message code='theme.navbar.system-mgmt' /></a></li>
+							<li><a href="${pageContext.request.contextPath}/ui/service-messaging/default" title="<spring:message code='theme.navbar.messaging' />">
+                                    <spring:message code='theme.navbar.messaging' /></a></li>
                             <li>
                                 <a href="${pageContext.request.contextPath}/ui/common/contact" title="<spring:message code='theme.contact.us' />">
                                     <spring:message code='theme.contact.us' /></a>
                             </li>
-                        </c:if>
-                        <c:if test="${sessionScope.userAccount.userRole eq SecurityUserRole.USER_ADMIN or roleName eq SecurityUserRole.ADMIN or roleName eq SecurityUserRole.SITE_ADMIN}">
-	                        <li class="last">
-                            	<a href="${pageContext.request.contextPath}/ui/user-management/default" title="<spring:message code='theme.navbar.useradmin' />">
-                                	<spring:message code='theme.navbar.useradmin' /></a>
-                            </li>
-                        </c:if>
-                    </c:if>
-                </ul>
-            </div>
+	                        <c:if test="${sessionScope.userAccount.userRole eq SecurityUserRole.USER_ADMIN or roleName eq SecurityUserRole.ADMIN or roleName eq SecurityUserRole.SITE_ADMIN}">
+		                        <li class="last">
+	                            	<a href="${pageContext.request.contextPath}/ui/user-management/default" title="<spring:message code='theme.navbar.useradmin' />">
+	                                	<spring:message code='theme.navbar.useradmin' /></a>
+	                            </li>
+	                        </c:if>
+        				</ul>
+    				</div>
+    			</c:if>
+    			<br class="clear" />
+  			</div>
+		</div>

@@ -330,4 +330,20 @@ public class AutoResponseUserManager implements UserManager
 
         return true;
     }
+
+	@Override
+	public List<Object> getUserByEmailAddress(final String searchData) throws UserManagementException
+	{
+        final String methodName = AutoResponseUserManager.CNAME + "#getUserByEmailAddress(final String searchData) throws UserManagementException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", searchData);
+        }
+
+        List<Object> results = null;
+
+        return results;
+	}
 }

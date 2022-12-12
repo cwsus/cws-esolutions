@@ -364,6 +364,7 @@ public class SQLUserManager implements UserManager
                         {
                             resultSet.getString("cn"),
                             resultSet.getString("uid"),
+                            resultSet.getString("email"),
                             resultSet.getString("userpassword")
                         };
 
@@ -497,6 +498,127 @@ public class SQLUserManager implements UserManager
 
                     	userAccount.add(resultSet.getObject(y));
                     }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("userAccount: {}", userAccount);
+                    }
+                }
+            }
+            else
+            {
+                throw new UserManagementException("No users were located with the provided information");
+            }
+        }
+        catch (final SQLException sqx)
+        {
+            throw new UserManagementException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            try
+            {
+                if (resultSet != null)
+                {
+                    resultSet.close();
+                }
+            
+                if (stmt != null)
+                {
+                    stmt.close();
+                }
+
+                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                {
+                    sqlConn.close();
+                }
+            }
+            catch (final SQLException sqx)
+            {
+                throw new UserManagementException(sqx.getMessage(), sqx);
+            }
+        }
+
+        return userAccount;
+    }
+
+    /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#getUserByEmailAddress(java.lang.String)
+     */
+    public synchronized List<Object> getUserByEmailAddress(final String userGuid) throws UserManagementException
+    {
+        final String methodName = SQLUserManager.CNAME + "#getUserByEmailAddress(final String guid) throws UserManagementException";
+        
+        if(DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", userGuid);
+        }
+
+        Connection sqlConn = null;
+        ResultSet resultSet = null;
+        CallableStatement stmt = null;
+        List<Object> userAccount = null;
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((sqlConn == null) || (sqlConn.isClosed()))
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{ CALL getUserByEmailAddress(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt.setString(1, userGuid); // common name
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("CallableStatement: {}", stmt);
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ResultSet: {}", resultSet);
+                }
+
+                if (resultSet.next())
+                {
+                    resultSet.last();
+                    int x = resultSet.getRow();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("x: {}", x);
+                    }
+
+                    if ((x == 0) || (x > 1))
+                    {
+                        throw new UserManagementException("No user account was located for the provided data.");
+                    }
+
+                    resultSet.first();
+                    userAccount = new ArrayList<Object>(
+                    		Arrays.asList(
+                    				resultSet.getString(1),
+                    				resultSet.getString(2),
+                    				resultSet.getString(3)));
 
                     if (DEBUG)
                     {

@@ -28,8 +28,6 @@ package com.cws.esolutions.web.controllers;
  */
 import java.util.Date;
 import org.slf4j.Logger;
-import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import org.slf4j.LoggerFactory;
 import org.springframework.ui.Model;
@@ -51,7 +49,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
-import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.web.validators.OnlineResetValidator;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
@@ -74,7 +71,7 @@ import com.cws.esolutions.security.processors.interfaces.IAccountControlProcesso
  * @see org.springframework.stereotype.Controller
  */
 @Controller
-@RequestMapping("/online-reset")
+@RequestMapping("online-reset")
 public class OnlineResetController
 {
     private String resetURL = null;
@@ -240,7 +237,7 @@ public class OnlineResetController
         this.forgotPasswordEmail = value;
     }
 
-    @RequestMapping(value = "/forgot-username", method = RequestMethod.GET)
+    @RequestMapping(value = "forgot-username", method = RequestMethod.GET)
     public final String showForgotUsername(final Model model)
     {
         final String methodName = OnlineResetController.CNAME + "#showForgotUsername()";
@@ -248,7 +245,6 @@ public class OnlineResetController
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Model: {}", model);
         }
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
@@ -307,7 +303,7 @@ public class OnlineResetController
         return this.submitEmailAddrPage;
     }
 
-    @RequestMapping(value = "/forgot-password", method = RequestMethod.GET)
+    @RequestMapping(value = "forgot-password", method = RequestMethod.GET)
     public final String showForgottenPassword(final Model model)
     {
         final String methodName = OnlineResetController.CNAME + "#showForgottenPassword()";
@@ -315,7 +311,6 @@ public class OnlineResetController
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Model: {}", model);
         }
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
@@ -374,7 +369,7 @@ public class OnlineResetController
         return this.submitUsernamePage;
     }
 
-    @RequestMapping(value = "/forgot-password/{resetId}", method = RequestMethod.GET)
+    @RequestMapping(value = "forgot-password/{resetId}", method = RequestMethod.GET)
     public final String showPasswordChange(@PathVariable(value = "resetId") final String resetId, final Model model)
     {
         final String methodName = OnlineResetController.CNAME + "#showPasswordChange(@PathVariable(value = \"resetId\") final String resetId, final Model model)";
@@ -497,7 +492,7 @@ public class OnlineResetController
         }
     }
 
-    @RequestMapping(value = "/cancel", method = RequestMethod.GET)
+    @RequestMapping(value = "cancel", method = RequestMethod.GET)
     public final String doCancelRequest(final Model model)
     {
         final String methodName = OnlineResetController.CNAME + "#doCancelRequest()";
@@ -564,7 +559,7 @@ public class OnlineResetController
         return this.appConfig.getLogonRedirect();
     }
 
-    @RequestMapping(value = "/forgot-username", method = RequestMethod.POST)
+    @RequestMapping(value = "forgot-username", method = RequestMethod.POST)
     public final String submitForgottenUsername(@ModelAttribute("request") final AccountChangeData request, final BindingResult bindResult, final Model model)
     {
         final String methodName = OnlineResetController.CNAME + "#submitForgottenUsername(@ModelAttribute(\"UserChangeRequest\") final UserChangeRequest request, final BindingResult bindResult, final Model model)";
@@ -573,8 +568,6 @@ public class OnlineResetController
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("UserChangeRequest: {}", request);
-            DEBUGGER.debug("BindingResult: {}", bindResult);
-            DEBUGGER.debug("Model: {}", model);
         }
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
@@ -680,6 +673,14 @@ public class OnlineResetController
             if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
             {
                 // this will return a single user account
+            	if (response.getUserList().size() != 1)
+            	{
+            		// too many accounts
+            		model.addAttribute(Constants.ERROR_MESSAGE, "An account could not be located for the information provided."); // TODO
+
+            		return this.appConfig.getLogonRedirect();
+            	}
+
                 UserAccount userAccount = response.getUserList().get(0);
 
                 if (DEBUG)
@@ -689,16 +690,10 @@ public class OnlineResetController
 
                 try
                 {
-                    EmailMessage message = new EmailMessage();
-                    message.setIsAlert(false);
-                    message.setMessageSubject(this.forgotUsernameEmail.getSubject());
-                    message.setMessageTo(new ArrayList<String>(
-                            Arrays.asList(
-                                    String.format(this.forgotUsernameEmail.getTo()[0], userAccount.getEmailAddr()))));
-                    message.setEmailAddr(new ArrayList<String>(
-                            Arrays.asList(
-                                    String.format(this.forgotUsernameEmail.getTo()[0], this.appConfig.getEmailAddress()))));
-                    message.setMessageBody(String.format(this.forgotUsernameEmail.getText(),
+                	// TODO some shit here
+                	SimpleMailMessage emailMessage = this.forgotPasswordEmail;
+                	emailMessage.setTo(response.getUserAccount().getEmailAddr());
+                	emailMessage.setText(String.format(this.forgotUsernameEmail.getText(),
                             userAccount.getGivenName(),
                             new Date(System.currentTimeMillis()),
                             reqInfo.getHostName(),
@@ -706,34 +701,10 @@ public class OnlineResetController
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("EmailMessage: {}", message);
+                        DEBUGGER.debug("SimpleMailMessage: {}", emailMessage);
                     }
-
-                    // TODO
-                	SimpleMailMessage emailMessage = new SimpleMailMessage();
-                	emailMessage.setTo(message.getEmailAddr().get(0));
-                	emailMessage.setSubject(message.getMessageSubject());
-                	emailMessage.setText(message.getMessageBody());
-
-                	if (DEBUG)
-                	{
-                		DEBUGGER.debug("SimpleMailMessage: {}", emailMessage);
-                	}
 
                 	mailSender.send(emailMessage);
-
-                	SimpleMailMessage autoResponse = new SimpleMailMessage();
-                	autoResponse.setReplyTo(this.appConfig.getEmailAddress());
-                	autoResponse.setTo(message.getEmailAddr().get(0));
-                	autoResponse.setSubject(message.getMessageSubject());
-                	autoResponse.setText(message.getMessageBody());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("EmailMessage: {}", autoResponse);
-                    }
-
-                    mailSender.send(autoResponse);
                 }
                 catch (final MailException mx)
                 {
@@ -758,7 +729,7 @@ public class OnlineResetController
         }
     }
 
-    @RequestMapping(value = "/forgot-password", method = RequestMethod.POST)
+    @RequestMapping(value = "forgot-password", method = RequestMethod.POST)
     public final String submitUsername(@ModelAttribute("request") final AccountChangeData request, final BindingResult bindResult, final Model model)
     {
         final String methodName = OnlineResetController.CNAME + "#submitUsername(@ModelAttribute(\"UserChangeRequest\") final UserChangeRequest request, final BindingResult bindResult, final Model model)";
@@ -766,9 +737,7 @@ public class OnlineResetController
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("UserChangeRequest: {}", request);
-            DEBUGGER.debug("BindingResult: {}", bindResult);
-            DEBUGGER.debug("Model: {}", model);
+            DEBUGGER.debug("AccountChangeData: {}", request);
         }
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
@@ -915,7 +884,7 @@ public class OnlineResetController
         }
     }
 
-    @RequestMapping(value = "/submit", method = RequestMethod.POST)
+    @RequestMapping(value = "submit", method = RequestMethod.POST)
     public final String submitSecurityResponse(@ModelAttribute("request") final AccountChangeData request, final BindingResult bindResult, final Model model)
     {
         final String methodName = OnlineResetController.CNAME + "#submitSecurityResponse(@ModelAttribute(\"request\") final UserChangeRequest request, final BindingResult bindResult, final Model model)";
@@ -923,9 +892,7 @@ public class OnlineResetController
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("UserChangeRequest: {}", request);
-            DEBUGGER.debug("BindingResult: {}", bindResult);
-            DEBUGGER.debug("Model: {}", model);
+            DEBUGGER.debug("AccountChangeData: {}", request);
         }
 
         boolean resetError = false;
@@ -1084,10 +1051,8 @@ public class OnlineResetController
                         
                     try
                     {
-                    	SimpleMailMessage emailMessage = new SimpleMailMessage();
-                    	emailMessage.setTo(this.forgotPasswordEmail.getTo());
-                    	emailMessage.setSubject(this.forgotPasswordEmail.getSubject());
-                    	emailMessage.setFrom(this.appConfig.getEmailAddress());
+                    	SimpleMailMessage emailMessage = this.forgotPasswordEmail;
+                    	emailMessage.setTo(userAccount.getEmailAddr());
                     	emailMessage.setText(String.format(this.forgotPasswordEmail.getText(),
                     			userAccount.getGivenName(),
                                 new Date(System.currentTimeMillis()),

@@ -186,7 +186,6 @@ public class ServiceMessagingController
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Model: {}", model);
         }
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
@@ -521,7 +520,6 @@ public class ServiceMessagingController
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("ServiceMessage: {}", message);
-            DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();

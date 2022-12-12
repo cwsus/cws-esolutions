@@ -62,63 +62,51 @@
     }
 //-->
 </script>
-<div id="sidebar">&nbsp;</div>
+<c:set var="resetAllowed" value="${allowUserReset}" />
 
-<div id="main">
-    <h1><spring:message code="login.user.combined.message" /></h1>
+<div id="homecontent">
+	<div class="wrapper">
+	    <h1><spring:message code="login.user.combined.message" /></h1>
 
-    <div id="error"></div>
+	    <div id="error"></div>
 
-    <c:if test="${not empty fn:trim(messageResponse)}">
-        <p id="info">${messageResponse}</p>
-    </c:if>
-    <c:if test="${not empty fn:trim(errorResponse)}">
-        <p id="error">${errorResponse}</p>
-    </c:if>
-    <c:if test="${not empty fn:trim(responseMessage)}">
-        <p id="info"><spring:message code="${responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(errorMessage)}">
-        <p id="error"><spring:message code="${errorMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(param.responseMessage)}">
-        <p id="info"><spring:message code="${param.responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(param.errorMessage)}">
-        <p id="error"><spring:message code="${param.errorMessage}" /></p>
-    </c:if>
+	    <c:if test="${not empty fn:trim(messageResponse)}">
+	        <p id="info">${messageResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(errorResponse)}">
+	        <p id="error">${errorResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(responseMessage)}">
+	        <p id="info"><spring:message code="${responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(errorMessage)}">
+	        <p id="error"><spring:message code="${errorMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(param.responseMessage)}">
+        	<p id="info"><spring:message code="${param.responseMessage}" /></p>
+    	</c:if>
+	    <c:if test="${not empty fn:trim(param.errorMessage)}">
+    	    <p id="error"><spring:message code="${param.errorMessage}" /></p>
+	    </c:if>
 
-    <p>
         <form:form id="submitCombinedLogin" name="submitCombinedLogin" action="${pageContext.request.contextPath}/ui/auth/submit" method="post">
             <input type="hidden" name="vpath" id="vpath" value="${param.vpath}" />
 
             <p>
                 <label id="txtUsername"><spring:message code="login.user.name" /></label>
-                <form:input path="loginUser" />
+                <form:input path="loginUser" /> <c:if test="${resetAllowed eq true}"><a href="${pageContext.request.contextPath}/ui/online-reset/forgot-username"
+                	title="<spring:message code='login.user.forgot_uid' />"><spring:message code="login.user.forgot_uid" /></a></c:if>
                 <form:errors path="loginUser" cssClass="error" />
+                <br /><br />
                 <label id="txtPassword"><spring:message code="login.user.pwd" /></label>
-                <form:password path="loginPass" />
+                <form:password path="loginPass" /> <c:if test="${resetAllowed eq true}"><a href="${pageContext.request.contextPath}/ui/online-reset/forgot-password"
+	            	title="<spring:message code='login.user.forgot_pwd' />"><spring:message code="login.user.forgot_pwd" /></a></c:if>
                 <form:errors path="loginPass" cssClass="error" />
                 <br /><br />
                 <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
                 <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
             </p>
         </form:form>
-    </p>
-</div>
-
-<c:if test="${not empty allowUserReset and allowUserReset eq true}">
-	<div id="rightbar">
-	    <h1><spring:message code="login.user.forgot.info" /></h1>
-	    <ul>
-	        <li>
-	            <a href="${pageContext.request.contextPath}/ui/online-reset/forgot-username" title="<spring:message code='login.user.forgot_uid' />">
-	                <spring:message code="login.user.forgot_uid" /></a>
-	        </li>
-	        <li>
-	            <a href="${pageContext.request.contextPath}/ui/online-reset/forgot-password" title="<spring:message code='login.user.forgot_pwd' />">
-	                <spring:message code="login.user.forgot_pwd" /></a>
-	        </li>
-	    </ul>
+  		<br class="clear" />
 	</div>
-</c:if>
+</div>

@@ -48,6 +48,7 @@ public class ApplicationServiceBean implements Serializable
     private String dateFormat = null;
     private String fileEncoding = null;
     private String homeRedirect = null;
+    private String isTestSystem = null;
     private String emailAddress = null;
     private String logonRedirect = null;
     private String applicationId = null;
@@ -471,6 +472,19 @@ public class ApplicationServiceBean implements Serializable
         this.emailValidator = value;
     }
 
+    public final void setIsTestSystem(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setIsTestSystem(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.isTestSystem = value;
+    }
+
     public final void setIsSmsEnabled(final boolean value)
     {
         final String methodName = ApplicationServiceBean.CNAME + "#setIsSmsEnabled(final boolean value)";
@@ -874,6 +888,19 @@ public class ApplicationServiceBean implements Serializable
         return this.expiredRedirect;
     }
 
+	public final boolean isSmsEnabled()
+	{
+        final String methodName = ApplicationServiceBean.CNAME + "#getIsSmsEnabled()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.isSmsEnabled);
+        }
+
+        return this.isSmsEnabled;
+	}
+
 	public final boolean getIsSmsEnabled()
 	{
         final String methodName = ApplicationServiceBean.CNAME + "#getIsSmsEnabled()";
@@ -885,6 +912,32 @@ public class ApplicationServiceBean implements Serializable
         }
 
         return this.isSmsEnabled;
+	}
+
+	public final boolean getIsTestSystem()
+	{
+        final String methodName = ApplicationServiceBean.CNAME + "#getIsTestSystem()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.isTestSystem);
+        }
+
+        return Boolean.valueOf(this.isTestSystem);
+	}
+
+	public final boolean isTestSystem()
+	{
+        final String methodName = ApplicationServiceBean.CNAME + "#isTestSystem()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.isTestSystem);
+        }
+
+        return Boolean.valueOf(this.isTestSystem);
 	}
 
     @Override
