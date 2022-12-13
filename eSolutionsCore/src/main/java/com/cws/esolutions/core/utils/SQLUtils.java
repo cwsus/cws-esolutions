@@ -26,14 +26,15 @@ package com.cws.esolutions.core.utils;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.Map;
-import org.slf4j.Logger;
+import java.util.Objects;
 import java.sql.ResultSet;
 import java.sql.Connection;
 import javax.sql.DataSource;
 import java.sql.SQLException;
-import org.slf4j.LoggerFactory;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.CoreServicesConstants;
@@ -48,9 +49,9 @@ public class SQLUtils
     private static final CoreServicesBean appBean = CoreServicesBean.getInstance();
     private static final DataSource dataSource = appBean.getDataSources().get("ApplicationDataSource");
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER);
+    private static final Logger ERROR_RECORDER = LogManager.getLogger(CoreServicesConstants.ERROR_LOGGER);
 
     /**
      * Run a provided query against the configured datasource and return the resultset for
@@ -75,6 +76,11 @@ public class SQLUtils
         Connection sqlConn = null;
         ResultSet resultSet = null;
         PreparedStatement stmt = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new UtilityException("Unable to obtain datasource connection.");
+        }
 
         try
         {
@@ -172,6 +178,11 @@ public class SQLUtils
         Connection sqlConn = null;
         ResultSet resultSet = null;
         CallableStatement stmt = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new UtilityException("Unable to obtain datasource connection.");
+        }
 
         try
         {
@@ -279,6 +290,11 @@ public class SQLUtils
         Connection sqlConn = null;
         PreparedStatement stmt = null;
 
+        if (Objects.isNull(dataSource))
+        {
+        	throw new UtilityException("Unable to obtain datasource connection.");
+        }
+
         try
         {
             sqlConn = SQLUtils.dataSource.getConnection();
@@ -354,6 +370,11 @@ public class SQLUtils
 
         Connection sqlConn = null;
         CallableStatement stmt = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new UtilityException("Unable to obtain datasource connection.");
+        }
 
         try
         {

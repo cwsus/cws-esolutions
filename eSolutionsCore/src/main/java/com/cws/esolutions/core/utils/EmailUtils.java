@@ -28,7 +28,6 @@ package com.cws.esolutions.core.utils;
 import java.util.Map;
 import java.util.List;
 import javax.mail.Part;
-import org.slf4j.Logger;
 import javax.mail.Store;
 import javax.mail.Flags;
 import java.util.HashMap;
@@ -46,17 +45,18 @@ import javax.mail.Transport;
 import javax.naming.Context;
 import java.util.Properties;
 import javax.mail.Multipart;
-import org.slf4j.LoggerFactory;
 import java.io.FileInputStream;
 import javax.mail.Authenticator;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.mail.MessagingException;
+import org.apache.logging.log4j.Logger;
 import javax.mail.internet.MimeMessage;
 import javax.mail.Message.RecipientType;
 import javax.mail.PasswordAuthentication;
-import org.apache.commons.lang3.StringUtils;
 import javax.mail.internet.InternetAddress;
+import org.apache.logging.log4j.LogManager;
+import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.config.xml.MailConfig;
@@ -73,9 +73,9 @@ public final class EmailUtils
 {
     private static final String CNAME = EmailUtils.class.getName();
 
-    static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
+    static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER + CNAME);
+    static final Logger ERROR_RECORDER = LogManager.getLogger(CoreServicesConstants.ERROR_LOGGER + CNAME);
 
     /**
      * eSolutionsCore

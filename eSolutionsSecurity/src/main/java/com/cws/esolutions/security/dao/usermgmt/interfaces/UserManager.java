@@ -26,9 +26,9 @@ package com.cws.esolutions.security.dao.usermgmt.interfaces;
  * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import java.util.List;
-import org.slf4j.Logger;
 import javax.sql.DataSource;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.SecurityServiceConstants;
@@ -56,7 +56,7 @@ public interface UserManager
     static final SecurityReturningAttributes securityAttributes = repoConfig.getSecurityAttributes();
     static final PasswordRepositoryConfig passwordConfig = svcBean.getConfigData().getPasswordRepo();
 
-    static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
+    static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     /**

@@ -22,8 +22,8 @@ package com.cws.esolutions.security.listeners;
  * History
  *
  * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * cws-khuntly          11/23/2008 22:39:20             Created.
+	 * ----------------------------------------------------------------------------
+	 * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.net.URL;
 import java.util.Map;
@@ -36,10 +36,8 @@ import javax.naming.InitialContext;
 import javax.xml.bind.JAXBException;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
-import org.apache.log4j.helpers.Loader;
 import javax.servlet.ServletContextEvent;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.xml.DOMConfigurator;
 import javax.servlet.ServletContextListener;
 
 import com.cws.esolutions.security.SecurityServiceBean;
@@ -53,7 +51,6 @@ import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 public class SecurityServiceListener implements ServletContextListener
 {
     private static final String INIT_SYSCONFIG_FILE = "SecurityServiceConfig";
-    private static final String INIT_SYSLOGGING_FILE = "SecurityServiceLogger";
     private static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
 
     /**
@@ -73,18 +70,9 @@ public class SecurityServiceListener implements ServletContextListener
         {
             if (sContext != null)
             {
-            	if (StringUtils.isEmpty(sContext.getInitParameter(SecurityServiceListener.INIT_SYSLOGGING_FILE)))
+            	if (StringUtils.isBlank(SecurityServiceListener.INIT_SYSCONFIG_FILE))
                 {
-                    System.err.println("Logging configuration not found. No logging enabled !");
-                }
-                else
-                {
-                    DOMConfigurator.configure(Loader.getResource(sContext.getInitParameter(SecurityServiceListener.INIT_SYSLOGGING_FILE)));
-                }
-
-                if (StringUtils.isBlank(SecurityServiceListener.INIT_SYSCONFIG_FILE))
-                {
-                    throw new SecurityServiceException("System configuration file location not provided by application. Cannot continue.");
+                    throw new SecurityServiceException("SecurityService: System configuration file location not provided by application. Cannot continue.");
                 }
                 else
                 {

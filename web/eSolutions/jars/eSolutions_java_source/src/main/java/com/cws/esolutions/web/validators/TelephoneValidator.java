@@ -27,11 +27,11 @@ package com.cws.esolutions.web.validators;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
-import org.slf4j.Logger;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
@@ -50,7 +50,7 @@ public class TelephoneValidator implements Validator
 
     private static final String CNAME = TelephoneValidator.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public final void setMessageNumberInvalid(final String value)

@@ -25,10 +25,10 @@ package com.cws.esolutions.core.config.xml;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -59,7 +59,7 @@ public final class DNSConfig implements Serializable
     private static final String CNAME = DNSConfig.class.getName();
     private static final long serialVersionUID = -8781098886379821126L;
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public final void setAdminName(final String value)
@@ -367,11 +367,6 @@ public final class DNSConfig implements Serializable
 
         for (Field field : this.getClass().getDeclaredFields())
         {
-            if (DEBUG)
-            {
-                DEBUGGER.debug("field: {}", field);
-            }
-
             if (!(field.getName().equals("methodName")) &&
                     (!(field.getName().equals("CNAME"))) &&
                     (!(field.getName().equals("DEBUGGER"))) &&

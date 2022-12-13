@@ -26,19 +26,19 @@ package com.cws.esolutions.security.filters;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.Map;
-import org.slf4j.Logger;
 import java.util.HashMap;
 import java.io.IOException;
 import javax.servlet.Filter;
 import java.util.Enumeration;
-import org.slf4j.LoggerFactory;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
+import org.apache.logging.log4j.Logger;
 import javax.servlet.annotation.WebFilter;
+import org.apache.logging.log4j.LogManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -51,7 +51,7 @@ public class SessionFixationFilter implements Filter
 {
     private static final String CNAME = SessionFixationFilter.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public void init(final FilterConfig filterConfig)

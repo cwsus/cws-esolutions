@@ -27,11 +27,11 @@ package com.cws.esolutions.security.quartz;
  */
 import java.util.List;
 import org.quartz.Job;
-import org.slf4j.Logger;
 import java.util.Calendar;
 import java.sql.SQLException;
-import org.slf4j.LoggerFactory;
 import org.quartz.JobExecutionContext;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl;
@@ -43,10 +43,10 @@ public class ResetRequestReaper implements Job
 {
     private static final String CNAME = ResetRequestReaper.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger AUDIT_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.AUDIT_LOGGER + ResetRequestReaper.CNAME);
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + ResetRequestReaper.CNAME);
+    private static final Logger AUDIT_RECORDER = LogManager.getLogger(SecurityServiceConstants.AUDIT_LOGGER + ResetRequestReaper.CNAME);
+    private static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER + ResetRequestReaper.CNAME);
 
     /**
      * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)

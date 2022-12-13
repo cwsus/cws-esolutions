@@ -21,10 +21,10 @@ package com.cws.esolutions.web.model;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cws.esolutions.web.Constants;
@@ -53,7 +53,7 @@ public class ApplicationRequest implements Serializable
     private static final long serialVersionUID = -3668811202791320189L;
     private static final String CNAME = ApplicationRequest.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public final void setApplicationGuid(final String value)
@@ -441,11 +441,6 @@ public class ApplicationRequest implements Serializable
 
         for (Field field : this.getClass().getDeclaredFields())
         {
-            if (DEBUG)
-            {
-                DEBUGGER.debug("field: {}", field);
-            }
-
             if (!(field.getName().equals("methodName")) &&
                     (!(field.getName().equals("CNAME"))) &&
                     (!(field.getName().equals("DEBUGGER"))) &&

@@ -25,8 +25,8 @@ package com.cws.esolutions.core.processors.interfaces;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.dao.impl.ServerDataDAOImpl;
@@ -46,14 +46,14 @@ import com.cws.esolutions.core.processors.exception.ServerManagementException;
  */
 public interface IServerManagementProcessor
 {
-    static final IAuditProcessor auditor = new AuditProcessorImpl();
-    static final IServerDataDAO serverDAO = new ServerDataDAOImpl();
-    static final String CNAME = IServerManagementProcessor.class.getName();
-    static final IAccessControlService accessControl = new AccessControlServiceImpl();
+	static final String CNAME = IServerManagementProcessor.class.getName();
+    static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
+    static final IServerDataDAO serverDAO = (IServerDataDAO) new ServerDataDAOImpl();
+    static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
 
-    static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
+    static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER + CNAME);
+    static final Logger ERROR_RECORDER = LogManager.getLogger(CoreServicesConstants.ERROR_LOGGER + CNAME);
 
     /**
      * Adds the provided server to the service datastore.

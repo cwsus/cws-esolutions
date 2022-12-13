@@ -27,6 +27,7 @@ package com.cws.esolutions.core.dao.impl;
  */
 import java.util.List;
 import java.util.Arrays;
+import java.util.Objects;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.Connection;
@@ -60,6 +61,11 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
         Connection sqlConn = null;
         boolean isComplete = false;
         CallableStatement stmt = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
 
         try
         {
@@ -135,6 +141,11 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
         boolean isComplete = false;
         CallableStatement stmt = null;
 
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
+
         try
         {
             sqlConn = dataSource.getConnection();
@@ -205,6 +216,11 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
         boolean isComplete = false;
         CallableStatement stmt = null;
 
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
+
         try
         {
             sqlConn = dataSource.getConnection();
@@ -268,6 +284,11 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
         ResultSet resultSet = null;
         CallableStatement stmt = null;
         List<String[]> responseData = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
 
         try
         {
@@ -365,6 +386,11 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
         ResultSet resultSet = null;
         CallableStatement stmt = null;
         List<Object[]> responseData = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
 
         try
         {
@@ -490,6 +516,11 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
         ResultSet resultSet = null;
         CallableStatement stmt = null;
         List<String> responseData = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
 
         try
         {

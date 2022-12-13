@@ -25,11 +25,9 @@ package com.cws.esolutions.core.filters;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.slf4j.Logger;
 import java.io.IOException;
 import javax.naming.Context;
 import javax.servlet.Filter;
-import org.slf4j.LoggerFactory;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.naming.InitialContext;
@@ -37,7 +35,9 @@ import javax.naming.NamingException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.ServletException;
+import org.apache.logging.log4j.Logger;
 import javax.servlet.annotation.WebFilter;
+import org.apache.logging.log4j.LogManager;
 import org.apache.commons.lang3.StringUtils;
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
@@ -55,9 +55,9 @@ public class ResponseTimeFilter implements Filter
 	private String environment = null;
 
     private static final String CNAME = ResponseTimeFilter.class.getName();
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER);
+    static final Logger ERROR_RECORDER = LogManager.getLogger(CoreServicesConstants.ERROR_LOGGER);
 
     public void init(final FilterConfig config) throws ServletException
     {

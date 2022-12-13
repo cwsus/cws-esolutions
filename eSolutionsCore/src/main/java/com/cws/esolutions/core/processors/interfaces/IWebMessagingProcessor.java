@@ -25,8 +25,8 @@ package com.cws.esolutions.core.processors.interfaces;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.CoreServicesConstants;
@@ -47,18 +47,18 @@ import com.cws.esolutions.core.processors.exception.MessagingServiceException;
  */
 public interface IWebMessagingProcessor
 {
-    static final IAuditProcessor auditor = new AuditProcessorImpl();
-    static final IAccessControlService accessControl = new AccessControlServiceImpl();
     static final CoreServicesBean appBean = CoreServicesBean.getInstance();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
     static final ServiceAccount serviceAccount = appBean.getConfigData().getAppConfig().getServiceAccount().get(0);
-    static final IWebMessagingDAO webMessengerDAO = new WebMessagingDAOImpl();
+    static final IWebMessagingDAO webMessengerDAO = (IWebMessagingDAO)new WebMessagingDAOImpl();
+    static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
+    static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
 
     static final String dateFormat = appConfig.getDateFormat();
     static final String CNAME = IWebMessagingProcessor.class.getName();
 
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER + CNAME);
-    static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
+    static final Logger ERROR_RECORDER = LogManager.getLogger(CoreServicesConstants.ERROR_LOGGER + CNAME);
+    static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     MessagingResponse addNewMessage(final MessagingRequest request) throws MessagingServiceException;

@@ -26,6 +26,7 @@ package com.cws.esolutions.core.dao.impl;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
+import java.util.Objects;
 import java.sql.ResultSet;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -55,6 +56,11 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
         Connection sqlConn = null;
         CallableStatement stmt = null;
         boolean isComplete = false;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
 
         try
         {
@@ -122,6 +128,11 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
         ResultSet resultSet = null;
         CallableStatement stmt = null;
         List<Object> svcMessage = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
 
         try
         {
@@ -211,6 +222,11 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
         ResultSet resultSet = null;
         CallableStatement stmt = null;
         List<Object[]> response = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
 
         try
         {
@@ -313,6 +329,11 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
         ResultSet resultSet = null;
         CallableStatement stmt = null;
         List<Object[]> response = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
 
         try
         {
@@ -417,6 +438,11 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
         boolean isComplete = false;
         CallableStatement stmt = null;
 
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
+
         try
         {
             sqlConn = dataSource.getConnection();
@@ -488,6 +514,11 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
         boolean isComplete = false;
         CallableStatement stmt = null;
 
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
+
         try
         {
             sqlConn = dataSource.getConnection();
@@ -551,6 +582,11 @@ public class WebMessagingDAOImpl implements IWebMessagingDAO
         ResultSet resultSet = null;
         CallableStatement stmt = null;
         List<Object[]> responseData = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
 
         try
         {

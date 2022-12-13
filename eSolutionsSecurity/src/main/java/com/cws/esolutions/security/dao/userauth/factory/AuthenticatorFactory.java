@@ -25,8 +25,8 @@ package com.cws.esolutions.security.dao.userauth.factory;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
@@ -44,9 +44,9 @@ public class AuthenticatorFactory
 
     private static final String CNAME = AuthenticatorFactory.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
+    private static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
     /**
      * Static method to provide a new or existing instance of a

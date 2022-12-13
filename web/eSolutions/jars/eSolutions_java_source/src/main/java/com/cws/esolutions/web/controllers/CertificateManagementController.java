@@ -26,10 +26,10 @@ package com.cws.esolutions.web.controllers;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.slf4j.Logger;
 import java.util.Enumeration;
-import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpSession;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
@@ -58,7 +58,7 @@ public class CertificateManagementController
 
     private static final String CNAME = CertificateManagementController.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public final void setAppConfig(final ApplicationServiceBean value)

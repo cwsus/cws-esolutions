@@ -27,14 +27,12 @@ package com.cws.esolutions.security.filters;
  */
 import java.util.Set;
 import java.util.Arrays;
-import org.slf4j.Logger;
 import java.util.HashSet;
 import java.io.IOException;
 import java.net.URLEncoder;
 import javax.servlet.Filter;
 import java.util.Collections;
 import java.util.Enumeration;
-import org.slf4j.LoggerFactory;
 import java.util.ResourceBundle;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -42,12 +40,13 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
+import org.apache.logging.log4j.Logger;
 import javax.servlet.UnavailableException;
 import javax.servlet.annotation.WebFilter;
-import javax.servlet.annotation.WebInitParam;
-
 import java.util.MissingResourceException;
+import org.apache.logging.log4j.LogManager;
 import org.apache.commons.lang3.StringUtils;
+import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -73,9 +72,9 @@ public class SSLEnforcementFilter implements Filter
     private static final Set<String> LOCALHOST = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("localhost", "127.0.0.1")));
     private static final SystemConfig systemConfig = SecurityServiceBean.getInstance().getConfigData().getSystemConfig();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
+    private static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
     public void init(final FilterConfig filterConfig) throws ServletException
     {

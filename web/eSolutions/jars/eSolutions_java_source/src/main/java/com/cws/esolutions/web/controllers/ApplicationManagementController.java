@@ -30,15 +30,15 @@ import java.util.Map;
 import java.util.List;
 import java.util.UUID;
 import java.util.Arrays;
-import org.slf4j.Logger;
 import java.util.Objects;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import org.slf4j.LoggerFactory;
 import org.springframework.ui.Model;
 import org.apache.commons.io.IOUtils;
 import javax.servlet.http.HttpSession;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.commons.lang3.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
@@ -103,9 +103,9 @@ public class ApplicationManagementController
 
     private static final String CNAME = ApplicationManagementController.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
+    private static final Logger ERROR_RECORDER = LogManager.getLogger(Constants.ERROR_LOGGER + CNAME);
 
     public final void setValidator(final ApplicationValidator value)
     {

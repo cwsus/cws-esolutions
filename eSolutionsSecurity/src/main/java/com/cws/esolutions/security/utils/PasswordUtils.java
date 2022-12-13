@@ -26,20 +26,20 @@ package com.cws.esolutions.security.utils;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import javax.crypto.Mac;
-import org.slf4j.Logger;
 import java.util.Base64;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
-import org.slf4j.LoggerFactory;
 import java.security.MessageDigest;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.SecretKeySpec;
+import org.apache.logging.log4j.Logger;
 import javax.crypto.BadPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import java.security.InvalidKeyException;
 import java.security.AlgorithmParameters;
 import javax.crypto.NoSuchPaddingException;
+import org.apache.logging.log4j.LogManager;
 import java.io.UnsupportedEncodingException;
 import javax.crypto.IllegalBlockSizeException;
 import org.apache.commons.codec.binary.Base32;
@@ -60,7 +60,7 @@ public final class PasswordUtils
 {
     private static final String CNAME = PasswordUtils.class.getName();
 
-    static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
+    static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     /**

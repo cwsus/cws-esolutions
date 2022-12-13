@@ -27,11 +27,10 @@ package com.cws.esolutions.core.listeners;
  */
 import java.net.URL;
 import java.util.Map;
-import org.slf4j.Logger;
+import java.util.Objects;
 import java.util.HashMap;
 import javax.sql.DataSource;
 import java.sql.SQLException;
-import org.slf4j.LoggerFactory;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.JAXBException;
@@ -39,10 +38,8 @@ import java.net.MalformedURLException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.apache.logging.log4j.core.config.Configurator;
 
 import com.cws.esolutions.core.CoreServicesBean;
-import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.config.xml.DataSourceManager;
@@ -54,13 +51,8 @@ import com.cws.esolutions.core.config.xml.CoreConfigurationData;
  */
 public class CoreServicesInitializer
 {
-    private static final String CNAME = CoreServicesInitializer.class.getName();
     private static final CoreServicesBean appBean = CoreServicesBean.getInstance();
     private static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
-
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
-    private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER + CNAME);
 
     /**
      * Initializes the core service in a standalone mode - used for applications outside of a container or when
@@ -81,31 +73,12 @@ public class CoreServicesInitializer
         CoreConfigurationData configData = null;
 
         final String serviceConfig = (StringUtils.isBlank(configFile)) ? System.getProperty("coreConfigFile") : configFile;
-        final String loggingConfig = (StringUtils.isBlank(logConfig)) ? System.getProperty("coreLogConfig") : logConfig;
 
         try
         {
-            try
-            {
-            	Configurator.initialize(null, loggingConfig);
-            }
-            catch (final NullPointerException npx)
-            {
-                try
-                {
-                	Configurator.initialize(null, FileUtils.getFile(loggingConfig).toString());
-                }
-                catch (final NullPointerException npx1)
-                {
-                    System.err.println("Unable to load logging configuration. No logging enabled!");
-                    System.err.println("");
-                    npx1.printStackTrace();
-                }
-            }
-
             xmlURL = CoreServicesInitializer.class.getClassLoader().getResource(serviceConfig);
 
-            if (xmlURL == null)
+            if (Objects.isNull(xmlURL))
             {
                 // try loading from the filesystem
                 xmlURL = FileUtils.getFile(configFile).toURI().toURL();
@@ -121,11 +94,6 @@ public class CoreServicesInitializer
             {
                 Map<String, DataSource> dsMap = CoreServicesInitializer.appBean.getDataSources();
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("dsMap: {}", dsMap);
-                }
-
                 if (dsMap == null)
                 {
                     dsMap = new HashMap<String, DataSource>();
@@ -138,13 +106,7 @@ public class CoreServicesInitializer
                         StringBuilder sBuilder = new StringBuilder()
                             .append("connectTimeout=" + mgr.getConnectTimeout() + ";")
                             .append("socketTimeout=" + mgr.getConnectTimeout() + ";")
-                            .append("autoReconnect=" + mgr.getAutoReconnect() + ";")
-                            .append("zeroDateTimeBehavior=convertToNull");
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("StringBuilder: {}", sBuilder);
-                        }
+                            .append("autoReconnect=" + mgr.getAutoReconnect() + ";");
 
                         BasicDataSource dataSource = new BasicDataSource();
                             dataSource.setDriverClassName(mgr.getDriver());
@@ -159,18 +121,8 @@ public class CoreServicesInitializer
                             		secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
                             		appBean.getConfigData().getSystemConfig().getEncoding()));
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("BasicDataSource: {}", dataSource);
-                        }
-
                         dsMap.put(mgr.getDsName(), dataSource);
                     }
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("dsMap: {}", dsMap);
                 }
 
                 CoreServicesInitializer.appBean.setDataSources(dsMap);
@@ -193,13 +145,6 @@ public class CoreServicesInitializer
      */
     public static void shutdown()
     {
-        final String methodName = CoreServicesInitializer.CNAME + "#shutdown()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
         final Map<String, DataSource> datasources = CoreServicesInitializer.appBean.getDataSources();
 
         try
@@ -208,17 +153,7 @@ public class CoreServicesInitializer
             {
                 for (String key : datasources.keySet())
                 {
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Key: {}", key);
-                    }
-
                     BasicDataSource dataSource = (BasicDataSource) datasources.get(key);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("BasicDataSource: {}", dataSource);
-                    }
 
                     if ((dataSource != null ) && (!(dataSource.isClosed())))
                     {
@@ -229,7 +164,7 @@ public class CoreServicesInitializer
         }
         catch (final SQLException sqx)
         {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+        	System.err.println("CoreServicesInitializer#shutdown(): Exception occurred while shutting down: " + sqx.getMessage());
         }
     }
 }

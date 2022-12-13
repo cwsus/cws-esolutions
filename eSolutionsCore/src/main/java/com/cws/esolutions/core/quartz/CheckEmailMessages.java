@@ -29,15 +29,15 @@ import java.util.Map;
 import java.util.List;
 import org.quartz.Job;
 import java.util.Arrays;
-import org.slf4j.Logger;
 import java.util.ArrayList;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Properties;
-import org.slf4j.LoggerFactory;
 import java.io.LineNumberReader;
 import javax.mail.MessagingException;
 import org.quartz.JobExecutionContext;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.core.CoreServicesConstants;
@@ -55,9 +55,9 @@ public class CheckEmailMessages implements Job
 {
     private static final String CNAME = CheckEmailMessages.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER + CheckEmailMessages.CNAME);
+    private static final Logger ERROR_RECORDER = LogManager.getLogger(CoreServicesConstants.ERROR_LOGGER + CheckEmailMessages.CNAME);
 
     /**
      * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)

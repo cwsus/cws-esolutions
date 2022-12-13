@@ -25,15 +25,15 @@ package com.cws.esolutions.security.main;
  * ----------------------------------------------------------------------------
  * cws-khuntly           11/23/2008 22:39:20             Created.
  */
-import org.slf4j.Logger;
 import java.net.InetAddress;
-import org.slf4j.LoggerFactory;
 import java.net.UnknownHostException;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.apache.logging.log4j.Logger;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.PosixParser;
+import org.apache.logging.log4j.LogManager;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
@@ -74,10 +74,10 @@ public class UserManagementUtility
     private static final String SEC_CONFIG = System.getProperty("user.home") + "/etc/ServiceConfig.xml";
 
     private static final String CNAME = UserManagementUtility.class.getName();
-    private static final IAccountControlProcessor processor = new AccountControlProcessorImpl();
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
+    private static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER);
+    private static final IAccountControlProcessor processor = (IAccountControlProcessor) new AccountControlProcessorImpl();
 
     static
     {

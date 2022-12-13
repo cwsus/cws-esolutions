@@ -25,8 +25,8 @@ package com.cws.esolutions.core.processors.interfaces;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.CoreServicesConstants;
@@ -48,16 +48,16 @@ import com.cws.esolutions.security.services.interfaces.IAccessControlService;
  */
 public interface ISystemCheckProcessor
 {
-    static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final CoreServicesBean appBean = CoreServicesBean.getInstance();
     static final String CNAME = IServerManagementProcessor.class.getName();
     static final AgentConfig agentConfig = appBean.getConfigData().getAgentConfig();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
-    static final IAccessControlService accessControl = new AccessControlServiceImpl();
+    static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
+    static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
 
-    static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
+    static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER + ISystemCheckProcessor.CNAME);
+    static final Logger ERROR_RECORDER = LogManager.getLogger(CoreServicesConstants.ERROR_LOGGER + ISystemCheckProcessor.CNAME);
 
     /**
      * Performs a netstat request against a given host and returns the obtained

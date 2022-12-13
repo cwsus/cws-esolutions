@@ -25,10 +25,10 @@ package com.cws.esolutions.security.dao.keymgmt.interfaces;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.slf4j.Logger;
 import javax.sql.DataSource;
 import java.security.KeyPair;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.config.xml.KeyConfig;
@@ -49,15 +49,15 @@ import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDA
  */
 public interface KeyManager
 {
-    static final ISecurityReferenceDAO secRef = new SecurityReferenceDAOImpl();
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
     static final DataSource dataSource = (DataSource) svcBean.getAuthDataSource();
     static final KeyConfig keyConfig = svcBean.getConfigData().getKeyConfig();
     static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
     static final RepositoryConfig repoConfig = svcBean.getConfigData().getRepoConfig();
     static final SecurityReturningAttributes securityAttributes = repoConfig.getSecurityAttributes();
+    static final ISecurityReferenceDAO secRef = (ISecurityReferenceDAO) new SecurityReferenceDAOImpl();
     
-    static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
+    static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     /**

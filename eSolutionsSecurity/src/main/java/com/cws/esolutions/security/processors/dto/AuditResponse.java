@@ -26,10 +26,10 @@ package com.cws.esolutions.security.processors.dto;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
-import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
@@ -47,7 +47,7 @@ public class AuditResponse implements Serializable
     private static final long serialVersionUID = 4340210996951737264L;
     private static final String CNAME = AuditResponse.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public final void setRequestStatus(final SecurityRequestStatus value)

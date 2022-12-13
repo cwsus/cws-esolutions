@@ -69,6 +69,7 @@
                 <entry key="svcMgmt" value="true" />
                 <entry key="userAdmin" value="true" />
                 <entry key="certMgmt" value="true" />
+                <entry key="dcMgmt" value="true" />
             </map>
         </property>
         <property name="homePage" value="/jsp/html/en/CommonLandingPage" />
@@ -94,7 +95,6 @@
         <property name="messageEmailSentSuccess" value="theme.email.sent.success" />
     </bean>
 
-	<!-- we found this on the internet AND we're trying it -->
 	<bean class="org.springframework.web.context.support.ServletContextAttributeExporter">
 		<property name="attributes">
     		<map>
@@ -119,7 +119,8 @@
                 <value>classpath:nls/OnlineResetServlet/OnlineResetServlet</value>
                 <value>classpath:nls/UserAccountServlet/UserAccountServlet</value>
                 <value>classpath:nls/UserManagementServlet/UserManagementServlet</value>
-                <value>classpath:nls/UserManagementServlet/CertificateManagementServlet</value>
+                <value>classpath:nls/DatacenterManagementServlet/DatacenterManagementServlet</value>
+                <value>classpath:nls/CertificateManagementServlet/CertificateManagementServlet</value>
                 <value>classpath:nls/theme/resources</value>
             </list>
         </property>

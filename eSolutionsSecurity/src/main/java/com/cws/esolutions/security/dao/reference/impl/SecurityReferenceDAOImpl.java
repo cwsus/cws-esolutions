@@ -27,6 +27,7 @@ package com.cws.esolutions.security.dao.reference.impl;
  */
 import java.util.Map;
 import java.util.List;
+import java.util.Objects;
 import java.util.HashMap;
 import java.sql.ResultSet;
 import java.sql.Connection;
@@ -60,6 +61,11 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
         ResultSet resultSet = null;
         CallableStatement stmt = null;
         List<String> securityList = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
 
         try
         {
@@ -153,6 +159,11 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
         CallableStatement stmt = null;
         List<String> questionList = null;
 
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
+
         try
         {
             sqlConn = dataSource.getConnection();
@@ -245,6 +256,11 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
         CallableStatement stmt = null;
         Map<String, String> serviceMap = null;
 
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
+
         try
         {
             sqlConn = dataSource.getConnection();
@@ -330,6 +346,11 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
         ResultSet resultSet = null;
         CallableStatement stmt = null;
         List<String> serviceList = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
 
         try
         {

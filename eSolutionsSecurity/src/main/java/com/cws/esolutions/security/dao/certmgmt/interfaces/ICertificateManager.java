@@ -27,8 +27,8 @@ package com.cws.esolutions.security.dao.certmgmt.interfaces;
  */
 import java.io.File;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.SecurityServiceConstants;
@@ -45,7 +45,7 @@ public interface ICertificateManager
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
     static final CertificateConfig certConfig = svcBean.getConfigData().getCertConfig();
     
-    static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
+    static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     /**

@@ -26,11 +26,11 @@ package com.cws.esolutions.security;
  * Kevin Huntly         12/05/2008 13:36:09             Added method to process change requests
  */
 import java.util.Map;
-import org.slf4j.Logger;
 import java.io.Serializable;
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 /**
@@ -50,7 +50,7 @@ public class SecurityServiceBean implements Serializable
     private static final long serialVersionUID = -2801382473833987974L;
     private static final String CNAME = SecurityServiceBean.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public static final SecurityServiceBean getInstance()

@@ -25,6 +25,7 @@ package com.cws.esolutions.security.dao.keymgmt.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
+import java.util.Objects;
 import java.sql.ResultSet;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -65,6 +66,11 @@ public class SQLKeyManager implements KeyManager
         Connection sqlConn = null;
         boolean isComplete = false;
         CallableStatement stmt = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new KeyManagementException("A datasource connection could not be obtained.");
+        }
 
         try
         {
@@ -183,6 +189,11 @@ public class SQLKeyManager implements KeyManager
         ResultSet resultSet = null;
         CallableStatement stmt = null;
 
+        if (Objects.isNull(dataSource))
+        {
+        	throw new KeyManagementException("A datasource connection could not be obtained.");
+        }
+
         try
         {
             sqlConn = dataSource.getConnection();
@@ -300,6 +311,11 @@ public class SQLKeyManager implements KeyManager
         Connection sqlConn = null;
         boolean isComplete = false;
         CallableStatement stmt = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new KeyManagementException("A datasource connection could not be obtained.");
+        }
 
         try
         {

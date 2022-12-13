@@ -26,10 +26,10 @@ package com.cws.esolutions.core.processors.dto;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
-import org.slf4j.Logger;
 import java.io.Serializable;
-import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
@@ -51,9 +51,8 @@ public class ApplicationManagementResponse implements Serializable
     private static final long serialVersionUID = 6843850571636255437L;
     private static final String CNAME = ApplicationManagementResponse.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER);
 
     public final void setRequestStatus(final CoreServicesStatus value)
     {
@@ -240,23 +239,11 @@ public class ApplicationManagementResponse implements Serializable
     @Override
     public final String toString()
     {
-        final String methodName = ApplicationManagementResponse.CNAME + "#toString()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
         StringBuilder sBuilder = new StringBuilder()
             .append("[" + this.getClass().getName() + "]" + CoreServicesConstants.LINE_BREAK + "{" + CoreServicesConstants.LINE_BREAK);
 
         for (Field field : this.getClass().getDeclaredFields())
         {
-            if (DEBUG)
-            {
-                DEBUGGER.debug("field: {}", field);
-            }
-
             if (!(field.getName().equals("methodName")) &&
                     (!(field.getName().equals("CNAME"))) &&
                     (!(field.getName().equals("DEBUGGER"))) &&
@@ -271,19 +258,11 @@ public class ApplicationManagementResponse implements Serializable
                         sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + CoreServicesConstants.LINE_BREAK);
                     }
                 }
-                catch (final IllegalAccessException iax)
-                {
-                    ERROR_RECORDER.error(iax.getMessage(), iax);
-                }
+                catch (final IllegalAccessException iax) {}
             }
         }
 
         sBuilder.append('}');
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("sBuilder: {}", sBuilder);
-        }
 
         return sBuilder.toString();
     }

@@ -29,7 +29,6 @@ import java.net.URL;
 import java.net.URI;
 import java.util.List;
 import java.net.Socket;
-import org.slf4j.Logger;
 import java.util.Arrays;
 import org.xbill.DNS.Name;
 import org.xbill.DNS.Type;
@@ -46,7 +45,6 @@ import java.security.Security;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.Session;
 import java.io.FileInputStream;
-import org.slf4j.LoggerFactory;
 import java.io.FileOutputStream;
 import java.net.SocketException;
 import java.io.InputStreamReader;
@@ -63,19 +61,21 @@ import java.util.concurrent.TimeUnit;
 import java.net.UnknownHostException;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
+import org.apache.logging.log4j.Logger;
 import org.apache.commons.io.FileUtils;
 import org.xbill.DNS.TextParseException;
-import org.apache.hc.core5.net.URIBuilder;
 import org.apache.hc.core5.util.Timeout;
+import org.apache.hc.core5.net.URIBuilder;
+import org.apache.logging.log4j.LogManager;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.hc.client5.http.auth.AuthScope;
 import org.apache.hc.client5.http.auth.NTCredentials;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.auth.CredentialsProvider;
+import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
-import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
 import org.apache.hc.client5.http.impl.auth.SystemDefaultCredentialsProvider;
 
 import com.cws.esolutions.core.CoreServicesBean;
@@ -105,9 +105,9 @@ public final class NetworkUtils
     private static final CoreServicesBean appBean = CoreServicesBean.getInstance();
     private static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER + CNAME);
+    private static final Logger ERROR_RECORDER = LogManager.getLogger(CoreServicesConstants.ERROR_LOGGER + CNAME);
 
     /**
      * Creates an SSH connection to a target host and then executes an SCP

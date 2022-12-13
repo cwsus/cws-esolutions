@@ -27,6 +27,7 @@ package com.cws.esolutions.security.dao.reference.impl;
  */
 import java.util.List;
 import java.util.Arrays;
+import java.util.Objects;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.Connection;
@@ -58,6 +59,11 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
         Connection sqlConn = null;
         boolean isComplete = false;
         CallableStatement stmt = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
 
         try
         {
@@ -117,6 +123,11 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
         Connection sqlConn = null;
         ResultSet resultSet = null;
         CallableStatement stmt = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
 
         try
         {
@@ -196,6 +207,11 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
         boolean isComplete = false;
         CallableStatement stmt = null;
 
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
+
         try
         {
             sqlConn = dataSource.getConnection();
@@ -263,6 +279,11 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
         boolean isComplete = false;
         CallableStatement stmt = null;
 
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
+
         try
         {
             sqlConn = dataSource.getConnection();
@@ -324,6 +345,11 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
         ResultSet resultSet = null;
         CallableStatement stmt = null;
         List<String[]> response = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
 
         try
         {
@@ -408,6 +434,11 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
         List<Object> resetData = null;
         CallableStatement stmt = null;
 
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
+
         try
         {
             sqlConn = dataSource.getConnection();
@@ -483,6 +514,11 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
         boolean isComplete = false;
         CallableStatement stmt = null;
 
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
+
         try
         {
             sqlConn = dataSource.getConnection();
@@ -545,6 +581,11 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
         Connection sqlConn = null;
         boolean isVerified = false;
         CallableStatement stmt = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
 
         try
         {

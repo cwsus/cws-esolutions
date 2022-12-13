@@ -28,6 +28,7 @@ package com.cws.esolutions.core.dao.impl;
 import java.sql.Types;
 import java.util.List;
 import java.util.Arrays;
+import java.util.Objects;
 import java.sql.ResultSet;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -59,6 +60,11 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         Connection sqlConn = null;
         boolean isComplete = false;
         CallableStatement stmt = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
 
         try
         {
@@ -131,6 +137,11 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         boolean isComplete = false;
         CallableStatement stmt = null;
 
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
+
         try
         {
             sqlConn = dataSource.getConnection();
@@ -202,6 +213,11 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         boolean isComplete = false;
         CallableStatement stmt = null;
 
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
+
         try
         {
             sqlConn = dataSource.getConnection();
@@ -265,6 +281,11 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         ResultSet resultSet = null;
         CallableStatement stmt = null;
         List<String[]> responseData = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
 
         try
         {
@@ -366,6 +387,11 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         ResultSet resultSet = null;
         CallableStatement stmt = null;
         List<Object[]> responseData = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
 
         try
         {
@@ -491,6 +517,11 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         ResultSet resultSet = null;
         CallableStatement stmt = null;
         List<Object> responseData = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
 
         try
         {

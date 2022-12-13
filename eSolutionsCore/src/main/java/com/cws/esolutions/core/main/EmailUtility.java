@@ -26,10 +26,8 @@ package com.cws.esolutions.core.main;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.net.URL;
-import org.slf4j.Logger;
 import java.util.Arrays;
 import java.util.ArrayList;
-import org.slf4j.LoggerFactory;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.JAXBException;
@@ -64,10 +62,6 @@ public final class EmailUtility
     private static Options options = null;
 
     private static final String CNAME = EmailUtility.class.getName();
-
-    static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
-    static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER + CNAME);
 
     static
     {
@@ -108,14 +102,6 @@ public final class EmailUtility
 
     public static final void main(final String[] args)
     {
-        final String methodName = EmailUtility.CNAME + "#main(final String[] args)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", (Object) args);
-        }
-
         if (args.length == 0)
         {
             HelpFormatter usage = new HelpFormatter();
@@ -146,11 +132,6 @@ public final class EmailUtility
             message.setEmailAddr(
                     (StringUtils.isNotEmpty(commandLine.getOptionValue("from"))) ? new ArrayList<String>(Arrays.asList(commandLine.getOptionValue("from")))
                             : new ArrayList<String>(Arrays.asList(configData.getMailConfig().getMailFrom())));
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("EmailMessage: {}", message);
-            }
 
             try
             {

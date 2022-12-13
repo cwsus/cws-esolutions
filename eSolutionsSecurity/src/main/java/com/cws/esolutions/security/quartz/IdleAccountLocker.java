@@ -28,10 +28,10 @@ package com.cws.esolutions.security.quartz;
 import java.util.Date;
 import java.util.List;
 import org.quartz.Job;
-import org.slf4j.Logger;
 import java.util.Calendar;
-import org.slf4j.LoggerFactory;
 import org.quartz.JobExecutionContext;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.SecurityServiceConstants;
@@ -46,9 +46,9 @@ public class IdleAccountLocker implements Job
     private static final String CNAME = IdleAccountLocker.class.getName();
     private static final SecurityServiceBean bean = SecurityServiceBean.getInstance();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + IdleAccountLocker.CNAME);
+    private static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER + IdleAccountLocker.CNAME);
 
     /**
      * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)

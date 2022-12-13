@@ -25,8 +25,8 @@ package com.cws.esolutions.core.processors.interfaces;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.CoreServicesConstants;
@@ -48,16 +48,16 @@ import com.cws.esolutions.security.services.interfaces.IAccessControlService;
  */
 public interface IDNSServiceRequestProcessor
 {
-    static final IServerDataDAO dao = new ServerDataDAOImpl();
-    static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final CoreServicesBean appBean = CoreServicesBean.getInstance();
     static final String CNAME = IDNSServiceRequestProcessor.class.getName();
     static final SSHConfig sshConfig = appBean.getConfigData().getSshConfig();
-    static final IAccessControlService accessControl = new AccessControlServiceImpl();
+    static final IServerDataDAO dao = (IServerDataDAO) new ServerDataDAOImpl();
+    static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
+    static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
 
-    static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
+    static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER + CNAME);
+    static final Logger ERROR_RECORDER = LogManager.getLogger(CoreServicesConstants.ERROR_LOGGER + CNAME);
 
     /**
      * Adds a new record to an existing DNS zone. The record can be a subdomain, CNAME, TXT

@@ -26,10 +26,10 @@ package com.cws.esolutions.security.processors.dto;
  * cws-khuntly          03/28/2017 01:41:00             Created.
  */
 import java.io.File;
-import org.slf4j.Logger;
 import java.io.Serializable;
-import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityServiceConstants;
@@ -59,7 +59,7 @@ public class CertificateRequest implements Serializable
     private static final long serialVersionUID = -4071795817942006166L;
     private static final String CNAME = CertificateRequest.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public final void setApplicationId(final String value)

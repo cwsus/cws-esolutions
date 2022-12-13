@@ -27,6 +27,7 @@ package com.cws.esolutions.security.dao.usermgmt.impl;
  */
 import java.util.List;
 import java.util.Arrays;
+import java.util.Objects;
 import java.sql.ResultSet;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -61,6 +62,11 @@ public class SQLUserManager implements UserManager
         Connection sqlConn = null;
         ResultSet resultSet = null;
         CallableStatement stmt = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new UserManagementException("A datasource connection could not be obtained.");
+        }
 
         try
         {
@@ -164,6 +170,11 @@ public class SQLUserManager implements UserManager
         boolean isComplete = false;
         CallableStatement stmt = null;
 
+        if (Objects.isNull(dataSource))
+        {
+        	throw new UserManagementException("A datasource connection could not be obtained.");
+        }
+
         try
         {
             sqlConn = dataSource.getConnection();
@@ -251,6 +262,11 @@ public class SQLUserManager implements UserManager
         boolean isComplete = false;
         CallableStatement stmt = null;
 
+        if (Objects.isNull(dataSource))
+        {
+        	throw new UserManagementException("A datasource connection could not be obtained.");
+        }
+
         try
         {
             sqlConn = dataSource.getConnection();
@@ -324,6 +340,11 @@ public class SQLUserManager implements UserManager
         ResultSet resultSet = null;
         CallableStatement stmt = null;
         List<String[]> results = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new UserManagementException("A datasource connection could not be obtained.");
+        }
 
         try
         {
@@ -432,6 +453,11 @@ public class SQLUserManager implements UserManager
         ResultSet resultSet = null;
         CallableStatement stmt = null;
         List<Object> userAccount = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new UserManagementException("A datasource connection could not be obtained.");
+        }
 
         try
         {
@@ -560,6 +586,11 @@ public class SQLUserManager implements UserManager
         CallableStatement stmt = null;
         List<Object> userAccount = null;
 
+        if (Objects.isNull(dataSource))
+        {
+        	throw new UserManagementException("A datasource connection could not be obtained.");
+        }
+
         try
         {
             sqlConn = dataSource.getConnection();
@@ -680,6 +711,11 @@ public class SQLUserManager implements UserManager
         CallableStatement stmt = null;
         List<String[]> results = null;
 
+        if (Objects.isNull(dataSource))
+        {
+        	throw new UserManagementException("A datasource connection could not be obtained.");
+        }
+
         try
         {
             sqlConn = dataSource.getConnection();
@@ -788,6 +824,11 @@ public class SQLUserManager implements UserManager
         boolean isComplete = false;
         CallableStatement stmt = null;
 
+        if (Objects.isNull(dataSource))
+        {
+        	throw new UserManagementException("A datasource connection could not be obtained.");
+        }
+
         try
         {
             sqlConn = dataSource.getConnection();
@@ -865,6 +906,11 @@ public class SQLUserManager implements UserManager
         boolean isComplete = false;
         CallableStatement stmt = null;
 
+        if (Objects.isNull(dataSource))
+        {
+        	throw new UserManagementException("A datasource connection could not be obtained.");
+        }
+
         try
         {
             sqlConn = dataSource.getConnection();
@@ -941,6 +987,11 @@ public class SQLUserManager implements UserManager
         Connection sqlConn = null;
         boolean isComplete = false;
         CallableStatement stmt = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new UserManagementException("A datasource connection could not be obtained.");
+        }
 
         try
         {
@@ -1024,6 +1075,11 @@ public class SQLUserManager implements UserManager
         boolean isComplete = false;
         CallableStatement stmt = null;
 
+        if (Objects.isNull(dataSource))
+        {
+        	throw new UserManagementException("A datasource connection could not be obtained.");
+        }
+
         try
         {
             sqlConn = dataSource.getConnection();
@@ -1100,6 +1156,11 @@ public class SQLUserManager implements UserManager
         Connection sqlConn = null;
         boolean isComplete = false;
         CallableStatement stmt = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new UserManagementException("A datasource connection could not be obtained.");
+        }
 
         try
         {
@@ -1178,6 +1239,11 @@ public class SQLUserManager implements UserManager
         Connection sqlConn = null;
         CallableStatement stmt = null;
 
+        if (Objects.isNull(dataSource))
+        {
+        	throw new UserManagementException("A datasource connection could not be obtained.");
+        }
+
         try
         {
             sqlConn = dataSource.getConnection();
@@ -1254,6 +1320,11 @@ public class SQLUserManager implements UserManager
         boolean isComplete = false;
         CallableStatement stmt = null;
 
+        if (Objects.isNull(dataSource))
+        {
+        	throw new UserManagementException("A datasource connection could not be obtained.");
+        }
+
         try
         {
             sqlConn = dataSource.getConnection();
@@ -1329,6 +1400,11 @@ public class SQLUserManager implements UserManager
         Connection sqlConn = null;
         boolean isComplete = false;
         CallableStatement stmt = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new UserManagementException("A datasource connection could not be obtained.");
+        }
 
         try
         {
@@ -1412,6 +1488,11 @@ public class SQLUserManager implements UserManager
         boolean isComplete = false;
         CallableStatement stmt = null;
 
+        if (Objects.isNull(dataSource))
+        {
+        	throw new UserManagementException("A datasource connection could not be obtained.");
+        }
+
         try
         {
             sqlConn = dataSource.getConnection();
@@ -1493,6 +1574,11 @@ public class SQLUserManager implements UserManager
         Connection sqlConn = null;
         boolean isComplete = false;
         CallableStatement stmt = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new UserManagementException("A datasource connection could not be obtained.");
+        }
 
         try
         {

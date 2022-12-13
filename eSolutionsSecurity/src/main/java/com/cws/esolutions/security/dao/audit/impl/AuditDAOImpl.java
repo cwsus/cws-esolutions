@@ -26,6 +26,7 @@ package com.cws.esolutions.security.dao.audit.impl;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
+import java.util.Objects;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.Connection;
@@ -55,6 +56,11 @@ public class AuditDAOImpl implements IAuditDAO
 
         Connection sqlConn = null;
         CallableStatement stmt = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
 
         try
         {
@@ -127,6 +133,11 @@ public class AuditDAOImpl implements IAuditDAO
         ResultSet resultSet = null;
         CallableStatement stmt = null;
         List<Object> responseList = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
 
         try
         {

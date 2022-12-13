@@ -25,11 +25,10 @@ package com.cws.esolutions.security.processors.dto;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
 /**
@@ -53,7 +52,7 @@ public class AuthenticationData implements Serializable
     private static final long serialVersionUID = -1680121237315483191L;
     private static final String CNAME = AuthenticationData.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public final void setUsername(final String value)

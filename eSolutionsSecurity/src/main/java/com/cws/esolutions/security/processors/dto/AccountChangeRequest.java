@@ -25,10 +25,10 @@ package com.cws.esolutions.security.processors.dto;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.slf4j.Logger;
 import java.io.Serializable;
-import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityServiceConstants;
@@ -52,7 +52,7 @@ public class AccountChangeRequest implements Serializable
     private static final long serialVersionUID = -7265044360536886625L;
     private static final String CNAME = AccountChangeRequest.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public final void setHostInfo(final RequestHostInfo value)

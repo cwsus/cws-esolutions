@@ -25,8 +25,8 @@ package com.cws.esolutions.security.processors.interfaces;
  * ----------------------------------------------------------------------------
  * cws-khuntly          03/28/2017 01:41:00             Created.
  */
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.SecurityServiceConstants;
@@ -56,8 +56,8 @@ public interface ICertificateRequestProcessor
     static final ICertificateManager processor = (ICertificateManager) new CertificateManagerImpl();
     static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
 
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
-    static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
+    static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER);
+    static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     CertificateResponse listActiveRequests(final CertificateRequest request) throws CertificateRequestException;

@@ -26,10 +26,10 @@ package com.cws.esolutions.security.dao.audit.interfaces;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
-import org.slf4j.Logger;
 import javax.sql.DataSource;
 import java.sql.SQLException;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.SecurityServiceConstants;
@@ -45,9 +45,9 @@ public interface IAuditDAO
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
     static final DataSource dataSource = (DataSource) svcBean.getAuditDataSource();
 
-    static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
+    static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger AUDIT_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.AUDIT_LOGGER);
+    static final Logger AUDIT_RECORDER = LogManager.getLogger(SecurityServiceConstants.AUDIT_LOGGER);
 
     /**
      * Inserts audit-related data into the audit datastore

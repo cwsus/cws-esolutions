@@ -26,19 +26,20 @@ package com.cws.esolutions.security.main;
  * cws-khuntly           11/23/2008 22:39:20             Created.
  */
 import java.io.File;
-import org.slf4j.Logger;
+
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import org.slf4j.LoggerFactory;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.Logger;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.PosixParser;
+import org.apache.logging.log4j.LogManager;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
@@ -76,9 +77,9 @@ public class PasswordUtility
     private static final String LOG_CONFIG = System.getProperty("user.home") + "/.etc/SecurityService/logging/logging.xml";
     private static final String SEC_CONFIG = System.getProperty("user.home") + "/.etc/SecurityService/config/ServiceConfig.xml";
 
-    static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
+    static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
+    private static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
     public PasswordUtility()
     {

@@ -28,11 +28,11 @@ package com.cws.esolutions.core.utils.dto;
 import java.util.Map;
 import java.util.Date;
 import java.util.List;
-import org.slf4j.Logger;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.core.CoreServicesConstants;
 /**
@@ -59,9 +59,9 @@ public class EmailMessage implements Serializable
     private static final String CNAME = EmailMessage.class.getName();
     private static final long serialVersionUID = -4668375236085938239L;
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER);
+    private static final Logger ERROR_RECORDER = LogManager.getLogger(CoreServicesConstants.ERROR_LOGGER);
 
     public final void setIsAlert(final boolean value)
     {
@@ -424,11 +424,6 @@ public class EmailMessage implements Serializable
 
         for (Field field : this.getClass().getDeclaredFields())
         {
-            if (DEBUG)
-            {
-                DEBUGGER.debug("field: {}", field);
-            }
-
             if (!(field.getName().equals("methodName")) &&
                 (!(field.getName().equals("CNAME"))) &&
                 (!(field.getName().equals("DEBUGGER"))) &&

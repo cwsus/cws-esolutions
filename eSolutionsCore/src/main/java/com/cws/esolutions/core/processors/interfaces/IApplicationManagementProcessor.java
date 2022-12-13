@@ -26,8 +26,8 @@ package com.cws.esolutions.core.processors.interfaces;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.CoreServicesConstants;
@@ -52,17 +52,17 @@ import com.cws.esolutions.core.processors.exception.ApplicationManagementExcepti
  */
 public interface IApplicationManagementProcessor
 {
-    static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final CoreServicesBean appBean = CoreServicesBean.getInstance();
-    static final IServiceDataDAO serviceDao = new ServiceDataDAOImpl();
-    static final IApplicationDataDAO appDAO = new ApplicationDataDAOImpl();
     static final AgentConfig agentConfig = appBean.getConfigData().getAgentConfig();
-    static final IAccessControlService accessControl = new AccessControlServiceImpl();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
+    static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
+    static final IServiceDataDAO serviceDao = (IServiceDataDAO) new ServiceDataDAOImpl();
+    static final IApplicationDataDAO appDAO = (IApplicationDataDAO) new ApplicationDataDAOImpl();
+    static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
 
-    static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
+    static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServicesConstants.ERROR_LOGGER);
+    static final Logger ERROR_RECORDER = LogManager.getLogger(CoreServicesConstants.ERROR_LOGGER);
 
     /**
      * Allows addition of a new application to the service datastore

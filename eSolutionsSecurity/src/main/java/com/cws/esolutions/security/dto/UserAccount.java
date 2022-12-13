@@ -25,12 +25,12 @@ package com.cws.esolutions.security.dto;
  * ----------------------------------------------------------------------------
  * cws-khuntly           11/23/2008 22:39:20             Created.
  */
-import org.slf4j.Logger;
 import java.sql.Timestamp;
 import java.io.Serializable;
 import java.security.KeyPair;
 import java.lang.reflect.Field;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.security.SecurityServiceConstants;
@@ -65,7 +65,7 @@ public class UserAccount implements Serializable
     private static final String CNAME = UserAccount.class.getName();
     private static final long serialVersionUID = -1860442834878637721L;
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     /**

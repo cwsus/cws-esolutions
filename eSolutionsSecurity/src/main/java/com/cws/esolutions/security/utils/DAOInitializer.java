@@ -25,22 +25,22 @@ package com.cws.esolutions.security.utils;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.slf4j.Logger;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.Properties;
 import javax.naming.Context;
 import java.sql.SQLException;
-import org.slf4j.LoggerFactory;
 import javax.net.ssl.SSLContext;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.io.FileNotFoundException;
 import com.unboundid.util.ssl.SSLUtil;
 import javax.net.ssl.SSLSocketFactory;
+import org.apache.logging.log4j.Logger;
 import com.unboundid.ldap.sdk.BindResult;
 import com.unboundid.ldap.sdk.ResultCode;
 import com.unboundid.ldap.sdk.BindRequest;
+import org.apache.logging.log4j.LogManager;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.ExtendedResult;
 import com.unboundid.ldap.sdk.LDAPConnection;
@@ -89,9 +89,9 @@ public final class DAOInitializer
     private static final SystemConfig systemConfig = svcBean.getConfigData().getSystemConfig();
     private static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + DAOInitializer.CNAME);
+    private static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER + DAOInitializer.CNAME);
 
     /**
      * @param properties - The <code>AuthRepo</code> object containing connection information

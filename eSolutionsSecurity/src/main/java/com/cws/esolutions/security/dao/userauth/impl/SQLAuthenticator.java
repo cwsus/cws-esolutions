@@ -27,6 +27,7 @@ package com.cws.esolutions.security.dao.userauth.impl;
  */
 import java.util.List;
 import java.util.Arrays;
+import java.util.Objects;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.Connection;
@@ -35,8 +36,8 @@ import java.sql.CallableStatement;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.utils.PasswordUtils;
+import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 /**
  * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator
@@ -63,6 +64,11 @@ public class SQLAuthenticator implements Authenticator
         Connection sqlConn = null;
         ResultSet resultSet = null;
         CallableStatement stmt = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new AuthenticatorException("A datasource connection could not be obtained.");
+        }
 
         try
         {
@@ -168,6 +174,11 @@ public class SQLAuthenticator implements Authenticator
         ResultSet resultSet = null;
         CallableStatement stmt = null;
         List<Object> userSecurity = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new AuthenticatorException("A datasource connection could not be obtained.");
+        }
 
         try
         {
@@ -311,6 +322,11 @@ public class SQLAuthenticator implements Authenticator
         ResultSet resultSet = null;
         CallableStatement stmt = null;
 
+        if (Objects.isNull(dataSource))
+        {
+        	throw new AuthenticatorException("A datasource connection could not be obtained.");
+        }
+
         try
         {
             sqlConn = SQLAuthenticator.dataSource.getConnection();
@@ -402,6 +418,11 @@ public class SQLAuthenticator implements Authenticator
         boolean isValid = false;
         Connection sqlConn = null;
         CallableStatement stmt = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new AuthenticatorException("A datasource connection could not be obtained.");
+        }
 
         try
         {

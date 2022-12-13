@@ -26,12 +26,12 @@ package com.cws.esolutions.security.config.xml;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.Map;
-import org.slf4j.Logger;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.commons.lang3.StringUtils;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -61,7 +61,7 @@ public final class SecurityConfigurationData implements Serializable
     private static final long serialVersionUID = -795898942156658458L;
     private static final String CNAME = SecurityConfigurationData.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public final void setSystemConfig(final SystemConfig value)

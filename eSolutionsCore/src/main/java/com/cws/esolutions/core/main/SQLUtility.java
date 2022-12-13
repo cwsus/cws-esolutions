@@ -25,8 +25,6 @@ package com.cws.esolutions.core.main;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.lang3.StringUtils;
@@ -34,7 +32,6 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.ParseException;
 
-import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.exception.CoreServicesException;
 import com.cws.esolutions.core.listeners.CoreServicesInitializer;
 import com.cws.esolutions.security.exception.SecurityServiceException;
@@ -53,9 +50,6 @@ public class SQLUtility
     private static final String CORE_SVC_CONFIG = System.getProperty("user.home") + "/etc/eSolutionsCore/config/ServiceConfig.xml";
     private static final String SEC_LOG_CONFIG = System.getProperty("user.home") + "/etc/SecurityService/logging/logging.xml";
     private static final String SEC_SVC_CONFIG = System.getProperty("user.home") + "/etc/SecurityService/config/ServiceConfig.xml";
-
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServicesConstants.DEBUGGER);
-    private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public enum LoadType
     {
@@ -92,14 +86,6 @@ public class SQLUtility
 
     public static final void main(final String[] args)
     {
-        final String methodName = SQLUtility.CNAME + "#main(final String[] args)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", (Object) args);
-        }
-
         if (args.length == 0)
         {
             HelpFormatter usage = new HelpFormatter();
@@ -112,14 +98,6 @@ public class SQLUtility
         final String securityConfiguration = (StringUtils.isBlank(System.getProperty("secConfigFile"))) ? SQLUtility.CORE_LOG_CONFIG : System.getProperty("secConfigFile");
         final String coreLogging = (StringUtils.isBlank(System.getProperty("coreLogConfig"))) ? SQLUtility.SEC_SVC_CONFIG : System.getProperty("coreLogConfig");
         final String securityLogging = (StringUtils.isBlank(System.getProperty("secLogConfig"))) ? SQLUtility.SEC_LOG_CONFIG : System.getProperty("secLogConfig");
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("String coreConfiguration: {}", coreConfiguration);
-            DEBUGGER.debug("String securityConfiguration: {}", securityConfiguration);
-            DEBUGGER.debug("String coreLogging: {}", coreLogging);
-            DEBUGGER.debug("String securityLogging: {}", securityLogging);
-        }
 
         try
         {
