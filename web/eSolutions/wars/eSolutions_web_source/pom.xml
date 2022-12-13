@@ -23,6 +23,10 @@
 
     <dependencies>
         <!-- Provided dependencies -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+		</dependency>
         <!-- tld's -->
         <dependency>
             <groupId>org.apache.taglibs</groupId>
@@ -31,6 +35,12 @@
         <dependency>
             <groupId>javax.servlet.jsp.jstl</groupId>
             <artifactId>jstl-api</artifactId>
+            <exclusions>
+            	<exclusion>
+            		<groupId>javax.servlet</groupId>
+            		<artifactId>servlet-api</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>javax.servlet.jsp</groupId>

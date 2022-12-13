@@ -22,6 +22,10 @@
 	</properties>
 
     <dependencies>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+		</dependency>
         <!-- cws-shared -->
         <dependency>
             <groupId>com.cws</groupId>

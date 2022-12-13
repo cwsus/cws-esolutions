@@ -6,13 +6,12 @@
     <name>CaspersBox Web Services</name>
     <groupId>com.cws</groupId>
     <artifactId>cws</artifactId>
-    <version>5.1.6</version>
+    <version>5.1.8</version>
     <packaging>pom</packaging>
     <description>CWS SuperPom</description>
     <url>http://www.caspersbox.com/</url>
 
     <properties>
-        <servlet.version>4.0.1</servlet.version>
         <junit.version>5.9.1</junit.version>
         <assertj.version>3.23.1</assertj.version>
         <commons-codec.version>1.15</commons-codec.version>
@@ -30,8 +29,6 @@
         <log4j.version>2.19.0</log4j.version>
         <mail.version>2.1.0</mail.version>
         <activation.version>1.1.1</activation.version>
-        <dnsjava.version>3.5.2</dnsjava.version>
-        <unboundid-ldapsdk.version>6.0.7</unboundid-ldapsdk.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <jaxb-runtime.version>4.0.1</jaxb-runtime.version>
         <mysql.version>8.0.31</mysql.version>
@@ -111,16 +108,9 @@
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
-              <artifactId>junit-jupiter-engine</artifactId>
-              <version>${junit.version}</version>
-              <scope>test</scope>
-          </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>${servlet.version}</version>
-            <type>jar</type>
-            <scope>provided</scope>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>jakarta.mail</groupId>
@@ -164,6 +154,10 @@
                 <exclusion>
                     <groupId>commons-logging</groupId>
                     <artifactId>commons-logging</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
                 </exclusion>
             </exclusions>
             <type>jar</type>
@@ -236,22 +230,6 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-digester3</artifactId>
             <version>${commons-digester.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <!-- unbound id -->
-        <dependency>
-            <groupId>com.unboundid</groupId>
-            <artifactId>unboundid-ldapsdk</artifactId>
-            <version>${unboundid-ldapsdk.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <!-- dnsjava -->
-        <dependency>
-            <groupId>dnsjava</groupId>
-            <artifactId>dnsjava</artifactId>
-            <version>${dnsjava.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>

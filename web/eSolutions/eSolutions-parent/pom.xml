@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.cws</groupId>
         <artifactId>cws</artifactId>
-        <version>5.1.6</version>
+        <version>5.1.8</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -22,6 +22,7 @@
     </scm>
 
     <properties>
+    	<javax.servlet.version>4.0.1</javax.servlet.version>
         <taglibs.version>1.2.5</taglibs.version>
         <jstl.version>1.2</jstl.version>
         <jsp-api.version>2.3.3</jsp-api.version>
@@ -198,6 +199,14 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+            <!-- servlet api -->
+	        <dependency>
+	            <groupId>javax.servlet</groupId>
+	            <artifactId>javax.servlet-api</artifactId>
+			    <version>${javax.servlet.version}</version>
+			    <type>jar</type>
+			    <scope>provided</scope>
+			</dependency>
         </dependencies>
     </dependencyManagement>
 </project>

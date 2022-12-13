@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.cws</groupId>
         <artifactId>cws</artifactId>
-        <version>5.1.6</version>
+        <version>5.1.8</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -21,6 +21,8 @@
     </scm>
 
     <properties>
+    	<javax.servlet.version>4.0.1</javax.servlet.version>
+    	<unboundid-ldapsdk.version>6.0.7</unboundid-ldapsdk.version>
         <quartz.version>2.3.2</quartz.version>
         <qrgen.version>1.4</qrgen.version>
         <bouncycastle.version>1.72</bouncycastle.version>
@@ -97,5 +99,21 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
+        <!-- unbound id -->
+        <dependency>
+            <groupId>com.unboundid</groupId>
+            <artifactId>unboundid-ldapsdk</artifactId>
+            <version>${unboundid-ldapsdk.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <!-- servlet api -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+		    <version>${javax.servlet.version}</version>
+		    <type>jar</type>
+		    <scope>provided</scope>
+		</dependency>
     </dependencies>
 </project>

@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.cws</groupId>
         <artifactId>cws</artifactId>
-        <version>5.1.6</version>
+        <version>5.1.8</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -19,6 +19,8 @@
     </scm>
 
     <properties>
+    	<javax.servlet.version>4.0.1</javax.servlet.version>
+    	<dnsjava.version>3.5.2</dnsjava.version>
         <quartz.version>2.3.2</quartz.version>
         <j2ssh.version>0.2.9</j2ssh.version>
         <virtualbox.version>4.2.8</virtualbox.version>
@@ -72,6 +74,12 @@
             <version>${commons-httpclient}</version>
             <type>jar</type>
             <scope>compile</scope>
+            <exclusions>
+            	<exclusion>
+            		<groupId>org.slf4j</groupId>
+            		<artifactId>slf4j-api</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
         <!-- quartz -->
         <dependency>
@@ -129,5 +137,19 @@
 		    <type>jar</type>
 		    <scope>provided</scope>
 		</dependency>
+        <!-- dnsjava -->
+        <dependency>
+            <groupId>dnsjava</groupId>
+            <artifactId>dnsjava</artifactId>
+            <version>${dnsjava.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 </project>

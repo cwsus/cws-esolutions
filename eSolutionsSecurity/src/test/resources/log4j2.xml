@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+    <!-- Logging Properties -->
+    <Properties>
+        <Property name="LOG_PATTERN">%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} %p %m%n</Property>
+        <Property name="APP_LOG_ROOT">${sys:ESOLUTIONS_LOG_ROOT}</Property>
+    </Properties>
+
+    <Appenders>
+        <!-- Console Appender -->
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+
+        <!-- SecurityService appenders -->
+        <RollingFile name="sec-audit-logger" fileName="${APP_LOG_ROOT}/SecurityService-audit.log" filePattern="${APP_LOG_ROOT}/SecurityService-audit-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+        <RollingFile name="sec-error-logger" fileName="${APP_LOG_ROOT}/SecurityService-error.log" filePattern="${APP_LOG_ROOT}/SecurityService-error-%d{yyyy-MM-dd}-%i.log">
+            <LevelRangeFilter minLevel="ERROR" maxLevel="ERROR" onMatch="ACCEPT" onMismatch="DENY" />
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+        <RollingFile name="sec-debug-logger" fileName="${APP_LOG_ROOT}/SecurityService-debug.log" filePattern="${APP_LOG_ROOT}/SecurityService-debug-%d{yyyy-MM-dd}-%i.log">
+            <LevelRangeFilter minLevel="DEBUG" maxLevel="DEBUG" onMatch="ACCEPT" onMismatch="DENY" />
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <!-- SecurityService loggers -->
+        <Logger name="AUDIT_RECORDER.com.cws.esolutions.security" additivity="false" level="trace">
+            <AppenderRef ref="sec-audit-logger" />
+        </Logger>
+        <Logger name="ERROR_RECORDER.com.cws.esolutions.security" additivity="false" level="error">
+            <AppenderRef ref="sec-error-logger" />
+        </Logger>
+        <Logger name="SECURITY_DEBUGGER" additivity="false" level="debug">
+            <AppenderRef ref="sec-debug-logger" />
+        </Logger>
+
+        <Root level="warn">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>
