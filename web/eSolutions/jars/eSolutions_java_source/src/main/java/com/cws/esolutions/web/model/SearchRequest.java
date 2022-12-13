@@ -33,6 +33,7 @@ import com.cws.esolutions.web.Constants;
  */
 public class SearchRequest implements Serializable
 {
+	private String searchType = null;
     private String searchTerms = null;
     private String searchExtras = null;
 
@@ -41,6 +42,19 @@ public class SearchRequest implements Serializable
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+
+    public final void setSearchType(final String value)
+    {
+        final String methodName = SearchRequest.CNAME + "#setSearchType(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.searchType = value;
+    }
 
     public final void setSearchTerms(final String value)
     {
@@ -66,6 +80,19 @@ public class SearchRequest implements Serializable
         }
 
         this.searchExtras = value;
+    }
+
+    public final String getSearchType()
+    {
+        final String methodName = SearchRequest.CNAME + "#getSearchType";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.searchType);
+        }
+
+        return this.searchType;
     }
 
     public final String getSearchTerms()

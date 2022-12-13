@@ -35,8 +35,6 @@
 
 <div id="homecontent">
     <div class="wrapper">
-        <h1><spring:message code="user.account.select.options" /></h1>
-    
         <div id="error"></div>
     
         <c:if test="${not empty fn:trim(messageResponse)}">
@@ -57,57 +55,58 @@
         <c:if test="${not empty fn:trim(param.errorMessage)}">
             <p id="error"><spring:message code="${param.errorMessage}" /></p>
         </c:if>
-    
-        <p>
-            <ul>
-                <li><a href="${pageContext.request.contextPath}/ui/user-account/email" title="<spring:message code='user.account.change.email' />"><spring:message code="user.account.change.email" /></a></li>
-                <li><a href="${pageContext.request.contextPath}/ui/user-account/contact" title="<spring:message code='user.account.change.contact' />"><spring:message code="user.account.change.contact" /></a></li>
-                <li><a href="${pageContext.request.contextPath}/ui/user-account/password" title="<spring:message code='user.account.change.password' />"><spring:message code="user.account.change.password" /></a></li>
-                <li><a href="${pageContext.request.contextPath}/ui/user-account/security" title="<spring:message code='user.account.change.security.questions' />"><spring:message code="user.account.change.security.questions" /></a></li>
-                <li><a href="${pageContext.request.contextPath}/ui/user-account/regenerate-keys" title="<spring:message code='user.account.change.keys' />"><spring:message code="user.account.change.keys" /></a></li>
-            </ul>
-        </p>
+
+        <h2 class="title"><spring:message code="user.account.view.profile" arguments="${sessionScope.userAccount.displayName}" /></h2>
+        <table id="viewUserAccount">
+            <tr>
+                <td><label><spring:message code="user.account.username" /></label></td>
+                <td>${sessionScope.userAccount.username}</td>
+            </tr>
+            <tr>
+                <td><label><spring:message code="user.account.name" /></label></td>
+                <td>${sessionScope.userAccount.displayName}</td>
+            </tr>
+            <tr>
+                <td><label><spring:message code="user.account.givenname" /></label></td>
+                <td>${sessionScope.userAccount.givenName}</td>
+            </tr>
+            <tr>
+                <td><label><spring:message code="user.account.surname" /></label></td>
+                <td>${sessionScope.userAccount.surname}</td>
+            </tr>
+            <tr>
+                <td><label><spring:message code="user.account.telephone" /></label></td>
+                <td>${sessionScope.userAccount.telephoneNumber}</td>
+            </tr>
+            <tr>
+                <td><label><spring:message code="user.account.pager" /></label></td>
+                <td>${sessionScope.userAccount.pagerNumber}</td>
+            </tr>
+            <tr>
+                <td><label><spring:message code="user.account.email.addr" /></label></td>
+                <td>${sessionScope.userAccount.emailAddr}</td>
+            </tr>
+            <tr>
+                <td><label><spring:message code="user.account.role" /></label></td>
+                <td>${sessionScope.userAccount.userRole}</td>
+            </tr>
+        </table>
     </div>
 </div>
 
 <div id="container">
     <div class="wrapper">
         <div id="content">
-            <h2 class="title"><spring:message code="user.account.view.profile" arguments="${sessionScope.userAccount.displayName}" /></h2>
-            <table id="viewUserAccount">
-                <tr>
-                    <td><label><spring:message code="user.account.username" /></label></td>
-                    <td>${sessionScope.userAccount.username}</td>
-                </tr>
-                <tr>
-                    <td><label><spring:message code="user.account.name" /></label></td>
-                    <td>${sessionScope.userAccount.displayName}</td>
-                </tr>
-                <tr>
-                    <td><label><spring:message code="user.account.givenname" /></label></td>
-                    <td>${sessionScope.userAccount.givenName}</td>
-                </tr>
-                <tr>
-                    <td><label><spring:message code="user.account.surname" /></label></td>
-                    <td>${sessionScope.userAccount.surname}</td>
-                </tr>
-                <tr>
-                    <td><label><spring:message code="user.account.telephone" /></label></td>
-                    <td>${sessionScope.userAccount.telephoneNumber}</td>
-                </tr>
-                <tr>
-                    <td><label><spring:message code="user.account.pager" /></label></td>
-                    <td>${sessionScope.userAccount.pagerNumber}</td>
-                </tr>
-                <tr>
-                    <td><label><spring:message code="user.account.email.addr" /></label></td>
-                    <td>${sessionScope.userAccount.emailAddr}</td>
-                </tr>
-                <tr>
-                    <td><label><spring:message code="user.account.role" /></label></td>
-                    <td>${sessionScope.userAccount.userRole}</td>
-                </tr>
-            </table>
+            <h1><spring:message code="user.account.select.options" /></h1>
+            <p>
+                <ul>
+                    <li><a href="${pageContext.request.contextPath}/ui/user-account/email" title="<spring:message code='user.account.change.email' />"><spring:message code="user.account.change.email" /></a></li>
+                    <li><a href="${pageContext.request.contextPath}/ui/user-account/contact" title="<spring:message code='user.account.change.contact' />"><spring:message code="user.account.change.contact" /></a></li>
+                    <li><a href="${pageContext.request.contextPath}/ui/user-account/password" title="<spring:message code='user.account.change.password' />"><spring:message code="user.account.change.password" /></a></li>
+                    <li><a href="${pageContext.request.contextPath}/ui/user-account/security" title="<spring:message code='user.account.change.security.questions' />"><spring:message code="user.account.change.security.questions" /></a></li>
+                    <li><a href="${pageContext.request.contextPath}/ui/user-account/regenerate-keys" title="<spring:message code='user.account.change.keys' />"><spring:message code="user.account.change.keys" /></a></li>
+                </ul>
+            </p>
         </div>
         <br class="clear" />
     </div>

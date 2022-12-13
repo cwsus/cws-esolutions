@@ -14,8 +14,7 @@
     <mvc:annotation-driven />
     <mvc:default-servlet-handler />
 
-    <bean id="viewResolver"
-        class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
         <property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
         <property name="prefix" value="/com.cws.esolutions.web" />
         <property name="suffix" value=".jsp" />
@@ -93,6 +92,17 @@
         <property name="messageValidationFailed" value="theme.request.validation.failed" />
         <property name="messageNoSearchResults" value="theme.search.no.results" />
         <property name="messageEmailSentSuccess" value="theme.email.sent.success" />
+    </bean>
+
+	<!-- we found this on the internet AND we're trying it -->
+	<bean class="org.springframework.web.context.support.ServletContextAttributeExporter">
+		<property name="attributes">
+    		<map>
+      			<entry key="appBean">
+        			<ref bean="appConfig" />
+      			</entry>
+      		</map>
+      	</property>
     </bean>
 
     <!-- internationalization -->

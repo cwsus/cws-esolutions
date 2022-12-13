@@ -34,21 +34,16 @@
 --%>
 
 <%@page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" isThreadSafe="true" isErrorPage="true" %>
-<jsp:useBean id="appBean" class="com.cws.esolutions.web.ApplicationServiceBean" scope="application" />
 
 <div id="homecontent">
 	<div class="wrapper">
 	    <h1><spring:message code="theme.error.system.failure" /></h1>
 	    <p>
         	<spring:message code="theme.system.service.failure" />
-        	<c:set var="isTest" value="<%= appBean.isTestSystem() %>" />
-        	<c:out value="${isTest}" />
-        
-        	<c:if test="$[isTest == 'true'}">
-       			<pre>
-    	   			<%= exception.getMessage() %>
-	       		</pre>
-	       	</c:if>
+        	<c:if test="${appBean.isTestSystem eq false}">
+				<br /><br />
+				<font color="#FF0000"><%= exception.getMessage() %></font>
+   			</c:if>
 	    </p>
 	</div>
 </div>
