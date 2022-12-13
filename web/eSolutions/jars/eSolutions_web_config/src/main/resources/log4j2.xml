@@ -72,6 +72,13 @@
             </Policies>
             <DefaultRolloverStrategy max="10"/>
         </RollingFile>
+        <RollingFile name="responsetime-log" fileName="${APP_LOG_ROOT}/responsetime.log" filePattern="${APP_LOG_ROOT}/responsetime-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="50MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
     </Appenders>
 
     <Loggers>
@@ -97,6 +104,9 @@
         <!-- eSolutionsWeb loggers -->
         <Logger name="ERROR_RECORDER.com.cws.esolutions.web" additivity="false" level="error">
             <AppenderRef ref="web-error-logger" />
+        </Logger>
+        <Logger name="RESPONSE_TIME" additivity="false" level="debug">
+            <AppenderRef ref="responsetime-log" />
         </Logger>
         <Logger name="CORE_DEBUGGER" additivity="false" level="debug">
             <AppenderRef ref="web-debug-logger" />

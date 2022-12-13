@@ -49,13 +49,14 @@ import com.cws.esolutions.core.processors.enums.ServiceRegion;
  * @version 1.0
  * @see javax.servlet.Filter
  */
-@WebFilter(filterName = "ResponseTimeFilter", urlPatterns = {"/*"}, initParams = @WebInitParam(name = "env", value = "dev"))
+@WebFilter(filterName = "ResponseTimeFilter", urlPatterns = {"/*"}, initParams = @WebInitParam(name = "environment", value = "DEV"))
 public class ResponseTimeFilter implements Filter
 {
 	private String environment = null;
 
     private static final String CNAME = ResponseTimeFilter.class.getName();
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
+    private static final Logger RESPONSETIME_LOGGER = LogManager.getLogger(CoreServicesConstants.RESPONSE_LOGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LogManager.getLogger(CoreServicesConstants.ERROR_LOGGER);
 
@@ -72,7 +73,7 @@ public class ResponseTimeFilter implements Filter
         try
         {
         	Context initContext = new InitialContext();
-        	environment = (String) initContext.lookup("testSystem");
+        	environment = (String) initContext.lookup("environment");
         }
         catch (final NamingException nx)
         {
@@ -112,8 +113,8 @@ public class ResponseTimeFilter implements Filter
             	DEBUGGER.debug("Value: {}", url);
             }
 
-            System.out.println("Time taken for request to complete:  " + time + "ms");
-            System.out.println("Request url : " + url);
+            RESPONSETIME_LOGGER.info("Time taken for request to complete:  " + time + "ms");
+            RESPONSETIME_LOGGER.info("Request url : " + url);
 
             chain.doFilter(request, response);
         }

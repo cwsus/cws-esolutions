@@ -34,6 +34,7 @@ public class CoreServicesConstants
     /* Logging constants */
     public static final String DEBUGGER = "CORE_DEBUGGER";
     public static final String ERROR_LOGGER = "ERROR_RECORDER.";
+    public static final String RESPONSE_LOGGER = "RESPONSE_TIME";
 
     /* Configuration constants */
     public static final String SALT = "userSalt";
