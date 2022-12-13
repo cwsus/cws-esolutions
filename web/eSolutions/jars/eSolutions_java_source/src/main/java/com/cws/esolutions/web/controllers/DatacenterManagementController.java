@@ -49,6 +49,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.esolutions.web.Constants;
+import com.cws.esolutions.web.model.SearchRequest;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.web.ApplicationServiceBean;
@@ -72,6 +73,7 @@ import com.cws.esolutions.web.validators.EmailMessageValidator;
 public class DatacenterManagementController
 {
     private String homePage = null;
+    private String serviceName = null;
     private ApplicationServiceBean appConfig = null;
 
     private static final String CNAME = DatacenterManagementController.class.getName();
@@ -104,6 +106,78 @@ public class DatacenterManagementController
         }
 
         this.homePage = value;
+    }
+
+    @RequestMapping(value = "add-datacenter", method = RequestMethod.GET)
+    public final String showAddDatacenter(final Model model)
+    {
+        final String methodName = DatacenterManagementController.CNAME + "#showAddDatacenter(final Model model)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            Enumeration<?> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String element = (String) sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
+
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            Enumeration<?> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String element = (String) requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
+
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<?> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String element = (String) paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
+
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
+            }
+        }
+
+        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
+        {
+            return this.appConfig.getLogonRedirect();
+        }
+
+        if (!(this.appConfig.getServices().get(this.serviceName)))
+        {
+            return this.appConfig.getUnavailablePage();
+        }
+
+        model.addAttribute(Constants.COMMAND, new SearchRequest());
+
+        return this.homePage;
     }
 
     /*

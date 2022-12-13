@@ -1,112 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE log4j:configuration SYSTEM "./log4j.dtd">
-<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
-    <appender name="eSolutionsCore-error" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${ESOLUTIONS_LOG_ROOT}/eSolutionsCore-error.log" />
-        <param name="DatePattern" value="'.'yy-MM-dd" />
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread: %t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
-        </layout>
-    </appender>
-    <appender name="eSolutionsCore-debug" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${ESOLUTIONS_LOG_ROOT}/eSolutionsCore-debug.log" />
-        <param name="DatePattern" value="'.'yy-MM-dd" />
-        <param name="Threshold" value="DEBUG" />
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread: %t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
-        </layout>
-        <filter class="org.apache.log4j.varia.LevelMatchFilter">
-            <param name="LevelToMatch" value="DEBUG" />
-            <param name="AcceptOnMatch" value="true" />
-        </filter>
-        <filter class="org.apache.log4j.varia.DenyAllFilter" />
-    </appender>
+<Configuration status="WARN" monitorInterval="30">
+    <!-- Logging Properties -->
+    <Properties>
+        <Property name="LOG_PATTERN">[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread: %t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n</Property>
+        <Property name="APP_LOG_ROOT">${sys:ESOLUTIONS_LOG_ROOT}</Property>
+    </Properties>
 
-    <!-- third party appenders -->
-    <appender name="apache-commons" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${ESOLUTIONS_LOG_ROOT}/apache-commons.log" />
-        <param name="DatePattern" value="'.'yy-MM-dd" />
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread: %t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
-        </layout>
-    </appender>
-    <appender name="quartz" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${ESOLUTIONS_LOG_ROOT}/quartz.log" />
-        <param name="DatePattern" value="'.'yy-MM-dd" />
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread: %t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
-        </layout>
-    </appender>
-    <appender name="virtualbox" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${ESOLUTIONS_LOG_ROOT}/virtualbox.log" />
-        <param name="DatePattern" value="'.'yy-MM-dd" />
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread: %t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
-        </layout>
-    </appender>
-    <appender name="j2ssh" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${ESOLUTIONS_LOG_ROOT}/j2ssh.log" />
-        <param name="DatePattern" value="'.'yy-MM-dd" />
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread: %t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
-        </layout>
-    </appender>
-    <appender name="jsch" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${ESOLUTIONS_LOG_ROOT}/jsch.log" />
-        <param name="DatePattern" value="'.'yy-MM-dd" />
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread: %t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
-        </layout>
-    </appender>
-    <appender name="xbill" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${ESOLUTIONS_LOG_ROOT}/xbill.log" />
-        <param name="DatePattern" value="'.'yy-MM-dd" />
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread: %t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
-        </layout>
-    </appender>
+    <Appenders>
+        <!-- Console Appender -->
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
 
-    <category name="ERROR_RECORDER.com.cws.esolutions.core" additivity="false">
-        <priority value="ERROR" />
-        <appender-ref ref="eSolutionsCore-error" />
-    </category>
-    <category name="CORE_DEBUGGER" additivity="false">
-        <priority value="DEBUG" />
-        <appender-ref ref="eSolutionsCore-debug" />
-    </category>
+        <!-- SecurityService appenders -->
+        <RollingFile name="core-error-logger" fileName="${APP_LOG_ROOT}/SecurityService-error.log" filePattern="${APP_LOG_ROOT}/SecurityService-error-%d{yyyy-MM-dd}-%i.log">
+            <LevelRangeFilter minLevel="ERROR" maxLevel="ERROR" onMatch="ACCEPT" onMismatch="DENY" />
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+        <RollingFile name="core-debug-logger" fileName="${APP_LOG_ROOT}/SecurityService-debug.log" filePattern="${APP_LOG_ROOT}/SecurityService-debug-%d{yyyy-MM-dd}-%i.log">
+            <LevelRangeFilter minLevel="DEBUG" maxLevel="DEBUG" onMatch="ACCEPT" onMismatch="DENY" />
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+    </Appenders>
 
-    <!-- third-party loggers -->
-    <!-- apache commons -->
-    <category name="org.apache.commons.httpclient" additivity="false">
-        <priority value="DEBUG" />
-        <appender-ref ref="apache-commons" />
-    </category>
-    <category name="org.apache.commons.lang" additivity="false">
-        <priority value="DEBUG" />
-        <appender-ref ref="apache-commons" />
-    </category>
-    <!-- quartz -->
-    <category name="org.quartz" additivity="false">
-        <priority value="DEBUG" />
-        <appender-ref ref="quartz" />
-    </category>
-    <!-- virtualbox -->
-    <category name="org.virtualbox" additivity="false">
-        <priority value="DEBUG" />
-        <appender-ref ref="virtualbox" />
-    </category>
-    <!-- j2ssh -->
-    <category name="com.sshtools.j2ssh" additivity="false">
-        <priority value="DEBUG" />
-        <appender-ref ref="j2ssh" />
-    </category>
-    <category name="com.jcraft.jsch" additivity="false">
-        <priority value="DEBUG" />
-        <appender-ref ref="jsch" />
-    </category>
-    <!-- xbill -->
-    <category name="org.xbill" additivity="false">
-        <priority value="DEBUG" />
-        <appender-ref ref="xbill" />
-    </category>
-</log4j:configuration>
+    <Loggers>
+        <!-- SecurityService loggers -->
+        <Logger name="ERROR_RECORDER.com.cws.esolutions.core" additivity="false" level="error">
+            <AppenderRef ref="core-error-logger" />
+        </Logger>
+        <Logger name="CORE_DEBUGGER" additivity="false" level="debug">
+            <AppenderRef ref="core-debug-logger" />
+        </Logger>
+
+        <Root level="warn">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>

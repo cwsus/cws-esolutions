@@ -72,7 +72,7 @@ public class ResponseTimeFilter implements Filter
         try
         {
         	Context initContext = new InitialContext();
-        	environment = (String) initContext.lookup("env");
+        	environment = (String) initContext.lookup("testSystem");
         }
         catch (final NamingException nx)
         {
