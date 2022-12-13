@@ -72,17 +72,6 @@
             </Policies>
             <DefaultRolloverStrategy max="10"/>
         </RollingFile>
-
-        <!-- Third Party -->
-        <!-- Spring -->
-        <RollingFile name="spring-logger" fileName="${APP_LOG_ROOT}/spring-framework.log" filePattern="${APP_LOG_ROOT}/spring-framework-%d{yyyy-MM-dd}-%i.log">
-            <LevelRangeFilter minLevel="INFO" maxLevel="INFO" onMatch="ACCEPT" onMismatch="DENY" />
-            <PatternLayout pattern="${LOG_PATTERN}"/>
-            <Policies>
-                <SizeBasedTriggeringPolicy size="50MB" />
-            </Policies>
-            <DefaultRolloverStrategy max="10"/>
-        </RollingFile>
     </Appenders>
 
     <Loggers>
@@ -113,7 +102,6 @@
             <AppenderRef ref="web-debug-logger" />
         </Logger>
 
-        <!-- Third Party loggers -->
         <Root level="warn">
             <AppenderRef ref="Console"/>
         </Root>
