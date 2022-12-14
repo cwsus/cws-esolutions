@@ -17,19 +17,8 @@
         </property>
         <property name="messageNoSearchResults" value="theme.search.no.results" />
         <property name="serviceName" value="dcMgmt" />
-        <property name="lookupPage" value=".dns-service/jsp/html/en/DNSService_ServiceLookup" />
         <property name="serviceId" value="FE0261DB-F94B-466D-A7FC-98DC7AC7C2E8" />
-        <property name="serviceTypes">
-            <list>
-                <value>A</value>
-                <value>MX</value>
-                <value>NS</value>
-                <value>TXT</value>
-                <value>PTR</value>
-                <value>SOA</value>
-                <value>SRV</value>
-                <value>CNAME</value>
-            </list>
-        </property>
+        <property name="homePage" value=".datacenter-management/jsp/html/en/DatacenterMgmt_DefaultHandler" />
+        <property name="addDatacenterPage" value=".datacenter-management/jsp/html/en/DatacenterMgmt_AddDatacenter" />
     </bean>
 </beans>

@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.core.processors.dto;
+package com.cws.esolutions.core.dto;
 /*
  * Project: eSolutionsAgent
- * Package: com.cws.esolutions.agent.processors.dto
- * File: SystemManagerResponse.java
+ * Package: com.cws.esolutions.agent.dto
+ * File: CoreServicesResponse.java
  *
  * History
  *
@@ -40,33 +40,33 @@ import com.cws.esolutions.core.enums.CoreServicesStatus;
  * @author cws-khuntly
  * @version 1.0
  */
-public class ServiceCheckResponse implements Serializable
+public class CoreServicesResponse implements Serializable
 {
-    private Object requestData = null;
+    private Object responsePayload = null;
     private CoreServicesStatus requestStatus = null;
 
-    private static final long serialVersionUID = -3312104029603222594L;
-    private static final String CNAME = ServiceCheckResponse.class.getName();
+    private static final String CNAME = CoreServicesResponse.class.getName();
+    private static final long serialVersionUID = 8147483886425734062L;
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public final void setRequestStatus(final CoreServicesStatus value)
     {
-        final String methodName = ServiceCheckResponse.CNAME + "#setRequestStatus(final CoreServicesStatus value)";
+        final String methodName = CoreServicesResponse.CNAME + "#setRequestStatus(final CoreServicesStatus value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("CoreServicesStatus: {}", value);
         }
 
         this.requestStatus = value;
     }
 
-    public final void setResponseData(final Object value)
+    public final void setResponsePayload(final Object value)
     {
-        final String methodName = ServiceCheckResponse.CNAME + "#setResponseData(final Object value)";
+        final String methodName = CoreServicesResponse.CNAME + "#setResponsePayload(final Object value)";
 
         if (DEBUG)
         {
@@ -74,33 +74,33 @@ public class ServiceCheckResponse implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.requestData = value;
+        this.responsePayload = value;
     }
 
     public final CoreServicesStatus getRequestStatus()
     {
-        final String methodName = ServiceCheckResponse.CNAME + "#getRequestStatus()";
+        final String methodName = CoreServicesResponse.CNAME + "#getRequestStatus()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.requestStatus);
+            DEBUGGER.debug("CoreServicesStatus: {}", this.requestStatus);
         }
 
         return this.requestStatus;
     }
 
-    public final Object getResponseData()
+    public final Object getResponsePayload()
     {
-        final String methodName = ServiceCheckResponse.CNAME + "#getResponseData()";
+        final String methodName = CoreServicesResponse.CNAME + "#getResponsePayload()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.requestData);
+            DEBUGGER.debug("Value: {}", this.responsePayload);
         }
 
-        return this.requestData;
+        return this.responsePayload;
     }
 
     @Override

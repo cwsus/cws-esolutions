@@ -39,13 +39,13 @@ import com.cws.esolutions.core.processors.enums.ServiceStatus;
  */
 public class Datacenter implements Serializable
 {
-    private String guid = null;
+	private String guid = null;
     private String name = null;
     private String description = null;
     private ServiceStatus status = null;
 
     private static final String CNAME = Datacenter.class.getName();
-    private static final long serialVersionUID = -4706146415002579327L;
+    private static final long serialVersionUID = -6001070610244183707L;
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

@@ -125,6 +125,7 @@ public enum AuditType
     LISTDATACENTERS,
     LOADDATACENTER,
     UPDATEDATACENTER,
+    DELETEDATACENTER,
 
     // certificate mgmt
     LISTCSR,

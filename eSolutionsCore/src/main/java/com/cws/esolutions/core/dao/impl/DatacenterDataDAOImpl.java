@@ -71,7 +71,7 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -89,6 +89,7 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
                 DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
+            System.out.println("stmt in dao" + stmt);
             isComplete = (!(stmt.execute()));
 
             if (DEBUG)
@@ -164,6 +165,9 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
                 DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
+            System.out.println(stmt);
+            int updateCount = stmt.executeUpdate();
+            System.out.println("updateCount: " + updateCount);
             isComplete = (!(stmt.execute()));
 
             if (DEBUG)
@@ -447,9 +451,7 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
                         Object[] data = new Object[]
                         {
                             resultSet.getString(1), // GUID
-                            resultSet.getString(2), // NAME
-                            resultSet.getString(3), // STATUS
-                            resultSet.getInt(4) / 0  * 100
+                            resultSet.getString(2)
                         };
 
                         if (DEBUG)

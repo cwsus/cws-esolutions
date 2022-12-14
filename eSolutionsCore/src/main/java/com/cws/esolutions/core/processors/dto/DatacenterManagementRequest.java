@@ -17,7 +17,7 @@ package com.cws.esolutions.core.processors.dto;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.dto
- * File: ApplicationManagementResponse.java
+ * File: ServiceManagementRequest.java
  *
  * History
  *
@@ -25,38 +25,38 @@ package com.cws.esolutions.core.processors.dto;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.util.List;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
+import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.CoreServicesConstants;
-import com.cws.esolutions.core.enums.CoreServicesStatus;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 /**
  * @author cws-khuntly
  * @version 1.0
  * @see java.io.Serializable
  */
-public class ApplicationManagementResponse implements Serializable
+public class DatacenterManagementRequest implements Serializable
 {
-    private int entryCount = 0;
-    private byte[] fileData = null;
-    private String currentPath = null;
-    private List<String> fileList = null;
-    private Application application = null;
-    private CoreServicesStatus requestStatus = null;
-    private List<Application> applicationList = null;
+    private int startPage = 0;
+    private String serviceId = null;
+    private String applicationId = null;
+    private Datacenter dataCenter = null;
+    private String applicationName = null;
+    private UserAccount userAccount = null;
+    private RequestHostInfo requestInfo = null;
 
-    private static final long serialVersionUID = 6843850571636255437L;
-    private static final String CNAME = ApplicationManagementResponse.class.getName();
+    private static final long serialVersionUID = 1320457990776649679L;
+    private static final String CNAME = DatacenterManagementRequest.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
-    public final void setRequestStatus(final CoreServicesStatus value)
+    public final void setUserAccount(final UserAccount value)
     {
-        final String methodName = ApplicationManagementResponse.CNAME + "#setRequestStatus(final CoreServicesStatus value)";
+        final String methodName = DatacenterManagementRequest.CNAME + "#setUserAccount(final UserAccount value)";
 
         if (DEBUG)
         {
@@ -64,12 +64,12 @@ public class ApplicationManagementResponse implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.requestStatus = value;
+        this.userAccount = value;
     }
 
-    public final void setEntryCount(final int value)
+    public final void setRequestInfo(final RequestHostInfo value)
     {
-        final String methodName = ApplicationManagementResponse.CNAME + "#setEntryCount(final int value)";
+        final String methodName = DatacenterManagementRequest.CNAME + "#setRequestInfo(final RequestHostInfo value)";
 
         if (DEBUG)
         {
@@ -77,12 +77,12 @@ public class ApplicationManagementResponse implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.entryCount = value;
+        this.requestInfo = value;
     }
 
-    public final void setApplication(final Application value)
+    public final void setServiceId(final String value)
     {
-        final String methodName = ApplicationManagementResponse.CNAME + "#setApplication(final Application value)";
+        final String methodName = DatacenterManagementRequest.CNAME + "#setServiceId(final String value)";
 
         if (DEBUG)
         {
@@ -90,12 +90,12 @@ public class ApplicationManagementResponse implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.application = value;
+        this.serviceId = value;
     }
 
-    public final void setApplicationList(final List<Application> value)
+    public final void setApplicationName(final String value)
     {
-        final String methodName = ApplicationManagementResponse.CNAME + "#setApplicationList(final List<Application> value)";
+        final String methodName = DatacenterManagementRequest.CNAME + "#setApplicationName(final String value)";
 
         if (DEBUG)
         {
@@ -103,12 +103,12 @@ public class ApplicationManagementResponse implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.applicationList = value;
+        this.applicationName = value;
     }
 
-    public final void setFileData(final byte[] value)
+    public final void setApplicationId(final String value)
     {
-        final String methodName = ApplicationManagementResponse.CNAME + "#setFileData(final byte[] value)";
+        final String methodName = DatacenterManagementRequest.CNAME + "#setApplicationId(final String value)";
 
         if (DEBUG)
         {
@@ -116,12 +116,12 @@ public class ApplicationManagementResponse implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.fileData = value;
+        this.applicationId = value;
     }
 
-    public final void setCurrentPath(final String value)
+    public final void setStartPage(final int value)
     {
-        final String methodName = ApplicationManagementResponse.CNAME + "#setCurrentPath(final String value)";
+        final String methodName = DatacenterManagementRequest.CNAME + "#setStartPage(final int value)";
 
         if (DEBUG)
         {
@@ -129,12 +129,12 @@ public class ApplicationManagementResponse implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.currentPath = value;
+        this.startPage = value;
     }
 
-    public final void setFileList(final List<String> value)
+    public final void setDatacenter(final Datacenter value)
     {
-        final String methodName = ApplicationManagementResponse.CNAME + "#setFileData(final List<String> value)";
+        final String methodName = DatacenterManagementRequest.CNAME + "#setDatacenter(final Datacenter value)";
 
         if (DEBUG)
         {
@@ -142,102 +142,102 @@ public class ApplicationManagementResponse implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.fileList = value;
+        this.dataCenter = value;
     }
 
-    public final CoreServicesStatus getRequestStatus()
+    public final UserAccount getUserAccount()
     {
-        final String methodName = ApplicationManagementResponse.CNAME + "#getRequestStatus()";
+        final String methodName = DatacenterManagementRequest.CNAME + "#getUserAccount()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.requestStatus);
+            DEBUGGER.debug("Value: {}", this.userAccount);
         }
 
-        return this.requestStatus;
+        return this.userAccount;
     }
 
-    public final int getEntryCount()
+    public final RequestHostInfo getRequestInfo()
     {
-        final String methodName = ApplicationManagementResponse.CNAME + "#getEntryCount()";
+        final String methodName = DatacenterManagementRequest.CNAME + "#getRequestInfo()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.entryCount);
+            DEBUGGER.debug("Value: {}", this.requestInfo);
         }
 
-        return this.entryCount;
+        return this.requestInfo;
     }
 
-    public final Application getApplication()
+    public final String getServiceId()
     {
-        final String methodName = ApplicationManagementResponse.CNAME + "#getApplication()";
+        final String methodName = DatacenterManagementRequest.CNAME + "#getServiceId()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.application);
+            DEBUGGER.debug("Value: {}", this.serviceId);
         }
 
-        return this.application;
+        return this.serviceId;
     }
 
-    public final List<Application> getApplicationList()
+    public final String getApplicationName()
     {
-        final String methodName = ApplicationManagementResponse.CNAME + "#getApplicationList()";
+        final String methodName = DatacenterManagementRequest.CNAME + "#getApplicationName()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.applicationList);
+            DEBUGGER.debug("Value: {}", this.applicationName);
         }
 
-        return this.applicationList;
+        return this.applicationName;
     }
 
-    public final byte[] getFileData()
+    public final String getApplicationId()
     {
-        final String methodName = ApplicationManagementResponse.CNAME + "#getFileData()";
+        final String methodName = DatacenterManagementRequest.CNAME + "#getApplicationId()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.fileData);
+            DEBUGGER.debug("Value: {}", this.applicationId);
         }
 
-        return this.fileData;
+        return this.applicationId;
     }
 
-    public final String getCurrentPath()
+    public final int getStartPage()
     {
-        final String methodName = ApplicationManagementResponse.CNAME + "#getCurrentPath()";
+        final String methodName = DatacenterManagementRequest.CNAME + "#getStartPage()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.currentPath);
+            DEBUGGER.debug("Value: {}", this.startPage);
         }
 
-        return this.currentPath;
+        return this.startPage;
     }
 
-    public final List<String> getFileList()
+    public final Datacenter getDatacenter()
     {
-        final String methodName = ApplicationManagementResponse.CNAME + "#getFileList()";
+        final String methodName = DatacenterManagementRequest.CNAME + "#getDatacenter()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.fileList);
+            DEBUGGER.debug("Value: {}", this.dataCenter);
         }
 
-        return this.fileList;
+        return this.dataCenter;
     }
 
     @Override
-    public final String toString()
+    public String toString()
     {
         StringBuilder sBuilder = new StringBuilder()
             .append("[" + this.getClass().getName() + "]" + CoreServicesConstants.LINE_BREAK + "{" + CoreServicesConstants.LINE_BREAK);

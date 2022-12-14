@@ -420,11 +420,6 @@ public class UserManagementController
             }
         }
 
-        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
-        {
-        	return this.appConfig.getLogonRedirect();
-        }
-
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
             return this.appConfig.getUnavailablePage();
@@ -665,11 +660,6 @@ public class UserManagementController
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
-        }
-
-        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
-        {
-        	return this.appConfig.getLogonRedirect();
         }
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
@@ -1195,11 +1185,6 @@ public class UserManagementController
             }
         }
 
-        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
-        {
-        	return this.appConfig.getLogonRedirect();
-        }
-
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
             return this.appConfig.getUnavailablePage();
@@ -1326,11 +1311,6 @@ public class UserManagementController
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
-        }
-
-        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
-        {
-        	return this.appConfig.getLogonRedirect();
         }
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
@@ -1461,11 +1441,6 @@ public class UserManagementController
             }
         }
 
-        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
-        {
-        	return this.appConfig.getLogonRedirect();
-        }
-
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
             return this.appConfig.getUnavailablePage();
@@ -1593,11 +1568,6 @@ public class UserManagementController
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
-        }
-
-        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
-        {
-        	return this.appConfig.getLogonRedirect();
         }
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
@@ -1963,11 +1933,6 @@ public class UserManagementController
             }
         }
 
-        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
-        {
-        	return this.appConfig.getLogonRedirect();
-        }
-
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
             return this.appConfig.getUnavailablePage();
@@ -2094,11 +2059,6 @@ public class UserManagementController
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
-        }
-
-        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
-        {
-        	return this.appConfig.getLogonRedirect();
         }
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
@@ -2275,11 +2235,6 @@ public class UserManagementController
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
-        }
-
-        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
-        {
-        	return this.appConfig.getLogonRedirect();
         }
 
         if (!(this.appConfig.getServices().get(this.serviceName)))

@@ -27,7 +27,6 @@ package com.cws.esolutions.web.controllers;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
-import java.util.Objects;
 import java.util.Enumeration;
 import org.springframework.ui.Model;
 import javax.servlet.http.HttpSession;
@@ -47,11 +46,11 @@ import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.web.model.SearchRequest;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
+import com.cws.esolutions.core.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.dto.Service;
 import com.cws.esolutions.web.validators.ServiceValidator;
 import com.cws.esolutions.core.processors.enums.ServiceType;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.dto.ServiceManagementRequest;
 import com.cws.esolutions.core.processors.dto.ServiceManagementResponse;
 import com.cws.esolutions.core.processors.impl.ServiceManagementProcessorImpl;
@@ -312,11 +311,6 @@ public class ServiceManagementController
             }
         }
 
-        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
-        {
-        	return this.appConfig.getLogonRedirect();
-        }
-
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
             return this.appConfig.getUnavailablePage();
@@ -386,11 +380,6 @@ public class ServiceManagementController
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
-        }
-
-        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
-        {
-        	return this.appConfig.getLogonRedirect();
         }
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
@@ -525,11 +514,6 @@ public class ServiceManagementController
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
-        }
-
-        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
-        {
-        	return this.appConfig.getLogonRedirect();
         }
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
@@ -669,11 +653,6 @@ public class ServiceManagementController
             }
         }
 
-        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
-        {
-        	return this.appConfig.getLogonRedirect();
-        }
-
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
             return this.appConfig.getUnavailablePage();
@@ -809,11 +788,6 @@ public class ServiceManagementController
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
-        }
-
-        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
-        {
-        	return this.appConfig.getLogonRedirect();
         }
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
@@ -963,11 +937,6 @@ public class ServiceManagementController
             }
         }
 
-        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
-        {
-        	return this.appConfig.getLogonRedirect();
-        }
-
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
             return this.appConfig.getUnavailablePage();
@@ -1106,11 +1075,6 @@ public class ServiceManagementController
             }
         }
 
-        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
-        {
-        	return this.appConfig.getLogonRedirect();
-        }
-
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
             return this.appConfig.getUnavailablePage();
@@ -1246,11 +1210,6 @@ public class ServiceManagementController
             }
         }
 
-        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
-        {
-        	return this.appConfig.getLogonRedirect();
-        }
-
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
             return this.appConfig.getUnavailablePage();
@@ -1318,11 +1277,6 @@ public class ServiceManagementController
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
-        }
-
-        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
-        {
-        	return this.appConfig.getLogonRedirect();
         }
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
@@ -1456,11 +1410,6 @@ public class ServiceManagementController
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
-        }
-
-        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
-        {
-        	return this.appConfig.getLogonRedirect();
         }
 
         if (!(this.appConfig.getServices().get(this.serviceName)))

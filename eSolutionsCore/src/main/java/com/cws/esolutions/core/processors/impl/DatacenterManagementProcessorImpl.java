@@ -28,57 +28,53 @@ package com.cws.esolutions.core.processors.impl;
 import java.util.UUID;
 import java.util.List;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.ArrayList;
 import java.sql.SQLException;
-import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
-import com.cws.esolutions.core.processors.dto.Server;
-import com.cws.esolutions.core.processors.dto.Service;
-import com.cws.esolutions.core.processors.enums.ServiceType;
+import com.cws.esolutions.core.processors.dto.Datacenter;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.security.processors.enums.AuditType;
-import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
-import com.cws.esolutions.core.processors.enums.NetworkPartition;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-import com.cws.esolutions.core.processors.dto.ServiceManagementRequest;
-import com.cws.esolutions.core.processors.dto.ServiceManagementResponse;
-import com.cws.esolutions.security.processors.exception.AuditServiceException;
-import com.cws.esolutions.core.processors.exception.ServiceManagementException;
-import com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor;
+import com.cws.esolutions.core.processors.dto.DatacenterManagementRequest;
+import com.cws.esolutions.core.processors.dto.DatacenterManagementResponse;
 import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
 import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
+import com.cws.esolutions.security.processors.exception.AuditServiceException;
+import com.cws.esolutions.core.processors.exception.DatacenterManagementException;
+import com.cws.esolutions.core.processors.interfaces.IDatacenterManagementProcessor;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /**
- * @see com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor
+ * @see com.cws.esolutions.core.processors.interfaces.IDatacenterManagementProcessor
  */
-public class ServiceManagementProcessorImpl implements IServiceManagementProcessor
+public class DatacenterManagementProcessorImpl implements IDatacenterManagementProcessor
 {
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor#addNewService(com.cws.esolutions.core.processors.dto.ServiceManagementRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IDatacenterManagementProcessor#addNewDatacenter(com.cws.esolutions.core.processors.dto.DatacenterManagementRequest)
      */
-    public ServiceManagementResponse addNewService(final ServiceManagementRequest request) throws ServiceManagementException
+    public DatacenterManagementResponse addNewDatacenter(final DatacenterManagementRequest request) throws DatacenterManagementException
     {
-        final String methodName = IServiceManagementProcessor.CNAME + "#addNewService(final ServiceManagementRequest request) throws ServiceManagementException";
+        final String methodName = IDatacenterManagementProcessor.CNAME + "#addNewDatacenter(final DatacenterManagementRequest request) throws DatacenterManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ServiceManagementRequest: {}", request);
+            DEBUGGER.debug("DatacenterManagementRequest: {}", request);
         }
 
-        ServiceManagementResponse response = new ServiceManagementResponse();
+        DatacenterManagementResponse response = new DatacenterManagementResponse();
 
-        final Service service = request.getService();
+        final Datacenter dataCenter = request.getDatacenter();
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("Service: {}", service);
+            DEBUGGER.debug("Datacenter: {}", dataCenter);
             DEBUGGER.debug("UserAccount: {}", userAccount);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
         }
@@ -111,7 +107,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.ADDPLATFORM);
+                    auditEntry.setAuditType(AuditType.ADDDATACENTER);
                     auditEntry.setUserAccount(userAccount);
                     auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
@@ -140,9 +136,9 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 return response;
             }
 
-            if (service == null)
+            if (Objects.isNull(dataCenter))
             {
-                throw new ServiceManagementException("No platform was provided. Cannot continue.");
+                throw new DatacenterManagementException("No datacenter was provided. Cannot continue.");
             }
 
             // make sure all the platform data is there
@@ -150,7 +146,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
             try
             {
-                validator = serviceDao.getServicesByAttribute(service.getName(), request.getStartPage());
+                validator = datacenterDao.getDatacentersByAttribute(dataCenter.getName(), request.getStartPage());
             }
             catch (final SQLException sqx)
             {
@@ -164,33 +160,12 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
             if ((validator == null) || (validator.size() == 0))
             {
-                // valid platform
-                List<String> serverList = new ArrayList<String>();
-                for (Server server : service.getServers())
-                {
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Server: {}", server);
-                    }
-
-                    serverList.add(server.getServerGuid());
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("List<String>: {}", serverList);
-                }
-
                 List<String> insertData = new ArrayList<String>(
                         Arrays.asList(
                                 UUID.randomUUID().toString(), // GUID
-                                service.getType().name(), // SERVICE_TYPE
-                                service.getName(), // NAME
-                                service.getRegion().name(), // REGION
-                                service.getPartition().name(), // NWPARTITION
-                                service.getStatus().name(), // STATUS
-                                serverList.toString(), // SERVERS
-                                service.getDescription())); // DESCRIPTION
+                                dataCenter.getName(), // DCNAME
+                                dataCenter.getStatus().name(), // STATUS
+                                dataCenter.getDescription())); // DESCRIPTION
                 
                 if (DEBUG)
                 {
@@ -200,7 +175,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                     }
                 }
 
-                boolean isComplete = serviceDao.addService(insertData);
+                boolean isComplete = datacenterDao.addDatacenter(insertData);
 
                 if (DEBUG)
                 {
@@ -213,11 +188,15 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 }
                 else
                 {
+                	ERROR_RECORDER.error("An error occurred while adding the new information.");
+
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
             }
             else
             {
+            	ERROR_RECORDER.error("An entry already exists for the given information.");
+
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
@@ -225,13 +204,13 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
-            throw new ServiceManagementException(sqx.getMessage(), sqx);
+            throw new DatacenterManagementException(sqx.getMessage(), sqx);
         }
         catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
-            throw new ServiceManagementException(acsx.getMessage(), acsx);
+            throw new DatacenterManagementException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -240,7 +219,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
             {
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.ADDPLATFORM);
+                auditEntry.setAuditType(AuditType.ADDDATACENTER);
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
@@ -271,27 +250,27 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor#updateServiceData(com.cws.esolutions.core.processors.dto.ServiceManagementRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IDatacenterManagementProcessor#updateDatacenter(com.cws.esolutions.core.processors.dto.DatacenterManagementRequest)
      */
-    public ServiceManagementResponse updateServiceData(final ServiceManagementRequest request) throws ServiceManagementException
+    public DatacenterManagementResponse updateDatacenter(final DatacenterManagementRequest request) throws DatacenterManagementException
     {
-        final String methodName = IServiceManagementProcessor.CNAME + "#updateServiceData(final ServiceManagementRequest request) throws ServiceManagementException";
+        final String methodName = IDatacenterManagementProcessor.CNAME + "#updateDatacenter(final DatacenterManagementRequest request) throws DatacenterManagementException";
         
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ServiceManagementRequest: {}", request);
+            DEBUGGER.debug("DatacenterManagementRequest: {}", request);
         }
 
-        ServiceManagementResponse response = new ServiceManagementResponse();
+        DatacenterManagementResponse response = new DatacenterManagementResponse();
 
-        final Service service = request.getService();
+        final Datacenter dataCenter = request.getDatacenter();
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("Service: {}", service);
+            DEBUGGER.debug("Datacenter: {}", dataCenter);
             DEBUGGER.debug("UserAccount: {}", userAccount);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
         }
@@ -324,7 +303,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.UPDATEPLATFORM);
+                    auditEntry.setAuditType(AuditType.UPDATEDATACENTER);
                     auditEntry.setUserAccount(userAccount);
                     auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
@@ -353,31 +332,12 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 return response;
             }
 
-            List<String> serverList = new ArrayList<String>();
-            for (Server server : service.getServers())
-            {
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Server: {}", server);
-                }
-
-                serverList.add(server.getServerGuid());
-            }
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("List<String>: {}", serverList);
-            }
-
             List<String> insertData = new ArrayList<String>(
                     Arrays.asList(
-                            service.getGuid(),
-                            service.getName(),
-                            service.getRegion().name(),
-                            service.getPartition().name(),
-                            service.getStatus().name(),
-                            serverList.toString(),
-                            service.getDescription()));
+                    		dataCenter.getGuid(),
+                    		dataCenter.getName(),
+                    		dataCenter.getStatus().toString(),
+                    		dataCenter.getDescription()));
 
             if (DEBUG)
             {
@@ -387,7 +347,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 }
             }
 
-            boolean isComplete = serviceDao.updateService(insertData);
+            boolean isComplete = datacenterDao.updateDatacenter(insertData);
 
             if (DEBUG)
             {
@@ -407,13 +367,13 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-            throw new ServiceManagementException(acsx.getMessage(), acsx);
+            throw new DatacenterManagementException(acsx.getMessage(), acsx);
         }
         catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
-            throw new ServiceManagementException(sqx.getMessage(), sqx);
+            throw new DatacenterManagementException(sqx.getMessage(), sqx);
         }
         finally
         {
@@ -422,7 +382,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
             {
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.UPDATEPLATFORM);
+                auditEntry.setAuditType(AuditType.UPDATEDATACENTER);
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
@@ -453,27 +413,27 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor#removeServiceData(com.cws.esolutions.core.processors.dto.ServiceManagementRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IDatacenterManagementProcessor#removeDatacenter(com.cws.esolutions.core.processors.dto.DatacenterManagementRequest)
      */
-    public ServiceManagementResponse removeServiceData(final ServiceManagementRequest request) throws ServiceManagementException
+    public DatacenterManagementResponse removeDatacenter(final DatacenterManagementRequest request) throws DatacenterManagementException
     {
-        final String methodName = IServiceManagementProcessor.CNAME + "#removeServiceData(final ServiceManagementRequest request) throws ServiceManagementException";
+        final String methodName = IDatacenterManagementProcessor.CNAME + "#removeDatacenter(final DatacenterManagementRequest request) throws DatacenterManagementException";
         
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ServiceManagementRequest: {}", request);
+            DEBUGGER.debug("DatacenterManagementRequest: {}", request);
         }
 
-        ServiceManagementResponse response = new ServiceManagementResponse();
+        DatacenterManagementResponse response = new DatacenterManagementResponse();
 
-        final Service service = request.getService();
+        final Datacenter dataCenter = request.getDatacenter();
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("Service: {}", service);
+            DEBUGGER.debug("Datacenter: {}", dataCenter);
             DEBUGGER.debug("UserAccount: {}", userAccount);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
         }
@@ -506,7 +466,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.DELETEPLATFORM);
+                    auditEntry.setAuditType(AuditType.DELETEDATACENTER);
                     auditEntry.setUserAccount(userAccount);
                     auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
@@ -535,7 +495,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 return response;
             }
 
-            boolean isComplete = serviceDao.removeService(service.getGuid());
+            boolean isComplete = datacenterDao.removeDatacenter(dataCenter.getGuid());
 
             if (DEBUG)
             {
@@ -555,13 +515,13 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-            throw new ServiceManagementException(acsx.getMessage(), acsx);
+            throw new DatacenterManagementException(acsx.getMessage(), acsx);
         }
         catch (final SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
-            throw new ServiceManagementException(sqx.getMessage(), sqx);
+            throw new DatacenterManagementException(sqx.getMessage(), sqx);
         }
         finally
         {
@@ -570,7 +530,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
             {
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.DELETEPLATFORM);
+                auditEntry.setAuditType(AuditType.DELETEDATACENTER);
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
@@ -601,19 +561,19 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor#listServices(com.cws.esolutions.core.processors.dto.ServiceManagementRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IDatacenterManagementProcessor#listDatacenters(com.cws.esolutions.core.processors.dto.DatacenterManagementRequest)
      */
-    public ServiceManagementResponse listServices(final ServiceManagementRequest request) throws ServiceManagementException
+    public DatacenterManagementResponse listDatacenters(final DatacenterManagementRequest request) throws DatacenterManagementException
     {
-        final String methodName = IServiceManagementProcessor.CNAME + "#listServices(final ServiceManagementRequest request) throws ServiceManagementException";
+        final String methodName = IDatacenterManagementProcessor.CNAME + "#listDatacenters(final DatacenterManagementRequest request) throws DatacenterManagementException";
         
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ServiceManagementRequest: {}", request);
+            DEBUGGER.debug("DatacenterManagementRequest: {}", request);
         }
 
-        ServiceManagementResponse response = new ServiceManagementResponse();
+        DatacenterManagementResponse response = new DatacenterManagementResponse();
 
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
@@ -652,7 +612,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.LISTPLATFORMS);
+                    auditEntry.setAuditType(AuditType.LISTDATACENTERS);
                     auditEntry.setUserAccount(userAccount);
                     auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
@@ -681,39 +641,40 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 return response;
             }
 
-            List<String[]> serviceData = serviceDao.listServices(request.getStartPage());
+            List<String[]> datacenters = datacenterDao.listDatacenters(request.getStartPage());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("serviceData: {}", serviceData);
+                DEBUGGER.debug("datacenters: {}", datacenters);
             }
 
-            if ((serviceData != null) && (serviceData.size() != 0))
+            if ((datacenters != null) && (datacenters.size() != 0))
             {
-                List<Service> serviceList = new ArrayList<Service>();
+                List<Datacenter> datacenterList = new ArrayList<Datacenter>();
 
-                for (String[] data : serviceData)
+                for (String[] data : datacenters)
                 {
-                    Service service = new Service();
-                    service.setGuid(data[0]);
-                    service.setType(ServiceType.valueOf(data[1]));
-                    service.setName(data[2]);
+                	Datacenter dataCenter = new Datacenter();
+                	dataCenter.setGuid(data[0]);
+                	dataCenter.setName(data[1]);
+                	dataCenter.setStatus(ServiceStatus.valueOf(data[2]));
+                	dataCenter.setDescription(data[3]);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("Service: {}", service);
+                        DEBUGGER.debug("Datacenter: {}", dataCenter);
                     }
 
-                    serviceList.add(service);
+                    datacenterList.add(dataCenter);
                 }
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("serviceList: {}", serviceList);
+                    DEBUGGER.debug("dataCenterList: {}", datacenterList);
                 }
 
                 // response.setEntryCount(count); // TODO
-                response.setServiceList(serviceList);
+                response.setDatacenterList(datacenterList);
                 response.setRequestStatus(CoreServicesStatus.SUCCESS);
             }
             else
@@ -725,13 +686,13 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
-            throw new ServiceManagementException(sqx.getMessage(), sqx);
+            throw new DatacenterManagementException(sqx.getMessage(), sqx);
         }
         catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
-            throw new ServiceManagementException(acsx.getMessage(), acsx);
+            throw new DatacenterManagementException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -740,7 +701,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
             {
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.LISTPLATFORMS);
+                auditEntry.setAuditType(AuditType.LISTDATACENTERS);
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
@@ -771,21 +732,21 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor#listServicesByType(com.cws.esolutions.core.processors.dto.ServiceManagementRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IDatacenterManagementProcessor#getDatacenterByAttribute(com.cws.esolutions.core.processors.dto.DatacenterManagementRequest)
      */
-    public ServiceManagementResponse listServicesByType(final ServiceManagementRequest request) throws ServiceManagementException
+    public DatacenterManagementResponse getDatacenterByAttribute(final DatacenterManagementRequest request) throws DatacenterManagementException
     {
-        final String methodName = IServiceManagementProcessor.CNAME + "#listServicesByType(final ServiceManagementRequest request) throws ServiceManagementException";
+        final String methodName = IDatacenterManagementProcessor.CNAME + "#getDatacenterByAttribute(final DatacenterManagementRequest request) throws DatacenterManagementException";
         
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ServiceManagementRequest: {}", request);
+            DEBUGGER.debug("DatacenterManagementRequest: {}", request);
         }
 
-        ServiceManagementResponse response = new ServiceManagementResponse();
+        DatacenterManagementResponse response = new DatacenterManagementResponse();
 
-        final Service service = request.getService();
+        final Datacenter service = request.getDatacenter();
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
 
@@ -824,7 +785,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.LISTPLATFORMS);
+                    auditEntry.setAuditType(AuditType.LISTDATACENTERS);
                     auditEntry.setUserAccount(userAccount);
                     auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
@@ -853,42 +814,37 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 return response;
             }
 
-            List<String[]> serviceData = serviceDao.listServices(request.getStartPage());
+            List<Object[]> datacenterData = datacenterDao.getDatacentersByAttribute(service.getName(), request.getStartPage());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("serviceData: {}", serviceData);
+                DEBUGGER.debug("datacenterData: {}", datacenterData);
             }
 
-            if ((serviceData != null) && (serviceData.size() != 0))
+            if ((datacenterData != null) && (datacenterData.size() != 0))
             {
-                List<Service> serviceList = new ArrayList<Service>();
+                List<Datacenter> datacenterList = new ArrayList<Datacenter>();
 
-                for (String[] data : serviceData)
+                for (Object[] data : datacenterData)
                 {
-                    if (ServiceType.valueOf(data[1]) == service.getType())
+                	Datacenter dataCenter = new Datacenter();
+                	dataCenter.setGuid((String) data[0]);
+                	dataCenter.setName((String) data[1]);
+
+                    if (DEBUG)
                     {
-                        Service resService = new Service();
-                        resService.setGuid(data[0]);
-                        resService.setType(ServiceType.valueOf(data[1]));
-                        resService.setName(data[2]);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Service: {}", resService);
-                        }
-
-                        serviceList.add(resService);
+                        DEBUGGER.debug("Datacenter: {}", dataCenter);
                     }
+
+                    datacenterList.add(dataCenter);
                 }
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("serviceList: {}", serviceList);
+                    DEBUGGER.debug("datacenterList: {}", datacenterList);
                 }
 
-                // response.setEntryCount(count); // TODO
-                response.setServiceList(serviceList);
+                response.setDatacenterList(datacenterList);
                 response.setRequestStatus(CoreServicesStatus.SUCCESS);
             }
             else
@@ -900,13 +856,13 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
-            throw new ServiceManagementException(sqx.getMessage(), sqx);
+            throw new DatacenterManagementException(sqx.getMessage(), sqx);
         }
         catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
-            throw new ServiceManagementException(acsx.getMessage(), acsx);
+            throw new DatacenterManagementException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -915,7 +871,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
             {
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.LISTPLATFORMS);
+                auditEntry.setAuditType(AuditType.LISTDATACENTERS);
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());
@@ -946,27 +902,27 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor#getServiceByAttribute(com.cws.esolutions.core.processors.dto.ServiceManagementRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IDatacenterManagementProcessor#getDatacenterData(com.cws.esolutions.core.processors.dto.DatacenterManagementRequest)
      */
-    public ServiceManagementResponse getServiceByAttribute(final ServiceManagementRequest request) throws ServiceManagementException
+    public DatacenterManagementResponse getDatacenterData(final DatacenterManagementRequest request) throws DatacenterManagementException
     {
-        final String methodName = IServiceManagementProcessor.CNAME + "#getServiceByAttribute(final ServiceManagementRequest request) throws ServiceManagementException";
+        final String methodName = IDatacenterManagementProcessor.CNAME + "#getDatacenterData(final DatacenterManagementRequest request) throws DatacenterManagementException";
         
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ServiceManagementRequest: {}", request);
+            DEBUGGER.debug("DatacenterManagementRequest: {}", request);
         }
 
-        ServiceManagementResponse response = new ServiceManagementResponse();
+        DatacenterManagementResponse response = new DatacenterManagementResponse();
 
-        final Service service = request.getService();
+        final Datacenter dataCenter = request.getDatacenter();
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("Service: {}", service);
+            DEBUGGER.debug("Datacenter: {}", dataCenter);
             DEBUGGER.debug("UserAccount: {}", userAccount);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
         }
@@ -999,7 +955,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.LISTPLATFORMS);
+                    auditEntry.setAuditType(AuditType.LOADDATACENTER);
                     auditEntry.setUserAccount(userAccount);
                     auditEntry.setAuthorized(Boolean.FALSE);
                     auditEntry.setApplicationId(request.getApplicationId());
@@ -1028,39 +984,28 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 return response;
             }
 
-            List<Object[]> serviceData = serviceDao.getServicesByAttribute(service.getName(), request.getStartPage());
+            List<String> datacenterData = datacenterDao.getDatacenter(dataCenter.getGuid());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("serviceData: {}", serviceData);
+                DEBUGGER.debug("datacenterData: {}", datacenterData);
             }
 
-            if ((serviceData != null) && (serviceData.size() != 0))
+            if ((datacenterData != null) && (datacenterData.size() != 0))
             {
-                List<Service> serviceList = new ArrayList<Service>();
-
-                for (Object[] data : serviceData)
-                {
-                    Service resService = new Service();
-                    service.setGuid((String) data[0]);
-                    service.setName((String) data[1]);
-                    service.setScore((Double) data[2]);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Service: {}", resService);
-                    }
-
-                    serviceList.add(resService);
-                }
+                Datacenter resDatacenter = new Datacenter();
+                resDatacenter.setGuid(datacenterData.get(0));
+                resDatacenter.setName(datacenterData.get(1));
+                resDatacenter.setStatus(ServiceStatus.valueOf(datacenterData.get(2)));
+                resDatacenter.setDescription(datacenterData.get(3));
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("serviceList: {}", serviceList);
+                    DEBUGGER.debug("Datacenter: {}", resDatacenter);
                 }
 
-                response.setServiceList(serviceList);
                 response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                response.setDatacenter(resDatacenter);
             }
             else
             {
@@ -1071,13 +1016,13 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
-            throw new ServiceManagementException(sqx.getMessage(), sqx);
+            throw new DatacenterManagementException(sqx.getMessage(), sqx);
         }
         catch (final AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
-            throw new ServiceManagementException(acsx.getMessage(), acsx);
+            throw new DatacenterManagementException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -1086,218 +1031,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
             {
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.LISTPLATFORMS);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuthorized(Boolean.TRUE);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (final AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
-        }
-
-        return response;
-    }
-
-    /**
-     * @see com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor#getServiceData(com.cws.esolutions.core.processors.dto.ServiceManagementRequest)
-     */
-    public ServiceManagementResponse getServiceData(final ServiceManagementRequest request) throws ServiceManagementException
-    {
-        final String methodName = IServiceManagementProcessor.CNAME + "#getServiceData(final ServiceManagementRequest request) throws ServiceManagementException";
-        
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ServiceManagementRequest: {}", request);
-        }
-
-        ServiceManagementResponse response = new ServiceManagementResponse();
-
-        final Service service = request.getService();
-        final UserAccount userAccount = request.getUserAccount();
-        final RequestHostInfo reqInfo = request.getRequestInfo();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("Service: {}", service);
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-        }
-
-        try
-        {
-            // this will require admin and service authorization
-            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-            }
-
-            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-            }
-
-            if (!(accessResponse.getIsUserAuthorized()))
-            {
-                // unauthorized
-                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-
-                // audit
-                try
-                {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.LOADPLATFORM);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setAuthorized(Boolean.FALSE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
-                }
-
-                return response;
-            }
-
-            List<Server> serverList = null;
-            List<String> serviceData = serviceDao.getService(service.getGuid());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("serviceData: {}", serviceData);
-            }
-
-            if ((serviceData != null) && (serviceData.size() != 0))
-            {
-                if (ServiceType.valueOf(serviceData.get(0)) == ServiceType.PLATFORM)
-                {
-                    String appTmp = StringUtils.remove(serviceData.get(5), "["); // PLATFORM_SERVERS
-                    String platformServers = StringUtils.remove(appTmp, "]");
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("String: {}", platformServers);
-                    }
-
-                    if (platformServers.split(",").length >= 1)
-                    {
-                        serverList = new ArrayList<Server>();
-
-                        for (String serverGuid : platformServers.split(","))
-                        {
-                            List<Object> serverData = serverDao.getServer(StringUtils.trim(serverGuid));
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("serverData: {}", serverData);
-                            }
-
-                            if ((serverData != null) && (serverData.size() != 0))
-                            {
-                                Server server = new Server();
-                                server.setServerGuid((String) serverData.get(0)); // SYSTEM_GUID
-                                server.setServerRegion(ServiceRegion.valueOf((String) serverData.get(3))); // SYSTEM_REGION
-                                server.setOperHostName((String) serverData.get(16)); // OPER_HOSTNAME
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("Server: {}", server);
-                                }
-
-                                serverList.add(server);
-                            }
-                        }
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("serverList: {}", serverList);
-                        }
-                    }
-                }
-
-                Service resService = new Service();
-                resService.setGuid(service.getGuid());
-                resService.setType(ServiceType.valueOf(serviceData.get(0)));
-                resService.setName(serviceData.get(1));
-                resService.setRegion(ServiceRegion.valueOf(serviceData.get(2)));
-                resService.setPartition(NetworkPartition.valueOf(serviceData.get(3)));
-                resService.setServers(serverList);
-                resService.setStatus(ServiceStatus.valueOf(serviceData.get(4)));
-                resService.setDescription(serviceData.get(6));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Service: {}", resService);
-                }
-
-                response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                response.setService(resService);
-            }
-            else
-            {
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
-            }
-        }
-        catch (final SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new ServiceManagementException(sqx.getMessage(), sqx);
-        }
-        catch (final AccessControlServiceException acsx)
-        {
-            ERROR_RECORDER.error(acsx.getMessage(), acsx);
-            
-            throw new ServiceManagementException(acsx.getMessage(), acsx);
-        }
-        finally
-        {
-            // audit
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.LOADPLATFORM);
+                auditEntry.setAuditType(AuditType.LOADDATACENTER);
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setAuthorized(Boolean.TRUE);
                 auditEntry.setApplicationId(request.getApplicationId());

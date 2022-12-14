@@ -14,6 +14,7 @@
     <import resource="classpath:eSolutions/servlets/ApplicationManagementController.xml" />
     <import resource="classpath:eSolutions/servlets/CommonController.xml" />
     <import resource="classpath:eSolutions/servlets/DNSServiceController.xml" />
+    <import resource="classpath:eSolutions/servlets/DatacenterManagementController.xml" />
     <import resource="classpath:eSolutions/servlets/OnlineResetController.xml" />
     <import resource="classpath:eSolutions/servlets/ServiceManagementController.xml" />
     <import resource="classpath:eSolutions/servlets/SystemCheckController.xml" />    

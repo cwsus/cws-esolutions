@@ -102,8 +102,8 @@ public class SessionAuthenticationFilter implements Filter
             this.loginURI = rBundle.getString(SessionAuthenticationFilter.LOGIN_URI);
             this.passwordURI = rBundle.getString(SessionAuthenticationFilter.PASSWORD_URI);
             this.ignoreURIs = (StringUtils.isNotEmpty(rBundle.getString(SessionAuthenticationFilter.IGNORE_URI_LIST)))
-                    ? rBundle.getString(SessionAuthenticationFilter.IGNORE_URI_LIST).trim().split(",") : null;
-                    
+                    ? rBundle.getString(SessionAuthenticationFilter.IGNORE_URI_LIST).trim().split(",") : new String[] { "ALL" };
+
             if (DEBUG)
             {
                 if (this.ignoreURIs != null)
@@ -134,14 +134,11 @@ public class SessionAuthenticationFilter implements Filter
             DEBUGGER.debug("ServletResponse: {}", sResponse);
         }
 
+        final String passwdPage = this.passwordURI;
         final HttpServletRequest hRequest = (HttpServletRequest) sRequest;
         final HttpServletResponse hResponse = (HttpServletResponse) sResponse;
         final HttpSession hSession = hRequest.getSession(false);
         final String requestURI = hRequest.getRequestURI();
-        final String passwdPage = hRequest.getContextPath() + this.passwordURI;
-        final StringBuilder redirectPath = new StringBuilder()
-            .append(hRequest.getContextPath() + this.loginURI)
-            .append("?vpath=" + requestURI);
 
         if (DEBUG)
         {
@@ -150,7 +147,6 @@ public class SessionAuthenticationFilter implements Filter
             DEBUGGER.debug("HttpSession: {}", hSession);
             DEBUGGER.debug("RequestURI: {}", requestURI);
             DEBUGGER.debug("passwdPage: {}", passwdPage);
-            DEBUGGER.debug("redirectPath: {}", redirectPath);
 
             DEBUGGER.debug("Dumping session content:");
             Enumeration<?> sessionEnumeration = hSession.getAttributeNames();
@@ -190,7 +186,7 @@ public class SessionAuthenticationFilter implements Filter
         {
             if (DEBUG)
             {
-                DEBUGGER.debug("Request authenticated. No action taken !");
+                DEBUGGER.debug("Request is for the login URI. Breaking!");
             }
 
             filterChain.doFilter(sRequest, sResponse);
@@ -215,7 +211,7 @@ public class SessionAuthenticationFilter implements Filter
             // hostname isnt in ignore list
             for (String uri : this.ignoreURIs)
             {
-                uri = hRequest.getContextPath().trim() + uri.trim();
+                uri = uri.trim();
 
                 if (DEBUG)
                 {
@@ -240,14 +236,14 @@ public class SessionAuthenticationFilter implements Filter
 
         if (hRequest.isRequestedSessionIdFromURL())
         {
-            ERROR_RECORDER.error("Session found is from URL. Redirecting request to " + hRequest.getContextPath() + this.loginURI);
+            ERROR_RECORDER.error("Session found is from URL. Redirecting request to " + this.loginURI);
 
             // invalidate the session
             hRequest.getSession(false).invalidate();
             hSession.removeAttribute(SessionAuthenticationFilter.USER_ACCOUNT);
             hSession.invalidate();
 
-            hResponse.sendRedirect(hRequest.getContextPath() + this.loginURI);
+            hResponse.sendRedirect(this.loginURI);
 
             return;
         }
@@ -293,7 +289,7 @@ public class SessionAuthenticationFilter implements Filter
                             {
                                 ERROR_RECORDER.error("Account is expired and this request is not for the password page. Redirecting !");
 
-                                hResponse.sendRedirect(hRequest.getContextPath() + this.passwordURI);
+                                hResponse.sendRedirect(this.passwordURI);
 
                                 return;
                             }
@@ -306,7 +302,7 @@ public class SessionAuthenticationFilter implements Filter
                             {
                                 ERROR_RECORDER.error("Account has status RESET and this request is not for the password page. Redirecting !");
 
-                                hResponse.sendRedirect(hRequest.getContextPath() + this.passwordURI);
+                                hResponse.sendRedirect(this.passwordURI);
 
                                 return;
                             }
@@ -326,23 +322,13 @@ public class SessionAuthenticationFilter implements Filter
         }
 
         // no user account in the session
-        ERROR_RECORDER.error("Session contains no existing user account. Redirecting request to " + hRequest.getContextPath() + this.loginURI);
+        ERROR_RECORDER.error("Session contains no existing user account. Redirecting request to " + this.loginURI);
 
         // invalidate the session
         hSession.removeAttribute(SessionAuthenticationFilter.USER_ACCOUNT);
         hSession.invalidate();
 
-        if (StringUtils.isNotEmpty(hRequest.getQueryString()))
-        {
-            redirectPath.append("?" + hRequest.getQueryString());
-        }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("redirectPath: {}", redirectPath.toString());
-        }
-
-        hResponse.sendRedirect(URLEncoder.encode(redirectPath.toString(), systemConfig.getEncoding()));
+        hResponse.sendRedirect(this.loginURI);
 
         return;
     }

@@ -52,15 +52,52 @@ public interface IDatacenterDataDAO
     static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
+    /**
+     * 
+     * @param serverData
+     * @return
+     * @throws SQLException
+     */
     boolean addDatacenter(final List<String> serverData) throws SQLException;
 
+    /**
+     * 
+     * @param serverData
+     * @return
+     * @throws SQLException
+     */
     boolean updateDatacenter(final List<String> serverData) throws SQLException;
 
+    /**
+     * 
+     * @param serverGuid
+     * @return
+     * @throws SQLException
+     */
     boolean removeDatacenter(final String serverGuid) throws SQLException;
 
+    /**
+     * 
+     * @param startRow
+     * @return
+     * @throws SQLException
+     */
     List<String[]> listDatacenters(final int startRow) throws SQLException;
 
+    /**
+     * 
+     * @param attribute
+     * @param startRow
+     * @return
+     * @throws SQLException
+     */
     List<Object[]> getDatacentersByAttribute(final String attribute, final int startRow) throws SQLException;
 
+    /**
+     * 
+     * @param attribute
+     * @return
+     * @throws SQLException
+     */
     List<String> getDatacenter(final String attribute) throws SQLException;
 }

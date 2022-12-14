@@ -26,7 +26,6 @@ package com.cws.esolutions.web.controllers;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.util.Objects;
 import java.util.Enumeration;
 import org.springframework.ui.Model;
 import javax.servlet.http.HttpSession;
@@ -178,11 +177,6 @@ public class CommonController
 
                 DEBUGGER.debug("Request Parameter: {}; Value: {}", element, value);
             }
-        }
-
-        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
-        {
-        	return this.appConfig.getLogonRedirect();
         }
 
         // in here, we're going to get all the messages to display and such

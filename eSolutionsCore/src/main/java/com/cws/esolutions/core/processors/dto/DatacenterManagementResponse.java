@@ -15,9 +15,9 @@
  */
 package com.cws.esolutions.core.processors.dto;
 /*
- * Project: eSolutionsAgent
- * Package: com.cws.esolutions.agent.dto
- * File: CoreServicesRequest.java
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.processors.dto
+ * File: ServiceManagementResponse.java
  *
  * History
  *
@@ -25,36 +25,35 @@ package com.cws.esolutions.core.processors.dto;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
+import java.util.List;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.core.CoreServicesConstants;
+import com.cws.esolutions.core.enums.CoreServicesStatus;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
- *
  * @author cws-khuntly
  * @version 1.0
+ * @see java.io.Serializable
  */
-public class CoreServicesRequest implements Serializable
+public class DatacenterManagementResponse implements Serializable
 {
-    private String appName = null;
-    private String projectId = null;
-    private String serviceId = null;
-    private Object requestPayload = null;
+    private int entryCount = 0;
+    private Datacenter dataCenter = null;
+    private List<Datacenter> datacenterList = null;
+    private CoreServicesStatus requestStatus = null;
 
-    private static final String CNAME = CoreServicesRequest.class.getName();
-    private static final long serialVersionUID = -7910758710669328293L;
+    private static final long serialVersionUID = -9169608004657687586L;
+    private static final String CNAME = DatacenterManagementResponse.class.getName();
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
-    public final void setAppName(final String value)
+    public final void setRequestStatus(final CoreServicesStatus value)
     {
-        final String methodName = CoreServicesRequest.CNAME + "#setAppName(final String value)";
+        final String methodName = DatacenterManagementResponse.CNAME + "#setRequestStatus(final CoreServicesStatus value)";
 
         if (DEBUG)
         {
@@ -62,12 +61,12 @@ public class CoreServicesRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.appName = value;
+        this.requestStatus = value;
     }
 
-    public final void setProjectId(final String value)
+    public final void setEntryCount(final int value)
     {
-        final String methodName = CoreServicesRequest.CNAME + "#setProjectId(final String value)";
+        final String methodName = DatacenterManagementResponse.CNAME + "#setEntryCount(final int value)";
 
         if (DEBUG)
         {
@@ -75,12 +74,12 @@ public class CoreServicesRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.projectId = value;
+        this.entryCount = value;
     }
 
-    public final void setServiceId(final String value)
+    public final void setDatacenter(final Datacenter value)
     {
-        final String methodName = CoreServicesRequest.CNAME + "#setServiceId(final String value)";
+        final String methodName = DatacenterManagementResponse.CNAME + "#setDatacenter(final Datacenter value)";
 
         if (DEBUG)
         {
@@ -88,12 +87,12 @@ public class CoreServicesRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.serviceId = value;
+        this.dataCenter = value;
     }
 
-    public final void setRequestPayload(final Object value)
+    public final void setDatacenterList(final List<Datacenter> value)
     {
-        final String methodName = CoreServicesRequest.CNAME + "#setRequestPayload(final Object value)";
+        final String methodName = DatacenterManagementResponse.CNAME + "#setDatacenterList(final List<Datacenter> value)";
 
         if (DEBUG)
         {
@@ -101,63 +100,63 @@ public class CoreServicesRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.requestPayload = value;
+        this.datacenterList = value;
     }
 
-    public final String getAppName()
+    public final CoreServicesStatus getRequestStatus()
     {
-        final String methodName = CoreServicesRequest.CNAME + "#getAppName()";
+        final String methodName = DatacenterManagementResponse.CNAME + "#getRequestStatus()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.appName);
+            DEBUGGER.debug("Value: {}", this.requestStatus);
         }
 
-        return this.appName;
+        return this.requestStatus;
     }
 
-    public final String getProjectId()
+    public final int getEntryCount()
     {
-        final String methodName = CoreServicesRequest.CNAME + "#getProjectId()";
+        final String methodName = DatacenterManagementResponse.CNAME + "#getEntryCount()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.projectId);
+            DEBUGGER.debug("Value: {}", this.entryCount);
         }
 
-        return this.projectId;
+        return this.entryCount;
     }
 
-    public final String getServiceId()
+    public final List<Datacenter> getDatacenterList()
     {
-        final String methodName = CoreServicesRequest.CNAME + "#getServiceId()";
+        final String methodName = DatacenterManagementResponse.CNAME + "#getDatacenterList()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.serviceId);
+            DEBUGGER.debug("Value: {}", this.datacenterList);
         }
 
-        return this.serviceId;
+        return this.datacenterList;
     }
 
-    public final Object getRequestPayload()
+    public final Datacenter getDatacenter()
     {
-        final String methodName = CoreServicesRequest.CNAME + "#getRequestPayload()";
+        final String methodName = DatacenterManagementResponse.CNAME + "#getDatacenter()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.requestPayload);
+            DEBUGGER.debug("Value: {}", this.dataCenter);
         }
 
-        return this.requestPayload;
+        return this.dataCenter;
     }
 
     @Override
-    public final String toString()
+    public String toString()
     {
         StringBuilder sBuilder = new StringBuilder()
             .append("[" + this.getClass().getName() + "]" + CoreServicesConstants.LINE_BREAK + "{" + CoreServicesConstants.LINE_BREAK);

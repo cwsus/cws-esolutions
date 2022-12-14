@@ -26,24 +26,14 @@ package com.cws.esolutions.web.controllers;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.util.List;
-import java.util.Objects;
 import java.util.Enumeration;
 import org.springframework.ui.Model;
 import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import org.springframework.mail.MailSender;
 import javax.servlet.http.HttpServletRequest;
-import org.springframework.mail.MailException;
 import org.springframework.stereotype.Controller;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.validation.BindingResult;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -51,18 +41,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.web.model.SearchRequest;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.web.ApplicationServiceBean;
-import com.cws.esolutions.core.processors.dto.Service;
-import com.cws.esolutions.core.processors.dto.ServiceManagementRequest;
-import com.cws.esolutions.core.processors.dto.ServiceManagementResponse;
-import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
-import com.cws.esolutions.core.processors.enums.ServiceType;
-import com.cws.esolutions.core.processors.exception.ServiceManagementException;
-import com.cws.esolutions.core.processors.impl.ServiceManagementProcessorImpl;
-import com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor;
-import com.cws.esolutions.core.utils.dto.EmailMessage;
-import com.cws.esolutions.web.validators.EmailMessageValidator;
+import com.cws.esolutions.core.processors.dto.Datacenter;
+import com.cws.esolutions.core.processors.enums.ServiceStatus;
 /**
  * @author cws-khuntly
  * @version 1.0
@@ -73,7 +54,10 @@ import com.cws.esolutions.web.validators.EmailMessageValidator;
 public class DatacenterManagementController
 {
     private String homePage = null;
+    private String serviceId = null;
     private String serviceName = null;
+    private String addDatacenterPage = null;
+    private String messageNoSearchResults = null;
     private ApplicationServiceBean appConfig = null;
 
     private static final String CNAME = DatacenterManagementController.class.getName();
@@ -95,6 +79,32 @@ public class DatacenterManagementController
         this.appConfig = value;
     }
 
+    public final void setServiceId(final String value)
+    {
+        final String methodName = DatacenterManagementController.CNAME + "#setServiceId(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.serviceId = value;
+    }
+
+    public final void setServiceName(final String value)
+    {
+        final String methodName = DatacenterManagementController.CNAME + "#setServiceName(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.serviceName = value;
+    }
+
     public final void setHomePage(final String value)
     {
         final String methodName = DatacenterManagementController.CNAME + "#setHomePage(final String value)";
@@ -106,6 +116,99 @@ public class DatacenterManagementController
         }
 
         this.homePage = value;
+    }
+
+    public final void setAddDatacenterPage(final String value)
+    {
+        final String methodName = DatacenterManagementController.CNAME + "#setAddDatacenterPage(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.addDatacenterPage = value;
+    }
+
+    public final void setMessageNoSearchResults(final String value)
+    {
+        final String methodName = DatacenterManagementController.CNAME + "#setMessageNoSearchResults(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageNoSearchResults = value;
+    }
+
+    @RequestMapping(value = "default", method = RequestMethod.GET)
+    public final String showDefaultPage(final Model model)
+    {
+        final String methodName = DatacenterManagementController.CNAME + "#showDefaultPage(final Model model)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            Enumeration<?> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String element = (String) sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
+
+                DEBUGGER.debug("Session Attribute: {}; Value: {}", element, value);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            Enumeration<?> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String element = (String) requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
+
+                DEBUGGER.debug("Request Attribute: {}; Value: {}", element, value);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<?> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String element = (String) paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
+
+                DEBUGGER.debug("Request Parameter: {}; Value: {}", element, value);
+            }
+        }
+
+        if (!(this.appConfig.getServices().get(this.serviceName)))
+        {
+            return this.appConfig.getUnavailablePage();
+        }
+
+        model.addAttribute(Constants.COMMAND, new SearchRequest());
+
+        return this.homePage;
     }
 
     @RequestMapping(value = "add-datacenter", method = RequestMethod.GET)
@@ -165,88 +268,18 @@ public class DatacenterManagementController
             }
         }
 
-        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
-        {
-            return this.appConfig.getLogonRedirect();
-        }
-
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
             return this.appConfig.getUnavailablePage();
         }
 
-        model.addAttribute(Constants.COMMAND, new SearchRequest());
+        model.addAttribute("statusList", ServiceStatus.values());
+        model.addAttribute(Constants.COMMAND, new Datacenter());
 
-        return this.homePage;
+        return this.addDatacenterPage;
     }
 
     /*
-    @RequestMapping(value = "default", method = RequestMethod.GET)
-    public final String showDefaultPage(final Model model)
-    {
-        final String methodName = DatacenterManagementController.CNAME + "#showDefaultPage(final Model model)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        final HttpServletRequest hRequest = requestAttributes.getRequest();
-        final HttpSession hSession = hRequest.getSession();
-        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
-            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
-            DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("Session ID: {}", hSession.getId());
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-
-            DEBUGGER.debug("Dumping session content:");
-            Enumeration<?> sessionEnumeration = hSession.getAttributeNames();
-
-            while (sessionEnumeration.hasMoreElements())
-            {
-                String element = (String) sessionEnumeration.nextElement();
-                Object value = hSession.getAttribute(element);
-
-                DEBUGGER.debug("Session Attribute: {}; Value: {}", element, value);
-            }
-
-            DEBUGGER.debug("Dumping request content:");
-            Enumeration<?> requestEnumeration = hRequest.getAttributeNames();
-
-            while (requestEnumeration.hasMoreElements())
-            {
-                String element = (String) requestEnumeration.nextElement();
-                Object value = hRequest.getAttribute(element);
-
-                DEBUGGER.debug("Request Attribute: {}; Value: {}", element, value);
-            }
-
-            DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<?> paramsEnumeration = hRequest.getParameterNames();
-
-            while (paramsEnumeration.hasMoreElements())
-            {
-                String element = (String) paramsEnumeration.nextElement();
-                Object value = hRequest.getParameter(element);
-
-                DEBUGGER.debug("Request Parameter: {}; Value: {}", element, value);
-            }
-        }
-
-        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
-        {
-        	return this.appConfig.getLogonRedirect();
-        }
-
-        // in here, we're going to get all the messages to display and such
-        return this.homePage;
-    }
-
     @RequestMapping(value = "list-datacenters", method = RequestMethod.GET)
     public final String showDatacenterList(final Model model)
     {
@@ -303,11 +336,6 @@ public class DatacenterManagementController
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
-        }
-
-        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
-        {
-        	return this.appConfig.getLogonRedirect();
         }
 
         if (!(this.appConfig.getServices().get(this.serviceName)))
@@ -455,11 +483,6 @@ public class DatacenterManagementController
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
-        }
-
-        if (Objects.isNull(hSession.getAttribute(Constants.USER_ACCOUNT)))
-        {
-        	return this.appConfig.getLogonRedirect();
         }
 
         if (!(this.appConfig.getServices().get(this.serviceName)))

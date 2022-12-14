@@ -361,11 +361,6 @@ public class UserAccountController
             }
         }
 
-        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
-        {
-        	return this.appConfig.getLogonRedirect(); // try it ?
-        }
-
         // in here, we're going to get all the messages to display and such
         return this.myAccountPage;
     }
@@ -428,13 +423,6 @@ public class UserAccountController
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
-        }
-
-        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
-        {
-        	mView.setViewName(this.appConfig.getLogonRedirect());
-
-        	return mView;
         }
 
         if ((userAccount.getStatus() == LoginStatus.RESET) || (userAccount.getStatus() == LoginStatus.EXPIRED))
@@ -520,13 +508,6 @@ public class UserAccountController
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
-        }
-
-        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
-        {
-        	mView.setViewName(this.appConfig.getLogonRedirect());
-
-        	return mView;
         }
 
         mView.addObject(Constants.COMMAND, new AccountChangeData());
@@ -650,13 +631,6 @@ public class UserAccountController
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
             mView.setViewName(this.appConfig.getErrorResponsePage());
-        }
-
-        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
-        {
-        	mView.setViewName(this.appConfig.getLogonRedirect());
-
-        	return mView;
         }
 
         if (DEBUG)

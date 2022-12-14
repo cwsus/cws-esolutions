@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.core.processors.enums;
+package com.cws.esolutions.core.enums;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.enums

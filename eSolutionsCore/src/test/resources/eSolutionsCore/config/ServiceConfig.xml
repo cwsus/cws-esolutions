@@ -90,8 +90,8 @@
     <resource-config>
         <DataSourceManager>
             <dsName>ApplicationDataSource</dsName>
-            <datasource>jdbc:mysql://localhost/ESOLUTIONSSVC?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
-            <driver>com.mysql.jdbc.Driver</driver>
+            <datasource>jdbc:mysql://localhost/ESOLUTIONSSVC?autoReconnect=true</datasource>
+            <driver>com.mysql.cj.jdbc.Driver</driver>
             <dsUser>appadm</dsUser>
             <dsPass>U1Y5RkFIdzZ3VXZBdW9DRHlyM0syZz09OmUvR2szWDJvdHVoWmhqZTZPNU9MTVFWeXkrWUpETTRwOVA1WWplRnpaWU09</dsPass>
             <dsSalt>hg4Q1qymhVY5ZICwyXuYFvdegQVyrAbg</dsSalt>

@@ -32,8 +32,8 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.core.CoreServicesConstants;
+import com.cws.esolutions.core.enums.CoreServicesStatus;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
-import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 /**
  * @author cws-khuntly
  * @version 1.0

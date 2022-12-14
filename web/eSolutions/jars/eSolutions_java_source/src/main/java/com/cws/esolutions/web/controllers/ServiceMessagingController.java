@@ -235,11 +235,6 @@ public class ServiceMessagingController
             }
         }
 
-        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
-        {
-        	return this.appConfig.getLogonRedirect(); // try it ?
-        }
-
         String responsePage = null;
 
         try
@@ -357,11 +352,6 @@ public class ServiceMessagingController
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
-        }
-
-        if (hSession.getAttribute(Constants.USER_ACCOUNT) == null)
-        {
-        	return this.appConfig.getLogonRedirect(); // try it ?
         }
 
         model.addAttribute(Constants.COMMAND, new ServiceMessage());

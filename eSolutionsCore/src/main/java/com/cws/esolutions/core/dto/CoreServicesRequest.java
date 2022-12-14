@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.core.processors.dto;
+package com.cws.esolutions.core.dto;
 /*
  * Project: eSolutionsAgent
  * Package: com.cws.esolutions.agent.dto
- * File: CoreServicesResponse.java
+ * File: CoreServicesRequest.java
  *
  * History
  *
@@ -31,7 +31,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.core.CoreServicesConstants;
-import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -40,33 +39,22 @@ import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
  * @author cws-khuntly
  * @version 1.0
  */
-public class CoreServicesResponse implements Serializable
+public class CoreServicesRequest implements Serializable
 {
-    private Object responsePayload = null;
-    private CoreServicesStatus requestStatus = null;
+    private String appName = null;
+    private String projectId = null;
+    private String serviceId = null;
+    private Object requestPayload = null;
 
-    private static final String CNAME = CoreServicesResponse.class.getName();
-    private static final long serialVersionUID = 8147483886425734062L;
+    private static final String CNAME = CoreServicesRequest.class.getName();
+    private static final long serialVersionUID = -7910758710669328293L;
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
-    public final void setRequestStatus(final CoreServicesStatus value)
+    public final void setAppName(final String value)
     {
-        final String methodName = CoreServicesResponse.CNAME + "#setRequestStatus(final CoreServicesStatus value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("CoreServicesStatus: {}", value);
-        }
-
-        this.requestStatus = value;
-    }
-
-    public final void setResponsePayload(final Object value)
-    {
-        final String methodName = CoreServicesResponse.CNAME + "#setResponsePayload(final Object value)";
+        final String methodName = CoreServicesRequest.CNAME + "#setAppName(final String value)";
 
         if (DEBUG)
         {
@@ -74,37 +62,102 @@ public class CoreServicesResponse implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.responsePayload = value;
+        this.appName = value;
     }
 
-    public final CoreServicesStatus getRequestStatus()
+    public final void setProjectId(final String value)
     {
-        final String methodName = CoreServicesResponse.CNAME + "#getRequestStatus()";
+        final String methodName = CoreServicesRequest.CNAME + "#setProjectId(final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("CoreServicesStatus: {}", this.requestStatus);
+            DEBUGGER.debug("Value: {}", value);
         }
 
-        return this.requestStatus;
+        this.projectId = value;
     }
 
-    public final Object getResponsePayload()
+    public final void setServiceId(final String value)
     {
-        final String methodName = CoreServicesResponse.CNAME + "#getResponsePayload()";
+        final String methodName = CoreServicesRequest.CNAME + "#setServiceId(final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.responsePayload);
+            DEBUGGER.debug("Value: {}", value);
         }
 
-        return this.responsePayload;
+        this.serviceId = value;
+    }
+
+    public final void setRequestPayload(final Object value)
+    {
+        final String methodName = CoreServicesRequest.CNAME + "#setRequestPayload(final Object value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.requestPayload = value;
+    }
+
+    public final String getAppName()
+    {
+        final String methodName = CoreServicesRequest.CNAME + "#getAppName()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.appName);
+        }
+
+        return this.appName;
+    }
+
+    public final String getProjectId()
+    {
+        final String methodName = CoreServicesRequest.CNAME + "#getProjectId()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.projectId);
+        }
+
+        return this.projectId;
+    }
+
+    public final String getServiceId()
+    {
+        final String methodName = CoreServicesRequest.CNAME + "#getServiceId()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.serviceId);
+        }
+
+        return this.serviceId;
+    }
+
+    public final Object getRequestPayload()
+    {
+        final String methodName = CoreServicesRequest.CNAME + "#getRequestPayload()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.requestPayload);
+        }
+
+        return this.requestPayload;
     }
 
     @Override
-    public String toString()
+    public final String toString()
     {
         StringBuilder sBuilder = new StringBuilder()
             .append("[" + this.getClass().getName() + "]" + CoreServicesConstants.LINE_BREAK + "{" + CoreServicesConstants.LINE_BREAK);

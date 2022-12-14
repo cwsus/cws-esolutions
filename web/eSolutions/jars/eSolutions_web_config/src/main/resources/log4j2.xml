@@ -83,7 +83,7 @@
 
     <Loggers>
         <!-- SecurityService loggers -->
-        <Logger name="AUDIT_RECORDER.com.cws.esolutions.security" additivity="false" level="trace">
+        <Logger name="AUDIT_RECORDER.com.cws.esolutions.security" additivity="false" level="info">
             <AppenderRef ref="sec-audit-logger" />
         </Logger>
         <Logger name="ERROR_RECORDER.com.cws.esolutions.security" additivity="false" level="error">
@@ -93,9 +93,9 @@
             <AppenderRef ref="sec-debug-logger" />
         </Logger>
 
-        <!-- SecurityService loggers -->
+        <!-- eSolutions loggers -->
         <Logger name="ERROR_RECORDER.com.cws.esolutions.core" additivity="false" level="error">
-            <AppenderRef ref="core-audit-logger" />
+            <AppenderRef ref="core-error-logger" />
         </Logger>
         <Logger name="CORE_DEBUGGER" additivity="false" level="debug">
             <AppenderRef ref="core-debug-logger" />
@@ -105,7 +105,7 @@
         <Logger name="ERROR_RECORDER.com.cws.esolutions.web" additivity="false" level="error">
             <AppenderRef ref="web-error-logger" />
         </Logger>
-        <Logger name="RESPONSE_TIME" additivity="false" level="debug">
+        <Logger name="RESPONSE_TIME" additivity="false" level="info">
             <AppenderRef ref="responsetime-log" />
         </Logger>
         <Logger name="CORE_DEBUGGER" additivity="false" level="debug">

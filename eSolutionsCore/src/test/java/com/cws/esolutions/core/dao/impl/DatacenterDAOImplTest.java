@@ -63,7 +63,7 @@ public class DatacenterDAOImplTest
     {
     	List<String> data = new ArrayList<String>(
     			Arrays.asList(
-    					"0771a4c5-683a-47d1-8d56-f5ec89760d79",
+    					"0771a4c5-683a-47d1-8d56-f5ec89760d80",
     					"TD",
     					"ACTIVE",
     					"Test Datacenter"));
@@ -82,7 +82,7 @@ public class DatacenterDAOImplTest
     {
     	List<String> data = new ArrayList<String>(
     			Arrays.asList(
-    					"0771a4c5-683a-47d1-8d56-f5ec89760d79",
+    					"0771a4c5-683a-47d1-8d56-f5ec89760d80",
     					"CH",
     					"ACTIVE",
     					"Test Datacenter"));
