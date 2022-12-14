@@ -864,6 +864,122 @@ public class OpenLDAPUserManager implements UserManager
     }
 
     /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#getUserByEmailAddress(java.lang.String)
+     */
+    public synchronized String getUserByUsername(final String value) throws UserManagementException
+    {
+        final String methodName = OpenLDAPUserManager.CNAME + "#getUserByEmailAddress(final String value) throws UserManagementException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        String userAccount = null;
+        LDAPConnection ldapConn = null;
+        LDAPConnectionPool ldapPool = null;
+
+        try
+        {
+            ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPConnectionPool: {}", ldapPool);
+            }
+
+            if (ldapPool.isClosed())
+            {
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+
+            ldapConn = ldapPool.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+            }
+
+            if (!(ldapConn.isConnected()))
+            {
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+
+            Filter searchFilter = Filter.create("(&(objectClass=" + repoConfig.getBaseObject() + ")" +
+                    "(&(" + userAttributes.getUserId() + "=" + value + ")))");
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchFilter: {}", searchFilter);
+            }
+
+            SearchRequest searchRequest = new SearchRequest(
+                    repoConfig.getRepositoryUserBase() + "," + repoConfig.getRepositoryBaseDN(),
+                    SearchScope.SUB,
+                    searchFilter);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchRequest: {}", searchRequest);
+            }
+
+            SearchResult searchResult = ldapConn.search(searchRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchResult: {}", searchResult);
+            }
+
+            if (searchResult.getResultCode() == ResultCode.SUCCESS)
+            {
+                if (searchResult.getEntryCount() == 1)
+                {
+                    SearchResultEntry entry = searchResult.getSearchEntries().get(0);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("SearchResultEntry: {}", entry);
+                    }
+
+                    userAccount = entry.getAttribute(userAttributes.getCommonName()).toString();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("UserAccount: {}", userAccount);
+                    }
+                }
+                else
+                {
+                    throw new UserManagementException("Multiple users were located for the provided information");
+                }
+            }
+            else
+            {
+                throw new UserManagementException("Search request failed: " + searchResult.getResultCode());
+            }
+        }
+        catch (final LDAPException lx)
+        {
+            throw new UserManagementException(lx.getMessage(), lx);
+        }
+        catch (final ConnectException cx)
+        {
+            throw new UserManagementException(cx.getMessage(), cx);
+        }
+        finally
+        {
+            if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
+            {
+                ldapConn.close();
+                ldapPool.releaseConnection(ldapConn);
+            }
+        }
+
+        return userAccount;
+    }
+
+    /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#listUserAccounts()
      */
     public synchronized List<String[]> listUserAccounts() throws UserManagementException

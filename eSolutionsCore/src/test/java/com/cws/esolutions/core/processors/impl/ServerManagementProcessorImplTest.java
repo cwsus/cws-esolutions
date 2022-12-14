@@ -29,16 +29,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.TestInstance;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.dto.Service;
+import com.cws.esolutions.core.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.core.processors.enums.ServerStatus;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
-import com.cws.esolutions.core.enums.CoreServicesStatus;
 import com.cws.esolutions.core.listeners.CoreServicesInitializer;
 import com.cws.esolutions.core.processors.enums.NetworkPartition;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
@@ -48,12 +50,13 @@ import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.core.processors.exception.ServerManagementException;
 import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ServerManagementProcessorImplTest
 {
     private static UserAccount userAccount = new UserAccount();
     private static RequestHostInfo hostInfo = new RequestHostInfo();
 
-    private static final IServerManagementProcessor processor = new ServerManagementProcessorImpl();
+    private static final IServerManagementProcessor processor = (IServerManagementProcessor) new ServerManagementProcessorImpl();
 
     @BeforeAll public void setUp()
     {
@@ -63,6 +66,7 @@ public class ServerManagementProcessorImplTest
         userAccount.setStatus(LoginStatus.SUCCESS);
         userAccount.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
         userAccount.setUsername("khuntly");
+        userAccount.setUserRole(SecurityUserRole.SITE_ADMIN);
 
         try
         {

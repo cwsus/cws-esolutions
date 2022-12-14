@@ -11,14 +11,27 @@
         http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context-4.3.xsd
         http://www.springframework.org/schema/jee https://www.springframework.org/schema/jee/spring-jee-4.3.xsd">
 
+    <bean id="datacenterValidator" class="com.cws.esolutions.web.validators.DatacenterValidator">
+        <property name="messageNameRequired" value="datacenter.mgmt.name.required" />
+        <property name="messageNameNotLongEnough" value="datacenter.mgmt.name.length" />
+        <property name="messageDescriptionRequired" value="datacenter.mgmt.description.required" />
+        <property name="messageStatusRequired" value="datacenter.mgmt.status.required" />
+    </bean>
+
     <bean id="datacenterManagementController" class="com.cws.esolutions.web.controllers.DatacenterManagementController">
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
+        <property name="validator">
+            <ref bean="datacenterValidator" />
+        </property>
         <property name="messageNoSearchResults" value="theme.search.no.results" />
+        <property name="messageDatacenterAddSuccess" value="datacenter.mgmt.datacenter.add.success" />
         <property name="serviceName" value="dcMgmt" />
         <property name="serviceId" value="FE0261DB-F94B-466D-A7FC-98DC7AC7C2E8" />
         <property name="homePage" value=".datacenter-management/jsp/html/en/DatacenterMgmt_DefaultHandler" />
         <property name="addDatacenterPage" value=".datacenter-management/jsp/html/en/DatacenterMgmt_AddDatacenter" />
+        <property name="viewDatacenterPage" value=".datacenter-management/jsp/html/en/DatacenterMgmt_ViewDatacenter" />
+        <property name="listDatacentersPage" value=".datacenter-management/jsp/html/en/DatacenterMgmt_ViewDatacenters" />
     </bean>
 </beans>

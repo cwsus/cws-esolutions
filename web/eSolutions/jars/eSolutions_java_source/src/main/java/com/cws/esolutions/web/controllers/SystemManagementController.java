@@ -47,10 +47,11 @@ import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.web.model.SearchRequest;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
-import com.cws.esolutions.core.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.dto.Service;
+import com.cws.esolutions.core.enums.CoreServicesStatus;
 import com.cws.esolutions.web.validators.ServerValidator;
+import com.cws.esolutions.core.processors.dto.Datacenter;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.core.processors.enums.ServerStatus;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
@@ -59,14 +60,14 @@ import com.cws.esolutions.core.processors.enums.NetworkPartition;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.ServerManagementRequest;
 import com.cws.esolutions.core.processors.dto.ServerManagementResponse;
-import com.cws.esolutions.core.processors.dto.ServiceManagementRequest;
-import com.cws.esolutions.core.processors.dto.ServiceManagementResponse;
+import com.cws.esolutions.core.processors.dto.DatacenterManagementRequest;
+import com.cws.esolutions.core.processors.dto.DatacenterManagementResponse;
 import com.cws.esolutions.core.processors.impl.ServerManagementProcessorImpl;
-import com.cws.esolutions.core.processors.impl.ServiceManagementProcessorImpl;
 import com.cws.esolutions.core.processors.exception.ServerManagementException;
-import com.cws.esolutions.core.processors.exception.ServiceManagementException;
 import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
-import com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor;
+import com.cws.esolutions.core.processors.impl.DatacenterManagementProcessorImpl;
+import com.cws.esolutions.core.processors.exception.DatacenterManagementException;
+import com.cws.esolutions.core.processors.interfaces.IDatacenterManagementProcessor;
 /**
  * @author cws-khuntly
  * @version 1.0
@@ -913,7 +914,7 @@ public class SystemManagementController
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IServerManagementProcessor processor = (IServerManagementProcessor) new ServerManagementProcessorImpl();
-        final IServiceManagementProcessor svcProcessor = (IServiceManagementProcessor) new ServiceManagementProcessorImpl();
+        final IDatacenterManagementProcessor dataCtrProcessor = (IDatacenterManagementProcessor) new DatacenterManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -1014,21 +1015,21 @@ public class SystemManagementController
         }
 
         // list datacenters
-        ServiceManagementRequest dcRequest = new ServiceManagementRequest();
-        dcRequest.setRequestInfo(reqInfo);
-        dcRequest.setServiceId(this.dcService);
-        dcRequest.setUserAccount(userAccount);
-        dcRequest.setApplicationId(this.appConfig.getApplicationId());
-        dcRequest.setApplicationName(this.appConfig.getApplicationName());
+        DatacenterManagementRequest dmRequest = new DatacenterManagementRequest();
+        dmRequest.setApplicationId(this.appConfig.getApplicationId());
+        dmRequest.setApplicationName(this.appConfig.getApplicationName());
+        dmRequest.setRequestInfo(reqInfo);
+        dmRequest.setServiceId(this.dcService);
+        dmRequest.setUserAccount(userAccount);
 
         if (DEBUG)
         {
-            DEBUGGER.debug("DatacenterManagementRequest: {}", dcRequest);
+            DEBUGGER.debug("DatacenterManagementRequest: {}", dmRequest);
         }
 
         try
         {
-            ServiceManagementResponse dcResponse = svcProcessor.listServices(dcRequest);
+            DatacenterManagementResponse dcResponse = dataCtrProcessor.listDatacenters(dmRequest);
 
             if (DEBUG)
             {
@@ -1037,14 +1038,14 @@ public class SystemManagementController
 
             if (dcResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
             {
-                List<Service> services = dcResponse.getServiceList();
+                List<Datacenter> datacenters = dcResponse.getDatacenterList();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("List<Service>: {}", services);
+                    DEBUGGER.debug("List<Datacenter>: {}", datacenters);
                 }
 
-                mView.addObject("datacenters", services);
+                mView.addObject("datacenters", datacenters);
             }
             else if (dcResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
@@ -1059,9 +1060,9 @@ public class SystemManagementController
                 mView.setViewName(this.addDatacenterRedirect);
             }
         }
-        catch (final ServiceManagementException smx)
+        catch (final DatacenterManagementException dmx)
         {
-            ERROR_RECORDER.error(smx.getMessage(), smx);
+            ERROR_RECORDER.error(dmx.getMessage(), dmx);
 
             // redirect to add datacenter
             mView = new ModelAndView(new RedirectView());

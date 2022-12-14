@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.TestInstance;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
@@ -42,6 +43,7 @@ import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AuditProcessorImplTest
 {
     private static UserAccount userAccount = new UserAccount();

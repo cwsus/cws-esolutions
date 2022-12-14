@@ -66,7 +66,7 @@ public class AuditDAOImpl implements IAuditDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if ((sqlConn == null) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain audit datasource connection");
             }

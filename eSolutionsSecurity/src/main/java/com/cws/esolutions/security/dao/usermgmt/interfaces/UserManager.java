@@ -144,6 +144,29 @@ public interface UserManager
     List<Object> getUserByEmailAddress(final String searchData) throws UserManagementException;
 
     /**
+     * Searches for user accounts given provided search data.
+     * The following <code>SearchRequestType</code>s are available:
+     * <code>USERNAME</code> - A basic username search. If a wildcard
+     * is utilized, all matching accounts are returned, otherwise one
+     * or zero accounts will be returned, depending on result.
+     * <code>EMAILADDR</code> - An email address search. Response follows
+     * that of <code>USERNAME</code> search.
+     * <code>GUID</code> - A UUID search. 1 or zero accounts should be
+     * returned with this type of search.
+     * <code>FIRSTNAME</code> - Search based on first name. Multiple accounts
+     * may be returned as a result of this search, with or without wildcarding.
+     * <code>LASTNAME</code> - Search based on last name. Multiple accounts
+     * may be returned as a result of this search, with or without wildcarding.
+     *
+     * @param searchData - The search string to utilize within the <code>Filter</code>
+     * that correlates to the provided <code>SearchRequestType</code>
+     * @return List - An <code>String</code> containing a string array of
+     * all possible responses
+     * @throws UserManagementException if an exception occurs during processing
+     */
+    String getUserByUsername(final String searchData) throws UserManagementException;
+
+    /**
      * Loads and returns data for a provided user account. Search is performed using the user's
      * GUID (Globally Unique IDentifier). If no user, or more than one user is returned for the
      * provided information, an <code>UserManagementException</code> is thrown and returned to

@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.CallableStatement;
-import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.core.dao.interfaces.IDatacenterDataDAO;
 /**
@@ -89,7 +88,6 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
                 DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
-            System.out.println("stmt in dao" + stmt);
             isComplete = (!(stmt.execute()));
 
             if (DEBUG)
@@ -147,7 +145,7 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -165,10 +163,10 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
                 DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
-            System.out.println(stmt);
-            int updateCount = stmt.executeUpdate();
-            System.out.println("updateCount: " + updateCount);
-            isComplete = (!(stmt.execute()));
+            if (stmt.executeUpdate() == 1)
+            {
+            	isComplete = true;
+            }
 
             if (DEBUG)
             {
@@ -221,7 +219,7 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -290,7 +288,7 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -392,39 +390,15 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
 
             sqlConn.setAutoCommit(true);
-            StringBuilder sBuilder = new StringBuilder();
-
-            if (StringUtils.split(attribute, " ").length >= 2)
-            {
-                for (String str : StringUtils.split(attribute, " "))
-                {
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Value: {}", str);
-                    }
-
-                    sBuilder.append("+" + str);
-                    sBuilder.append(" ");
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("StringBuilder: {}", sBuilder);
-                }
-            }
-            else
-            {
-                sBuilder.append("+" + attribute);
-            }
 
             stmt = sqlConn.prepareCall("{CALL getDatacenterByAttribute(?, ?)}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            stmt.setString(1, sBuilder.toString().trim());
+            stmt.setString(1, attribute);
             stmt.setInt(2, startRow);
 
             if (DEBUG)
@@ -521,7 +495,7 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }

@@ -346,4 +346,20 @@ public class AutoResponseUserManager implements UserManager
 
         return results;
 	}
+
+	@Override
+	public String getUserByUsername(String searchData) throws UserManagementException
+	{
+        final String methodName = AutoResponseUserManager.CNAME + "#getUserByUsername(final String searchData) throws UserManagementException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", searchData);
+        }
+
+        String results = null;
+
+        return results;
+	}
 }

@@ -106,8 +106,8 @@
         <div id="content">
             <h1><spring:message code="svc.mgmt.header" /></h1>
             <ul>
-                <li><a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters" title="<spring:message code='svc.mgmt.list.datacenters' />"><spring:message code="svc.mgmt.list.datacenters" /></a></li>
-                <li><a href="${pageContext.request.contextPath}/ui/service-management/add-datacenter" title="<spring:message code='svc.mgmt.add.datacenter' />"><spring:message code="svc.mgmt.add.datacenter" /></a></li>
+                <li><a href="${pageContext.request.contextPath}/ui/datacenter-management/list-datacenters" title="<spring:message code='datacenter.mgmt.list.datacenters' />"><spring:message code="svc.mgmt.list.datacenters" /></a></li>
+                <li><a href="${pageContext.request.contextPath}/ui/datacenter-management/add-datacenter" title="<spring:message code='datacenter.mgmt.add.datacenter' />"><spring:message code="svc.mgmt.add.datacenter" /></a></li>
             </ul>
         </div>
         <c:if test="${not empty searchResults}">
@@ -115,7 +115,7 @@
             <table id="searchResults">
                 <c:forEach var="result" items="${searchResults}">
                     <tr>
-                        <td><a href="${pageContext.request.contextPath}/ui/service-management/${searchType}/${result.path}" title="${result.title}">${result.title}</a></td>
+                        <td><a href="${pageContext.request.contextPath}/ui/datacenter-management/${searchType}/${result.path}" title="${result.title}">${result.title}</a></td>
                     </tr>
                 </c:forEach>
             </table>
@@ -133,7 +133,7 @@
                                 </c:when>
                                 <c:otherwise>
                                     <td>
-                                        <a href="${pageContext.request.contextPath}/service-management/search/terms/${searchTerms}/type/${searchType}page/${i}" title="{i}">${i}</a>
+                                        <a href="${pageContext.request.contextPath}/datacenter-management/search/terms/${searchTerms}/type/${searchType}page/${i}" title="{i}">${i}</a>
                                     </td>
                                 </c:otherwise>
                             </c:choose>

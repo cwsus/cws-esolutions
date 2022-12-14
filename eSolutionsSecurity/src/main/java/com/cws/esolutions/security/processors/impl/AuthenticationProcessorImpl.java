@@ -85,37 +85,30 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
         try
         {
-            List<String[]> userInfo = userManager.searchUsers(authUser.getUsername());
+        	String userInfo = userManager.getUserByUsername(authUser.getUsername());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("List<String[]>: {}", userInfo);
+                DEBUGGER.debug("String: {}", userInfo);
             }
 
-            if (userInfo.size() != 1)
+            if (StringUtils.isBlank(userInfo))
             {
+            	ERROR_RECORDER.error("No user account was located for the given information");
+
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
 
                 return response;
             }
 
-            if (DEBUG)
-            {
-            	for (int x = 0; x < userInfo.size(); x++)
-            	{
-            		DEBUGGER.debug("UserInfo: {}", (Object) userInfo.get(x));
-            	}
-            }
+            String userSalt = userSec.getUserSalt(userInfo, SaltType.LOGON.name()); // user salt as obtained from the database
 
-            String userSalt = userSec.getUserSalt(userInfo.get(0)[0], SaltType.LOGON.name()); // user salt as obtained from the database
-            String userGuid = userInfo.get(0)[0]; // this should be the guid
-
-            if ((StringUtils.isEmpty(userGuid)) || (StringUtils.isEmpty(userSalt)))
+            if ((StringUtils.isEmpty(userInfo)) || (StringUtils.isEmpty(userSalt)))
             {
                 throw new AuthenticationException("Unable to obtain configured user security information. Cannot continue");
             }
 
-            isValid = authenticator.performLogon(userGuid, authUser.getUsername(), authSec.getPassword()); // the password provided here is decrypted. it must be 
+            isValid = authenticator.performLogon(userInfo, authUser.getUsername(), authSec.getPassword()); // the password provided here is decrypted. it must be
 
             if (DEBUG)
             {
@@ -128,7 +121,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             }
 
             // load the user account here
-            List<Object> authObject = userManager.loadUserAccount(userGuid);
+            List<Object> authObject = userManager.loadUserAccount(userInfo);
 
             if (DEBUG)
             {

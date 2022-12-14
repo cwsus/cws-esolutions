@@ -332,36 +332,62 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                 return response;
             }
 
-            List<String> insertData = new ArrayList<String>(
-                    Arrays.asList(
-                    		dataCenter.getGuid(),
-                    		dataCenter.getName(),
-                    		dataCenter.getStatus().toString(),
-                    		dataCenter.getDescription()));
+            List<Object[]> validator = null;
+
+            try
+            {
+                validator = datacenterDao.getDatacentersByAttribute(dataCenter.getName(), 0);
+            }
+            catch (final SQLException sqx)
+            {
+                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+            }
 
             if (DEBUG)
             {
-                for (Object str : insertData)
-                {
-                    DEBUGGER.debug("Value: {}", str);
-                }
+                DEBUGGER.debug("Validator: {}", validator);
             }
 
-            boolean isComplete = datacenterDao.updateDatacenter(insertData);
-
-            if (DEBUG)
+            if ((Objects.isNull(validator)) || (validator.size() == 0))
             {
-                DEBUGGER.debug("isComplete: {}", isComplete);
-            }
-
-            if (isComplete)
-            {
-                response.setRequestStatus(CoreServicesStatus.SUCCESS);
+	            List<String> insertData = new ArrayList<String>(
+	                    Arrays.asList(
+	                    		dataCenter.getGuid(),
+	                    		dataCenter.getName(),
+	                    		dataCenter.getStatus().toString(),
+	                    		dataCenter.getDescription()));
+	
+	            if (DEBUG)
+	            {
+	                for (Object str : insertData)
+	                {
+	                    DEBUGGER.debug("Value: {}", str);
+	                }
+	            }
+	
+	            boolean isComplete = datacenterDao.updateDatacenter(insertData);
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("isComplete: {}", isComplete);
+	            }
+	
+	            if (isComplete)
+	            {
+	                response.setRequestStatus(CoreServicesStatus.SUCCESS);
+	            }
+	            else
+	            {
+	                response.setRequestStatus(CoreServicesStatus.FAILURE);
+	            }
             }
             else
             {
+            	ERROR_RECORDER.error("An entry already exists for the given information.");
+
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
+            
         }
         catch (final AccessControlServiceException acsx)
         {
@@ -657,8 +683,6 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                 	Datacenter dataCenter = new Datacenter();
                 	dataCenter.setGuid(data[0]);
                 	dataCenter.setName(data[1]);
-                	dataCenter.setStatus(ServiceStatus.valueOf(data[2]));
-                	dataCenter.setDescription(data[3]);
 
                     if (DEBUG)
                     {
@@ -746,13 +770,13 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
 
         DatacenterManagementResponse response = new DatacenterManagementResponse();
 
-        final Datacenter service = request.getDatacenter();
+        final Datacenter dataCenter = request.getDatacenter();
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("Service: {}", service);
+            DEBUGGER.debug("Datacenter: {}", dataCenter);
             DEBUGGER.debug("UserAccount: {}", userAccount);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
         }
@@ -814,7 +838,7 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                 return response;
             }
 
-            List<Object[]> datacenterData = datacenterDao.getDatacentersByAttribute(service.getName(), request.getStartPage());
+            List<Object[]> datacenterData = datacenterDao.getDatacentersByAttribute(dataCenter.getName(), request.getStartPage());
 
             if (DEBUG)
             {
@@ -827,16 +851,16 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
 
                 for (Object[] data : datacenterData)
                 {
-                	Datacenter dataCenter = new Datacenter();
-                	dataCenter.setGuid((String) data[0]);
-                	dataCenter.setName((String) data[1]);
+                	Datacenter dcResponse = new Datacenter();
+                	dcResponse.setGuid((String) data[0]);
+                	dcResponse.setName((String) data[1]);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("Datacenter: {}", dataCenter);
+                        DEBUGGER.debug("Datacenter: {}", dcResponse);
                     }
 
-                    datacenterList.add(dataCenter);
+                    datacenterList.add(dcResponse);
                 }
 
                 if (DEBUG)

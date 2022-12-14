@@ -30,14 +30,13 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.core.CoreServicesConstants;
-import com.cws.esolutions.core.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.dto.Server;
+import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.processors.dto.Service;
+import com.cws.esolutions.core.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.core.processors.enums.ServerStatus;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
@@ -51,14 +50,14 @@ import com.cws.esolutions.core.processors.dto.ServerManagementRequest;
 import com.cws.esolutions.core.processors.dto.ServerManagementResponse;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
+import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
+import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.exception.ServerManagementException;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
-import com.cws.esolutions.security.services.dto.AccessControlServiceRequest;
-import com.cws.esolutions.security.services.dto.AccessControlServiceResponse;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /**
  * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor
@@ -194,7 +193,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                             requestServer.getServerStatus().name(),
                             requestServer.getServerRegion().name(),
                             requestServer.getNetworkPartition().name(),
-                            requestServer.getService().getGuid(),
+                            UUID.randomUUID().toString(),
                             requestServer.getServerType().name(),
                             requestServer.getDomainName(),
                             requestServer.getCpuType(),

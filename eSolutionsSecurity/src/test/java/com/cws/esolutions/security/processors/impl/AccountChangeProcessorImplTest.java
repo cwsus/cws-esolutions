@@ -26,6 +26,7 @@ package com.cws.esolutions.security.processors.impl;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.assertj.core.api.Assertions;
@@ -42,6 +43,7 @@ import com.cws.esolutions.security.processors.dto.AccountChangeResponse;
 import com.cws.esolutions.security.processors.exception.AccountChangeException;
 import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public final class AccountChangeProcessorImplTest
 {
     private static UserAccount userAccount = new UserAccount();

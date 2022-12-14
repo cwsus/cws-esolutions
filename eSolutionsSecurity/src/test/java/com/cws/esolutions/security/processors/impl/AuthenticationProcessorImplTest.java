@@ -33,7 +33,6 @@ import org.junit.jupiter.api.TestInstance;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
-import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
@@ -69,15 +68,10 @@ public class AuthenticationProcessorImplTest
     @Test public void processAgentLogon()
     {
         UserAccount account = new UserAccount();
-        account.setUsername("junit-runner");
-        account.setDisplayName("JUnit Test Account");
-        account.setEmailAddr("webdev@caspersbox.com");
-        account.setGivenName("JUnit");
-        account.setSurname("JUnit");
-        account.setUserRole(SecurityUserRole.NONE);
+        account.setUsername("khuntly");
 
         AuthenticationData userSecurity = new AuthenticationData();
-        userSecurity.setPassword("naB8QUXNTWFA7MCpFYvT");
+        userSecurity.setPassword("U1Y5RkFIdzZ3VXZBdW9DRHlyM0syZz09OmUvR2szWDJvdHVoWmhqZTZPNU9MTVFWeXkrWUpETTRwOVA1WWplRnpaWU09");
 
         AuthenticationRequest request = new AuthenticationRequest();
         request.setApplicationName("esolutions");

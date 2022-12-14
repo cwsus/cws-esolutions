@@ -37,32 +37,23 @@
 <!--
     function validateForm(theForm)
     {
-        if (theForm.platformName.value == '')
+        if (theForm.name.value == '')
         {
             clearText(theForm);
 
-            document.getElementById('validationError').innerHTML = 'A platform name must be provided.';
-            document.getElementById('txtPlatformName').style.color = '#FF0000';
+            document.getElementById('validationError').innerHTML = 'A datacenter name must be provided.';
+            document.getElementById('txtDatacenterName').style.color = '#FF0000';
             document.getElementById('execute').disabled = false;
-            document.getElementById('platformName').focus();
+            document.getElementById('name').focus();
         }
         else if (theForm.status.value == '')
         {
             clearText(theForm);
 
-            document.getElementById('validationError').innerHTML = 'A platform status must be provided.';
-            document.getElementById('txtPlatformStatus').style.color = '#FF0000';
+            document.getElementById('validationError').innerHTML = 'A datacenter status must be provided.';
+            document.getElementById('txtDatacenterStatus').style.color = '#FF0000';
             document.getElementById('execute').disabled = false;
-            document.getElementById('platformName').focus();
-        }
-        else if (theForm.platformServers.value == '')
-        {
-            clearText(theForm);
-
-            document.getElementById('validationError').innerHTML = 'Target servers must be provided.';
-            document.getElementById('txtPlatformServers').style.color = '#FF0000';
-            document.getElementById('execute').disabled = false;
-            document.getElementById('platformServers').focus();
+            document.getElementById('status').focus();
         }
         else
         {
@@ -112,15 +103,16 @@
                             <form:input path="name" />
                             <form:errors path="name" cssClass="error" />
 
-                            <label id="txtDatacenterStatus"><spring:message code="datacenter.mgmt.service.status" /></label>
+                            <label id="txtDatacenterStatus"><spring:message code="datacenter.mgmt.datacenter.status" /></label>
                             <form:select path="status" multiple="false">
                                 <option><spring:message code="theme.option.select" /></option>
                                 <option><spring:message code="theme.option.spacer" /></option>
                                 <form:options items="${statusList}" />
                             </form:select>
                             <form:errors path="status" cssClass="error" />
+                            <br /><br />
 
-                            <label id="txtDescription"><spring:message code="datacenter.mgmt.service.description" /></label>
+                            <label id="txtDescription"><spring:message code="datacenter.mgmt.datacenter.description" /></label>
                             <form:textarea path="description" />
                             <form:errors path="description" cssClass="error" />
 

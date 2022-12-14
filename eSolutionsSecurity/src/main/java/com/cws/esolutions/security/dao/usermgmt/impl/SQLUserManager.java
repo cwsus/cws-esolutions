@@ -695,6 +695,124 @@ public class SQLUserManager implements UserManager
     }
 
     /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#getUserByEmailAddress(java.lang.String)
+     */
+    public synchronized String getUserByUsername(final String searchData) throws UserManagementException
+    {
+        final String methodName = SQLUserManager.CNAME + "#getUserByUsername(final String searchData) throws UserManagementException";
+        
+        if(DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", searchData);
+        }
+
+        Connection sqlConn = null;
+        String userAccount = null;
+        ResultSet resultSet = null;
+        CallableStatement stmt = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new UserManagementException("A datasource connection could not be obtained.");
+        }
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{ CALL getUserByUsername(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt.setString(1, searchData); // common name
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("CallableStatement: {}", stmt);
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ResultSet: {}", resultSet);
+                }
+
+                if (resultSet.next())
+                {
+                    resultSet.last();
+                    int x = resultSet.getRow();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("x: {}", x);
+                    }
+
+                    if ((x == 0) || (x > 1))
+                    {
+                        throw new UserManagementException("No user account was located for the provided data.");
+                    }
+
+                    resultSet.first();
+
+                    userAccount = resultSet.getString(1);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("userAccount: {}", userAccount);
+                    }
+                }
+            }
+            else
+            {
+                throw new UserManagementException("No users were located with the provided information");
+            }
+        }
+        catch (final SQLException sqx)
+        {
+            throw new UserManagementException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            try
+            {
+                if (resultSet != null)
+                {
+                    resultSet.close();
+                }
+            
+                if (stmt != null)
+                {
+                    stmt.close();
+                }
+
+                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                {
+                    sqlConn.close();
+                }
+            }
+            catch (final SQLException sqx)
+            {
+                throw new UserManagementException(sqx.getMessage(), sqx);
+            }
+        }
+
+        return userAccount;
+    }
+
+    /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#listUserAccounts()
      */
     public synchronized List<String[]> listUserAccounts() throws UserManagementException

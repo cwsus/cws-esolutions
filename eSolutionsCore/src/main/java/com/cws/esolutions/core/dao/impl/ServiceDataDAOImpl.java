@@ -71,7 +71,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -150,7 +150,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -225,7 +225,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -294,7 +294,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -396,7 +396,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -526,7 +526,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }

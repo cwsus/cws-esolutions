@@ -13,28 +13,44 @@
         </Console>
 
         <!-- SecurityService appenders -->
-        <RollingFile name="sec-audit-logger" fileName="${APP_LOG_ROOT}/SecurityService-audit.log" filePattern="${APP_LOG_ROOT}/SecurityService-audit-%d{yyyy-MM-dd}-%i.log">
+        <RollingFile name="sec-audit-logger" fileName="${APP_LOG_ROOT}/SecurityService-audit.log" filePattern="${APP_LOG_ROOT}/SecurityService-audit-%d{yyyy-MM-dd}-%i.log.gz" ignoreExceptions="false">
             <PatternLayout pattern="${LOG_PATTERN}"/>
+            <LevelRangeFilter minLevel="INFO" maxLevel="INFO" onMatch="ACCEPT" onMismatch="DENY" />
             <Policies>
-                <SizeBasedTriggeringPolicy size="50MB" />
+                <SizeBasedTriggeringPolicy size="10MB" />
             </Policies>
-            <DefaultRolloverStrategy max="10"/>
+            <DefaultRolloverStrategy max="10">
+            	<Delete basePath="${APP_LOG_ROOT}" maxdepth="10">
+            		<IfFilename glob="*/SecurityService-audit*.log.gz" />
+            		<IfLastModified age="P30D" />
+            	</Delete>
+            </DefaultRolloverStrategy>
         </RollingFile>
-        <RollingFile name="sec-error-logger" fileName="${APP_LOG_ROOT}/SecurityService-error.log" filePattern="${APP_LOG_ROOT}/SecurityService-error-%d{yyyy-MM-dd}-%i.log">
+        <RollingFile name="sec-error-logger" fileName="${APP_LOG_ROOT}/SecurityService-error.log" filePattern="${APP_LOG_ROOT}/SecurityService-error-%d{yyyy-MM-dd}-%i.log.gz" ignoreExceptions="false">
             <LevelRangeFilter minLevel="ERROR" maxLevel="ERROR" onMatch="ACCEPT" onMismatch="DENY" />
             <PatternLayout pattern="${LOG_PATTERN}"/>
             <Policies>
-                <SizeBasedTriggeringPolicy size="50MB" />
+                <SizeBasedTriggeringPolicy size="10MB" />
             </Policies>
-            <DefaultRolloverStrategy max="10"/>
+            <DefaultRolloverStrategy max="10">
+            	<Delete basePath="${APP_LOG_ROOT}" maxdepth="10">
+            		<IfFilename glob="*/SecurityService-error*.log.gz" />
+            		<IfLastModified age="P30D" />
+            	</Delete>
+            </DefaultRolloverStrategy>
         </RollingFile>
-        <RollingFile name="sec-debug-logger" fileName="${APP_LOG_ROOT}/SecurityService-debug.log" filePattern="${APP_LOG_ROOT}/SecurityService-debug-%d{yyyy-MM-dd}-%i.log">
+        <RollingFile name="sec-debug-logger" fileName="${APP_LOG_ROOT}/SecurityService-debug.log" filePattern="${APP_LOG_ROOT}/SecurityService-debug-%d{yyyy-MM-dd}-%i.log.gz" ignoreExceptions="false">
             <LevelRangeFilter minLevel="DEBUG" maxLevel="DEBUG" onMatch="ACCEPT" onMismatch="DENY" />
             <PatternLayout pattern="${LOG_PATTERN}"/>
             <Policies>
-                <SizeBasedTriggeringPolicy size="50MB" />
+                <SizeBasedTriggeringPolicy size="10MB" />
             </Policies>
-            <DefaultRolloverStrategy max="10"/>
+            <DefaultRolloverStrategy max="10">
+            	<Delete basePath="${APP_LOG_ROOT}" maxdepth="10">
+            		<IfFilename glob="*/SecurityService-debug*.log.gz" />
+            		<IfLastModified age="P30D" />
+            	</Delete>
+            </DefaultRolloverStrategy>
         </RollingFile>
 
         <!-- eSolutionsCore appenders -->
@@ -44,7 +60,12 @@
             <Policies>
                 <SizeBasedTriggeringPolicy size="50MB" />
             </Policies>
-            <DefaultRolloverStrategy max="10"/>
+            <DefaultRolloverStrategy max="10">
+            	<Delete basePath="${APP_LOG_ROOT}" maxdepth="10">
+            		<IfFilename glob="*/eSolutionsCore-error*.log.gz" />
+            		<IfLastModified age="P30D" />
+            	</Delete>
+            </DefaultRolloverStrategy>
         </RollingFile>
         <RollingFile name="core-debug-logger" fileName="${APP_LOG_ROOT}/eSolutionsCore-debug.log" filePattern="${APP_LOG_ROOT}/eSolutionsCore-debug-%d{yyyy-MM-dd}-%i.log">
             <LevelRangeFilter minLevel="DEBUG" maxLevel="DEBUG" onMatch="ACCEPT" onMismatch="DENY" />
@@ -52,7 +73,12 @@
             <Policies>
                 <SizeBasedTriggeringPolicy size="50MB" />
             </Policies>
-            <DefaultRolloverStrategy max="10"/>
+            <DefaultRolloverStrategy max="10">
+            	<Delete basePath="${APP_LOG_ROOT}" maxdepth="10">
+            		<IfFilename glob="*/eSolutionsCore-debug*.log.gz" />
+            		<IfLastModified age="P30D" />
+            	</Delete>
+            </DefaultRolloverStrategy>
         </RollingFile>
 
         <!-- eSolutions appenders -->
@@ -62,7 +88,12 @@
             <Policies>
                 <SizeBasedTriggeringPolicy size="50MB" />
             </Policies>
-            <DefaultRolloverStrategy max="10"/>
+            <DefaultRolloverStrategy max="10">
+            	<Delete basePath="${APP_LOG_ROOT}" maxdepth="10">
+            		<IfFilename glob="*/esolutions-error*.log.gz" />
+            		<IfLastModified age="P30D" />
+            	</Delete>
+            </DefaultRolloverStrategy>
         </RollingFile>
         <RollingFile name="web-debug-logger" fileName="${APP_LOG_ROOT}/esolutions-debug.log" filePattern="${APP_LOG_ROOT}/esolutions-debug-%d{yyyy-MM-dd}-%i.log">
             <LevelRangeFilter minLevel="DEBUG" maxLevel="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
@@ -70,20 +101,30 @@
             <Policies>
                 <SizeBasedTriggeringPolicy size="50MB" />
             </Policies>
-            <DefaultRolloverStrategy max="10"/>
+            <DefaultRolloverStrategy max="10">
+            	<Delete basePath="${APP_LOG_ROOT}" maxdepth="10">
+            		<IfFilename glob="*/esolutions-debug*.log.gz" />
+            		<IfLastModified age="P30D" />
+            	</Delete>
+            </DefaultRolloverStrategy>
         </RollingFile>
         <RollingFile name="responsetime-log" fileName="${APP_LOG_ROOT}/responsetime.log" filePattern="${APP_LOG_ROOT}/responsetime-%d{yyyy-MM-dd}-%i.log">
             <PatternLayout pattern="${LOG_PATTERN}"/>
             <Policies>
                 <SizeBasedTriggeringPolicy size="50MB" />
             </Policies>
-            <DefaultRolloverStrategy max="10"/>
+            <DefaultRolloverStrategy max="10">
+            	<Delete basePath="${APP_LOG_ROOT}" maxdepth="10">
+            		<IfFilename glob="*/responsetime*.log.gz" />
+            		<IfLastModified age="P30D" />
+            	</Delete>
+            </DefaultRolloverStrategy>
         </RollingFile>
     </Appenders>
 
     <Loggers>
         <!-- SecurityService loggers -->
-        <Logger name="AUDIT_RECORDER.com.cws.esolutions.security" additivity="false" level="info">
+        <Logger name="AUDIT_RECORDER" additivity="false" level="info">
             <AppenderRef ref="sec-audit-logger" />
         </Logger>
         <Logger name="ERROR_RECORDER.com.cws.esolutions.security" additivity="false" level="error">

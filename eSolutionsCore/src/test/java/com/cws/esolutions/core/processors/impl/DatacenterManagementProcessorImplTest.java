@@ -51,8 +51,6 @@ public class DatacenterManagementProcessorImplTest
     private static UserAccount userAccount = new UserAccount();
     private static RequestHostInfo hostInfo = new RequestHostInfo();
 
-    private static final String UUID = "b3d7b12e-410a-4d59-95cb-91e77bd9cd82";
-
     private static final IDatacenterManagementProcessor processor = (IDatacenterManagementProcessor) new DatacenterManagementProcessorImpl();
 
     @BeforeAll public void setUp()
@@ -72,7 +70,6 @@ public class DatacenterManagementProcessorImplTest
         }
         catch (final Exception ex)
         {
-            ex.printStackTrace();
             Assertions.fail(ex.getMessage());
 
             System.exit(-1);
@@ -82,8 +79,7 @@ public class DatacenterManagementProcessorImplTest
     @Test public void addNewDatacenter()
     {
     	Datacenter datacenter = new Datacenter();
-    	datacenter.setGuid(DatacenterManagementProcessorImplTest.UUID);
-    	datacenter.setName("ANEWDC");
+    	datacenter.setName("VH1");
     	datacenter.setStatus(ServiceStatus.ACTIVE);
     	datacenter.setDescription("Test Datacenter");
 
@@ -111,8 +107,8 @@ public class DatacenterManagementProcessorImplTest
     @Test public void updateDatacenter()
     {
     	Datacenter datacenter = new Datacenter();
-    	datacenter.setGuid(DatacenterManagementProcessorImplTest.UUID);
-    	datacenter.setName("CH");
+    	datacenter.setGuid("ada799db-624b-4204-be9b-dba45005736a"); // get a value out of the db to use
+    	datacenter.setName("CH4");
     	datacenter.setStatus(ServiceStatus.ACTIVE);
     	datacenter.setDescription("Test Datacenter");
 
@@ -128,7 +124,102 @@ public class DatacenterManagementProcessorImplTest
     	{
     		DatacenterManagementResponse response = processor.updateDatacenter(request);
 
-    		System.out.println(response);
+    		Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
+    	}
+    	catch (final DatacenterManagementException dmx)
+        {
+    		Assertions.fail(dmx.getMessage());
+        }
+    }
+
+    @Test public void removeDatacenter()
+    {
+    	Datacenter datacenter = new Datacenter();
+    	datacenter.setGuid("ada799db-624b-4204-be9b-dba45005736a");
+
+    	DatacenterManagementRequest request = new DatacenterManagementRequest();
+    	request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+    	request.setApplicationName("eSolutions");
+    	request.setDatacenter(datacenter);
+    	request.setRequestInfo(hostInfo);
+    	request.setServiceId("D1B5D088-32B3-4AA1-9FCF-822CB476B649");
+    	request.setUserAccount(userAccount);
+
+    	try
+    	{
+    		DatacenterManagementResponse response = processor.removeDatacenter(request);
+
+    		Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
+    	}
+    	catch (final DatacenterManagementException dmx)
+        {
+    		Assertions.fail(dmx.getMessage());
+        }
+    }
+
+    @Test public void listDatacenters()
+    {
+    	DatacenterManagementRequest request = new DatacenterManagementRequest();
+    	request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+    	request.setApplicationName("eSolutions");
+    	request.setRequestInfo(hostInfo);
+    	request.setServiceId("D1B5D088-32B3-4AA1-9FCF-822CB476B649");
+    	request.setUserAccount(userAccount);
+
+    	try
+    	{
+    		DatacenterManagementResponse response = processor.listDatacenters(request);
+
+    		Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
+    	}
+    	catch (final DatacenterManagementException dmx)
+        {
+    		Assertions.fail(dmx.getMessage());
+        }
+    }
+
+    @Test public void getDatacenterByAttribute()
+    {
+    	Datacenter dataCenter = new Datacenter();
+    	dataCenter.setName("CH2");
+
+    	DatacenterManagementRequest request = new DatacenterManagementRequest();
+    	request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+    	request.setApplicationName("eSolutions");
+    	request.setRequestInfo(hostInfo);
+    	request.setServiceId("D1B5D088-32B3-4AA1-9FCF-822CB476B649");
+    	request.setUserAccount(userAccount);
+    	request.setDatacenter(dataCenter);
+
+    	try
+    	{
+    		DatacenterManagementResponse response = processor.getDatacenterByAttribute(request);
+
+    		Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
+    	}
+    	catch (final DatacenterManagementException dmx)
+        {
+    		Assertions.fail(dmx.getMessage());
+        }
+    }
+
+    @Test public void getDatacenterData()
+    {
+    	Datacenter dataCenter = new Datacenter();
+    	dataCenter.setGuid("484d1923-a384-4e9e-8386-c9b07de60776");
+
+    	DatacenterManagementRequest request = new DatacenterManagementRequest();
+    	request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+    	request.setApplicationName("eSolutions");
+    	request.setRequestInfo(hostInfo);
+    	request.setServiceId("D1B5D088-32B3-4AA1-9FCF-822CB476B649");
+    	request.setUserAccount(userAccount);
+    	request.setDatacenter(dataCenter);
+
+    	try
+    	{
+    		DatacenterManagementResponse response = processor.getDatacenterData(request);
+
     		Assertions.assertThat(response.getRequestStatus()).isEqualTo(CoreServicesStatus.SUCCESS);
     	}
     	catch (final DatacenterManagementException dmx)
