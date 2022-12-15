@@ -332,7 +332,7 @@ public class AutoResponseUserManager implements UserManager
     }
 
 	@Override
-	public List<Object> getUserByEmailAddress(final String searchData) throws UserManagementException
+	public List<String[]> getUserByEmailAddress(final String searchData) throws UserManagementException
 	{
         final String methodName = AutoResponseUserManager.CNAME + "#getUserByEmailAddress(final String searchData) throws UserManagementException";
 
@@ -342,7 +342,7 @@ public class AutoResponseUserManager implements UserManager
             DEBUGGER.debug("Value: {}", searchData);
         }
 
-        List<Object> results = null;
+        List<String[]> results = null;
 
         return results;
 	}

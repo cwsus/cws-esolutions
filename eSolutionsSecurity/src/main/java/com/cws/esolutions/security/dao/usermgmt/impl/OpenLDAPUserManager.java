@@ -68,8 +68,8 @@ public class OpenLDAPUserManager implements UserManager
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("userId: {}", userId);
-            DEBUGGER.debug("userGuid: {}", userGuid);
+            DEBUGGER.debug("Value: {}", userId);
+            DEBUGGER.debug("Value: {}", userGuid);
         }
 
         boolean isValid = false;
@@ -686,7 +686,7 @@ public class OpenLDAPUserManager implements UserManager
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#getUserByEmailAddress(java.lang.String)
      */
-    public synchronized List<Object> getUserByEmailAddress(final String value) throws UserManagementException
+    public synchronized List<String[]> getUserByEmailAddress(final String value) throws UserManagementException
     {
         final String methodName = OpenLDAPUserManager.CNAME + "#getUserByEmailAddress(final String value) throws UserManagementException";
 
@@ -697,7 +697,7 @@ public class OpenLDAPUserManager implements UserManager
         }
 
         LDAPConnection ldapConn = null;
-        List<Object> userAccount = null;
+        List<String[]> userAccount = null;
         LDAPConnectionPool ldapPool = null;
 
         try
@@ -762,71 +762,21 @@ public class OpenLDAPUserManager implements UserManager
                         DEBUGGER.debug("SearchResultEntry: {}", entry);
                     }
 
-                    userAccount = new ArrayList<Object>();
-
-                    for (String returningAttribute : userAttributes.getReturningAttributes())
-                    {
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("returningAttribute: {}", returningAttribute);
-                        }
-
-                        if (entry.hasAttribute(returningAttribute))
-                        {
-                            userAccount.add(entry.getAttributeValue(returningAttribute));
-                        }
-                    }
+                    String[] returnedData = new String[] { entry.getAttribute(userAttributes.getCommonName()).toString(),
+                    		entry.getAttribute(userAttributes.getUserId()).toString(), entry.getAttribute(userAttributes.getEmailAddr()).toString() };
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("userAccount: {}", userAccount);
+                    	DEBUGGER.debug("returnedData {}", (Object[]) returnedData);
+
+                    	for (String val : returnedData)
+                    	{
+                    		DEBUGGER.debug("Entry: {}", val);
+                    	}
                     }
 
-                    if (StringUtils.isNotBlank(userAttributes.getMemberOf()))
-                    {
-                        Filter roleFilter = Filter.create("(&(objectClass=groupOfUniqueNames)" +
-                                "(&(uniqueMember=" + entry.getDN() + ")))");
-    
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("SearchFilter: {}", roleFilter);
-                        }
-    
-                        SearchRequest roleSearch = new SearchRequest(
-                                repoConfig.getRepositoryRoleBase(),
-                            SearchScope.SUB,
-                            roleFilter,
-                            userAttributes.getCommonName());
-    
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("SearchRequest: {}", roleSearch);
-                        }
-    
-                        SearchResult roleResult = ldapConn.search(roleSearch);
-    
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("searchResult: {}", roleResult);
-                        }
-    
-                        if ((roleResult.getResultCode() == ResultCode.SUCCESS) && (roleResult.getEntryCount() != 0))
-                        {
-                            List<String> roles = new ArrayList<String>();
-    
-                            for (SearchResultEntry role : roleResult.getSearchEntries())
-                            {
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("SearchResultEntry: {}", role);
-                                }
-    
-                                roles.add(role.getAttributeValue(userAttributes.getCommonName()));
-                            }
-    
-                            userAccount.add(roles);
-                        }
-                    }
+                    userAccount = new ArrayList<String[]>();
+                    userAccount.add(returnedData);
 
                     if (DEBUG)
                     {

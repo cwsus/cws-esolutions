@@ -139,6 +139,8 @@
 <div id="container">
     <div class="wrapper">
         <div id="holder">
+            <div id="validationError" style="color: #FF0000"></div>
+
             <h2><spring:message code="app.mgmt.search.applications" /></h2>
             <ul id="latestnews">
                 <li>

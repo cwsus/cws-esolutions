@@ -370,13 +370,8 @@ public class ServerDataDAOImpl implements IServerDataDAO
                     {
                         String[] serverData = new String[]
                         {
-                                resultSet.getString(1), // T1.SYSTEM_GUID
-                                resultSet.getString(2), // T1.SYSTEM_REGION
-                                resultSet.getString(3), // T1.NETWORK_PARTITION
-                                resultSet.getString(4), // T1.OPER_HOSTNAME
-                                resultSet.getString(5), // T1.OWNING_DMGR
-                                resultSet.getString(6), // T2.GUID
-                                resultSet.getString(7) // T2.NAME
+                                resultSet.getString(1), // SYSTEM_GUID
+                                resultSet.getString(2) // NAME
                         };
 
                         if (DEBUG)

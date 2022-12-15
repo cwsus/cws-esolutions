@@ -33,7 +33,7 @@
  */
 --%>
 
-<script>
+<script type="text/javascript">
 <!--
     function validateForm(theForm)
     {
@@ -85,6 +85,8 @@
 <div id="container">
     <div class="wrapper">
         <div id="holder">
+            <div id="validationError" style="color: #FF0000"></div>
+
             <h1><spring:message code="olr.user.provide.username" /></h1>
             <ul id="latestnews">
                 <li>
@@ -97,7 +99,7 @@
                         <br /><br />
                         <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
                         <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-                        <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+                        <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="redirectOnCancel('${pageContext.request.contextPath}/ui/auth/default');" />
                     </form:form>
                 </li>
             </ul>

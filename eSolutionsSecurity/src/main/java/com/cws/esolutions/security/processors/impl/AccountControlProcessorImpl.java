@@ -1333,7 +1333,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if (request.isResetRequest())
             {
-            	List<Object> resetList = userManager.getUserByEmailAddress(userAccount.getEmailAddr());
+            	List<String[]> resetList = userManager.getUserByEmailAddress(userAccount.getEmailAddr());
 
 	            if (DEBUG)
 	            {
@@ -1342,17 +1342,17 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
 	            if ((resetList != null) && (resetList.size() == 1))
 	            {
-	                for (Object userData : resetList)
+	                for (String[] userData : resetList)
 	                {
 	                	if (DEBUG)
 	                	{
-	                		DEBUGGER.debug("userData: {}", userData);
+	                		DEBUGGER.debug("userData: {}", (Object[]) userData);
 	                	}
 
 	                	UserAccount userInfo = new UserAccount();
-	                	userInfo.setGuid((String) resetList.get(0));
-	                	userInfo.setUsername((String) resetList.get(1));
-	                	userInfo.setEmailAddr((String) resetList.get(2));
+	                	userInfo.setGuid(userData[0]);
+	                	userInfo.setUsername(userData[1]);
+	                	userInfo.setEmailAddr(userData[2]);
 
 		                if (DEBUG)
 		                {

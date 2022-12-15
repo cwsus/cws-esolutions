@@ -95,6 +95,8 @@
     <div class="wrapper">
         <div id="holder">
             <h1><spring:message code="olr.forgotpwd.message" /></h1>
+            <div id="validationError" style="color: #FF0000"></div>
+
             <ul id="latestnews">
                 <li>
                     <form:form id="submitSecurityQuestion" name="submitSecurityQuestion" action="${pageContext.request.contextPath}/ui/online-reset/submit" method="post" autocomplete="off">

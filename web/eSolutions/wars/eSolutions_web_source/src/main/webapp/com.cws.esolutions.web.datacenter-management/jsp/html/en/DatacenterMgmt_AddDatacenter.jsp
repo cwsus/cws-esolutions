@@ -65,6 +65,8 @@
 
 <div id="homecontent">
     <div class="wrapper">
+        <div id="validationError" style="color: #FF0000"></div>
+
         <c:if test="${not empty fn:trim(messageResponse)}">
             <p id="info">${messageResponse}</p>
         </c:if>
@@ -94,6 +96,8 @@
 <div id="container">
     <div class="wrapper">
         <div id="holder">
+            <div id="validationError" style="color: #FF0000"></div>
+
             <h2><spring:message code="datacenter.mgmt.add.datacenter" /></h2>
             <ul id="latestnews">
                 <li>

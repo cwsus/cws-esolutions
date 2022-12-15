@@ -571,7 +571,7 @@ public class SQLUserManager implements UserManager
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#getUserByEmailAddress(java.lang.String)
      */
-    public synchronized List<Object> getUserByEmailAddress(final String emailAddress) throws UserManagementException
+    public synchronized List<String[]> getUserByEmailAddress(final String emailAddress) throws UserManagementException
     {
         final String methodName = SQLUserManager.CNAME + "#getUserByEmailAddress(final String emailAddress) throws UserManagementException";
         
@@ -584,7 +584,7 @@ public class SQLUserManager implements UserManager
         Connection sqlConn = null;
         ResultSet resultSet = null;
         CallableStatement stmt = null;
-        List<Object> userAccount = null;
+        List<String[]> userAccount = null;
 
         if (Objects.isNull(dataSource))
         {
@@ -640,11 +640,21 @@ public class SQLUserManager implements UserManager
                     }
 
                     resultSet.first();
-                    userAccount = new ArrayList<Object>(
-                    		Arrays.asList(
-                    				resultSet.getString(1),
-                    				resultSet.getString(2),
-                    				resultSet.getString(3)));
+
+                    String[] returnedData = new String[] { resultSet.getString(1), resultSet.getString(2), resultSet.getString(3) };
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("returnedData {}", (Object[]) returnedData);
+
+                    	for (String value : returnedData)
+                    	{
+                    		DEBUGGER.debug("Entry: {}", value);
+                    	}
+                    }
+
+                    userAccount = new ArrayList<String[]>();
+                    userAccount.add(returnedData);
 
                     if (DEBUG)
                     {

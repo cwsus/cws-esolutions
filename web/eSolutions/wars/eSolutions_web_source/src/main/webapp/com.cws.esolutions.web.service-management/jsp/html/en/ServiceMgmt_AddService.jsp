@@ -37,7 +37,7 @@
 <!--
     function validateForm(theForm)
     {
-        if (theForm.platformName.value == '')
+        if (theForm.name.value == '')
         {
             clearText(theForm);
 
@@ -46,7 +46,7 @@
             document.getElementById('execute').disabled = false;
             document.getElementById('platformName').focus();
         }
-        else if (theForm.status.value == '')
+        else if ((theForm.status.value == '') || (theForm.status.value = '------'))
         {
             clearText(theForm);
 
@@ -55,7 +55,7 @@
             document.getElementById('execute').disabled = false;
             document.getElementById('platformName').focus();
         }
-        else if (theForm.platformServers.value == '')
+        else if (theForm.servers.value == '')
         {
             clearText(theForm);
 
@@ -84,7 +84,7 @@
 <div id="main">
     <h1><spring:message code="svc.mgmt.add.platform" /></h1>
 
-    <div id="error"></div>
+    <div id="validationError"></div>
 
     <c:if test="${not empty fn:trim(messageResponse)}">
         <p id="info">${messageResponse}</p>

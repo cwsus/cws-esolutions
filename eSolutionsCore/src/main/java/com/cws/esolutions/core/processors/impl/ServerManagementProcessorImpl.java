@@ -733,9 +733,8 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 {
                     Server server = new Server();
                     server.setServerGuid(data[0]); // SYSTEM_GUID
-                    server.setServerRegion(ServiceRegion.valueOf(data[1])); // SYSTEM_REGION
-                    server.setNetworkPartition(NetworkPartition.valueOf(data[2])); // NETWORK_PARTITION
-                    server.setOperHostName(data[3]); // OPER_HOSTNAME
+                    server.setOperHostName(data[1]); // OPER_HOSTNAME
+                    
 
                     if (DEBUG)
                     {

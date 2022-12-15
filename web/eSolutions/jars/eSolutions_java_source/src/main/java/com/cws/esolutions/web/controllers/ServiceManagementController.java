@@ -46,6 +46,8 @@ import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.web.model.SearchRequest;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
+import com.cws.esolutions.core.processors.dto.ServerManagementRequest;
+import com.cws.esolutions.core.processors.dto.ServerManagementResponse;
 import com.cws.esolutions.core.processors.dto.Service;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
 import com.cws.esolutions.web.validators.ServiceValidator;
@@ -53,8 +55,11 @@ import com.cws.esolutions.core.processors.enums.ServiceType;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.ServiceManagementRequest;
 import com.cws.esolutions.core.processors.dto.ServiceManagementResponse;
+import com.cws.esolutions.core.processors.impl.ServerManagementProcessorImpl;
 import com.cws.esolutions.core.processors.impl.ServiceManagementProcessorImpl;
+import com.cws.esolutions.core.processors.exception.ServerManagementException;
 import com.cws.esolutions.core.processors.exception.ServiceManagementException;
+import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
 import com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor;
 /**
  * @author cws-khuntly
@@ -882,6 +887,7 @@ public class ServiceManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IServerManagementProcessor processor = (IServerManagementProcessor) new ServerManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -928,6 +934,66 @@ public class ServiceManagementController
         if (!(this.appConfig.getServices().get(this.serviceName)))
         {
             return this.appConfig.getUnavailablePage();
+        }
+
+        // TODO: build in getting the list of servers here
+        try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            }
+        	
+        	ServerManagementRequest request = new ServerManagementRequest();
+        	request.setApplicationId(this.appConfig.getApplicationId());
+        	request.setApplicationName(this.appConfig.getApplicationName());
+        	request.setRequestInfo(reqInfo);
+        	request.setUserAccount(userAccount);
+        	request.setStartPage(0);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ServerManagementRequest: {}", request);
+            }
+
+        	ServerManagementResponse response = processor.listServers(request);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ServerManagementResponse: {}", response);
+            }
+
+            switch (response.getRequestStatus())
+            {
+				case EXCEPTION:
+					ERROR_RECORDER.error("An error occurred while obtaining the list of installed servers. Please try again later.");
+
+					model.addAttribute(Constants.ERROR_MESSAGE, "theme.system.service.failure");
+
+					break;
+				case FAILURE:
+					ERROR_RECORDER.error("A system failure occurred while obtaining the list of installed servers. Please try again later.");
+
+					model.addAttribute(Constants.ERROR_MESSAGE, "theme.system.service.failure");
+
+					break;
+				case SUCCESS:
+					model.addAttribute("serverList", response.getServerList());
+
+					break;
+				case UNAUTHORIZED:
+					return this.appConfig.getUnauthorizedPage();
+            }
+        }
+        catch (ServerManagementException smx)
+        {
+        	ERROR_RECORDER.error(smx.getMessage(), smx);
+
+        	return this.appConfig.getErrorResponsePage();
         }
 
         model.addAttribute(Constants.COMMAND, new Service());

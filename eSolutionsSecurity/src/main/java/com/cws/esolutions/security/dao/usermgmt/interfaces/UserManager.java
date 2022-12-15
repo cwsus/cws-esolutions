@@ -141,7 +141,7 @@ public interface UserManager
      * all possible responses
      * @throws UserManagementException if an exception occurs during processing
      */
-    List<Object> getUserByEmailAddress(final String searchData) throws UserManagementException;
+    List<String[]> getUserByEmailAddress(final String searchData) throws UserManagementException;
 
     /**
      * Searches for user accounts given provided search data.

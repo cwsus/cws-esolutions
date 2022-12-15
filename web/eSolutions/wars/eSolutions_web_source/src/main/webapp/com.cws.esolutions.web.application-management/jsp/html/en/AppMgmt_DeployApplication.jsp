@@ -83,7 +83,7 @@
 <div id="main">
     <h1><spring:message code="app.mgmt.deploy.application" /></h1>
 
-    <div id="error"></div>
+    <div id="validationError" style="color: #FF0000"></div>
 
     <c:if test="${not empty fn:trim(messageResponse)}">
         <p id="info">${messageResponse}</p>

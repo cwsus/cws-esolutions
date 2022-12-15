@@ -67,7 +67,7 @@
 	<div class="wrapper">
 	    <h1><spring:message code="theme.messaging.send.email.message" /></h1>
 
-	    <div id="error"></div>
+	    <div id="validationError" style="color: #FF0000"></div>
 
 	    <c:if test="${not empty fn:trim(messageResponse)}">
 	        <p id="info">${messageResponse}</p>
@@ -88,28 +88,24 @@
 	        <p id="error"><spring:message code="${param.errorMessage}" /></p>
 	    </c:if>
 
-	    <p>
-	        <form:form id="submitContactForm" name="submitContactForm" action="${pageContext.request.contextPath}/ui/common/contact" method="post">
-	            <form:hidden path="messageTo" value="${serviceEmail}" />
+        <form:form id="submitContactForm" name="submitContactForm" action="${pageContext.request.contextPath}/ui/common/contact" method="post">
+	       <form:hidden path="messageTo" value="${serviceEmail}" />
 	
-	            <p>
-	                <label id="txtMessageSubject"><spring:message code="theme.add.contact.request.subject" /></label>
-	                <form:input path="messageSubject" />
-	                <form:errors path="messageSubject" cssClass="error" />
-	                <br /><br />
-	                <label id="txtRequestorEmail"><spring:message code="theme.add.contact.source.email" /></label>
-	                <form:input path="emailAddr" />
-	                <form:errors path="emailAddr" cssClass="error" />
-	                <br /><br />
-	                <label id="txtMessageBody"><spring:message code="theme.add.contact.request.body" /></label>
-	                <form:textarea path="messageBody" />
-	                <form:errors path="messageBody" cssClass="error" />
-	                <br /><br />
-	                <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-	                <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-	            </p>
-	        </form:form>
-	    </p>
+	       <label id="txtMessageSubject"><spring:message code="theme.add.contact.request.subject" /></label>
+	       <form:input path="messageSubject" />
+	       <form:errors path="messageSubject" cssClass="error" />
+	       <br /><br />
+	       <label id="txtRequestorEmail"><spring:message code="theme.add.contact.source.email" /></label>
+	       <form:input path="emailAddr" />
+	       <form:errors path="emailAddr" cssClass="error" />
+	       <br /><br />
+	       <label id="txtMessageBody"><spring:message code="theme.add.contact.request.body" /></label>
+	       <form:textarea path="messageBody" />
+	       <form:errors path="messageBody" cssClass="error" />
+	       <br /><br />
+	       <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	       <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+	    </form:form>
   		<br class="clear" />
 	</div>
 </div>
