@@ -571,14 +571,14 @@ public class SQLUserManager implements UserManager
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#getUserByEmailAddress(java.lang.String)
      */
-    public synchronized List<Object> getUserByEmailAddress(final String userGuid) throws UserManagementException
+    public synchronized List<Object> getUserByEmailAddress(final String emailAddress) throws UserManagementException
     {
-        final String methodName = SQLUserManager.CNAME + "#getUserByEmailAddress(final String guid) throws UserManagementException";
+        final String methodName = SQLUserManager.CNAME + "#getUserByEmailAddress(final String emailAddress) throws UserManagementException";
         
         if(DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", userGuid);
+            DEBUGGER.debug("Value: {}", emailAddress);
         }
 
         Connection sqlConn = null;
@@ -600,12 +600,7 @@ public class SQLUserManager implements UserManager
             	DEBUGGER.debug("sqlConn: {}", sqlConn);
             }
 
-            if (DEBUG)
-            {
-            	DEBUGGER.debug("sqlConn: {}", sqlConn);
-            }
-
-            if ((sqlConn == null) || (sqlConn.isClosed()))
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -613,7 +608,7 @@ public class SQLUserManager implements UserManager
             sqlConn.setAutoCommit(true);
 
             stmt = sqlConn.prepareCall("{ CALL getUserByEmailAddress(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            stmt.setString(1, userGuid); // common name
+            stmt.setString(1, emailAddress); // common name
 
             if (DEBUG)
             {

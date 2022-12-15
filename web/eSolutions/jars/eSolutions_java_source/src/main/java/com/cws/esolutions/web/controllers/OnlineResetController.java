@@ -901,7 +901,7 @@ public class OnlineResetController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAccountResetProcessor processor = new AccountResetProcessorImpl();
+        final IAccountResetProcessor processor = (IAccountResetProcessor) new AccountResetProcessorImpl();
 
         if (DEBUG)
         {

@@ -49,6 +49,7 @@ import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.impl.ServiceMessagingProcessorImpl;
+import com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 /**
  * @author cws-khuntly
@@ -66,7 +67,6 @@ public class ServiceMessagingController
     private String messageSuccessfullyAdded = null;
     private ApplicationServiceBean appConfig = null;
     private String messageSuccessfullyUpdated = null;
-    private ServiceMessagingProcessorImpl processor = null;
 
     private static final String CNAME = ServiceMessagingController.class.getName();
 
@@ -98,19 +98,6 @@ public class ServiceMessagingController
         }
 
         this.serviceId = value;
-    }
-
-    public final void setProcessor(final ServiceMessagingProcessorImpl value)
-    {
-        final String methodName = ServiceMessagingController.CNAME + "#setProcessor(final ServiceMessagingProcessorImpl value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.processor = value;
     }
 
     public final void setAddServiceMessagePage(final String value)
@@ -192,6 +179,7 @@ public class ServiceMessagingController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IServiceMessagingProcessor processor = (IServiceMessagingProcessor) new ServiceMessagingProcessorImpl();
 
         if (DEBUG)
         {
@@ -260,7 +248,7 @@ public class ServiceMessagingController
                 DEBUGGER.debug("MessagingRequest: {}", request);
             }
 
-            MessagingResponse response = this.processor.showMessages(request);
+            MessagingResponse response = processor.showMessages(request);
 
             if (DEBUG)
             {
@@ -374,6 +362,7 @@ public class ServiceMessagingController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IServiceMessagingProcessor processor = (IServiceMessagingProcessor) new ServiceMessagingProcessorImpl();
 
         if (DEBUG)
         {
@@ -451,7 +440,7 @@ public class ServiceMessagingController
                 DEBUGGER.debug("MessagingRequest: {}", request);
             }
 
-            MessagingResponse response = this.processor.showMessage(request);
+            MessagingResponse response = processor.showMessage(request);
 
             if (DEBUG)
             {
@@ -516,6 +505,7 @@ public class ServiceMessagingController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IServiceMessagingProcessor processor = (IServiceMessagingProcessor) new ServiceMessagingProcessorImpl();
 
         if (DEBUG)
         {
@@ -559,8 +549,6 @@ public class ServiceMessagingController
             }
         }
 
-        String responsePage = null;
-
         // validate here
         try
         {
@@ -586,7 +574,7 @@ public class ServiceMessagingController
                 DEBUGGER.debug("MessagingRequest: {}", request);
             }
 
-            MessagingResponse response = (message.getIsNewMessage()) ? this.processor.addNewMessage(request) : this.processor.updateExistingMessage(request);
+            MessagingResponse response = (message.getIsNewMessage()) ? processor.addNewMessage(request) : processor.updateExistingMessage(request);
 
             if (DEBUG)
             {
@@ -596,13 +584,15 @@ public class ServiceMessagingController
             switch (response.getRequestStatus())
             {
 				case EXCEPTION:
-					responsePage = this.appConfig.getErrorResponsePage();
-		
-					break;
+					model.addAttribute(Constants.COMMAND, new ServiceMessage());
+					model.addAttribute(Constants.ERROR_RESPONSE, "An error occurred while performing the requested operation.");
+
+					return this.addServiceMessagePage;
 				case FAILURE:
-					responsePage = this.appConfig.getErrorResponsePage();
-		
-					break;
+					model.addAttribute(Constants.COMMAND, new ServiceMessage());
+					model.addAttribute(Constants.ERROR_RESPONSE, "An error occurred while performing the requested operation.");
+
+					return this.addServiceMessagePage;
 				case SUCCESS:
 		            if (message.getIsNewMessage())
 		            {
@@ -612,28 +602,24 @@ public class ServiceMessagingController
 		            {
 		                model.addAttribute(Constants.RESPONSE_MESSAGE, this.messageSuccessfullyUpdated);
 		            }
-		
-					break;
+
+		            model.addAttribute(Constants.COMMAND, new ServiceMessage());
+
+		            return this.addServiceMessagePage;
 				case UNAUTHORIZED:
-					responsePage = this.appConfig.getUnauthorizedPage();
-
-					break;
+					return this.appConfig.getUnauthorizedPage();
 				default:
+					model.addAttribute(Constants.COMMAND, new ServiceMessage());
 					model.addAttribute(Constants.ERROR_RESPONSE, "An error occurred while performing the requested operation.");
-					responsePage = this.addServiceMessagePage;
 
-					break;
+					return this.addServiceMessagePage;
             }
         }
         catch (final MessagingServiceException msx)
         {
             ERROR_RECORDER.error(msx.getMessage(), msx);
 
-            responsePage = this.appConfig.getErrorResponsePage();
+            return this.appConfig.getErrorResponsePage();
         }
-
-        model.addAttribute(Constants.COMMAND, new ServiceMessage());
-
-        return responsePage;
     }
 }

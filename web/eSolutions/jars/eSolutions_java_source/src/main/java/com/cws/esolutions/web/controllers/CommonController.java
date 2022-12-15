@@ -49,7 +49,13 @@ import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
+import com.cws.esolutions.core.enums.CoreServicesStatus;
 import com.cws.esolutions.web.validators.EmailMessageValidator;
+import com.cws.esolutions.core.processors.dto.MessagingRequest;
+import com.cws.esolutions.core.processors.dto.MessagingResponse;
+import com.cws.esolutions.core.processors.impl.ServiceMessagingProcessorImpl;
+import com.cws.esolutions.core.processors.exception.MessagingServiceException;
+import com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor;
 /**
  * @author cws-khuntly
  * @version 1.0
@@ -136,6 +142,7 @@ public class CommonController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IServiceMessagingProcessor svcMessage = (IServiceMessagingProcessor) new ServiceMessagingProcessorImpl();
 
         if (DEBUG)
         {
@@ -178,6 +185,22 @@ public class CommonController
                 DEBUGGER.debug("Request Parameter: {}; Value: {}", element, value);
             }
         }
+
+        try
+        {
+            MessagingResponse messageResponse = svcMessage.showAlertMessages(new MessagingRequest());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("MessagingResponse: {}", messageResponse);
+            }
+
+            if (messageResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+            {
+                model.addAttribute("alertMessages", messageResponse.getSvcMessages());
+            }
+        }
+        catch (final MessagingServiceException msx) {}
 
         // in here, we're going to get all the messages to display and such
         return this.homePage;

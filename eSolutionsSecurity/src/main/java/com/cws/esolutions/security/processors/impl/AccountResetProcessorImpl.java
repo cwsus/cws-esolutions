@@ -205,6 +205,8 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                 		ERROR_RECORDER.error("User has not set up the online reset process. Cannot continue.");
 
                 		response.setRequestStatus(SecurityRequestStatus.FAILURE);
+
+                		return response;
                 	}
                 	else if ((Boolean) securityData.get(2))
                 	{
@@ -212,6 +214,8 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                 		ERROR_RECORDER.error("User is currently OLR locked. Cannot continue.");
 
                         response.setRequestStatus(SecurityRequestStatus.FAILURE);
+
+                        return response;
                 	}
 
                     UserAccount resAccount = new UserAccount();

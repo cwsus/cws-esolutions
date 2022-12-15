@@ -221,11 +221,15 @@
             <web-resource-name>JSP-NoAccess</web-resource-name>
             <description>No access to JSP files</description>
             <url-pattern>*.jsp</url-pattern>
+            <http-method-omission>GET</http-method-omission>
+            <http-method-omission>POST</http-method-omission>
         </web-resource-collection>
         <web-resource-collection>
             <web-resource-name>Secure URLs</web-resource-name>
             <description>Enforce SSL</description>
             <url-pattern>/*</url-pattern>
+            <http-method-omission>GET</http-method-omission>
+            <http-method-omission>POST</http-method-omission>
         </web-resource-collection>
         <user-data-constraint>
             <transport-guarantee>CONFIDENTIAL</transport-guarantee>

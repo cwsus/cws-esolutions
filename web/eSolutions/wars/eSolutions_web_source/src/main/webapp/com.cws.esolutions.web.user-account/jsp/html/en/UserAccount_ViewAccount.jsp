@@ -36,7 +36,7 @@
 <div id="homecontent">
     <div class="wrapper">
         <div id="error"></div>
-    
+
         <c:if test="${not empty fn:trim(messageResponse)}">
             <p id="info">${messageResponse}</p>
         </c:if>

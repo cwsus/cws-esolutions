@@ -45,7 +45,7 @@ import com.cws.esolutions.core.processors.exception.MessagingServiceException;
  * @author cws-khuntly
  * @version 1.0
  */
-public interface IWebMessagingProcessor
+public interface IServiceMessagingProcessor
 {
     static final CoreServicesBean appBean = CoreServicesBean.getInstance();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
@@ -55,7 +55,7 @@ public interface IWebMessagingProcessor
     static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
 
     static final String dateFormat = appConfig.getDateFormat();
-    static final String CNAME = IWebMessagingProcessor.class.getName();
+    static final String CNAME = IServiceMessagingProcessor.class.getName();
 
     static final Logger ERROR_RECORDER = LogManager.getLogger(CoreServicesConstants.ERROR_LOGGER + CNAME);
     static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);

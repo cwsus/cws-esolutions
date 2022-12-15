@@ -81,7 +81,9 @@ public class AuditProcessorImpl implements IAuditProcessor
         {
             if ((hostInfo == null) || (userAccount == null))
             {
-                throw new AuditServiceException("Cannot perform audit: RequestHostInfo / UserAccount is missing");
+            	ERROR_RECORDER.error("Cannot perform audit: RequestHostInfo / UserAccount is missing");
+
+            	return;
             }
 
             try
@@ -105,6 +107,7 @@ public class AuditProcessorImpl implements IAuditProcessor
 	                	DEBUGGER.debug(str);
 	                }
 	            }
+
                 // log it ..
                 AUDIT_RECORDER.info("AUDIT: User: " + userAccount + ", Requested Action: " + auditEntry.getAuditType() + ", Host: " + hostInfo);
 

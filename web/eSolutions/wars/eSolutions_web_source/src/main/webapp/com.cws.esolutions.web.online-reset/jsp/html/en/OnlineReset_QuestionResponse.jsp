@@ -19,8 +19,8 @@
 <%--
 /**
  * Project: eSolutions_web_source
- * Package: com.cws.esolutions.web.onlinereset\jsp\html\en
- * File: OnlineReset_QuestionResponse.jsp
+ * Package: com.cws.esolutions.web.application-management\jsp\html\en
+ * File: AppMgmt_AddApplication.jsp
  *
  * @author cws-khuntly
  * @version 1.0
@@ -63,59 +63,61 @@
 //-->
 </script>
 
-<div id="sidebar">&nbsp;</div>
+<div id="homecontent">
+    <div class="wrapper">
+        <c:if test="${not empty fn:trim(messageResponse)}">
+            <p id="info">${messageResponse}</p>
+        </c:if>
+        <c:if test="${not empty fn:trim(errorResponse)}">
+            <p id="error">${errorResponse}</p>
+        </c:if>
+        <c:if test="${not empty fn:trim(responseMessage)}">
+            <p id="info"><spring:message code="${responseMessage}" /></p>
+        </c:if>
+        <c:if test="${not empty fn:trim(errorMessage)}">
+            <p id="error"><spring:message code="${errorMessage}" /></p>
+        </c:if>
+        <c:if test="${not empty fn:trim(param.responseMessage)}">
+            <p id="info"><spring:message code="${param.responseMessage}" /></p>
+        </c:if>
+        <c:if test="${not empty fn:trim(param.errorMessage)}">
+            <p id="error"><spring:message code="${param.errorMessage}" /></p>
+        </c:if>
 
-<div id="main">
-    <h1><spring:message code="olr.forgotpwd.message" /></h1>
-
-    <div id="error"></div>
-
-    <c:if test="${not empty fn:trim(messageResponse)}">
-        <p id="info">${messageResponse}</p>
-    </c:if>
-    <c:if test="${not empty fn:trim(errorResponse)}">
-        <p id="error">${errorResponse}</p>
-    </c:if>
-    <c:if test="${not empty fn:trim(responseMessage)}">
-        <p id="info"><spring:message code="${responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(errorMessage)}">
-        <p id="error"><spring:message code="${errorMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(param.responseMessage)}">
-        <p id="info"><spring:message code="${param.responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(param.errorMessage)}">
-        <p id="error"><spring:message code="${param.errorMessage}" /></p>
-    </c:if>
-
-    <p>
-        <form:form id="submitSecurityQuestion" name="submitSecurityQuestion" action="${pageContext.request.contextPath}/ui/online-reset/submit" method="post" autocomplete="off">
-            <form:hidden path="resetType" value="${resetType}" />
-
-            <p>
-                <label id="txtQuestionOne"><spring:message code="olr.question" /></label>
-                ${command.secQuestionOne}
-                <label id="txtAnswerOne"><spring:message code="olr.answer" /></label>
-                <form:password path="secAnswerOne" />
-                <form:errors path="secAnswerOne" cssClass="error" />
-                <label id="txtQuestionTwo"><spring:message code="olr.question" /></label>
-                ${command.secQuestionTwo}
-                <label id="txtAnswerTwo"><spring:message code="olr.answer" /></label>
-                <form:password path="secAnswerTwo" />
-                <form:errors path="secAnswerTwo" cssClass="error" />
-                <br /><br />
-                <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-                <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); window.location.href = '${pageContext.request.contextPath}/ui/online-reset/cancel';" />
-            </p>
-        </form:form>
-    </p>
+        <h1><spring:message code="login.user.forgot.info" /></h1>
+        <ul>
+            <li><a href="${pageContext.request.contextPath}/ui/app/help/forgot-questions" title="<spring:message code='olr.forgot.questions' />"><spring:message code="olr.forgot.questions" /></a></li>
+        </ul>
+    </div>
 </div>
 
-<div id="rightbar">
-    <h1><spring:message code="login.user.forgot.info" /></h1>
-    <ul>
-        <li><a href="${pageContext.request.contextPath}/ui/app/help/forgot-questions" title="<spring:message code='olr.forgot.questions' />"><spring:message code="olr.forgot.questions" /></a></li>
-    </ul>
+<div id="container">
+    <div class="wrapper">
+        <div id="holder">
+            <h1><spring:message code="olr.forgotpwd.message" /></h1>
+            <ul id="latestnews">
+                <li>
+                    <form:form id="submitSecurityQuestion" name="submitSecurityQuestion" action="${pageContext.request.contextPath}/ui/online-reset/submit" method="post" autocomplete="off">
+                        <form:hidden path="resetType" value="${resetType}" />
+
+                        <label id="txtQuestionOne"><spring:message code="olr.question" /></label>
+                        ${command.secQuestionOne}
+                        <label id="txtAnswerOne"><spring:message code="olr.answer" /></label>
+                        <form:password path="secAnswerOne" />
+                        <form:errors path="secAnswerOne" cssClass="error" />
+                        <label id="txtQuestionTwo"><spring:message code="olr.question" /></label>
+                        ${command.secQuestionTwo}
+                        <label id="txtAnswerTwo"><spring:message code="olr.answer" /></label>
+                        <form:password path="secAnswerTwo" />
+                        <form:errors path="secAnswerTwo" cssClass="error" />
+                        <br /><br />
+                        <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+                        <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+                        <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); window.location.href = '${pageContext.request.contextPath}/ui/online-reset/cancel';" />
+                    </form:form>
+                </li>
+            </ul>
+        </div>
+        <br class="clear" />
+    </div>
 </div>

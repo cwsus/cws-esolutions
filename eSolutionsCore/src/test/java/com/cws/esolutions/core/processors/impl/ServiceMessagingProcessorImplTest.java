@@ -37,14 +37,14 @@ import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
-import com.cws.esolutions.core.processors.interfaces.IWebMessagingProcessor;
+import com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor;
 
 public class ServiceMessagingProcessorImplTest
 {
     private static UserAccount userAccount = new UserAccount();
     private static RequestHostInfo hostInfo = new RequestHostInfo();
 
-    private static final IWebMessagingProcessor processor = new ServiceMessagingProcessorImpl();
+    private static final IServiceMessagingProcessor processor = new ServiceMessagingProcessorImpl();
 
     @BeforeAll public void setUp() throws Exception
     {

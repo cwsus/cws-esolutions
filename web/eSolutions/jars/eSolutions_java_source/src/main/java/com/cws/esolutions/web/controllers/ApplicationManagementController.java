@@ -950,7 +950,7 @@ public class ApplicationManagementController
             }
             else
             {
-            	return "redirect:/" + this.addPlatformRedirect;
+            	return this.addPlatformRedirect;
             }
         }
         catch (final ServiceManagementException smx)

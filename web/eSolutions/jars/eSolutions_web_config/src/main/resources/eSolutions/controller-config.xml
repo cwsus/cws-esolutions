@@ -10,16 +10,17 @@
         http://www.springframework.org/schema/jee https://www.springframework.org/schema/jee/spring-jee-4.3.xsd">
 
     <!-- import controllers -->
-    <import resource="classpath:eSolutions/servlets/LoginController.xml" />
     <import resource="classpath:eSolutions/servlets/ApplicationManagementController.xml" />
+    <import resource="classpath:eSolutions/servlets/CertificateManagementController.xml" />
     <import resource="classpath:eSolutions/servlets/CommonController.xml" />
-    <import resource="classpath:eSolutions/servlets/DNSServiceController.xml" />
     <import resource="classpath:eSolutions/servlets/DatacenterManagementController.xml" />
+    <import resource="classpath:eSolutions/servlets/DNSServiceController.xml" />
+    <import resource="classpath:eSolutions/servlets/LoginController.xml" />
     <import resource="classpath:eSolutions/servlets/OnlineResetController.xml" />
     <import resource="classpath:eSolutions/servlets/ServiceManagementController.xml" />
+    <import resource="classpath:eSolutions/servlets/ServiceMessagingController.xml" />
     <import resource="classpath:eSolutions/servlets/SystemCheckController.xml" />    
     <import resource="classpath:eSolutions/servlets/SystemManagementController.xml" />
     <import resource="classpath:eSolutions/servlets/UserAccountController.xml" />
     <import resource="classpath:eSolutions/servlets/UserManagementController.xml" />
-    <import resource="classpath:eSolutions/servlets/CertificateManagementController.xml" />
 </beans>

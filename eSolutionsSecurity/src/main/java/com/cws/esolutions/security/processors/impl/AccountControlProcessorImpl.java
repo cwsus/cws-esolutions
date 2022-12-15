@@ -1273,17 +1273,17 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            // this will require admin and service authorization
-            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(userAccount);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-            }
-
             if (!(request.isResetRequest()))
             {
+                // this will require admin and service authorization
+                AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+                accessRequest.setUserAccount(userAccount);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+                }
+
 	            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
 
 	            if (DEBUG)

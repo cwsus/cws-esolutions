@@ -27,6 +27,7 @@ package com.cws.esolutions.web.controllers;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
+import java.util.Objects;
 import java.util.Enumeration;
 import org.springframework.ui.Model;
 import javax.servlet.http.HttpSession;
@@ -37,6 +38,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -462,7 +464,7 @@ public class DatacenterManagementController
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("List<Service>: {}", datacenterList);
+                    DEBUGGER.debug("List<Datacenter>: {}", datacenterList);
                 }
 
                 if ((datacenterList != null) && (datacenterList.size() != 0))
@@ -488,6 +490,152 @@ public class DatacenterManagementController
             else
             {
                 model.addAttribute(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                model.addAttribute(Constants.COMMAND, new Datacenter());
+
+                return this.addDatacenterPage;
+            }
+        }
+        catch (final DatacenterManagementException dmx)
+        {
+            ERROR_RECORDER.error(dmx.getMessage(), dmx);
+
+            return this.appConfig.getErrorResponsePage();
+        }
+    }
+
+    @RequestMapping(value = "datacenter/{guid}", method = RequestMethod.GET)
+    public final String showSearchPage(@PathVariable("guid") final String guid, final Model model)
+    {
+        final String methodName = DatacenterManagementController.CNAME + "#showSearchPage(@PathVariable(\"guid\") final String guid, final Model model)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("@PathVariable(\"guid\"): ", guid);
+        }
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IDatacenterManagementProcessor processor = (IDatacenterManagementProcessor) new DatacenterManagementProcessorImpl();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            Enumeration<?> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String element = (String) sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
+
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            Enumeration<?> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String element = (String) requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
+
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<?> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String element = (String) paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
+
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
+            }
+        }
+
+        if (!(this.appConfig.getServices().get(this.serviceName)))
+        {
+            return this.appConfig.getUnavailablePage();
+        }
+
+        try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            }
+
+            Datacenter datacenter = new Datacenter();
+            datacenter.setGuid(guid);
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("Datacenter: {}", datacenter);
+            }
+
+            DatacenterManagementRequest request = new DatacenterManagementRequest();
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setApplicationName(this.appConfig.getApplicationName());
+            request.setRequestInfo(reqInfo);
+            request.setServiceId(this.serviceId);
+            request.setStartPage(0);
+            request.setUserAccount(userAccount);
+            request.setDatacenter(datacenter);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("DatacenterManagementRequest: {}", request);
+            }
+
+            DatacenterManagementResponse response = processor.getDatacenterData(request);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ServiceManagementResponse: {}", response);
+            }
+
+            if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+            {
+            	Datacenter dcResponse = response.getDatacenter();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Datacenter: {}", dcResponse);
+                }
+
+                if (Objects.isNull(dcResponse))
+                {
+                    model.addAttribute(Constants.MESSAGE_RESPONSE, this.messageNoSearchResults);
+                    model.addAttribute(Constants.COMMAND, new Datacenter());
+
+                    return this.addDatacenterPage;
+                }
+
+                model.addAttribute("datacenter", dcResponse);
+
+                return this.viewDatacenterPage;
+            }
+            else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+            {
+                return this.appConfig.getUnauthorizedPage();
+            }
+            else
+            {
+                model.addAttribute(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                model.addAttribute(Constants.COMMAND, new Datacenter());
 
                 return this.addDatacenterPage;
             }

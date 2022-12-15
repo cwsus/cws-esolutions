@@ -44,23 +44,23 @@ import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
-import com.cws.esolutions.core.processors.interfaces.IWebMessagingProcessor;
+import com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 /**
- * @see com.cws.esolutions.core.processors.interfaces.IWebMessagingProcessor
+ * @see com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor
  */
-public class ServiceMessagingProcessorImpl implements IWebMessagingProcessor
+public class ServiceMessagingProcessorImpl implements IServiceMessagingProcessor
 {
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IWebMessagingProcessor#addNewMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor#addNewMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
      */
     public MessagingResponse addNewMessage(final MessagingRequest request) throws MessagingServiceException
     {
-        final String methodName = IWebMessagingProcessor.CNAME + "#addNewMessage(final MessagingRequest request) throws MessagingServiceException";
+        final String methodName = IServiceMessagingProcessor.CNAME + "#addNewMessage(final MessagingRequest request) throws MessagingServiceException";
 
         if (DEBUG)
         {
@@ -168,11 +168,11 @@ public class ServiceMessagingProcessorImpl implements IWebMessagingProcessor
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IWebMessagingProcessor#updateExistingMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor#updateExistingMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
      */
     public MessagingResponse updateExistingMessage(final MessagingRequest request) throws MessagingServiceException
     {
-        final String methodName = IWebMessagingProcessor.CNAME + "#updateExistingMessage(final MessagingRequest request) throws MessagingServiceException";
+        final String methodName = IServiceMessagingProcessor.CNAME + "#updateExistingMessage(final MessagingRequest request) throws MessagingServiceException";
         
         if (DEBUG)
         {
@@ -277,11 +277,11 @@ public class ServiceMessagingProcessorImpl implements IWebMessagingProcessor
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IWebMessagingProcessor#showMessages(com.cws.esolutions.core.processors.dto.MessagingRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor#showMessages(com.cws.esolutions.core.processors.dto.MessagingRequest)
      */
     public MessagingResponse showMessages(final MessagingRequest request) throws MessagingServiceException
     {
-        final String methodName = IWebMessagingProcessor.CNAME + "#showMessages(final MessagingRequest request) throws MessagingServiceException";
+        final String methodName = IServiceMessagingProcessor.CNAME + "#showMessages(final MessagingRequest request) throws MessagingServiceException";
         
         if (DEBUG)
         {
@@ -450,11 +450,11 @@ public class ServiceMessagingProcessorImpl implements IWebMessagingProcessor
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IWebMessagingProcessor#showAlertMessages(com.cws.esolutions.core.processors.dto.MessagingRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor#showAlertMessages(com.cws.esolutions.core.processors.dto.MessagingRequest)
      */
     public MessagingResponse showAlertMessages(final MessagingRequest request) throws MessagingServiceException
     {
-        final String methodName = IWebMessagingProcessor.CNAME + "#showAlertMessages(final MessagingRequest request) throws MessagingServiceException";
+        final String methodName = IServiceMessagingProcessor.CNAME + "#showAlertMessages(final MessagingRequest request) throws MessagingServiceException";
         
         if (DEBUG)
         {
@@ -525,11 +525,11 @@ public class ServiceMessagingProcessorImpl implements IWebMessagingProcessor
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IWebMessagingProcessor#showMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IServiceMessagingProcessor#showMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
      */
     public MessagingResponse showMessage(final MessagingRequest request) throws MessagingServiceException
     {
-        final String methodName = IWebMessagingProcessor.CNAME + "#showMessage(final MessagingRequest request) throws MessagingServiceException";
+        final String methodName = IServiceMessagingProcessor.CNAME + "#showMessage(final MessagingRequest request) throws MessagingServiceException";
         
         if (DEBUG)
         {
