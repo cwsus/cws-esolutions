@@ -59,8 +59,10 @@ public class PasswordUtilsTest
 
     @Test public void testTwoWayEncryption()
     {
-        final String plainText = "U1Y5RkFIdzZ3VXZBdW9DRHlyM0syZz09OmUvR2szWDJvdHVoWmhqZTZPNU9MTVFWeXkrWUpETTRwOVA1WWplRnpaWU09";
-        final String salt = "2YETtHagNl36dQanQ3P1M3mJNjwRHaoa";
+    	// U1Y5RkFIdzZ3VXZBdW9DRHlyM0syZz09OmUvR2szWDJvdHVoWmhqZTZPNU9MTVFWeXkrWUpETTRwOVA1WWplRnpaWU09
+    	
+        final String plainText = "Answer 1";
+        final String salt = "PIQNYhYZgEDdePK4ObMF";
 
         try
         {
@@ -72,12 +74,14 @@ public class PasswordUtilsTest
         			bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
         			bean.getConfigData().getSystemConfig().getEncoding());
 
+        	System.out.println(encr);
         	Assertions.assertThat(encr).isNotEmpty();
 
         	String decr = PasswordUtils.decryptText(encr, salt, bean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(), bean.getConfigData().getSecurityConfig().getIterations(),
         			bean.getConfigData().getSecurityConfig().getKeyBits(), bean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(), bean.getConfigData().getSecurityConfig().getEncryptionInstance(),
         			bean.getConfigData().getSystemConfig().getEncoding());
 
+        	System.out.println(decr);
         	Assertions.assertThat(decr).isEqualTo(plainText);
         }
         catch (final Exception sx)

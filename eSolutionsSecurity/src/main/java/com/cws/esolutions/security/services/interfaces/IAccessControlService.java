@@ -45,13 +45,14 @@ import com.cws.esolutions.security.services.exception.AccessControlServiceExcept
  */
 public interface IAccessControlService
 {
+	static final String CNAME = IAccessControlService.class.getName();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
     static final ISecurityReferenceDAO ref = (ISecurityReferenceDAO) new SecurityReferenceDAOImpl();
 
     static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER);
+    static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER + IAccessControlService.CNAME);
 
     /**
      * Determines if the requested user has the proper level of authority to

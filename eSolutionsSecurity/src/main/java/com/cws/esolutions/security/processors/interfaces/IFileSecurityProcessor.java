@@ -47,13 +47,14 @@ import com.cws.esolutions.security.processors.exception.FileSecurityException;
  */
 public interface IFileSecurityProcessor
 {
+	static final String CNAME = IFileSecurityProcessor.class.getName();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final KeyConfig keyConfig = secBean.getConfigData().getKeyConfig();
     static final SecurityConfigurationData secConfig = secBean.getConfigData();
     static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
     static final FileSecurityConfig fileSecurityConfig = secConfig.getFileSecurityConfig();
 
-    static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER);
+    static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER + IFileSecurityProcessor.CNAME);
     static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 

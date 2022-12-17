@@ -379,14 +379,13 @@ public class SQLUserManager implements UserManager
                     resultSet.beforeFirst();
                     results = new ArrayList<String[]>();
 
-                    while (resultSet.next())
+                    while (resultSet.next()) // TODO: these should not be static strings.
                     {
                         String[] userData = new String[]
                         {
                             resultSet.getString("cn"),
                             resultSet.getString("uid"),
-                            resultSet.getString("email"),
-                            resultSet.getString("userpassword")
+                            resultSet.getString("email")
                         };
 
                         if (DEBUG)

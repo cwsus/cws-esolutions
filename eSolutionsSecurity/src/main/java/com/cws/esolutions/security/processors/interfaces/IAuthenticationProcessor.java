@@ -58,6 +58,7 @@ public interface IAuthenticationProcessor
 {
     static final String ATTRIBUTE_UID = "uid";
     static final String ATTRIBUTE_GUID = "cn";
+    static final String CNAME = IAuthenticationProcessor.class.getName();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
@@ -68,7 +69,7 @@ public interface IAuthenticationProcessor
     static final Authenticator authenticator = (Authenticator) AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());
     static final IUserSecurityInformationDAO userSec = (IUserSecurityInformationDAO) UserSecurityInformationDAOFactory.getUserSecurityDAO(secConfig.getUserSecDAO());
 
-    static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER);
+    static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER + IAuthenticationProcessor.CNAME);
     static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 

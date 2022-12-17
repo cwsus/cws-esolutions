@@ -49,6 +49,7 @@ import com.cws.esolutions.security.processors.exception.CertificateRequestExcept
  */
 public interface ICertificateRequestProcessor
 {
+	static final String CNAME = ICertificateRequestProcessor.class.getName();
 	static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
@@ -56,7 +57,7 @@ public interface ICertificateRequestProcessor
     static final ICertificateManager processor = (ICertificateManager) new CertificateManagerImpl();
     static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
 
-    static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER);
+    static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER + ICertificateRequestProcessor.CNAME);
     static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 

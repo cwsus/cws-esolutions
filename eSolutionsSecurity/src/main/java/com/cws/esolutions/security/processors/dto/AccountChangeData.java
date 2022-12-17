@@ -35,6 +35,7 @@ import com.cws.esolutions.security.processors.enums.ResetRequestType;
 public final class AccountChangeData implements Serializable
 {
     private int count = 0;
+    private String guid = null;
     private String resetKey = null;
     private String username = null;
     private String telNumber = null;
@@ -55,6 +56,19 @@ public final class AccountChangeData implements Serializable
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+
+    public final void setGuid(final String value)
+    {
+        final String methodName = AccountChangeData.CNAME + "#setGuid(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.guid = value;
+    }
 
     public final void setIsReset(final boolean value)
     {
@@ -270,6 +284,19 @@ public final class AccountChangeData implements Serializable
         }
 
         return this.isReset;
+    }
+
+    public final String getGuid()
+    {
+        final String methodName = AccountChangeData.CNAME + "#getGuid()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.guid);
+        }
+
+        return this.guid;
     }
 
     public final String getResetKey()

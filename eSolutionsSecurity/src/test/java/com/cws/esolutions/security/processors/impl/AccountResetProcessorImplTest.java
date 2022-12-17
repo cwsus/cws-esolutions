@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.TestInstance;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
@@ -40,11 +41,12 @@ import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AccountResetProcessorImplTest
 {
     private static RequestHostInfo hostInfo = null;
 
-    private static final IAccountResetProcessor processor = new AccountResetProcessorImpl();
+    private static final IAccountResetProcessor processor = (IAccountResetProcessor) new AccountResetProcessorImpl();
 
     @BeforeAll public void setUp()
     {
@@ -65,16 +67,17 @@ public class AccountResetProcessorImplTest
 
     @Test public void findUserAccount()
     {
-        AccountResetRequest request = new AccountResetRequest();
+    	AccountResetRequest request = new AccountResetRequest();
         request.setApplicationId("f42fb0ba-4d1e-1126-986f-800cd2650000");
         request.setApplicationName("eSolutions");
         request.setHostInfo(hostInfo);
-        request.setSearchData("junit");
+        request.setSearchData("junit@caspersbox.com");
 
         try
         {
             AccountResetResponse response = processor.findUserAccount(request);
 
+            System.out.println(response);
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (final AccountResetException ax)
@@ -110,12 +113,12 @@ public class AccountResetProcessorImplTest
     @Test public void verifyUserSecurityConfig()
     {
         UserAccount account = new UserAccount();
-        account.setUsername("junit");
-        account.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
+        account.setUsername("khuntly");
+        account.setGuid("a332cb8f-6891-4ae0-bd4d-18efe70b4ed2");
 
         AuthenticationData userSecurity = new AuthenticationData();
-        userSecurity.setSecAnswerOne("answerone");
-        userSecurity.setSecAnswerTwo("answertwo");
+        userSecurity.setSecAnswerOne("Answer 1");
+        userSecurity.setSecAnswerTwo("Answer 2");
 
         AccountResetRequest request = new AccountResetRequest();
         request.setApplicationId("f42fb0ba-4d1e-1126-986f-800cd2650000");

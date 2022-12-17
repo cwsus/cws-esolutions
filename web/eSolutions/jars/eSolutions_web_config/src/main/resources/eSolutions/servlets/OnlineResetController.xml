@@ -31,6 +31,8 @@
         <property name="resetURL" value="/ui/online-reset/forgot-password/" />
         <property name="messageRequestComplete" value="olr.request.complete" />
         <property name="messageRequestFailure" value="olr.request.failure" />
+        <property name="messageNoAccountFound" value="olr.no.account.found" />
+        <property name="messageAccountDisabled" value="olr.account.disabled" />
         <property name="submitAnswersPage" value=".online-reset/jsp/html/en/OnlineReset_QuestionResponse" />
         <property name="submitUsernamePage" value=".online-reset/jsp/html/en/OnlineReset_SubmitUsername" />
         <property name="submitEmailAddrPage" value=".online-reset/jsp/html/en/OnlineReset_ForgotUsername" />

@@ -41,7 +41,7 @@
         {
             clearText(theForm);
 
-            document.getElementById('validationError').innerHTML = 'You must provide your account username.';
+            document.getElementById('validationError').innerHTML = 'Please provide an answer for your security question.';
             document.getElementById('txtAnswerOne').style.color = '#FF0000';
             document.getElementById('execute').disabled = false;
             document.getElementById('secAnswerOne').focus();
@@ -50,7 +50,7 @@
         {
             clearText(theForm);
 
-            document.getElementById('validationError').innerHTML = 'You must provide your account username.';
+            document.getElementById('validationError').innerHTML = 'Please provide an answer for your security question.';
             document.getElementById('txtAnswerTwo').style.color = '#FF0000';
             document.getElementById('execute').disabled = false;
             document.getElementById('secAnswerOne').focus();
@@ -101,18 +101,21 @@
                 <li>
                     <form:form id="submitSecurityQuestion" name="submitSecurityQuestion" action="${pageContext.request.contextPath}/ui/online-reset/submit" method="post" autocomplete="off">
                         <form:hidden path="resetType" value="${resetType}" />
+                        <form:hidden path="guid" value="${resetGuid}" />
+                        <form:hidden path="username" value="${resetUsername}" />
 
-                        <label id="txtQuestionOne"><spring:message code="olr.question" /></label>
-                        ${command.secQuestionOne}
+                        <label id="txtQuestionOne">${command.secQuestionOne}</label>
                         <label id="txtAnswerOne"><spring:message code="olr.answer" /></label>
                         <form:password path="secAnswerOne" />
                         <form:errors path="secAnswerOne" cssClass="error" />
-                        <label id="txtQuestionTwo"><spring:message code="olr.question" /></label>
-                        ${command.secQuestionTwo}
+                        <br /><br />
+
+                        <label id="txtQuestionTwo">${command.secQuestionTwo}</label>
                         <label id="txtAnswerTwo"><spring:message code="olr.answer" /></label>
                         <form:password path="secAnswerTwo" />
                         <form:errors path="secAnswerTwo" cssClass="error" />
                         <br /><br />
+
                         <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
                         <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
                         <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); window.location.href = '${pageContext.request.contextPath}/ui/online-reset/cancel';" />

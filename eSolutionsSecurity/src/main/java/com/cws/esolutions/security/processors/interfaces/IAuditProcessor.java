@@ -46,6 +46,7 @@ import com.cws.esolutions.security.processors.exception.AuditServiceException;
  */
 public interface IAuditProcessor
 {
+	static final String CNAME = IAuditProcessor.class.getName();
     static final IAuditDAO auditDAO = (IAuditDAO) new AuditDAOImpl();
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
     static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
@@ -53,7 +54,7 @@ public interface IAuditProcessor
 
     static final String SERVICE_ID = "360144AC-7234-406A-B152-08CD080459A6";
 
-    static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER);
+    static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER + IAuditProcessor.CNAME);
     static final Logger AUDIT_RECORDER = LogManager.getLogger(SecurityServiceConstants.AUDIT_LOGGER);
     static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

@@ -54,6 +54,7 @@ import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInforma
  */
 public interface IAccountResetProcessor
 {
+	static final String CNAME = IAccountResetProcessor.class.getName();
     static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
@@ -63,7 +64,7 @@ public interface IAccountResetProcessor
     static final Authenticator authenticator = (Authenticator) AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());
     static final UserManager userManager = (UserManager) UserManagerFactory.getUserManager(secBean.getConfigData().getSecurityConfig().getUserManager());
 
-    static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER);
+    static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER + IAccountResetProcessor.CNAME);
     static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 

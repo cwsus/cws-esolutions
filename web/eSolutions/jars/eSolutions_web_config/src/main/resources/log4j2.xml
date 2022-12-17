@@ -141,22 +141,22 @@
             <AppenderRef ref="sec-debug-logger" />
         </Logger>
 
-        <!-- eSolutions loggers -->
+        <!-- eSolutionsCore loggers -->
         <Logger name="ERROR_RECORDER.com.cws.esolutions.core" additivity="false" level="error">
             <AppenderRef ref="core-error-logger" />
         </Logger>
         <Logger name="CORE_DEBUGGER" additivity="false" level="debug">
             <AppenderRef ref="core-debug-logger" />
         </Logger>
+        <Logger name="RESPONSE_TIME" additivity="false" level="info">
+            <AppenderRef ref="responsetime-log" />
+        </Logger>
 
         <!-- eSolutionsWeb loggers -->
         <Logger name="ERROR_RECORDER.com.cws.esolutions.web" additivity="false" level="error">
             <AppenderRef ref="web-error-logger" />
         </Logger>
-        <Logger name="RESPONSE_TIME" additivity="false" level="info">
-            <AppenderRef ref="responsetime-log" />
-        </Logger>
-        <Logger name="CORE_DEBUGGER" additivity="false" level="debug">
+        <Logger name="ESOLUTIONS_DEBUGGER" additivity="false" level="debug">
             <AppenderRef ref="web-debug-logger" />
         </Logger>
 

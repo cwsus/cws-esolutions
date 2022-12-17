@@ -1273,152 +1273,110 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            if (!(request.isResetRequest()))
+            // this will require admin and service authorization
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(userAccount);
+
+            if (DEBUG)
             {
-                // this will require admin and service authorization
-                AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-                accessRequest.setUserAccount(userAccount);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-                }
-
-	            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
-
-	            if (DEBUG)
-	            {
-	                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-	            }
-	
-	            if (!(accessResponse.getIsUserAuthorized()))
-	            {
-	                // unauthorized
-	                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-	
-	                // audit
-	                try
-	                {
-	                    AuditEntry auditEntry = new AuditEntry();
-	                    auditEntry.setHostInfo(reqInfo);
-	                    auditEntry.setAuditType(AuditType.SEARCHACCOUNTS);
-	                    auditEntry.setUserAccount(userAccount);
-	                    auditEntry.setAuthorized(Boolean.FALSE);
-	                    auditEntry.setApplicationId(request.getApplicationId());
-	                    auditEntry.setApplicationName(request.getApplicationName());
-	
-	                    if (DEBUG)
-	                    {
-	                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-	                    }
-	
-	                    AuditRequest auditRequest = new AuditRequest();
-	                    auditRequest.setAuditEntry(auditEntry);
-	
-	                    if (DEBUG)
-	                    {
-	                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-	                    }
-	
-	                    auditor.auditRequest(auditRequest);
-	                }
-	                catch (final AuditServiceException asx)
-	                {
-	                    ERROR_RECORDER.error(asx.getMessage(), asx);
-	                }
-	
-	                return response;
-	            }
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
             }
 
-            if (request.isResetRequest())
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+            if (DEBUG)
             {
-            	List<String[]> resetList = userManager.getUserByEmailAddress(userAccount.getEmailAddr());
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
 
-	            if (DEBUG)
-	            {
-	                DEBUGGER.debug("resetList: {}", resetList);
-	            }
+            if (!(accessResponse.getIsUserAuthorized()))
+            {
+                // unauthorized
+                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
-	            if ((resetList != null) && (resetList.size() == 1))
-	            {
-	                for (String[] userData : resetList)
-	                {
-	                	if (DEBUG)
-	                	{
-	                		DEBUGGER.debug("userData: {}", (Object[]) userData);
-	                	}
+                // audit
+                try
+                {
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.SEARCHACCOUNTS);
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setAuthorized(Boolean.FALSE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 
-	                	UserAccount userInfo = new UserAccount();
-	                	userInfo.setGuid(userData[0]);
-	                	userInfo.setUsername(userData[1]);
-	                	userInfo.setEmailAddr(userData[2]);
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
 
-		                if (DEBUG)
-		                {
-		                	DEBUGGER.debug("UserAccount: {}", userInfo);
-		                }
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
 
-		                userAccounts.add(userInfo);
-	                }
-	            }
-	            else
-	            {
-	            	throw new AccountControlException("Failed to load account for the given information.");
-	            }
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
+                }
+                catch (final AuditServiceException asx)
+                {
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                }
+
+                return response;
+            }
+
+            List<String[]> userList = userManager.searchUsers(userAccount.getEmailAddr());
+
+	        if (DEBUG)
+	        {
+	        	DEBUGGER.debug("userList: {}", userList);
+	        }
+
+            if ((userList != null) && (userList.size() != 0))
+            {
+                for (Object[] userData : userList)
+                {
+                	if (DEBUG)
+                	{
+                		DEBUGGER.debug("userData: {}", userData);
+                	}
+
+                	if (!(StringUtils.equals(reqAccount.getGuid(), (String) userData[0])))
+                	{
+                		UserAccount userInfo = new UserAccount();
+                		userInfo.setGuid((String) userData[0]);
+                		userInfo.setUsername((String) userData[1]);
+
+                		if (DEBUG)
+                		{
+                			DEBUGGER.debug("UserAccount: {}", userInfo);
+                		}
+
+                		userAccounts.add(userInfo);
+
+                        if (DEBUG)
+                        {
+                        	DEBUGGER.debug("userAccounts: {}", userAccounts);
+                        }
+
+                        if (userAccounts.size() == 0)
+                        {
+                        	response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                        }
+                        else
+                        {
+                        	response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                            response.setUserList(userAccounts);
+                        }
+                	}
+                }
             }
             else
             {
-            	List<String[]> userList = userManager.searchUsers(userAccount.getEmailAddr());
-
-	            if (DEBUG)
-	            {
-	                DEBUGGER.debug("userList: {}", userList);
-	            }
-
-	            if ((userList != null) && (userList.size() != 0))
-	            {
-	                for (Object[] userData : userList)
-	                {
-	                	if (DEBUG)
-	                	{
-	                		DEBUGGER.debug("userData: {}", userData);
-	                	}
-
-	                	if (!(StringUtils.equals(reqAccount.getGuid(), (String) userData[0])))
-	                	{
-	                		UserAccount userInfo = new UserAccount();
-	                		userInfo.setGuid((String) userData[0]);
-	                		userInfo.setUsername((String) userData[1]);
-
-	                		if (DEBUG)
-	                		{
-	                			DEBUGGER.debug("UserAccount: {}", userInfo);
-	                		}
-
-	                		userAccounts.add(userInfo);
-
-	                        if (DEBUG)
-	                        {
-	                        	DEBUGGER.debug("userAccounts: {}", userAccounts);
-	                        }
-
-	                        if (userAccounts.size() == 0)
-	                        {
-	                        	response.setRequestStatus(SecurityRequestStatus.FAILURE);
-	                        }
-	                        else
-	                        {
-	                        	response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-	                            response.setUserList(userAccounts);
-	                        }
-	                	}
-	                }
-	            }
-	            else
-	            {
-	            	throw new AccountControlException("Failed to load account for the given information.");
-	            }
+            	throw new AccountControlException("Failed to load account for the given information.");
             }
         }
         catch (final UserManagementException umx)

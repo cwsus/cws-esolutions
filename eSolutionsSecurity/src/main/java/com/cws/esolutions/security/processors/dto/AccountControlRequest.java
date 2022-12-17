@@ -48,7 +48,6 @@ public class AccountControlRequest implements Serializable
     private String applicationId = null;
     private UserAccount requestor = null;
     private String applicationName = null;
-    private boolean isResetRequest = false;
     private UserAccount userAccount = null;
     private RequestHostInfo hostInfo = null;
     private List<String> servicesList = null;
@@ -189,19 +188,6 @@ public class AccountControlRequest implements Serializable
         this.startPage = value;
     }
 
-    public final void setIsResetRequest(final boolean value)
-    {
-        final String methodName = AccountControlRequest.CNAME + "#setIsResetRequest(final boolean value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.isResetRequest = value;
-    }
-
     public final RequestHostInfo getHostInfo()
     {
         final String methodName = AccountControlRequest.CNAME + "#getHostInfo()";
@@ -277,19 +263,6 @@ public class AccountControlRequest implements Serializable
         }
 
         return this.requestor;
-    }
-
-    public final boolean isResetRequest()
-    {
-        final String methodName = AccountControlRequest.CNAME + "#isLoginRequest()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.isResetRequest);
-        }
-
-        return this.isResetRequest;
     }
 
     public final String getServiceId()

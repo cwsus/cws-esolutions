@@ -38,6 +38,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
+import com.cws.esolutions.security.processors.enums.SaltType;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 /**
  * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator
@@ -89,6 +90,7 @@ public class SQLAuthenticator implements Authenticator
             stmt = sqlConn.prepareCall("{CALL retrLogonData(?, ?)}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, username); // guid
             stmt.setString(2, userGuid); // username
+            stmt.setString(3, SaltType.LOGON.toString());
 
             if (DEBUG)
             {
@@ -137,12 +139,12 @@ public class SQLAuthenticator implements Authenticator
                     resultSet.close();
                 }
             
-                if (stmt != null)
+                if (!(Objects.isNull(stmt)))
                 {
                     stmt.close();
                 }
 
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
                 {
                     sqlConn.close();
                 }
@@ -284,12 +286,12 @@ public class SQLAuthenticator implements Authenticator
                     resultSet.close();
                 }
             
-                if (stmt != null)
+                if (!(Objects.isNull(stmt)))
                 {
                     stmt.close();
                 }
 
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
                 {
                     sqlConn.close();
                 }
@@ -382,12 +384,12 @@ public class SQLAuthenticator implements Authenticator
                     resultSet.close();
                 }
             
-                if (stmt != null)
+                if (!(Objects.isNull(stmt)))
                 {
                     stmt.close();
                 }
 
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
                 {
                     sqlConn.close();
                 }
@@ -417,6 +419,7 @@ public class SQLAuthenticator implements Authenticator
 
         boolean isValid = false;
         Connection sqlConn = null;
+        ResultSet resultSet = null;
         CallableStatement stmt = null;
 
         if (Objects.isNull(dataSource))
@@ -433,24 +436,57 @@ public class SQLAuthenticator implements Authenticator
             	DEBUGGER.debug("sqlConn: {}", sqlConn);
             }
 
-            if ((sqlConn == null) || (sqlConn.isClosed()))
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
+
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL verifySecurityQuestions(?, ?, ?, ?)}");
+            stmt = sqlConn.prepareCall("{CALL retrSecurityAnswers(?, ?)}", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, userGuid); // guid
             stmt.setString(2, userId);
-            stmt.setString(3, attributes.get(0)); // username
-            stmt.setString(4, attributes.get(1)); // username
 
             if (DEBUG)
             {
-                DEBUGGER.debug("Statement: {}", stmt.toString());
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
-            isValid = stmt.execute();
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ResultSet: {}", resultSet);
+                }
+
+                if (resultSet.next())
+                {
+                    resultSet.first();
+                    
+                    String answerOneDecrypted = PasswordUtils.decryptText(resultSet.getString(1), attributes.get(0), secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(),
+                			secConfig.getKeyBits(), secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
+                			svcBean.getConfigData().getSystemConfig().getEncoding());
+
+                    String answerTwoDecrypted = PasswordUtils.decryptText(resultSet.getString(2), attributes.get(0), secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(),
+                			secConfig.getKeyBits(), secConfig.getEncryptionAlgorithm(), secConfig.getEncryptionInstance(),
+                			svcBean.getConfigData().getSystemConfig().getEncoding());
+
+                    if ((StringUtils.equals(answerOneDecrypted, attributes.get(1))) && (StringUtils.equals(answerTwoDecrypted, attributes.get(2))))
+                    {
+                    	isValid = true;
+                    }
+                }
+                else
+                {
+                	throw new AuthenticatorException("No user security information was returned for the given user.");
+                }
+            }
+            else
+            {
+            	throw new SQLException("Failed to execute statement against database.");
+            }
         }
         catch (final SQLException sqx)
         {
@@ -460,12 +496,18 @@ public class SQLAuthenticator implements Authenticator
         {
             try
             {
-                if (stmt != null)
+            	if (!(Objects.isNull(resultSet)))
+            	{
+            		resultSet.close();
+            		resultSet = null;
+            	}
+
+                if (!(Objects.isNull(stmt)))
                 {
                     stmt.close();
                 }
 
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
                 {
                     sqlConn.close();
                 }

@@ -30,17 +30,20 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.ArrayList;
+import java.security.KeyPair;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.processors.enums.SaltType;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
+import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
@@ -83,7 +86,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
         try
         {
-            List<String[]> userList = userManager.searchUsers(request.getSearchData());
+        	List<String[]> userList = userManager.searchUsers(request.getSearchData());
 
             if (DEBUG)
             {
@@ -100,6 +103,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             UserAccount userInfo = new UserAccount();
             userInfo.setGuid(userList.get(0)[0]);
             userInfo.setUsername(userList.get(0)[1]);
+            userInfo.setEmailAddr(userList.get(0)[2]);
 
             if (DEBUG)
             {
@@ -237,8 +241,8 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                     }
 
                     response.setUserAccount(resAccount);
-                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                     response.setUserSecurity(userSecurity);
+                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
 
                     if (DEBUG)
                     {
@@ -306,33 +310,26 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             DEBUGGER.debug("AccountResetRequest: {}", request);
         }
 
-        AccountResetResponse authResponse = new AccountResetResponse();
+        AccountResetResponse response = new AccountResetResponse();
 
         final RequestHostInfo reqInfo = request.getHostInfo();
-        final UserAccount userAccount = request.getUserAccount();
-        final AuthenticationData userSecurity = request.getUserSecurity();
+        final UserAccount reqAccount  = request.getUserAccount();
+        final AuthenticationData reqSecurity = request.getUserSecurity();
 
         if (DEBUG)
         {
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            DEBUGGER.debug("UserAccount: {}", userAccount);
+            DEBUGGER.debug("UserAccount: {}", reqAccount);
         }
 
         try
         {
-            final String userSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.RESET.name());
+            final String userSalt = userSec.getUserSalt(reqAccount.getGuid(), SaltType.RESET.name());
 
             if (StringUtils.isNotEmpty(userSalt))
             {
-                boolean isVerified = authenticator.verifySecurityData(userAccount.getUsername(), userAccount.getGuid(),
-                    new ArrayList<String>(
-                        Arrays.asList(
-                            PasswordUtils.encryptText(userSecurity.getSecAnswerOne(), userSalt,
-                                secConfig.getMessageDigest(), secConfig.getIterations(),
-                                secBean.getConfigData().getSystemConfig().getEncoding()),
-                            PasswordUtils.encryptText(userSecurity.getSecAnswerTwo(), userSalt,
-                                secConfig.getMessageDigest(), secConfig.getIterations(),
-                                secBean.getConfigData().getSystemConfig().getEncoding()))));
+                boolean isVerified = authenticator.verifySecurityData(reqAccount.getUsername(), reqAccount.getGuid(), 
+                		new ArrayList<String>(Arrays.asList(userSalt, reqSecurity.getSecAnswerOne(), reqSecurity.getSecAnswerTwo())));
 
                 if (DEBUG)
                 {
@@ -341,7 +338,44 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
                 if (isVerified)
                 {
-                    authResponse.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                	// build a user account object here
+                    // load the user account here
+                    List<Object> authObject = userManager.loadUserAccount(reqAccount.getGuid());
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("authObject: {}", authObject);
+                    }
+
+                    if ((Integer) authObject.get(7) >= secConfig.getMaxAttempts())
+                    {
+                        // user locked
+                    	response.setRequestStatus(SecurityRequestStatus.FAILURE);
+
+                        return response;
+                    }
+
+                    UserAccount resAccount = new UserAccount();
+                    resAccount.setGuid((String) authObject.get(0)); // CN
+                    resAccount.setUsername((String) authObject.get(1)); // UID
+                    resAccount.setGivenName((String) authObject.get(2)); // GIVENNAME
+                    resAccount.setSurname((String) authObject.get(3)); // sn
+                    resAccount.setDisplayName((String) authObject.get(4)); // displayName
+                    resAccount.setEmailAddr((String) authObject.get(5)); // email
+                    resAccount.setUserRole(SecurityUserRole.valueOf((String) authObject.get(6))); //cwsrole
+                    resAccount.setFailedCount((int) authObject.get(7)); // cwsfailedpwdcount            
+                    resAccount.setLastLogin((Timestamp) authObject.get(8)); // cwslastlogin
+                    resAccount.setExpiryDate((Timestamp) authObject.get(9)); // cwsexpirydate
+                    resAccount.setSuspended((boolean) authObject.get(10)); // cwsissuspended
+                    resAccount.setOlrSetup((boolean) authObject.get(11)); // cwsisolrsetup
+                    resAccount.setOlrLocked((boolean) authObject.get(12)); // cwsisolrlocked
+                    resAccount.setAccepted((boolean) authObject.get(13)); // cwsistcaccepted
+                    resAccount.setUserKeys((KeyPair) authObject.get(14)); // cwspublickey
+                    resAccount.setTelephoneNumber((String) authObject.get(15)); // telephoneNumber
+                    resAccount.setPagerNumber((String) authObject.get(16)); // pager
+
+                    response.setUserAccount(resAccount);
+                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                 }
                 else
                 {
@@ -349,7 +383,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                     {
                         try
                         {
-                            userManager.modifyOlrLock(userAccount.getUsername(), true);
+                            userManager.modifyOlrLock(reqAccount.getGuid(), true);
                         }
                         catch (final UserManagementException umx)
                         {
@@ -357,8 +391,8 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                         }
                     }
 
-                    authResponse.setCount(request.getCount() + 1);
-                    authResponse.setRequestStatus(SecurityRequestStatus.FAILURE);
+                    response.setCount(request.getCount() + 1);
+                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
                 }
             }
             else
@@ -378,6 +412,12 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
             throw new AccountResetException(ax.getMessage(), ax);
         }
+        catch (UserManagementException umx)
+        {
+            ERROR_RECORDER.error(umx.getMessage(), umx);
+
+            throw new AccountResetException(umx.getMessage(), umx);
+		}
         finally
         {
         	if (secConfig.getPerformAudit())
@@ -388,7 +428,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 	                AuditEntry auditEntry = new AuditEntry();
 	                auditEntry.setHostInfo(reqInfo);
 	                auditEntry.setAuditType(AuditType.VERIFYSECURITY);
-	                auditEntry.setUserAccount(userAccount);
+	                auditEntry.setUserAccount(reqAccount);
 	                auditEntry.setAuthorized(Boolean.TRUE);
 	                auditEntry.setApplicationId(request.getApplicationId());
 	                auditEntry.setApplicationName(request.getApplicationName());
@@ -415,7 +455,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
         	}
         }
 
-        return authResponse;
+        return response;
     }
 
     /**

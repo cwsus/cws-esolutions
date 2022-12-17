@@ -27,6 +27,7 @@ package com.cws.esolutions.web.controllers;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.Date;
+import java.util.Objects;
 import java.util.Enumeration;
 import org.springframework.ui.Model;
 import javax.servlet.http.HttpSession;
@@ -37,8 +38,8 @@ import org.springframework.mail.MailException;
 import org.springframework.stereotype.Controller;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.validation.BindingResult;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -57,14 +58,9 @@ import com.cws.esolutions.security.processors.enums.ResetRequestType;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AccountResetRequest;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
-import com.cws.esolutions.security.processors.dto.AccountControlRequest;
-import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.security.processors.impl.AccountResetProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
-import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
-import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
-import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 /**
  * @author cws-khuntly
  * @version 1.0
@@ -80,6 +76,8 @@ public class OnlineResetController
     private String submitUsernamePage = null;
     private String submitEmailAddrPage = null;
     private String messageRequestFailure = null;
+    private String messageNoAccountFound = null;
+    private String messageAccountDisabled = null;
     private String messageRequestComplete = null;
     private OnlineResetValidator validator = null;
     private ApplicationServiceBean appConfig = null;
@@ -120,6 +118,31 @@ public class OnlineResetController
         this.resetURL = value;
     }
 
+    public final void setMessageNoAccountFound(final String value)
+    {
+        final String methodName = OnlineResetController.CNAME + "#setMessageNoAccountFound(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageNoAccountFound = value;
+    }
+
+    public final void setMessageAccountDisabled(final String value)
+    {
+        final String methodName = OnlineResetController.CNAME + "#setMessageAccountDisabled(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageAccountDisabled = value;
+    }
     public final void setMessageRequestComplete(final String value)
     {
         final String methodName = OnlineResetController.CNAME + "#setMessageRequestComplete(final String value)";
@@ -383,6 +406,7 @@ public class OnlineResetController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
+        final IAccountResetProcessor processor = (IAccountResetProcessor) new AccountResetProcessorImpl();
 
         if (DEBUG)
         {
@@ -442,8 +466,7 @@ public class OnlineResetController
             resetReq.setApplicationId(this.appConfig.getApplicationId());
             resetReq.setApplicationName(this.appConfig.getApplicationName());
 
-            IAccountResetProcessor resetProcessor = (IAccountResetProcessor) new AccountResetProcessorImpl();
-            AccountResetResponse resetRes = resetProcessor.verifyResetRequest(resetReq);
+            AccountResetResponse resetRes = processor.verifyResetRequest(resetReq);
 
             if (DEBUG)
             {
@@ -570,10 +593,12 @@ public class OnlineResetController
             DEBUGGER.debug("UserChangeRequest: {}", request);
         }
 
+        String responsePage = null;
+
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
-        final IAccountControlProcessor acctController = (IAccountControlProcessor) new AccountControlProcessorImpl();
+        final IAccountResetProcessor processor = (IAccountResetProcessor) new AccountResetProcessorImpl();
 
         if (DEBUG)
         {
@@ -628,7 +653,7 @@ public class OnlineResetController
             model.addAttribute(Constants.BIND_RESULT, bindResult.getAllErrors());
             model.addAttribute(Constants.COMMAND, new AccountChangeData());
 
-            return this.submitUsernamePage;
+            responsePage = this.submitUsernamePage;
         }
 
         try
@@ -643,90 +668,102 @@ public class OnlineResetController
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            UserAccount reqAccount = new UserAccount();
-            reqAccount.setEmailAddr(request.getEmailAddr());
+            AccountResetRequest resetRequest = new AccountResetRequest();
+            resetRequest.setApplicationId(this.appConfig.getApplicationId());
+            resetRequest.setApplicationName(this.appConfig.getApplicationName());
+            resetRequest.setHostInfo(reqInfo);
+            resetRequest.setSearchData(request.getEmailAddr());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("UserAccount: {}", reqAccount);
+                DEBUGGER.debug("AccountResetRequest: {}", request);
             }
 
-            AccountControlRequest controlReq = new AccountControlRequest();
-            controlReq.setHostInfo(reqInfo);
-            controlReq.setUserAccount(reqAccount);
-            controlReq.setApplicationId(this.appConfig.getApplicationId());
-            controlReq.setApplicationName(this.appConfig.getApplicationName());
-            controlReq.setIsResetRequest(true);
+            AccountResetResponse response = processor.findUserAccount(resetRequest);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("AccountControlRequest: {}", request);
+                DEBUGGER.debug("AccountResetResponse: {}", response);
             }
 
-            AccountControlResponse response = acctController.searchAccounts(controlReq);
-
-            if (DEBUG)
+            switch (response.getRequestStatus())
             {
-                DEBUGGER.debug("AccountControlResponse: {}", response);
-            }
+				case DISABLED:
+            		model.addAttribute(Constants.ERROR_MESSAGE, this.messageAccountDisabled);
 
-            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-            {
-                // this will return a single user account
-            	if (response.getUserList().size() != 1)
-            	{
-            		// too many accounts
-            		model.addAttribute(Constants.ERROR_MESSAGE, "An account could not be located for the information provided."); // TODO
+            		responsePage = this.appConfig.getLogonRedirect();
 
-            		return this.appConfig.getLogonRedirect();
-            	}
+            		break;
+				case FAILURE:
+            		model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageNoSearchResults());
 
-                UserAccount userAccount = response.getUserList().get(0);
+            		responsePage = this.appConfig.getErrorResponsePage();
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserAccount: {}", userAccount);
-                }
+            		break;
+				case SUCCESS:
+	                // this will return a single user account
+					if (Objects.isNull(response.getUserAccount()))
+					{
+	            		model.addAttribute(Constants.ERROR_MESSAGE, this.messageNoAccountFound);
 
-                try
-                {
-                	// TODO some shit here
-                	SimpleMailMessage emailMessage = this.forgotPasswordEmail;
-                	emailMessage.setTo(response.getUserAccount().getEmailAddr());
-                	emailMessage.setText(String.format(this.forgotUsernameEmail.getText(),
-                            userAccount.getGivenName(),
-                            new Date(System.currentTimeMillis()),
-                            reqInfo.getHostName(),
-                            userAccount.getUsername()));
+	            		responsePage = this.appConfig.getLogonRedirect();
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("SimpleMailMessage: {}", emailMessage);
-                    }
+	            		break;
+					}
+					else
+					{
+						UserAccount userAccount = response.getUserAccount();
 
-                	mailSender.send(emailMessage);
-                }
-                catch (final MailException mx)
-                {
-                    ERROR_RECORDER.error(mx.getMessage(), mx);
+		                if (DEBUG)
+		                {
+		                    DEBUGGER.debug("UserAccount: {}", userAccount);
+		                }
 
-                    model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
-                }
+		                try
+		                {
+		                	// TODO some shit here
+		                	SimpleMailMessage emailMessage = this.forgotPasswordEmail;
+		                	emailMessage.setTo(response.getUserAccount().getEmailAddr());
+		                	emailMessage.setText(String.format(this.forgotUsernameEmail.getText(),
+		                            userAccount.getGivenName(),
+		                            new Date(System.currentTimeMillis()),
+		                            reqInfo.getHostName(),
+		                            userAccount.getUsername()));
 
-                model.addAttribute(Constants.MESSAGE_RESPONSE, this.messageRequestComplete);
-                return this.appConfig.getLogonRedirect();
-            }
-            else
-            {
-                return this.appConfig.getErrorResponsePage();
+		                    if (DEBUG)
+		                    {
+		                        DEBUGGER.debug("SimpleMailMessage: {}", emailMessage);
+		                    }
+
+		                    mailSender.send(emailMessage);
+		                }
+		                catch (final MailException mx)
+		                {
+		                	ERROR_RECORDER.error(mx.getMessage(), mx);
+
+		                	model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
+		                }
+					}
+
+	                model.addAttribute(Constants.MESSAGE_RESPONSE, this.messageRequestComplete);
+
+	                responsePage = this.appConfig.getLogonRedirect();
+
+	                break;
+				case UNAUTHORIZED:
+					responsePage = this.appConfig.getUnauthorizedPage();
+
+					break;
             }
         }
-        catch (final AccountControlException acx)
+        catch (final AccountResetException arx)
         {
-            ERROR_RECORDER.error(acx.getMessage(), acx);
+            ERROR_RECORDER.error(arx.getMessage(), arx);
 
-            return this.appConfig.getErrorResponsePage();
+            responsePage = this.appConfig.getErrorResponsePage();
         }
+
+        return responsePage;
     }
 
     @RequestMapping(value = "forgot-password", method = RequestMethod.POST)
@@ -740,10 +777,12 @@ public class OnlineResetController
             DEBUGGER.debug("AccountChangeData: {}", request);
         }
 
+        String responsePage = null;
+
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
-        final IAccountResetProcessor processor = new AccountResetProcessorImpl();
+        final IAccountResetProcessor processor = (IAccountResetProcessor) new AccountResetProcessorImpl();
 
         if (DEBUG)
         {
@@ -797,7 +836,7 @@ public class OnlineResetController
             model.addAttribute(Constants.BIND_RESULT, bindResult.getAllErrors());
             model.addAttribute(Constants.COMMAND, new AccountChangeData());
 
-            return this.submitUsernamePage;
+            responsePage = this.submitUsernamePage;
         }
 
         try
@@ -812,76 +851,137 @@ public class OnlineResetController
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            UserAccount reqAccount = new UserAccount();
-            reqAccount.setUsername(request.getUsername());
+            AccountResetRequest resetRequest = new AccountResetRequest();
+            resetRequest.setApplicationId(this.appConfig.getApplicationId());
+            resetRequest.setApplicationName(this.appConfig.getApplicationName());
+            resetRequest.setHostInfo(reqInfo);
+            resetRequest.setSearchData(request.getUsername());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("UserAccount: {}", reqAccount);
+                DEBUGGER.debug("AccountResetRequest: {}", request);
             }
 
-            AccountResetRequest resetReq = new AccountResetRequest();
-            resetReq.setApplicationId(this.appConfig.getApplicationId());
-            resetReq.setApplicationName(this.appConfig.getApplicationName());
-            resetReq.setHostInfo(reqInfo);
-            resetReq.setUserAccount(reqAccount);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AuthenticationRequest: {}", resetReq);
-            }
-
-            AccountResetResponse response = processor.obtainUserSecurityConfig(resetReq);
+            AccountResetResponse response = processor.findUserAccount(resetRequest);
 
             if (DEBUG)
             {
                 DEBUGGER.debug("AccountResetResponse: {}", response);
             }
 
-            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            switch (response.getRequestStatus())
             {
-                UserAccount resAccount = response.getUserAccount();
+				case DISABLED:
+            		model.addAttribute(Constants.ERROR_MESSAGE, this.messageAccountDisabled);
 
-                if ((resAccount.isSuspended()) || (resAccount.isOlrLocked()))
-                {
-                    return this.appConfig.getUnauthorizedPage();
-                }
+            		responsePage = this.appConfig.getLogonRedirect();
 
-                AuthenticationData userSec = response.getUserSecurity();
+            		break;
+				case FAILURE:
+            		model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageNoSearchResults());
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuthenticationData: {}", userSec);
-                }
+            		return this.appConfig.getErrorResponsePage();
+				case SUCCESS:
+	                // this will return a single user account
+					if (Objects.isNull(response.getUserAccount()))
+					{
+	            		model.addAttribute(Constants.ERROR_MESSAGE, this.messageNoAccountFound);
 
-                AccountChangeData changeReq = new AccountChangeData();
-                changeReq.setSecQuestionOne(userSec.getSecQuestionOne());
-                changeReq.setSecQuestionTwo(userSec.getSecQuestionTwo());
+	            		responsePage = this.appConfig.getLogonRedirect();
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserChangeRequest: {}", changeReq);
-                }
+	            		break;
+					}
+					else
+					{
+			            AccountResetRequest resetReq = new AccountResetRequest();
+			            resetReq.setApplicationId(this.appConfig.getApplicationId());
+			            resetReq.setApplicationName(this.appConfig.getApplicationName());
+			            resetReq.setHostInfo(reqInfo);
+			            resetReq.setUserAccount(response.getUserAccount());
 
-                // xlnt. set the user
-                hSession.setAttribute(Constants.USER_ACCOUNT, resAccount);
+			            if (DEBUG)
+			            {
+			                DEBUGGER.debug("AccountResetRequest: {}", resetReq);
+			            }
 
-                model.addAttribute("resetType", ResetRequestType.QUESTIONS);
-                model.addAttribute(Constants.COMMAND, changeReq);
+			            AccountResetResponse resetResponse = processor.obtainUserSecurityConfig(resetReq);
 
-                return this.submitAnswersPage;
-            }
-            else
-            {
-                return this.appConfig.getErrorResponsePage();
+			            if (DEBUG)
+			            {
+			                DEBUGGER.debug("AccountResetResponse: {}", resetResponse);
+			            }
+
+			            switch (resetResponse.getRequestStatus())
+			            {
+							case DISABLED:
+								model.addAttribute(Constants.ERROR_MESSAGE, this.messageAccountDisabled);
+								responsePage = this.appConfig.getErrorResponsePage();
+
+								break;
+							case FAILURE:
+								model.addAttribute(Constants.ERROR_MESSAGE, this.messageRequestFailure);
+				            	responsePage = this.appConfig.getErrorResponsePage();
+
+								break;
+							case SUCCESS:
+				                UserAccount resAccount = resetResponse.getUserAccount();
+
+				                if (DEBUG)
+				                {
+				                	DEBUGGER.debug("UserAccount resAccount: {}", resAccount);
+				                }
+	
+				                if ((resAccount.isSuspended()) || (resAccount.isOlrLocked()))
+				                {
+				                    return this.appConfig.getUnauthorizedPage();
+				                }
+
+				                AuthenticationData secResponse = resetResponse.getUserSecurity();
+
+				                AccountChangeData changeReq = new AccountChangeData();
+				                changeReq.setSecQuestionOne(secResponse.getSecQuestionOne());
+				                changeReq.setSecQuestionTwo(secResponse.getSecQuestionTwo());
+				                changeReq.setGuid(resAccount.getGuid());
+				                changeReq.setUsername(resAccount.getUsername());
+				                changeReq.setResetType(ResetRequestType.QUESTIONS);
+
+				                if (DEBUG)
+				                {
+				                    DEBUGGER.debug("UserChangeRequest: {}", changeReq);
+				                }
+
+				                model.addAttribute(Constants.COMMAND, changeReq);
+	
+				                responsePage = this.submitAnswersPage;
+	
+								break;
+							case UNAUTHORIZED:
+								responsePage = this.appConfig.getUnauthorizedPage();
+	
+								break;
+							default:
+								model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
+								responsePage = this.appConfig.getErrorResponsePage();
+	
+								break;
+			            }
+
+			            break;
+					}
+				case UNAUTHORIZED:
+					responsePage = this.appConfig.getUnauthorizedPage();
+
+					break;
             }
         }
         catch (final AccountResetException arx)
         {
             ERROR_RECORDER.error(arx.getMessage(), arx);
 
-            return this.appConfig.getErrorResponsePage();
+            responsePage = this.appConfig.getErrorResponsePage();
         }
+
+        return responsePage;
     }
 
     @RequestMapping(value = "submit", method = RequestMethod.POST)
@@ -895,12 +995,11 @@ public class OnlineResetController
             DEBUGGER.debug("AccountChangeData: {}", request);
         }
 
-        boolean resetError = false;
+        String responsePage = null;
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
-        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IAccountResetProcessor processor = (IAccountResetProcessor) new AccountResetProcessorImpl();
 
         if (DEBUG)
@@ -909,7 +1008,6 @@ public class OnlineResetController
             DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
             DEBUGGER.debug("Session ID: {}", hSession.getId());
-            DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
             Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
@@ -956,7 +1054,7 @@ public class OnlineResetController
             model.addAttribute(Constants.BIND_RESULT, bindResult.getAllErrors());
             model.addAttribute(Constants.COMMAND, request);
 
-            return this.submitAnswersPage;
+            responsePage = this.submitAnswersPage;
         }
 
         try
@@ -969,6 +1067,15 @@ public class OnlineResetController
             if (DEBUG)
             {
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            }
+
+            UserAccount userAccount = new UserAccount();
+            userAccount.setGuid(request.getGuid());
+            userAccount.setUsername(request.getUsername());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("UserAccount: {}", userAccount);
             }
 
             AuthenticationData userSecurity = new AuthenticationData();
@@ -993,162 +1100,184 @@ public class OnlineResetController
                 DEBUGGER.debug("AccountResetRequest: {}", resRequest);
             }
 
-            AccountResetResponse response = processor.verifyUserSecurityConfig(resRequest);
+            AccountResetResponse resResponse = processor.verifyUserSecurityConfig(resRequest);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("AccountResetResponse: {}", response);
+                DEBUGGER.debug("AccountResetResponse: {}", resResponse);
             }
 
-            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            switch (resResponse.getRequestStatus())
             {
-                // ok, good - the user successfully passed this validation
-                // kick off the reset workflow
-                AccountResetRequest resetReq = new AccountResetRequest();
-                resetReq.setHostInfo(reqInfo);
-                resetReq.setUserAccount(userAccount);
-                resetReq.setApplicationId(this.appConfig.getApplicationId());
-                resetReq.setApplicationName(this.appConfig.getApplicationName());
+				case DISABLED:
+	                model.addAttribute(Constants.ERROR_RESPONSE, this.messageAccountDisabled);
+	                model.addAttribute(Constants.COMMAND, request);
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountResetRequest: {}", resetReq);
-                }
+	                responsePage = this.submitAnswersPage;
 
-                AccountResetResponse resetRes = processor.resetUserPassword(resetReq);
+	                break;
+				case FAILURE:
+	                model.addAttribute(Constants.ERROR_RESPONSE, this.messageRequestFailure);
+	                model.addAttribute(Constants.COMMAND, request);
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountResetResponse: {}", resetRes);
-                }
+	                responsePage = this.submitAnswersPage;
 
-                if (resetRes.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                {
-                    // good, send email
-                    UserAccount responseAccount = resetRes.getUserAccount();
+	                break;
+				case SUCCESS:
+					// ok, good - the user successfully passed this validation
+	                // kick off the reset workflow
+	                AccountResetRequest resetReq = new AccountResetRequest();
+	                resetReq.setHostInfo(reqInfo);
+	                resetReq.setUserAccount(resResponse.getUserAccount());
+	                resetReq.setApplicationId(this.appConfig.getApplicationId());
+	                resetReq.setApplicationName(this.appConfig.getApplicationName());
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("UserAccount: {}", responseAccount);
-                    }
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AccountResetRequest: {}", resetReq);
+	                }
 
-                    String emailId = RandomStringUtils.randomAlphanumeric(16);
+	                AccountResetResponse resetRes = processor.resetUserPassword(resetReq);
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Message ID: {}", emailId);
-                    }
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("AccountResetResponse: {}", resetRes);
+	                }
 
-                    StringBuilder targetURL = new StringBuilder()
-                        .append(hRequest.getScheme() + "://" + hRequest.getServerName())
-                        .append((hRequest.getServerPort() == 443) ? null : ":" + hRequest.getServerPort())
-                        .append(hRequest.getContextPath() + this.resetURL + resetRes.getResetId());
+	                switch (resetRes.getRequestStatus())
+	                {
+						case DISABLED:
+		                	model.addAttribute(Constants.ERROR_MESSAGE, this.messageAccountDisabled);
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("targetURL: {}", targetURL);
-                    }
-                        
-                    try
-                    {
-                    	SimpleMailMessage emailMessage = this.forgotPasswordEmail;
-                    	emailMessage.setTo(userAccount.getEmailAddr());
-                    	emailMessage.setText(String.format(this.forgotPasswordEmail.getText(),
-                    			userAccount.getGivenName(),
-                                new Date(System.currentTimeMillis()),
-                                reqInfo.getHostName(),
-                                targetURL.toString(),
-                                8, 128));
+		                	responsePage = this.submitAnswersPage;
 
-                    	if (DEBUG)
-                    	{
-                    		DEBUGGER.debug("SimpleMailMessage: {}", emailMessage);
-                    	}
+							break;
+						case FAILURE:
+		                	model.addAttribute(Constants.ERROR_MESSAGE, this.messageRequestFailure);
 
-                    	mailSender.send(emailMessage);
-                    }
-                    catch (final MailException mx)
-                    {
-                        ERROR_RECORDER.error(mx.getMessage(), mx);
+		                	responsePage = this.submitAnswersPage;
 
-                        model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
-                    }
+							break;
+						case SUCCESS:
+		                    // good, send email
+		                    UserAccount responseAccount = resetRes.getUserAccount();
 
-                    if (this.appConfig.getIsSmsEnabled())
-                    {
-                        // send an sms code
-                        try
-                        {
-                        	SimpleMailMessage emailMessage = new SimpleMailMessage();
-                        	emailMessage.setTo(userAccount.getPagerNumber());
-                        	emailMessage.setText(resetRes.getSmsCode());
+		                    if (DEBUG)
+		                    {
+		                        DEBUGGER.debug("UserAccount: {}", responseAccount);
+		                    }
 
-                        	if (DEBUG)
-                        	{
-                        		DEBUGGER.debug("SimpleMailMessage: {}", emailMessage);
-                        	}
+		                    String emailId = RandomStringUtils.randomAlphanumeric(16);
 
-                        	mailSender.send(emailMessage);
-                        }
-                        catch (final MailException mx)
-                        {
-                            ERROR_RECORDER.error(mx.getMessage(), mx);
+		                    if (DEBUG)
+		                    {
+		                        DEBUGGER.debug("Message ID: {}", emailId);
+		                    }
 
-                            model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
-                        }
-                    }
-                }
-                else
-                {
-                    // some failure occurred
-                    return this.appConfig.getErrorResponsePage();
-                }
-            }
-            else
-            {
-                // user not logged in, redirect
-                request.setCount(response.getCount());
+		                    StringBuilder targetURL = new StringBuilder()
+		                        .append(hRequest.getScheme() + "://" + hRequest.getServerName())
+		                        .append((hRequest.getServerPort() == 443) ? null : ":" + hRequest.getServerPort())
+		                        .append(hRequest.getContextPath() + this.resetURL + resetRes.getResetId());
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserChangeRequest: {}", request);
-                }
+		                    if (DEBUG)
+		                    {
+		                        DEBUGGER.debug("targetURL: {}", targetURL);
+		                    }
+		                        
+		                    try
+		                    {
+		                    	SimpleMailMessage emailMessage = this.forgotPasswordEmail;
+		                    	emailMessage.setTo(userAccount.getEmailAddr());
+		                    	emailMessage.setText(String.format(this.forgotPasswordEmail.getText(),
+		                    			userAccount.getGivenName(),
+		                                new Date(System.currentTimeMillis()),
+		                                reqInfo.getHostName(),
+		                                targetURL.toString(),
+		                                8, 128));
 
-                resetError = true;
-                model.addAttribute(Constants.ERROR_RESPONSE, this.messageRequestFailure);
-                model.addAttribute(Constants.COMMAND, request);
+		                    	if (DEBUG)
+		                    	{
+		                    		DEBUGGER.debug("SimpleMailMessage: {}", emailMessage);
+		                    	}
 
-                return this.submitAnswersPage;
+		                    	mailSender.send(emailMessage);
+		                    }
+		                    catch (final MailException mx)
+		                    {
+		                        ERROR_RECORDER.error(mx.getMessage(), mx);
+
+		                        model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
+		                    }
+
+		                    if (this.appConfig.getIsSmsEnabled())
+		                    {
+		                        // send an sms code
+		                        try
+		                        {
+		                        	SimpleMailMessage emailMessage = new SimpleMailMessage();
+		                        	emailMessage.setTo(userAccount.getPagerNumber());
+		                        	emailMessage.setText(resetRes.getSmsCode());
+
+		                        	if (DEBUG)
+		                        	{
+		                        		DEBUGGER.debug("SimpleMailMessage: {}", emailMessage);
+		                        	}
+
+		                        	mailSender.send(emailMessage);
+		                        }
+		                        catch (final MailException mx)
+		                        {
+		                            ERROR_RECORDER.error(mx.getMessage(), mx);
+
+		                            model.addAttribute(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
+		                        }
+		                    }
+
+		                    model.addAttribute(Constants.MESSAGE_RESPONSE, this.messageRequestComplete);
+
+		                    responsePage = this.appConfig.getLogonRedirect();
+
+		                    break;
+						case UNAUTHORIZED:
+							responsePage = this.appConfig.getUnauthorizedPage();
+
+							break;
+						default:
+		                	model.addAttribute(Constants.ERROR_MESSAGE, this.messageRequestFailure);
+
+		                	responsePage = this.appConfig.getErrorResponsePage();
+							break;
+	                }
+
+					break;
+				case UNAUTHORIZED:
+					responsePage = this.appConfig.getUnauthorizedPage();
+
+					break;
+				default:
+                	model.addAttribute(Constants.ERROR_MESSAGE, this.messageRequestFailure);
+
+                	responsePage = this.appConfig.getErrorResponsePage();
+
+                	break;
             }
         }
         catch (final AccountResetException arx)
         {
             ERROR_RECORDER.error(arx.getMessage(), arx);
 
-            return this.appConfig.getErrorResponsePage();
+            responsePage = this.appConfig.getErrorResponsePage();
         }
         finally
         {
-            if (!(resetError))
-            {
-                // invalidate the session at this point
-                hSession.removeAttribute(Constants.USER_ACCOUNT);
-                hSession.invalidate();
+            // invalidate the session at this point
+            hSession.removeAttribute(Constants.USER_ACCOUNT);
+            hSession.invalidate();
 
-                hRequest.getSession().removeAttribute(Constants.USER_ACCOUNT);
-                hRequest.getSession().invalidate();
-
-                model.addAttribute(Constants.RESPONSE_MESSAGE, this.messageRequestComplete);
-
-                return this.appConfig.getLogonRedirect();
-            }
+            hRequest.getSession().removeAttribute(Constants.USER_ACCOUNT);
+            hRequest.getSession().invalidate();
         }
 
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", model);
-        }
-
-        return this.appConfig.getLogonRedirect();
+        return responsePage;
     }
 }

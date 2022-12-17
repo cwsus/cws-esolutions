@@ -79,7 +79,7 @@ public class AuditProcessorImpl implements IAuditProcessor
 
         if (secConfig.getPerformAudit())
         {
-            if ((hostInfo == null) || (userAccount == null))
+            if ((Objects.isNull(hostInfo)) || (Objects.isNull(userAccount)))
             {
             	ERROR_RECORDER.error("Cannot perform audit: RequestHostInfo / UserAccount is missing");
 
@@ -117,10 +117,11 @@ public class AuditProcessorImpl implements IAuditProcessor
             catch (final SQLException sqx)
             {
                 ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-                throw new AuditServiceException(sqx.getMessage(), sqx);
             }
-            catch (UnknownHostException uhx) {} // dont do anything with it
+            catch (UnknownHostException uhx)
+            {
+            	ERROR_RECORDER.error(uhx.getMessage(), uhx);
+            }
         }
     }
 

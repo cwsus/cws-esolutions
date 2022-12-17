@@ -102,10 +102,9 @@ public class SQLAuthenticatorTest
 
         try
         {
-            Assertions.assertThat(authenticator.verifySecurityData("junit", "f42fb0ba-4d1e-1126-986f-800cd2650000",
+            Assertions.assertThat(authenticator.verifySecurityData("khuntly", "a332cb8f-6891-4ae0-bd4d-18efe70b4ed2",
                     new ArrayList<String>(
-                            Arrays.asList("nnVRD0xm0quQrHv2k9AHSfQIHJLoJ6Hp9HWPgiqpiV9zOMDUaboAUOUzI4Vn5lWlqczMl/TzjWWrt6YhHhRjng==",
-                                    "FEwX3hCErzIAaeZThAznod4cIOG1eboOwttIBiW6Fz1Rbe/JzczTN6ANjIdW9KNkKx6Q+g1fDtIZgYX/xEYlOA==")))).isTrue();
+                            Arrays.asList("PIQNYhYZgEDdePK4ObMF", "Answer One", "Answer Two")))).isTrue();
                                     
         }
         catch (final AuthenticatorException e)
